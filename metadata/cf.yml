@@ -247,6 +247,8 @@ job_types:
         user: (( credentials.identity ))
         password: (( credentials.password ))
         address: (( first_ip ))
+        machines:
+          - (( first_ip ))
         port: 4222
         use_gnatsd: true
       syslog_aggregator:
@@ -605,6 +607,8 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
+        machines:
+          - (( .nats.first_ip ))
       syslog_aggregator:
         address: (( .syslog.first_ip ))
         port: 54321
