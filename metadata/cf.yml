@@ -1,0 +1,1664 @@
+---
+name: cf
+product_version: 1.1.0.0
+metadata_version: "1.1"
+stemcell:
+  name: bosh-vsphere-esxi-ubuntu
+  version: "1471"
+  file: bosh-stemcell-1471-vsphere-esxi-ubuntu.tgz
+  md5: 3a8ad37903ab4f7c1f933a8de5cf8c3e
+releases:
+  - name: cf
+    version: "154.1-dev"
+    file: cf-154.1-dev.tgz
+    md5: e0713fa063168a175fd89d2fbd699717
+provides_product_versions:
+  - name: cf
+    version: 1.1.0.0
+requires_product_versions:
+  - name: microbosh
+    version: "~> 1.0"
+label: Pivotal Elastic Runtime
+description:
+  Gives developers the ability to push apps on a dynamically-configured software stack
+image: iVBORw0KGgoAAAANSUhEUgAAAKEAAAArCAYAAAAQeugIAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyNpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChNYWNpbnRvc2gpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjUxRTZBNUVGNzU1RDExRTNCNDNEQ0EzRUU1OTlFMDU4IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjUxRTZBNUYwNzU1RDExRTNCNDNEQ0EzRUU1OTlFMDU4Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NTFFNkE1RUQ3NTVEMTFFM0I0M0RDQTNFRTU5OUUwNTgiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NTFFNkE1RUU3NTVEMTFFM0I0M0RDQTNFRTU5OUUwNTgiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6HD2kRAAAMmklEQVR42uxdC5hV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
+rank: 90
+
+install_time_verifiers:
+  - name: Verifiers::SsoUrlVerifier
+    properties:
+      - saml_login.sso_url
+  - name: Verifiers::SmtpAuthenticationVerifier
+    properties:
+      - consoledb.smtp_address
+      - consoledb.smtp_port
+      - consoledb.smtp_helo_domain
+      - consoledb.smtp_credentials
+      - consoledb.smtp_authentication
+      - consoledb.smtp_enable_starttls_auto
+
+form_types:
+  - name: ha_proxy
+    label: HAProxy
+    description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Cloud Foundry router IP. Self signed certificates will function properly.
+    verifier:
+      name: Verifiers::StaticIpsVerifier
+    property_inputs:
+      - reference: ha_proxy.static_ips
+      - reference: ha_proxy.ssl_rsa_certificate
+
+  - name: cloud_controller
+    label: Cloud Controller
+    description: Coordinates Cloud Foundry application lifecycles
+    property_inputs:
+      - reference: cloud_controller.system_domain
+      - reference: cloud_controller.apps_domain
+
+  - name: router
+    label: Router IPs
+    description: "Enter the IP address(es) for the Cloud Foundry Router. This IP must be in your subnet."
+    verifier:
+      name: Verifiers::StaticIpsVerifier
+    property_inputs:
+      - reference: router.static_ips
+
+  - name: saml_login
+    label: SAML Login
+    description: Communicates between SAML endpoints and the UAA
+    verifier:
+      name: Verifiers::SsoUrlVerifier
+      properties:
+        - sso_url
+    property_inputs:
+      - reference: saml_login.sso_url
+
+  - name: consoledb
+    label: Web Console
+    description: A Web application will be deployed to Cloud Foundry at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
+    verifier:
+      name: Verifiers::SmtpAuthenticationVerifier
+      properties:
+        - smtp_credentials
+        - smtp_address
+        - smtp_port
+        - smtp_helo_domain
+        - smtp_authentication
+        - smtp_enable_starttls_auto
+    property_inputs:
+      - reference: consoledb.reply_to
+      - reference: consoledb.from
+      - reference: consoledb.smtp_address
+      - reference: consoledb.smtp_port
+      - reference: consoledb.smtp_helo_domain
+      - reference: consoledb.smtp_credentials
+      - reference: consoledb.smtp_authentication
+      - reference: consoledb.smtp_enable_starttls_auto
+
+job_types:
+  - name: ha_proxy
+    label: HAProxy
+    resource_label: HAProxy
+    description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Cloud Foundry router IP. Self signed certificates will function properly.
+    template: haproxy
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 0
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: static_ips
+        type: ip_ranges
+        label: HAProxy IPs
+        description: "Enter the IP address(es) for HAProxy. You must point your DNS to this IP unless you are using your own load balancer. HAProxy's IP must be in your subnet."
+        configurable: true
+        optional: true
+
+      - name: ssl_rsa_certificate
+        type: rsa_cert_credentials
+        label: SSL Certificate
+        configurable: true
+
+    manifest: |
+      networks:
+        apps: default
+      ha_proxy:
+        timeout: 300
+        ssl_pem: (( ssl_rsa_certificate.cert_and_private_key_pems ))
+      router:
+        servers:
+          z1: (( .router.ips ))
+          z2: []
+      syslog_aggregator:
+        address: (( .syslog.first_ip ))
+        port: 54321
+
+  - name: nats
+    label: NATS
+    resource_label: NATS
+    description: Acts as the Cloud Foundry message bus
+    template: nats
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+          max: 3_000 # monit will restart when > 3000
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: credentials
+        type: simple_credentials
+        label: NATS credentials
+        default:
+          identity: nats
+
+    manifest: |
+      networks:
+        apps: default
+      nats:
+        user: (( credentials.identity ))
+        password: (( credentials.password ))
+        address: (( first_ip ))
+        port: 4222
+      syslog_aggregator:
+        address: (( .syslog.first_ip ))
+        port: 54321
+
+  - name: health_manager
+    label: Health Manager
+    resource_label: Health Manager
+    description: Reports app health to the Cloud Controller
+    template: health_manager_next
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      cc:
+        srv_api_uri: "<%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>"
+      networks:
+        apps: default
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+      health_manager:
+        intervals:
+          giveup_crash_number: 4
+      syslog_aggregator:
+        address: (( .syslog.first_ip ))
+        port: 54321
+
+  - name: nfs_server
+    label: NFS Server
+    resource_label: NFS Server
+    description: Stores droplets and app packages on behalf of Cloud Controller
+    template: debian_nfs_server
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 102_400
+        constraints:
+          min: 10_240
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      nfs_server:
+        address: (( first_ip ))
+        network: "<%= Tempest::Network.from_installation(@installation).ip_range %>"
+
+  - name: ccdb
+    label: Cloud Controller Database
+    resource_label: Cloud Controller Database
+    description: Stores Cloud Controller information
+    template: postgres
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: credentials
+        type: simple_credentials
+        label: Database credentials
+        default:
+          identity: admin
+
+    manifest: |
+      db: ccdb
+      ccdb:
+        address: (( first_ip ))
+        port: 2544
+        db_scheme: "postgres"
+        roles:
+        - tag: admin
+          name: (( credentials.identity ))
+          password: (( credentials.password ))
+        databases:
+        - tag: cc
+          name: ccdb
+          citext: true
+
+  - name: cloud_controller
+    label: Cloud Controller
+    resource_label: Cloud Controller
+    description: Coordinates Cloud Foundry application lifecycles
+    template: cloud_controller_ng
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 10_240
+        constraints:
+          min: 10_240
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: staging_upload_credentials
+        type: simple_credentials
+        label: Application staging upload credentials
+        default:
+          identity: staging_upload_user
+
+      - name: bulk_api_credentials
+        type: simple_credentials
+        label: Bulk api credentials
+        default:
+          identity: bulk_api
+
+      - name: db_encryption_credentials
+        type: simple_credentials
+        label: Database data encryption credentials
+        default:
+          identity: db_encryption
+
+      - name: system_domain
+        type: domain
+        label: System domain
+        description: "This domain is used to target and push apps to Cloud Foundry (ex: api.my-cf.com). You must set up a wildcard DNS record for this domain that points to the router static IP(s) or a load balancer."
+        configurable: true
+
+      - name: apps_domain
+        type: domain
+        label: Apps domain
+        description: "This domain is used to serve applications pushed to Cloud Foundry (ex: my-app.cool-apps.com). You must set up a wildcard DNS record for this domain as well. This domain can be the same as the system domain if you do not care about distinguishing the two."
+        configurable: true
+
+    manifest: |
+      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      system_domain_organization: system
+      app_domains: ["<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"]
+
+      ccng:
+        external_host: api
+        logging_level: debug
+        uaa_resource_id: cloud_controller
+        staging_upload_user: (( staging_upload_credentials.identity ))
+        staging_upload_password: (( staging_upload_credentials.password ))
+        bulk_api_password: (( bulk_api_credentials.password ))
+        db_encryption_key: (( db_encryption_credentials.password ))
+        bootstrap_admin_email: admin
+        tasks_disabled: true
+        default_quota_definition: runaway
+
+      ccdb_ng:
+        address: (( .ccdb.first_ip ))
+        port: 2544
+        db_scheme: "postgres"
+        roles:
+        - tag: admin
+          name: (( .ccdb.credentials.identity ))
+          password: (( .ccdb.credentials.password ))
+        databases:
+        - tag: cc
+          name: ccdb
+          citext: true
+
+      networks:
+        apps: default
+      nfs_server:
+        address: (( .nfs_server.first_ip ))
+
+      uaa:
+        url: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
+        jwt:
+          verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
+      login:
+        url: "<%= Tempest::CfAddressProvider.from_config(@installation).login_url %>"
+
+      loggregator:
+        trafficcontroller: (( .loggregator_trafficcontroller.first_ip ))
+        incoming_port: 3456
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+      syslog_aggregator:
+        address: (( .syslog.first_ip ))
+        port: 54321
+
+  - name: router
+    label: Router
+    resource_label: Router
+    description: Routers route Internet traffic to applications and between Cloud Foundry components.
+    template: gorouter
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: status_credentials
+        type: simple_credentials
+        label: Status credentials
+        default:
+          identity: router_status
+
+      - name: static_ips
+        type: ip_ranges
+        label: Router IPs
+        description: "Enter the IP address(es) for the Cloud Foundry Router. This IP must be in your subnet."
+        configurable: true
+        optional: true
+
+    manifest: |
+      router:
+        endpoint_timeout: 300
+        status:
+          user: router_status
+          password: (( status_credentials.password ))
+      loggregator:
+        trafficcontroller: (( .loggregator_trafficcontroller.first_ip ))
+        incoming_port: 3456
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+      syslog_aggregator:
+        address: (( .syslog.first_ip ))
+        port: 54321
+
+  - name: syslog
+    label: Syslog
+    resource_label: Syslog
+    description: Collects system logs from each Cloud Foundry component
+    template: syslog_aggregator
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 8_192
+        constraints:
+          min: 8_192
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+      syslog_aggregator:
+        address: (( .syslog.first_ip ))
+        port: 54321
+
+  - name: collector
+    label: Collector
+    resource_label: Collector
+    description: Collects system information in order to provide health and status metrics
+    template: collector
+
+    requires_product_versions:
+      - name: p-metrics
+        version: ~> 0.1
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 0
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+      syslog_aggregator:
+        address: (( .syslog.first_ip ))
+        port: 54321
+      collector:
+        use_tsdb: true
+      opentsdb:
+        address: (( ..p-metrics.maximus.first_ip ))
+        port: 13321
+
+  - name: uaadb
+    label: UAA Database
+    resource_label: UAA Database
+    description: Stores user information for the UAA
+    template: postgres
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 8_192
+        constraints:
+          min: 8_192
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: credentials
+        type: simple_credentials
+        label: Database credentials
+        default:
+          identity: root
+
+    manifest: |
+      db: uaadb
+      uaadb:
+        address: (( first_ip ))
+        port: 2544
+        db_scheme: postgresql
+        roles:
+        - tag: admin
+          name: (( credentials.identity ))
+          password: (( credentials.password ))
+        databases:
+        - tag: uaa
+          name: uaa
+      networks:
+        services: default
+
+  - name: uaa
+    label: UAA
+    resource_label: UAA
+    description: Cloud Foundry's Authentication and Authorization server
+    template: uaa
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        default: 1
+        configurable: true
+        constraints:
+          min: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: admin_credentials
+        type: simple_credentials
+        label: Administrator user credentials
+        default:
+          identity: admin
+
+      - name: system_services_credentials
+        type: simple_credentials
+        label: System services user credentials
+        default:
+          identity: system_services
+
+      - name: system_verification_credentials
+        type: simple_credentials
+        label: System verification user credentials
+        default:
+          identity: system_verification
+
+      - name: system_passwords_client_credentials
+        type: simple_credentials
+        label: System passwords client secret
+        default:
+          identity: system_passwords
+
+      - name: login_client_credentials
+        type: simple_credentials
+        label: Login client credentials
+        default:
+          identity: login
+
+      - name: console_client_credentials
+        type: simple_credentials
+        label: Console client credentials
+        default:
+          identity: portal
+
+      - name: cc_client_credentials
+        type: simple_credentials
+        label: Cloud Controller client secret
+
+      - name: admin_client_credentials
+        type: simple_credentials
+        label: Administrator client secret
+
+      - name: jwt_signing_key_credentials
+        type: rsa_pkey_credentials
+        label: Access token signing RSA key
+
+    manifest: |
+      uaa:
+        catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
+        url: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
+        jwt:
+          signing_key: (( jwt_signing_key_credentials.private_key_pem ))
+          verification_key: (( jwt_signing_key_credentials.public_key_pem ))
+        cc:
+          client_secret: (( cc_client_credentials.password ))
+        admin:
+          client_secret: (( admin_client_credentials.password ))
+        clients:
+          login:
+            id: (( login_client_credentials.identity ))
+            override: true
+            autoapprove: true
+            authorities: "oauth.login"
+            authorized-grant-types: "authorization_code,client_credentials,refresh_token"
+            scope: "openid"
+            secret: (( login_client_credentials.password ))
+          portal:
+            id: (( console_client_credentials.identity ))
+            override: true
+            autoapprove: true
+            authorities: "scim.write,scim.read,cloud_controller.read,cloud_controller.write,password.write,uaa.admin,uaa.resource,cloud_controller.admin"
+            authorized-grant-types: "authorization_code,client_credentials,password,implicit"
+            scope: "openid,cloud_controller.read,cloud_controller.write,password.write,console.admin,console.support,cloud_controller.admin"
+            secret: (( console_client_credentials.password ))
+            access-token-validity: 1209600
+            refresh-token-validity: 1209600
+          cf:
+            id: "cf"
+            override: true
+            autoapprove: true
+            authorities: "uaa.none"
+            authorized-grant-types: "implicit,password,refresh_token"
+            scope: "cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write"
+          system_passwords:
+            id: (( system_passwords_client_credentials.identity ))
+            override: true
+            autoapprove: true
+            authorities: "uaa.admin,scim.read,scim.write,password.write"
+            authorized-grant-types: "client_credentials"
+            secret: (( system_passwords_client_credentials.password ))
+        scim:
+          user:
+            override: false
+          users:
+          - "<%= job.get_property("admin_credentials").typed_value.identity %>|<%= job.get_property("admin_credentials").typed_value.password %>|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support"
+          - "<%= job.get_property("system_services_credentials").typed_value.identity %>|<%= job.get_property("system_services_credentials").typed_value.password %>|cloud_controller.admin"
+          - "<%= job.get_property("system_verification_credentials").typed_value.identity %>|<%= job.get_property("system_verification_credentials").typed_value.password %>|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support"
+
+      ccdb:
+        address: (( .ccdb.first_ip ))
+        port: 2544
+        db_scheme: "postgres"
+        roles:
+        - tag: admin
+          name: (( .ccdb.credentials.identity ))
+          password: (( .ccdb.credentials.password ))
+        databases:
+        - tag: cc
+          name: ccdb
+          citext: true
+
+      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+
+      db: uaadb
+      uaadb:
+        address: (( .uaadb.first_ip ))
+        port: 2544
+        db_scheme: postgresql
+        roles:
+        - tag: admin
+          name: (( .uaadb.credentials.identity ))
+          password: (( .uaadb.credentials.password ))
+        databases:
+        - tag: uaa
+          name: uaa
+      networks:
+        apps: default
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+      syslog_aggregator:
+        address: (( .syslog.first_ip ))
+        port: 54321
+
+  - name: saml_login
+    label: SAML Login
+    resource_label: SAML Login
+    description: Communicates between SAML endpoints and the UAA
+    template: saml_login
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: service_provider_key_credentials
+        type: rsa_cert_credentials
+        label: Service provider RSA certificate
+
+      - name: sso_url
+        type: http_url
+        label: SSO URL
+        description: "Enter the URL of an SSO appliance. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata. Example: <span class='nowrap'>example.com/Metadata/vsphere.local</span>"
+        configurable: true
+        optional: true
+
+    manifest: |
+      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+
+      saml_login:
+        links:
+          home: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"
+          passwd: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).apps %>/password_resets/new"
+          signup: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).apps %>/register"
+        uaa_base: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
+        uaa_certificate: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
+        serviceProviderKey: (( service_provider_key_credentials.private_key_pem ))
+        serviceProviderCertificate: (( service_provider_key_credentials.cert_pem ))
+        idp_entity_alias: sso-sp
+        idp_metadata_url: "<%= job.get_property("sso_url").typed_value.value || "''" %>"
+
+      uaa:
+        clients:
+          login:
+            secret: (( .uaa.login_client_credentials.password ))
+
+      networks:
+        apps: default
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+      syslog_aggregator:
+        address: (( .syslog.first_ip ))
+        port: 54321
+
+  - name: consoledb
+    label: Web Console
+    resource_label: Console Database
+    description: A Web application will be deployed to Cloud Foundry at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
+    template: postgres
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: credentials
+        type: simple_credentials
+        label: Database credentials
+        default:
+          identity: root
+
+      - name: reply_to
+        type: email
+        label: Reply-To email
+        configurable: true
+        optional: true
+        description: "The email address console invitees will reply to."
+
+      - name: from
+        type: email
+        label: From email
+        configurable: true
+        optional: true
+        description: "The email address from which console invitations are sent."
+
+      - name: smtp_address
+        type: network_address
+        label: Address of SMTP server
+        configurable: true
+        optional: true
+        description: "The SMTP address of the server that will send console invitations."
+
+      - name: smtp_port
+        type: port
+        label: Port of SMTP server
+        configurable: true
+        optional: true
+        description: "The port of the SMTP server that will send console invitations."
+
+      - name: smtp_helo_domain
+        type: domain
+        label: HELO domain
+        configurable: true
+        optional: true
+        description: "The HELO domain of the SMTP server that will send console invitations."
+
+      - name: smtp_credentials
+        type: simple_credentials
+        label: SMTP server credentials
+        configurable: true
+        optional: true
+        description: "The credentials for the SMTP server that will send console invitations."
+
+      - name: smtp_authentication
+        type: smtp_authentication
+        label: SMTP authentication
+        configurable: true
+        optional: true
+
+      - name: smtp_enable_starttls_auto
+        type: boolean
+        label: SMTP Enable Automatic STARTTLS
+        configurable: true
+        default: false
+
+    manifest: |
+      db: consoledb
+      consoledb:
+        address: (( first_ip ))
+        port: 2544
+        db_scheme: postgresql
+        roles:
+        - tag: admin
+          name: (( credentials.identity ))
+          password: (( credentials.password ))
+        databases:
+        - tag: console
+          name: console
+      networks:
+        services: default
+
+  - name: dea
+    label: DEA
+    resource_label: DEA
+    description: Droplet Execution Agents run the applications pushed to Cloud Foundry
+    template:
+      - dea_next
+      - dea_logging_agent
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 16_384
+        constraints:
+          min: 4_096
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 32_768
+        constraints:
+          min: 10_240
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 2
+        constraints:
+          min: 1
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: loggregator_agent_status_credentials
+        type: simple_credentials
+        label: Loggregator Agent status credentials
+
+    manifest: |
+      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+
+      dea_next:
+        directory_server_protocol: https
+        memory_mb: (( ram ))
+        memory_overcommit_factor: 1
+        disk_mb: (( ephemeral_disk ))
+        disk_overcommit_factor: 1
+        num_instances: 10
+        stacks: ["lucid64"]
+
+      loggregator:
+        trafficcontroller: (( .loggregator_trafficcontroller.first_ip ))
+        incoming_port: 3456
+        status:
+          user: (( .loggregator.status_credentials.identity ))
+          password: (( .loggregator.status_credentials.password ))
+          port: 5768
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+      syslog_aggregator:
+        address: (( .syslog.first_ip ))
+        port: 54321
+
+  - name: loggregator
+    label: Loggregator Server
+    resource_label: Loggregator Server
+    description: Loggregator server collects application logs
+    template: loggregator
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: status_credentials
+        type: simple_credentials
+        label: Loggregator status credentials
+
+      - name: shared_secret_credentials
+        type: simple_credentials
+        label: Shared secret
+
+    manifest: |
+      loggregator:
+        incoming_port: 3456
+        outgoing_port: 8080
+        status:
+          user: (( status_credentials.identity ))
+          password: (( status_credentials.password ))
+          port: 5768
+
+      cc:
+        srv_api_uri: "<%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>"
+      system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      uaa:
+        jwt:
+          verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+      syslog_aggregator:
+        address: (( .syslog.first_ip ))
+        port: 54321
+
+  - name: loggregator_trafficcontroller
+    label: Loggregator Trafficcontroller
+    resource_label: Loggregator Trafficcontroller
+    description: Loggregator trafficcontroller distributes requests to Loggregator servers
+    template: loggregator_trafficcontroller
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: status_credentials
+        type: simple_credentials
+        label: Loggregator status credentials
+
+    manifest: |
+      loggregator:
+        disableEmailDomainAuthorization: true
+        trafficcontroller: (( .loggregator_trafficcontroller.first_ip ))
+        incoming_port: 3456
+        outgoing_port: 8080
+        shared_secret: (( .loggregator.shared_secret_credentials.password ))
+        servers:
+          z1: (( .loggregator.ips ))
+
+      zone: z1
+
+      ssl:
+        skip_cert_verify: true
+
+      cc:
+        srv_api_uri: "<%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>"
+
+      system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+
+      uaa:
+        jwt:
+          verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
+
+      syslog_aggregator:
+        address: (( .syslog.first_ip ))
+        port: 54321
+
+  - name: compilation
+    label: Compilation
+    resource_label: Compilation
+    description: Compilation
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 4_096
+        constraints:
+          min: 4_096
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 2
+        constraints:
+          min: 1
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        default: 5
+        configurable: true
+        constraints:
+          min: 1
