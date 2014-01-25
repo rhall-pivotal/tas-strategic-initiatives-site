@@ -29,6 +29,7 @@ install_time_verifiers:
     properties:
       - saml_login.sso_url
   - name: Verifiers::SmtpAuthenticationVerifier
+    ignorable: true
     properties:
       - consoledb.smtp_address
       - consoledb.smtp_port
@@ -571,7 +572,13 @@ job_types:
         db_encryption_key: (( db_encryption_credentials.password ))
         bootstrap_admin_email: admin
         tasks_disabled: true
-        default_quota_definition: runaway
+        quota_definitions:
+          default:
+            memory_limit: 10240
+            total_services: 100
+            non_basic_services_allowed: true
+            total_routes: 1000
+            trial_db_allowed: true
 
       ccdb_ng:
         address: (( .ccdb.first_ip ))
@@ -601,6 +608,11 @@ job_types:
       loggregator:
         trafficcontroller: (( .loggregator_trafficcontroller.first_ip ))
         incoming_port: 3456
+
+      loggregator_endpoint:
+        host: (( .loggregator_trafficcontroller.first_ip ))
+        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -692,11 +704,16 @@ job_types:
       loggregator:
         trafficcontroller: (( .loggregator_trafficcontroller.first_ip ))
         incoming_port: 3456
+      loggregator_endpoint:
+        host: (( .loggregator_trafficcontroller.first_ip ))
+        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
+        machines:
+          - (( .nats.first_ip ))
       syslog_aggregator:
         address: (( .syslog.first_ip ))
         port: 54321
@@ -1114,6 +1131,8 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
+        machines:
+          - (( .nats.first_ip ))
       syslog_aggregator:
         address: (( .syslog.first_ip ))
         port: 54321
@@ -1211,6 +1230,8 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
+        machines:
+          - (( .nats.first_ip ))
       syslog_aggregator:
         address: (( .syslog.first_ip ))
         port: 54321
@@ -1431,11 +1452,17 @@ job_types:
           password: (( .loggregator.status_credentials.password ))
           port: 5768
 
+      loggregator_endpoint:
+        host: (( .loggregator_trafficcontroller.first_ip ))
+        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
+        machines:
+          - (( .nats.first_ip ))
       syslog_aggregator:
         address: (( .syslog.first_ip ))
         port: 54321
@@ -1523,6 +1550,8 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
+      loggregator_endpoint:
+        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
       syslog_aggregator:
         address: (( .syslog.first_ip ))
         port: 54321
@@ -1614,10 +1643,13 @@ job_types:
       uaa:
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
-
+      loggregator_endpoint:
+        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
       syslog_aggregator:
         address: (( .syslog.first_ip ))
         port: 54321
+      traffic_controller:
+        zone: z1
 
   - name: compilation
     label: Compilation
