@@ -9,9 +9,9 @@ stemcell:
   md5: 3a8ad37903ab4f7c1f933a8de5cf8c3e
 releases:
   - name: cf
-    version: "154.1-dev"
-    file: cf-154.1-dev.tgz
-    md5: e0713fa063168a175fd89d2fbd699717
+    version: "154.3-dev"
+    file: cf-154.3-dev.tgz
+    md5: 3a26291ff08e444ad34fee592779db78
 provides_product_versions:
   - name: cf
     version: 1.1.0.0
@@ -570,6 +570,11 @@ job_types:
             non_basic_services_allowed: true
             total_routes: 1000
             trial_db_allowed: true
+          runaway:
+            memory_limit: 102400
+            total_services: -1
+            total_routes: 1000
+            non_basic_services_allowed: true
 
       ccdb_ng:
         address: (( .ccdb.first_ip ))
