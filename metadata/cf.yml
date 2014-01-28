@@ -175,9 +175,6 @@ job_types:
         servers:
           z1: (( .router.ips ))
           z2: []
-      syslog_aggregator:
-        address: (( .syslog.first_ip ))
-        port: 54321
 
   - name: nats
     label: NATS
@@ -252,9 +249,6 @@ job_types:
           - (( first_ip ))
         port: 4222
         use_gnatsd: true
-      syslog_aggregator:
-        address: (( .syslog.first_ip ))
-        port: 54321
 
   - name: health_manager
     label: Health Manager
@@ -325,9 +319,6 @@ job_types:
       health_manager:
         intervals:
           giveup_crash_number: 4
-      syslog_aggregator:
-        address: (( .syslog.first_ip ))
-        port: 54321
 
   - name: nfs_server
     label: NFS Server
@@ -621,9 +612,6 @@ job_types:
         port: 4222
         machines:
           - (( .nats.first_ip ))
-      syslog_aggregator:
-        address: (( .syslog.first_ip ))
-        port: 54321
 
   - name: router
     label: Router
@@ -714,77 +702,6 @@ job_types:
         port: 4222
         machines:
           - (( .nats.first_ip ))
-      syslog_aggregator:
-        address: (( .syslog.first_ip ))
-        port: 54321
-
-  - name: syslog
-    label: Syslog
-    resource_label: Syslog
-    description: Collects system logs from each Cloud Foundry component
-    template: syslog_aggregator
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 2_048
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: true
-        default: 8_192
-        constraints:
-          min: 8_192
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        label: VM credentials
-        default:
-          identity: vcap
-
-    manifest: |
-      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
-        port: 4222
-      syslog_aggregator:
-        address: (( .syslog.first_ip ))
-        port: 54321
 
   - name: collector
     label: Collector
@@ -851,9 +768,6 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
-      syslog_aggregator:
-        address: (( .syslog.first_ip ))
-        port: 54321
       collector:
         use_tsdb: true
       opentsdb:
@@ -1133,9 +1047,6 @@ job_types:
         port: 4222
         machines:
           - (( .nats.first_ip ))
-      syslog_aggregator:
-        address: (( .syslog.first_ip ))
-        port: 54321
 
   - name: saml_login
     label: SAML Login
@@ -1232,9 +1143,6 @@ job_types:
         port: 4222
         machines:
           - (( .nats.first_ip ))
-      syslog_aggregator:
-        address: (( .syslog.first_ip ))
-        port: 54321
 
   - name: consoledb
     label: Web Console
@@ -1463,9 +1371,6 @@ job_types:
         port: 4222
         machines:
           - (( .nats.first_ip ))
-      syslog_aggregator:
-        address: (( .syslog.first_ip ))
-        port: 54321
 
   - name: loggregator
     label: Loggregator Server
@@ -1552,9 +1457,6 @@ job_types:
         port: 4222
       loggregator_endpoint:
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
-      syslog_aggregator:
-        address: (( .syslog.first_ip ))
-        port: 54321
 
   - name: loggregator_trafficcontroller
     label: Loggregator Trafficcontroller
@@ -1645,9 +1547,6 @@ job_types:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
       loggregator_endpoint:
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
-      syslog_aggregator:
-        address: (( .syslog.first_ip ))
-        port: 54321
       traffic_controller:
         zone: z1
 
