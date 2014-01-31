@@ -1123,9 +1123,9 @@ job_types:
 
       saml_login:
         links:
-          home: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"
-          passwd: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).apps %>/password_resets/new"
-          signup: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).apps %>/register"
+          home: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+          passwd: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).system %>/password_resets/new"
+          signup: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).system %>/register"
         uaa_base: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
         uaa_certificate: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
         serviceProviderKey: (( service_provider_key_credentials.private_key_pem ))
