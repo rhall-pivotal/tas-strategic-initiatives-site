@@ -54,6 +54,7 @@ form_types:
     property_inputs:
       - reference: cloud_controller.system_domain
       - reference: cloud_controller.apps_domain
+      - reference: cloud_controller.encrypt_key
 
   - name: router
     label: Router IPs
@@ -535,6 +536,13 @@ job_types:
         default:
           identity: db_encryption
 
+      - name: encrypt_key
+        type: secret
+        label: CCDB Encryption Key
+        description: "For loading an exported CCDB encryption key on restore."
+        configurable: true
+        optional: true
+
       - name: system_domain
         type: domain
         label: System domain
@@ -560,7 +568,7 @@ job_types:
         staging_upload_user: (( staging_upload_credentials.identity ))
         staging_upload_password: (( staging_upload_credentials.password ))
         bulk_api_password: (( bulk_api_credentials.password ))
-        db_encryption_key: (( db_encryption_credentials.password ))
+        db_encryption_key: <%= (job.get_property("encrypt_key").typed_value.secret || job.get_property("db_encryption_credentials").typed_value.password) %>
         bootstrap_admin_email: admin
         tasks_disabled: true
         quota_definitions:
