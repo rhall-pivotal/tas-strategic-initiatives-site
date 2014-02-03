@@ -983,7 +983,7 @@ job_types:
             authorized-grant-types: "authorization_code,client_credentials,refresh_token"
             scope: "openid"
             secret: (( login_client_credentials.password ))
-          portal:
+          (( console_client_credentials.identity )):
             id: (( console_client_credentials.identity ))
             override: true
             autoapprove: true
