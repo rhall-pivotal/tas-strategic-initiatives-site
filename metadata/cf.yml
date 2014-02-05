@@ -9,9 +9,9 @@ stemcell:
   md5: 3a8ad37903ab4f7c1f933a8de5cf8c3e
 releases:
   - name: cf
-    version: "155.1-dev"
-    file: cf-155.1-dev.tgz
-    md5: 366109e060a1fefb9f3cfdb7abe18005
+    version: "155.2-dev"
+    file: cf-155.2-dev.tgz
+    md5: d114c4280e593f2402ef7edc03f089ed
 provides_product_versions:
   - name: cf
     version: 1.1.0.0
@@ -251,11 +251,72 @@ job_types:
         port: 4222
         use_gnatsd: true
 
+  - name: etcd_leader
+    label: etcd Leader
+    resource_label: etcd Leader
+    description: Leader of cluster that maintains the state of applications
+    template: etcd
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      networks:
+        apps: default
+
   - name: health_manager
     label: Health Manager
     resource_label: Health Manager
     description: Reports app health to the Cloud Controller
-    template: health_manager_next
+    template: hm9000
 
     resource_definitions:
       - name: ram
@@ -317,9 +378,11 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
-      health_manager:
-        intervals:
-          giveup_crash_number: 4
+        machines:  (( .nats.ips ))
+      ccng:
+        bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
+        bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
+      etcd_ips: (( .etcd_leader.ips ))
 
   - name: nfs_server
     label: NFS Server
