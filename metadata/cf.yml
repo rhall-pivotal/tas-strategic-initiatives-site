@@ -246,8 +246,7 @@ job_types:
         user: (( credentials.identity ))
         password: (( credentials.password ))
         address: (( first_ip ))
-        machines:
-          - (( first_ip ))
+        machines: (( ips ))
         port: 4222
         use_gnatsd: true
 
@@ -681,8 +680,7 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
-        machines:
-          - (( .nats.first_ip ))
+        machines: (( .nats.ips ))
 
   - name: router
     label: Router
@@ -768,8 +766,7 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
-        machines:
-          - (( .nats.first_ip ))
+        machines: (( .nats.ips ))
 
   - name: collector
     label: Collector
@@ -1113,8 +1110,7 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
-        machines:
-          - (( .nats.first_ip ))
+        machines: (( .nats.ips ))
 
   - name: saml_login
     label: SAML Login
@@ -1209,8 +1205,7 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
-        machines:
-          - (( .nats.first_ip ))
+        machines: (( .nats.ips ))
 
   - name: consoledb
     label: Web Console
@@ -1429,8 +1424,7 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
-        machines:
-          - (( .nats.first_ip ))
+        machines: (( .nats.ips ))
 
   - name: loggregator
     label: Loggregator Server
