@@ -11,7 +11,7 @@ compiled_package:
   name: cf
   version: "155.2-dev"
   file: cf-155.2-dev-bosh-vsphere-esxi-ubuntu-1471.tgz
-  md5: ddf145a0c80e0fe588aeb317238c072e
+  md5: 4200a13821b0fc8c29fd1dde3343457b
 releases:
   - name: cf
     version: "155.2-dev"
@@ -100,6 +100,9 @@ form_types:
       - reference: consoledb.smtp_credentials
       - reference: consoledb.smtp_authentication
       - reference: consoledb.smtp_enable_starttls_auto
+
+
+
 
 job_types:
   - name: ha_proxy
@@ -258,7 +261,7 @@ job_types:
   - name: etcd_leader
     label: etcd Leader
     resource_label: etcd Leader
-    description: Leader of cluster that maintains the state of applications
+    description: The first member of the etcd cluster, which maintains the state of applications
     template: etcd
 
     resource_definitions:
@@ -316,6 +319,68 @@ job_types:
       networks:
         apps: default
 
+  - name: etcd
+    label: etcd
+    resource_label: etcd
+    description: A node of the etcd cluster, which maintains the state of applications
+    template: etcd
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 2
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      leader_ip: (( .etcd_leader.first_ip ))
+      networks:
+        apps: default
+
   - name: health_manager
     label: Health Manager
     resource_label: Health Manager
@@ -361,7 +426,7 @@ job_types:
       - name: instances
         type: integer
         label: Instances
-        configurable: false
+        configurable: true
         default: 1
 
     property_blueprints:
@@ -638,6 +703,7 @@ job_types:
         db_encryption_key: <%= (job.get_property("encrypt_key").typed_value.secret || job.get_property("db_encryption_credentials").typed_value.password) %>
         bootstrap_admin_email: admin
         tasks_disabled: true
+        hm9000_noop: false
         quota_definitions:
           default:
             memory_limit: 10240
@@ -687,6 +753,248 @@ job_types:
         port: 4222
         machines: (( .nats.ips ))
 
+  - name: clock_global
+    label: Clock Global
+    resource_label: Clock Global
+    description: Schedules asynchronous tasks for cloud controller
+    template: cloud_controller_ng
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+        constraints:
+          min: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      system_domain_organization: system
+      app_domains: ["<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"]
+
+      ccng:
+        process_group: clock
+        logging_level: debug
+        staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+        staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+        bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
+        db_encrption_key: ((  .cloud_controller.encrypt.key.secret || .cloud_controller.))
+
+        db_encryption_key: <%= (@component.find_job_with_type('cloud_controller').get_property("encrypt_key").typed_value.secret || @component.find_job_with_type('cloud_controller').get_property("db_encryption_credentials").typed_value.password) %>
+        hm9000_noop: false
+        quota_definitions:
+          default:
+            memory_limit: 10240
+            total_services: 100
+            non_basic_services_allowed: true
+            total_routes: 1000
+            trial_db_allowed: true
+          runaway:
+            memory_limit: 102400
+            total_services: -1
+            total_routes: 1000
+            non_basic_services_allowed: true
+
+      ccdb_ng:
+        address: (( .ccdb.first_ip ))
+        port: 2544
+        db_scheme: "postgres"
+        roles:
+        - tag: admin
+          name: (( .ccdb.credentials.identity ))
+          password: (( .ccdb.credentials.password ))
+        databases:
+        - tag: cc
+          name: ccdb
+          citext: true
+
+      networks:
+        apps: default
+      nfs_server:
+        address: (( .nfs_server.first_ip ))
+
+      uaa:
+        url: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
+        jwt:
+          verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
+      login:
+        url: "<%= Tempest::CfAddressProvider.from_config(@installation).login_url %>"
+
+      loggregator_endpoint:
+        host: (( .loggregator_trafficcontroller.first_ip ))
+        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+        machines: (( .nats.ips ))
+  - name: cloud_controller_worker
+    label: Cloud Controller Worker
+    resource_label: Cloud Controller Worker
+    description: Worker for cloud controller asynchronous tasks
+    template: cloud_controller_ng
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      system_domain_organization: system
+      app_domains: ["<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"]
+
+      ccng:
+        process_group: worker
+        logging_level: debug
+        staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+        staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+        bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
+        db_encrption_key: ((  .cloud_controller.encrypt.key.secret || .cloud_controller.))
+
+        db_encryption_key: <%= (@component.find_job_with_type('cloud_controller').get_property("encrypt_key").typed_value.secret || @component.find_job_with_type('cloud_controller').get_property("db_encryption_credentials").typed_value.password) %>
+        hm9000_noop: false
+        quota_definitions:
+          default:
+            memory_limit: 10240
+            total_services: 100
+            non_basic_services_allowed: true
+            total_routes: 1000
+            trial_db_allowed: true
+          runaway:
+            memory_limit: 102400
+            total_services: -1
+            total_routes: 1000
+            non_basic_services_allowed: true
+
+      ccdb_ng:
+        address: (( .ccdb.first_ip ))
+        port: 2544
+        db_scheme: "postgres"
+        roles:
+        - tag: admin
+          name: (( .ccdb.credentials.identity ))
+          password: (( .ccdb.credentials.password ))
+        databases:
+        - tag: cc
+          name: ccdb
+          citext: true
+
+      networks:
+        apps: default
+      nfs_server:
+        address: (( .nfs_server.first_ip ))
+
+      uaa:
+        url: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
+        jwt:
+          verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
+      login:
+        url: "<%= Tempest::CfAddressProvider.from_config(@installation).login_url %>"
+
+      loggregator_endpoint:
+        host: (( .loggregator_trafficcontroller.first_ip ))
+        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+        machines: (( .nats.ips ))
   - name: router
     label: Router
     resource_label: Router
