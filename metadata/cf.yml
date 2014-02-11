@@ -61,6 +61,13 @@ form_types:
       - reference: cloud_controller.apps_domain
       - reference: cloud_controller.encrypt_key
 
+  - name: syslog_aggregator
+    label: Syslog Aggregator
+    description: "Forwards syslog messages via TCP to a RELP syslog server"
+    property_inputs:
+      - reference: .syslog_host
+      - reference: .syslog_port
+
   - name: router
     label: Router IPs
     description: "Enter the IP address(es) for the Cloud Foundry Router. This IP must be in your subnet."
@@ -100,9 +107,6 @@ form_types:
       - reference: consoledb.smtp_credentials
       - reference: consoledb.smtp_authentication
       - reference: consoledb.smtp_enable_starttls_auto
-
-
-
 
 job_types:
   - name: ha_proxy
@@ -184,6 +188,9 @@ job_types:
         servers:
           z1: (( .router.ips ))
           z2: []
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
   - name: nats
     label: NATS
@@ -257,6 +264,9 @@ job_types:
         machines: (( ips ))
         port: 4222
         use_gnatsd: true
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
   - name: etcd_leader
     label: etcd Leader
@@ -318,6 +328,9 @@ job_types:
     manifest: |
       networks:
         apps: default
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
   - name: etcd
     label: etcd
@@ -380,6 +393,9 @@ job_types:
       leader_ip: (( .etcd_leader.first_ip ))
       networks:
         apps: default
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
   - name: health_manager
     label: Health Manager
@@ -441,6 +457,9 @@ job_types:
         srv_api_uri: "<%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>"
       networks:
         apps: default
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -514,6 +533,9 @@ job_types:
       nfs_server:
         address: (( first_ip ))
         network: "<%= Tempest::Network.from_installation(@installation).ip_range %>"
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
   - name: ccdb
     label: Cloud Controller Database
@@ -592,6 +614,9 @@ job_types:
         - tag: cc
           name: ccdb
           citext: true
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
   - name: cloud_controller
     label: Cloud Controller
@@ -692,6 +717,9 @@ job_types:
       system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
       system_domain_organization: system
       app_domains: ["<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"]
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
       ccng:
         external_host: api
@@ -815,6 +843,9 @@ job_types:
       system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
       system_domain_organization: system
       app_domains: ["<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"]
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
       ccng:
         process_group: clock
@@ -936,6 +967,9 @@ job_types:
       system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
       system_domain_organization: system
       app_domains: ["<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"]
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
       ccng:
         process_group: worker
@@ -1080,6 +1114,9 @@ job_types:
         address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
   - name: collector
     label: Collector
@@ -1151,6 +1188,9 @@ job_types:
       opentsdb:
         address: (( ..p-metrics.maximus.first_ip ))
         port: 13321
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
   - name: uaadb
     label: UAA Database
@@ -1230,6 +1270,9 @@ job_types:
           name: uaa
       networks:
         services: default
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
   - name: uaa
     label: UAA
@@ -1387,6 +1430,9 @@ job_types:
           - "<%= job.get_property("admin_credentials").typed_value.identity %>|<%= job.get_property("admin_credentials").typed_value.password %>|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support"
           - "<%= job.get_property("system_services_credentials").typed_value.identity %>|<%= job.get_property("system_services_credentials").typed_value.password %>|cloud_controller.admin"
           - "<%= job.get_property("system_verification_credentials").typed_value.identity %>|<%= job.get_property("system_verification_credentials").typed_value.password %>|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support"
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
       ccdb:
         address: (( .ccdb.first_ip ))
@@ -1492,6 +1538,9 @@ job_types:
 
     manifest: |
       domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
       saml_login:
         links:
@@ -1652,6 +1701,9 @@ job_types:
           name: console
       networks:
         services: default
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
   - name: dea
     label: DEA
@@ -1718,6 +1770,9 @@ job_types:
 
     manifest: |
       domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
       dea_next:
         directory_server_protocol: https
@@ -1809,6 +1864,9 @@ job_types:
           user: (( status_credentials.identity ))
           password: (( status_credentials.password ))
           port: 5768
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
 
       uaa:
         jwt:
@@ -1954,3 +2012,18 @@ job_types:
         configurable: true
         constraints:
           min: 1
+
+property_blueprints:
+  - name: syslog_host
+    type: network_address
+    label: IP Address of Syslog Aggregator Host
+    description: "Leave blank unless providing a syslogd server; it must be reachable from the Elastic Runtime network.  It must accept TCP connections and use the RELP protocol (e.g. rsyslogd)"
+    configurable: true
+    optional: true
+
+  - name: syslog_port
+    type: port
+    label: Syslog Aggregator Port
+    description: "Leave blank unless providing a syslogd server, typical syslogd port is 514. Ensure syslogd is listening on external interfaces."
+    configurable: true
+    optional: true
