@@ -60,6 +60,7 @@ form_types:
       - reference: cloud_controller.system_domain
       - reference: cloud_controller.apps_domain
       - reference: cloud_controller.encrypt_key
+      - reference: cloud_controller.disable_custom_buildpacks
 
   - name: syslog_aggregator
     label: Syslog Aggregator
@@ -700,6 +701,12 @@ job_types:
         configurable: true
         optional: true
 
+      - name: disable_custom_buildpacks
+        type: boolean
+        label: Disable Custom Buildpacks
+        configurable: true
+        optional: false
+
       - name: system_domain
         type: domain
         label: System domain
@@ -720,6 +727,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+      disable_custom_buildpacks: (( disable_custom_buildpacks ))
 
       ccng:
         external_host: api
