@@ -7,16 +7,11 @@ stemcell:
   version: "1471"
   file: bosh-stemcell-1471-vsphere-esxi-ubuntu.tgz
   md5: 3a8ad37903ab4f7c1f933a8de5cf8c3e
-compiled_package:
-  name: cf
-  version: "155.2-dev"
-  file: cf-155.2-dev-bosh-vsphere-esxi-ubuntu-1471.tgz
-  md5: 4200a13821b0fc8c29fd1dde3343457b
 releases:
   - name: cf
-    version: "155.2-dev"
-    file: cf-155.2-dev.tgz
-    md5: d114c4280e593f2402ef7edc03f089ed
+    version: "156.1-dev"
+    file: cf-156.1-dev.tgz
+    md5: 59c492974ad0f84f0aadee82f7ced85e
 provides_product_versions:
   - name: cf
     version: 1.1.0.0
@@ -690,7 +685,7 @@ job_types:
 
       - name: db_encryption_credentials
         type: simple_credentials
-        label: Database data encryption credentials
+        label: Cloud Controller DB encryption credentials
         default:
           identity: db_encryption
 
@@ -727,7 +722,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
-      disable_custom_buildpacks: (( disable_custom_buildpacks ))
+      disable_custom_buildpacks: (( disable_custom_buildpacks.value ))
 
       ccng:
         external_host: api
