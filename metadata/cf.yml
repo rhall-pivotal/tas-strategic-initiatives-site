@@ -264,7 +264,7 @@ job_types:
         address: (( first_ip ))
         machines: (( ips ))
         port: 4222
-        use_gnatsd: true
+        use_gnatsd: false
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
