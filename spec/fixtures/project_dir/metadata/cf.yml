@@ -1,0 +1,16 @@
+---
+name: cf
+product_version: 1.2.3.4
+stemcell:
+  file: bosh-stemcell-1111111-vsphere-esxi-ubuntu.tgz
+releases:
+- file: cf-mysql-123.tgz
+  name: cf-mysql
+  version: '123'
+  md5: c3d48e9a5e5bd66dc09b3009cead694c
+provides_product_versions:
+  - name: cf
+    version: 1.1.0.0
+requires_product_versions:
+  - name: microbosh
+    version: "~> 1.0"
