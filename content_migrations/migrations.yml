@@ -1,0 +1,13 @@
+---
+product: cf
+installation_version: "1.1"
+to_version: "1.1.0.0"
+migrations:
+  - from_version: 1.0.0.1
+    rules:
+      - type: update
+        selector: "product_version"
+        to: "1.1.0.0"
+      - type: update
+        selector: "jobs.[type=collector].instances.[definition=instances].value"
+        to: 0
