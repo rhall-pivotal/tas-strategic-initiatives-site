@@ -80,13 +80,20 @@ class ProductBuilder
 
   def zip
     zipper = DirectoryZipper.new(pivotal_output_path, working_dir)
-    ['metadata', 'content_migrations', 'releases', 'stemcells'].each do |dir|
+    ['metadata', 'content_migrations'].map do |dir|
       zipper.add_directory(File.expand_path(File.join(working_dir, dir)))
     end
+    zipper.add_file(stemcell_path(stemcell_version))
+    zipper.add_file(project_tarball_path)
     zipper.zip
   end
 
   private
+
+  def project_tarball_path
+    tarball_filename = target_manifest.gsub(/\.yml$/, '.tgz')
+    File.join(working_dir, 'releases', tarball_filename)
+  end
 
   def stemcell_metadata
     {

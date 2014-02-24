@@ -7,10 +7,10 @@ describe ProductBuilder do
     FileUtils.rm_rf(temp_dir)
     FileUtils.cp_r(File.join(fixture_dir, '.'), temp_dir)
     test.run
-    FileUtils.rm_rf(temp_dir)
+    # FileUtils.rm_rf(temp_dir)
   end
 
-  let(:target_manifest) { 'cf-mysql-9999.yml' }
+  let(:target_manifest) { 'cf-9999.yml' }
   let(:seed_version_number) { '1111111' }
   let(:build_name) { "rc#{rand(10)}" }
   let(:metadata) { YAML.load_file(File.join(temp_project_dir, 'metadata', 'cf.yml')) }
@@ -33,6 +33,33 @@ describe ProductBuilder do
         expect {
           builder.build
         }.to change { File.exists?(builder.pivotal_output_path) }.from(false).to(true)
+      end
+
+      describe 'zipfile contents' do
+        let(:pivotal_filepath) { builder.pivotal_output_path }
+        let(:pivotal_filename) { File.basename(pivotal_filepath) }
+        let(:stemcell_filename) { builder.stemcell_filename(seed_version_number) }
+        let(:unzip_dir) { File.expand_path(File.join(temp_dir, 'unzip_here')) }
+
+        it 'should explode to a properly formed directory structure' do
+          builder.build
+          FileUtils.mkdir_p(unzip_dir)
+          `unzip #{pivotal_filepath} -d #{unzip_dir}`
+
+          Dir.chdir(unzip_dir) do
+            directory_contents = Dir.glob("**/**")
+            expect(directory_contents).to match_array(%W(
+              content_migrations
+              content_migrations/migration1.yml
+              metadata
+              metadata/cf.yml
+              releases
+              releases/cf-9999.tgz
+              stemcells
+              stemcells/#{stemcell_filename}
+            ))
+          end
+        end
       end
     end
 
