@@ -7,7 +7,7 @@ describe ProductBuilder do
     FileUtils.rm_rf(temp_dir)
     FileUtils.cp_r(File.join(fixture_dir, '.'), temp_dir)
     test.run
-    # FileUtils.rm_rf(temp_dir)
+    FileUtils.rm_rf(temp_dir)
   end
 
   let(:target_manifest) { 'cf-9999.yml' }
@@ -74,10 +74,10 @@ describe ProductBuilder do
     end
   end
 
-  describe '#create_bosh_mysql_release' do
+  describe '#create_bosh_release' do
     let(:builder) { ProductBuilder.new(build_name, target_manifest, seed_version_number, temp_project_dir, metadata) }
 
-    context 'if the target mysql manifest is missing' do
+    context 'if the target manifest is missing' do
       let(:target_manifest) { "manifest_that_doesnt_exist_version_#{rand(10)}.yml" }
 
       it 'should raise' do
@@ -85,52 +85,61 @@ describe ProductBuilder do
       end
     end
 
-    context 'if the target mysql manifest is present' do
+    context 'if the target cf manifest is present' do
       let(:tarball_filename) { target_manifest.gsub(/\.yml$/, '.tgz') }
       let(:project_tarball_path) { File.join(temp_project_dir, 'releases', tarball_filename) }
       let(:bosh_create_tarball_path) { File.join(temp_project_dir, '../cf-release/releases', tarball_filename) }
       let(:tarball_contents) { "I am some random bits in a tarball #{rand(10)}" }
       let(:tarball_md5) { Digest::MD5.hexdigest(tarball_contents) }
 
-      before do
-        FileUtils.rm_f(bosh_create_tarball_path)
-        FileUtils.rm_f(project_tarball_path)
-      end
-
-      after do
-        FileUtils.rm_f(bosh_create_tarball_path)
-        FileUtils.rm_f(project_tarball_path)
-      end
-
-      it 'should execute a bosh create' do
-        allow(Open4).to receive(:popen4).and_call_original
-
-        builder.create_bosh_release
-        temp_mysql_dir = File.expand_path(File.join(temp_dir, 'cf-release'))
-        expect(Open4).to have_received(:popen4).with("cd #{temp_mysql_dir} && bosh create release --with-tarball '#{File.join(temp_mysql_dir, 'releases', target_manifest)}'")
-      end
-
-      context 'bosh succeeds' do
-        it 'should copy the release tarball to local releases/' do
+      context 'if the target mysql tarball is present' do
+        before do
+          File.write(bosh_create_tarball_path, tarball_contents)
+          Open4.stub(:popen4).and_return(double 'status', success?: true)
           builder.create_bosh_release
+        end
 
-          expect(File.exist?(project_tarball_path)).to eq(true)
-          expect(FileUtils.cmp(project_tarball_path, bosh_create_tarball_path)).to eq(true)
+        it 'should not shell out to bosh' do
+          expect(Open4).not_to have_received(:popen4)
+        end
+
+        it 'should copy the release tarball to local releases/' do
+          expect(File.exist?(project_tarball_path)).to be_true
+          expect(FileUtils.cmp(project_tarball_path, bosh_create_tarball_path)).to be_true
         end
       end
 
-      context 'bosh fails' do
-        before do
-          allow(Open4).to receive(:popen4) do |command, &blk|
-            stderr = double(read: double(strip: "bosh create failed"))
-            blk.call(nil, nil, nil, stderr)
+      context 'if the target mysql tarball is missing' do
+        it 'should execute a bosh create' do
+          allow(Open4).to receive(:popen4).and_call_original
 
-            double(success?: false)
+          builder.create_bosh_release
+          cf_release_dir = File.expand_path(File.join(temp_dir, 'cf-release'))
+          expect(Open4).to have_received(:popen4).with("cd #{cf_release_dir} && bosh create release --with-tarball '#{File.join(cf_release_dir, 'releases', target_manifest)}'")
+        end
+
+        context 'bosh succeeds' do
+          it 'should copy the release tarball to local releases/' do
+            builder.create_bosh_release
+
+            expect(File.exist?(project_tarball_path)).to eq(true)
+            expect(FileUtils.cmp(project_tarball_path, bosh_create_tarball_path)).to eq(true)
           end
         end
 
-        it 'should raise' do
-          expect { builder.create_bosh_release }.to raise_error(/bosh create failed/)
+        context 'bosh fails' do
+          before do
+            allow(Open4).to receive(:popen4) do |command, &blk|
+              stderr = double(read: double(strip: "bosh create failed"))
+              blk.call(nil, nil, nil, stderr)
+
+              double(success?: false)
+            end
+          end
+
+          it 'should raise' do
+            expect { builder.create_bosh_release }.to raise_error(/bosh create failed/)
+          end
         end
       end
     end

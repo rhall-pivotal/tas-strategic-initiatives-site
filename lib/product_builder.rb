@@ -30,19 +30,18 @@ class ProductBuilder
 
     raise "#{manifest_path} does not exist" unless File.exist?(manifest_path)
 
-    bosh_console_output = ''
-    status = Open4::popen4("cd #{parent_path} && bosh create release --with-tarball '#{manifest_path}'") do |_, _, _, stderr|
-      bosh_console_output = stderr.read.strip
+    tarball_filename = File.basename(project_tarball_path)
+    bosh_created_tarball_path = File.join(bosh_release_dir, tarball_filename)
+
+    if !File.exists?(bosh_created_tarball_path)
+      bosh_console_output = ''
+      status = Open4::popen4("cd #{parent_path} && bosh create release --with-tarball '#{manifest_path}'") do |_pid, _stdin, _stdout, stderr|
+        bosh_console_output = stderr.read.strip
+      end
+      raise("bosh create failed: #{bosh_console_output}") unless status.success?
     end
 
-    if status.success?
-      tarball_filename = target_manifest.gsub(/\.yml$/, '.tgz')
-      bosh_created_tarball_path = File.join(bosh_release_dir, tarball_filename)
-      project_tarball_path = File.join(working_dir, 'releases', tarball_filename)
-      FileUtils.cp(bosh_created_tarball_path, project_tarball_path)
-    else
-      raise("bosh create failed: #{bosh_console_output}")
-    end
+    FileUtils.cp(bosh_created_tarball_path, project_tarball_path)
   end
 
   def update_metadata
