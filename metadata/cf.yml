@@ -727,9 +727,9 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
-      disable_custom_buildpacks: (( disable_custom_buildpacks.value ))
 
       ccng:
+        disable_custom_buildpacks: (( disable_custom_buildpacks.value ))
         external_host: api
         logging_level: debug
         uaa_resource_id: cloud_controller
