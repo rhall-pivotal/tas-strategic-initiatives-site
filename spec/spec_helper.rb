@@ -13,3 +13,9 @@ end
 def temp_project_dir
   File.join(temp_dir, 'project_dir')
 end
+
+def contents_of_zipfile(zipfile_path)
+  Zip::File.open(zipfile_path) do |zipfile|
+    zipfile.map { |entry| entry.name }
+  end
+end

@@ -79,10 +79,11 @@ class ProductBuilder
   end
 
   def zip
-    ops_mgr_directories = ['metadata', 'content_migrations', 'releases', 'stemcells'].map do |dir|
-      File.expand_path(File.join(working_dir, dir))
+    zipper = DirectoryZipper.new(pivotal_output_path, working_dir)
+    ['metadata', 'content_migrations', 'releases', 'stemcells'].each do |dir|
+      zipper.add_directory(File.expand_path(File.join(working_dir, dir)))
     end
-    DirectoryZipper.new(pivotal_output_path, ops_mgr_directories).zip
+    zipper.zip
   end
 
   private
