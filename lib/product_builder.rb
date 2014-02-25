@@ -48,14 +48,28 @@ class ProductBuilder
     metadata['releases'] = releases_metadata
     metadata['stemcell'] = stemcell_metadata
     metadata['provides_product_versions'] = product_versions_metadata
+    version = target_manifest.gsub(/\.yml$/, '').gsub(/^cf-/, '')
+
+    filename = "cf-#{version}-bosh-#{stemcell_platform}-#{stemcell_version}.tgz"
+    filepath = File.join(@working_dir, 'compiled_packages', filename)
+    metadata['compiled_package'] = !File.exist?(filepath) ? nil : {
+      'name' => 'cf',
+      'version' => version,
+      'file' => filename,
+      'md5' => Digest::MD5.file(filepath).hexdigest
+    }
 
     File.open(File.join(working_dir, 'metadata', 'cf.yml'), 'w') do |out|
       Psych.dump(metadata, out)
     end
   end
 
+  def stemcell_platform
+    'vsphere-esxi-ubuntu'
+  end
+
   def stemcell_filename(stemcell_version)
-    "bosh-stemcell-#{stemcell_version}-vsphere-esxi-ubuntu.tgz"
+    "bosh-stemcell-#{stemcell_version}-#{stemcell_platform}.tgz"
   end
 
   def download_stemcell_if_not_local(stemcell_version)
@@ -86,6 +100,7 @@ class ProductBuilder
     end
     zipper.add_file(stemcell_path(stemcell_version))
     zipper.add_file(project_tarball_path)
+    zipper.add_file(compiled_package_path) if File.exists?(compiled_package_path)
     zipper.zip
   end
 
@@ -94,6 +109,12 @@ class ProductBuilder
   def project_tarball_path
     tarball_filename = target_manifest.gsub(/\.yml$/, '.tgz')
     File.join(working_dir, 'releases', tarball_filename)
+  end
+
+  def compiled_package_path
+    manifest_part = target_manifest.gsub(/\.yml$/, '')
+    stemcell_part = "bosh-vsphere-esxi-ubuntu-#{stemcell_version}"
+    File.join(working_dir, 'compiled_packages', "#{manifest_part}-#{stemcell_part}.tgz")
   end
 
   def stemcell_directory

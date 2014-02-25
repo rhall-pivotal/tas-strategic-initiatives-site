@@ -25,6 +25,8 @@ describe ProductBuilder do
     end
   end
 
+  let(:compiled_package_file) { File.join(temp_project_dir, 'compiled_packages', compiled_package) }
+
   describe '#build' do
     let(:builder) { ProductBuilder.new(build_name, target_manifest, seed_version_number, temp_project_dir, metadata) }
 
@@ -58,6 +60,36 @@ describe ProductBuilder do
               stemcells
               stemcells/#{stemcell_filename}
             ))
+          end
+        end
+
+        context 'with compiled packages' do
+          before do
+            FileUtils.touch(compiled_package_file)
+          end
+
+          let(:compiled_package) { "cf-9999-bosh-vsphere-esxi-ubuntu-#{seed_version_number}.tgz" }
+
+          it 'should explode to a properly formed directory structure including the compiled packages' do
+            builder.build
+            FileUtils.mkdir_p(unzip_dir)
+            `unzip #{pivotal_filepath} -d #{unzip_dir}`
+
+            Dir.chdir(unzip_dir) do
+              directory_contents = Dir.glob("**/**")
+              expect(directory_contents).to match_array(%W(
+                compiled_packages
+                compiled_packages/#{compiled_package}
+                content_migrations
+                content_migrations/migration1.yml
+                metadata
+                metadata/cf.yml
+                releases
+                releases/cf-9999.tgz
+                stemcells
+                stemcells/#{stemcell_filename}
+              ))
+            end
           end
         end
       end
@@ -146,10 +178,6 @@ describe ProductBuilder do
   end
 
   describe '#update_metadata' do
-    before do
-      builder.update_metadata
-    end
-
     let(:original_metadata) do
       {
         'foo' => 'bar',
@@ -159,7 +187,10 @@ describe ProductBuilder do
           {'name' => 'whatever', 'version' => '0.0.0'},
           {'name' => 'p-foo', 'version' => '1.2.1.1'},
           {'name' => 'p-old-foo', 'version' => '10.0.2'},
-        ]
+        ],
+        'compiled_package' => {
+          'name' => 'fake-compiled-package'
+        }
       }
     end
     let(:target_manifest) { 'cf-123.yml' }
@@ -167,10 +198,12 @@ describe ProductBuilder do
     let(:updated_metadata) { YAML.load_file(File.join(temp_project_dir, 'metadata', 'cf.yml')) }
 
     it 'should copy keys from the original metadata' do
+      builder.update_metadata
       expect(updated_metadata['foo']).to eq('bar')
     end
 
     it 'should update the releases array with target release' do
+      builder.update_metadata
       expected_release_metadata = {
         'name' => 'cf',
         'file' => 'cf-123.tgz',
@@ -181,6 +214,7 @@ describe ProductBuilder do
     end
 
     it 'should update the stemcell info with the new version, filename, and md5' do
+      builder.update_metadata
       expected_stemcell_metadata = {
         'name' => 'bosh-vsphere-esxi-ubuntu',
         'version' => seed_version_number,
@@ -190,8 +224,36 @@ describe ProductBuilder do
       expect(updated_metadata['stemcell']).to eq(expected_stemcell_metadata)
     end
 
+    context 'with a compiled_packages tarball' do
+      before do
+        puts compiled_package_file
+        File.write(compiled_package_file, 'I am a compiled package, howdy yall')
+      end
+
+      let(:compiled_package) { 'cf-123-bosh-vsphere-esxi-ubuntu-1111111.tgz' }
+
+      it 'should re-compute the compiled_packages info' do
+        builder.update_metadata
+        compiled_package_metadata = {
+          'name' => 'cf',
+          'version' => '123',
+          'file' => compiled_package,
+          'md5' => '91f491bdb83c77ee16abd69323f42ad7'
+        }
+        expect(updated_metadata['compiled_package']).to eq(compiled_package_metadata)
+      end
+    end
+
+    context 'without a compiled_packages tarball' do
+      it 'should remove any compiled_packages info from the metadata' do
+        builder.update_metadata
+        expect(updated_metadata['compiled_package']).to be_nil
+      end
+    end
+
     describe 'provides_product_versions' do
       it 'synchronizes product_version with provides_product_versions[n][version] when the names match' do
+        builder.update_metadata
         expected_provides_product_versions_metadata = [
           {'name' => 'whatever', 'version' => '0.0.0'},
           {'name' => 'p-foo', 'version' => '1.2.3.4'},
@@ -209,6 +271,7 @@ describe ProductBuilder do
         end
 
         it 'adds the name and product_version to the expected_provides_versions key' do
+          builder.update_metadata
           expected_provides_product_versions_metadata = [
             {'name' => 'p-foo', 'version' => '1.2.3.4'}
           ]
