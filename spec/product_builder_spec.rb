@@ -274,7 +274,7 @@ describe ProductBuilder do
     let(:product_builder) { ProductBuilder.new(release_name, target_manifest, seed_version_number, temp_project_dir, metadata) }
 
     it 'should compose the path from workdir, product version, and given name' do
-      expected_path = File.join(temp_project_dir, "p-runtime-#{product_version}-#{release_name}.pivotal")
+      expected_path = File.join(temp_project_dir, "cf-#{product_version}-#{release_name}.pivotal")
       expect(product_builder.pivotal_output_path).to eq(expected_path)
     end
   end

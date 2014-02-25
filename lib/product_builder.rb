@@ -76,7 +76,7 @@ class ProductBuilder
   end
 
   def pivotal_output_path
-    File.join(working_dir, "p-runtime-#{metadata['product_version']}-#{name}.pivotal")
+    File.join(working_dir, "cf-#{metadata['product_version']}-#{name}.pivotal")
   end
 
   def zip
