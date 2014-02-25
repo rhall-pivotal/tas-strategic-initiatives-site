@@ -146,9 +146,8 @@ describe ProductBuilder do
   end
 
   describe '#update_metadata' do
-    around do |test|
+    before do
       builder.update_metadata
-      test.run
     end
 
     let(:original_metadata) do
@@ -163,6 +162,7 @@ describe ProductBuilder do
         ]
       }
     end
+    let(:target_manifest) { 'cf-123.yml' }
     let(:builder) { ProductBuilder.new(build_name, target_manifest, seed_version_number, temp_project_dir, original_metadata) }
     let(:updated_metadata) { YAML.load_file(File.join(temp_project_dir, 'metadata', 'cf.yml')) }
 
@@ -170,10 +170,10 @@ describe ProductBuilder do
       expect(updated_metadata['foo']).to eq('bar')
     end
 
-    it 'should update the releases array with releases/ contents' do
+    it 'should update the releases array with target release' do
       expected_release_metadata = {
-        'name' => 'cf-mysql',
-        'file' => 'cf-mysql-123.tgz',
+        'name' => 'cf',
+        'file' => 'cf-123.tgz',
         'version' => '123',
         'md5' => 'c3d48e9a5e5bd66dc09b3009cead694c'
       }
@@ -239,13 +239,14 @@ describe ProductBuilder do
 
     context 'when the stemcell does not exist locally' do
       let(:seed_version_number) { '99999' }
+      let(:stemcell_folder) { File.expand_path(File.join(temp_project_dir, 'stemcells')) }
 
       it 'downloads the file from bosh_artifacts' do
         allow(Open4).to receive(:popen4).and_return(double('status_double', success?: true))
 
         pb = ProductBuilder.new('rc-test', target_manifest, seed_version_number, temp_project_dir, {})
         pb.download_stemcell_if_not_local seed_version_number
-        expect(Open4).to have_received(:popen4).with("bosh download public stemcell bosh-stemcell-#{seed_version_number}-vsphere-esxi-ubuntu.tgz")
+        expect(Open4).to have_received(:popen4).with("mkdir -p #{stemcell_folder} && cd #{stemcell_folder} && bosh download public stemcell bosh-stemcell-#{seed_version_number}-vsphere-esxi-ubuntu.tgz")
       end
 
       context 'when downloading fails' do

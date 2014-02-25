@@ -61,8 +61,10 @@ class ProductBuilder
   def download_stemcell_if_not_local(stemcell_version)
     return if File.exists?(stemcell_path(stemcell_version))
 
+    shellout = "mkdir -p #{stemcell_directory} && cd #{stemcell_directory} && bosh download public stemcell #{stemcell_filename(stemcell_version)}"
+
     error = nil
-    status = Open4::popen4("bosh download public stemcell #{stemcell_filename(stemcell_version)}") do |_, _, _, stderr|
+    status = Open4::popen4(shellout) do |_, _, _, stderr|
       error = stderr.read.strip
     end
 
@@ -94,6 +96,10 @@ class ProductBuilder
     File.join(working_dir, 'releases', tarball_filename)
   end
 
+  def stemcell_directory
+    File.expand_path(File.join(working_dir, 'stemcells'))
+  end
+
   def stemcell_metadata
     {
       'name' => 'bosh-vsphere-esxi-ubuntu',
@@ -105,25 +111,21 @@ class ProductBuilder
 
   def releases_metadata
     releases = []
-    release_files = File.join(working_dir, 'releases', '*tgz')
-    Dir.glob(release_files).each do |release_path|
-      release_filename = File.basename(release_path)
-      regex_match = release_filename.match(/\A(.*)-(\d+)\.tgz\Z/)
-      next unless regex_match
+    release_filename = File.basename(project_tarball_path)
+    regex_match = release_filename.match(/\A(.*)-(\d+)\.tgz\Z/)
 
-      release_name = regex_match[1]
-      release_version = regex_match[2]
-      release_md5 = Digest::MD5.file(release_path).hexdigest
+    release_name = regex_match[1]
+    release_version = regex_match[2]
+    release_md5 = Digest::MD5.file(project_tarball_path).hexdigest
 
-      release_metadata = {
-        'file' => release_filename,
-        'name' => release_name,
-        'version' => release_version,
-        'md5' => release_md5.encode('utf-8')
-      }
+    release_metadata = {
+      'file' => release_filename,
+      'name' => release_name,
+      'version' => release_version,
+      'md5' => release_md5.encode('utf-8')
+    }
 
-      releases << release_metadata
-    end
+    releases << release_metadata
 
     releases
   end
