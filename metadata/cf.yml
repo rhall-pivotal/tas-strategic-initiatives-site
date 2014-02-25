@@ -60,6 +60,7 @@ form_types:
       - reference: cloud_controller.system_domain
       - reference: cloud_controller.apps_domain
       - reference: cloud_controller.encrypt_key
+      - reference: cloud_controller.max_file_size
       - reference: cloud_controller.disable_custom_buildpacks
 
   - name: syslog_aggregator
@@ -701,6 +702,17 @@ job_types:
         configurable: true
         optional: true
 
+      - name: max_file_size
+        type: integer
+        label: Maximum file upload size (MB)
+        description: This value limits the size of an application upload.
+        configurable: true
+        optional: false
+        default: 256
+        constraints:
+          min: 256
+          max: 2048
+
       - name: disable_custom_buildpacks
         type: boolean
         label: Disable Custom Buildpacks
@@ -740,6 +752,7 @@ job_types:
         bootstrap_admin_email: admin
         tasks_disabled: true
         hm9000_noop: false
+        client_max_body_size: (( max_file_size.value ))M
         quota_definitions:
           default:
             memory_limit: 10240
