@@ -4,19 +4,19 @@ product_version: 1.1.0.0
 metadata_version: "1.1"
 stemcell:
   name: bosh-vsphere-esxi-ubuntu
-  version: "1471"
-  file: bosh-stemcell-1471-vsphere-esxi-ubuntu.tgz
-  md5: 3a8ad37903ab4f7c1f933a8de5cf8c3e
+  version: '1471.2'
+  file: bosh-stemcell-1471_2-vsphere-esxi-ubuntu.tgz
+  md5: bdac5aba02fb09843b5f2742b7b40f9a
 releases:
-  - name: cf
-    version: "156.1-dev"
-    file: cf-156.1-dev.tgz
-    md5: 59c492974ad0f84f0aadee82f7ced85e
+- file: cf-158.1-dev.tgz
+  name: cf
+  version: '158.1-dev'
+  md5: 8fcde36b27caf3608bf5262dc6694f16
 compiled_package:
   name: cf
-  version: "156.1-dev"
-  file: cf-156.1-dev-bosh-vsphere-esxi-ubuntu-1471.tgz
-  md5: b3ca0bb14db453b63e93ea6c2ec38cf0
+  version: "158.1-dev"
+  file: cf-158.1-dev-bosh-vsphere-esxi-ubuntu-1471.2.tgz
+  md5: b0442baabda61fbbb9f1ffc673417306
 provides_product_versions:
   - name: cf
     version: 1.1.0.0
