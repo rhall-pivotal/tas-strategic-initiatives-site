@@ -104,6 +104,16 @@ describe ProductBuilder do
         }.to raise_error(/file already exists/)
       end
     end
+
+    context 'with a -dev.yml manifest file' do
+      let(:target_manifest) { 'cf-9999-dev.yml' }
+      it 'should look in the dev_releases/ dir and not the releases/ dir for the .yml and create the .tgz there' do
+        expect {
+          builder.build
+        }.to change { File.exists?(builder.pivotal_output_path) }.from(false).to(true)
+        expect(File.exist?(File.join(temp_dir, 'cf-release', 'dev_releases', 'cf-9999-dev.tgz'))).to be_true
+      end
+    end
   end
 
   describe '#create_bosh_release' do

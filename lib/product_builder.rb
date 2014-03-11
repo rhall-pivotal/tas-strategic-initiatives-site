@@ -133,7 +133,7 @@ class ProductBuilder
   def releases_metadata
     releases = []
     release_filename = File.basename(project_tarball_path)
-    regex_match = release_filename.match(/\A(.*)-(\d+)\.tgz\Z/)
+    regex_match = release_filename.match(/\A(.*)-(\d+)(-dev)?\.tgz\Z/)
 
     release_name = regex_match[1]
     release_version = regex_match[2]
@@ -164,7 +164,8 @@ class ProductBuilder
   end
 
   def bosh_release_dir
-    File.join(working_dir, "../cf-release/releases")
+    subdir = /-dev\.yml/.match(target_manifest) ? 'dev_releases' : 'releases'
+    File.join(working_dir, '..', 'cf-release', subdir)
   end
 
   attr_reader :metadata, :name, :target_manifest, :working_dir, :stemcell_version
