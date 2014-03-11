@@ -133,7 +133,7 @@ class ProductBuilder
   def releases_metadata
     releases = []
     release_filename = File.basename(project_tarball_path)
-    regex_match = release_filename.match(/\A(.*)-(\d+)(-dev)?\.tgz\Z/)
+    regex_match = release_filename.match(/\A(.*)-(\d+(\.\d+)?)(-dev)?\.tgz\Z/)
 
     release_name = regex_match[1]
     release_version = regex_match[2]
