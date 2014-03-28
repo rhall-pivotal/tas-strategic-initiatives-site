@@ -1,6 +1,6 @@
 ---
 name: cf
-product_version: 1.1.0.0
+product_version: 1.2.0.0
 metadata_version: "1.1"
 stemcell:
   name: bosh-vsphere-esxi-ubuntu
@@ -8,18 +8,14 @@ stemcell:
   file: bosh-stemcell-1471_2-vsphere-esxi-ubuntu.tgz
   md5: bdac5aba02fb09843b5f2742b7b40f9a
 releases:
-- file: cf-158.1-dev.tgz
+- file: cf-164.tgz
   name: cf
-  version: '158.1-dev'
-  md5: 8fcde36b27caf3608bf5262dc6694f16
-compiled_package:
-  name: cf
-  version: "158.1-dev"
-  file: cf-158.1-dev-bosh-vsphere-esxi-ubuntu-1471.2.tgz
-  md5: b0442baabda61fbbb9f1ffc673417306
+  version: '164'
+  md5: b89fee482d1c3d7bdadee69753e0d679
+  url: https://releng-artifacts.s3.amazonaws.com/cf-164.tgz
 provides_product_versions:
   - name: cf
-    version: 1.1.0.0
+    version: 1.2.0.0
 requires_product_versions:
   - name: microbosh
     version: "~> 1.1"
