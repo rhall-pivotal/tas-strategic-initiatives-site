@@ -1,18 +1,7 @@
 ---
 name: cf
 product_version: 1.2.0.0
-metadata_version: "1.1"
-stemcell:
-  name: bosh-vsphere-esxi-ubuntu
-  version: '1471.2'
-  file: bosh-stemcell-1471_2-vsphere-esxi-ubuntu.tgz
-  md5: bdac5aba02fb09843b5f2742b7b40f9a
-releases:
-- file: cf-164.tgz
-  name: cf
-  version: '164'
-  md5: b89fee482d1c3d7bdadee69753e0d679
-  url: https://releng-artifacts.s3.amazonaws.com/cf-164.tgz
+metadata_version: '1.1'
 provides_product_versions:
   - name: cf
     version: 1.2.0.0
