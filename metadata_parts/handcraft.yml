@@ -457,8 +457,8 @@ job_types:
       ccng:
         bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
-      etcd_ips: (( .etcd_leader.ips ))
-
+      etcd_ips: <%= (@installation_plan.find_component_with_type('cf').get_ips_for_job('etcd') +
+        @installation_plan.find_component_with_type('cf').get_ips_for_job('etcd_leader')).to_json %>
   - name: nfs_server
     label: NFS Server
     resource_label: NFS Server
@@ -1873,6 +1873,9 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+
+      etcd_ips: <%= (@installation_plan.find_component_with_type('cf').get_ips_for_job('etcd')
+        + @installation_plan.find_component_with_type('cf').get_ips_for_job('etcd_leader')).to_json %>
 
       uaa:
         jwt:
