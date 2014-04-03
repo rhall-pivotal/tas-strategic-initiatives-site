@@ -1387,6 +1387,8 @@ job_types:
 
     manifest: |
       uaa:
+        login:
+          addnew: false
         catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
         url: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
         jwt:
