@@ -1,7 +1,7 @@
 ---
 name: cf
 product_version: 1.2.0.0
-metadata_version: '1.1'
+metadata_version: '1.2'
 provides_product_versions:
   - name: cf
     version: 1.2.0.0
@@ -101,6 +101,7 @@ job_types:
     resource_label: HAProxy
     description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Cloud Foundry router IP. Self signed certificates will function properly.
     template: haproxy
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -184,6 +185,7 @@ job_types:
     resource_label: NATS
     description: Acts as the Cloud Foundry message bus
     template: nats
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -260,6 +262,7 @@ job_types:
     resource_label: etcd Leader
     description: The first member of the etcd cluster, which maintains the state of applications
     template: etcd
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -324,6 +327,7 @@ job_types:
     resource_label: etcd
     description: A node of the etcd cluster, which maintains the state of applications
     template: etcd
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -389,6 +393,7 @@ job_types:
     resource_label: Health Manager
     description: Reports app health to the Cloud Controller
     template: hm9000
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -464,6 +469,7 @@ job_types:
     resource_label: NFS Server
     description: Stores droplets and app packages on behalf of Cloud Controller
     template: debian_nfs_server
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -529,6 +535,7 @@ job_types:
     resource_label: Cloud Controller Database
     description: Stores Cloud Controller information
     template: postgres
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -610,6 +617,7 @@ job_types:
     resource_label: Cloud Controller
     description: Coordinates Cloud Foundry application lifecycles
     template: cloud_controller_ng
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -792,6 +800,7 @@ job_types:
     resource_label: Clock Global
     description: Schedules asynchronous tasks for cloud controller
     template: cloud_controller_ng
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -916,6 +925,7 @@ job_types:
     resource_label: Cloud Controller Worker
     description: Worker for cloud controller asynchronous tasks
     template: cloud_controller_ng
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -1040,6 +1050,7 @@ job_types:
     resource_label: Router
     description: Routers route Internet traffic to applications and between Cloud Foundry components.
     template: gorouter
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -1129,6 +1140,7 @@ job_types:
     resource_label: Collector
     description: Collects system information in order to provide health and status metrics
     template: collector
+    release: cf
 
     requires_product_versions:
       - name: p-metrics
@@ -1203,6 +1215,7 @@ job_types:
     resource_label: UAA Database
     description: Stores user information for the UAA
     template: postgres
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -1285,6 +1298,7 @@ job_types:
     resource_label: UAA
     description: Cloud Foundry's Authentication and Authorization server
     template: uaa
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -1484,6 +1498,7 @@ job_types:
     resource_label: Login
     description: Communicates between SAML endpoints and the UAA
     template: login
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -1582,6 +1597,7 @@ job_types:
     resource_label: Console Database
     description: A Web application will be deployed to Cloud Foundry at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
     template: postgres
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -1720,6 +1736,7 @@ job_types:
     template:
       - dea_next
       - dea_logging_agent
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -1807,6 +1824,7 @@ job_types:
     resource_label: Loggregator Server
     description: Loggregator server collects application logs
     template: loggregator
+    release: cf
 
     resource_definitions:
       - name: ram
@@ -1896,6 +1914,7 @@ job_types:
     resource_label: Loggregator Trafficcontroller
     description: Loggregator trafficcontroller distributes requests to Loggregator servers
     template: loggregator_trafficcontroller
+    release: cf
 
     resource_definitions:
       - name: ram
