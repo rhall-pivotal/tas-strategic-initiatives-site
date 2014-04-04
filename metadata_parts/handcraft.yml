@@ -21,12 +21,15 @@ install_time_verifiers:
   - name: Verifiers::SmtpAuthenticationVerifier
     ignorable: true
     properties:
-      - consoledb.smtp_credentials
-      - consoledb.smtp_address
-      - consoledb.smtp_port
-      - consoledb.smtp_helo_domain
-      - consoledb.smtp_authentication
-      - consoledb.smtp_enable_starttls_auto
+      - push-console.smtp_credentials
+      - push-console.smtp_address
+      - push-console.smtp_port
+      - push-console.smtp_helo_domain
+      - push-console.smtp_authentication
+      - push-console.smtp_enable_starttls_auto
+
+post_deploy_errands:
+  - name: push-console
 
 form_types:
   - name: ha_proxy
@@ -73,7 +76,7 @@ form_types:
     property_inputs:
       - reference: login.sso_url
 
-  - name: consoledb
+  - name: push-console
     label: Web Console
     description: A Web application will be deployed to Cloud Foundry at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
     verifier:
@@ -86,14 +89,14 @@ form_types:
         - smtp_authentication
         - smtp_enable_starttls_auto
     property_inputs:
-      - reference: consoledb.reply_to
-      - reference: consoledb.from
-      - reference: consoledb.smtp_address
-      - reference: consoledb.smtp_port
-      - reference: consoledb.smtp_helo_domain
-      - reference: consoledb.smtp_credentials
-      - reference: consoledb.smtp_authentication
-      - reference: consoledb.smtp_enable_starttls_auto
+      - reference: push-console.reply_to
+      - reference: push-console.from
+      - reference: push-console.smtp_address
+      - reference: push-console.smtp_port
+      - reference: push-console.smtp_helo_domain
+      - reference: push-console.smtp_credentials
+      - reference: push-console.smtp_authentication
+      - reference: push-console.smtp_enable_starttls_auto
 
 job_types:
   - name: ha_proxy
@@ -1656,60 +1659,6 @@ job_types:
         default:
           identity: root
 
-      - name: reply_to
-        type: email
-        label: Reply-To email
-        configurable: true
-        optional: true
-        description: "The email address console invitees will reply to."
-
-      - name: from
-        type: email
-        label: From email
-        configurable: true
-        optional: true
-        description: "The email address from which console invitations are sent."
-
-      - name: smtp_address
-        type: network_address
-        label: Address of SMTP server
-        configurable: true
-        optional: true
-        description: "The SMTP address of the server that will send console invitations."
-
-      - name: smtp_port
-        type: port
-        label: Port of SMTP server
-        configurable: true
-        optional: true
-        description: "The port of the SMTP server that will send console invitations."
-
-      - name: smtp_helo_domain
-        type: domain
-        label: HELO domain
-        configurable: true
-        optional: true
-        description: "The HELO domain of the SMTP server that will send console invitations."
-
-      - name: smtp_credentials
-        type: simple_credentials
-        label: SMTP server credentials
-        configurable: true
-        optional: true
-        description: "The credentials for the SMTP server that will send console invitations."
-
-      - name: smtp_authentication
-        type: smtp_authentication
-        label: SMTP authentication
-        configurable: true
-        optional: true
-
-      - name: smtp_enable_starttls_auto
-        type: boolean
-        label: SMTP Enable Automatic STARTTLS
-        configurable: true
-        default: false
-
     manifest: |
       db: consoledb
       consoledb:
@@ -1993,6 +1942,153 @@ job_types:
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
       traffic_controller:
         zone: z1
+
+  - name: push-console
+    label: Push Console
+    resource_label: Push Console
+    description: Pushes the Pivotal Dev Console application to your Elastic Runtime installation
+    template: push-console
+    release: console-errands-release
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: secret_token
+        type: secret
+        label: Secret Token
+        configurable: false
+
+      - name: reply_to
+        type: email
+        label: Reply-To email
+        configurable: true
+        optional: true
+        description: "The email address console invitees will reply to."
+
+      - name: from
+        type: email
+        label: From email
+        configurable: true
+        optional: true
+        description: "The email address from which console invitations are sent."
+
+      - name: smtp_address
+        type: network_address
+        label: Address of SMTP server
+        configurable: true
+        optional: true
+        description: "The SMTP address of the server that will send console invitations."
+
+      - name: smtp_port
+        type: port
+        label: Port of SMTP server
+        configurable: true
+        optional: true
+        description: "The port of the SMTP server that will send console invitations."
+
+      - name: smtp_helo_domain
+        type: domain
+        label: HELO domain
+        configurable: true
+        optional: true
+        description: "The HELO domain of the SMTP server that will send console invitations."
+
+      - name: smtp_credentials
+        type: simple_credentials
+        label: SMTP server credentials
+        configurable: true
+        optional: true
+        description: "The credentials for the SMTP server that will send console invitations."
+
+      - name: smtp_authentication
+        type: smtp_authentication
+        label: SMTP authentication
+        configurable: true
+        optional: true
+
+      - name: smtp_enable_starttls_auto
+        type: boolean
+        label: SMTP Enable Automatic STARTTLS
+        configurable: true
+        default: false
+
+    manifest: |
+      cf:
+        api_url: <%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>
+        admin_username: (( .uaa.admin_credentials.identity ))
+        admin_password: (( .uaa.admin_credentials.password ))
+        system_domain: (( .cloud_controller.system_domain.value ))
+      services:
+        authentication:
+          CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
+          CF_CLIENT_SECRET: (( .uaa.console_client_credentials.password ))
+          CF_LOGIN_SERVER_URL: <%= Tempest::CfAddressProvider.from_config(@installation).login_url %>"
+          CF_UAA_SERVER_URL: <%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
+        smtp:
+          address: (( smtp_address.value ))
+          port: (( smtp_port.value ))
+          domain: (( smtp_helo_domain.value ))
+          username: (( smtp_credentials.identity ))
+          password: (( smtp_credentials.password ))
+          authentication: (( smtp_authentication.value ))
+          enable_starttls_auto: (( smtp_enable_starttls_auto.value ))
+      env:
+        secret_token: (( secret_token.secret ))
+        cf_cc_api_url: <%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>
+        cf_console_url: <%= Tempest::CfAddressProvider.from_config(@installation).console_url %>
+        default_reply_to: (( reply_to.value ))
+        default_from: (( from.value ))
+      database:
+        ip: (( .consoledb.first_ip ))
+        username: (( .consoledb.credentials.identity ))
+        password: (( .consoledb.credentials.password ))
 
   - name: compilation
     label: Compilation
