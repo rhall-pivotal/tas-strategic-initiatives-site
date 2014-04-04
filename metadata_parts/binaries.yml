@@ -1,12 +1,17 @@
 ---
 stemcell:
   name: bosh-vsphere-esxi-ubuntu
-  version: '1471.2'
-  file: bosh-stemcell-1471_2-vsphere-esxi-ubuntu.tgz
-  md5: bdac5aba02fb09843b5f2742b7b40f9a
+  version: '2200'
+  file: bosh-stemcell-2200-vsphere-esxi-ubuntu.tgz
+  md5: ee144a0a3abed4cdf543cef11e9f0f7b
 releases:
 - file: cf-165.tgz
   name: cf
   version: '165'
   md5: b829f7f8d456aad7bc90f2cae29f88ac
   url: https://releng-artifacts.s3.amazonaws.com/cf-165.tgz
+- file: console-errands-release-0.13-dev.tgz
+  name: console-errands-release
+  version: 0.13-dev
+  md5: 1e9bee55d8b58da1446c8555f4ca118a
+  url: https://releng-artifacts.s3.amazonaws.com/console-errands-release-0.13-dev.tgz
