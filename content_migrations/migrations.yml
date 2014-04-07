@@ -13,7 +13,7 @@ migrations:
         to: 0
       - type: append
         selector: "jobs"
-        object: { "type" => "push-console", "properties" => [] }
+        object: { "type" : "push-console", "properties" : [] }
       - type: move
         selector: ""
         from: "jobs.[type=consoledb].properties.[definition=reply_to]"
@@ -56,7 +56,7 @@ migrations:
         to: 0
       - type: append
         selector: "jobs"
-        object: { "type" => "push-console", "properties" => [] }
+        object: { "type" : "push-console", "properties" : [] }
       - type: move
         selector: ""
         from: "jobs.[type=consoledb].properties.[definition=reply_to]"
