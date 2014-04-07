@@ -39,24 +39,40 @@ form_types:
       name: Verifiers::StaticIpsVerifier
     property_inputs:
       - reference: ha_proxy.static_ips
+        label: HAProxy IPs
+        description: "Enter the IP address(es) for HAProxy. You must point your DNS to this IP unless you are using your own load balancer. HAProxy's IP must be in your subnet."
       - reference: ha_proxy.ssl_rsa_certificate
+        label: SSL Certificate
 
   - name: cloud_controller
     label: Cloud Controller
     description: Coordinates Cloud Foundry application lifecycles
     property_inputs:
       - reference: cloud_controller.system_domain
+        label: System domain
+        description: "This domain is used to target and push apps to Cloud Foundry (ex: api.my-cf.com). You must set up a wildcard DNS record for this domain that points to the router static IP(s) or a load balancer."
       - reference: cloud_controller.apps_domain
+        label: Apps domain
+        description: "This domain is used to serve applications pushed to Cloud Foundry (ex: my-app.cool-apps.com). You must set up a wildcard DNS record for this domain as well. This domain can be the same as the system domain if you do not care about distinguishing the two."
       - reference: cloud_controller.encrypt_key
+        label: Cloud Controller DB Encryption Key
+        description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
       - reference: cloud_controller.max_file_size
+        label: Maximum file upload size (MB)
+        description: This value limits the size of an application upload.
       - reference: cloud_controller.disable_custom_buildpacks
+        label: Disable Custom Buildpacks
 
   - name: syslog_aggregator
     label: Syslog Aggregator
     description: "Forwards syslog messages via TCP to a RELP syslog server"
     property_inputs:
       - reference: .syslog_host
+        label: IP Address of Syslog Aggregator Host
+        description: "Leave blank unless providing a syslogd server; it must be reachable from the Elastic Runtime network.  It must accept TCP connections and use the RELP protocol (e.g. rsyslogd)"
       - reference: .syslog_port
+        label: Syslog Aggregator Port
+        description: "Leave blank unless providing a syslogd server, typical syslogd port is 514. Ensure syslogd is listening on external interfaces."
 
   - name: router
     label: Router IPs
@@ -65,6 +81,8 @@ form_types:
       name: Verifiers::StaticIpsVerifier
     property_inputs:
       - reference: router.static_ips
+        label: Router IPs
+        description: "Enter the IP address(es) for the Cloud Foundry Router. This IP must be in your subnet."
 
   - name: login
     label: Login
@@ -75,6 +93,8 @@ form_types:
         - sso_url
     property_inputs:
       - reference: login.sso_url
+        label: SSO URL
+        description: "Enter the URL of an SSO appliance. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata. Example: <span class='nowrap'>example.com/Metadata/vsphere.local</span>"
 
   - name: push-console
     label: Web Console
@@ -90,13 +110,27 @@ form_types:
         - smtp_enable_starttls_auto
     property_inputs:
       - reference: push-console.reply_to
+        label: Reply-To email
+        description: "The email address console invitees will reply to."
       - reference: push-console.from
+        label: From email
+        description: "The email address from which console invitations are sent."
       - reference: push-console.smtp_address
+        label: Address of SMTP server
+        description: "The SMTP address of the server that will send console invitations."
       - reference: push-console.smtp_port
+        label: Port of SMTP server
+        description: "The port of the SMTP server that will send console invitations."
       - reference: push-console.smtp_helo_domain
+        label: HELO domain
+        description: "The HELO domain of the SMTP server that will send console invitations."
       - reference: push-console.smtp_credentials
+        label: SMTP server credentials
+        description: "The credentials for the SMTP server that will send console invitations."
       - reference: push-console.smtp_authentication
+        label: SMTP authentication
       - reference: push-console.smtp_enable_starttls_auto
+        label: SMTP Enable Automatic STARTTLS
 
 job_types:
   - name: ha_proxy
@@ -159,14 +193,11 @@ job_types:
 
       - name: static_ips
         type: ip_ranges
-        label: HAProxy IPs
-        description: "Enter the IP address(es) for HAProxy. You must point your DNS to this IP unless you are using your own load balancer. HAProxy's IP must be in your subnet."
         configurable: true
         optional: true
 
       - name: ssl_rsa_certificate
         type: rsa_cert_credentials
-        label: SSL Certificate
         configurable: true
 
     manifest: |
@@ -693,15 +724,11 @@ job_types:
 
       - name: encrypt_key
         type: secret
-        label: Cloud Controller DB Encryption Key
-        description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
         configurable: true
         optional: true
 
       - name: max_file_size
         type: integer
-        label: Maximum file upload size (MB)
-        description: This value limits the size of an application upload.
         configurable: true
         optional: false
         default: 256
@@ -711,20 +738,15 @@ job_types:
 
       - name: disable_custom_buildpacks
         type: boolean
-        label: Disable Custom Buildpacks
         configurable: true
         optional: false
 
       - name: system_domain
         type: domain
-        label: System domain
-        description: "This domain is used to target and push apps to Cloud Foundry (ex: api.my-cf.com). You must set up a wildcard DNS record for this domain that points to the router static IP(s) or a load balancer."
         configurable: true
 
       - name: apps_domain
         type: domain
-        label: Apps domain
-        description: "This domain is used to serve applications pushed to Cloud Foundry (ex: my-app.cool-apps.com). You must set up a wildcard DNS record for this domain as well. This domain can be the same as the system domain if you do not care about distinguishing the two."
         configurable: true
 
     manifest: |
@@ -1114,8 +1136,6 @@ job_types:
 
       - name: static_ips
         type: ip_ranges
-        label: Router IPs
-        description: "Enter the IP address(es) for the Cloud Foundry Router. This IP must be in your subnet."
         configurable: true
         optional: true
 
@@ -1557,8 +1577,6 @@ job_types:
 
       - name: sso_url
         type: http_url
-        label: SSO URL
-        description: "Enter the URL of an SSO appliance. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata. Example: <span class='nowrap'>example.com/Metadata/vsphere.local</span>"
         configurable: true
         optional: true
 
@@ -2007,55 +2025,41 @@ job_types:
 
       - name: reply_to
         type: email
-        label: Reply-To email
         configurable: true
         optional: true
-        description: "The email address console invitees will reply to."
 
       - name: from
         type: email
-        label: From email
         configurable: true
         optional: true
-        description: "The email address from which console invitations are sent."
 
       - name: smtp_address
         type: network_address
-        label: Address of SMTP server
         configurable: true
         optional: true
-        description: "The SMTP address of the server that will send console invitations."
 
       - name: smtp_port
         type: port
-        label: Port of SMTP server
         configurable: true
         optional: true
-        description: "The port of the SMTP server that will send console invitations."
 
       - name: smtp_helo_domain
         type: domain
-        label: HELO domain
         configurable: true
         optional: true
-        description: "The HELO domain of the SMTP server that will send console invitations."
 
       - name: smtp_credentials
         type: simple_credentials
-        label: SMTP server credentials
         configurable: true
         optional: true
-        description: "The credentials for the SMTP server that will send console invitations."
 
       - name: smtp_authentication
         type: smtp_authentication
-        label: SMTP authentication
         configurable: true
         optional: true
 
       - name: smtp_enable_starttls_auto
         type: boolean
-        label: SMTP Enable Automatic STARTTLS
         configurable: true
         default: false
 
@@ -2142,14 +2146,10 @@ job_types:
 property_blueprints:
   - name: syslog_host
     type: network_address
-    label: IP Address of Syslog Aggregator Host
-    description: "Leave blank unless providing a syslogd server; it must be reachable from the Elastic Runtime network.  It must accept TCP connections and use the RELP protocol (e.g. rsyslogd)"
     configurable: true
     optional: true
 
   - name: syslog_port
     type: port
-    label: Syslog Aggregator Port
-    description: "Leave blank unless providing a syslogd server, typical syslogd port is 514. Ensure syslogd is listening on external interfaces."
     configurable: true
     optional: true
