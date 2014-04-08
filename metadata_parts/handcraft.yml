@@ -43,7 +43,8 @@ form_types:
         description: "Enter the IP address(es) for HAProxy. You must point your DNS to this IP unless you are using your own load balancer. HAProxy's IP must be in your subnet."
       - reference: ha_proxy.ssl_rsa_certificate
         label: SSL Certificate
-
+      - reference: ha_proxy.skip_cert_verify
+        label: Trust Self-Signed Certificates
   - name: cloud_controller
     label: Cloud Controller
     description: Coordinates Cloud Foundry application lifecycles
@@ -198,6 +199,10 @@ job_types:
 
       - name: ssl_rsa_certificate
         type: rsa_cert_credentials
+        configurable: true
+
+      - name: skip_cert_verify
+        type: boolean
         configurable: true
 
     manifest: |
@@ -498,6 +503,8 @@ job_types:
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
       etcd_ips: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) +
         @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
   - name: nfs_server
     label: NFS Server
     resource_label: NFS Server
@@ -1943,7 +1950,7 @@ job_types:
           z1: (( .loggregator.ips ))
 
       ssl:
-        skip_cert_verify: true
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
       cc:
         srv_api_uri: "<%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>"
