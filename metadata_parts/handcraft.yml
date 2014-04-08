@@ -2073,8 +2073,8 @@ job_types:
         authentication:
           CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
           CF_CLIENT_SECRET: (( .uaa.console_client_credentials.password ))
-          CF_LOGIN_SERVER_URL: <%= Tempest::CfAddressProvider.from_config(@installation).login_url %>"
-          CF_UAA_SERVER_URL: <%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
+          CF_LOGIN_SERVER_URL: <%= Tempest::CfAddressProvider.from_config(@installation).login_url %>
+          CF_UAA_SERVER_URL: <%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>
         smtp:
           address: (( smtp_address.value ))
           port: (( smtp_port.value ))
