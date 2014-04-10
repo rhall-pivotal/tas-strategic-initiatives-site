@@ -1,4 +1,4 @@
-$LOAD_PATH << File.expand_path('lib', File.dirname(__FILE__))
+$LOAD_PATH.unshift(File.expand_path('../lib', __FILE__))
 
 require 'product_builder'
 require 'bench_task'
@@ -13,4 +13,13 @@ namespace :product do
     builder.build
     puts "#{builder.pivotal_output_path} build completed"
   end
+end
+
+begin
+  require 'rspec/core/rake_task'
+
+  RSpec::Core::RakeTask.new(:spec)
+
+  task default: :spec
+rescue LoadError
 end
