@@ -5,6 +5,10 @@ set -e
 P_RUNTIME_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 P_RUNTIME_METADATA=${P_RUNTIME_DIR}/metadata/cf.yml
 
+echo "------------- metadata_parts/binaries.yml -------------"
+cat ${P_RUNTIME_DIR}/metadata_parts/binaries.yml
+echo "------------- metadata_parts/binaries.yml -------------"
+
 rm -f ${P_RUNTIME_DIR}/*.pivotal
 
 bundle install
