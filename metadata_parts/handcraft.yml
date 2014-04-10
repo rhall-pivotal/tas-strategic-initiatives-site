@@ -778,6 +778,13 @@ job_types:
         tasks_disabled: true
         hm9000_noop: false
         client_max_body_size: (( max_file_size.value ))M
+        install_buildpacks:
+          - name: java_buildpack
+            package: buildpack_java
+          - name: ruby_buildpack
+            package: buildpack_ruby
+          - name: nodejs_buildpack
+            package: buildpack_nodejs
         quota_definitions:
           default:
             memory_limit: 10240
