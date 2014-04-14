@@ -5,4 +5,5 @@ gem 'bosh_cli', '1.2200.0' # a dependency of vara but version should match bosh 
 
 group :development do
   gem 'pry'
+  gem 'rspec'
 end
