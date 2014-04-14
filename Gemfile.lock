@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:pivotal-cf/vara.git
-  revision: a1610c31ba8cad103bc84718d2bf681c28f340f8
+  revision: cad0d261334f3f53a2576ac63928ca623b4aa6f0
   specs:
     vara (0.3.0)
       aws-sdk
@@ -15,16 +15,16 @@ GEM
       json (~> 1.4)
       nokogiri (>= 1.4.4)
       uuidtools (~> 2.1)
-    blobstore_client (1.2355.0)
+    blobstore_client (1.2200.0)
       aws-sdk (= 1.32.0)
-      bosh_common (~> 1.2355.0)
+      bosh_common (~> 1.2200.0)
       fog (~> 1.14.0)
       httpclient (= 2.2.4)
       multi_json (~> 1.1)
       ruby-atmos-pure (~> 1.0.5)
-    bosh_cli (1.2355.0)
-      blobstore_client (~> 1.2355.0)
-      bosh_common (~> 1.2355.0)
+    bosh_cli (1.2200.0)
+      blobstore_client (~> 1.2200.0)
+      bosh_common (~> 1.2200.0)
       highline (~> 1.6.2)
       httpclient (= 2.2.4)
       json_pure (~> 1.7)
@@ -35,7 +35,7 @@ GEM
       netaddr (~> 1.5.0)
       progressbar (~> 0.9.0)
       terminal-table (~> 1.4.3)
-    bosh_common (1.2355.0)
+    bosh_common (1.2200.0)
     builder (3.2.2)
     coderay (1.1.0)
     erubis (2.7.0)
@@ -52,7 +52,7 @@ GEM
       ruby-hmac
     formatador (0.2.4)
     highline (1.6.21)
-    httparty (0.13.0)
+    httparty (0.13.1)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     httpclient (2.2.4)
@@ -90,6 +90,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bosh_cli
+  bosh_cli (= 1.2200.0)
   pry
   vara!
