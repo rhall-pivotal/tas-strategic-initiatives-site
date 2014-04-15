@@ -1394,6 +1394,11 @@ job_types:
         default:
           identity: admin
 
+      - name: push_console_credentials
+        type: simple_credentials
+        default:
+          identity: push_console
+
       - name: system_services_credentials
         type: simple_credentials
         label: System services user credentials
@@ -1487,6 +1492,7 @@ job_types:
             override: false
           users:
           - "<%= job.get_property("admin_credentials").typed_value.identity %>|<%= job.get_property("admin_credentials").typed_value.password %>|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support"
+          - "<%= job.get_property("push_console_credentials").typed_value.identity %>|<%= job.get_property("push_console_credentials").typed_value.password %>|cloud_controller.admin"
           - "<%= job.get_property("system_services_credentials").typed_value.identity %>|<%= job.get_property("system_services_credentials").typed_value.password %>|cloud_controller.admin"
           - "<%= job.get_property("system_verification_credentials").typed_value.identity %>|<%= job.get_property("system_verification_credentials").typed_value.password %>|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support"
       syslog_aggregator:
@@ -2080,8 +2086,8 @@ job_types:
     manifest: |
       cf:
         api_url: <%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>
-        admin_username: (( .uaa.admin_credentials.identity ))
-        admin_password: (( .uaa.admin_credentials.password ))
+        admin_username: (( .uaa.push_console_credentials.identity ))
+        admin_password: (( .uaa.push_console_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
       services:
         authentication:
