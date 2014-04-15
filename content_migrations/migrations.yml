@@ -46,6 +46,12 @@ migrations:
         selector: ""
         from: "jobs.[type=consoledb].properties.[definition=smtp_address]"
         to: "jobs.[type=push-console].properties"
+      - type: update
+        selector: "jobs.[type=saml_login].type"
+        to: "login"
+      - type: update
+        selector: "jobs.[installation_name=saml_login].installation_name"
+        to: "login"
   - from_version: 1.1.0.0
     rules:
       - type: update
