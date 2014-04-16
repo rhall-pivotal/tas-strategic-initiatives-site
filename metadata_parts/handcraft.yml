@@ -1429,6 +1429,12 @@ job_types:
         default:
           identity: portal
 
+      - name: autoscale_client_credentials
+        type: simple_credentials
+        label: Autoscaling Service client credentials
+        default:
+          identity: autoscaling_service
+
       - name: cc_client_credentials
         type: simple_credentials
         label: Cloud Controller client secret
@@ -1480,6 +1486,14 @@ job_types:
             authorities: "uaa.none"
             authorized-grant-types: "implicit,password,refresh_token"
             scope: "cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write"
+          (( autoscale_client_credentials.identity )):
+            secret: (( autoscale_client_credentials.identity ))
+            override: true
+            autoapprove: true
+            authorities: "cloud_controller.write,cloud_controller.read,cloud_controller.admin"
+            authorized-grant-types: "client_credentials,authorization_code,refresh_token"
+            scope: "openid,cloud_controller.permissions,cloud_controller.read,cloud_controller.write"
+            secret: (( autoscale_client_credentials.password ))
           system_passwords:
             id: (( system_passwords_client_credentials.identity ))
             override: true
