@@ -10,6 +10,7 @@ cat ${P_RUNTIME_DIR}/metadata_parts/binaries.yml
 echo "------------- metadata_parts/binaries.yml -------------"
 
 rm -f ${P_RUNTIME_DIR}/*.pivotal
+rm -f ${P_RUNTIME_DIR}/*.pivotal.yml
 
 bundle install
 bundle exec vara-build-metadata --product-dir="${P_RUNTIME_DIR}"
