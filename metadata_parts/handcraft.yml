@@ -18,6 +18,10 @@ install_time_verifiers:
   - name: Verifiers::SsoUrlVerifier
     properties:
       - login.sso_url
+  - name: Verifiers::WildcardDomainVerifier
+    properties:
+    - cloud_controller.system_domain
+    - cloud_controller.apps_domain
   - name: Verifiers::SmtpAuthenticationVerifier
     ignorable: true
     properties:
@@ -46,6 +50,11 @@ form_types:
       - reference: ha_proxy.skip_cert_verify
         label: Trust Self-Signed Certificates
   - name: cloud_controller
+    verifier:
+      name: Verifiers::WildcardDomainVerifier
+      properties:
+      - system_domain
+        apps_domain
     label: Cloud Controller
     description: Coordinates Cloud Foundry application lifecycles
     property_inputs:
@@ -757,11 +766,11 @@ job_types:
         optional: false
 
       - name: system_domain
-        type: domain
+        type: wildcard_domain
         configurable: true
 
       - name: apps_domain
-        type: domain
+        type: wildcard_domain
         configurable: true
 
     manifest: |
