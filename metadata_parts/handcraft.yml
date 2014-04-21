@@ -1611,7 +1611,10 @@ job_types:
       - name: instances
         type: integer
         label: Instances
+        configurable: true
         default: 1
+        constraints:
+          min: 1
 
     property_blueprints:
       - name: vm_credentials
