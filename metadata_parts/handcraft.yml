@@ -1938,6 +1938,7 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
+        machines: (( .nats.ips ))
       loggregator_endpoint:
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
@@ -2021,6 +2022,7 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
+        machines: (( .nats.ips ))
 
       loggregator_endpoint:
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
