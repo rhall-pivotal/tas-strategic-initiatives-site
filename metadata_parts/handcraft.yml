@@ -1648,6 +1648,7 @@ job_types:
         port: (( .properties.syslog_port.value ))
 
       login:
+        spring_profiles: saml
         brand: pivotal
         links:
           home: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
