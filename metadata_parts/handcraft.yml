@@ -34,6 +34,7 @@ install_time_verifiers:
 
 post_deploy_errands:
   - name: push-console
+  - name: smoke-tests
 
 form_types:
   - name: ha_proxy
@@ -1422,6 +1423,11 @@ job_types:
         default:
           identity: push_console
 
+      - name: run_smoke_tests_credentials
+        type: simple_credentials
+        default:
+          identity: smoke_tests
+
       - name: system_services_credentials
         type: simple_credentials
         label: System services user credentials
@@ -1530,6 +1536,7 @@ job_types:
           users:
           - "<%= job.get_property("admin_credentials").typed_value.identity %>|<%= job.get_property("admin_credentials").typed_value.password %>|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support"
           - "<%= job.get_property("push_console_credentials").typed_value.identity %>|<%= job.get_property("push_console_credentials").typed_value.password %>|cloud_controller.admin"
+          - "<%= job.get_property("run_smoke_tests_credentials").typed_value.identity %>|<%= job.get_property("run_smoke_tests_credentials").typed_value.password %>|cloud_controller.admin"
           - "<%= job.get_property("system_services_credentials").typed_value.identity %>|<%= job.get_property("system_services_credentials").typed_value.password %>|cloud_controller.admin"
           - "<%= job.get_property("system_verification_credentials").typed_value.identity %>|<%= job.get_property("system_verification_credentials").typed_value.password %>|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support"
       syslog_aggregator:
@@ -2162,6 +2169,74 @@ job_types:
         ip: (( .consoledb.first_ip ))
         username: (( .consoledb.credentials.identity ))
         password: (( .consoledb.credentials.password ))
+
+  - name: smoke-tests
+    label: Run Smoke Tests
+    resource_label: Run Smoke Tests
+    description: Runs Smoke Tests against your Elastic Runtime installation
+    template: cf-smoke-tests
+    release: runtime-verification-errands
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      cf_smoke_tests:
+        api: <%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>
+        apps_domain: (( .cloud_controller.system_domain.value ))
+        user: (( .uaa.run_smoke_tests_credentials.identity ))
+        password: (( .uaa.run_smoke_tests_credentials.password ))
+        org: CF_SMOKE_TEST_ORG
+        space: CF_SMOKE_TEST_SPACE
+        skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
 
   - name: compilation
     label: Compilation
