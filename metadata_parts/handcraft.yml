@@ -270,7 +270,7 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 2
+    static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
 
@@ -278,8 +278,8 @@ job_types:
       - name: instances
         type: integer
         label: Instances
-        configurable: false
-        default: 2
+        configurable: true
+        default: 1
 
     property_blueprints:
       - name: vm_credentials
