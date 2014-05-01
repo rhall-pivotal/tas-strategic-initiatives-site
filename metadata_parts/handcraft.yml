@@ -270,7 +270,7 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 1
+    static_ip: 2
     dynamic_ip: 0
     max_in_flight: 1
 
@@ -279,7 +279,7 @@ job_types:
         type: integer
         label: Instances
         configurable: false
-        default: 1
+        default: 2
 
     property_blueprints:
       - name: vm_credentials
@@ -303,7 +303,6 @@ job_types:
         address: (( first_ip ))
         machines: (( ips ))
         port: 4222
-        use_gnatsd: false
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
