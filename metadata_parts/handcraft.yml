@@ -2175,7 +2175,7 @@ job_types:
     manifest: |
       cf_smoke_tests:
         api: <%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>
-        apps_domain: (( .cloud_controller.system_domain.value ))
+        apps_domain: (( .cloud_controller.apps_domain.value ))
         user: (( .uaa.run_smoke_tests_credentials.identity ))
         password: (( .uaa.run_smoke_tests_credentials.password ))
         org: CF_SMOKE_TEST_ORG
