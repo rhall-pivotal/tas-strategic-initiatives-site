@@ -369,13 +369,13 @@ job_types:
           identity: vcap
 
     manifest: |
-      etcd:
-        machines: (( ips ))
       networks:
         apps: default
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+      etcd:
+        machines: (( ips ))
       etcd_metrics_server:
         nats:
           user: (( .nats.credentials.identity ))
