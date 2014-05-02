@@ -311,7 +311,9 @@ job_types:
     label: etcd
     resource_label: etcd
     description: A node of the etcd cluster, which maintains the state of applications
-    template: etcd
+    template:
+    - etcd
+    - etcd_metrics_server
     release: cf
 
     resource_definitions:
@@ -374,6 +376,13 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+      etcd_metrics_server:
+        nats:
+          user: (( .nats.credentials.identity ))
+          password: (( .nats.credentials.password ))
+          address: (( .nats.first_ip ))
+          port: 4222
+          machines: (( .nats.ips ))
 
   - name: health_manager
     label: Health Manager
