@@ -378,11 +378,9 @@ job_types:
         machines: (( ips ))
       etcd_metrics_server:
         nats:
-          user: (( .nats.credentials.identity ))
-          password: (( .nats.credentials.password ))
-          address: (( .nats.first_ip ))
-          port: 4222
           machines: (( .nats.ips ))
+          username: (( .nats.credentials.identity ))
+          password: (( .nats.credentials.password ))
 
   - name: health_manager
     label: Health Manager
