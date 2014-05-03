@@ -2181,6 +2181,8 @@ job_types:
         org: CF_SMOKE_TEST_ORG
         space: CF_SMOKE_TEST_SPACE
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+        use_existing_org: false
+        use_existing_space: false
 
   - name: compilation
     label: Compilation
