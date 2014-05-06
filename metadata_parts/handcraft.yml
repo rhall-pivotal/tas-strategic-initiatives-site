@@ -806,6 +806,9 @@ job_types:
       login:
         url: "<%= Tempest::CfAddressProvider.from_config(@installation).login_url %>"
 
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+
       loggregator_endpoint:
         host: (( .loggregator_trafficcontroller.first_ip ))
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
@@ -937,7 +940,10 @@ job_types:
         host: (( .loggregator_trafficcontroller.first_ip ))
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
-      nats:
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+
+       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
@@ -1062,6 +1068,9 @@ job_types:
       loggregator_endpoint:
         host: (( .loggregator_trafficcontroller.first_ip ))
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -1943,6 +1952,10 @@ job_types:
         address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
+
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+
       loggregator_endpoint:
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
