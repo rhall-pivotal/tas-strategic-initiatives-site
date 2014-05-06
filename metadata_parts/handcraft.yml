@@ -397,8 +397,7 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
       etcd:
-        machines: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) +
-                       @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
+        machines: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) + @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
       etcd_metrics_server:
         nats:
           machines: (( .nats.ips ))
@@ -473,8 +472,7 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
       etcd:
-        machines: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) +
-                       @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
+        machines: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) + @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
       etcd_metrics_server:
         nats:
           machines: (( .nats.ips ))
@@ -548,8 +546,7 @@ job_types:
         port: (( .properties.syslog_port.value ))
 
       etcd:
-        machines: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) +
-                       @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
+        machines: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) + @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -2018,8 +2015,7 @@ job_types:
         port: (( .properties.syslog_port.value ))
 
       etcd:
-        machines: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) +
-                       @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
+        machines: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) + @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
 
       uaa:
         jwt:
