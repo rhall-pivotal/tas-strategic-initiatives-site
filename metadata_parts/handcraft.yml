@@ -329,6 +329,82 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
 
+  - name: etcd_leader
+    label: etcd Leader
+    resource_label: etcd Leader
+    description: The first member of the etcd cluster, which maintains the state of applications
+    template:
+    - etcd
+    - etcd_metrics_server
+    release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      networks:
+        apps: default
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+      etcd:
+        machines: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) +
+                       @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
+      etcd_metrics_server:
+        nats:
+          machines: (( .nats.ips ))
+          username: (( .nats.credentials.identity ))
+          password: (( .nats.credentials.password ))
+
   - name: etcd
     label: etcd
     resource_label: etcd
@@ -381,7 +457,7 @@ job_types:
         type: integer
         label: Instances
         configurable: false
-        default: 3
+        default: 2
 
     property_blueprints:
       - name: vm_credentials
@@ -397,7 +473,8 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
       etcd:
-        machines: (( ips ))
+        machines: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) +
+                       @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
       etcd_metrics_server:
         nats:
           machines: (( .nats.ips ))
@@ -471,7 +548,8 @@ job_types:
         port: (( .properties.syslog_port.value ))
 
       etcd:
-        machines: (( .etcd.ips ))
+        machines: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) +
+                       @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1940,7 +2018,8 @@ job_types:
         port: (( .properties.syslog_port.value ))
 
       etcd:
-        machines: (( .etcd.ips ))
+        machines: <%= (@component.get_ips_for_job(@component.find_job_with_type('etcd').guid) +
+                       @component.get_ips_for_job(@component.find_job_with_type('etcd_leader').guid)).to_json %>
 
       uaa:
         jwt:
