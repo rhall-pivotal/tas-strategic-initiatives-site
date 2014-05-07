@@ -110,7 +110,7 @@ form_types:
       - reference: login.ldap_url
         label: LDAP server URL
         description: 'Required for LDAP. The LDAP server url.  Must start with ldap:// or ldaps://'
-      - reference: login.ldap_credentials
+      - reference: login.credentials
         label: LDAP Credentials
         description: 'Required for LDAP. This is the distinguished name and password for binding to the LDAP Server'
       - reference: login.ldap_search_base
@@ -1623,7 +1623,7 @@ job_types:
         type: ldap_url
         configurable: true
         optional: true
-      - name: ldap_credentials
+      - name: credentials
         type: simple_credentials
         configurable: true
         optional: true
