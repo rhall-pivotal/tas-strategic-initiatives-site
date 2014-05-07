@@ -797,8 +797,8 @@ job_types:
             package: buildpack_nodejs
         quota_definitions:
           default:
-            memory_limit: (( default_quota_memory_limit_mb ))
-            total_services: (( default_quota_max_number_services ))
+            memory_limit: (( default_quota_memory_limit_mb.value ))
+            total_services: (( default_quota_max_number_services.value ))
             non_basic_services_allowed: true
             total_routes: 1000
             trial_db_allowed: true
@@ -925,8 +925,8 @@ job_types:
         hm9000_noop: false
         quota_definitions:
           default:
-            memory_limit: (( .cloud_controller.default_quota_memory_limit_mb ))
-            total_services: (( .cloud_controller.default_quota_max_number_services ))
+            memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
+            total_services: (( .cloud_controller.default_quota_max_number_services.value ))
             non_basic_services_allowed: true
             total_routes: 1000
             trial_db_allowed: true
@@ -1053,8 +1053,8 @@ job_types:
         hm9000_noop: false
         quota_definitions:
           default:
-            memory_limit: (( .cloud_controller.default_quota_memory_limit_mb ))
-            total_services: (( .cloud_controller.default_quota_max_number_services ))
+            memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
+            total_services: (( .cloud_controller.default_quota_max_number_services.value ))
             non_basic_services_allowed: true
             total_routes: 1000
             trial_db_allowed: true
