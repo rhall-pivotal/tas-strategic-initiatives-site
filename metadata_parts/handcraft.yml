@@ -165,6 +165,17 @@ form_types:
       - reference: push-console.smtp_enable_starttls_auto
         label: SMTP Enable Automatic STARTTLS
 
+  - name: quotas
+    label: quotas
+    description: Default Quota
+    property_inputs:
+    - reference: cloud_controller.default_quota_memory_limit_mb
+      label: App Memory (MB)
+      description: Default memory limit for all apps in an org. Use the CLI to manage specific quotas.
+    - reference: cloud_controller.default_quota_max_number_services
+      label: Service Instances
+      description: Maximum allowed number of service instances in an org. Use the CLI to manage specific quotas.
+
 job_types:
   - name: ha_proxy
     label: HAProxy
@@ -739,6 +750,22 @@ job_types:
         type: wildcard_domain
         configurable: true
 
+      - name: default_quota_memory_limit_mb
+        type: integer
+        configurable: true
+        default: 10240
+        constraints:
+          min: 10240
+          max: 102400
+
+      - name: default_quota_max_number_services
+        type: integer
+        configurable: true
+        default: 100
+        constraints:
+          min: 100
+          max: 1000
+
     manifest: |
       domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
       system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
@@ -770,8 +797,8 @@ job_types:
             package: buildpack_nodejs
         quota_definitions:
           default:
-            memory_limit: 10240
-            total_services: 100
+            memory_limit: (( default_quota_memory_limit_mb ))
+            total_services: (( default_quota_max_number_services ))
             non_basic_services_allowed: true
             total_routes: 1000
             trial_db_allowed: true
@@ -898,8 +925,8 @@ job_types:
         hm9000_noop: false
         quota_definitions:
           default:
-            memory_limit: 10240
-            total_services: 100
+            memory_limit: (( .cloud_controller.default_quota_memory_limit_mb ))
+            total_services: (( .cloud_controller.default_quota_max_number_services ))
             non_basic_services_allowed: true
             total_routes: 1000
             trial_db_allowed: true
@@ -1026,8 +1053,8 @@ job_types:
         hm9000_noop: false
         quota_definitions:
           default:
-            memory_limit: 10240
-            total_services: 100
+            memory_limit: (( .cloud_controller.default_quota_memory_limit_mb ))
+            total_services: (( .cloud_controller.default_quota_max_number_services ))
             non_basic_services_allowed: true
             total_routes: 1000
             trial_db_allowed: true
