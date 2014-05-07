@@ -2212,6 +2212,8 @@ job_types:
         ip: (( .consoledb.first_ip ))
         username: (( .consoledb.credentials.identity ))
         password: (( .consoledb.credentials.password ))
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
   - name: smoke-tests
     label: Run Smoke Tests
