@@ -64,7 +64,7 @@ form_types:
         description: "This domain is used to target and push apps to Cloud Foundry (ex: api.my-cf.com). You must set up a wildcard DNS record for this domain that points to the router static IP(s) or a load balancer."
       - reference: cloud_controller.apps_domain
         label: Apps domain
-        description: "This domain is used to serve applications pushed to Cloud Foundry (ex: my-app.cool-apps.com). You must set up a wildcard DNS record for this domain as well. This domain can be the same as the system domain if you do not care about distinguishing the two."
+        description: "Changing this field will add a new domain to Cloud Foundry on deploy. To delete domains, or change the default App Domain, you must also use the Command Line Interface."
       - reference: cloud_controller.encrypt_key
         label: Cloud Controller DB Encryption Key
         description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
