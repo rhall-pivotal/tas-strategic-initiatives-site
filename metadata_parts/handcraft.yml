@@ -1657,8 +1657,8 @@ job_types:
 
       login:
         spring_profiles: <%= job.get_property("ldap_url").typed_value.value_present? ? 'saml,ldap' : 'saml'%>
-        ldap_profile_type: search-and-compare
         ldap:
+          profile_type: search-and-compare
           url: (( ldap_url ))
           userDN: (( credentials.identity ))
           userPassword: (( credentials.password ))
