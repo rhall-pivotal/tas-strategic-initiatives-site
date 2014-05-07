@@ -1659,14 +1659,14 @@ job_types:
         spring_profiles: <%= job.get_property("ldap_url").typed_value.value_present? ? 'saml,ldap' : 'saml'%>
         ldap:
           profile_type: search-and-compare
-          url: (( ldap_url ))
+          url: (( ldap_url.value ))
           userDN: (( credentials.identity ))
           userPassword: (( credentials.password ))
-          searchBase: (( ldap_search_base ))
-          searchFilter: (( ldap_search_filter ))
-          passwordAttributeName: (( ldap_password_attribute_name ))
-          sslCertificate: (( ldap_server_ssl_cert ))
-          sslCertificateAlias: (( ldap_server_ssl_cert_alias ))
+          searchBase: (( ldap_search_base.value ))
+          searchFilter: (( ldap_search_filter.value ))
+          passwordAttributeName: (( ldap_password_attribute_name.value ))
+          sslCertificate: (( ldap_server_ssl_cert.value ))
+          sslCertificateAlias: (( ldap_server_ssl_cert_alias.value ))
         brand: pivotal
         links:
           home: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
