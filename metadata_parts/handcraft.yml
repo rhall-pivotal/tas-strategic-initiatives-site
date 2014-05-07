@@ -471,7 +471,7 @@ job_types:
         port: (( .properties.syslog_port.value ))
 
       etcd:
-        machines: (( .etcd.ips ))
+        machines: (( .etcd_and_metrics.ips ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1937,7 +1937,7 @@ job_types:
         port: (( .properties.syslog_port.value ))
 
       etcd:
-        machines: (( .etcd.ips ))
+        machines: (( .etcd_and_metrics.ips ))
 
       uaa:
         jwt:
