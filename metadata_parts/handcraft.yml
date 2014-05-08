@@ -33,8 +33,8 @@ install_time_verifiers:
       - push-console.smtp_enable_starttls_auto
 
 post_deploy_errands:
-  - name: push-console
   - name: smoke-tests
+  - name: push-console
 
 form_types:
   - name: ha_proxy
