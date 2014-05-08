@@ -411,9 +411,9 @@ job_types:
         machines: (( ips ))
       etcd_metrics_server:
         nats:
-          machines: (( .nats.ips ))
           username: (( .nats.credentials.identity ))
           password: (( .nats.credentials.password ))
+          machines: (( .nats.ips ))
 
   - name: health_manager
     label: Health Manager
