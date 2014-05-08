@@ -1258,6 +1258,7 @@ job_types:
         password: (( .nats.credentials.password ))
         address: (( .nats.first_ip ))
         port: 4222
+        machines: (( .nats.ips ))
       collector:
         use_tsdb: true
       opentsdb:
