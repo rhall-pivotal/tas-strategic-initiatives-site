@@ -95,9 +95,9 @@ form_types:
         label: Router IPs
         description: "Enter the IP address(es) for the Cloud Foundry Router. This IP must be in your subnet."
 
-  - name: login
-    label: Login
-    description: Communicates between SAML endpoints and the UAA
+  - name: login_sso
+    label: SSO Login
+    description: Configure an SSO endpoint for the UAA
     verifier:
       name: Verifiers::SsoUrlVerifier
       properties:
@@ -107,6 +107,15 @@ form_types:
         label: SSO URL
         description: "Enter the URL of an SSO appliance. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata."
 
+  - name: login_ldap
+    label: LDAP Login
+    description: Configure an LDAP endpoint for the UAA
+    verifier:
+      name: Verifiers::LDAPBindVerifier
+      properties:
+        - ldap_url
+        - credentials
+    property_inputs:
       - reference: login.ldap_url
         label: LDAP server URL
         description: 'Required for LDAP. The LDAP server url.  Must start with ldap:// or ldaps://'
