@@ -1506,20 +1506,20 @@ job_types:
         clients:
           login:
             id: (( login_client_credentials.identity ))
+            secret: (( login_client_credentials.password ))
             override: true
             autoapprove: true
             authorities: "oauth.login"
             authorized-grant-types: "authorization_code,client_credentials,refresh_token"
             scope: "openid"
-            secret: (( login_client_credentials.password ))
           (( console_client_credentials.identity )):
             id: (( console_client_credentials.identity ))
+            secret: (( console_client_credentials.password ))
             override: true
             autoapprove: true
             authorities: "scim.write,scim.read,cloud_controller.read,cloud_controller.write,password.write,uaa.admin,uaa.resource,cloud_controller.admin"
             authorized-grant-types: "authorization_code,client_credentials,password,implicit"
             scope: "openid,cloud_controller.read,cloud_controller.write,password.write,console.admin,console.support,cloud_controller.admin"
-            secret: (( console_client_credentials.password ))
             access-token-validity: 1209600
             refresh-token-validity: 1209600
           cf:
@@ -1539,11 +1539,11 @@ job_types:
             secret: (( autoscale_client_credentials.password ))
           system_passwords:
             id: (( system_passwords_client_credentials.identity ))
+            secret: (( system_passwords_client_credentials.password ))
             override: true
             autoapprove: true
             authorities: "uaa.admin,scim.read,scim.write,password.write"
             authorized-grant-types: "client_credentials"
-            secret: (( system_passwords_client_credentials.password ))
         scim:
           user:
             override: false
