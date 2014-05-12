@@ -841,6 +841,9 @@ job_types:
         url: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
+        clients:
+          cc_service_broker_client:
+            secret: (( .uaa.cc_service_broker_client_secret.secret ))
       login:
         url: "<%= Tempest::CfAddressProvider.from_config(@installation).login_url %>"
 
@@ -967,6 +970,9 @@ job_types:
         url: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
+        clients:
+          cc_service_broker_client:
+            secret: (( .uaa.cc_service_broker_client_secret.secret ))
       login:
         url: "<%= Tempest::CfAddressProvider.from_config(@installation).login_url %>"
 
@@ -1093,6 +1099,9 @@ job_types:
         url: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
+        clients:
+          cc_service_broker_client:
+            secret: (( .uaa.cc_service_broker_client_secret.secret ))
       login:
         url: "<%= Tempest::CfAddressProvider.from_config(@installation).login_url %>"
 
@@ -1478,6 +1487,10 @@ job_types:
         default:
           identity: autoscaling_service
 
+      - name: cc_service_broker_client_secret
+        type: secret
+        label: Autoscaling Service client credentials
+
       - name: cc_client_credentials
         type: simple_credentials
         label: Cloud Controller client secret
@@ -1544,6 +1557,13 @@ job_types:
             autoapprove: true
             authorities: "uaa.admin,scim.read,scim.write,password.write"
             authorized-grant-types: "client_credentials"
+          cc_service_broker_client:
+            id: cc_service_broker_client
+            secret: (( cc_service_broker_client_secret.secret ))
+            override: true
+            authorities: clients.read,clients.write,clients.admin
+            authorized-grant-types: client_credentials
+            scope: cloud_controller.write,openid,cloud_controller.read,cloud_controller_service_permissions.read
         scim:
           user:
             override: false
