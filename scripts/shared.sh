@@ -13,4 +13,4 @@ METADATA_FILE=${PRODUCT_DIR}/metadata/cf.yml
 bundle install
 bundle exec vara-build-metadata     --product-dir="${PRODUCT_DIR}"
 bundle exec vara-download-artifacts --product-metadata="${METADATA_FILE}"
-bundle exec vara-build-pivotal      --product-metadata="${METADATA_FILE}" --rc="-build${BUILD_NUMBER:--local}"
+bundle exec vara-build-pivotal      --product-metadata="${METADATA_FILE}" --rc="${RC_VALUE}"
