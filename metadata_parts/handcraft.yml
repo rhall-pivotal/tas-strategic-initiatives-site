@@ -537,7 +537,7 @@ job_types:
     manifest: |
       nfs_server:
         address: (( first_ip ))
-        network: "<%= Tempest::Network.from_installation(@installation).ip_range %>"
+        network: (( ..microbosh.properties.subnet.value ))
 
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
