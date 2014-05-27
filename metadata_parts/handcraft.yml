@@ -122,9 +122,6 @@ form_types:
       - reference: login.ldap_search_filter
         label: LDAP Search Filter
         description: 'Required for LDAP. Example: (objectClass=person)'
-      - reference: login.ldap_password_attribute_name
-        label: LDAP Password Attribute Name
-        description: 'Required for LDAP. The LDAP password attribute'
       - reference: login.ldap_server_ssl_cert
         label: LDAP Server SSL Cert
         description: 'Required only for ldaps://. This is the server certificate to trust for self-signed certificates'
@@ -1692,10 +1689,6 @@ job_types:
         type: string
         configurable: true
         optional: true
-      - name: ldap_password_attribute_name
-        type: string
-        configurable: true
-        optional: true
       - name: ldap_server_ssl_cert
         type: text
         configurable: true
@@ -1712,13 +1705,12 @@ job_types:
       login:
         spring_profiles: <%= job.get_property("ldap_url").typed_value.value_present? ? 'saml,ldap' : 'saml'%>
         ldap:
-          profile_type: search-and-compare
+          profile_type: search-and-bind
           url: (( ldap_url.value ))
           userDN: (( credentials.identity ))
           userPassword: (( credentials.password ))
           searchBase: (( ldap_search_base.value ))
           searchFilter: (( ldap_search_filter.value ))
-          passwordAttributeName: (( ldap_password_attribute_name.value ))
           sslCertificate: (( ldap_server_ssl_cert.value ))
           sslCertificateAlias: (( ldap_server_ssl_cert_alias.value ))
         brand: pivotal
