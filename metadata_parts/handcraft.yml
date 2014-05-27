@@ -101,6 +101,37 @@ form_types:
         label: SSO URL
         description: "Enter the URL of an SSO appliance. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata."
 
+  - name: login_ldap
+    label: LDAP Login
+    description: Configure an LDAP endpoint for the UAA
+    verifier:
+      name: Verifiers::LDAPBindVerifier
+      properties:
+        - ldap_url
+        - credentials
+    property_inputs:
+      - reference: login.ldap_url
+        label: LDAP server URL
+        description: 'Required for LDAP. The LDAP server url.  Must start with ldap:// or ldaps://'
+      - reference: login.credentials
+        label: LDAP Credentials
+        description: 'Required for LDAP. This is the distinguished name and password for binding to the LDAP Server'
+      - reference: login.ldap_search_base
+        label: LDAP Search Base
+        description: 'Required for LDAP. Example: ou=cloud,dc=example,dc=com'
+      - reference: login.ldap_search_filter
+        label: LDAP Search Filter
+        description: 'Required for LDAP. Example: (objectClass=person)'
+      - reference: login.ldap_password_attribute_name
+        label: LDAP Password Attribute Name
+        description: 'Required for LDAP. The LDAP password attribute'
+      - reference: login.ldap_server_ssl_cert
+        label: LDAP Server SSL Cert
+        description: 'Required only for ldaps://. This is the server certificate to trust for self-signed certificates'
+      - reference: login.ldap_server_ssl_cert_alias
+        label: LDAP Server SSL Cert AltName
+        description: 'Required only for ldaps:// + self-signed Cert. The SSL certifcates AltNames'
+
   - name: push-console
     label: Web Console
     description: A Web application will be deployed to Cloud Foundry at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
@@ -1645,11 +1676,51 @@ job_types:
         configurable: true
         optional: true
 
+      - name: ldap_url
+        type: ldap_url
+        configurable: true
+        optional: true
+      - name: credentials
+        type: simple_credentials
+        configurable: true
+        optional: true
+      - name: ldap_search_base
+        type: string
+        configurable: true
+        optional: true
+      - name: ldap_search_filter
+        type: string
+        configurable: true
+        optional: true
+      - name: ldap_password_attribute_name
+        type: string
+        configurable: true
+        optional: true
+      - name: ldap_server_ssl_cert
+        type: text
+        configurable: true
+        optional: true
+      - name: ldap_server_ssl_cert_alias
+        type: string
+        configurable: true
+        optional: true
+
+
     manifest: |
       domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
 
       login:
-        spring_profiles: saml
+        spring_profiles: <%= job.get_property("ldap_url").typed_value.value_present? ? 'saml,ldap' : 'saml'%>
+        ldap:
+          profile_type: search-and-compare
+          url: (( ldap_url.value ))
+          userDN: (( credentials.identity ))
+          userPassword: (( credentials.password ))
+          searchBase: (( ldap_search_base.value ))
+          searchFilter: (( ldap_search_filter.value ))
+          passwordAttributeName: (( ldap_password_attribute_name.value ))
+          sslCertificate: (( ldap_server_ssl_cert.value ))
+          sslCertificateAlias: (( ldap_server_ssl_cert_alias.value ))
         brand: pivotal
         links:
           home: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
