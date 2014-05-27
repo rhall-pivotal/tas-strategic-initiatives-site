@@ -121,7 +121,7 @@ form_types:
         description: 'Required for LDAP. Example: ou=cloud,dc=example,dc=com'
       - reference: login.ldap_search_filter
         label: LDAP Search Filter
-        description: 'Required for LDAP. Example: (objectClass=person)'
+        description: 'Required for LDAP. Use {0} where the username should be inserted. If unsure, use cn={0}'
       - reference: login.ldap_server_ssl_cert
         label: LDAP Server SSL Cert
         description: 'Required only for ldaps://. This is the server certificate to trust for self-signed certificates'
@@ -1689,6 +1689,7 @@ job_types:
         type: string
         configurable: true
         optional: true
+        default: cn={0}
       - name: ldap_server_ssl_cert
         type: text
         configurable: true
