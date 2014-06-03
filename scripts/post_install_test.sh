@@ -19,7 +19,7 @@ git checkout $CATS_SHA
 
 cat > integration_config.json <<EOF
 {
-  "api": "api.${APPS_DOMAIN}",
+  "api": "api.${SYSTEM_DOMAIN}",
   "admin_user": "${ADMIN_USER}",
   "admin_password": "${ADMIN_PASSWORD}",
   "apps_domain": "${APPS_DOMAIN}",
