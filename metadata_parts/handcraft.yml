@@ -1987,6 +1987,7 @@ job_types:
       loggregator:
         incoming_port: 3456
         outgoing_port: 8080
+        maxRetainedLogMessages: 100
         status:
           user: (( status_credentials.identity ))
           password: (( status_credentials.password ))
