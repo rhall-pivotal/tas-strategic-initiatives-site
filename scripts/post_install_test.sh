@@ -1,6 +1,8 @@
 #!/bin/bash
 # Warning: Running CATs (this test) may pollute your deployment
 
+set -x
+
 export CATS_SHA=9fc2aa8
 export SKIP_SSL_VALIDATION=true
 
