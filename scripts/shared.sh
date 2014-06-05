@@ -8,8 +8,5 @@ rm -f ${PRODUCT_DIR}/*.pivotal
 rm -f ${PRODUCT_DIR}/*.pivotal.yml
 rm -f ${PRODUCT_DIR}/*.pivotal.md5
 
-METADATA_FILE=${PRODUCT_DIR}/metadata/cf.yml
-
 bundle install
-bundle exec vara-build-metadata     --product-dir="${PRODUCT_DIR}"
-bundle exec vara-build-pivotal      --product-metadata="${METADATA_FILE}" --rc="${RC_VALUE}"
+bundle exec vara build-pivotal ${PRODUCT_DIR}
