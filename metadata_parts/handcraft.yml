@@ -1184,6 +1184,8 @@ job_types:
         optional: true
 
     manifest: |
+      networks:
+        apps: default
       router:
         endpoint_timeout: 300
         status:
@@ -1894,6 +1896,8 @@ job_types:
         label: Loggregator Agent status credentials
 
     manifest: |
+      networks:
+        apps: default
       domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
 
       dea_next:
@@ -1984,6 +1988,8 @@ job_types:
         label: Shared secret
 
     manifest: |
+      networks:
+        apps: default
       loggregator:
         incoming_port: 3456
         outgoing_port: 8080
@@ -2077,6 +2083,8 @@ job_types:
         label: Loggregator status credentials
 
     manifest: |
+      networks:
+        apps: default
       loggregator:
         incoming_port: 3456
         outgoing_port: 8080
