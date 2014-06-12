@@ -15,57 +15,63 @@ scripts/build_cf_release_tarball.sh
 In this example, we update the Elastic Runtime.  We assume the following:
 
 * The product version is **1.3.0.0**
-* The CF Release tag is **v168**
-* The stemcell version is **2399**
+* The CF Release tag is **v172**
+* The stemcell version is **2603**
 
 We follow this procedure:
 
 * Edit *metadata_parts/binaries.yml* and modify the entries to match the following:
 
 ```
+---
 stemcell:
   name: bosh-vsphere-esxi-ubuntu
-  version: '2399'
-  file: bosh-stemcell-2399-vsphere-esxi-ubuntu.tgz
-  md5: ee144a0a3abed4cdf543cef11e9f0f7b
+  version: '2603'
+  file: bosh-stemcell-2603-vsphere-esxi-ubuntu-lucid-go_agent.tgz
+  md5: 78c3edd2cc1935dc27201b1647132b63
 releases:
-- file: cf-168.tgz
+- file: cf-172.tgz
   name: cf
-  version: '168'
-  md5: 88ba12abac6e44cba0562e6c812daf4a
-  url: https://releng-artifacts.s3.amazonaws.com/cf-168.tgz
-```
-
-* Edit *metadata/handcraft.yml* and update the product number to *1.3.0.0*.  Also, update the metadata version (used by Ops Manager) to *1.3*:
-
-```
+  version: '172'
+  md5: 777fe352515612841a3d96af12054947
+  url: https://releng-artifacts.s3.amazonaws.com/cf-172.tgz
+- file: push-console-release-75.tgz
+  name: push-console-release
+  version: '75'
+  md5: 87b5ac9c91a10a88eafde0b0f70e9d77
+  url: https://releng-artifacts.s3.amazonaws.com/push-console-release-75.tgz
+- file: runtime-verification-errands-3.tgz
+  name: runtime-verification-errands
+  version: '3'
+  md5: 342cf0e591bc1157b3dd76db403c5257
+  url: https://releng-artifacts.s3.amazonaws.com/runtime-verification-errands-3.tgz
 name: cf
-product_version: 1.3.0.0
-metadata_version: '1.3'
+product_version: 1.3.0.0$PRERELEASE_VERSION$
+metadata_version: '1.2'
 provides_product_versions:
-  - name: cf
-    version: 1.3.0.0
+- name: cf
+  version: 1.3.0.0
 ```
 
 * Use [vara](https://github.com/pivotal-cf/vara) to re-generate the metadata .yml file by merging the metadata partial files:
 
 ```
-vara-build-metadata --product-dir=~/workspace/p-runtime
+bundle exec vara build-metadata ~/workspace/p-runtime
 ```
 
 * Use *vara* to download the stemcells and artifacts:
 
 ```
-vara-download-artifacts --product-metadata=~/workspace/p-runtime/metadata/cf.yml
+bundle exec vara download-artifacts ~/workspace/p-runtime/metadata/cf.yml
 ```
 
 * Use *vara* (again) to create the .pivotal file:
 
 ```
-vara-build-pivotal --product-metadata=~/workspace/p-runtime/metadata/cf.yml
+bundle exec vara build-pivotal ~/workspace/p-runtime/
 ```
 
-* Look for file named *cf-168.pivotal*
+* Look for file named *cf-1.3.0.0.alpha.212.78ca0e8.pivotal*
 * Upload that file to an Ops Manager VM
 * Configure the settings
 * Install
