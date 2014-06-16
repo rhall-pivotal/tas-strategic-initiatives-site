@@ -1268,6 +1268,8 @@ job_types:
           identity: vcap
 
     manifest: |
+      networks:
+        apps: default
       collector:
         use_tsdb: true
       opentsdb:
