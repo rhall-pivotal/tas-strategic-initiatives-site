@@ -2223,6 +2223,7 @@ job_types:
     manifest: |
       cf:
         api_url: <%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>
+        console_subdomain: console
         admin_username: (( .uaa.push_console_credentials.identity ))
         admin_password: (( .uaa.push_console_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
