@@ -340,9 +340,9 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
 
-  - name: etcd_and_metrics
-    label: etcd_and_metrics
-    resource_label: etcd_and_metrics
+  - name: etcd_server
+    label: etcd_server
+    resource_label: etcd_server
     description: An etcd cluster node, which maintains the state of applications, and its metrics server
     template:
     - etcd
@@ -392,7 +392,7 @@ job_types:
         type: integer
         label: Instances
         configurable: false
-        default: 3
+        default: 1
 
     property_blueprints:
       - name: vm_credentials
@@ -482,7 +482,7 @@ job_types:
         apps: default
 
       etcd:
-        machines: (( .etcd_and_metrics.ips ))
+        machines: (( .etcd_server.ips ))
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -2002,7 +2002,7 @@ job_types:
           port: 5768
 
       etcd:
-        machines: (( .etcd_and_metrics.ips ))
+        machines: (( .etcd_server.ips ))
 
       uaa:
         jwt:
