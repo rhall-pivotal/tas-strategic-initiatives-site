@@ -1910,6 +1910,7 @@ job_types:
         disk_overcommit_factor: 1
         num_instances: 10
         stacks: ["lucid64"]
+        evacuation_bail_out_time_in_seconds: 600
 
       loggregator_endpoint:
         host: (( .loggregator_trafficcontroller.first_ip ))
