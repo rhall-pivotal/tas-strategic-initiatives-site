@@ -2246,6 +2246,11 @@ job_types:
         cf_console_url: <%= Tempest::CfAddressProvider.from_config(@installation).console_url %>
         default_reply_to: (( reply_to.value ))
         default_from: (( from.value ))
+      console:
+        web_instances: 1
+        web_memory: 2G
+        workers_memory: 1536MB
+        scheduler_memory: 1536MB
       database:
         ip: (( .consoledb.first_ip ))
         username: (( .consoledb.credentials.identity ))
