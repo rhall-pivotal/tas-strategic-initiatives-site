@@ -1,7 +1,7 @@
 ---
 requires_product_versions:
   - name: microbosh
-    version: "~> 1.2"
+    version: "~> 1.3"
 label: Pivotal Elastic Runtime
 description:
   Gives developers the ability to push apps on a dynamically-configured software stack
@@ -559,7 +559,8 @@ job_types:
     manifest: |
       nfs_server:
         address: (( first_ip ))
-        network: "<%= Tempest::Network.from_installation(@installation).ip_range %>"
+        network: (( ..cf.cloud_controller.first_network_deprecated ))
+        allowed_ips: (( ..cf.cloud_controller.ips ))
 
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
