@@ -475,7 +475,6 @@ job_types:
     manifest: |
       cc:
         srv_api_uri: "<%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>"
-      cc:
         bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
       networks:
@@ -810,7 +809,7 @@ job_types:
           - name: go_buildpack
             package: buildpack_go
 
-      ccdb_ng:
+      ccdb:
         address: (( .ccdb.first_ip ))
         port: 2544
         db_scheme: "postgres"
@@ -939,7 +938,7 @@ job_types:
             total_routes: 1000
             non_basic_services_allowed: true
 
-      ccdb_ng:
+      ccdb:
         address: (( .ccdb.first_ip ))
         port: 2544
         db_scheme: "postgres"
@@ -1068,7 +1067,7 @@ job_types:
             total_routes: 1000
             non_basic_services_allowed: true
 
-      ccdb_ng:
+      ccdb:
         address: (( .ccdb.first_ip ))
         port: 2544
         db_scheme: "postgres"
