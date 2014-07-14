@@ -475,7 +475,7 @@ job_types:
     manifest: |
       cc:
         srv_api_uri: "<%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>"
-      ccng:
+      cc:
         bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
       networks:
@@ -775,7 +775,7 @@ job_types:
       system_domain_organization: system
       app_domains: ["<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"]
 
-      ccng:
+      cc:
         logging_level: debug
         staging_upload_user: (( staging_upload_credentials.identity ))
         staging_upload_password: (( staging_upload_credentials.password ))
@@ -920,7 +920,7 @@ job_types:
       system_domain_organization: system
       app_domains: ["<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"]
 
-      ccng:
+      cc:
         logging_level: debug
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
@@ -1049,7 +1049,7 @@ job_types:
       system_domain_organization: system
       app_domains: ["<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"]
 
-      ccng:
+      cc:
         logging_level: debug
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
