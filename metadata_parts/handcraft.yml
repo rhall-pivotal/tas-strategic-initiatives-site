@@ -630,8 +630,7 @@ job_types:
           identity: admin
 
     manifest: |
-      db: ccdb
-      ccdb:
+      databases:
         address: (( first_ip ))
         port: 2544
         db_scheme: "postgres"
@@ -1351,8 +1350,7 @@ job_types:
           identity: root
 
     manifest: |
-      db: uaadb
-      uaadb:
+      databases:
         address: (( first_ip ))
         port: 2544
         db_scheme: postgresql
@@ -1583,7 +1581,6 @@ job_types:
 
       domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
 
-      db: uaadb
       uaadb:
         address: (( .uaadb.first_ip ))
         port: 2544
@@ -1812,8 +1809,7 @@ job_types:
           identity: root
 
     manifest: |
-      db: consoledb
-      consoledb:
+      databases:
         address: (( first_ip ))
         port: 2544
         db_scheme: postgresql
