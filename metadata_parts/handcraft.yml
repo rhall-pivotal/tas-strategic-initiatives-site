@@ -1,7 +1,7 @@
 ---
 requires_product_versions:
   - name: microbosh
-    version: "~> 1.2"
+    version: "~> 1.3"
 label: Pivotal Elastic Runtime
 description:
   Gives developers the ability to push apps on a dynamically-configured software stack
@@ -474,7 +474,7 @@ job_types:
 
     manifest: |
       cc:
-        srv_api_uri: "<%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>"
+        srv_api_uri: (( $runtime.system_api_url ))
         bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
       networks:
@@ -558,7 +558,8 @@ job_types:
     manifest: |
       nfs_server:
         address: (( first_ip ))
-        network: "<%= Tempest::Network.from_installation(@installation).ip_range %>"
+        network: (( ..cf.cloud_controller.first_network_deprecated ))
+        allowed_ips: (( ..cf.cloud_controller.ips ))
 
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
@@ -768,17 +769,17 @@ job_types:
           max: 1000
 
     manifest: |
-      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
-      system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      domain: (( $runtime.system_domain ))
+      system_domain: (( $runtime.system_domain ))
       system_domain_organization: system
-      app_domains: ["<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"]
+      app_domains: ["(( $runtime.apps_domain ))"]
 
       cc:
         logging_level: debug
         staging_upload_user: (( staging_upload_credentials.identity ))
         staging_upload_password: (( staging_upload_credentials.password ))
         bulk_api_password: (( bulk_api_credentials.password ))
-        db_encryption_key: <%= (job.get_property("encrypt_key").typed_value.secret || job.get_property("db_encryption_credentials").typed_value.password) %>
+        db_encryption_key: (( encrypt_key.secret || db_encryption_credentials.password ))
         quota_definitions:
           default:
             memory_limit: (( default_quota_memory_limit_mb.value ))
@@ -827,14 +828,14 @@ job_types:
         address: (( .nfs_server.first_ip ))
 
       uaa:
-        url: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
+        url: (( $runtime.uaa_url ))
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
           cc_service_broker_client:
             secret: (( .uaa.cc_service_broker_client_secret.secret ))
       login:
-        url: "<%= Tempest::CfAddressProvider.from_config(@installation).login_url %>"
+        url: (( $runtime.login_url ))
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -913,17 +914,17 @@ job_types:
           identity: vcap
 
     manifest: |
-      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
-      system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      domain: (( $runtime.system_domain ))
+      system_domain: (( $runtime.system_domain ))
       system_domain_organization: system
-      app_domains: ["<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"]
+      app_domains: ["(( $runtime.apps_domain ))"]
 
       cc:
         logging_level: debug
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
-        db_encryption_key: <%= (@component.find_job_with_type('cloud_controller').get_property("encrypt_key").typed_value.secret || @component.find_job_with_type('cloud_controller').get_property("db_encryption_credentials").typed_value.password) %>
+        db_encryption_key: (( .cloud_controller.encrypt_key.secret || .cloud_controller.db_encryption_credentials.password ))
         quota_definitions:
           default:
             memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
@@ -956,14 +957,14 @@ job_types:
         address: (( .nfs_server.first_ip ))
 
       uaa:
-        url: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
+        url: (( $runtime.uaa_url ))
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
           cc_service_broker_client:
             secret: (( .uaa.cc_service_broker_client_secret.secret ))
       login:
-        url: "<%= Tempest::CfAddressProvider.from_config(@installation).login_url %>"
+        url: (( $runtime.login_url ))
 
       loggregator_endpoint:
         host: (( .loggregator_trafficcontroller.first_ip ))
@@ -1042,17 +1043,17 @@ job_types:
           identity: vcap
 
     manifest: |
-      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
-      system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      domain: (( $runtime.system_domain ))
+      system_domain: (( $runtime.system_domain ))
       system_domain_organization: system
-      app_domains: ["<%= Tempest::CfAddressProvider.from_config(@installation).apps %>"]
+      app_domains: ["(( $runtime.apps_domain ))"]
 
       cc:
         logging_level: debug
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
-        db_encryption_key: <%= (@component.find_job_with_type('cloud_controller').get_property("encrypt_key").typed_value.secret || @component.find_job_with_type('cloud_controller').get_property("db_encryption_credentials").typed_value.password) %>
+        db_encryption_key: (( .cloud_controller.encrypt_key.secret || .cloud_controller.db_encryption_credentials.password ))
         quota_definitions:
           default:
             memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
@@ -1085,14 +1086,14 @@ job_types:
         address: (( .nfs_server.first_ip ))
 
       uaa:
-        url: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
+        url: (( $runtime.uaa_url ))
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
           cc_service_broker_client:
             secret: (( .uaa.cc_service_broker_client_secret.secret ))
       login:
-        url: "<%= Tempest::CfAddressProvider.from_config(@installation).login_url %>"
+        url: (( $runtime.login_url ))
 
       loggregator_endpoint:
         host: (( .loggregator_trafficcontroller.first_ip ))
@@ -1500,7 +1501,7 @@ job_types:
         login:
           addnew: false
         catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
-        url: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
+        url: (( $runtime.uaa_url ))
         jwt:
           signing_key: (( jwt_signing_key_credentials.private_key_pem ))
           verification_key: (( jwt_signing_key_credentials.public_key_pem ))
@@ -1560,11 +1561,11 @@ job_types:
           user:
             override: false
           users:
-          - "<%= job.get_property("admin_credentials").typed_value.identity %>|<%= job.get_property("admin_credentials").typed_value.password %>|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support"
-          - "<%= job.get_property("push_console_credentials").typed_value.identity %>|<%= job.get_property("push_console_credentials").typed_value.password %>|cloud_controller.admin"
-          - "<%= job.get_property("run_smoke_tests_credentials").typed_value.identity %>|<%= job.get_property("run_smoke_tests_credentials").typed_value.password %>|cloud_controller.admin"
-          - "<%= job.get_property("system_services_credentials").typed_value.identity %>|<%= job.get_property("system_services_credentials").typed_value.password %>|cloud_controller.admin"
-          - "<%= job.get_property("system_verification_credentials").typed_value.identity %>|<%= job.get_property("system_verification_credentials").typed_value.password %>|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support"
+          - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support
+          - (( push_console_credentials.identity ))|(( push_console_credentials.password ))|cloud_controller.admin
+          - (( run_smoke_tests_credentials.identity ))|(( run_smoke_tests_credentials.password ))|cloud_controller.admin
+          - (( system_services_credentials.identity ))|(( system_services_credentials.password ))|cloud_controller.admin
+          - (( system_verification_credentials.identity ))|(( system_verification_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support
 
       ccdb:
         address: (( .ccdb.first_ip ))
@@ -1579,7 +1580,7 @@ job_types:
           name: ccdb
           citext: true
 
-      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      domain: (( $runtime.system_domain ))
 
       uaadb:
         address: (( .uaadb.first_ip ))
@@ -1700,10 +1701,10 @@ job_types:
 
 
     manifest: |
-      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      domain: (( $runtime.system_domain ))
 
       login:
-        spring_profiles: <%= job.get_property("ldap_url").typed_value.value_present? ? 'saml,ldap' : 'saml'%>
+        spring_profiles: (( ldap_url.value_present? ? 'saml,ldap' : 'saml'))
         ldap:
           profile_type: search-and-bind
           url: (( ldap_url.value ))
@@ -1715,15 +1716,15 @@ job_types:
           sslCertificateAlias: (( ldap_server_ssl_cert_alias.value ))
         brand: pivotal
         links:
-          home: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
-          passwd: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).system %>/password_resets/new"
-          signup: "https://console.<%= Tempest::CfAddressProvider.from_config(@installation).system %>/register"
-        uaa_base: "<%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>"
+          home: "https://console.(( $runtime.system_domain ))"
+          passwd: "https://console.(( $runtime.system_domain ))/password_resets/new"
+          signup: "https://console.(( $runtime.system_domain ))/register"
+        uaa_base: (( $runtime.uaa_url ))
         uaa_certificate: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
         serviceProviderKey: (( service_provider_key_credentials.private_key_pem ))
         serviceProviderCertificate: (( service_provider_key_credentials.cert_pem ))
         idp_entity_alias: sso-sp
-        idp_metadata_url: "<%= job.get_property("sso_url").typed_value.value || "''" %>"
+        idp_metadata_url: (( sso_url.value ))
 
       uaa:
         clients:
@@ -1895,7 +1896,7 @@ job_types:
     manifest: |
       networks:
         apps: default
-      domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      domain: (( $runtime.system_domain ))
 
       dea_next:
         directory_server_protocol: https
@@ -2090,9 +2091,9 @@ job_types:
           z1: (( .loggregator.ips ))
 
       cc:
-        srv_api_uri: "<%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>"
+        srv_api_uri: (( $runtime.system_api_url ))
 
-      system_domain: "<%= Tempest::CfAddressProvider.from_config(@installation).system %>"
+      system_domain: (( $runtime.system_domain ))
 
       loggregator_endpoint:
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
@@ -2217,8 +2218,8 @@ job_types:
 
     manifest: |
       cf:
-        api_url: <%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>
         console_subdomain: console
+        api_url: (( $runtime.system_api_url ))
         admin_username: (( .uaa.push_console_credentials.identity ))
         admin_password: (( .uaa.push_console_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
@@ -2226,8 +2227,8 @@ job_types:
         authentication:
           CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
           CF_CLIENT_SECRET: (( .uaa.console_client_credentials.password ))
-          CF_LOGIN_SERVER_URL: <%= Tempest::CfAddressProvider.from_config(@installation).login_url %>
-          CF_UAA_SERVER_URL: <%= Tempest::CfAddressProvider.from_config(@installation).uaa_url %>
+          CF_LOGIN_SERVER_URL: (( $runtime.login_url ))
+          CF_UAA_SERVER_URL: (( $runtime.uaa_url ))
         smtp:
           address: (( smtp_address.value ))
           port: (( smtp_port.value ))
@@ -2238,8 +2239,8 @@ job_types:
           enable_starttls_auto: (( smtp_enable_starttls_auto.value ))
       env:
         secret_token: (( secret_token.secret ))
-        cf_cc_api_url: <%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>
-        cf_console_url: <%= Tempest::CfAddressProvider.from_config(@installation).console_url %>
+        cf_cc_api_url: (( $runtime.system_api_url ))
+        cf_console_url: (( $runtime.console_url ))
         default_reply_to: (( reply_to.value ))
         default_from: (( from.value ))
       console:
@@ -2314,7 +2315,7 @@ job_types:
 
     manifest: |
       cf_smoke_tests:
-        api: <%= Tempest::CfAddressProvider.from_config(@installation).system_api_url %>
+        api: (( $runtime.system_api_url ))
         apps_domain: (( .cloud_controller.apps_domain.value ))
         user: (( .uaa.run_smoke_tests_credentials.identity ))
         password: (( .uaa.run_smoke_tests_credentials.password ))
