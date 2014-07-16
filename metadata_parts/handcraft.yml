@@ -1704,7 +1704,7 @@ job_types:
       domain: (( $runtime.system_domain ))
 
       login:
-        spring_profiles: (( ldap_url.value_present? ? 'saml,ldap' : 'saml'))
+        spring_profiles: "(( ldap_url.value_present? ? 'saml,ldap' : 'saml'))"
         ldap:
           profile_type: search-and-bind
           url: (( ldap_url.value ))
