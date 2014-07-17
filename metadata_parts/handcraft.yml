@@ -559,7 +559,7 @@ job_types:
       nfs_server:
         address: (( first_ip ))
         network: (( ..cf.cloud_controller.first_network_deprecated ))
-        allowed_ips: (( ..cf.cloud_controller.ips ))
+        allowed_ips: (( ..cf.cloud_controller.first_network_deprecated ))
 
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
