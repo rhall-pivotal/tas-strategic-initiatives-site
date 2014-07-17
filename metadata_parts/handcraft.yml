@@ -809,6 +809,16 @@ job_types:
           - name: go_buildpack
             package: buildpack_go
 
+        security_group_definitions:
+          - name: all_open
+            rules:
+              - protocol: all
+                destination: 0.0.0.0-255.255.255.255
+        default_running_security_groups:
+          - all_open
+        default_staging_security_groups:
+          - all_open
+
       ccdb:
         address: (( .ccdb.first_ip ))
         port: 2544
@@ -938,6 +948,16 @@ job_types:
             total_routes: 1000
             non_basic_services_allowed: true
 
+        security_group_definitions:
+          - name: all_open
+            rules:
+              - protocol: all
+                destination: 0.0.0.0-255.255.255.255
+        default_running_security_groups:
+          - all_open
+        default_staging_security_groups:
+          - all_open
+
       ccdb:
         address: (( .ccdb.first_ip ))
         port: 2544
@@ -1066,6 +1086,16 @@ job_types:
             total_services: -1
             total_routes: 1000
             non_basic_services_allowed: true
+
+        security_group_definitions:
+          - name: all_open
+            rules:
+              - protocol: all
+                destination: 0.0.0.0-255.255.255.255
+        default_running_security_groups:
+          - all_open
+        default_staging_security_groups:
+          - all_open
 
       ccdb:
         address: (( .ccdb.first_ip ))
