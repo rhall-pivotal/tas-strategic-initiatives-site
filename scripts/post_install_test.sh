@@ -3,7 +3,7 @@
 
 set -x
 
-export CATS_SHA=9fc2aa8
+export CATS_SHA=beb3d3b
 export SKIP_SSL_VALIDATION=true
 
 cd $GOPATH
@@ -31,4 +31,4 @@ EOF
 
 export CONFIG=$PWD/integration_config.json
 
-./bin/test -nodes=3
+./bin/test -nodes=3 --noColor
