@@ -3,8 +3,28 @@
 
 set -x
 
-export CATS_SHA=beb3d3b
+export SCRIPT_DIR=$(dirname $0)
 export SKIP_SSL_VALIDATION=true
+
+function set_cats_sha() {
+  export CF_RELEASE_TAG=$(ruby -r 'yaml' -e 'puts "v" + YAML.load_file(ENV["SCRIPT_DIR"] + "/../metadata_parts/binaries.yml").fetch("releases").find{ |release| release["name"] == "cf"}.fetch("version")')
+  export CATS_DIR='src/acceptance-tests'
+
+  cd ${GOPATH}
+  mkdir -p src/github.com/cloudfoundry/
+  cd src/github.com/cloudfoundry/
+  if [ -d cf-release ]; then
+    cd cf-release
+    git fetch origin master
+  else
+    git clone git@github.com:cloudfoundry/cf-release.git
+    cd cf-release
+  fi
+
+  export CATS_SHA=$(git ls-tree ${CF_RELEASE_TAG} ${CATS_DIR} | awk '{print $3}')
+}
+
+set_cats_sha
 
 cd $GOPATH
 mkdir -p src/github.com/cloudfoundry/
