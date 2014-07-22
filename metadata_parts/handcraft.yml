@@ -794,7 +794,7 @@ job_types:
             non_basic_services_allowed: true
 
         external_host: api
-        uaa_resource_id: cloud_controller
+        uaa_resource_id: cloud_controller,cloud_controller_service_permissions
         client_max_body_size: (( max_file_size.value ))M
         bootstrap_admin_email: admin
         tasks_disabled: true
@@ -1525,6 +1525,8 @@ job_types:
       - name: admin_client_credentials
         type: simple_credentials
         label: Administrator client secret
+        default:
+          identity: admin
 
       - name: jwt_signing_key_credentials
         type: rsa_pkey_credentials
