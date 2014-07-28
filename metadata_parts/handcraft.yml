@@ -848,7 +848,7 @@ job_types:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
           cc_service_broker_client:
-            secret: (( .uaa.cc_service_broker_client_secret.secret ))
+            secret: (( .uaa.cc_service_broker_client_credentials.password ))
       login:
         url: (( $runtime.login_url ))
 
@@ -987,7 +987,7 @@ job_types:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
           cc_service_broker_client:
-            secret: (( .uaa.cc_service_broker_client_secret.secret ))
+            secret: (( .uaa.cc_service_broker_client_credentials.password ))
       login:
         url: (( $runtime.login_url ))
 
@@ -1126,7 +1126,7 @@ job_types:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
           cc_service_broker_client:
-            secret: (( .uaa.cc_service_broker_client_secret.secret ))
+            secret: (( .uaa.cc_service_broker_client_credentials.password ))
       login:
         url: (( $runtime.login_url ))
 
@@ -1493,7 +1493,7 @@ job_types:
 
       - name: system_passwords_client_credentials
         type: simple_credentials
-        label: System passwords client secret
+        label: System passwords client credentials
         default:
           identity: system_passwords
 
@@ -1515,17 +1515,21 @@ job_types:
         default:
           identity: autoscaling_service
 
-      - name: cc_service_broker_client_secret
-        type: secret
+      - name: cc_service_broker_client_credentials
+        type: simple_credentials
         label: Autoscaling Service client credentials
+        default:
+          identity: cc_service_broker_client
 
       - name: cc_client_credentials
         type: simple_credentials
-        label: Cloud Controller client secret
+        label: Cloud Controller client credentials
+        default:
+          identity: cloud_controller
 
       - name: admin_client_credentials
         type: simple_credentials
-        label: Administrator client secret
+        label: Administrator client credentials
         default:
           identity: admin
 
@@ -1589,7 +1593,7 @@ job_types:
             authorized-grant-types: "client_credentials"
           cc_service_broker_client:
             id: cc_service_broker_client
-            secret: (( cc_service_broker_client_secret.secret ))
+            secret: (( cc_service_broker_client_credentials.password ))
             override: true
             authorities: clients.read,clients.write,clients.admin
             authorized-grant-types: client_credentials
