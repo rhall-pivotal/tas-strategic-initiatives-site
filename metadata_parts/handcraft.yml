@@ -855,7 +855,7 @@ job_types:
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
-      loggregator_endpoint:
+      metron_endpoint:
         host: (( .loggregator_trafficcontroller.first_ip ))
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
@@ -991,7 +991,7 @@ job_types:
       login:
         url: (( $runtime.login_url ))
 
-      loggregator_endpoint:
+      metron_endpoint:
         host: (( .loggregator_trafficcontroller.first_ip ))
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
@@ -1130,7 +1130,7 @@ job_types:
       login:
         url: (( $runtime.login_url ))
 
-      loggregator_endpoint:
+      metron_endpoint:
         host: (( .loggregator_trafficcontroller.first_ip ))
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
@@ -1226,7 +1226,7 @@ job_types:
           user: router_status
           password: (( status_credentials.password ))
 
-      loggregator_endpoint:
+      metron_endpoint:
         host: (( .loggregator_trafficcontroller.first_ip ))
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
@@ -1949,7 +1949,7 @@ job_types:
         stacks: ["lucid64"]
         evacuation_bail_out_time_in_seconds: 600
 
-      loggregator_endpoint:
+      metron_endpoint:
         host: (( .loggregator_trafficcontroller.first_ip ))
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
