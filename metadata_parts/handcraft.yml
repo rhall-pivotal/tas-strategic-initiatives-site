@@ -1952,6 +1952,9 @@ job_types:
       metron_endpoint:
         host: (( .loggregator_trafficcontroller.first_ip ))
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+      loggregator_endpoint:
+        host: (( .loggregator_trafficcontroller.first_ip ))
+        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
       nats:
         user: (( .nats.credentials.identity ))
