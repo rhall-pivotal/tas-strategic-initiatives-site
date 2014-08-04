@@ -2287,6 +2287,13 @@ job_types:
         cf_console_url: (( $runtime.console_url ))
         default_reply_to: (( reply_to.value ))
         default_from: (( from.value ))
+        usage_service_host: ''
+        bundle_without: test development hosted_only
+        rack_env: production
+        rails_env: production
+        show_app_events: true
+        on_premise: true
+        include_app_statuses_on_org_dashboard: true
       console:
         web_instances: 1
         web_memory: 2G
