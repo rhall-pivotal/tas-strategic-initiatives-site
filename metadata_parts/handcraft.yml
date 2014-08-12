@@ -2300,10 +2300,11 @@ job_types:
         web_memory: 2G
         workers_memory: 1536MB
         scheduler_memory: 1536MB
-      database:
-        ip: (( .consoledb.first_ip ))
-        username: (( .consoledb.credentials.identity ))
-        password: (( .consoledb.credentials.password ))
+      databases:
+        console:
+          ip: (( .consoledb.first_ip ))
+          username: (( .consoledb.credentials.identity ))
+          password: (( .consoledb.credentials.password ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
