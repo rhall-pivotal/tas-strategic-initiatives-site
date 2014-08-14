@@ -559,9 +559,8 @@ job_types:
 
     manifest: |
       nfs_server:
-        address: (( first_ip ))
-        network: (( ..cf.cloud_controller.first_network_deprecated ))
-        allowed_ips: (( ..cf.cloud_controller.first_network_deprecated ))
+        allow_from_entries:
+        - (( ..cf.cloud_controller.first_network_deprecated ))
 
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
@@ -2027,6 +2026,9 @@ job_types:
         stacks: ["lucid64"]
         evacuation_bail_out_time_in_seconds: 600
 
+      etcd:
+        machines: (( .etcd_server.ips ))
+
       metron_endpoint:
         host: (( .loggregator_trafficcontroller.first_ip ))
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
@@ -2115,6 +2117,7 @@ job_types:
         incoming_port: 3456
         outgoing_port: 8080
         maxRetainedLogMessages: 100
+        zone: z1
         status:
           user: (( status_credentials.identity ))
           password: (( status_credentials.password ))
@@ -2132,6 +2135,9 @@ job_types:
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+
+      etcd:
+        machines: (( .etcd_server.ips ))
 
       nats:
         user: (( .nats.credentials.identity ))
