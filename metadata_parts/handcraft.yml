@@ -1869,6 +1869,79 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
 
+  - name: mysql
+    label: MySQL Server
+    resource_label: MySQL Server
+    description: Multi-tenant MySQL server.
+    template: mysql
+    release: cf-mysql
+    max_in_flight: 1
+    resource_definitions:
+    - name: ram
+      type: integer
+      label: RAM
+      configurable: true
+      default: 8192
+      constraints:
+        min: 4096
+    - name: ephemeral_disk
+      type: integer
+      label: Ephemeral Disk
+      configurable: true
+      default: 30000
+      constraints:
+        min: 10000
+    - name: persistent_disk
+      type: integer
+      label: Persistent Disk
+      configurable: true
+      default: 100000
+      constraints:
+        min: 10000
+    - name: cpu
+      type: integer
+      label: CPU
+      configurable: true
+      default: 2
+      constraints:
+        min: 1
+        power_of_two: true
+    static_ip: 1
+    dynamic_ip: 0
+    instance_definitions:
+    - name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
+    property_blueprints:
+    - name: vm_credentials
+      type: salted_credentials
+      label: VM credentials
+      default:
+        identity: vcap
+    - name: mysql_admin_password
+      type: simple_credentials
+      label: MySQL root password
+      default:
+        identity: root
+    - name: max_user_connections
+      type: integer
+      default: 40
+      configurable: true
+    manifest: |
+        admin_password: (( mysql_admin_password.password ))
+        max_connections: 1500
+        max_user_connections: (( max_user_connections.value ))
+        innodb_buffer_pool_size: 2147483648
+        cluster_ips: (( .mysql.ips ))
+        haproxy_ips: []
+        network_name: default
+        persistent_disk: (( .mysql.persistent_disk ))
+        syslog_aggregator:
+           address: (( ..cf.properties.syslog_host.value ))
+           port: (( ..cf.properties.syslog_port.value ))
+
   - name: dea
     label: DEA
     resource_label: DEA
@@ -2305,6 +2378,154 @@ job_types:
           ip: (( .consoledb.first_ip ))
           username: (( .consoledb.credentials.identity ))
           password: (( .consoledb.credentials.password ))
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  - name: push-app-usage-service
+    label: Push App Usage Service
+    resource_label: Push App Usage Service
+    description: Monitors usage of an application pushed to your Elastic Runtime installation
+    template: push-app-usage-service
+    release: push-console-release
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: secret_token
+        type: secret
+        label: Secret Token
+        configurable: false
+
+      - name: reply_to
+        type: email
+        configurable: true
+        optional: true
+
+      - name: from
+        type: email
+        configurable: true
+        optional: true
+
+      - name: smtp_address
+        type: network_address
+        configurable: true
+        optional: true
+
+      - name: smtp_port
+        type: port
+        configurable: true
+        optional: true
+
+      - name: smtp_helo_domain
+        type: domain
+        configurable: true
+        optional: true
+
+      - name: smtp_credentials
+        type: simple_credentials
+        configurable: true
+        optional: true
+
+      - name: smtp_authentication
+        type: smtp_authentication
+        configurable: true
+        optional: true
+
+      - name: smtp_enable_starttls_auto
+        type: boolean
+        configurable: true
+        default: false
+
+    manifest: |
+      cf:
+        console_subdomain: console
+        api_url: (( $runtime.system_api_url ))
+        admin_username: (( .uaa.push_console_credentials.identity ))
+        admin_password: (( .uaa.push_console_credentials.password ))
+        system_domain: (( .cloud_controller.system_domain.value ))
+      services:
+        authentication:
+          CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
+          CF_CLIENT_SECRET: (( .uaa.console_client_credentials.password ))
+          CF_LOGIN_SERVER_URL: (( $runtime.login_url ))
+          CF_UAA_SERVER_URL: (( $runtime.uaa_url ))
+        smtp:
+          address: (( smtp_address.value ))
+          port: (( smtp_port.value ))
+          domain: (( smtp_helo_domain.value ))
+          user_name: (( smtp_credentials.identity ))
+          password: (( smtp_credentials.password ))
+          authentication: (( smtp_authentication.value ))
+          enable_starttls_auto: (( smtp_enable_starttls_auto.value ))
+      env:
+        secret_token: (( secret_token.secret ))
+        cf_cc_api_url: (( $runtime.system_api_url ))
+        cf_loggregator_http_url: (( .loggregator_trafficcontroller.first_ip )) # this property is not yet used, so this value may be wrong when the time comes
+        cf_console_url: (( $runtime.console_url ))
+        default_reply_to: (( reply_to.value ))
+        default_from: (( from.value ))
+        usage_service_host: app-usage.(( $runtime.system_domain ))
+        bundle_without: test development hosted_only
+        rack_env: production
+        rails_env: production
+        show_app_events: true
+        on_premise: true
+        include_app_statuses_on_org_dashboard: true
+      app_usage_service:
+        event_fetching_offset: 60
+        allow_test_data_creation: false
+        allow_viewing_logs: false
+      database:
+        ip: (( .mysql.first_ip ))
+        username: (( .mysql.mysql_admin_password.identity ))
+        password: (( .mysql.mysql_admin_password.password ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
