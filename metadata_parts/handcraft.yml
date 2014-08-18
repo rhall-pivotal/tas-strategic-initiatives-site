@@ -30,6 +30,7 @@ install_time_verifiers:
 post_deploy_errands:
   - name: push-console
   - name: smoke-tests
+  - name: push-app-usage-service
 
 form_types:
   - name: ha_proxy
@@ -2378,6 +2379,7 @@ job_types:
           ip: (( .consoledb.first_ip ))
           username: (( .consoledb.credentials.identity ))
           password: (( .consoledb.credentials.password ))
+
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
   - name: push-app-usage-service
@@ -2522,10 +2524,13 @@ job_types:
         event_fetching_offset: 60
         allow_test_data_creation: false
         allow_viewing_logs: false
-      database:
-        ip: (( .mysql.first_ip ))
-        username: (( .mysql.mysql_admin_password.identity ))
-        password: (( .mysql.mysql_admin_password.password ))
+      databases:
+        app_usage_service:
+          name: app_usage
+          port: 3306
+          ip: (( .mysql.first_ip ))
+          username: (( .mysql.mysql_admin_password.identity ))
+          password: (( .mysql.mysql_admin_password.password ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
