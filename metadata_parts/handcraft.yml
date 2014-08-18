@@ -2228,6 +2228,9 @@ job_types:
       traffic_controller:
         zone: z1
 
+      etcd:
+        machines: (( .etcd_server.ips ))
+
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
