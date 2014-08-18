@@ -1777,6 +1777,13 @@ job_types:
       domain: (( $runtime.system_domain ))
 
       login:
+        asset_base_url: '/resources/pivotal'
+        tiles:
+          - name: Pivotal Dev Console
+            login-link:  (( $runtime.console_url ))
+            image: "/resources/pivotal/images/dev-console-logo-gray.png"
+            image-hover: "/resources/pivotal/images/dev-console-logo-teal.png"
+
         spring_profiles: "(( ldap_url.value_present? ? 'saml,ldap' : 'saml'))"
         ldap:
           profile_type: search-and-bind
