@@ -829,6 +829,10 @@ job_types:
         default_staging_security_groups:
           - all_open
 
+        stacks:
+          - name: windows2012
+            description: "Microsoft Windows / .Net 64 bit"
+
       ccdb:
         address: (( .ccdb.first_ip ))
         port: 2544
