@@ -112,24 +112,27 @@ form_types:
         - ldap_url
         - credentials
     property_inputs:
-      - reference: login.ldap_url
+      - reference: uaa.ldap_url
         label: LDAP server URL
         description: 'Required for LDAP. The LDAP server url.  Must start with ldap:// or ldaps://'
-      - reference: login.credentials
+      - reference: uaa.credentials
         label: LDAP Credentials
         description: 'Required for LDAP. This is the distinguished name and password for binding to the LDAP Server'
-      - reference: login.ldap_search_base
+      - reference: uaa.ldap_search_base
         label: LDAP Search Base
         description: 'Required for LDAP. Example: ou=cloud,dc=example,dc=com'
-      - reference: login.ldap_search_filter
+      - reference: uaa.ldap_search_filter
         label: LDAP Search Filter
         description: 'Required for LDAP. Use {0} where the username should be inserted. If unsure, use cn={0}'
-      - reference: login.ldap_server_ssl_cert
+      - reference: uaa.ldap_server_ssl_cert
         label: LDAP Server SSL Cert
         description: 'Required only for ldaps://. This is the server certificate to trust for self-signed certificates'
-      - reference: login.ldap_server_ssl_cert_alias
+      - reference: uaa.ldap_server_ssl_cert_alias
         label: LDAP Server SSL Cert AltName
         description: 'Required only for ldaps:// + self-signed Cert. The SSL certifcates AltNames'
+      - reference: uaa.ldap_mail_attribute_name
+        label: Email Attribute
+        description: "The name of the attribute that contains the user's email address, default value is mail."
 
   - name: push-console
     label: Web Console
@@ -1569,8 +1572,53 @@ job_types:
         type: rsa_pkey_credentials
         label: Access token signing RSA key
 
+      - name: ldap_url
+        type: ldap_url
+        configurable: true
+        optional: true
+
+      - name: credentials
+        type: simple_credentials
+        configurable: true
+        optional: true
+
+      - name: ldap_search_base
+        type: string
+        configurable: true
+        optional: true
+
+      - name: ldap_search_filter
+        type: string
+        configurable: true
+        optional: true
+
+      - name: ldap_server_ssl_cert
+        type: text
+        configurable: true
+        optional: true
+
+      - name: ldap_server_ssl_cert_alias
+        type: string
+        configurable: true
+        optional: true
+
+      - name: ldap_mail_attribute_name
+        type: string
+        configurable: true
+        default: 'mail'
+
     manifest: |
       uaa:
+        ldap:
+          profile_type: search-and-bind
+          url: (( ldap_url.value ))
+          userDN: (( credentials.identity ))
+          userPassword: (( credentials.password ))
+          searchBase: (( ldap_search_base.value ))
+          searchFilter: (( ldap_search_filter.value ))
+          sslCertificate: (( ldap_server_ssl_cert.value ))
+          sslCertificateAlias: (( ldap_server_ssl_cert_alias.value ))
+          mailAttributeName: (( ldap_mail_attribute_name.value ))
         login:
           addnew: false
         catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
@@ -1747,32 +1795,6 @@ job_types:
         configurable: true
         optional: true
 
-      - name: ldap_url
-        type: ldap_url
-        configurable: true
-        optional: true
-      - name: credentials
-        type: simple_credentials
-        configurable: true
-        optional: true
-      - name: ldap_search_base
-        type: string
-        configurable: true
-        optional: true
-      - name: ldap_search_filter
-        type: string
-        configurable: true
-        optional: true
-      - name: ldap_server_ssl_cert
-        type: text
-        configurable: true
-        optional: true
-      - name: ldap_server_ssl_cert_alias
-        type: string
-        configurable: true
-        optional: true
-
-
     manifest: |
       domain: (( $runtime.system_domain ))
 
@@ -1785,15 +1807,6 @@ job_types:
             image-hover: "/resources/pivotal/images/dev-console-logo-teal.png"
 
         spring_profiles: "(( ldap_url.value_present? ? 'saml,ldap' : 'saml'))"
-        ldap:
-          profile_type: search-and-bind
-          url: (( ldap_url.value ))
-          userDN: (( credentials.identity ))
-          userPassword: (( credentials.password ))
-          searchBase: (( ldap_search_base.value ))
-          searchFilter: (( ldap_search_filter.value ))
-          sslCertificate: (( ldap_server_ssl_cert.value ))
-          sslCertificateAlias: (( ldap_server_ssl_cert_alias.value ))
         brand: pivotal
         links:
           home: "https://console.(( $runtime.system_domain ))"
