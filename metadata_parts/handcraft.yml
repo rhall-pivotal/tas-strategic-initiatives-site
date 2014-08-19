@@ -1619,6 +1619,7 @@ job_types:
           sslCertificate: (( ldap_server_ssl_cert.value ))
           sslCertificateAlias: (( ldap_server_ssl_cert_alias.value ))
           mailAttributeName: (( ldap_mail_attribute_name.value ))
+          enabled: (( ldap_url.value_present? ))
         login:
           addnew: false
         catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
@@ -1806,7 +1807,6 @@ job_types:
             image: "/resources/pivotal/images/dev-console-logo-gray.png"
             image-hover: "/resources/pivotal/images/dev-console-logo-teal.png"
 
-        spring_profiles: "(( ldap_url.value_present? ? 'saml,ldap' : 'saml'))"
         brand: pivotal
         links:
           home: "https://console.(( $runtime.system_domain ))"
