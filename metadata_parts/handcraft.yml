@@ -653,7 +653,9 @@ job_types:
     label: Cloud Controller
     resource_label: Cloud Controller
     description: Coordinates Cloud Foundry application lifecycles
-    template: cloud_controller_ng
+    template:
+      - cloud_controller_ng
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -855,14 +857,18 @@ job_types:
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
+      etcd:
+        machines: (( .etcd_server.ips ))
+
       metron_endpoint:
-        host: (( .loggregator_trafficcontroller.first_ip ))
+        zone: z1
+        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+      loggregator_endpoint:
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
       syslog_aggregator:
@@ -873,7 +879,9 @@ job_types:
     label: Clock Global
     resource_label: Clock Global
     description: Schedules asynchronous tasks for cloud controller
-    template: cloud_controller_clock
+    template:
+      - cloud_controller_clock
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -991,8 +999,13 @@ job_types:
       login:
         url: (( $runtime.login_url ))
 
+      etcd:
+        machines: (( .etcd_server.ips ))
+
       metron_endpoint:
-        host: (( .loggregator_trafficcontroller.first_ip ))
+        zone: z1
+        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+      loggregator_endpoint:
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
       ssl:
@@ -1001,7 +1014,6 @@ job_types:
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
       syslog_aggregator:
@@ -1012,7 +1024,9 @@ job_types:
     label: Cloud Controller Worker
     resource_label: Cloud Controller Worker
     description: Worker for cloud controller asynchronous tasks
-    template: cloud_controller_worker
+    template:
+      - cloud_controller_worker
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -1130,8 +1144,13 @@ job_types:
       login:
         url: (( $runtime.login_url ))
 
+      etcd:
+        machines: (( .etcd_server.ips ))
+
       metron_endpoint:
-        host: (( .loggregator_trafficcontroller.first_ip ))
+        zone: z1
+        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+      loggregator_endpoint:
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
       ssl:
@@ -1140,7 +1159,6 @@ job_types:
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
       syslog_aggregator:
@@ -1151,7 +1169,9 @@ job_types:
     label: Router
     resource_label: Router
     description: Routers route Internet traffic to applications and between Cloud Foundry components.
-    template: gorouter
+    template:
+      - gorouter
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -1226,14 +1246,18 @@ job_types:
           user: router_status
           password: (( status_credentials.password ))
 
+      etcd:
+        machines: (( .etcd_server.ips ))
+
       metron_endpoint:
-        host: (( .loggregator_trafficcontroller.first_ip ))
+        zone: z1
+        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+      loggregator_endpoint:
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
       syslog_aggregator:
@@ -1953,6 +1977,7 @@ job_types:
     template:
       - dea_next
       - dea_logging_agent
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -2030,16 +2055,14 @@ job_types:
         machines: (( .etcd_server.ips ))
 
       metron_endpoint:
-        host: (( .loggregator_trafficcontroller.first_ip ))
+        zone: z1
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
       loggregator_endpoint:
-        host: (( .loggregator_trafficcontroller.first_ip ))
         shared_secret:  (( .loggregator.shared_secret_credentials.password ))
 
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
       syslog_aggregator:
