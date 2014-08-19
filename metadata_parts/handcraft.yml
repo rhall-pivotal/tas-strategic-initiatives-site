@@ -29,8 +29,8 @@ install_time_verifiers:
 
 post_deploy_errands:
   - name: push-console
-  - name: smoke-tests
   - name: push-app-usage-service
+  - name: smoke-tests
 
 form_types:
   - name: ha_proxy
@@ -1932,13 +1932,17 @@ job_types:
       configurable: true
     manifest: |
         admin_password: (( mysql_admin_password.password ))
-        max_connections: 1500
-        max_user_connections: (( max_user_connections.value ))
-        innodb_buffer_pool_size: 2147483648
         cluster_ips: (( .mysql.ips ))
         haproxy_ips: []
+        innodb_buffer_pool_size: 2147483648
+        max_connections: 1500
+        max_user_connections: (( max_user_connections.value ))
         network_name: default
         persistent_disk: (( .mysql.persistent_disk ))
+        seeded_databases:
+          - name: app_usage_service
+            username: (( mysql_admin_password.identity ))
+            password: (( mysql_admin_password.password ))
         syslog_aggregator:
            address: (( ..cf.properties.syslog_host.value ))
            port: (( ..cf.properties.syslog_port.value ))
@@ -2526,7 +2530,7 @@ job_types:
         allow_viewing_logs: false
       databases:
         app_usage_service:
-          name: app_usage
+          name: app_usage_service
           port: 3306
           ip: (( .mysql.first_ip ))
           username: (( .mysql.mysql_admin_password.identity ))
