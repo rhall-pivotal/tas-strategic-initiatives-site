@@ -1816,6 +1816,7 @@ job_types:
         uaa_certificate: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
         serviceProviderKey: (( service_provider_key_credentials.private_key_pem ))
         serviceProviderCertificate: (( service_provider_key_credentials.cert_pem ))
+        spring_profiles: saml
         idp_entity_alias: sso-sp
         idp_metadata_url: (( sso_url.value ))
 
