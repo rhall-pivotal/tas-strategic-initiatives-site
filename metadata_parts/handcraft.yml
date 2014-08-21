@@ -1307,9 +1307,9 @@ job_types:
         apps: default
       collector:
         use_tsdb: true
-      opentsdb:
-        address: (( ..p-metrics.maximus.first_ip ))
-        port: 13321
+        opentsdb:
+          address: (( ..p-metrics.maximus.first_ip ))
+          port: 13321
 
       nats:
         user: (( .nats.credentials.identity ))
