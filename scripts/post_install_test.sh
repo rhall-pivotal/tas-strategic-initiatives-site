@@ -51,5 +51,5 @@ EOF
 
 export CONFIG=$PWD/integration_config.json
 
-echo "WARNING: skipping Security Groups CATs" >&2
-./bin/test -nodes=3 --noColor -skipPackage=security_groups
+echo "WARNING: only running applications and services CATs; other suites skipped" >&2
+./bin/test -nodes=3 --noColor apps services
