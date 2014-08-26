@@ -781,30 +781,16 @@ job_types:
       app_domains: ["(( $runtime.apps_domain ))"]
 
       cc:
-        logging_level: debug
-        staging_upload_user: (( staging_upload_credentials.identity ))
-        staging_upload_password: (( staging_upload_credentials.password ))
-        bulk_api_password: (( bulk_api_credentials.password ))
-        db_encryption_key: (( encrypt_key.secret || db_encryption_credentials.password ))
-        quota_definitions:
-          default:
-            memory_limit: (( default_quota_memory_limit_mb.value ))
-            total_services: (( default_quota_max_number_services.value ))
-            non_basic_services_allowed: true
-            total_routes: 1000
-            trial_db_allowed: true
-          runaway:
-            memory_limit: 102400
-            total_services: -1
-            total_routes: 1000
-            non_basic_services_allowed: true
-
-        external_host: api
-        uaa_resource_id: cloud_controller,cloud_controller_service_permissions
-        client_max_body_size: (( max_file_size.value ))M
         bootstrap_admin_email: admin
-        tasks_disabled: true
+        bulk_api_password: (( bulk_api_credentials.password ))
+        client_max_body_size: (( max_file_size.value ))M
+        db_encryption_key: (( encrypt_key.secret || db_encryption_credentials.password ))
+        default_running_security_groups:
+          - all_open
+        default_staging_security_groups:
+          - all_open
         disable_custom_buildpacks: (( disable_custom_buildpacks.value ))
+        external_host: api
         install_buildpacks:
           - name: java_buildpack_offline
             package: buildpack_java_offline
@@ -818,16 +804,31 @@ job_types:
             package: buildpack_python
           - name: php_buildpack
             package: buildpack_php
-
+        logging_level: debug
+        quota_definitions:
+          default:
+            memory_limit: (( default_quota_memory_limit_mb.value ))
+            total_services: (( default_quota_max_number_services.value ))
+            non_basic_services_allowed: true
+            total_routes: 1000
+            trial_db_allowed: true
+          runaway:
+            memory_limit: 102400
+            total_services: -1
+            total_routes: 1000
+            non_basic_services_allowed: true
         security_group_definitions:
           - name: all_open
             rules:
               - protocol: all
                 destination: 0.0.0.0-255.255.255.255
-        default_running_security_groups:
-          - all_open
-        default_staging_security_groups:
-          - all_open
+        stacks:
+          - name: windows2012
+            description: "Microsoft Windows / .Net 64 bit"
+        staging_upload_user: (( staging_upload_credentials.identity ))
+        staging_upload_password: (( staging_upload_credentials.password ))
+        tasks_disabled: true
+        uaa_resource_id: cloud_controller,cloud_controller_service_permissions
 
       ccdb:
         address: (( .ccdb.first_ip ))
