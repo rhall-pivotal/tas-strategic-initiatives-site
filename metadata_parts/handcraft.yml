@@ -33,9 +33,13 @@ post_deploy_errands:
   - name: smoke-tests
 
 form_types:
-  - name: ha_proxy
-    label: HAProxy
-    description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Cloud Foundry router IP. Self signed certificates will function properly.
+  - name: app_routing
+    label: App Routing & SSL
+    description: |
+      The configured router IPs will define internal application routing.
+      HAProxy is the default load balancer for SSL termination. Alternatively,
+      you can use your own load balancer and forward traffic to the Cloud
+      Foundry router IP. Self-signed certificates will function properly.
     verifier:
       name: Verifiers::StaticIpsVerifier
     property_inputs:
@@ -46,6 +50,10 @@ form_types:
         label: SSL Certificate
       - reference: ha_proxy.skip_cert_verify
         label: Trust Self-Signed Certificates
+      - reference: router.static_ips
+        label: Router IPs
+        description: "Enter the IP address(es) for the Pivotal Elastic Runtime Router. This IP must be in your subnet."
+
   - name: cloud_controller
     verifier:
       name: Verifiers::WildcardDomainVerifier
@@ -53,14 +61,14 @@ form_types:
       - system_domain
       - apps_domain
     label: Cloud Controller
-    description: Coordinates Cloud Foundry application lifecycles
+    description: Coordinates Pivotal Elastic Runtime application lifecycles
     property_inputs:
       - reference: cloud_controller.system_domain
         label: System Domain
-        description: "This domain is used to target and push apps to Cloud Foundry (ex: api.my-cf.com). You must set up a wildcard DNS record for this domain that points to the router static IP(s) or a load balancer."
+        description: "This domain is used to target and push apps to Pivotal Elastic Runtime (ex: api.my-cf.com). You must set up a wildcard DNS record for this domain that points to the router static IP(s) or a load balancer."
       - reference: cloud_controller.apps_domain
         label: Apps Domain
-        description: This field specifies a default apps domain for Cloud Foundry. Use the command line interface to delete domains.
+        description: This field specifies a default apps domain for Pivotal Elastic Runtime. Use the command line interface to delete domains.
       - reference: cloud_controller.encrypt_key
         label: Cloud Controller DB Encryption Key
         description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
@@ -69,9 +77,15 @@ form_types:
         description: This value limits the size of an application upload.
       - reference: cloud_controller.disable_custom_buildpacks
         label: Disable Custom Buildpacks
+      - reference: cloud_controller.default_quota_memory_limit_mb
+        label: App Memory (MB)
+        description: Memory limit for all apps in an org using the default quota. For initial install only. Use the CLI to manage quotas.
+      - reference: cloud_controller.default_quota_max_number_services
+        label: Service Instances
+        description: Maximum allowed number of service instances in an org using the default quota. For initial install only. Use the CLI to manage quotas.
 
   - name: syslog_aggregator
-    label: Syslog Aggregator
+    label: External Endpoints
     description: Forwards syslog messages via TCP to a RELP syslog server. Leave these options blank unless you are providing a syslogd server.
     property_inputs:
       - reference: .syslog_host
@@ -81,18 +95,8 @@ form_types:
         label: Syslog Aggregator Port
         description: The typical syslogd port is 514. Ensure syslogd is listening on external interfaces.
 
-  - name: router
-    label: Router IPs
-    description: "Enter the IP address(es) for the Cloud Foundry Router. This IP must be in your subnet."
-    verifier:
-      name: Verifiers::StaticIpsVerifier
-    property_inputs:
-      - reference: router.static_ips
-        label: Router IPs
-        description: "Enter the IP address(es) for the Cloud Foundry Router. This IP must be in your subnet."
-
   - name: login_sso
-    label: SSO Login
+    label: SSO Config
     description: Configure an SSO endpoint for the UAA
     verifier:
       name: Verifiers::SsoUrlVerifier
@@ -104,7 +108,7 @@ form_types:
         description: "Enter an SSO endpoint. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata."
 
   - name: login_ldap
-    label: LDAP Login
+    label: LDAP Config
     description: Configure an LDAP endpoint for the UAA
     verifier:
       name: Verifiers::LDAPBindVerifier
@@ -135,8 +139,8 @@ form_types:
         description: "The name of the attribute that contains the user's email address, default value is mail."
 
   - name: push-console
-    label: Web Console
-    description: A Web application for managing applications will be deployed to Cloud Foundry at console.your-app-domain. These fields configure settings for this console app to send invitations and other emails.
+    label: SMTP Config
+    description: A Web application for managing applications will be deployed to Pivotal Elastic Runtime at console.your-app-domain. These fields configure settings for this console app to send invitations and other emails.
     verifier:
       name: Verifiers::SmtpAuthenticationVerifier
       properties:
@@ -170,22 +174,11 @@ form_types:
       - reference: push-console.smtp_enable_starttls_auto
         label: SMTP Enable Automatic STARTTLS
 
-  - name: quotas
-    label: Quota Settings
-    description: Default Quota
-    property_inputs:
-    - reference: cloud_controller.default_quota_memory_limit_mb
-      label: App Memory (MB)
-      description: Memory limit for all apps in an org using the default quota. For initial install only. Use the CLI to manage quotas.
-    - reference: cloud_controller.default_quota_max_number_services
-      label: Service Instances
-      description: Maximum allowed number of service instances in an org using the default quota. For initial install only. Use the CLI to manage quotas.
-
 job_types:
   - name: ha_proxy
     label: HAProxy
     resource_label: HAProxy
-    description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Cloud Foundry router IP. Self signed certificates will function properly.
+    description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal Elastic Runtime router IP. Self signed certificates will function properly.
     template: haproxy
     release: cf
 
@@ -271,7 +264,7 @@ job_types:
   - name: nats
     label: NATS
     resource_label: NATS
-    description: Acts as the Cloud Foundry message bus
+    description: Acts as the Pivotal Elastic Runtime message bus
     template: nats
     release: cf
 
@@ -655,7 +648,7 @@ job_types:
   - name: cloud_controller
     label: Cloud Controller
     resource_label: Cloud Controller
-    description: Coordinates Cloud Foundry application lifecycles
+    description: Coordinates Pivotal Elastic Runtime application lifecycles
     template:
       - cloud_controller_ng
       - metron_agent
@@ -1178,7 +1171,7 @@ job_types:
   - name: router
     label: Router
     resource_label: Router
-    description: Routers route Internet traffic to applications and between Cloud Foundry components.
+    description: Routers route Internet traffic to applications and between Pivotal Elastic Runtime components.
     template:
       - gorouter
       - metron_agent
@@ -1443,7 +1436,7 @@ job_types:
   - name: uaa
     label: UAA
     resource_label: UAA
-    description: Cloud Foundry's Authentication and Authorization server
+    description: Pivotal Elastic Runtime's Authentication and Authorization server
     template: uaa
     release: cf
 
@@ -1842,7 +1835,7 @@ job_types:
   - name: consoledb
     label: Web Console
     resource_label: Console Database
-    description: A Web application will be deployed to Cloud Foundry at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
+    description: A Web application will be deployed to Pivotal Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
     template: postgres
     release: cf
 
@@ -2003,7 +1996,7 @@ job_types:
   - name: dea
     label: DEA
     resource_label: DEA
-    description: Droplet Execution Agents run the applications pushed to Cloud Foundry
+    description: Droplet Execution Agents run the applications pushed to Pivotal Elastic Runtime
     template:
       - dea_next
       - dea_logging_agent
