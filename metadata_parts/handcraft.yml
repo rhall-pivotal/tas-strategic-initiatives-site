@@ -33,10 +33,9 @@ post_deploy_errands:
   - name: smoke-tests
 
 form_types:
-  - name: app_routing
-    label: App Routing & SSL
+  - name: ha_proxy
+    label: HAProxy
     description: |
-      The configured router IPs will define internal application routing.
       HAProxy is the default load balancer for SSL termination. Alternatively,
       you can use your own load balancer and forward traffic to the Cloud
       Foundry router IP. Self-signed certificates will function properly.
@@ -50,6 +49,13 @@ form_types:
         label: SSL Certificate
       - reference: ha_proxy.skip_cert_verify
         label: Trust Self-Signed Certificates
+
+  - name: router
+    label: Router IPs
+    description: "Enter the IP address(es) for the Cloud Foundry Router. This IP must be in your subnet."
+    verifier:
+      name: Verifiers::StaticIpsVerifier
+    property_inputs:
       - reference: router.static_ips
         label: Router IPs
         description: "Enter the IP address(es) for the Pivotal Elastic Runtime Router. This IP must be in your subnet."
