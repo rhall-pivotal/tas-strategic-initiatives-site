@@ -52,7 +52,7 @@ form_types:
 
   - name: router
     label: Router IPs
-    description: "Enter the IP address(es) for the Cloud Foundry Router. This IP must be in your subnet."
+    description: "Enter the IP address(es) for the Pivotal CF Elastic Runtime Router. This IP must be in your subnet."
     verifiers:
       - name: Verifiers::StaticIpsVerifier
     property_inputs:
@@ -146,7 +146,7 @@ form_types:
 
   - name: push-console
     label: SMTP Config
-    description: A Web application for managing applications will be deployed to Pivotal Elastic Runtime at console.your-app-domain. These fields configure settings for this console app to send invitations and other emails.
+    description: A Web application for managing applications will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain. These fields configure settings for this console app to send invitations and other emails.
     verifiers:
       - name: Verifiers::SmtpAuthenticationVerifier
         properties:
