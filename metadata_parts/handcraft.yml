@@ -100,6 +100,9 @@ form_types:
       - reference: .syslog_port
         label: Syslog Aggregator Port
         description: The typical syslogd port is 514. Ensure syslogd is listening on external interfaces.
+      - reference: .syslog_protocol
+        label: Networking Protocol
+        description: Transport to be used when forwarding logs
 
   - name: login_sso
     label: SSO Config
@@ -266,6 +269,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: nats
     label: NATS
@@ -343,6 +347,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: etcd_server
     label: etcd
@@ -411,6 +416,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
       etcd:
         machines: (( ips ))
       etcd_metrics_server:
@@ -499,6 +505,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: nfs_server
     label: NFS Server
@@ -563,10 +570,6 @@ job_types:
       nfs_server:
         allow_from_entries:
         - (( ..cf.cloud_controller.first_network_deprecated ))
-
-      syslog_aggregator:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
 
   - name: ccdb
     label: Cloud Controller Database
@@ -646,10 +649,6 @@ job_types:
         - tag: cc
           name: ccdb
           citext: true
-
-      syslog_aggregator:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
 
   - name: cloud_controller
     label: Cloud Controller
@@ -879,6 +878,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: clock_global
     label: Clock Global
@@ -1026,6 +1026,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: cloud_controller_worker
     label: Cloud Controller Worker
@@ -1173,6 +1174,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: router
     label: Router
@@ -1274,6 +1276,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: collector
     label: Collector
@@ -1354,6 +1357,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: uaadb
     label: UAA Database
@@ -1434,10 +1438,6 @@ job_types:
           name: uaa
       networks:
         services: default
-
-      syslog_aggregator:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
 
   - name: uaa
     label: UAA
@@ -1727,6 +1727,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: login
     label: Login
@@ -1837,6 +1838,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: consoledb
     label: Web Console
@@ -1918,10 +1920,6 @@ job_types:
       networks:
         services: default
 
-      syslog_aggregator:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-
   - name: mysql
     label: MySQL Server
     resource_label: MySQL Server
@@ -2001,8 +1999,9 @@ job_types:
             username: (( app_usage_credentials.identity ))
             password: (( app_usage_credentials.password ))
         syslog_aggregator:
-           address: (( ..cf.properties.syslog_host.value ))
-           port: (( ..cf.properties.syslog_port.value ))
+          address: (( ..cf.properties.syslog_host.value ))
+          port: (( ..cf.properties.syslog_port.value ))
+          transport: (( .properties.syslog_protocol.value ))
 
   - name: dea
     label: DEA
@@ -2104,6 +2103,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: loggregator
     label: Loggregator Server
@@ -2207,6 +2207,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: loggregator_trafficcontroller
     label: Loggregator Trafficcontroller
@@ -2302,6 +2303,7 @@ job_types:
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: push-console
     label: Push Console
@@ -2736,3 +2738,18 @@ property_blueprints:
     type: port
     configurable: true
     optional: true
+
+  - name: syslog_protocol
+    type: dropdown_select
+    label: Networking Protocol
+    configurable: true
+    optional: true
+    default: TCP
+    options:
+      - name: TCP
+        label: TCP protocol
+        default: true
+      - name: RELP
+        label: RELP protocol
+      - name: UDP
+        label: UDP protocol
