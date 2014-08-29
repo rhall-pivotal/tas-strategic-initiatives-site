@@ -1973,17 +1973,22 @@ job_types:
       label: VM credentials
       default:
         identity: vcap
-    - name: mysql_admin_password
+    - name: mysql_admin_credentials
       type: simple_credentials
-      label: MySQL root password
+      label: MySQL root credentials
       default:
         identity: root
+    - name: app_usage_credentials
+      type: simple_credentials
+      label: MySQL App Usage Service Credentials
+      default:
+        identity: app_usage
     - name: max_user_connections
       type: integer
       default: 40
       configurable: true
     manifest: |
-        admin_password: (( mysql_admin_password.password ))
+        admin_password: (( mysql_admin_credentials.password ))
         cluster_ips: (( .mysql.ips ))
         haproxy_ips: []
         innodb_buffer_pool_size: 2147483648
@@ -1993,8 +1998,8 @@ job_types:
         persistent_disk: (( .mysql.persistent_disk ))
         seeded_databases:
           - name: app_usage_service
-            username: (( mysql_admin_password.identity ))
-            password: (( mysql_admin_password.password ))
+            username: (( app_usage_credentials.identity ))
+            password: (( app_usage_credentials.password ))
         syslog_aggregator:
            address: (( ..cf.properties.syslog_host.value ))
            port: (( ..cf.properties.syslog_port.value ))
@@ -2596,8 +2601,8 @@ job_types:
           name: app_usage_service
           port: 3306
           ip: (( .mysql.first_ip ))
-          username: (( .mysql.mysql_admin_password.identity ))
-          password: (( .mysql.mysql_admin_password.password ))
+          username: (( .mysql.app_usage_credentials.identity ))
+          password: (( .mysql.app_usage_credentials.password ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
