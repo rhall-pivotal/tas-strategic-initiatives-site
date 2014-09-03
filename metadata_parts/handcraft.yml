@@ -52,13 +52,13 @@ form_types:
 
   - name: router
     label: Router IPs
-    description: "Enter the IP address(es) for the Cloud Foundry Router. This IP must be in your subnet."
+    description: "Enter the IP address(es) for the Pivotal CF Elastic Runtime Router. This IP must be in your subnet."
     verifier:
       name: Verifiers::StaticIpsVerifier
     property_inputs:
       - reference: router.static_ips
         label: Router IPs
-        description: "Enter the IP address(es) for the Pivotal Elastic Runtime Router. This IP must be in your subnet."
+        description: "Enter the IP address(es) for the Pivotal CF Elastic Runtime Router. This IP must be in your subnet."
 
   - name: cloud_controller
     verifier:
@@ -67,14 +67,14 @@ form_types:
       - system_domain
       - apps_domain
     label: Cloud Controller
-    description: Coordinates Pivotal Elastic Runtime application lifecycles
+    description: Coordinates Pivotal CF Elastic Runtime application lifecycles
     property_inputs:
       - reference: cloud_controller.system_domain
         label: System Domain
-        description: "This domain is used to target and push apps to Pivotal Elastic Runtime (ex: api.my-cf.com). You must set up a wildcard DNS record for this domain that points to the router static IP(s) or a load balancer."
+        description: "This domain is used to target and push apps to Pivotal CF Elastic Runtime (ex: api.my-cf.com). You must set up a wildcard DNS record for this domain that points to the router static IP(s) or a load balancer."
       - reference: cloud_controller.apps_domain
         label: Apps Domain
-        description: This field specifies a default apps domain for Pivotal Elastic Runtime. Use the command line interface to delete domains.
+        description: This field specifies a default apps domain for Pivotal CF Elastic Runtime. Use the command line interface to delete domains.
       - reference: cloud_controller.encrypt_key
         label: Cloud Controller DB Encryption Key
         description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
@@ -146,7 +146,7 @@ form_types:
 
   - name: push-console
     label: SMTP Config
-    description: A Web application for managing applications will be deployed to Pivotal Elastic Runtime at console.your-app-domain. These fields configure settings for this console app to send invitations and other emails.
+    description: A Web application for managing applications will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain. These fields configure settings for this console app to send invitations and other emails.
     verifier:
       name: Verifiers::SmtpAuthenticationVerifier
       properties:
@@ -184,7 +184,7 @@ job_types:
   - name: ha_proxy
     label: HAProxy
     resource_label: HAProxy
-    description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal Elastic Runtime router IP. Self signed certificates will function properly.
+    description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal CF Elastic Runtime router IP. Self signed certificates will function properly.
     template: haproxy
     release: cf
 
@@ -270,7 +270,7 @@ job_types:
   - name: nats
     label: NATS
     resource_label: NATS
-    description: Acts as the Pivotal Elastic Runtime message bus
+    description: Acts as the Pivotal CF Elastic Runtime message bus
     template: nats
     release: cf
 
@@ -654,7 +654,7 @@ job_types:
   - name: cloud_controller
     label: Cloud Controller
     resource_label: Cloud Controller
-    description: Coordinates Pivotal Elastic Runtime application lifecycles
+    description: Coordinates Pivotal CF Elastic Runtime application lifecycles
     template:
       - cloud_controller_ng
       - metron_agent
@@ -1177,7 +1177,7 @@ job_types:
   - name: router
     label: Router
     resource_label: Router
-    description: Routers route Internet traffic to applications and between Pivotal Elastic Runtime components.
+    description: Routers route Internet traffic to applications and between Pivotal CF Elastic Runtime components.
     template:
       - gorouter
       - metron_agent
@@ -1442,7 +1442,7 @@ job_types:
   - name: uaa
     label: UAA
     resource_label: UAA
-    description: Pivotal Elastic Runtime's Authentication and Authorization server
+    description: Pivotal CF Elastic Runtime's Authentication and Authorization server
     template: uaa
     release: cf
 
@@ -1841,7 +1841,7 @@ job_types:
   - name: consoledb
     label: Web Console
     resource_label: Console Database
-    description: A Web application will be deployed to Pivotal Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
+    description: A Web application will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
     template: postgres
     release: cf
 
@@ -2007,7 +2007,7 @@ job_types:
   - name: dea
     label: DEA
     resource_label: DEA
-    description: Droplet Execution Agents run the applications pushed to Pivotal Elastic Runtime
+    description: Droplet Execution Agents run the applications pushed to Pivotal CF Elastic Runtime
     template:
       - dea_next
       - dea_logging_agent
