@@ -52,4 +52,4 @@ EOF
 export CONFIG=$PWD/integration_config.json
 
 echo "WARNING: only running applications and services CATs; other suites skipped" >&2
-./bin/test -nodes=3 --noColor apps services
+./bin/test -nodes=3 --noColor apps services && ./bin/test_operator -nodes=3
