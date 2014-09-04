@@ -84,10 +84,10 @@ form_types:
       - reference: cloud_controller.disable_custom_buildpacks
         label: Disable Custom Buildpacks
       - reference: cloud_controller.default_quota_memory_limit_mb
-        label: App Memory (MB)
+        label: Default Quota App Memory (MB)
         description: Memory limit for all apps in an org using the default quota. For initial install only. Use the CLI to manage quotas.
       - reference: cloud_controller.default_quota_max_number_services
-        label: Service Instances
+        label: Default Quota Service Instances
         description: Maximum allowed number of service instances in an org using the default quota. For initial install only. Use the CLI to manage quotas.
 
   - name: syslog_aggregator
@@ -770,7 +770,7 @@ job_types:
         configurable: true
         default: 100
         constraints:
-          min: 100
+          min: 0
           max: 1000
 
     manifest: |
