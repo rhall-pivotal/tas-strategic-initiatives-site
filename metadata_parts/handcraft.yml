@@ -92,11 +92,11 @@ form_types:
 
   - name: syslog_aggregator
     label: External Endpoints
-    description: Forwards syslog messages via TCP to a RELP syslog server. Leave these options blank unless you are providing a syslogd server.
+    description: Forwards syslog messages to an external server. Leave these options blank unless you are providing a syslogd server.
     property_inputs:
       - reference: .syslog_host
         label: IP Address of Syslog Aggregator Host
-        description: The host must be reachable from the Elastic Runtime network, accept TCP connections, and use the RELP protocol (e.g. rsyslogd).
+        description: The host must be reachable from the Elastic Runtime network, accept TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd).
       - reference: .syslog_port
         label: Syslog Aggregator Port
         description: The typical syslogd port is 514. Ensure syslogd is listening on external interfaces.
