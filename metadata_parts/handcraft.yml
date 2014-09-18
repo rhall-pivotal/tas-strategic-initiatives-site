@@ -852,6 +852,7 @@ job_types:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
           cc_service_broker_client:
+            scope: cloud_controller.write,openid,cloud_controller.read,cloud_controller_service_permissions.read
             secret: (( .uaa.cc_service_broker_client_credentials.password ))
       login:
         url: (( $runtime.login_url ))
