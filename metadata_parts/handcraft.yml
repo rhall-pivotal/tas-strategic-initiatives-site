@@ -2613,8 +2613,8 @@ job_types:
     label: Run Smoke Tests
     resource_label: Run Smoke Tests
     description: Runs Smoke Tests against your Elastic Runtime installation
-    template: cf-smoke-tests
-    release: runtime-verification-errands
+    template: smoke-tests
+    release: cf
     errand: true
 
     resource_definitions:
@@ -2668,7 +2668,7 @@ job_types:
           identity: vcap
 
     manifest: |
-      cf_smoke_tests:
+      smoke_tests:
         api: (( $runtime.system_api_url ))
         apps_domain: (( .cloud_controller.apps_domain.value ))
         user: (( .uaa.run_smoke_tests_credentials.identity ))
@@ -2678,6 +2678,72 @@ job_types:
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         use_existing_org: false
         use_existing_space: false
+
+  - name: acceptance-tests
+    label: Run CF Acceptance Tests
+    resource_label: Run CF Acceptance Tests
+    description: Runs CF Acceptance Tests against your Elastic Runtime installation
+    template: acceptance-tests
+    release: cf
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      acceptance_tests:
+        api: (( $runtime.system_api_url ))
+        apps_domain: (( .cloud_controller.apps_domain.value ))
+        admin_user: (( .uaa.admin_credentials.identity ))
+        admin_password: (( .uaa.admin_credentials.password ))
+        skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
 
   - name: compilation
     label: Compilation
