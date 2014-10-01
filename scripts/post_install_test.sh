@@ -16,7 +16,8 @@ DEST_DIR="${GOPATH}/src/github.com/cloudfoundry/cf-acceptance-tests/"
 
 git submodule update --init --recursive -- 'src/acceptance-tests'
 rm -rf ${DEST_DIR}
-mv src/acceptance-tests/ ${DEST_DIR}
+mkdir -p ${DEST_DIR}
+mv src/acceptance-tests/* ${DEST_DIR}
 cd ${DEST_DIR}
 
 cat > integration_config.json <<EOF
