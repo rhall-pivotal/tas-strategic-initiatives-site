@@ -11,14 +11,14 @@ function set_cats_sha() {
   export CATS_DIR='src/acceptance-tests'
 
   cd ${GOPATH}
-  mkdir -p src/github.com/cloudfoundry/
-  cd src/github.com/cloudfoundry/
-  if [ -d cf-release ]; then
-    cd cf-release
+  mkdir -p src/github.com/pivotal-cf/
+  cd src/github.com/pivotal-cf/
+  if [ -d pcf-release ]; then
+    cd pcf-release
     git fetch origin master
   else
-    git clone git@github.com:cloudfoundry/cf-release.git
-    cd cf-release
+    git clone git@github.com:pivotal-cf/pcf-release.git
+    cd pcf-release
   fi
 
   export CATS_SHA=$(git ls-tree ${CF_RELEASE_TAG} ${CATS_DIR} | awk '{print $3}')
