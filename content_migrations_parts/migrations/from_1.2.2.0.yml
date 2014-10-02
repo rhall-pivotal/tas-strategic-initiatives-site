@@ -3,3 +3,27 @@ rules:
   - type: update
     selector: "product_version"
     to: "1.3.1.0$PRERELEASE_VERSION$"
+  - type: move
+    selector: ""
+    from: jobs.[type=login].property_blueprints.[name=ldap_url]
+    to: jobs.[type=uaa].property_blueprints
+  - type: move
+    selector: ""
+    from: jobs.[type=login].property_blueprints.[name=credentials]
+    to: jobs.[type=uaa].property_blueprints
+  - type: move
+    selector: ""
+    from: jobs.[type=login].property_blueprints.[name=ldap_search_base]
+    to: jobs.[type=uaa].property_blueprints
+  - type: move
+    selector: ""
+    from: jobs.[type=login].property_blueprints.[name=ldap_search_filter]
+    to: jobs.[type=uaa].property_blueprints
+  - type: move
+    selector: ""
+    from: jobs.[type=login].property_blueprints.[name=ldap_server_ssl_cert]
+    to: jobs.[type=uaa].property_blueprints
+  - type: move
+    selector: ""
+    from: jobs.[type=login].property_blueprints.[name=ldap_ssl_cert_alias]
+    to: jobs.[type=uaa].property_blueprints
