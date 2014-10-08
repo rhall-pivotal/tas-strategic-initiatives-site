@@ -2193,7 +2193,7 @@ job_types:
         apps: default
       doppler:
         incoming_port: 3456
-        outgoing_port: 8080
+        outgoing_port: 8081
         maxRetainedLogMessages: 100
         zone: z1
         status:
@@ -2293,10 +2293,7 @@ job_types:
       networks:
         apps: default
       loggregator:
-        incoming_port: 3456
-        outgoing_port: 8080
-        servers:
-          z1: (( .doppler.ips ))
+        doppler_port: 8081
 
       cc:
         srv_api_uri: (( $runtime.system_api_url ))
