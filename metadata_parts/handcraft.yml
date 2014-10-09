@@ -188,7 +188,8 @@ job_types:
     label: HAProxy
     resource_label: HAProxy
     description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal CF Elastic Runtime router IP. Self signed certificates will function properly.
-    template: haproxy
+    template:
+      - haproxy
     release: cf
 
     resource_definitions:
@@ -260,7 +261,6 @@ job_types:
       networks:
         apps: default
       ha_proxy:
-        timeout: 300
         ssl_pem: (( ssl_rsa_certificate.cert_and_private_key_pems ))
       router:
         servers:
@@ -275,7 +275,8 @@ job_types:
     label: NATS
     resource_label: NATS
     description: Acts as the Pivotal CF Elastic Runtime message bus
-    template: nats
+    template:
+      - nats
     release: cf
 
     resource_definitions:
@@ -429,7 +430,8 @@ job_types:
     label: Health Manager
     resource_label: Health Manager
     description: Reports app health to the Cloud Controller
-    template: hm9000
+    template:
+      - hm9000
     release: cf
 
     resource_definitions:
@@ -487,6 +489,10 @@ job_types:
         srv_api_uri: (( $runtime.system_api_url ))
         bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
+
+      dea_next:
+        heartbeat_interval_in_seconds: 10
+
       networks:
         apps: default
 
@@ -511,7 +517,8 @@ job_types:
     label: NFS Server
     resource_label: NFS Server
     description: Stores droplets and app packages on behalf of Cloud Controller
-    template: debian_nfs_server
+    template:
+      - debian_nfs_server
     release: cf
 
     resource_definitions:
@@ -575,7 +582,8 @@ job_types:
     label: Cloud Controller Database
     resource_label: Cloud Controller Database
     description: Stores Cloud Controller information
-    template: postgres
+    template:
+      - postgres
     release: cf
 
     resource_definitions:
@@ -841,6 +849,9 @@ job_types:
           name: ccdb
           citext: true
 
+      dea_next:
+        advertise_interval_in_seconds: 5
+
       networks:
         apps: default
       nfs_server:
@@ -867,9 +878,9 @@ job_types:
         zone: z1
       metron_endpoint:
         zone: z1
-        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
-        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -1012,9 +1023,9 @@ job_types:
         zone: z1
       metron_endpoint:
         zone: z1
-        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
-        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -1160,9 +1171,9 @@ job_types:
         zone: z1
       metron_endpoint:
         zone: z1
-        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
-        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -1265,9 +1276,9 @@ job_types:
         zone: z1
       metron_endpoint:
         zone: z1
-        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
-        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -1283,7 +1294,8 @@ job_types:
     label: Collector
     resource_label: Collector
     description: Collects system information in order to provide health and status metrics
-    template: collector
+    template:
+      - collector
     release: cf
 
     requires_product_versions:
@@ -1364,7 +1376,8 @@ job_types:
     label: UAA Database
     resource_label: UAA Database
     description: Stores user information for the UAA
-    template: postgres
+    template:
+      - postgres
     release: cf
 
     resource_definitions:
@@ -1444,7 +1457,8 @@ job_types:
     label: UAA
     resource_label: UAA
     description: Pivotal CF Elastic Runtime's Authentication and Authorization server
-    template: uaa
+    template:
+      - uaa
     release: cf
 
     resource_definitions:
@@ -1734,7 +1748,8 @@ job_types:
     label: Login
     resource_label: Login
     description: Communicates between SAML endpoints and the UAA
-    template: login
+    template:
+      - login
     release: cf
 
     resource_definitions:
@@ -1845,7 +1860,8 @@ job_types:
     label: Web Console
     resource_label: Console Database
     description: A Web application will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
-    template: postgres
+    template:
+      - postgres
     release: cf
 
     resource_definitions:
@@ -1925,7 +1941,8 @@ job_types:
     label: MySQL Server
     resource_label: MySQL Server
     description: Multi-tenant MySQL server.
-    template: mysql
+    template:
+      - mysql
     release: cf-mysql
     max_in_flight: 1
     resource_definitions:
@@ -2092,9 +2109,9 @@ job_types:
         zone: z1
       metron_endpoint:
         zone: z1
-        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
-        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -2106,11 +2123,12 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
 
-  - name: loggregator
-    label: Loggregator Server
-    resource_label: Loggregator Server
-    description: Loggregator server collects application logs
-    template: loggregator
+  - name: doppler
+    label: Doppler Server
+    resource_label: Doppler Server
+    description: Doppler server collects application logs
+    template:
+      - doppler
     release: cf
 
     resource_definitions:
@@ -2173,9 +2191,9 @@ job_types:
     manifest: |
       networks:
         apps: default
-      loggregator:
+      doppler:
         incoming_port: 3456
-        outgoing_port: 8080
+        outgoing_port: 8081
         maxRetainedLogMessages: 100
         zone: z1
         status:
@@ -2190,8 +2208,8 @@ job_types:
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
 
-      loggregator_endpoint:
-        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+      doppler_endpoint:
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -2214,7 +2232,8 @@ job_types:
     label: Loggregator Trafficcontroller
     resource_label: Loggregator Trafficcontroller
     description: Loggregator trafficcontroller distributes requests to Loggregator servers
-    template: loggregator_trafficcontroller
+    template:
+      - loggregator_trafficcontroller
     release: cf
 
     resource_definitions:
@@ -2274,10 +2293,7 @@ job_types:
       networks:
         apps: default
       loggregator:
-        incoming_port: 3456
-        outgoing_port: 8080
-        servers:
-          z1: (( .loggregator.ips ))
+        doppler_port: 8081
 
       cc:
         srv_api_uri: (( $runtime.system_api_url ))
@@ -2285,7 +2301,7 @@ job_types:
       system_domain: (( $runtime.system_domain ))
 
       loggregator_endpoint:
-        shared_secret:  (( .loggregator.shared_secret_credentials.password ))
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       traffic_controller:
         zone: z1
 
@@ -2310,7 +2326,8 @@ job_types:
     label: Push Console
     resource_label: Push Console
     description: Pushes the Pivotal Dev Console application to your Elastic Runtime installation
-    template: push-console
+    template:
+      - push-console
     release: push-console-release
     errand: true
 
@@ -2461,7 +2478,8 @@ job_types:
     label: Push App Usage Service
     resource_label: Push App Usage Service
     description: Monitors usage of an application pushed to your Elastic Runtime installation
-    template: push-app-usage-service
+    template:
+      - push-app-usage-service
     release: push-console-release
     errand: true
 
@@ -2613,7 +2631,8 @@ job_types:
     label: Run Smoke Tests
     resource_label: Run Smoke Tests
     description: Runs Smoke Tests against your Elastic Runtime installation
-    template: smoke-tests
+    template:
+      - smoke-tests
     release: cf
     errand: true
 
@@ -2683,7 +2702,8 @@ job_types:
     label: Run CF Acceptance Tests
     resource_label: Run CF Acceptance Tests
     description: Runs CF Acceptance Tests against your Elastic Runtime installation
-    template: acceptance-tests
+    template:
+      - acceptance-tests
     release: cf
     errand: true
 
