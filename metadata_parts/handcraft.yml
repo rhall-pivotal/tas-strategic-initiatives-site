@@ -496,6 +496,8 @@ job_types:
         internal_api_user: (( internal_api_user_credentials.identity ))
         internal_api_password: (( internal_api_user_credentials.password ))
 
+      domain: (( $runtime.system_domain ))
+
       dea_next:
         heartbeat_interval_in_seconds: 10
 
@@ -2711,6 +2713,8 @@ job_types:
           identity: vcap
 
     manifest: |
+      networks:
+        apps: default
       smoke_tests:
         api: (( $runtime.system_api_url ))
         apps_domain: (( .cloud_controller.apps_domain.value ))
