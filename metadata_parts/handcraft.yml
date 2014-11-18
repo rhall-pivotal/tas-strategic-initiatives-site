@@ -489,7 +489,6 @@ job_types:
         srv_api_uri: (( $runtime.system_api_url ))
         bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
-
       domain: (( $runtime.system_domain ))
 
       dea_next:
@@ -667,6 +666,7 @@ job_types:
     template:
       - cloud_controller_ng
       - metron_agent
+      - nfs_mounter
     release: cf
 
     resource_definitions:
@@ -901,6 +901,7 @@ job_types:
     template:
       - cloud_controller_clock
       - metron_agent
+      - nfs_mounter
     release: cf
 
     resource_definitions:
@@ -1049,6 +1050,7 @@ job_types:
     template:
       - cloud_controller_worker
       - metron_agent
+      - nfs_mounter
     release: cf
 
     resource_definitions:
@@ -2689,8 +2691,6 @@ job_types:
           identity: vcap
 
     manifest: |
-      networks:
-        apps: default
       smoke_tests:
         api: (( $runtime.system_api_url ))
         apps_domain: (( .cloud_controller.apps_domain.value ))
