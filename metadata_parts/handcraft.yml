@@ -484,11 +484,18 @@ job_types:
         default:
           identity: vcap
 
+      - name: internal_api_user_credentials
+        type: simple_credentials
+        label: Credentials for hm9000 API
+
     manifest: |
       cc:
         srv_api_uri: (( $runtime.system_api_url ))
         bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
+        internal_api_user: (( internal_api_user_credentials.identity ))
+        internal_api_password: (( internal_api_user_credentials.password ))
+
       domain: (( $runtime.system_domain ))
 
       dea_next:
@@ -812,6 +819,7 @@ job_types:
             package: buildpack_python
           - name: php_buildpack
             package: buildpack_php
+        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
         logging_level: debug
         quota_definitions:
           default:
@@ -968,6 +976,7 @@ job_types:
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
         db_encryption_key: (( .cloud_controller.encrypt_key.secret || .cloud_controller.db_encryption_credentials.password ))
+        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
         quota_definitions:
           default:
             memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
@@ -1117,6 +1126,7 @@ job_types:
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
         db_encryption_key: (( .cloud_controller.encrypt_key.secret || .cloud_controller.db_encryption_credentials.password ))
+        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
         quota_definitions:
           default:
             memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
@@ -1557,6 +1567,12 @@ job_types:
         default:
           identity: login
 
+      - name: doppler_client_credentials
+        type: simple_credentials
+        label: "Doppler's client secret to connect to UAA"
+        default:
+          identity: doppler
+
       - name: console_client_credentials
         type: simple_credentials
         label: Console client credentials
@@ -1698,11 +1714,14 @@ job_types:
             authorities: clients.read,clients.write,clients.admin
             authorized-grant-types: client_credentials
             scope: cloud_controller.write,openid,cloud_controller.read,cloud_controller_service_permissions.read
+          doppler:
+            id: (( doppler_client_credentials.identity ))
+            secret: (( doppler_client_credentials.password ))
         scim:
           user:
             override: false
           users:
-          - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support
+          - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose
           - (( push_console_credentials.identity ))|(( push_console_credentials.password ))|cloud_controller.admin
           - (( run_smoke_tests_credentials.identity ))|(( run_smoke_tests_credentials.password ))|cloud_controller.admin
           - (( system_services_credentials.identity ))|(( system_services_credentials.password ))|cloud_controller.admin
@@ -2325,6 +2344,12 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      doppler:
+        uaa_client_id: (( .uaa.doppler_client_credentials.identity ))
+      uaa:
+        clients:
+          doppler:
+            secret: (( .uaa.doppler_client_credentials.password ))
 
   - name: push-console
     label: Push Console
