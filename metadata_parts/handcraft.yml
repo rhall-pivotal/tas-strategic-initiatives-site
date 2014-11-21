@@ -30,8 +30,8 @@ install_time_verifiers:
 post_deploy_errands:
   - name: push-console
   - name: push-app-usage-service
-  - name: smoke-tests
   - name: notifications
+  - name: smoke-tests
 
 form_types:
   - name: ha_proxy
@@ -2869,6 +2869,9 @@ job_types:
         default: false
 
     manifest: |
+      domain: (( $runtime.system_domain ))
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
       notifications_with_ui:
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
@@ -2890,8 +2893,6 @@ job_types:
           port: (( smtp_port.value ))
           user: (( smtp_credentials.identity ))
           tls: (( smtp_enable_starttls_auto.value ))
-        ssl:
-          skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
   - name: acceptance-tests
     label: Run CF Acceptance Tests
