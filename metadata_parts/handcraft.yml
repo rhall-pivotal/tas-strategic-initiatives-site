@@ -2716,6 +2716,8 @@ job_types:
           identity: vcap
 
     manifest: |
+      networks:
+        apps: default
       smoke_tests:
         api: (( $runtime.system_api_url ))
         apps_domain: (( .cloud_controller.apps_domain.value ))
