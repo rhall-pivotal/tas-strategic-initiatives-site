@@ -1722,6 +1722,7 @@ job_types:
           doppler:
             id: (( doppler_client_credentials.identity ))
             secret: (( doppler_client_credentials.password ))
+            authorities: uaa.resource
         scim:
           user:
             override: false
