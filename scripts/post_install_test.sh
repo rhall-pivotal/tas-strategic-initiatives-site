@@ -26,6 +26,7 @@ cat > integration_config.json <<EOF
   "admin_user": "${ADMIN_USER}",
   "admin_password": "${ADMIN_PASSWORD}",
   "apps_domain": "${APPS_DOMAIN}",
+  "artifacts_directory": "$PWD/cats-logs",
   "skip_ssl_validation": ${SKIP_SSL_VALIDATION}
 }
 EOF
