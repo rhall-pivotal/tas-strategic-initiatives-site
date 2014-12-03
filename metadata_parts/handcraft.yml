@@ -2183,6 +2183,7 @@ job_types:
         num_instances: 10
         stacks: ["lucid64"]
         evacuation_bail_out_time_in_seconds: 600
+        zone: (( availability_zone ))
 
       etcd:
         machines: (( .etcd_server.ips ))
