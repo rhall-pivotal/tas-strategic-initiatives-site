@@ -149,7 +149,7 @@ form_types:
         description: "The name of the attribute that contains the user's email address, default value is mail."
 
   - name: push-console
-    label: SMTP Config
+    label: Push Console SMTP Config
     description: A Web application for managing applications will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain. These fields configure settings for this console app to send invitations and other emails.
     verifiers:
       - name: Verifiers::SmtpAuthenticationVerifier
@@ -185,8 +185,8 @@ form_types:
         label: SMTP Enable Automatic STARTTLS
 
   - name: notifications
-    label: SMTP Config
-    description: <<<INSERT DESCRIPTION!!!!!>>>
+    label: Notifications SMTP Config
+    description: Cloud Foundry component to send emails to end users.
     verifiers:
     property_inputs:
       - reference: notifications.reply_to
