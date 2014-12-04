@@ -1634,10 +1634,14 @@ job_types:
       - name: notifications_client_credentials
         type: simple_credentials
         label: Notifications client credentials
+        default:
+          identity: notifications
 
       - name: notifications_ui_client_credentials
         type: simple_credentials
         label: Notifications UI client credentials
+        default:
+          identity: notifications_ui_client
 
       - name: ldap_url
         type: ldap_url
@@ -1753,12 +1757,12 @@ job_types:
             secret: (( doppler_client_credentials.password ))
             authorities: uaa.resource
           notifications:
-            id: (( .uaa.notifications_client_credentials.identity ))
+            id: notifications
             secret: (( .uaa.notifications_client_credentials.password ))
-            authorities: cloud_controller.admin,scim.read
+            authorities: cloud_controller.admin,scim.read,notifications.write,critical_notifications.write,emails.write
             authorized-grant-types: client_credentials
           notifications_ui_client:
-            id: (( .uaa.notifications_ui_client_credentials.identity ))
+            id: notifications_ui_client
             secret: (( .uaa.notifications_ui_client_credentials.password ))
             scope: uaa.none notification_preferences.read notification_preferences.write openid
             resource_ids: none
@@ -2074,8 +2078,6 @@ job_types:
     - name: notifications_credentials
       type: simple_credentials
       label: MySQL Notifications Credentials
-      default:
-        identity: notifications
     - name: max_user_connections
       type: integer
       default: 40
@@ -2885,9 +2887,9 @@ job_types:
         network: default
         sender: (( reply_to.value ))
         uaa:
-          notifications_client_id: (( .uaa.notifications_client_credentials.identity ))
+          notifications_client_id: notifications
           notifications_client_secret: (( .uaa.notifications_client_credentials.password ))
-          notifications_ui_client_id: (( .uaa.notifications_ui_client_credentials.identity ))
+          notifications_ui_client_id: notifications_ui_client
           notifications_ui_client_secret: (( .uaa.notifications_ui_client_credentials.password ))
         smtp:
           host: (( smtp_address.value ))
