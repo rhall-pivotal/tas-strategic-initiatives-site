@@ -30,6 +30,7 @@ install_time_verifiers:
 post_deploy_errands:
   - name: push-console
   - name: push-app-usage-service
+  - name: notifications
   - name: smoke-tests
 
 form_types:
@@ -148,7 +149,7 @@ form_types:
         description: "The name of the attribute that contains the user's email address, default value is mail."
 
   - name: push-console
-    label: SMTP Config
+    label: Push Console SMTP Config
     description: A Web application for managing applications will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain. These fields configure settings for this console app to send invitations and other emails.
     verifiers:
       - name: Verifiers::SmtpAuthenticationVerifier
@@ -181,6 +182,26 @@ form_types:
       - reference: push-console.smtp_authentication
         label: SMTP Authentication
       - reference: push-console.smtp_enable_starttls_auto
+        label: SMTP Enable Automatic STARTTLS
+
+  - name: notifications
+    label: Notifications SMTP Config
+    description: Cloud Foundry component to send emails to end users.
+    verifiers:
+    property_inputs:
+      - reference: notifications.reply_to
+        label: Reply-To Email
+        description: The recipient email address for notification responses.
+      - reference: notifications.smtp_address
+        label: Address of SMTP Server
+        description: The SMTP address of the server that will send notifications.
+      - reference: notifications.smtp_port
+        label: Port of SMTP Server
+        description: The port of the SMTP server that will send notifications.
+      - reference: notifications.smtp_credentials
+        label: SMTP Server Credentials
+        description: The credentials for the SMTP server that will send notifications.
+      - reference: notifications.smtp_enable_starttls_auto
         label: SMTP Enable Automatic STARTTLS
 
 job_types:
@@ -1610,6 +1631,18 @@ job_types:
         type: rsa_pkey_credentials
         label: Access token signing RSA key
 
+      - name: notifications_client_credentials
+        type: simple_credentials
+        label: Notifications client credentials
+        default:
+          identity: notifications
+
+      - name: notifications_ui_client_credentials
+        type: simple_credentials
+        label: Notifications UI client credentials
+        default:
+          identity: notifications_ui_client
+
       - name: ldap_url
         type: ldap_url
         configurable: true
@@ -1723,6 +1756,20 @@ job_types:
             id: (( doppler_client_credentials.identity ))
             secret: (( doppler_client_credentials.password ))
             authorities: uaa.resource
+          notifications:
+            id: notifications
+            secret: (( .uaa.notifications_client_credentials.password ))
+            authorities: cloud_controller.admin,scim.read,notifications.write,critical_notifications.write,emails.write
+            authorized-grant-types: client_credentials
+          notifications_ui_client:
+            id: notifications_ui_client
+            secret: (( .uaa.notifications_ui_client_credentials.password ))
+            scope: uaa.none notification_preferences.read notification_preferences.write openid
+            resource_ids: none
+            authorized-grant-types: authorization_code client_credentials refresh_token
+            authorities: notifications.write critical_notifications.write emails.write notification_preferences.admin
+            autoapprove:
+            redirect_uri: http://example.com/sessions/create
         scim:
           user:
             override: false
@@ -2028,6 +2075,9 @@ job_types:
       label: MySQL App Usage Service Credentials
       default:
         identity: app_usage
+    - name: notifications_credentials
+      type: simple_credentials
+      label: MySQL Notifications Credentials
     - name: max_user_connections
       type: integer
       default: 40
@@ -2045,6 +2095,9 @@ job_types:
           - name: app_usage_service
             username: (( app_usage_credentials.identity ))
             password: (( app_usage_credentials.password ))
+          - name: notifications
+            username: (( notifications_credentials.identity ))
+            password: (( notifications_credentials.password ))
         syslog_aggregator:
           address: (( ..cf.properties.syslog_host.value ))
           port: (( ..cf.properties.syslog_port.value ))
@@ -2734,6 +2787,116 @@ job_types:
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         use_existing_org: false
         use_existing_space: false
+
+  - name: notifications
+    label: Notifications
+    resource_label: Notifications With UI
+    description: Notifications release for PCF
+    template:
+      - deploy-notifications-with-ui
+    release: notifications-with-ui
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: reply_to
+        type: email
+        configurable: true
+        optional: true
+
+      - name: smtp_address
+        type: network_address
+        configurable: true
+        optional: true
+
+      - name: smtp_port
+        type: port
+        configurable: true
+        optional: true
+
+      - name: smtp_credentials
+        type: simple_credentials
+        configurable: true
+        optional: true
+
+      - name: smtp_enable_starttls_auto
+        type: boolean
+        configurable: true
+        default: false
+
+    manifest: |
+      domain: (( $runtime.system_domain ))
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+      notifications_with_ui:
+        cf:
+          admin_user: (( .uaa.admin_credentials.identity ))
+          admin_password: (( .uaa.admin_credentials.password ))
+        app_domain: (( .cloud_controller.apps_domain.value ))
+        database_url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql.first_ip )):3306/notifications
+        notifications_instance_count: 2
+        notifications_ui_instance_count: 1
+        network: default
+        sender: (( reply_to.value ))
+        uaa:
+          notifications_client_id: notifications
+          notifications_client_secret: (( .uaa.notifications_client_credentials.password ))
+          notifications_ui_client_id: notifications_ui_client
+          notifications_ui_client_secret: (( .uaa.notifications_ui_client_credentials.password ))
+        smtp:
+          host: (( smtp_address.value ))
+          pass: (( smtp_credentials.password ))
+          port: (( smtp_port.value ))
+          user: (( smtp_credentials.identity ))
+          tls: (( smtp_enable_starttls_auto.value ))
 
   - name: acceptance-tests
     label: Run CF Acceptance Tests
