@@ -2872,6 +2872,9 @@ job_types:
         configurable: true
         default: false
 
+      - name: encryption_credentials
+        type: simple_credentials
+
     manifest: |
       domain: (( $runtime.system_domain ))
       ssl:
@@ -2897,6 +2900,7 @@ job_types:
           port: (( smtp_port.value ))
           user: (( smtp_credentials.identity ))
           tls: (( smtp_enable_starttls_auto.value ))
+        encryption_key: (( encryption_credentials.password ))
 
   - name: acceptance-tests
     label: Run CF Acceptance Tests
