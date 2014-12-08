@@ -111,14 +111,20 @@ form_types:
 
   - name: login_sso
     label: SSO Config
-    description: Configure an SSO endpoint for the UAA
+    description: Configure Identity Provider
     verifiers:
       - name: Verifiers::SsoUrlVerifier
         properties:
           - sso_url
     property_inputs:
+      - reference: login.sso_name
+        label: Provider Name
+        description: "Name of Identity Provider. Allowed characters are alphanumeric, _, and -."
+      - reference: login.sso_xml
+        label: Provider Metadata
+        description: "Metadata XML content for the Identity Provider"
       - reference: login.sso_url
-        label: SSO URL
+        label: Provider Metadata URL
         description: "Enter an SSO endpoint. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata."
 
   - name: login_ldap
@@ -1912,6 +1918,16 @@ job_types:
         configurable: true
         default: true
 
+      - name: sso_xml
+        type: text
+        configurable: true
+        optional: true
+
+      - name: sso_name
+        type: string
+        configurable: true
+        optional: true
+
     manifest: |
       domain: (( $runtime.system_domain ))
 
@@ -1938,6 +1954,10 @@ job_types:
         signups_enabled: (( signups_enabled.value ))
         notifications:
           url: "https://notifications.(( $runtime.system_domain ))"
+        saml:
+          providers:
+            nameId: (( sso_name.value ))
+            idpMetadata: (( sso_xml.value ))
 
       uaa:
         clients:
