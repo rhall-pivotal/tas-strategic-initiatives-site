@@ -17,15 +17,6 @@ install_time_verifiers:
     properties:
     - cloud_controller.system_domain
     - cloud_controller.apps_domain
-  - name: Verifiers::SmtpAuthenticationVerifier
-    ignorable: true
-    properties:
-      - push-console.smtp_credentials
-      - push-console.smtp_address
-      - push-console.smtp_port
-      - push-console.smtp_helo_domain
-      - push-console.smtp_authentication
-      - push-console.smtp_enable_starttls_auto
 
 post_deploy_errands:
   - name: smoke-tests
@@ -148,60 +139,23 @@ form_types:
         label: Email Attribute
         description: "The name of the attribute that contains the user's email address, default value is mail."
 
-  - name: push-console
-    label: Push Console SMTP Config
-    description: A Web application for managing applications will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain. These fields configure settings for this console app to send invitations and other emails.
-    verifiers:
-      - name: Verifiers::SmtpAuthenticationVerifier
-        properties:
-          - smtp_credentials
-          - smtp_address
-          - smtp_port
-          - smtp_helo_domain
-          - smtp_authentication
-          - smtp_enable_starttls_auto
+  - name: smtp_config
+    label: SMTP Config
+    description: Configuration for Simple Mail Transfer Protocol
     property_inputs:
-      - reference: push-console.reply_to
-        label: Reply-To Email
-        description: The recipient email address for console invite responses.
-      - reference: push-console.from
+      - reference: .smtp_from
         label: From Email
-        description: The email address from which console invitations are sent.
-      - reference: push-console.smtp_address
+        description: The email address from which emails are sent.
+      - reference: .smtp_address
         label: Address of SMTP Server
-        description: The SMTP address of the server that will send console invitations.
-      - reference: push-console.smtp_port
+        description: The SMTP address of the server that will send emails.
+      - reference: .smtp_port
         label: Port of SMTP Server
-        description: The port of the SMTP server that will send console invitations.
-      - reference: push-console.smtp_helo_domain
-        label: HELO Domain
-        description: The HELO domain of the SMTP server that will send console invitations.
-      - reference: push-console.smtp_credentials
+        description: The port of the SMTP server that will send emails.
+      - reference: .smtp_credentials
         label: SMTP Server Credentials
-        description: The credentials for the SMTP server that will send console invitations.
-      - reference: push-console.smtp_authentication
-        label: SMTP Authentication
-      - reference: push-console.smtp_enable_starttls_auto
-        label: SMTP Enable Automatic STARTTLS
-
-  - name: notifications
-    label: Notifications SMTP Config
-    description: Cloud Foundry component to send emails to end users.
-    verifiers:
-    property_inputs:
-      - reference: notifications.reply_to
-        label: Reply-To Email
-        description: The recipient email address for notification responses.
-      - reference: notifications.smtp_address
-        label: Address of SMTP Server
-        description: The SMTP address of the server that will send notifications.
-      - reference: notifications.smtp_port
-        label: Port of SMTP Server
-        description: The port of the SMTP server that will send notifications.
-      - reference: notifications.smtp_credentials
-        label: SMTP Server Credentials
-        description: The credentials for the SMTP server that will send notifications.
-      - reference: notifications.smtp_enable_starttls_auto
+        description: The credentials for the SMTP server that will send emails.
+      - reference: .smtp_enable_starttls_auto
         label: SMTP Enable Automatic STARTTLS
 
 job_types:
@@ -1774,7 +1728,7 @@ job_types:
           user:
             override: false
           users:
-          - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose
+          - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose,notification_preferences.read,notification_preferences.write
           - (( push_console_credentials.identity ))|(( push_console_credentials.password ))|cloud_controller.admin
           - (( run_smoke_tests_credentials.identity ))|(( run_smoke_tests_credentials.password ))|cloud_controller.admin
           - (( system_services_credentials.identity ))|(( system_services_credentials.password ))|cloud_controller.admin
@@ -2474,46 +2428,6 @@ job_types:
         label: Secret Token
         configurable: false
 
-      - name: reply_to
-        type: email
-        configurable: true
-        optional: true
-
-      - name: from
-        type: email
-        configurable: true
-        optional: true
-
-      - name: smtp_address
-        type: network_address
-        configurable: true
-        optional: true
-
-      - name: smtp_port
-        type: port
-        configurable: true
-        optional: true
-
-      - name: smtp_helo_domain
-        type: domain
-        configurable: true
-        optional: true
-
-      - name: smtp_credentials
-        type: simple_credentials
-        configurable: true
-        optional: true
-
-      - name: smtp_authentication
-        type: smtp_authentication
-        configurable: true
-        optional: true
-
-      - name: smtp_enable_starttls_auto
-        type: boolean
-        configurable: true
-        default: false
-
     manifest: |
       cf:
         console_subdomain: console
@@ -2528,13 +2442,11 @@ job_types:
           CF_LOGIN_SERVER_URL: (( $runtime.login_url ))
           CF_UAA_SERVER_URL: (( $runtime.uaa_url ))
         smtp:
-          address: (( smtp_address.value ))
-          port: (( smtp_port.value ))
-          domain: (( smtp_helo_domain.value ))
-          user_name: (( smtp_credentials.identity ))
-          password: (( smtp_credentials.password ))
-          authentication: (( smtp_authentication.value ))
-          enable_starttls_auto: (( smtp_enable_starttls_auto.value ))
+          address: (( .properties.smtp_address.value ))
+          port: (( .properties.smtp_port.value ))
+          user_name: (( .properties.smtp_credentials.identity ))
+          password: (( .properties.smtp_credentials.password ))
+          enable_starttls_auto: (( .properties.smtp_enable_starttls_auto.value ))
       env:
         secret_token: (( secret_token.secret ))
         cf_cc_api_url: (( $runtime.system_api_url ))
@@ -2646,18 +2558,8 @@ job_types:
         configurable: true
         optional: true
 
-      - name: smtp_helo_domain
-        type: domain
-        configurable: true
-        optional: true
-
       - name: smtp_credentials
         type: simple_credentials
-        configurable: true
-        optional: true
-
-      - name: smtp_authentication
-        type: smtp_authentication
         configurable: true
         optional: true
 
@@ -2682,10 +2584,8 @@ job_types:
         smtp:
           address: (( smtp_address.value ))
           port: (( smtp_port.value ))
-          domain: (( smtp_helo_domain.value ))
           user_name: (( smtp_credentials.identity ))
           password: (( smtp_credentials.password ))
-          authentication: (( smtp_authentication.value ))
           enable_starttls_auto: (( smtp_enable_starttls_auto.value ))
       env:
         secret_token: (( secret_token.secret ))
@@ -2847,31 +2747,6 @@ job_types:
         default:
           identity: vcap
 
-      - name: reply_to
-        type: email
-        configurable: true
-        optional: true
-
-      - name: smtp_address
-        type: network_address
-        configurable: true
-        optional: true
-
-      - name: smtp_port
-        type: port
-        configurable: true
-        optional: true
-
-      - name: smtp_credentials
-        type: simple_credentials
-        configurable: true
-        optional: true
-
-      - name: smtp_enable_starttls_auto
-        type: boolean
-        configurable: true
-        default: false
-
       - name: encryption_credentials
         type: simple_credentials
 
@@ -2888,18 +2763,18 @@ job_types:
         notifications_instance_count: 2
         notifications_ui_instance_count: 1
         network: default
-        sender: (( reply_to.value ))
+        sender: (( .properties.smtp_from.value ))
         uaa:
           notifications_client_id: notifications
           notifications_client_secret: (( .uaa.notifications_client_credentials.password ))
           notifications_ui_client_id: notifications_ui_client
           notifications_ui_client_secret: (( .uaa.notifications_ui_client_credentials.password ))
         smtp:
-          host: (( smtp_address.value ))
-          pass: (( smtp_credentials.password ))
-          port: (( smtp_port.value ))
-          user: (( smtp_credentials.identity ))
-          tls: (( smtp_enable_starttls_auto.value ))
+          host: (( .properties.smtp_address.value ))
+          pass: (( .properties.smtp_credentials.password ))
+          port: (( .properties.smtp_port.value ))
+          user: (( .properties.smtp_credentials.identity ))
+          tls: (( .properties.smtp_enable_starttls_auto.value ))
         encryption_key: (( encryption_credentials.password ))
 
   - name: acceptance-tests
@@ -3043,3 +2918,28 @@ property_blueprints:
         label: RELP protocol
       - name: udp
         label: UDP protocol
+
+  - name: smtp_from
+    type: email
+    configurable: true
+    optional: true
+
+  - name: smtp_address
+    type: network_address
+    configurable: true
+    optional: true
+
+  - name: smtp_port
+    type: port
+    configurable: true
+    optional: true
+
+  - name: smtp_credentials
+    type: simple_credentials
+    configurable: true
+    optional: true
+
+  - name: smtp_enable_starttls_auto
+    type: boolean
+    configurable: true
+    default: false
