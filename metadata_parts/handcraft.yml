@@ -2452,8 +2452,7 @@ job_types:
         cf_cc_api_url: (( $runtime.system_api_url ))
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
         cf_console_url: (( $runtime.console_url ))
-        default_reply_to: (( reply_to.value ))
-        default_from: (( from.value ))
+        default_from: (( .properties.smtp_from.value ))
         usage_service_host: app-usage.(( $runtime.system_domain ))
         bundle_without: test development hosted_only
         rack_env: production
@@ -2593,7 +2592,7 @@ job_types:
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
         cf_console_url: (( $runtime.console_url ))
         default_reply_to: (( reply_to.value ))
-        default_from: (( from.value ))
+        default_from: (( .properties.smtp_from.value ))
         usage_service_host: app-usage.(( $runtime.system_domain ))
         bundle_without: test development hosted_only
         rack_env: production
