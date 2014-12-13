@@ -153,6 +153,9 @@ form_types:
       - reference: uaa.ldap_mail_attribute_name
         label: Email Attribute
         description: "The name of the attribute that contains the user's email address, default value is mail."
+      - reference: login.signups_enabled
+        label: Enable sign ups
+        description: "If checked, will allow users to create an account from the log in page."
 
   - name: push-console
     label: Push Console SMTP Config
@@ -1909,6 +1912,11 @@ job_types:
         configurable: true
         optional: true
 
+      - name: signups_enabled
+        type: boolean
+        configurable: true
+        default: true
+
     manifest: |
       domain: (( $runtime.system_domain ))
 
@@ -1932,6 +1940,7 @@ job_types:
         spring_profiles: saml,ldap
         idp_entity_alias: sso-sp
         idp_metadata_url: (( sso_url.value ))
+        signups_enabled: (( signups_enabled.value ))
 
       uaa:
         clients:
