@@ -138,6 +138,12 @@ form_types:
       - reference: uaa.ldap_search_filter
         label: LDAP Search Filter
         description: 'Required for LDAP. Use {0} where the username should be inserted. If unsure, use cn={0}'
+      - reference: uaa.ldap_group_search_base
+        label: LDAP Group Search Base
+        description: 'Required for LDAP groups. Example: ou=cloud,dc=example,dc=com'
+      - reference: uaa.ldap_group_search_filter
+        label: LDAP Group Search Filter
+        description: 'Required for LDAP groups. Use {0} where the group should be inserted. If unsure, use cn={0}'
       - reference: uaa.ldap_server_ssl_cert
         label: LDAP Server SSL Cert
         description: 'Required only for ldaps://. This is the server certificate to trust for self-signed certificates'
@@ -1678,6 +1684,16 @@ job_types:
         configurable: true
         default: 'mail'
 
+      - name: ldap_group_search_base
+        type: string
+        configurable: true
+        optional: true
+
+      - name: ldap_group_search_filter
+        type: string
+        configurable: true
+        optional: true
+
     manifest: |
       uaa:
         ldap:
@@ -1691,6 +1707,10 @@ job_types:
           sslCertificateAlias: (( ldap_server_ssl_cert_alias.value ))
           mailAttributeName: (( ldap_mail_attribute_name.value ))
           enabled: (( ldap_url.value_present? ))
+          groups:
+            profile_type: groups-map-to-scopes
+            searchBase: (( ldap_group_search_base.value ))
+            groupSearchFilter: (( ldap_group_search_filter.value ))
         login:
           addnew: false
         catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
