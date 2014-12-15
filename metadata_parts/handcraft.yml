@@ -63,7 +63,6 @@ form_types:
         label: MySQL Proxy IPs
         description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer. The external load balancer IP will need to have been defined in the Router tab."
 
-
   - name: cloud_controller
     verifiers:
       - name: Verifiers::WildcardDomainVerifier
@@ -340,10 +339,17 @@ job_types:
         type: boolean
         configurable: true
 
+      - name: dashboard_credentials
+        type: simple_credentials
+        label: Proxy Dashboard Credentials
+        default:
+          identity: admin
+
     manifest: |
       networks:
         apps: default
       external_domain: (( cloud_controller.system_domain ))
+      haproxy_stats_password: (( dashboard_credentials.password ))
       ha_proxy:
         ssl_pem: (( ha_proxy.ssl_rsa_certificate.cert_and_private_key_pems ))
       mysql_proxy:
@@ -2148,7 +2154,7 @@ job_types:
       type: integer
       label: Instances
       configurable: false
-      default: 1
+      default: 3
     property_blueprints:
     - name: vm_credentials
       type: salted_credentials
@@ -2175,8 +2181,7 @@ job_types:
     manifest: |
         admin_password: (( mysql_admin_credentials.password ))
         cluster_ips: (( .mysql.ips ))
-        haproxy_ips: []
-        proxy_ips: (( mysql_proxy.proxy_ips ))
+        proxy_ips: []
         innodb_buffer_pool_size: 2147483648
         max_connections: 1500
         max_user_connections: (( max_user_connections.value ))
