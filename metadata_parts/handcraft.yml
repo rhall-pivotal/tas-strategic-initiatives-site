@@ -55,6 +55,15 @@ form_types:
         label: Router IPs
         description: "Enter the IP address(es) for the Pivotal CF Elastic Runtime Router. This IP must be in your subnet."
 
+  - name: mysql_proxy
+    label: MySQL Proxy Config
+    description: "blah blah"
+    property_inputs:
+      - reference: mysql_proxy.proxy_ips
+        label: MySQL Proxy IPs
+        description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer. The external load balancer IP will need to have been defined in the Router tab."
+
+
   - name: cloud_controller
     verifiers:
       - name: Verifiers::WildcardDomainVerifier
@@ -257,6 +266,95 @@ job_types:
         servers:
           z1: (( .router.ips ))
           z2: []
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+
+  - name: mysql_proxy
+    label: MySQL Proxy
+    resource_label: MySQL Proxy
+    description: Some description for MySQL Proxy
+    template:
+      - proxy
+    release: cf-mysql
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 0
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: proxy_ips
+        type: ip_ranges
+        configurable: true
+        optional: true
+
+      - name: skip_cert_verify
+        type: boolean
+        configurable: true
+
+    manifest: |
+      networks:
+        apps: default
+      external_domain: (( cloud_controller.system_domain ))
+      ha_proxy:
+        ssl_pem: (( ha_proxy.ssl_rsa_certificate.cert_and_private_key_pems ))
+      mysql_proxy:
+        proxy_ips: (( proxy_ips ))
+      mysql_ips: (( .mysql.ips ))
+      nats:
+        user: (( nats.credentials.identity ))
+        password: (( nats.credentials.password ))
+        address: (( nats.first_ip ))
+        machines: (( nats.ips ))
+        port: 4222
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -2078,6 +2176,7 @@ job_types:
         admin_password: (( mysql_admin_credentials.password ))
         cluster_ips: (( .mysql.ips ))
         haproxy_ips: []
+        proxy_ips: (( mysql_proxy.proxy_ips ))
         innodb_buffer_pool_size: 2147483648
         max_connections: 1500
         max_user_connections: (( max_user_connections.value ))
