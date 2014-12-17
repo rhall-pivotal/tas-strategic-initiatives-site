@@ -348,18 +348,19 @@ job_types:
     manifest: |
       networks:
         apps: default
-      external_domain: (( cloud_controller.system_domain ))
+      network_name: default
+      external_domain: (( .cloud_controller.system_domain.value ))
       haproxy_stats_password: (( dashboard_credentials.password ))
       ha_proxy:
-        ssl_pem: (( ha_proxy.ssl_rsa_certificate.cert_and_private_key_pems ))
+        ssl_pem: (( .ha_proxy.ssl_rsa_certificate.cert_and_private_key_pems ))
       mysql_proxy:
-        proxy_ips: (( proxy_ips ))
+        proxy_ips: (( proxy_ips.value ))
       mysql_ips: (( .mysql.ips ))
       nats:
-        user: (( nats.credentials.identity ))
-        password: (( nats.credentials.password ))
-        address: (( nats.first_ip ))
-        machines: (( nats.ips ))
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        machines: (( .nats.ips ))
         port: 4222
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
