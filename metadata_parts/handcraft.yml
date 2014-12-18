@@ -23,6 +23,8 @@ post_deploy_errands:
   - name: smoke-tests
   - name: push-app-usage-service
   - name: notifications
+  - name: autoscaling
+  - name: autoscaling-register-broker
 
 pre_delete_errands:
   - name: destroy-notifications
@@ -1589,7 +1591,7 @@ job_types:
 
       - name: cc_service_broker_client_credentials
         type: simple_credentials
-        label: Autoscaling Service client credentials
+        label: Cloud Controller Service Broker client credentials
         default:
           identity: cc_service_broker_client
 
@@ -1727,7 +1729,7 @@ job_types:
             secret: (( autoscale_client_credentials.password ))
             override: true
             autoapprove: true
-            authorities: "cloud_controller.write,cloud_controller.read,cloud_controller.admin"
+            authorities: "cloud_controller.write,cloud_controller.read,cloud_controller.admin,notifications.write"
             authorized-grant-types: "client_credentials,authorization_code,refresh_token"
             scope: "openid,cloud_controller.permissions,cloud_controller.read,cloud_controller.write"
           system_passwords:
@@ -2993,6 +2995,239 @@ job_types:
         organization: system
         space: notifications-with-ui
         app_domain: (( .cloud_controller.apps_domain.value ))
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+
+  - name: autoscaling
+    label: Deploy CF Autoscaling App
+    resource_label: Deploy CF Autoscaling App
+    description: Deploys the CF Autoscaling AP
+    template:
+      - deploy-autoscaling
+    release: cf-autoscaling
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 512
+        constraints:
+          min: 512
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: broker_credentials
+        type: salted_credentials
+        label: Broker credentials
+
+      - name: encryption_key
+        type: salted_credentials
+        label: Autoscaling encryption key
+
+    manifest: |
+      app_domains: (( .cloud_controller.apps_domain.value ))
+      autoscale:
+        broker:
+          user: (( broker_credentials.identity ))
+          password: (( broker_credentials.password ))
+        cf:
+          admin_user: (( .uaa.admin_credentials.identity ))
+          admin_password: (( .uaa.admin_credentials.password ))
+        encryption_key: (( encryption_key.password ))
+        notifications_host: "https://notifications.(( $runtime.system-domain ))"
+        organization: system
+        space: autoscaling
+      domain: (( .cloud_controller.system_domain.value ))
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+      uaa:
+        clients:
+          autoscaling_service:
+            secret: (( .uaa.autoscale_client_credentials.password ))
+  - name: autoscaling-register-broker
+    label: Register autoscaling service broker
+    resource_label: Register autoscaling service broker
+    description: Register autoscaling service broker
+    template:
+      - register-broker
+    release: cf-autoscaling
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 512
+        constraints:
+          min: 512
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      app_domains: (( .cloud_controller.apps_domain.value ))
+      autoscale:
+        broker:
+          user: (( .autoscaling.broker_credentials.identity ))
+          password: (( .autoscaling.broker_credentials.password ))
+        cf:
+          admin_user: (( .uaa.admin_credentials.identity ))
+          admin_password: (( .uaa.admin_credentials.password ))
+        organization: system
+        space: autoscaling
+      domain: (( .cloud_controller.system_domain.value ))
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  - name: autoscaling-destroy-broker
+    label: Destroy autoscaling service broker
+    resource_label: Destroy autoscaling service broker
+    description: Destroy autoscaling service broker
+    template:
+      - destroy-broker
+    release: cf-autoscaling
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 512
+        constraints:
+          min: 512
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      autoscale:
+        broker:
+          user: (( .autoscaling.broker_credentials.identity ))
+          password: (( .autoscaling.broker_credentials.password ))
+        cf:
+          admin_user: (( .uaa.admin_credentials.identity ))
+          admin_password: (( .uaa.admin_credentials.password ))
+        organization: system
+        space: autoscaling
+      domain: (( .cloud_controller.system_domain.value ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
