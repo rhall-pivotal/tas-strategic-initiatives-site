@@ -24,6 +24,9 @@ post_deploy_errands:
   - name: push-app-usage-service
   - name: notifications
 
+pre_delete_errands:
+  - name: destroy-notifications
+
 form_types:
   - name: ha_proxy
     label: HAProxy
@@ -166,6 +169,10 @@ form_types:
         description: The credentials for the SMTP server that will send emails.
       - reference: .smtp_enable_starttls_auto
         label: SMTP Enable Automatic STARTTLS
+      - reference: .smtp_auth_mechanism
+        label: SMTP Authentication Mechanism
+      - reference: .smtp_crammd5_secret
+        label: SMTP CRAMMD5 secret
 
 job_types:
   - name: ha_proxy
@@ -2792,6 +2799,8 @@ job_types:
         notifications_instance_count: 2
         notifications_ui_instance_count: 1
         network: default
+        organization: system
+        space: notifications-with-ui
         sender: (( .properties.smtp_from.value ))
         uaa:
           notifications_client_id: notifications
@@ -2804,7 +2813,80 @@ job_types:
           port: (( .properties.smtp_port.value ))
           user: (( .properties.smtp_credentials.identity ))
           tls: (( .properties.smtp_enable_starttls_auto.value ))
+          auth_mechanism: (( .properties.smtp_auth_mechanism.value ))
+          crammd5_secret: (( .properties.smtp_crammd5_secret.value ))
         encryption_key: (( encryption_credentials.password ))
+
+  - name: destroy-notifications
+    label: Destroy Notifications
+    resource_label: Destroy Notifications With UI
+    description: Destroy Notifications release for PCF
+    template:
+      - destroy-notifications-with-ui
+    release: notifications-with-ui
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      domain: (( $runtime.system_domain ))
+      notifications_with_ui:
+        cf:
+          admin_user: (( .uaa.admin_credentials.identity ))
+          admin_password: (( .uaa.admin_credentials.password ))
+        organization: system
+        space: notifications-with-ui
+        app_domain: (( .cloud_controller.apps_domain.value ))
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
   - name: acceptance-tests
     label: Run CF Acceptance Tests
@@ -2972,3 +3054,23 @@ property_blueprints:
     type: boolean
     configurable: true
     default: false
+
+  - name: smtp_auth_mechanism
+    type: dropdown_select
+    label: SMTP Authentication Mechanism
+    configurable: true
+    optional: false
+    options:
+      - name: none
+        label: None
+        default: true
+      - name: plain
+        label: Plain
+      - name: cram-md5
+        label: CRAMMD5
+
+  - name: smtp_crammd5_secret
+    type: string
+    label: Secret to use with CRAMMD5 auth mechanism
+    configurable: true
+    optional: true
