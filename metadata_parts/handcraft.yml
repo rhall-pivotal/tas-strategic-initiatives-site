@@ -1956,8 +1956,11 @@ job_types:
           url: "https://notifications.(( $runtime.system_domain ))"
         saml:
           providers:
-            nameId: (( sso_name.value ))
-            idpMetadata: (( sso_xml.value ))
+            (( sso_name.value )):
+              nameID: (( sso_name.value ))
+              idpMetadata: (( sso_xml.value ))
+              showSamlLoginLink: true
+              linkText: (( sso_name.value ))
 
       uaa:
         clients:
