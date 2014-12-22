@@ -145,8 +145,8 @@ form_types:
         label: Email Attribute
         description: "The name of the attribute that contains the user's email address, default value is mail."
       - reference: login.signups_enabled
-        label: Enable sign ups
-        description: "If checked, will allow users to create an account from the log in page."
+        label: Disable Email Sign Up
+        description: "If checked, then users will not be able to create an account or reset their password from the log in page."
 
   - name: smtp_config
     label: SMTP Config
@@ -1869,7 +1869,7 @@ job_types:
       - name: signups_enabled
         type: boolean
         configurable: true
-        default: true
+        default: false
 
     manifest: |
       domain: (( $runtime.system_domain ))
