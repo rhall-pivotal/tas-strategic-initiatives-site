@@ -1749,11 +1749,11 @@ job_types:
             id: notifications_ui_client
             secret: (( .uaa.notifications_ui_client_credentials.password ))
             scope: uaa.none notification_preferences.read notification_preferences.write openid
-            resource_ids: none
             authorized-grant-types: authorization_code client_credentials refresh_token
             authorities: notifications.write critical_notifications.write emails.write notification_preferences.admin
-            autoapprove:
-            redirect_uri: http://example.com/sessions/create
+            autoapprove: true
+            override: true
+            redirect-uri: "https://notifications-ui.(( $runtime.system_domain ))/"
         scim:
           user:
             override: false
@@ -1902,6 +1902,8 @@ job_types:
         idp_entity_alias: sso-sp
         idp_metadata_url: (( sso_url.value ))
         signups_enabled: (( signups_enabled.value ))
+        notifications:
+          url: "https://notifications.(( $runtime.system_domain ))"
 
       uaa:
         clients:
