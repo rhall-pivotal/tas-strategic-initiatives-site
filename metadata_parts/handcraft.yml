@@ -2179,6 +2179,9 @@ job_types:
     - name: notifications_credentials
       type: simple_credentials
       label: MySQL Notifications Credentials
+    - name: autoscale_credentials
+      type: simple_credentials
+      label: MySQL Notifications Credentials
     - name: max_user_connections
       type: integer
       default: 40
@@ -2199,6 +2202,9 @@ job_types:
           - name: notifications
             username: (( notifications_credentials.identity ))
             password: (( notifications_credentials.password ))
+          - name: autoscale
+            username: (( autoscale_credentials.identity ))
+            password: (( autoscale_credentials.password ))
         syslog_aggregator:
           address: (( ..cf.properties.syslog_host.value ))
           port: (( ..cf.properties.syslog_port.value ))
@@ -3075,6 +3081,7 @@ job_types:
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
           admin_password: (( .uaa.admin_credentials.password ))
+        database_url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql.first_ip )):3306/autoscale
         encryption_key: (( encryption_key.password ))
         notifications_host: "https://notifications.(( $runtime.system-domain ))"
         organization: system
