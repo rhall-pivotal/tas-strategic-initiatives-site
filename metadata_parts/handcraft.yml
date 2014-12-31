@@ -1753,7 +1753,7 @@ job_types:
             authorities: notifications.write critical_notifications.write emails.write notification_preferences.admin
             autoapprove: true
             override: true
-            redirect-uri: "https://notifications-ui.(( $runtime.system_domain ))/"
+            redirect-uri: "https://notifications-ui.(( $runtime.system_domain ))/sessions/create"
         scim:
           user:
             override: false
@@ -3023,10 +3023,10 @@ property_blueprints:
     label: Networking Protocol
     configurable: true
     optional: true
+    default: tcp
     options:
       - name: tcp
         label: TCP protocol
-        default: true
       - name: relp
         label: RELP protocol
       - name: udp
@@ -3062,10 +3062,10 @@ property_blueprints:
     label: SMTP Authentication Mechanism
     configurable: true
     optional: false
+    default: none
     options:
       - name: none
         label: None
-        default: true
       - name: plain
         label: Plain
       - name: cram-md5
