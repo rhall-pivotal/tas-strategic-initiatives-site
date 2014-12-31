@@ -1729,9 +1729,10 @@ job_types:
             secret: (( autoscale_client_credentials.password ))
             override: true
             autoapprove: true
-            authorities: "cloud_controller.write,cloud_controller.read,cloud_controller.admin,notifications.write"
+            authorities: "cloud_controller.write,cloud_controller.read,cloud_controller.admin,notifications.write,critical_notifications.write,emails.write"
             authorized-grant-types: "client_credentials,authorization_code,refresh_token"
             scope: "openid,cloud_controller.permissions,cloud_controller.read,cloud_controller.write"
+            access-token-validity: 3600
           system_passwords:
             id: (( system_passwords_client_credentials.identity ))
             secret: (( system_passwords_client_credentials.password ))
