@@ -3083,7 +3083,7 @@ job_types:
           admin_password: (( .uaa.admin_credentials.password ))
         database_url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql.first_ip )):3306/autoscale
         encryption_key: (( encryption_key.password ))
-        notifications_host: "https://notifications.(( $runtime.system-domain ))"
+        notifications_host: "https://notifications.(( $runtime.system_domain ))"
         organization: system
         space: autoscaling
       domain: (( .cloud_controller.system_domain.value ))
