@@ -1764,7 +1764,7 @@ job_types:
             redirect-uri: "https://notifications-ui.(( $runtime.system_domain ))/sessions/create"
         scim:
           user:
-            override: false
+            override: true
           users:
           - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose,notification_preferences.read,notification_preferences.write
           - (( push_console_credentials.identity ))|(( push_console_credentials.password ))|cloud_controller.admin
