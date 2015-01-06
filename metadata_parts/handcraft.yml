@@ -3306,6 +3306,9 @@ job_types:
         apps_domain: (( .cloud_controller.apps_domain.value ))
         admin_user: (( .uaa.admin_credentials.identity ))
         admin_password: (( .uaa.admin_credentials.password ))
+        include_logging: true
+        include_operator: true
+        nodes: 3
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
 
   - name: compilation
