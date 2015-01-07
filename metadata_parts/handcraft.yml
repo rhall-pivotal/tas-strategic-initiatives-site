@@ -1769,7 +1769,7 @@ job_types:
           user:
             override: true
           users:
-          - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose,notification_preferences.read,notification_preferences.write
+          - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose,notification_preferences.read,notification_preferences.write,notifications.manage,notification_templates.read,notification_templates.write
           - (( push_console_credentials.identity ))|(( push_console_credentials.password ))|cloud_controller.admin
           - (( run_smoke_tests_credentials.identity ))|(( run_smoke_tests_credentials.password ))|cloud_controller.admin
           - (( system_services_credentials.identity ))|(( system_services_credentials.password ))|cloud_controller.admin
@@ -2912,6 +2912,7 @@ job_types:
           admin_user: (( .uaa.admin_credentials.identity ))
           admin_password: (( .uaa.admin_credentials.password ))
         app_domain: (( .cloud_controller.apps_domain.value ))
+        app_subdomain: notifications-ui
         database_url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql.first_ip )):3306/notifications
         notifications_instance_count: 2
         notifications_ui_instance_count: 1
@@ -3002,6 +3003,7 @@ job_types:
         organization: system
         space: notifications-with-ui
         app_domain: (( .cloud_controller.apps_domain.value ))
+        app_subdomain: notifications-ui
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
