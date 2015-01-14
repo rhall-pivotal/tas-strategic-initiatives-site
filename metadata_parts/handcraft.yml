@@ -1617,6 +1617,12 @@ job_types:
         default:
           identity: notifications
 
+      - name: notifications_template_client_credentials
+        type: simple_credentials
+        label: Notifications client for modifying templates
+        default:
+          identity: notifications_templates
+
       - name: notifications_ui_client_credentials
         type: simple_credentials
         label: Notifications UI client credentials
@@ -1754,7 +1760,13 @@ job_types:
           notifications:
             id: notifications
             secret: (( .uaa.notifications_client_credentials.password ))
-            authorities: cloud_controller.admin,scim.read,notifications.write,critical_notifications.write,emails.write
+            authorities: cloud_controller.admin,scim.read,notifications.write,critical_notifications.write,emails.write,notification_templates.write
+            authorized-grant-types: client_credentials
+          notifications_template:
+            id: (( .uaa.notifications_template_client_credentials.identity ))
+            secret: (( .uaa.notifications_template_client_credentials.password ))
+            scope: clients.read,clients.write,clients.secret,notification_templates.write
+            authorities: clients.read,clients.write,clients.secret
             authorized-grant-types: client_credentials
           notifications_ui_client:
             id: notifications_ui_client
@@ -2921,6 +2933,8 @@ job_types:
         space: notifications-with-ui
         sender: (( .properties.smtp_from.value ))
         uaa:
+          admin_client: (( .uaa.notifications_template_client_credentials.identity ))
+          admin_secret: (( .uaa.notifications_template_client_credentials.password ))
           notifications_client_id: notifications
           notifications_client_secret: (( .uaa.notifications_client_credentials.password ))
           notifications_ui_client_id: notifications_ui_client
