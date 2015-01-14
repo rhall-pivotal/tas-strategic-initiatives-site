@@ -61,7 +61,7 @@ form_types:
     label: MySQL Proxy Config
     description: MySQL Proxy configuration
     property_inputs:
-      - reference: mysql_proxy.proxy_ips
+      - reference: mysql_proxy.static_ips
         label: MySQL Proxy IPs
         description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer. The external load balancer IP will need to have been defined in the Router tab."
 
@@ -2088,7 +2088,7 @@ job_types:
         default:
           identity: vcap
 
-      - name: proxy_ips
+      - name: static_ips
         type: ip_ranges
         configurable: true
         optional: true
@@ -2112,7 +2112,7 @@ job_types:
       ha_proxy:
         ssl_pem: (( .ha_proxy.ssl_rsa_certificate.cert_and_private_key_pems ))
       mysql_proxy:
-        proxy_ips: (( proxy_ips.value ))
+        static_ips: (( static_ips.value ))
       mysql_ips: (( .mysql.ips ))
       nats:
         user: (( .nats.credentials.identity ))
@@ -2201,7 +2201,7 @@ job_types:
     manifest: |
         admin_password: (( mysql_admin_credentials.password ))
         cluster_ips: (( .mysql.ips ))
-        proxy_ips: []
+        proxy_ips: (( .mysql_proxy.ips ))
         innodb_buffer_pool_size: 2147483648
         max_connections: 1500
         max_user_connections: (( max_user_connections.value ))
