@@ -1766,7 +1766,7 @@ job_types:
             id: (( .uaa.notifications_template_client_credentials.identity ))
             secret: (( .uaa.notifications_template_client_credentials.password ))
             scope: clients.read,clients.write,clients.secret
-            authorities: clients.read,clients.write,clients.secret,notification_templates.write
+            authorities: clients.read,clients.write,clients.secret,notification_templates.write,notification_templates.read,notifications.manage
             authorized-grant-types: client_credentials
           notifications_ui_client:
             id: notifications_ui_client
