@@ -2201,7 +2201,7 @@ job_types:
     manifest: |
         admin_password: (( mysql_admin_credentials.password ))
         cluster_ips: (( .mysql.ips ))
-        proxy_ips: (( .mysql_proxy.ips ))
+        proxy_ips: []
         innodb_buffer_pool_size: 2147483648
         max_connections: 1500
         max_user_connections: (( max_user_connections.value ))
