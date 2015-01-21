@@ -2926,7 +2926,7 @@ job_types:
         app_domain: (( .cloud_controller.apps_domain.value ))
         app_subdomain: notifications-ui
         database_url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql.first_ip )):3306/notifications
-        notifications_instance_count: 2
+        notifications_instance_count: 1
         notifications_ui_instance_count: 1
         network: default
         organization: system
