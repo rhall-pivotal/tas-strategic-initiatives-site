@@ -124,11 +124,6 @@ form_types:
   - name: login_ldap
     label: LDAP Config
     description: Configure an LDAP endpoint for the UAA
-    verifiers:
-      - name: Verifiers::LDAPBindVerifier
-        properties:
-          - ldap_url
-          - credentials
     property_inputs:
       - reference: uaa.ldap_url
         label: LDAP Server URL
@@ -1899,7 +1894,7 @@ job_types:
       - name: signups_enabled
         type: boolean
         configurable: true
-        default: true
+        default: false
 
     manifest: |
       domain: (( $runtime.system_domain ))
