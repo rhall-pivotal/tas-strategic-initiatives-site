@@ -1711,9 +1711,9 @@ job_types:
             secret: (( login_client_credentials.password ))
             override: true
             autoapprove: true
-            authorities: "oauth.login"
+            authorities: "oauth.login,scim.write,clients.read,notifications.write,critical_notifications.write,emails.write,scim.userids,password.write"
             authorized-grant-types: "authorization_code,client_credentials,refresh_token"
-            scope: "openid"
+            scope: "openid,oauth.approvals"
           (( console_client_credentials.identity )):
             id: (( console_client_credentials.identity ))
             secret: (( console_client_credentials.password ))
