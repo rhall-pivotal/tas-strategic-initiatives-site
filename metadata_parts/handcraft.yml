@@ -124,11 +124,6 @@ form_types:
   - name: login_ldap
     label: LDAP Config
     description: Configure an LDAP endpoint for the UAA
-    verifiers:
-      - name: Verifiers::LDAPBindVerifier
-        properties:
-          - ldap_url
-          - credentials
     property_inputs:
       - reference: uaa.ldap_url
         label: LDAP Server URL
@@ -1716,15 +1711,15 @@ job_types:
             secret: (( login_client_credentials.password ))
             override: true
             autoapprove: true
-            authorities: "oauth.login"
+            authorities: "oauth.login,scim.write,clients.read,notifications.write,critical_notifications.write,emails.write,scim.userids,password.write"
             authorized-grant-types: "authorization_code,client_credentials,refresh_token"
-            scope: "openid"
+            scope: "openid,oauth.approvals"
           (( console_client_credentials.identity )):
             id: (( console_client_credentials.identity ))
             secret: (( console_client_credentials.password ))
             override: true
             autoapprove: true
-            authorities: "scim.write,scim.read,cloud_controller.read,cloud_controller.write,password.write,uaa.admin,uaa.resource,cloud_controller.admin"
+            authorities: "scim.write,scim.read,cloud_controller.read,cloud_controller.write,password.write,uaa.admin,uaa.resource,cloud_controller.admin,emails.write,notifications.write"
             authorized-grant-types: "authorization_code,client_credentials,password,implicit"
             scope: "openid,cloud_controller.read,cloud_controller.write,password.write,console.admin,console.support,cloud_controller.admin"
             access-token-validity: 1209600
@@ -1792,7 +1787,7 @@ job_types:
           user:
             override: true
           users:
-          - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose,notification_preferences.read,notification_preferences.write,notifications.manage,notification_templates.read,notification_templates.write
+          - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose,notification_preferences.read,notification_preferences.write,notifications.manage,notification_templates.read,notification_templates.write,emails.write,notifications.write
           - (( push_console_credentials.identity ))|(( push_console_credentials.password ))|cloud_controller.admin
           - (( run_smoke_tests_credentials.identity ))|(( run_smoke_tests_credentials.password ))|cloud_controller.admin
           - (( system_services_credentials.identity ))|(( system_services_credentials.password ))|cloud_controller.admin
@@ -1910,7 +1905,7 @@ job_types:
       - name: signups_enabled
         type: boolean
         configurable: true
-        default: true
+        default: false
 
     manifest: |
       domain: (( $runtime.system_domain ))
@@ -3436,7 +3431,7 @@ property_blueprints:
     type: boolean
     configurable: true
     default: false
-    
+
   - name: smtp_auth_mechanism
     type: dropdown_select
     label: SMTP Authentication Mechanism
