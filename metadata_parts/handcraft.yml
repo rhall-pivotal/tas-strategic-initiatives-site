@@ -1950,7 +1950,6 @@ job_types:
         serviceProviderCertificate: (( service_provider_key_credentials.cert_pem ))
         spring_profiles: saml,ldap
         idp_entity_alias: sso-sp
-        idp_metadata_url: (( sso_url.value ))
         signups_enabled: (( signups_enabled.value ))
         notifications:
           url: "https://notifications.(( $runtime.system_domain ))"
@@ -1958,7 +1957,8 @@ job_types:
           providers:
             (( sso_name.value )):
               nameID: (( sso_name.value ))
-              idpMetadata: (( sso_xml.value ))
+              idpMetadataXML: (( sso_xml.value ))
+              idpMetadataURL: (( sso_url.value ))
               showSamlLoginLink: true
               linkText: (( sso_name.value ))
 
