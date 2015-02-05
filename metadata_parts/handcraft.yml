@@ -1780,7 +1780,7 @@ job_types:
           notifications_ui_client:
             id: notifications_ui_client
             secret: (( .uaa.notifications_ui_client_credentials.password ))
-            scope: uaa.none notification_preferences.read notification_preferences.write openid
+            scope: notification_preferences.read notification_preferences.write openid
             authorized-grant-types: authorization_code client_credentials refresh_token
             authorities: notifications.write critical_notifications.write emails.write notification_preferences.admin
             autoapprove: true
