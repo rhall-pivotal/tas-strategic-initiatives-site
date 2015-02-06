@@ -124,7 +124,7 @@ form_types:
         label: Provider Metadata
         description: "Metadata XML content for the Identity Provider"
       - reference: login.sso_url
-        label: Provider Metadata URL
+        label: "(OR) Provider Metadata URL"
         description: "Enter an SSO endpoint. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata."
 
   - name: login_ldap
@@ -1956,7 +1956,7 @@ job_types:
         saml:
           providers:
             (( sso_name.value )):
-              nameID: (( sso_name.value ))
+              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
               idpMetadataXML: (( sso_xml.value ))
               idpMetadataURL: (( sso_url.value ))
               showSamlLoginLink: true
