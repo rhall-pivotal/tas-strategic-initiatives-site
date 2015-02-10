@@ -111,14 +111,20 @@ form_types:
 
   - name: login_sso
     label: SSO Config
-    description: Configure an SSO endpoint for the UAA
+    description: Configure Identity Provider
     verifiers:
       - name: Verifiers::SsoUrlVerifier
         properties:
           - sso_url
     property_inputs:
+      - reference: login.sso_name
+        label: Provider Name
+        description: "Name of Identity Provider. Allowed characters are alphanumeric, _, and -."
+      - reference: login.sso_xml
+        label: Provider Metadata
+        description: "Metadata XML content for the Identity Provider"
       - reference: login.sso_url
-        label: SSO URL
+        label: "(OR) Provider Metadata URL"
         description: "Enter an SSO endpoint. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata."
 
   - name: login_ldap
@@ -184,7 +190,7 @@ job_types:
     label: HAProxy
     resource_label: HAProxy
     description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal CF Elastic Runtime router IP. Self signed certificates will function properly.
-    template:
+    job_templates:
       - haproxy
     release: cf
 
@@ -271,7 +277,7 @@ job_types:
     label: NATS
     resource_label: NATS
     description: Acts as the Pivotal CF Elastic Runtime message bus
-    template:
+    job_templates:
       - nats
     release: cf
 
@@ -350,7 +356,7 @@ job_types:
     label: etcd
     resource_label: etcd
     description: An etcd cluster node, which maintains the state of applications, and its metrics server
-    template:
+    job_templates:
     - etcd
     - etcd_metrics_server
     release: cf
@@ -426,7 +432,7 @@ job_types:
     label: Health Manager
     resource_label: Health Manager
     description: Reports app health to the Cloud Controller
-    template:
+    job_templates:
       - hm9000
     release: cf
 
@@ -521,7 +527,7 @@ job_types:
     label: NFS Server
     resource_label: NFS Server
     description: Stores droplets and app packages on behalf of Cloud Controller
-    template:
+    job_templates:
       - debian_nfs_server
     release: cf
 
@@ -586,7 +592,7 @@ job_types:
     label: Cloud Controller Database
     resource_label: Cloud Controller Database
     description: Stores Cloud Controller information
-    template:
+    job_templates:
       - postgres
     release: cf
 
@@ -666,7 +672,7 @@ job_types:
     label: Cloud Controller
     resource_label: Cloud Controller
     description: Coordinates Pivotal CF Elastic Runtime application lifecycles
-    template:
+    job_templates:
       - cloud_controller_ng
       - metron_agent
       - nfs_mounter
@@ -905,7 +911,7 @@ job_types:
     label: Clock Global
     resource_label: Clock Global
     description: Schedules asynchronous tasks for cloud controller
-    template:
+    job_templates:
       - cloud_controller_clock
       - metron_agent
       - nfs_mounter
@@ -1056,7 +1062,7 @@ job_types:
     label: Cloud Controller Worker
     resource_label: Cloud Controller Worker
     description: Worker for cloud controller asynchronous tasks
-    template:
+    job_templates:
       - cloud_controller_worker
       - metron_agent
       - nfs_mounter
@@ -1207,7 +1213,7 @@ job_types:
     label: Router
     resource_label: Router
     description: Routers route Internet traffic to applications and between Pivotal CF Elastic Runtime components.
-    template:
+    job_templates:
       - gorouter
       - metron_agent
     release: cf
@@ -1309,7 +1315,7 @@ job_types:
     label: Collector
     resource_label: Collector
     description: Collects system information in order to provide health and status metrics
-    template:
+    job_templates:
       - collector
     release: cf
 
@@ -1391,7 +1397,7 @@ job_types:
     label: UAA Database
     resource_label: UAA Database
     description: Stores user information for the UAA
-    template:
+    job_templates:
       - postgres
     release: cf
 
@@ -1472,7 +1478,7 @@ job_types:
     label: UAA
     resource_label: UAA
     description: Pivotal CF Elastic Runtime's Authentication and Authorization server
-    template:
+    job_templates:
       - uaa
     release: cf
 
@@ -1837,7 +1843,7 @@ job_types:
     label: Login
     resource_label: Login
     description: Communicates between SAML endpoints and the UAA
-    template:
+    job_templates:
       - login
     release: cf
 
@@ -1907,6 +1913,16 @@ job_types:
         configurable: true
         default: false
 
+      - name: sso_xml
+        type: text
+        configurable: true
+        optional: true
+
+      - name: sso_name
+        type: string
+        configurable: true
+        optional: true
+
     manifest: |
       domain: (( $runtime.system_domain ))
 
@@ -1929,10 +1945,17 @@ job_types:
         serviceProviderCertificate: (( service_provider_key_credentials.cert_pem ))
         spring_profiles: saml,ldap
         idp_entity_alias: sso-sp
-        idp_metadata_url: (( sso_url.value ))
         signups_enabled: (( signups_enabled.value ))
         notifications:
           url: "https://notifications.(( $runtime.system_domain ))"
+        saml:
+          providers:
+            (( sso_name.value )):
+              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+              idpMetadataXML: (( sso_xml.value ))
+              idpMetadataURL: (( sso_url.value ))
+              showSamlLoginLink: true
+              linkText: (( sso_name.value ))
 
       uaa:
         clients:
@@ -1957,7 +1980,7 @@ job_types:
     label: Web Console
     resource_label: Console Database
     description: A Web application will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
-    template:
+    job_templates:
       - postgres
     release: cf
 
@@ -2038,7 +2061,7 @@ job_types:
     label: MySQL Proxy
     resource_label: MySQL Proxy
     description: MySQL Proxy
-    template:
+    job_templates:
       - proxy
     release: cf-mysql
 
@@ -2136,7 +2159,7 @@ job_types:
     label: MySQL Server
     resource_label: MySQL Server
     description: Multi-tenant MySQL server.
-    template:
+    job_templates:
       - mysql
     release: cf-mysql
     max_in_flight: 1
@@ -2232,7 +2255,7 @@ job_types:
     label: DEA
     resource_label: DEA
     description: Droplet Execution Agents run the applications pushed to Pivotal CF Elastic Runtime
-    template:
+    job_templates:
       - dea_next
       - dea_logging_agent
       - metron_agent
@@ -2335,7 +2358,7 @@ job_types:
     label: Doppler Server
     resource_label: Doppler Server
     description: Doppler server collects application logs
-    template:
+    job_templates:
       - doppler
     release: cf
 
@@ -2440,7 +2463,7 @@ job_types:
     label: Loggregator Trafficcontroller
     resource_label: Loggregator Trafficcontroller
     description: Loggregator trafficcontroller distributes requests to Loggregator servers
-    template:
+    job_templates:
       - loggregator_trafficcontroller
     release: cf
 
@@ -2540,7 +2563,7 @@ job_types:
     label: Push Console
     resource_label: Push Console
     description: Pushes the Pivotal Dev Console application to your Elastic Runtime installation
-    template:
+    job_templates:
       - push-console
     release: push-console-release
     errand: true
@@ -2649,7 +2672,7 @@ job_types:
     label: Push App Usage Service
     resource_label: Push App Usage Service
     description: Monitors usage of an application pushed to your Elastic Runtime installation
-    template:
+    job_templates:
       - push-app-usage-service
     release: push-console-release
     errand: true
@@ -2790,7 +2813,7 @@ job_types:
     label: Run Smoke Tests
     resource_label: Run Smoke Tests
     description: Runs Smoke Tests against your Elastic Runtime installation
-    template:
+    job_templates:
       - smoke-tests
     release: cf
     errand: true
@@ -2863,7 +2886,7 @@ job_types:
     label: Notifications
     resource_label: Notifications With UI
     description: Notifications release for PCF
-    template:
+    job_templates:
       - deploy-notifications-with-ui
     release: notifications-with-ui
     errand: true
@@ -2959,7 +2982,7 @@ job_types:
     label: Destroy Notifications
     resource_label: Destroy Notifications With UI
     description: Destroy Notifications release for PCF
-    template:
+    job_templates:
       - destroy-notifications-with-ui
     release: notifications-with-ui
     errand: true
@@ -3031,7 +3054,7 @@ job_types:
     label: Deploy CF Autoscaling App
     resource_label: Deploy CF Autoscaling App
     description: Deploys the CF Autoscaling AP
-    template:
+    job_templates:
       - deploy-autoscaling
     release: cf-autoscaling
     errand: true
@@ -3120,7 +3143,7 @@ job_types:
     label: Register autoscaling service broker
     resource_label: Register autoscaling service broker
     description: Register autoscaling service broker
-    template:
+    job_templates:
       - register-broker
     release: cf-autoscaling
     errand: true
@@ -3194,7 +3217,7 @@ job_types:
     label: Destroy autoscaling service broker
     resource_label: Destroy autoscaling service broker
     description: Destroy autoscaling service broker
-    template:
+    job_templates:
       - destroy-broker
     release: cf-autoscaling
     errand: true
@@ -3267,7 +3290,7 @@ job_types:
     label: Run CF Acceptance Tests
     resource_label: Run CF Acceptance Tests
     description: Runs CF Acceptance Tests against your Elastic Runtime installation
-    template:
+    job_templates:
       - acceptance-tests
     release: cf
     errand: true
