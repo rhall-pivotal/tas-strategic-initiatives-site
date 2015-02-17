@@ -2209,8 +2209,10 @@ job_types:
     - name: instances
       type: integer
       label: Instances
-      configurable: false
-      default: 3
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
     property_blueprints:
     - name: vm_credentials
       type: salted_credentials
