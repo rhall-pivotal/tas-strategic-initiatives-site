@@ -2362,6 +2362,8 @@ job_types:
     description: Doppler server collects application logs
     template:
       - doppler
+      - metron_agent
+      - syslog_drain_binder
     release: cf
 
     resource_definitions:
@@ -2460,6 +2462,13 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+
+      system_domain: (( $runtime.system_domain ))
+      cc:
+        bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
 
   - name: loggregator_trafficcontroller
     label: Loggregator Trafficcontroller
