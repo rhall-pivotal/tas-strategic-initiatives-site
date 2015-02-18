@@ -2642,6 +2642,8 @@ job_types:
         admin_username: (( .uaa.push_console_credentials.identity ))
         admin_password: (( .uaa.push_console_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
+        console_space_name: apps_manager
+        console_app_name: apps_manager
       services:
         authentication:
           CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
@@ -2659,6 +2661,7 @@ job_types:
         cf_cc_api_url: (( $runtime.system_api_url ))
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
         cf_console_url: (( $runtime.console_url ))
+        cf_notifications_service_url: "https://notifications.(( $runtime.system_domain ))"
         default_from: (( .properties.smtp_from.value ))
         usage_service_host: app-usage.(( $runtime.system_domain ))
         bundle_without: test development hosted_only
