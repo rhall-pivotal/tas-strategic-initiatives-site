@@ -2452,6 +2452,9 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
 
+      metron_agent
+        zone: z1
+
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
