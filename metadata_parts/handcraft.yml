@@ -2314,7 +2314,7 @@ job_types:
         type: integer
         label: Instances
         configurable: true
-        default: 2
+        default: 1
         constraints:
           min: 1
 
@@ -3366,7 +3366,7 @@ job_types:
         admin_password: (( .uaa.admin_credentials.password ))
         include_logging: true
         include_operator: true
-        nodes: 3
+        ginkgo_opts: -nodes=2
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
 
   - name: compilation
