@@ -36,7 +36,7 @@ pre_delete_errands:
 
 form_types:
   - name: ha_proxy
-    label: HAProxy
+    label: IPs and Ports
     description: |
       HAProxy is the default load balancer for SSL termination. Alternatively,
       you can use your own load balancer and forward traffic to the Cloud
@@ -44,23 +44,19 @@ form_types:
     verifiers:
       - name: Verifiers::StaticIpsVerifier
     property_inputs:
+      - reference: router.static_ips
+        label: Router IPs
+        description: "Enter the IP address(es) for the Pivotal CF Elastic Runtime Router. This IP must be in your subnet."
       - reference: ha_proxy.static_ips
         label: HAProxy IPs
         description: "Enter the IP address(es) for HAProxy. You must point your DNS to this IP unless you are using your own load balancer. HAProxy's IP must be in your subnet."
+      - reference: .logger_endpoint_port
+        label: Loggregator Port
+        description: "Default is 443. Enter a new value to override the default"
       - reference: ha_proxy.ssl_rsa_certificate
         label: SSL Certificate
       - reference: ha_proxy.skip_cert_verify
         label: Trust Self-Signed Certificates
-
-  - name: router
-    label: Router IPs
-    description: "Enter the IP address(es) for the Pivotal CF Elastic Runtime Router. This IP must be in your subnet."
-    verifiers:
-      - name: Verifiers::StaticIpsVerifier
-    property_inputs:
-      - reference: router.static_ips
-        label: Router IPs
-        description: "Enter the IP address(es) for the Pivotal CF Elastic Runtime Router. This IP must be in your subnet."
 
   - name: mysql_proxy
     label: MySQL Proxy Config
@@ -899,6 +895,8 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
 
+      logger_endpoint:
+        port: (( .properties.logger_endpoint_port.value || 443 ))
       metron_agent:
         zone: z1
       metron_endpoint:
@@ -1047,6 +1045,8 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
 
+      logger_endpoint:
+        port: (( .properties.logger_endpoint_port.value || 443 ))
       metron_agent:
         zone: z1
       metron_endpoint:
@@ -1198,6 +1198,8 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
 
+      logger_endpoint:
+        port: (( .properties.logger_endpoint_port.value || 443 ))
       metron_agent:
         zone: z1
       metron_endpoint:
@@ -3489,5 +3491,10 @@ property_blueprints:
   - name: smtp_crammd5_secret
     type: string
     label: Secret to use with CRAMMD5 auth mechanism
+    configurable: true
+    optional: true
+
+  - name: logger_endpoint_port
+    type: port
     configurable: true
     optional: true
