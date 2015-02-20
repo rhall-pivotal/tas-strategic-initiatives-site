@@ -2970,7 +2970,8 @@ job_types:
           admin_password: (( .uaa.admin_credentials.password ))
         app_domain: (( .cloud_controller.apps_domain.value ))
         app_subdomain: notifications-ui
-        database_url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
+        database:
+          url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
         notifications_instance_count: 1
         notifications_ui_instance_count: 1
         network: default
@@ -3143,7 +3144,8 @@ job_types:
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
           admin_password: (( .uaa.admin_credentials.password ))
-        database_url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
+        database:
+          url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
         encryption_key: (( encryption_key.password ))
         notifications_host: "https://notifications.(( $runtime.system_domain ))"
         organization: system
