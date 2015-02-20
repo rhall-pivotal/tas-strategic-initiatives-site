@@ -64,7 +64,7 @@ form_types:
 
   - name: mysql_proxy
     label: MySQL Proxy Config
-    description: "This service provides a proxy tier that routes MySQL connections from applications to healthy cluster nodes. Configure DNS and/or your own load balancer to point to proxy instances for increased availability. TCP healthchecks can be configured against port 1936."
+    description: "A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936."
     property_inputs:
       - reference: mysql_proxy.static_ips
         label: MySQL Proxy IPs
