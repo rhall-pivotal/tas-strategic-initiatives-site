@@ -1,18 +1,15 @@
 ---
-metadata_version: '1.3'
+metadata_version: '1.4'
 provides_product_versions:
 - name: cf
   version: 1.4.0.0
 product_version: &product_version "1.4.0.0$PRERELEASE_VERSION$"
-requires_product_versions:
-  - name: microbosh
-    version: "~> 1.3"
 label: Pivotal Elastic Runtime
 description:
   Gives developers the ability to push apps on a dynamically-configured software stack
-image: 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
+deprecated_tile_image: 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
 rank: 90
-target_installer_version: 1.3.0.0
+target_installer_version: 1.4.0.0
 
 install_time_verifiers:
   - name: Verifiers::SsoUrlVerifier
@@ -200,7 +197,7 @@ job_types:
     label: HAProxy
     resource_label: HAProxy
     description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal CF Elastic Runtime router IP. Self signed certificates will function properly.
-    template:
+    job_templates:
       - haproxy
     release: cf
 
@@ -287,7 +284,7 @@ job_types:
     label: NATS
     resource_label: NATS
     description: Acts as the Pivotal CF Elastic Runtime message bus
-    template:
+    job_templates:
       - nats
     release: cf
 
@@ -366,7 +363,7 @@ job_types:
     label: etcd
     resource_label: etcd
     description: An etcd cluster node, which maintains the state of applications, and its metrics server
-    template:
+    job_templates:
     - etcd
     - etcd_metrics_server
     release: cf
@@ -442,7 +439,7 @@ job_types:
     label: Health Manager
     resource_label: Health Manager
     description: Reports app health to the Cloud Controller
-    template:
+    job_templates:
       - hm9000
     release: cf
 
@@ -537,7 +534,7 @@ job_types:
     label: NFS Server
     resource_label: NFS Server
     description: Stores droplets and app packages on behalf of Cloud Controller
-    template:
+    job_templates:
       - debian_nfs_server
     release: cf
 
@@ -602,7 +599,7 @@ job_types:
     label: Cloud Controller Database
     resource_label: Cloud Controller Database
     description: Stores Cloud Controller information
-    template:
+    job_templates:
       - postgres
     release: cf
 
@@ -682,7 +679,7 @@ job_types:
     label: Cloud Controller
     resource_label: Cloud Controller
     description: Coordinates Pivotal CF Elastic Runtime application lifecycles
-    template:
+    job_templates:
       - cloud_controller_ng
       - metron_agent
       - nfs_mounter
@@ -921,7 +918,7 @@ job_types:
     label: Clock Global
     resource_label: Clock Global
     description: Schedules asynchronous tasks for cloud controller
-    template:
+    job_templates:
       - cloud_controller_clock
       - metron_agent
       - nfs_mounter
@@ -1072,7 +1069,7 @@ job_types:
     label: Cloud Controller Worker
     resource_label: Cloud Controller Worker
     description: Worker for cloud controller asynchronous tasks
-    template:
+    job_templates:
       - cloud_controller_worker
       - metron_agent
       - nfs_mounter
@@ -1223,7 +1220,7 @@ job_types:
     label: Router
     resource_label: Router
     description: Routers route Internet traffic to applications and between Pivotal CF Elastic Runtime components.
-    template:
+    job_templates:
       - gorouter
       - metron_agent
     release: cf
@@ -1325,7 +1322,7 @@ job_types:
     label: Collector
     resource_label: Collector
     description: Collects system information in order to provide health and status metrics
-    template:
+    job_templates:
       - collector
     release: cf
 
@@ -1407,7 +1404,7 @@ job_types:
     label: UAA Database
     resource_label: UAA Database
     description: Stores user information for the UAA
-    template:
+    job_templates:
       - postgres
     release: cf
 
@@ -1488,7 +1485,7 @@ job_types:
     label: UAA
     resource_label: UAA
     description: Pivotal CF Elastic Runtime's Authentication and Authorization server
-    template:
+    job_templates:
       - uaa
     release: cf
 
@@ -1853,7 +1850,7 @@ job_types:
     label: Login
     resource_label: Login
     description: Communicates between SAML endpoints and the UAA
-    template:
+    job_templates:
       - login
     release: cf
 
@@ -1985,7 +1982,7 @@ job_types:
     label: Web Console
     resource_label: Console Database
     description: A Web application will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
-    template:
+    job_templates:
       - postgres
     release: cf
 
@@ -2066,7 +2063,7 @@ job_types:
     label: MySQL Proxy
     resource_label: MySQL Proxy
     description: MySQL Proxy
-    template:
+    job_templates:
       - proxy
     release: cf-mysql
 
@@ -2169,7 +2166,7 @@ job_types:
     label: MySQL Server
     resource_label: MySQL Server
     description: Multi-tenant MySQL server.
-    template:
+    job_templates:
       - mysql
     release: cf-mysql
     max_in_flight: 1
@@ -2267,7 +2264,7 @@ job_types:
     label: DEA
     resource_label: DEA
     description: Droplet Execution Agents run the applications pushed to Pivotal CF Elastic Runtime
-    template:
+    job_templates:
       - dea_next
       - dea_logging_agent
       - metron_agent
@@ -2370,7 +2367,7 @@ job_types:
     label: Doppler Server
     resource_label: Doppler Server
     description: Doppler server collects application logs
-    template:
+    job_templates:
       - doppler
     release: cf
 
@@ -2475,7 +2472,7 @@ job_types:
     label: Loggregator Trafficcontroller
     resource_label: Loggregator Trafficcontroller
     description: Loggregator trafficcontroller distributes requests to Loggregator servers
-    template:
+    job_templates:
       - loggregator_trafficcontroller
     release: cf
 
@@ -2575,7 +2572,7 @@ job_types:
     label: Push Console
     resource_label: Push Console
     description: Pushes the Pivotal Dev Console application to your Elastic Runtime installation
-    template:
+    job_templates:
       - push-apps-manager
     release: push-console-release
     errand: true
@@ -2685,7 +2682,7 @@ job_types:
     label: Push App Usage Service
     resource_label: Push App Usage Service
     description: Monitors usage of an application pushed to your Elastic Runtime installation
-    template:
+    job_templates:
       - push-app-usage-service
     release: push-console-release
     errand: true
@@ -2826,7 +2823,7 @@ job_types:
     label: Run Smoke Tests
     resource_label: Run Smoke Tests
     description: Runs Smoke Tests against your Elastic Runtime installation
-    template:
+    job_templates:
       - smoke-tests
     release: cf
     errand: true
@@ -2899,7 +2896,7 @@ job_types:
     label: Notifications
     resource_label: Notifications With UI
     description: Notifications release for PCF
-    template:
+    job_templates:
       - deploy-notifications-with-ui
     release: notifications-with-ui
     errand: true
@@ -2995,7 +2992,7 @@ job_types:
     label: Destroy Notifications
     resource_label: Destroy Notifications With UI
     description: Destroy Notifications release for PCF
-    template:
+    job_templates:
       - destroy-notifications-with-ui
     release: notifications-with-ui
     errand: true
@@ -3067,7 +3064,7 @@ job_types:
     label: Deploy CF Autoscaling App
     resource_label: Deploy CF Autoscaling App
     description: Deploys the CF Autoscaling AP
-    template:
+    job_templates:
       - deploy-autoscaling
     release: cf-autoscaling
     errand: true
@@ -3156,7 +3153,7 @@ job_types:
     label: Register autoscaling service broker
     resource_label: Register autoscaling service broker
     description: Register autoscaling service broker
-    template:
+    job_templates:
       - register-broker
     release: cf-autoscaling
     errand: true
@@ -3230,7 +3227,7 @@ job_types:
     label: Destroy autoscaling service broker
     resource_label: Destroy autoscaling service broker
     description: Destroy autoscaling service broker
-    template:
+    job_templates:
       - destroy-broker
     release: cf-autoscaling
     errand: true
@@ -3303,7 +3300,7 @@ job_types:
     label: Run CF Acceptance Tests
     resource_label: Run CF Acceptance Tests
     description: Runs CF Acceptance Tests against your Elastic Runtime installation
-    template:
+    job_templates:
       - acceptance-tests
     release: cf
     errand: true
@@ -3387,9 +3384,9 @@ job_types:
         type: integer
         label: Ephemeral Disk
         configurable: true
-        default: 6_144
+        default: 10_240
         constraints:
-          min: 6_144
+          min: 10_240
 
       - name: persistent_disk
         type: integer
