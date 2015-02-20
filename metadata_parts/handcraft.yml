@@ -896,7 +896,7 @@ job_types:
         machines: (( .etcd_server.ips ))
 
       logger_endpoint:
-        port: (( .properties.logger_endpoint_port.value || 443 ))
+        port: (( .properties.logger_endpoint_port.value || "443" ))
       metron_agent:
         zone: z1
       metron_endpoint:
@@ -1046,7 +1046,7 @@ job_types:
         machines: (( .etcd_server.ips ))
 
       logger_endpoint:
-        port: (( .properties.logger_endpoint_port.value || 443 ))
+        port: (( .properties.logger_endpoint_port.value || "443" ))
       metron_agent:
         zone: z1
       metron_endpoint:
@@ -1199,7 +1199,7 @@ job_types:
         machines: (( .etcd_server.ips ))
 
       logger_endpoint:
-        port: (( .properties.logger_endpoint_port.value || 443 ))
+        port: (( .properties.logger_endpoint_port.value || "443" ))
       metron_agent:
         zone: z1
       metron_endpoint:
