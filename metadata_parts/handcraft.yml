@@ -2371,6 +2371,8 @@ job_types:
     description: Doppler server collects application logs
     job_templates:
       - doppler
+      - metron_agent
+      - syslog_drain_binder
     release: cf
 
     resource_definitions:
@@ -2459,6 +2461,9 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
 
+      metron_agent:
+        zone: z1
+
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -2469,6 +2474,13 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+
+      system_domain: (( $runtime.system_domain ))
+      cc:
+        bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
 
   - name: loggregator_trafficcontroller
     label: Loggregator Trafficcontroller
@@ -3366,6 +3378,7 @@ job_types:
         include_logging: true
         include_operator: true
         ginkgo_opts: -nodes=2
+        include_services: true
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
 
   - name: compilation
