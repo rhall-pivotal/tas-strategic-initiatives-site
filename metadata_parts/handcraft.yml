@@ -1950,6 +1950,7 @@ job_types:
         notifications:
           url: "https://notifications.(( $runtime.system_domain ))"
         saml:
+          entityid: "http://login.(( $runtime.system_domain ))"
           providers:
             (( sso_name.value )):
               nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
@@ -1957,6 +1958,7 @@ job_types:
               idpMetadataURL: (( sso_url.value ))
               showSamlLoginLink: true
               linkText: (( sso_name.value ))
+              metadataTrustCheck: false
 
       uaa:
         clients:
