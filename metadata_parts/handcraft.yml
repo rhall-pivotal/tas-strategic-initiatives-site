@@ -2650,6 +2650,8 @@ job_types:
         admin_username: (( .uaa.push_console_credentials.identity ))
         admin_password: (( .uaa.push_console_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
+        console_space_name: apps_manager
+        console_app_name: apps_manager
       services:
         authentication:
           CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
@@ -2667,6 +2669,7 @@ job_types:
         cf_cc_api_url: (( $runtime.system_api_url ))
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
         cf_console_url: (( $runtime.console_url ))
+        cf_notifications_service_url: "https://notifications.(( $runtime.system_domain ))"
         default_from: (( .properties.smtp_from.value ))
         usage_service_host: app-usage.(( $runtime.system_domain ))
         bundle_without: test development hosted_only
@@ -2975,7 +2978,8 @@ job_types:
           admin_password: (( .uaa.admin_credentials.password ))
         app_domain: (( .cloud_controller.apps_domain.value ))
         app_subdomain: notifications-ui
-        database_url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
+        database:
+          url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
         notifications_instance_count: 1
         notifications_ui_instance_count: 1
         network: default
@@ -3076,7 +3080,8 @@ job_types:
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
           admin_password: (( .uaa.admin_credentials.password ))
-        database_url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
+        database:
+          url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
         encryption_key: (( encryption_key.password ))
         notifications_host: "https://notifications.(( $runtime.system_domain ))"
         organization: system
