@@ -28,9 +28,6 @@ post_deploy_errands:
   - name: autoscaling
   - name: autoscaling-register-broker
 
-pre_delete_errands:
-  - name: destroy-notifications
-
 form_types:
   - name: ha_proxy
     label: IPs and Ports
@@ -3001,78 +2998,6 @@ job_types:
           auth_mechanism: (( .properties.smtp_auth_mechanism.value ))
           crammd5_secret: (( .properties.smtp_crammd5_secret.value ))
         encryption_key: (( encryption_credentials.password ))
-
-  - name: destroy-notifications
-    label: Destroy Notifications
-    resource_label: Destroy Notifications With UI
-    description: Destroy Notifications release for PCF
-    job_templates:
-      - destroy-notifications-with-ui
-    release: notifications-with-ui
-    errand: true
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        label: VM credentials
-        default:
-          identity: vcap
-
-    manifest: |
-      domain: (( $runtime.system_domain ))
-      notifications_with_ui:
-        cf:
-          admin_user: (( .uaa.admin_credentials.identity ))
-          admin_password: (( .uaa.admin_credentials.password ))
-        organization: system
-        space: notifications-with-ui
-        app_domain: (( .cloud_controller.apps_domain.value ))
-        app_subdomain: notifications-ui
-      ssl:
-        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
   - name: autoscaling
     label: Deploy CF Autoscaling App
