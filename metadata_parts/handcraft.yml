@@ -38,6 +38,29 @@ post_deploy_errands:
   - name: autoscaling-register-broker
 
 form_types:
+  - name: system_database
+    label: System Database Config
+    description: Select internal if you want to keep using the system-provided databases. Otherwise, select external if you want to use your own database service, such as the Amazon Relational Database Service (RDS), to host the system-required databases, in which case you will need to create the database schemas. Consult Pivotal Cloud Foundry documentation for schema requirements.
+    property_inputs:
+    - reference: .properties.system_database
+      label: System Database Config
+      selector_property_inputs:
+      - reference: .properties.system_database.internal
+        label: Internal Databases
+        description:
+      - reference: .properties.system_database.external
+        label: External Databases
+        description:
+        property_inputs:
+          - reference: .properties.system_database.external.host
+            label: Hostname DNS Name
+          - reference: .properties.system_database.external.port
+            label: TCP Port
+          - reference: .properties.system_database.external.username
+            label: Username
+          - reference: .properties.system_database.external.password
+            label: Password
+
   - name: system_blobstore
     label: File Storage Config
     description: Select internal if you want to keep using the system-provided filestore. Otherwise select Amazon S3 if you want to use your own S3 filestore.
@@ -888,18 +911,7 @@ job_types:
         tasks_disabled: true
         uaa_resource_id: cloud_controller,cloud_controller_service_permissions
 
-      ccdb:
-        address: (( .ccdb.first_ip ))
-        port: 2544
-        db_scheme: "postgres"
-        roles:
-        - tag: admin
-          name: (( .ccdb.credentials.identity ))
-          password: (( .ccdb.credentials.password ))
-        databases:
-        - tag: cc
-          name: ccdb
-          citext: true
+      ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
       networks:
         apps: default
@@ -1048,18 +1060,8 @@ job_types:
         default_staging_security_groups:
           - all_open
 
-      ccdb:
-        address: (( .ccdb.first_ip ))
-        port: 2544
-        db_scheme: "postgres"
-        roles:
-        - tag: admin
-          name: (( .ccdb.credentials.identity ))
-          password: (( .ccdb.credentials.password ))
-        databases:
-        - tag: cc
-          name: ccdb
-          citext: true
+      ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
+
 
       networks:
         apps: default
@@ -1205,18 +1207,8 @@ job_types:
         default_staging_security_groups:
           - all_open
 
-      ccdb:
-        address: (( .ccdb.first_ip ))
-        port: 2544
-        db_scheme: "postgres"
-        roles:
-        - tag: admin
-          name: (( .ccdb.credentials.identity ))
-          password: (( .ccdb.credentials.password ))
-        databases:
-        - tag: cc
-          name: ccdb
-          citext: true
+      ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
+
 
       networks:
         apps: default
@@ -1849,32 +1841,11 @@ job_types:
           - (( system_services_credentials.identity ))|(( system_services_credentials.password ))|cloud_controller.admin
           - (( system_verification_credentials.identity ))|(( system_verification_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support
 
-      ccdb:
-        address: (( .ccdb.first_ip ))
-        port: 2544
-        db_scheme: "postgres"
-        roles:
-        - tag: admin
-          name: (( .ccdb.credentials.identity ))
-          password: (( .ccdb.credentials.password ))
-        databases:
-        - tag: cc
-          name: ccdb
-          citext: true
+      ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
       domain: (( $runtime.system_domain ))
 
-      uaadb:
-        address: (( .uaadb.first_ip ))
-        port: 2544
-        db_scheme: postgresql
-        roles:
-        - tag: admin
-          name: (( .uaadb.credentials.identity ))
-          password: (( .uaadb.credentials.password ))
-        databases:
-        - tag: uaa
-          name: uaa
+      uaadb: (( .properties.system_database.selected_option.parsed_manifest(uaadb) ))
       networks:
         apps: default
 
@@ -2731,10 +2702,7 @@ job_types:
         workers_memory: 1536MB
         scheduler_memory: 1536MB
       databases:
-        console:
-          ip: (( .consoledb.first_ip ))
-          username: (( .consoledb.credentials.identity ))
-          password: (( .consoledb.credentials.password ))
+        console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -2870,12 +2838,7 @@ job_types:
         allow_test_data_creation: false
         allow_viewing_logs: false
       databases:
-        app_usage_service:
-          name: app_usage_service
-          port: 3306
-          ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-          username: (( .mysql.app_usage_credentials.identity ))
-          password: (( .mysql.app_usage_credentials.password ))
+        app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -3024,8 +2987,7 @@ job_types:
           admin_password: (( .uaa.admin_credentials.password ))
         app_domain: (( .cloud_controller.apps_domain.value ))
         app_subdomain: notifications-ui
-        database:
-          url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
+        database: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
         notifications_instance_count: 1
         notifications_ui_instance_count: 1
         network: default
@@ -3126,8 +3088,7 @@ job_types:
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
           admin_password: (( .uaa.admin_credentials.password ))
-        database:
-          url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
+        database: (( .properties.system_database.selected_option.parsed_manifest(autoscaling) ))
         encryption_key: (( encryption_key.password ))
         notifications_host: "https://notifications.(( $runtime.system_domain ))"
         organization: system
@@ -3484,6 +3445,118 @@ property_blueprints:
     type: port
     configurable: true
     optional: true
+
+  - name: system_database
+    type: selector
+    configurable: true
+    default: internal
+    option_templates:
+      - name: internal
+        select_value: internal
+        named_manifests:
+          - name: ccdb
+            manifest: |
+              address: (( .ccdb.first_ip ))
+              port: 2544
+              db_scheme: "postgres"
+              roles:
+              - tag: admin
+                name: (( .ccdb.credentials.identity ))
+                password: (( .ccdb.credentials.password ))
+              databases:
+              - tag: cc
+                name: ccdb
+                citext: true
+          - name: uaadb
+            manifest: |
+              address: (( .uaadb.first_ip ))
+              port: 2544
+              db_scheme: postgresql
+              roles:
+              - tag: admin
+                name: (( .uaadb.credentials.identity ))
+                password: (( .uaadb.credentials.password ))
+              databases:
+              - tag: uaa
+                name: uaa
+          - name: notifications
+            manifest: |
+              url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
+          - name: autoscaling
+            manifest: |
+              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
+          - name: console
+            manifest: |
+              ip: (( .consoledb.first_ip ))
+              username: (( .consoledb.credentials.identity ))
+              password: (( .consoledb.credentials.password ))
+          - name: push-app-usage-service
+            manifest: |
+              name: app_usage_service
+              port: 3306
+              ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
+              username: (( .mysql.app_usage_credentials.identity ))
+              password: (( .mysql.app_usage_credentials.password ))
+
+      - name: external
+        named_manifests:
+          - name: ccdb
+            manifest: |
+              address: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              db_scheme: "mysql"
+              roles:
+              - tag: admin
+                name: (( .properties.system_database.external.username.value ))
+                password: (( .properties.system_database.external.password.value ))
+              databases:
+              - tag: cc
+                name: ccdb
+          - name: uaadb
+            manifest: |
+              address: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              db_scheme: "mysql"
+              roles:
+              - tag: admin
+                name: (( .properties.system_database.external.username.value ))
+                password: (( .properties.system_database.external.password.value ))
+              databases:
+              - tag: uaa
+                name: uaa
+          - name: notifications
+            manifest: |
+              url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/notifications
+          - name: autoscaling
+            manifest: |
+              url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/autoscale
+          - name: console
+            manifest: |
+              ip: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              username: (( .properties.system_database.external.username.value ))
+              password: (( .properties.system_database.external.password.value ))
+          - name: push-app-usage-service
+            manifest: |
+              name: app_usage_service
+              port: (( .properties.system_database.external.port.value ))
+              ip: (( .properties.system_database.external.host.value ))
+              username: (( .properties.system_database.external.username.value ))
+              password: (( .properties.system_database.external.password.value ))
+        select_value: external
+        property_blueprints:
+          - name: port
+            type: port
+            configurable: true
+          - name: host
+            type: string
+            configurable: true
+          - name: username
+            type: string
+            configurable: true
+          - name: password
+            type: secret
+            configurable: true
 
   - name: system_blobstore
     type: selector
