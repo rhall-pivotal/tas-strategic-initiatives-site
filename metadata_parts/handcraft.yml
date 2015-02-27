@@ -1786,8 +1786,8 @@ job_types:
           notifications_ui_client:
             id: notifications_ui_client
             secret: (( .uaa.notifications_ui_client_credentials.password ))
-            scope: notification_preferences.read notification_preferences.write openid
-            authorized-grant-types: authorization_code client_credentials refresh_token
+            scope: notification_preferences.read,notification_preferences.write,openid
+            authorized-grant-types: authorization_code,client_credentials,refresh_token
             authorities: notification_preferences.admin
             autoapprove: true
             override: true
@@ -1950,6 +1950,7 @@ job_types:
         notifications:
           url: "https://notifications.(( $runtime.system_domain ))"
         saml:
+          entityid: "http://login.(( $runtime.system_domain ))"
           providers:
             (( sso_name.value )):
               nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
@@ -1957,6 +1958,7 @@ job_types:
               idpMetadataURL: (( sso_url.value ))
               showSamlLoginLink: true
               linkText: (( sso_name.value ))
+              metadataTrustCheck: false
 
       uaa:
         clients:
