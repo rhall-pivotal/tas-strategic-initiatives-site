@@ -14,11 +14,13 @@ target_installer_version: 1.4.0.0
 install_time_verifiers:
   - name: Verifiers::SsoUrlVerifier
     properties:
-      - login.sso_url
+      url: login.sso_url
   - name: Verifiers::WildcardDomainVerifier
     properties:
-    - cloud_controller.system_domain
-    - cloud_controller.apps_domain
+      domain: cloud_controller.system_domain
+  - name: Verifiers::WildcardDomainVerifier
+    properties:
+      domain: cloud_controller.apps_domain
 
 post_deploy_errands:
   - name: push-console
@@ -67,8 +69,10 @@ form_types:
     verifiers:
       - name: Verifiers::WildcardDomainVerifier
         properties:
-        - system_domain
-        - apps_domain
+          domain: system_domain
+      - name: Verifiers::WildcardDomainVerifier
+        properties:
+          domain: apps_domain
     label: Cloud Controller
     description: Coordinates Pivotal CF Elastic Runtime application lifecycles
     property_inputs:
@@ -113,7 +117,7 @@ form_types:
     verifiers:
       - name: Verifiers::SsoUrlVerifier
         properties:
-          - sso_url
+          url: sso_url
     property_inputs:
       - reference: login.sso_name
         label: Provider Name
@@ -131,8 +135,8 @@ form_types:
     verifiers:
       - name: Verifiers::LDAPBindVerifier
         properties:
-          - ldap_url
-          - credentials
+          url: ldap_url
+          credentials: credentials
     property_inputs:
       - reference: uaa.ldap_url
         label: LDAP Server URL
