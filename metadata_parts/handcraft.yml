@@ -16,9 +16,11 @@ install_time_verifiers:
     properties:
       url: .login.sso_url
   - name: Verifiers::WildcardDomainVerifier
+    ignorable: true
     properties:
       domain: .cloud_controller.system_domain
   - name: Verifiers::WildcardDomainVerifier
+    ignorable: true
     properties:
       domain: .cloud_controller.apps_domain
 
