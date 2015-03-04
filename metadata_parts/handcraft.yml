@@ -3490,6 +3490,7 @@ property_blueprints:
               ip: (( .consoledb.first_ip ))
               username: (( .consoledb.credentials.identity ))
               password: (( .consoledb.credentials.password ))
+              adapter: postgres
           - name: push-app-usage-service
             manifest: |
               name: app_usage_service
@@ -3536,6 +3537,7 @@ property_blueprints:
               port: (( .properties.system_database.external.port.value ))
               username: (( .properties.system_database.external.username.value ))
               password: (( .properties.system_database.external.password.value ))
+              adapter: mysql
           - name: push-app-usage-service
             manifest: |
               name: app_usage_service
