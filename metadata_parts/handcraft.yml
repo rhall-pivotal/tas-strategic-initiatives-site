@@ -22,6 +22,12 @@ install_time_verifiers:
     ignorable: true
     properties:
       domain: .cloud_controller.apps_domain
+  - name: Verifiers::BlobstoreVerifier
+    ignorable: true
+    properties:
+      access_key_id: .properties.system_blobstore.external.access_key
+      secret_access_key: .properties.system_blobstore.external.secret_key
+      bucket_name: .properties.system_blobstore.external.bucket
 
 post_deploy_errands:
   - name: push-console
@@ -35,6 +41,12 @@ form_types:
   - name: system_blobstore
     label: File Storage Config
     description: Select internal if you want to keep using the system-provided filestore. Otherwise select Amazon S3 if you want to use your own S3 filestore.
+    verifiers:
+      - name: Verifiers::BlobstoreVerifier
+        properties:
+          access_key_id: .properties.system_blobstore.external.access_key
+          secret_access_key: .properties.system_blobstore.external.secret_key
+          bucket_name: .properties.system_blobstore.external.bucket
     property_inputs:
     - reference: .properties.system_blobstore
       label: File Storage Config
