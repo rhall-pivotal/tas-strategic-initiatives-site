@@ -1,0 +1,1 @@
+require 'krafa/client/tasks'
