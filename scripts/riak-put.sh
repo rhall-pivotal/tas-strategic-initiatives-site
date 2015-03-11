@@ -12,7 +12,7 @@ set -e
 SCRIPT_DIR=$( cd "$( dirname $0 )" && pwd)
 UPLOAD_FILE=$1
 S3_PATH=$2
-if [ $3 == "public=true" ]; then
+if [ -n "$3" ] && [ $3 = "public=true" ]; then
   ARGS="-P"
 fi
 FOLDER_OF_UPLOAD_FILE="$( cd "$( dirname $UPLOAD_FILE )" && pwd )"
