@@ -14,13 +14,13 @@ target_installer_version: 1.4.0.0
 install_time_verifiers:
   - name: Verifiers::SsoUrlVerifier
     properties:
-      url: login.sso_url
+      url: .login.sso_url
   - name: Verifiers::WildcardDomainVerifier
     properties:
-      domain: cloud_controller.system_domain
+      domain: .cloud_controller.system_domain
   - name: Verifiers::WildcardDomainVerifier
     properties:
-      domain: cloud_controller.apps_domain
+      domain: .cloud_controller.apps_domain
 
 post_deploy_errands:
   - name: push-console
@@ -40,28 +40,28 @@ form_types:
     verifiers:
       - name: Verifiers::StaticIpsVerifier
     property_inputs:
-      - reference: router.static_ips
+      - reference: .router.static_ips
         label: Router IPs
         description: "Enter the IP address(es) for the Pivotal CF Elastic Runtime Router. This IP must be in your subnet."
-      - reference: ha_proxy.static_ips
+      - reference: .ha_proxy.static_ips
         label: HAProxy IPs
         description: "Enter the IP address(es) for HAProxy. You must point your DNS to this IP unless you are using your own load balancer. HAProxy's IP must be in your subnet."
-      - reference: .logger_endpoint_port
+      - reference: .properties.logger_endpoint_port
         label: Loggregator Port
         description: "Default is 443. Enter a new value to override the default"
-      - reference: ha_proxy.ssl_rsa_certificate
+      - reference: .ha_proxy.ssl_rsa_certificate
         label: SSL Certificate
-      - reference: ha_proxy.skip_cert_verify
+      - reference: .ha_proxy.skip_cert_verify
         label: Trust Self-Signed Certificates
 
   - name: mysql_proxy
     label: MySQL Proxy Config
     description: "A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936."
     property_inputs:
-      - reference: mysql_proxy.static_ips
+      - reference: .mysql_proxy.static_ips
         label: MySQL Proxy IPs
         description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer. The external load balancer IP will need to have been defined in the Router tab."
-      - reference: mysql_proxy.service_hostname
+      - reference: .mysql_proxy.service_hostname
         label: MySQL Service Hostname
         description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
 
@@ -76,24 +76,24 @@ form_types:
     label: Cloud Controller
     description: Coordinates Pivotal CF Elastic Runtime application lifecycles
     property_inputs:
-      - reference: cloud_controller.system_domain
+      - reference: .cloud_controller.system_domain
         label: System Domain
         description: "This domain is used to target and push apps to Pivotal CF Elastic Runtime (ex: api.my-cf.com). You must set up a wildcard DNS record for this domain that points to the router static IP(s) or a load balancer."
-      - reference: cloud_controller.apps_domain
+      - reference: .cloud_controller.apps_domain
         label: Apps Domain
         description: This field specifies a default apps domain for Pivotal CF Elastic Runtime. Use the command line interface to delete domains.
-      - reference: cloud_controller.encrypt_key
+      - reference: .cloud_controller.encrypt_key
         label: Cloud Controller DB Encryption Key
         description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
-      - reference: cloud_controller.max_file_size
+      - reference: .cloud_controller.max_file_size
         label: Maximum File Upload Size (MB)
         description: This value limits the size of an application upload.
-      - reference: cloud_controller.disable_custom_buildpacks
+      - reference: .cloud_controller.disable_custom_buildpacks
         label: Disable Custom Buildpacks
-      - reference: cloud_controller.default_quota_memory_limit_mb
+      - reference: .cloud_controller.default_quota_memory_limit_mb
         label: Default Quota App Memory (MB)
         description: Memory limit for all apps in an org using the default quota. For initial install only. Use the CLI to manage quotas.
-      - reference: cloud_controller.default_quota_max_number_services
+      - reference: .cloud_controller.default_quota_max_number_services
         label: Default Quota Service Instances
         description: Maximum allowed number of service instances in an org using the default quota. For initial install only. Use the CLI to manage quotas.
 
@@ -101,13 +101,13 @@ form_types:
     label: External Endpoints
     description: Forwards syslog messages to an external server. Leave these options blank unless you are providing a syslogd server.
     property_inputs:
-      - reference: .syslog_host
+      - reference: .properties.syslog_host
         label: IP Address of Syslog Aggregator Host
         description: The host must be reachable from the Elastic Runtime network, accept TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd).
-      - reference: .syslog_port
+      - reference: .properties.syslog_port
         label: Syslog Aggregator Port
         description: The typical syslogd port is 514. Ensure syslogd is listening on external interfaces.
-      - reference: .syslog_protocol
+      - reference: .properties.syslog_protocol
         label: Networking Protocol
         description: Transport to be used when forwarding logs
 
@@ -119,13 +119,13 @@ form_types:
         properties:
           url: sso_url
     property_inputs:
-      - reference: login.sso_name
+      - reference: .login.sso_name
         label: Provider Name
         description: "Name of Identity Provider. Allowed characters are alphanumeric, _, and -."
-      - reference: login.sso_xml
+      - reference: .login.sso_xml
         label: Provider Metadata
         description: "Metadata XML content for the Identity Provider"
-      - reference: login.sso_url
+      - reference: .login.sso_url
         label: "(OR) Provider Metadata URL"
         description: "Enter an SSO endpoint. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata."
 
@@ -138,31 +138,31 @@ form_types:
           url: ldap_url
           credentials: credentials
     property_inputs:
-      - reference: uaa.ldap_url
+      - reference: .uaa.ldap_url
         label: LDAP Server URL
         description: 'Required for LDAP. The LDAP server url.  Must start with ldap:// or ldaps://'
-      - reference: uaa.credentials
+      - reference: .uaa.credentials
         label: LDAP Credentials
         description: Required for LDAP. This is the unique name and password for binding to the LDAP Server.
-      - reference: uaa.ldap_search_base
+      - reference: .uaa.ldap_search_base
         label: LDAP Search Base
         description: 'Required for LDAP. Example: ou=cloud,dc=example,dc=com'
-      - reference: uaa.ldap_search_filter
+      - reference: .uaa.ldap_search_filter
         label: LDAP Search Filter
         description: 'Required for LDAP. Use {0} where the username should be inserted. If unsure, use cn={0}'
-      - reference: uaa.ldap_group_search_base
+      - reference: .uaa.ldap_group_search_base
         label: LDAP Group Search Base
         description: 'Required for LDAP groups. Example: ou=cloud,dc=example,dc=com'
-      - reference: uaa.ldap_group_search_filter
+      - reference: .uaa.ldap_group_search_filter
         label: LDAP Group Search Filter
         description: 'Required for LDAP groups. Use {0} where the group should be inserted. If unsure, use cn={0}'
-      - reference: uaa.ldap_server_ssl_cert
+      - reference: .uaa.ldap_server_ssl_cert
         label: LDAP Server SSL Cert
         description: 'Required only for ldaps://. This is the server certificate to trust for self-signed certificates'
-      - reference: uaa.ldap_server_ssl_cert_alias
+      - reference: .uaa.ldap_server_ssl_cert_alias
         label: LDAP Server SSL Cert AltName
         description: "Required only for ldaps:// + self-signed Cert. The SSL certificate's AltNames"
-      - reference: uaa.ldap_mail_attribute_name
+      - reference: .uaa.ldap_mail_attribute_name
         label: Email Attribute
         description: "The name of the attribute that contains the user's email address, default value is mail."
 
@@ -170,23 +170,23 @@ form_types:
     label: SMTP Config
     description: Configuration for Simple Mail Transfer Protocol
     property_inputs:
-      - reference: .smtp_from
+      - reference: .properties.smtp_from
         label: From Email
         description: The email address from which emails are sent.
-      - reference: .smtp_address
+      - reference: .properties.smtp_address
         label: Address of SMTP Server
         description: The SMTP address of the server that will send emails.
-      - reference: .smtp_port
+      - reference: .properties.smtp_port
         label: Port of SMTP Server
         description: The port of the SMTP server that will send emails.
-      - reference: .smtp_credentials
+      - reference: .properties.smtp_credentials
         label: SMTP Server Credentials
         description: The credentials for the SMTP server that will send emails.
-      - reference: .smtp_enable_starttls_auto
+      - reference: .properties.smtp_enable_starttls_auto
         label: SMTP Enable Automatic STARTTLS
-      - reference: .smtp_auth_mechanism
+      - reference: .properties.smtp_auth_mechanism
         label: SMTP Authentication Mechanism
-      - reference: .smtp_crammd5_secret
+      - reference: .properties.smtp_crammd5_secret
         label: SMTP CRAMMD5 secret
 
 job_types:
