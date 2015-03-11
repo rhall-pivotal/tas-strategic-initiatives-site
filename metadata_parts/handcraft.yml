@@ -805,7 +805,7 @@ job_types:
         bootstrap_admin_email: admin
         bulk_api_password: (( bulk_api_credentials.password ))
         client_max_body_size: (( max_file_size.value ))M
-        db_encryption_key: (( encrypt_key.secret || db_encryption_credentials.password ))
+        db_encryption_key: (( encrypt_key.value || db_encryption_credentials.password ))
         default_running_security_groups:
           - all_open
         default_staging_security_groups:
@@ -986,7 +986,7 @@ job_types:
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
-        db_encryption_key: (( .cloud_controller.encrypt_key.secret || .cloud_controller.db_encryption_credentials.password ))
+        db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
         internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
         internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
         quota_definitions:
@@ -1139,7 +1139,7 @@ job_types:
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
-        db_encryption_key: (( .cloud_controller.encrypt_key.secret || .cloud_controller.db_encryption_credentials.password ))
+        db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
         internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
         internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
         quota_definitions:
@@ -2671,7 +2671,7 @@ job_types:
           password: (( .properties.smtp_credentials.password ))
           enable_starttls_auto: (( .properties.smtp_enable_starttls_auto.value ))
       env:
-        secret_token: (( secret_token.secret ))
+        secret_token: (( secret_token.value ))
         cf_cc_api_url: (( $runtime.system_api_url ))
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
         cf_console_url: (( $runtime.console_url ))
@@ -2812,7 +2812,7 @@ job_types:
           password: (( smtp_credentials.password ))
           enable_starttls_auto: (( smtp_enable_starttls_auto.value ))
       env:
-        secret_token: (( secret_token.secret ))
+        secret_token: (( secret_token.value ))
         cf_cc_api_url: (( $runtime.system_api_url ))
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
         cf_console_url: (( $runtime.console_url ))
