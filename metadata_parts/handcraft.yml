@@ -1294,10 +1294,10 @@ job_types:
         optional: true
 
     manifest: |
+      request_timeout_in_seconds: 900
       networks:
         apps: default
       router:
-        endpoint_timeout: 300
         status:
           user: router_status
           password: (( status_credentials.password ))
