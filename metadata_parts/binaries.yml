@@ -1,7 +1,7 @@
 ---
 stemcell_criteria:
   os: ubuntu-trusty
-  version: '2818' # TODO: https://www.pivotaltracker.com/story/show/87846512
+  version: '2859'
   requires_cpi: false
 releases:
 # MySQL release is first because its packages take the longest to compile.
@@ -14,8 +14,8 @@ releases:
   name: cf
   version: '200'
   md5: f9721192b8fedfdece8c0962ec6af567
-  url: https://bosh.io/d/github.com/cloudfoundry/cf-release?v=200
-- file: push-console-release-console-du-jour-70.tgz
+  url: http://cache.vsphere.gocd.cf-app.com/cf-releases/cf-200.tgz
+- file: push-console-release-console-du-jour-76.tgz
   name: push-console-release
   version: 'console-du-jour-76'
   md5: b1502548114db01360c6b5260aa13888
