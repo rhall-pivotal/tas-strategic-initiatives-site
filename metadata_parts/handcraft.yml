@@ -847,6 +847,8 @@ job_types:
               - protocol: all
                 destination: 0.0.0.0-255.255.255.255
         stacks:
+          - name: cflinuxfs2
+            description: Cloud Foundry Linux-based filesystem
           - name: windows2012
             description: "Microsoft Windows / .Net 64 bit"
         staging_upload_user: (( staging_upload_credentials.identity ))
@@ -866,9 +868,6 @@ job_types:
         - tag: cc
           name: ccdb
           citext: true
-
-      dea_next:
-        advertise_interval_in_seconds: 5
 
       networks:
         apps: default
