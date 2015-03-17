@@ -1,0 +1,658 @@
+---
+releng_notifications_smtp_config: &releng_notifications_smtp_config
+  from: 'identitystaging@mailinator.com'
+  address: 'smtp.sendgrid.net'
+  port: 587
+  credentials:
+    identity: 'cfidentitystaging'
+    password: 'incervolotbo'
+  enable_starttls_auto: true
+  auth_mechanism: plain
+environments:
+  badger:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "badger"
+      folder: "badger"
+    ops_manager_settings:
+      ip: "10.85.1.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.1.1"
+      reserved_ip_ranges: "10.85.1.0-10.85.1.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.1.254' ]
+      ssl_cert_domains: '*.badger.wild.cf-app.com'
+      system_domain: 'badger.wild.cf-app.com'
+      apps_domain: 'badger.wild.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  collie:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "collie"
+      folder: "collie"
+    ops_manager_settings:
+      ip: "10.85.10.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.10.1"
+      reserved_ip_ranges: "10.85.10.0-10.85.10.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.10.254' ]
+      ssl_cert_domains: '*.collie.wild.cf-app.com'
+      system_domain: 'collie.wild.cf-app.com'
+      apps_domain: 'collie.wild.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  cougar:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "cougar"
+      folder: "cougar"
+    ops_manager_settings:
+      ip: "10.85.11.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.11.1"
+      reserved_ip_ranges: "10.85.11.0-10.85.11.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.11.254' ]
+      ssl_cert_domains: '*.cougar.wild.cf-app.com'
+      system_domain: 'cougar.wild.cf-app.com'
+      apps_domain: 'cougar.wild.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  crane:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "crane"
+      folder: "crane"
+    ops_manager_settings:
+      ip: "10.85.13.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.13.1"
+      reserved_ip_ranges: "10.85.13.0-10.85.13.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.13.254' ]
+      ssl_cert_domains: '*.crane.wild.cf-app.com'
+      system_domain: 'crane.wild.cf-app.com'
+      apps_domain: 'crane.wild.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  dodo:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "dodo"
+      folder: "dodo"
+    ops_manager_settings:
+      ip: "10.85.17.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.17.1"
+      reserved_ip_ranges: "10.85.17.0-10.85.17.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.17.254' ]
+      ssl_cert_domains: '*.dodo.wild.cf-app.com'
+      system_domain: 'dodo.wild.cf-app.com'
+      apps_domain: 'dodo.wild.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  dog:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "dog"
+      folder: "dog"
+    ops_manager_settings:
+      ip: "10.85.18.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.18.1"
+      reserved_ip_ranges: "10.85.18.0-10.85.18.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.18.254' ]
+      ssl_cert_domains: '*.dog.wild.cf-app.com'
+      system_domain: 'dog.wild.cf-app.com'
+      apps_domain: 'dog.wild.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  falcon:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "falcon"
+      folder: "falcon"
+    ops_manager_settings:
+      ip: "10.85.23.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.23.1"
+      reserved_ip_ranges: "10.85.23.0-10.85.23.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.23.254' ]
+      ssl_cert_domains: '*.falcon.wild.cf-app.com'
+      system_domain: 'falcon.wild.cf-app.com'
+      apps_domain: 'falcon.wild.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  frog:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "frog"
+      folder: "frog"
+    ops_manager_settings:
+      ip: "10.85.25.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.25.1"
+      reserved_ip_ranges: "10.85.25.0-10.85.25.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.25.254' ]
+      ssl_cert_domains: '*.frog.wild.cf-app.com'
+      system_domain: 'frog.wild.cf-app.com'
+      apps_domain: 'frog.wild.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  hyena:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "hyena"
+      folder: "hyena"
+    ops_manager_settings:
+      ip: "10.85.35.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.35.1"
+      reserved_ip_ranges: "10.85.35.0-10.85.35.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.35.254' ]
+      ssl_cert_domains: '*.hyena.wild.cf-app.com'
+      system_domain: 'hyena.wild.cf-app.com'
+      apps_domain: 'hyena.wild.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  jackal:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "jackal"
+      folder: "jackal"
+    ops_manager_settings:
+      ip: "10.85.36.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.36.1"
+      reserved_ip_ranges: "10.85.36.0-10.85.36.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.36.254' ]
+      ssl_cert_domains: '*.jackal.wild.cf-app.com'
+      system_domain: 'jackal.wild.cf-app.com'
+      apps_domain: 'jackal.wild.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  mole:
+    krafa:
+      has_internet: false
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "mole"
+      folder: "mole"
+    ops_manager_settings:
+      ip: "10.85.44.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.44.1"
+      reserved_ip_ranges: "10.85.44.0-10.85.44.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      disabled_post_deploy_errand_names: [ 'notifications' ]
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.44.254' ]
+      ssl_cert_domains: '*.mole.wild.cf-app.com'
+      system_domain: 'mole.wild.cf-app.com'
+      apps_domain: 'mole.wild.cf-app.com'
+  moose:
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "moose"
+      folder: "moose"
+    ops_manager_settings:
+      ip: "10.85.45.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.45.1"
+      reserved_ip_ranges: "10.85.45.0-10.85.45.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      disabled_post_deploy_errand_names: [ 'notifications' ]
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.45.254' ]
+      ssl_cert_domains: '*.moose.wild.cf-app.com'
+      system_domain: 'moose.wild.cf-app.com'
+      apps_domain: 'moose.wild.cf-app.com'
+  rat:
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "rat"
+      folder: "rat"
+    ops_manager_settings:
+      ip: "10.85.56.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.56.1"
+      reserved_ip_ranges: "10.85.56.0-10.85.56.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.56.254' ]
+      ssl_cert_domains: '*.rat.wild.cf-app.com'
+      system_domain: 'rat.wild.cf-app.com'
+      apps_domain: 'rat.wild.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  skunk:
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "10.84.32.61"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "private"
+      cluster: "private"
+      datastore: "private"
+      network: "skunk"
+      folder: "skunk"
+    ops_manager_settings:
+      ip: "10.85.59.16"
+      netmask: "255.255.255.0"
+      gateway: "10.85.59.1"
+      reserved_ip_ranges: "10.85.59.0-10.85.59.90"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '10.85.59.254' ]
+      ssl_cert_domains: '*.skunk.wild.cf-app.com'
+      system_domain: 'skunk.wild.cf-app.com'
+      apps_domain: 'skunk.wild.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  mesa:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: pivotalcf
+      web_password: pivotalcf
+    vcenter:
+      host: 10.84.32.61
+      user: root
+      password: look74Beer
+    location:
+      datacenter: private
+      cluster: geography
+      datastore: public
+      network: mesa
+      folder: mesa
+    ops_manager_settings:
+      ip: 10.85.87.16
+      netmask: 255.255.255.0
+      gateway: 10.85.87.1
+      reserved_ip_ranges: 10.85.87.0-10.85.87.90
+      dns: 10.80.130.1
+      ntp_servers:
+      - time.apple.com
+      vm_password: pivotalcf
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips:
+      - 10.85.87.254
+      ssl_cert_domains: "*.mesa.cf-app.com"
+      system_domain: mesa.cf-app.com
+      apps_domain: mesa.cf-app.com
+  ridge:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: pivotalcf
+      web_password: pivotalcf
+    vcenter:
+      host: 10.84.32.61
+      user: root
+      password: look74Beer
+    location:
+      datacenter: private
+      cluster: geography
+      datastore: public
+      network: ridge
+      folder: ridge
+    ops_manager_settings:
+      ip: 10.85.88.16
+      netmask: 255.255.255.0
+      gateway: 10.85.88.1
+      reserved_ip_ranges: 10.85.88.0-10.85.88.90
+      dns: 10.80.130.1
+      ntp_servers:
+      - time.apple.com
+      vm_password: pivotalcf
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips:
+      - 10.85.88.254
+      ssl_cert_domains: "*.ridge.cf-app.com"
+      system_domain: ridge.cf-app.com
+      apps_domain: ridge.cf-app.com
+  cersei:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "172.16.74.3"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "pizza-boxes-dc"
+      cluster: "pizza-boxes"
+      datastore: "emc-ds"
+      network: "luthor"
+      folder: "cersei"
+    ops_manager_settings:
+      ip: "172.16.78.26"
+      netmask: "255.255.254.0"
+      gateway: "172.16.78.1"
+      reserved_ip_ranges: "172.16.78.1-172.16.78.26,172.16.78.126-172.16.79.255"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '172.16.78.125' ]
+      ssl_cert_domains: '*.cersei.cf-app.com'
+      system_domain: 'cersei.cf-app.com'
+      apps_domain: 'cersei.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  hound:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "172.16.74.3"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "pizza-boxes-dc"
+      cluster: "pizza-boxes"
+      datastore: "emc-ds"
+      network: "magneto"
+      folder: "hound"
+    ops_manager_settings:
+      ip: "172.16.80.26"
+      netmask: "255.255.254.0"
+      gateway: "172.16.80.1"
+      reserved_ip_ranges: "172.16.80.1-172.16.80.26,172.16.80.126-172.16.81.255"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '172.16.80.125' ]
+      ssl_cert_domains: '*.hound.cf-app.com'
+      system_domain: 'hound.cf-app.com'
+      apps_domain: 'hound.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  jaqen:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "172.16.74.3"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "pizza-boxes-dc"
+      cluster: "pizza-boxes"
+      datastore: "emc-ds"
+      network: "magneto"
+      folder: "jaqen"
+    ops_manager_settings:
+      ip: "172.16.80.126"
+      netmask: "255.255.254.0"
+      gateway: "172.16.80.1"
+      reserved_ip_ranges: "172.16.80.1-172.16.80.126,172.16.80.251-172.16.81.255"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '172.16.80.250' ]
+      ssl_cert_domains: '*.jaqen.cf-app.com'
+      system_domain: 'jaqen.cf-app.com'
+      apps_domain: 'jaqen.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  joffrey:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "172.16.74.3"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "pizza-boxes-dc"
+      cluster: "pizza-boxes"
+      datastore: "emc-ds"
+      network: "magneto"
+      folder: "joffrey"
+    ops_manager_settings:
+      ip: "172.16.81.26"
+      netmask: "255.255.254.0"
+      gateway: "172.16.80.1"
+      reserved_ip_ranges: "172.16.80.1-172.16.81.26,172.16.81.126-172.16.81.255"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '172.16.81.125' ]
+      ssl_cert_domains: '*.joffrey.cf-app.com'
+      system_domain: 'joffrey.cf-app.com'
+      apps_domain: 'joffrey.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+  jorah:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+    vcenter:
+      host: "172.16.74.3"
+      user: "root"
+      password: "look74Beer"
+    location:
+      datacenter: "pizza-boxes-dc"
+      cluster: "pizza-boxes"
+      datastore: "emc-ds"
+      network: "magneto"
+      folder: "jorah"
+    ops_manager_settings:
+      ip: "172.16.81.126"
+      netmask: "255.255.254.0"
+      gateway: "172.16.80.1"
+      reserved_ip_ranges: "172.16.80.1-172.16.81.126,172.16.81.251-172.16.81.255"
+      dns: "10.80.130.1"
+      ntp_servers: ["time.apple.com"]
+      vm_password: "pivotalcf"
+    ers_configuration:
+      trust_self_signed_certificates: true
+      ha_proxy_ips: [ '172.16.81.250' ]
+      ssl_cert_domains: '*.jorah.cf-app.com'
+      system_domain: 'jorah.cf-app.com'
+      apps_domain: 'jorah.cf-app.com'
+      smtp: *releng_notifications_smtp_config
