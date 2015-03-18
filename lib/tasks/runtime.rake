@@ -39,4 +39,19 @@ namespace :runtime do
 
     Opsmgr::Cmd::Installer.build(Opsmgr::Environments.for(args.environment), 'Elastic Runtime').install
   end
+
+  desc '-  Upgrade Elastic Runtime'
+  task :upgrade, [:environment, :product_path] do |_, args|
+    require 'opsmgr/cmd/uploader'
+    require 'cmd/runtime'
+    require 'opsmgr/environments'
+
+    env = Opsmgr::Environments.for(args.environment)
+    product_path = File.expand_path(args.product_path)
+    uploader = Opsmgr::Cmd::Uploader.build(env, product_path)
+    runtime = Cmd::Runtime.build(env)
+
+    uploader.upload
+    runtime.upgrade
+  end
 end
