@@ -11,4 +11,6 @@ gem 'bucket_brigade', git: 'git@github.com:pivotal-cf-experimental/bucket_brigad
 
 group :development, :test do
   gem 'rspec'
+  gem 'webmock'
+  gem 'byebug'
 end

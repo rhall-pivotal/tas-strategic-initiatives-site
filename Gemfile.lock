@@ -64,6 +64,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    addressable (2.3.7)
     aws-sdk (1.60.2)
       aws-sdk-v1 (= 1.60.2)
     aws-sdk-v1 (1.60.2)
@@ -96,6 +97,11 @@ GEM
       logging (~> 1.8.2)
       semi_semantic (~> 1.1.0)
     builder (3.2.2)
+    byebug (4.0.2)
+      columnize (= 0.9.0)
+    columnize (0.9.0)
+    crack (0.4.2)
+      safe_yaml (~> 1.0.0)
     diff-lcs (1.2.5)
     excon (0.44.4)
     filesize (0.0.4)
@@ -181,6 +187,7 @@ GEM
       ruby-hmac (>= 0.4.0)
     ruby-hmac (0.4.0)
     rubyzip (1.1.7)
+    safe_yaml (1.0.4)
     semi_semantic (1.1.0)
     sinatra (1.4.5)
       rack (~> 1.4)
@@ -193,6 +200,9 @@ GEM
     trollop (2.1.2)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    webmock (1.20.4)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
 
 PLATFORMS
   ruby
@@ -200,9 +210,11 @@ PLATFORMS
 DEPENDENCIES
   bosh_cli (= 1.2818.0)
   bucket_brigade!
+  byebug
   krafa-client (= 0.0.8)!
   opsmgr!
   ova_manager!
   rspec
   vara (= 0.12.0)!
   vsphere_clients!
+  webmock
