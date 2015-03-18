@@ -58,8 +58,6 @@ form_types:
         label: Amazon S3
         description:
         property_inputs:
-          - reference: .properties.system_blobstore.external.region
-            label: Region
           - reference: .properties.system_blobstore.external.bucket
             label: Bucket Name
           - reference: .properties.system_blobstore.external.access_key
@@ -3520,7 +3518,6 @@ property_blueprints:
               buildpack_directory_key: (( .properties.system_blobstore.external.bucket.value ))
               fog_connection:
                 provider: AWS
-                region: (( .properties.system_blobstore.external.region.value ))
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
           - name: ccdroplet
@@ -3528,7 +3525,6 @@ property_blueprints:
               droplet_directory_key: (( .properties.system_blobstore.external.bucket.value ))
               fog_connection:
                 provider: AWS
-                region: (( .properties.system_blobstore.external.region.value ))
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
           - name: ccpackage
@@ -3536,7 +3532,6 @@ property_blueprints:
               app_package_directory_key: (( .properties.system_blobstore.external.bucket.value ))
               fog_connection:
                 provider: AWS
-                region: (( .properties.system_blobstore.external.region.value ))
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
           - name: ccresource
@@ -3544,14 +3539,10 @@ property_blueprints:
               resource_directory_key: (( .properties.system_blobstore.external.bucket.value ))
               fog_connection:
                 provider: AWS
-                region: (( .properties.system_blobstore.external.region.value ))
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
         select_value: external
         property_blueprints:
-          - name: region
-            type: string
-            configurable: true
           - name: bucket
             type: string
             configurable: true
