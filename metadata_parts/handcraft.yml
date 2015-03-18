@@ -22,6 +22,54 @@ install_time_verifiers:
     ignorable: true
     properties:
       domain: .cloud_controller.apps_domain
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.app_usage_service_database
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.autoscale_database
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.ccdb_database
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.console_database
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.notifications_database
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.uaa_database
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
@@ -41,6 +89,49 @@ form_types:
   - name: system_database
     label: System Database Config
     description: Select internal if you want to keep using the system-provided databases. Otherwise, select external if you want to use your own database service, such as the Amazon Relational Database Service (RDS), to host the system-required databases, in which case you will need to create the database schemas. Consult Pivotal Cloud Foundry documentation for schema requirements.
+    verifiers:
+      - name: Verifiers::MysqlDatabaseVerifier
+        properties:
+          host: .properties.system_database.external.host
+          port: .properties.system_database.external.port
+          username: .properties.system_database.external.username
+          password: .properties.system_database.external.password
+          database: .properties.app_usage_service_database
+      - name: Verifiers::MysqlDatabaseVerifier
+        properties:
+          host: .properties.system_database.external.host
+          port: .properties.system_database.external.port
+          username: .properties.system_database.external.username
+          password: .properties.system_database.external.password
+          database: .properties.autoscale_database
+      - name: Verifiers::MysqlDatabaseVerifier
+        properties:
+          host: .properties.system_database.external.host
+          port: .properties.system_database.external.port
+          username: .properties.system_database.external.username
+          password: .properties.system_database.external.password
+          database: .properties.ccdb_database
+      - name: Verifiers::MysqlDatabaseVerifier
+        properties:
+          host: .properties.system_database.external.host
+          port: .properties.system_database.external.port
+          username: .properties.system_database.external.username
+          password: .properties.system_database.external.password
+          database: .properties.console_database
+      - name: Verifiers::MysqlDatabaseVerifier
+        properties:
+          host: .properties.system_database.external.host
+          port: .properties.system_database.external.port
+          username: .properties.system_database.external.username
+          password: .properties.system_database.external.password
+          database: .properties.notifications_database
+      - name: Verifiers::MysqlDatabaseVerifier
+        properties:
+          host: .properties.system_database.external.host
+          port: .properties.system_database.external.port
+          username: .properties.system_database.external.username
+          password: .properties.system_database.external.password
+          database: .properties.uaa_database
     property_inputs:
     - reference: .properties.system_database
       label: System Database Config
@@ -3445,6 +3536,31 @@ property_blueprints:
     type: port
     configurable: true
     optional: true
+
+  - name: app_usage_service_database
+    type: string
+    configurable: false
+    default: app_usage_service
+  - name: autoscale_database
+    type: string
+    configurable: false
+    default: autoscale
+  - name: ccdb_database
+    type: string
+    configurable: false
+    default: ccdb
+  - name: console_database
+    type: string
+    configurable: false
+    default: console
+  - name: notifications_database
+    type: string
+    configurable: false
+    default: notifications
+  - name: uaa_database
+    type: string
+    configurable: false
+    default: uaa
 
   - name: system_database
     type: selector
