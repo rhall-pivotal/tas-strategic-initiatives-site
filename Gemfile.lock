@@ -30,11 +30,18 @@ GIT
       rbvmomi
 
 GIT
-  remote: git@github.com:pivotal-cf/opsmgr
-  revision: 9312a5bede0593518fcbd8eea0d1f778c04d4229
+  remote: git@github.com:pivotal-cf/vara.git
+  revision: 3f0d5f1d52066ed1c3ba39a7c154658cfe9d4e90
+  specs:
+    vara (0.12.0)
+      open4
+      thor
+
+PATH
+  remote: ../opsmgr
   specs:
     opsmgr (0.1.0)
-      activesupport (~> 4.2.0)
+      activesupport (~> 4.1.6)
       bucket_brigade (= 0.1.4)
       fog
       multipart-post
@@ -47,22 +54,14 @@ GIT
       sinatra
       vsphere_clients
 
-GIT
-  remote: git@github.com:pivotal-cf/vara.git
-  revision: 3f0d5f1d52066ed1c3ba39a7c154658cfe9d4e90
-  specs:
-    vara (0.12.0)
-      open4
-      thor
-
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (4.2.1)
-      i18n (~> 0.7)
+    activesupport (4.1.10)
+      i18n (~> 0.6, >= 0.6.9)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
-      thread_safe (~> 0.3, >= 0.3.4)
+      thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     addressable (2.3.7)
     aws-sdk (1.60.2)
