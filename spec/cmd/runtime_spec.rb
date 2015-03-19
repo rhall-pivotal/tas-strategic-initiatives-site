@@ -3,9 +3,6 @@ require 'cmd/runtime'
 require 'opsmgr/environment'
 
 describe Cmd::Runtime do
-  before do
-    allow(Opsmgr::Api::EndpointsFactory).to receive(:create).and_return(Opsmgr::Api::Version12::Endpoints.new)
-  end
   let(:settings) do
     {
       environments: {
@@ -25,12 +22,16 @@ describe Cmd::Runtime do
   end
 
   let(:environment) { Opsmgr::Environment.build(:test, settings) }
-
   let(:endpoints) { Opsmgr::Api::Version12::Endpoints.new }
-  let(:installer) { Opsmgr::Cmd::Installer.build(environment, described_class::PRODUCT_NAME) }
+  let(:installer) { Opsmgr::Cmd::Installer.build(environment, Cmd::Runtime::PRODUCT_NAME) }
   let(:runtime_product) { Runtime.build(environment) }
-  let(:upgrader) { Opsmgr::Cmd::Upgrader.build(environment, described_class::PRODUCT_NAME) }
+  let(:upgrader) { Opsmgr::Cmd::Upgrader.build(environment, Cmd::Runtime::PRODUCT_NAME) }
+
   subject(:runtime) { Cmd::Runtime.new(installer, upgrader, runtime_product) }
+
+  before do
+    allow(Opsmgr::Api::EndpointsFactory).to receive(:create).and_return(Opsmgr::Api::Version12::Endpoints.new)
+  end
 
   describe '.build' do
     it 'correctly builds a Runtime command' do
