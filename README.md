@@ -2,14 +2,6 @@
 
 **p-runtime** creates .pivotal files to be consumed by Ops Manager&trade;.  It creates .pivotal files based on [Elastic Runtime](https://github.com/cloudfoundry/cf-release) releases.
 
-### Creating the CF Release .tgz
-[scripts/build_cf_release_tarball.sh](https://github.com/pivotal-cf/release-engineering-automation/blob/master/scripts/build_cf_release_tarball.sh) script in the [pivotal-cf/release-engineering-automation](https://github.com/pivotal-cf/release-engineering-automation) repo
-
-```
-cd pivotal-cf/release-engineering-automation
-scripts/build_cf_release_tarball.sh
-```
-
 ### Creating .pivotal File (no compiled packages)
 
 In this example, we update the Elastic Runtime.  We assume the following:
