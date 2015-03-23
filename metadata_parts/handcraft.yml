@@ -980,6 +980,7 @@ job_types:
         internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
         internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
         logging_level: debug
+        maximum_health_check_timeout: 600
         quota_definitions:
           default:
             memory_limit: (( default_quota_memory_limit_mb.value ))
