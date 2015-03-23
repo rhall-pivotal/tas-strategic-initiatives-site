@@ -338,93 +338,6 @@ form_types:
         label: SMTP CRAMMD5 secret
 
 job_types:
-  - name: ha_proxy
-    label: HAProxy
-    resource_label: HAProxy
-    description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal CF Elastic Runtime router IP. Self signed certificates will function properly.
-    job_templates:
-      - haproxy
-    release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 2_048
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 0
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        label: VM credentials
-        default:
-          identity: vcap
-
-      - name: static_ips
-        type: ip_ranges
-        configurable: true
-        optional: true
-
-      - name: ssl_rsa_certificate
-        type: rsa_cert_credentials
-        configurable: true
-
-      - name: skip_cert_verify
-        type: boolean
-        configurable: true
-
-    manifest: |
-      networks:
-        apps: default
-      ha_proxy:
-        ssl_pem: (( ssl_rsa_certificate.cert_and_private_key_pems ))
-      router:
-        servers:
-          z1: (( .router.ips ))
-          z2: []
-      syslog_aggregator:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-
   - name: nats
     label: NATS
     resource_label: NATS
@@ -580,101 +493,6 @@ job_types:
           password: (( .nats.credentials.password ))
           machines: (( .nats.ips ))
 
-  - name: health_manager
-    label: Health Manager
-    resource_label: Health Manager
-    description: Reports app health to the Cloud Controller
-    job_templates:
-      - hm9000
-    release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 1_024
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        label: VM credentials
-        default:
-          identity: vcap
-
-      - name: internal_api_user_credentials
-        type: simple_credentials
-        label: Credentials for hm9000 API
-
-    manifest: |
-      cc:
-        srv_api_uri: (( $runtime.system_api_url ))
-        bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
-        bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
-        internal_api_user: (( internal_api_user_credentials.identity ))
-        internal_api_password: (( internal_api_user_credentials.password ))
-
-      domain: (( $runtime.system_domain ))
-
-      dea_next:
-        heartbeat_interval_in_seconds: 10
-
-      networks:
-        apps: default
-
-      etcd:
-        machines: (( .etcd_server.ips ))
-
-      ssl:
-        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
-        port: 4222
-        machines:  (( .nats.ips ))
-      syslog_aggregator:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-
   - name: nfs_server
     label: NFS Server
     resource_label: NFS Server
@@ -819,6 +637,168 @@ job_types:
         - tag: cc
           name: ccdb
           citext: true
+
+  - name: uaadb
+    label: UAA Database
+    resource_label: UAA Database
+    description: Stores user information for the UAA
+    job_templates:
+      - postgres
+    release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 8_192
+        constraints:
+          min: 8_192
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: credentials
+        type: simple_credentials
+        label: Database credentials
+        default:
+          identity: root
+
+    manifest: |
+      databases:
+        address: (( first_ip ))
+        port: 2544
+        db_scheme: postgresql
+        roles:
+        - tag: admin
+          name: (( credentials.identity ))
+          password: (( credentials.password ))
+        databases:
+        - tag: uaa
+          name: uaa
+      networks:
+        services: default
+
+  - name: consoledb
+    label: Web Console
+    resource_label: Console Database
+    description: A Web application will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
+    job_templates:
+      - postgres
+    release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: credentials
+        type: simple_credentials
+        label: Database credentials
+        default:
+          identity: root
+
+    manifest: |
+      databases:
+        address: (( first_ip ))
+        port: 2544
+        db_scheme: postgresql
+        roles:
+        - tag: admin
+          name: (( credentials.identity ))
+          password: (( credentials.password ))
+        databases:
+        - tag: console
+          name: console
+      networks:
+        services: default
 
   - name: cloud_controller
     label: Cloud Controller
@@ -1044,6 +1024,290 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+
+  - name: ha_proxy
+    label: HAProxy
+    resource_label: HAProxy
+    description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal CF Elastic Runtime router IP. Self signed certificates will function properly.
+    job_templates:
+      - haproxy
+    release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 0
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: static_ips
+        type: ip_ranges
+        configurable: true
+        optional: true
+
+      - name: ssl_rsa_certificate
+        type: rsa_cert_credentials
+        configurable: true
+
+      - name: skip_cert_verify
+        type: boolean
+        configurable: true
+
+    manifest: |
+      networks:
+        apps: default
+      ha_proxy:
+        ssl_pem: (( ssl_rsa_certificate.cert_and_private_key_pems ))
+      router:
+        servers:
+          z1: (( .router.ips ))
+          z2: []
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+
+  - name: router
+    label: Router
+    resource_label: Router
+    description: Routers route Internet traffic to applications and between Pivotal CF Elastic Runtime components.
+    job_templates:
+      - gorouter
+      - metron_agent
+    release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: status_credentials
+        type: simple_credentials
+        label: Status credentials
+        default:
+          identity: router_status
+
+      - name: static_ips
+        type: ip_ranges
+        configurable: true
+        optional: true
+
+    manifest: |
+      request_timeout_in_seconds: 900
+      networks:
+        apps: default
+      router:
+        status:
+          user: router_status
+          password: (( status_credentials.password ))
+
+      etcd:
+        machines: (( .etcd_server.ips ))
+
+      metron_agent:
+        zone: z1
+      metron_endpoint:
+        zone: z1
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
+      loggregator_endpoint:
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+
+  - name: health_manager
+    label: Health Manager
+    resource_label: Health Manager
+    description: Reports app health to the Cloud Controller
+    job_templates:
+      - hm9000
+    release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+      - name: internal_api_user_credentials
+        type: simple_credentials
+        label: Credentials for hm9000 API
+
+    manifest: |
+      cc:
+        srv_api_uri: (( $runtime.system_api_url ))
+        bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
+        bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
+        internal_api_user: (( internal_api_user_credentials.identity ))
+        internal_api_password: (( internal_api_user_credentials.password ))
+
+      domain: (( $runtime.system_domain ))
+
+      dea_next:
+        heartbeat_interval_in_seconds: 10
+
+      networks:
+        apps: default
+
+      etcd:
+        machines: (( .etcd_server.ips ))
+
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        address: (( .nats.first_ip ))
+        port: 4222
+        machines:  (( .nats.ips ))
       syslog_aggregator:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -1343,108 +1607,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
 
-  - name: router
-    label: Router
-    resource_label: Router
-    description: Routers route Internet traffic to applications and between Pivotal CF Elastic Runtime components.
-    job_templates:
-      - gorouter
-      - metron_agent
-    release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 2_048
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        label: VM credentials
-        default:
-          identity: vcap
-
-      - name: status_credentials
-        type: simple_credentials
-        label: Status credentials
-        default:
-          identity: router_status
-
-      - name: static_ips
-        type: ip_ranges
-        configurable: true
-        optional: true
-
-    manifest: |
-      request_timeout_in_seconds: 900
-      networks:
-        apps: default
-      router:
-        status:
-          user: router_status
-          password: (( status_credentials.password ))
-
-      etcd:
-        machines: (( .etcd_server.ips ))
-
-      metron_agent:
-        zone: z1
-      metron_endpoint:
-        zone: z1
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
-      loggregator_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
-
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines: (( .nats.ips ))
-      syslog_aggregator:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-
   - name: collector
     label: Collector
     resource_label: Collector
@@ -1526,87 +1688,6 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-
-  - name: uaadb
-    label: UAA Database
-    resource_label: UAA Database
-    description: Stores user information for the UAA
-    job_templates:
-      - postgres
-    release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 2_048
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: true
-        default: 8_192
-        constraints:
-          min: 8_192
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        label: VM credentials
-        default:
-          identity: vcap
-
-      - name: credentials
-        type: simple_credentials
-        label: Database credentials
-        default:
-          identity: root
-
-    manifest: |
-      databases:
-        address: (( first_ip ))
-        port: 2544
-        db_scheme: postgresql
-        roles:
-        - tag: admin
-          name: (( credentials.identity ))
-          password: (( credentials.password ))
-        databases:
-        - tag: uaa
-          name: uaa
-      networks:
-        services: default
 
   - name: uaa
     label: UAA
@@ -2085,87 +2166,6 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-
-  - name: consoledb
-    label: Web Console
-    resource_label: Console Database
-    description: A Web application will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
-    job_templates:
-      - postgres
-    release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 2_048
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        label: VM credentials
-        default:
-          identity: vcap
-
-      - name: credentials
-        type: simple_credentials
-        label: Database credentials
-        default:
-          identity: root
-
-    manifest: |
-      databases:
-        address: (( first_ip ))
-        port: 2544
-        db_scheme: postgresql
-        roles:
-        - tag: admin
-          name: (( credentials.identity ))
-          password: (( credentials.password ))
-        databases:
-        - tag: console
-          name: console
-      networks:
-        services: default
 
   - name: mysql_proxy
     label: MySQL Proxy
