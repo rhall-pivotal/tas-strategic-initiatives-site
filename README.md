@@ -2,7 +2,7 @@
 
 **p-runtime** creates .pivotal files to be consumed by Ops Manager&trade;.  It creates .pivotal files based on [Elastic Runtime](https://github.com/cloudfoundry/cf-release) releases.
 
-### Creating .pivotal File (no compiled packages)
+### Creating .pivotal File
 
 In this example, we update the Elastic Runtime.  We assume the following:
 
@@ -70,54 +70,3 @@ bundle exec vara build-pivotal ~/workspace/p-runtime/
 * Test (e.g. running [CATS](https://github.com/cloudfoundry/cf-acceptance-tests))
 
 Any failures will mostly likely be addressed by modifying *metadata/handcraft.yml* and rebuilding the .pivotal file.
-
-### Creating .pivotal File (with compiled packages)
-
-We make sure we have successfully deployed a compiled packages-less .pivotal (we can't download compiled packages without first having deployed).
-
-1. deploy a regular (no compiled packages) Elastic Runtime
-2. ssh into the &micro;BOSH and download the compiled packages (only necessary for &micro;BOSHes who haven't fixed the nginx bug that truncates downloads to 1GB).  The exact procedure to follow has *not* been documented.
-3. the resulting file should be an amalgam of the Release and the Stemcell, e.g. `cf-170-bosh-vsphere-esxi-ubuntu-2366.tgz`
-4. put the aforementioned file in `~/workspace/p-runtime/lvl_2_compiled/compiled_packages/`
-
-
-```
-vim ~/workspace/p-runtime/lvl_2_compiled/metadata_parts/binaries.yml
-```
-
-Add the following lines:
-
-
-```
-compiled_package:
-  name: cf
-  file: cf-170-bosh-vsphere-esxi-ubuntu-2366.tgz
-  version: "170"
-  md5: a3eefb2dd839254e111d8e87232d036c
-  url: https://releng-artifacts.s3.amazonaws.com/cf-170-bosh-vsphere-esxi-ubuntu-2366.tgz
-```
-
-We build the product file:
-
-```
-be vara-build-metadata --product-dir=~/workspace/p-runtime/lvl_2_compiled
-```
-
-We build the .pivotal file:
-
-
-```
-lvl_2_compiled/scripts/build_pivotal.sh
-```
-
-### Process to create subdirectory for compiled packages
-
-```
-cd ~/workspace/p-runtime
-mkdir -p lvl_2_compiled/{metadata,metadata_parts,scripts}
-cd lvl_2_compiled
-for file in releases stemcells compiled_packages content_migrations metadata_parts/handcraft.yml; do
-  ln -s ../$file $file
-done
-
-```
