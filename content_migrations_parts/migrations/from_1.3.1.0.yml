@@ -6,3 +6,6 @@ rules:
   - type: update
     selector: "jobs.[identifier=compilation].resources.[identifier=ephemeral_disk].value"
     to: 20480
+  - type: update
+    selector: "jobs.[identifier=cloud_controller].resources.[identifier=ephemeral_disk].value"
+    to: 20480
