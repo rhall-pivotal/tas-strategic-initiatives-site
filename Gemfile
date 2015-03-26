@@ -7,7 +7,6 @@ gem 'bosh_cli', '1.2818.0', require: false # a dependency of vara but version sh
 gem 'opsmgr', git: 'git@github.com:pivotal-cf/opsmgr'
 gem 'ova_manager', git: 'git@github.com:pivotal-cf-experimental/ova_manager'
 gem 'vsphere_clients', git: 'git@github.com:pivotal-cf-experimental/vsphere_clients'
-gem 'bucket_brigade', git: 'git@github.com:pivotal-cf-experimental/bucket_brigade'
 
 group :development, :test do
   gem 'rspec'

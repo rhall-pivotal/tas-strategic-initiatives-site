@@ -11,11 +11,11 @@ namespace :artifacts do
     task :retrieve, [:cache_key] do |_, args|
       require 'json'
       require 'cmd/artifacts'
-      require 'bucket_brigade/bucket_config'
-      require 'bucket_brigade/bucket_list'
+      require 'opsmgr/bucket/config'
+      require 'opsmgr/bucket/list'
 
-      bucket_configs = [BucketBrigade::BucketConfig.from_hash(JSON.parse(ENV.fetch('RIAK_BUCKET'))), BucketBrigade::BucketConfig.from_hash(JSON.parse(ENV.fetch('S3_BUCKET')))]
-      storage = BucketBrigade::BucketList.build(bucket_configs)
+      bucket_configs = [Opsmgr::Bucket::Config.from_hash(JSON.parse(ENV.fetch('RIAK_BUCKET'))), Bucket::Config.from_hash(JSON.parse(ENV.fetch('S3_BUCKET')))]
+      storage = Opsmgr::Bucket::List.build(bucket_configs)
 
       Cmd::Artifacts.retrieve_cf_files(args.cache_key, storage)
     end

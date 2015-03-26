@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'cmd/artifacts'
-require 'bucket_brigade/bucket_list'
+require 'opsmgr/bucket/list'
 require 'tempfile'
 
 describe Cmd::Artifacts do
@@ -35,9 +35,9 @@ describe Cmd::Artifacts do
   end
 
   context '.retrieve_cf_files' do
-    it 'fetches the correct files using BucketBrigade' do
+    it 'fetches the correct files' do
       cache_key = 'folder/subfolder/cf-123.pivotal'
-      fake_storage = instance_double(BucketBrigade::BucketList)
+      fake_storage = instance_double(Opsmgr::Bucket::List)
 
       expect(fake_storage).to receive(:download).with(key: cache_key, destination_filename: 'cf-123.pivotal')
       expect(fake_storage).to receive(:download).with(key: "#{cache_key}.md5", destination_filename: 'cf-123.pivotal.md5')
