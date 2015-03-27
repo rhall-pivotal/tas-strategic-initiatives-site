@@ -309,6 +309,9 @@ environments:
       system_domain: 'brinjal.cf-app.com'
       apps_domain: 'brinjal.cf-app.com'
       smtp: *releng_notifications_smtp_config
+      jobs:
+        ha_proxy:
+          instances: 0
     ops_manager_settings:
       ip: "54.175.228.122"
       netmask: "255.255.255.0"

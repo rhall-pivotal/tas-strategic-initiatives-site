@@ -115,11 +115,15 @@ class TeapotComponents
           'type' => 'cloud_controller_worker',
           'resources' => [{
             'definition' => 'ephemeral_disk'
+          },{
+            'identifier' => 'instances'
           }]
         }, {
           'type' => 'clock_global',
           'resources' => [{
             'definition' => 'ephemeral_disk'
+          },{
+            'identifier' => 'instances'
           }]
         }],
         'properties' => [
@@ -171,12 +175,16 @@ class TeapotComponents
           'identifier' => 'cloud_controller_worker',
           'resources' => [{
             'identifier' => 'ephemeral_disk'
-          }]
+          },{
+            'identifier' => 'instances'
+          },]
         }, {
           'identifier' => 'clock_global',
           'resources' => [{
             'identifier' => 'ephemeral_disk'
-          }]
+          },{
+            'identifier' => 'instances'
+          },]
         }, {
           'identifier' => 'router'
         }],

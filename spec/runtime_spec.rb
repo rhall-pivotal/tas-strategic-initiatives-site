@@ -52,7 +52,12 @@ describe Runtime, :teapot do
                 password: 'secret'
               },
               enable_starttls_auto: true,
-              auth_mechanism: 'none' }
+              auth_mechanism: 'none' },
+            jobs: {
+              clock_global: {
+                instances: 0
+              }
+            }
           }
         }
       }
@@ -75,7 +80,7 @@ describe Runtime, :teapot do
   end
 
   def resource_value(job_name, resource_name)
-    resource(job_name, resource_name).fetch('value')
+    resource(job_name, resource_name).value
   end
 
   def top_level_property_value(property_name)
@@ -95,7 +100,7 @@ describe Runtime, :teapot do
   end
 
   def resource(job_name, resource_name)
-    job(job_name).resource(resource_name)
+    Opsmgr::Settings::Microbosh::Job.new(job(job_name)).resource(resource_name)
   end
 
   describe '.build' do
@@ -335,6 +340,12 @@ describe Runtime, :teapot do
           runtime.configure
 
           expect(job('router')['elb_name']).to eq('my-elb')
+        end
+
+        it 'sets job instance counts' do
+          runtime.configure
+
+          expect(resource_value('clock_global', 'instances')).to eq(0)
         end
       end
     end

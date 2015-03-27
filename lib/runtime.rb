@@ -37,6 +37,12 @@ class Runtime
         job.networks = [settings.network_guid('default')]
       end
 
+      environment.ers_configuration[:jobs].each do |job_name, job_config|
+        runtime.for_job(job_name.to_s) do |job|
+          job.resource('instances').value = job_config[:instances] if job_config[:instances]
+        end
+      end
+
       runtime.for_job('ha_proxy') do |job|
         job.property('static_ips').value = environment.ers_configuration[:ha_proxy_ips].join(',')
         job.property('ssl_rsa_certificate').value = ha_proxy_ssl_rsa_certificate_value
