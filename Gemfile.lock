@@ -15,6 +15,16 @@ GIT
       vsphere_clients
 
 GIT
+  remote: git@github.com:pivotal-cf-experimental/vm_shepherd.git
+  revision: 95586aaf484073a074edbb5138f4b8cd928d813d
+  specs:
+    vm_shepherd (0.0.1)
+      aws-sdk-v1
+      rbvmomi
+      ruby_vcloud_sdk (~> 0.7.0)
+      vsphere_clients
+
+GIT
   remote: git@github.com:pivotal-cf-experimental/vsphere_clients
   revision: 4bcc013e5ed78114c6c461437d0d4190acf48c3d
   specs:
@@ -180,6 +190,12 @@ GEM
       log4r (>= 1.1.9)
       ruby-hmac (>= 0.4.0)
     ruby-hmac (0.4.0)
+    ruby_vcloud_sdk (0.7.2)
+      builder (>= 3.1)
+      httpclient (>= 2.4.0)
+      netaddr
+      nokogiri (>= 1.5.6)
+      rest-client (>= 1.6.7)
     rubyzip (1.1.7)
     safe_yaml (1.0.4)
     semi_semantic (1.1.0)
@@ -209,5 +225,6 @@ DEPENDENCIES
   ova_manager!
   rspec
   vara (= 0.12.0)!
+  vm_shepherd!
   vsphere_clients!
   webmock
