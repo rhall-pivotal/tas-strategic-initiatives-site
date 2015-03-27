@@ -29,8 +29,8 @@ class Runtime
     ops_manager_configurator.configure do |settings|
       runtime = settings.product(PRODUCT_NAME)
       runtime.disabled_post_deploy_errand_names(environment.ers_configuration[:disabled_post_deploy_errand_names])
-      runtime.singleton_availability_zone = settings.availability_zone_guid('default')
-      runtime.availability_zone_references = [settings.availability_zone_guid('default')]
+      runtime.singleton_availability_zone = settings.default_availability_zone_guid
+      runtime.availability_zone_references = [settings.default_availability_zone_guid]
       runtime.network_reference = settings.network_guid('default')
 
       runtime.jobs.each do |job|
