@@ -45,6 +45,10 @@ class Runtime
         skip_cert_verify.value = environment.ers_configuration.fetch(:trust_self_signed_certificates) unless skip_cert_verify.nil?
       end
 
+      runtime.for_job('router') do |job|
+        job.elb_name = environment.ers_configuration[:elb_name]
+      end
+
       runtime.for_job('cloud_controller') do |job|
         job.property('system_domain').value = environment.ers_configuration[:system_domain]
         job.property('apps_domain').value = environment.ers_configuration[:apps_domain]

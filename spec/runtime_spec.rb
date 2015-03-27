@@ -37,6 +37,7 @@ describe Runtime, :teapot do
             vm_password: 'test_vm_password' },
           ers_configuration: {
             trust_self_signed_certificates: false,
+            elb_name: 'my-elb',
             ha_proxy_ips: ['192.168.2.4'],
             ssl_cert_domains: '*.ssl.example.com',
             system_domain: 'system.example.com',
@@ -328,6 +329,12 @@ describe Runtime, :teapot do
           runtime.configure
 
           expect(cf_details['network_reference']).to eq('guid-for-the-default-network')
+        end
+
+        it 'sets the elb_name' do
+          runtime.configure
+
+          expect(job('router')['elb_name']).to eq('my-elb')
         end
       end
     end
