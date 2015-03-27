@@ -82,23 +82,19 @@ describe Runtime, :teapot do
   end
 
   def job(job_name)
-    # FIXME: handle identifier #88366870
-    cf_details['jobs'].find { |j| j['type'] == job_name }
+    Opsmgr::Settings::Microbosh::JobList.new(cf_details['jobs']).find { |j| j.name == job_name }
   end
 
   def property(job_name, property_name)
-    # FIXME: handle identifier #88366870
-    job(job_name)['properties'].find { |p| p['definition'] == property_name }
+    Opsmgr::Settings::Microbosh::PropertyList.new(job(job_name)['properties']).find { |p| p.name == property_name }
   end
 
   def top_level_property(property_name)
-    # FIXME: handle identifier #88366870
-    cf_details['properties'].find { |p| p['definition'] == property_name }
+    Opsmgr::Settings::Microbosh::Product.new(cf_details).property(property_name)
   end
 
   def resource(job_name, resource_name)
-    # FIXME: handle identifier #88366870
-    job(job_name)['resources'].find { |p| p['definition'] == resource_name }
+    job(job_name).resource(resource_name)
   end
 
   describe '.build' do
@@ -201,6 +197,75 @@ describe Runtime, :teapot do
 
   context 'when cf version is 1.3' do
     before { set_teapot_version('1.3') }
+
+    describe 'configuring CF jobs' do
+      let(:expected_skip_cert_verify) { false }
+
+      before do
+        Tools::SelfSignedRsaCertificate.should_receive(:generate)
+          .with(['*.ssl.example.com'])
+          .and_return(double('certificate', private_key_pem: 'generated_private_key_pem', cert_pem: 'generated_cert_pem'))
+      end
+
+      context 'when the CF tile has not yet been added' do
+        it 'enters our configuration and appears in the installation.yml' do
+          runtime.configure
+
+          expect(property_value('ha_proxy', 'static_ips')).to eq('192.168.2.4')
+          expect(property_value('ha_proxy', 'skip_cert_verify')).to eq(expected_skip_cert_verify)
+          diff_assert(
+            property_value('ha_proxy', 'ssl_rsa_certificate'),
+            'private_key_pem' => 'generated_private_key_pem', 'cert_pem' => 'generated_cert_pem'
+          )
+          expect(property_value('cloud_controller', 'system_domain')).to eq('system.example.com')
+          expect(property_value('cloud_controller', 'apps_domain')).to eq('apps.example.com')
+          expect(property_value('cloud_controller', 'max_file_size')).to eq(1024)
+        end
+
+        it 'fills in notifications properties when smtp configuration is provided' do
+          allow(ENV).to receive(:[]).and_call_original
+          allow(ENV).to receive(:[]).with('REL_ENG_TEST_SMTP_PASSWORD') { 'secret' }
+
+          runtime.configure
+
+          expect(top_level_property_value('smtp_from')).to eq('reply_to@example.com')
+          expect(top_level_property_value('smtp_address')).to eq('smtp.example.com')
+          expect(top_level_property_value('smtp_port')).to eq(587)
+          expect(top_level_property_value('smtp_credentials')).to eq('identity' => 'notifications_id', 'password' => 'secret')
+          expect(top_level_property_value('smtp_enable_starttls_auto')).to be true
+          expect(top_level_property_value('smtp_auth_mechanism')).to eq('none')
+        end
+
+        it 'sets a default network on each job' do
+          runtime.configure
+
+          expect(job('ha_proxy')['network_references']).to eq(['guid-for-the-default-network'])
+          expect(job('cloud_controller')['network_references']).to eq(['guid-for-the-default-network'])
+        end
+
+        it 'assigns a singleton availability zone' do
+          runtime.configure
+
+          expect(cf_details['singleton_availability_zone_reference']).to eq('guid-for-the-availability-zone')
+        end
+
+        it 'assigns the availability zone references' do
+          runtime.configure
+
+          expect(cf_details['availability_zone_references']).to eq(['guid-for-the-availability-zone'])
+        end
+
+        it 'assigns the network_reference' do
+          runtime.configure
+
+          expect(cf_details['network_reference']).to eq('guid-for-the-default-network')
+        end
+      end
+    end
+  end
+
+  context 'when cf version is 1.4' do
+    before { set_teapot_version('1.4') }
 
     describe 'configuring CF jobs' do
       let(:expected_skip_cert_verify) { false }
