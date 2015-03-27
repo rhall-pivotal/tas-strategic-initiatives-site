@@ -14,7 +14,11 @@ namespace :artifacts do
       require 'opsmgr/bucket/config'
       require 'opsmgr/bucket/list'
 
-      bucket_configs = [Opsmgr::Bucket::Config.from_hash(JSON.parse(ENV.fetch('RIAK_BUCKET'))), Bucket::Config.from_hash(JSON.parse(ENV.fetch('S3_BUCKET')))]
+      bucket_configs = [
+        Opsmgr::Bucket::Config.from_hash(JSON.parse(ENV.fetch('RIAK_BUCKET'))),
+        Opsmgr::Bucket::Config.from_hash(JSON.parse(ENV.fetch('S3_BUCKET'))),
+      ]
+
       storage = Opsmgr::Bucket::List.build(bucket_configs)
 
       Cmd::Artifacts.retrieve_cf_files(args.cache_key, storage)
