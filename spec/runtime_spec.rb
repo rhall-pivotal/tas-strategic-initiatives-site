@@ -38,7 +38,6 @@ describe Runtime, :teapot do
           ers_configuration: {
             trust_self_signed_certificates: false,
             elb_name: 'my-elb',
-            ha_proxy_ips: ['192.168.2.4'],
             ssl_cert_domains: '*.ssl.example.com',
             system_domain: 'system.example.com',
             apps_domain: 'apps.example.com',
@@ -126,7 +125,6 @@ describe Runtime, :teapot do
         it 'enters our configuration and appears in the installation.yml' do
           runtime.configure
 
-          expect(property_value('ha_proxy', 'static_ips')).to eq('192.168.2.4')
           expect(property_value('ha_proxy', 'skip_cert_verify')).to eq(expected_skip_cert_verify)
           diff_assert(
             property_value('ha_proxy', 'ssl_rsa_certificate'),
@@ -217,7 +215,6 @@ describe Runtime, :teapot do
         it 'enters our configuration and appears in the installation.yml' do
           runtime.configure
 
-          expect(property_value('ha_proxy', 'static_ips')).to eq('192.168.2.4')
           expect(property_value('ha_proxy', 'skip_cert_verify')).to eq(expected_skip_cert_verify)
           diff_assert(
             property_value('ha_proxy', 'ssl_rsa_certificate'),
@@ -283,10 +280,20 @@ describe Runtime, :teapot do
       end
 
       context 'when the CF tile has not yet been added' do
+        context 'when ha_proxy_ips are set' do
+          before do
+            settings[:environments][:test][:ers_configuration][:ha_proxy_ips] = ['192.168.2.4']
+          end
+          it 'sets them correctly' do
+            runtime.configure
+
+            expect(property_value('ha_proxy', 'static_ips')).to eq('192.168.2.4')
+          end
+        end
+
         it 'enters our configuration and appears in the installation.yml' do
           runtime.configure
 
-          expect(property_value('ha_proxy', 'static_ips')).to eq('192.168.2.4')
           expect(property_value('ha_proxy', 'skip_cert_verify')).to eq(expected_skip_cert_verify)
           diff_assert(
             property_value('ha_proxy', 'ssl_rsa_certificate'),

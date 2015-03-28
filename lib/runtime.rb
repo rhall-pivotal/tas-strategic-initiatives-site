@@ -44,7 +44,7 @@ class Runtime
       end
 
       runtime.for_job('ha_proxy') do |job|
-        job.property('static_ips').value = environment.ers_configuration[:ha_proxy_ips].join(',')
+        job.property('static_ips').value = environment.ers_configuration.fetch(:ha_proxy_ips, []).join(',')
         job.property('ssl_rsa_certificate').value = ha_proxy_ssl_rsa_certificate_value
 
         skip_cert_verify = job.property('skip_cert_verify')
