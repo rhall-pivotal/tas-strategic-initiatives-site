@@ -554,8 +554,10 @@ job_types:
       - name: instances
         type: integer
         label: Instances
-        configurable: false
+        configurable: true
         default: 1
+        constraints:
+          max: 1
 
     property_blueprints:
       - name: vm_credentials
@@ -619,9 +621,10 @@ job_types:
       - name: instances
         type: integer
         label: Instances
-        configurable: false
         default: 1
-
+        configurable: true
+        constraints:
+          max: 1
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
@@ -699,7 +702,9 @@ job_types:
       - name: instances
         type: integer
         label: Instances
-        configurable: false
+        configurable: true
+        constraints:
+          max: 1
         default: 1
 
     property_blueprints:
@@ -780,7 +785,9 @@ job_types:
       - name: instances
         type: integer
         label: Instances
-        configurable: false
+        configurable: true
+        constraints:
+          max: 1
         default: 1
 
     property_blueprints:
@@ -2330,8 +2337,6 @@ job_types:
       label: Instances
       configurable: true
       default: 1
-      constraints:
-        min: 1
     property_blueprints:
     - name: vm_credentials
       type: salted_credentials
