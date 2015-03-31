@@ -309,6 +309,37 @@ environments:
       system_domain: 'brinjal.cf-app.com'
       apps_domain: 'brinjal.cf-app.com'
       smtp: *releng_notifications_smtp_config
+      ssl_certificate: |
+        -----BEGIN CERTIFICATE-----
+        MIICLzCCAZgCCQCE5TYXmTA1OzANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJV
+        UzELMAkGA1UECBMCQ0ExITAfBgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0
+        ZDEdMBsGA1UEAxQUKi5icmluamFsLmNmLWFwcC5jb20wHhcNMTUwNDAyMTgwMzM3
+        WhcNMTUwNTAyMTgwMzM3WjBcMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExITAf
+        BgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEdMBsGA1UEAxQUKi5icmlu
+        amFsLmNmLWFwcC5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAJW9yvBq
+        j1rWJmnLJeCR4d6asqEGGnLMFnXiFq3+Wfsu+AWzLk09B6AIyo2kHCBjeQ6eX279
+        mvEzZ1iW8r9xOUkJAvTxzg8h8RFNzyL8mNdcDPuPG5m+X+RlkFCwLojhOV/y8r4y
+        eyVYffn9Sfo1H1htHFW8gkr6GlZqelg4XRKnAgMBAAEwDQYJKoZIhvcNAQEFBQAD
+        gYEAdW5UAurPm4Rkc6utMayx/9Hogu8a4heyFNtxNrls7PmusNR28my3ivEqj2A0
+        EKiCDKKFgm6T9h+qA6LyuwCq8apTXfDj3tOpkb/IhLCQEbcZuhzv7bp4TGFlXbPM
+        vebMfaWLtpsxTr0jFIw5lD0n7RhajjXku+ItHabVNsrYy3w=
+        -----END CERTIFICATE-----
+      ssl_private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIICXQIBAAKBgQCVvcrwao9a1iZpyyXgkeHemrKhBhpyzBZ14hat/ln7LvgFsy5N
+        PQegCMqNpBwgY3kOnl9u/ZrxM2dYlvK/cTlJCQL08c4PIfERTc8i/JjXXAz7jxuZ
+        vl/kZZBQsC6I4Tlf8vK+MnslWH35/Un6NR9YbRxVvIJK+hpWanpYOF0SpwIDAQAB
+        AoGAcWRTtVM8U3EvjZWEjVZrUIKdGkrg5GWf7IzU19VwlkGvF8HkIiFBEPMXT8Mi
+        eXRaS7OqWQY6usROUkucb1RyJ6/fw48QNKqJ/donjXt1JrCGiduPU+PWVDDI7gwq
+        w2kKoYLcnGnEpOcP0kzY56sBWlY9tKnKSn9vheaEJ69H4KECQQDD0DznaIgyy9IK
+        bz3VudNhc+g+FyEkDXCssLT0UyNZRarqJm5ykSyc49nGn3ywGWCTw2Rw62emeRvt
+        4ffJT2mNAkEAw8RVIS1dMvRC2kfmdPSWTZmpWkFSefUQipt7hO0qC6+6KhbyWaDP
+        4UZt5TA2pNsF3HvHD6JBbV64QhFmyrWuAwJBAL1YQ0xRHEJiLLzCTLy6b9gwSEah
+        /v3psSaLyK7pJalRYLACcZJ/JvCesxsJZXyzTVwU+K7oMtYbDhK9CumyzJECQHx9
+        wdUTUA0zH8BHsNn3IA3BBd0LZTOBED/UmDvzxaUg3rYdWYh9pzSO4Ru6CUXUsml/
+        nRroB8tRTMNW5ZNK7ZkCQQCxPJ+wSsltmyhhJj54wArSFqNIwKdNItMr1blBUwwj
+        nrGQHOlvIstpJUPUqUnaTiWPf+1hkA2oMJ/925Do5TEa
+        -----END RSA PRIVATE KEY-----
       jobs:
         ha_proxy:
           instances: 0

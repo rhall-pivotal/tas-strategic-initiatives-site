@@ -274,7 +274,7 @@ describe Runtime, :teapot do
       let(:expected_skip_cert_verify) { false }
 
       before do
-        Tools::SelfSignedRsaCertificate.should_receive(:generate)
+        allow(Tools::SelfSignedRsaCertificate).to receive(:generate)
           .with(['*.ssl.example.com'])
           .and_return(double('certificate', private_key_pem: 'generated_private_key_pem', cert_pem: 'generated_cert_pem'))
       end
@@ -302,6 +302,18 @@ describe Runtime, :teapot do
           expect(property_value('cloud_controller', 'system_domain')).to eq('system.example.com')
           expect(property_value('cloud_controller', 'apps_domain')).to eq('apps.example.com')
           expect(property_value('cloud_controller', 'max_file_size')).to eq(1024)
+        end
+
+        it 'uses the provided certificate and private key' do
+          settings[:environments][:test][:ers_configuration][:ssl_certificate] = 'provided_ssl_cert'
+          settings[:environments][:test][:ers_configuration][:ssl_private_key] = 'provided_ssl_private_key'
+
+          runtime.configure
+
+          diff_assert(
+            property_value('ha_proxy', 'ssl_rsa_certificate'),
+            'private_key_pem' => 'provided_ssl_private_key', 'cert_pem' => 'provided_ssl_cert'
+          )
         end
 
         it 'fills in notifications properties when smtp configuration is provided' do

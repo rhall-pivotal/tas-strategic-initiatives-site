@@ -82,10 +82,17 @@ class Runtime
   attr_reader :ops_manager_configurator, :environment
 
   def ha_proxy_ssl_rsa_certificate_value
-    certificate = Tools::SelfSignedRsaCertificate.generate(environment.ers_configuration[:ssl_cert_domains].split(','))
-    {
-      'private_key_pem' => certificate.private_key_pem,
-      'cert_pem' => certificate.cert_pem
-    }
+    if environment.ers_configuration[:ssl_certificate]
+      {
+        'cert_pem' => environment.ers_configuration[:ssl_certificate],
+        'private_key_pem' => environment.ers_configuration[:ssl_private_key]
+      }
+    else
+      certificate = Tools::SelfSignedRsaCertificate.generate(environment.ers_configuration[:ssl_cert_domains].split(','))
+      {
+        'cert_pem' => certificate.cert_pem,
+        'private_key_pem' => certificate.private_key_pem
+      }
+    end
   end
 end
