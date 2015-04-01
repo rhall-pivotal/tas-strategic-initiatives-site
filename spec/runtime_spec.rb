@@ -366,6 +366,14 @@ describe Runtime, :teapot do
 
           expect(resource_value('clock_global', 'instances')).to eq(0)
         end
+
+        it 'sets the logger_endpoint_port' do
+          settings[:environments][:test][:ers_configuration][:logging_port] = 1234
+
+          runtime.configure
+
+          expect(top_level_property_value('logger_endpoint_port')).to eq(1234)
+        end
       end
     end
   end

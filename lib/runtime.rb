@@ -20,8 +20,7 @@ class Runtime
     @environment = ops_manager_configurator.environment
   end
 
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
   def configure
     log.info "configuring #{environment.name}'s Elastic Runtime"
 
@@ -72,15 +71,19 @@ class Runtime
         runtime.set_property('smtp_enable_starttls_auto', environment.ers_configuration[:smtp][:enable_starttls_auto])
         runtime.set_property('smtp_auth_mechanism', environment.ers_configuration[:smtp][:auth_mechanism])
       end
+
+      if environment.ers_configuration[:logging_port]
+        runtime.set_property('logger_endpoint_port', environment.ers_configuration[:logging_port])
+      end
     end
   end
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
 
   private
 
   attr_reader :ops_manager_configurator, :environment
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def ha_proxy_ssl_rsa_certificate_value
     if environment.ers_configuration[:ssl_certificate]
       {
@@ -95,4 +98,5 @@ class Runtime
       }
     end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end
