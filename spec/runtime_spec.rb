@@ -364,7 +364,7 @@ describe Runtime, :teapot do
         it 'sets job instance counts' do
           runtime.configure
 
-          expect(resource_value('clock_global', 'instances')).to eq(0)
+          expect(job('clock_global')['instances'].first['value']).to eq(0)
         end
 
         it 'sets the logger_endpoint_port' do
