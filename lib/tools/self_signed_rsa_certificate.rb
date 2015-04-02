@@ -3,6 +3,8 @@ require 'securerandom'
 
 module Tools
   class SelfSignedRsaCertificate
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def self.generate(wildcard_domains)
       private_key = OpenSSL::PKey::RSA.new(2048)
 
@@ -33,6 +35,8 @@ module Tools
 
       new(private_key.to_pem, cert.to_pem)
     end
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
     def initialize(private_key_pem, cert_pem)
       @private_key_pem = private_key_pem

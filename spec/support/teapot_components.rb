@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ClassLength
+# rubocop:disable Metrics/MethodLength
 class TeapotComponents
   def names_for_installation
     ['cf']
@@ -138,3 +140,5 @@ class TeapotComponents
     }
   end
 end
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/ClassLength

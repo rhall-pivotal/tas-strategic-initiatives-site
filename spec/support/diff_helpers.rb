@@ -1,5 +1,7 @@
 module DiffHelpers
   class Differ
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def diff(actual, expected, path = [])
       return if actual == expected
 
@@ -29,6 +31,8 @@ module DiffHelpers
         puts "\texpected=#{types[1]} value=#{expected.inspect}"
       end
     end
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
     private
 

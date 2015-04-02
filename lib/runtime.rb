@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/LineLength
+
 require 'opsmgr/log'
 require 'opsmgr/configurator'
 require 'opsmgr/settings/microbosh/network'
@@ -18,6 +20,8 @@ class Runtime
     @environment = ops_manager_configurator.environment
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def configure
     log.info "configuring #{environment.name}'s Elastic Runtime"
 
@@ -60,6 +64,8 @@ class Runtime
       end
     end
   end
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
 
   private
 
