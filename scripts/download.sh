@@ -21,5 +21,5 @@ DOCKER_REGISTRY=docker.vsphere.gocd.cf-app.com:5000
 docker run \
   -v $FOLDER_OF_LOCAL_FILE:/data \
   -v $SCRIPT_DIR:/opt/workspace \
-  ${DOCKER_REGISTRY}/releng/releng-blobstore \
+  ${DOCKER_REGISTRY}/releng/releng \
   /opt/workspace/support/_download.sh $URL /data/$LOCAL_FILE_BASENAME
