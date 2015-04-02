@@ -3095,7 +3095,7 @@ job_types:
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
           admin_password: (( .uaa.admin_credentials.password ))
-        app_domain: (( .cloud_controller.apps_domain.value ))
+        app_domain: (( .cloud_controller.system_domain.value ))
         app_subdomain: notifications-ui
         database: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
         notifications_instance_count: 1
