@@ -5,8 +5,7 @@ gem 'vara',     '0.12.0',   require: false, git: 'git@github.com:pivotal-cf/vara
 gem 'bosh_cli', '1.2818.0', require: false # a dependency of vara but version should match bosh stemcell: metadata_parts/binaries.yml
 
 gem 'opsmgr', git: 'git@github.com:pivotal-cf/opsmgr'
-gem 'vm_shepherd', git: 'git@github.com:pivotal-cf-experimental/vm_shepherd.git', require: false
-gem 'ova_manager', git: 'git@github.com:pivotal-cf-experimental/ova_manager'
+gem 'vm_shepherd', git: 'git@github.com:pivotal-cf-experimental/vm_shepherd.git'
 gem 'vsphere_clients', git: 'git@github.com:pivotal-cf-experimental/vsphere_clients'
 
 group :development, :test do
