@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ruby:2.1
 
 RUN apt-get update
 RUN apt-get -y upgrade; apt-get clean

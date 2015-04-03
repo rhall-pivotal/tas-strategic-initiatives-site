@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-DOCKER_IMAGE_NAME=releng-blobstore
+DOCKER_IMAGE_NAME=releng
 IMAGE_FOLDER="$( cd "$( dirname ${BASH_SOURCE[0]} )"/${DOCKER_IMAGE_NAME} && pwd )"
 DOCKER_REGISTRY=docker.vsphere.gocd.cf-app.com:5000
 

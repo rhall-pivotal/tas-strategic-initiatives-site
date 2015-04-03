@@ -20,8 +20,7 @@ class Runtime
     @environment = ops_manager_configurator.environment
   end
 
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
   def configure
     log.info "configuring #{environment.name}'s Elastic Runtime"
 
@@ -29,20 +28,30 @@ class Runtime
     ops_manager_configurator.configure do |settings|
       runtime = settings.product(PRODUCT_NAME)
       runtime.disabled_post_deploy_errand_names(environment.ers_configuration[:disabled_post_deploy_errand_names])
-      runtime.singleton_availability_zone = settings.availability_zone_guid('default')
-      runtime.availability_zone_references = [settings.availability_zone_guid('default')]
+      runtime.singleton_availability_zone = settings.default_availability_zone_guid
+      runtime.availability_zone_references = [settings.default_availability_zone_guid]
       runtime.network_reference = settings.network_guid('default')
 
       runtime.jobs.each do |job|
         job.networks = [settings.network_guid('default')]
       end
 
+      environment.ers_configuration[:jobs].each do |job_name, job_config|
+        runtime.for_job(job_name.to_s) do |job|
+          job.instances = job_config[:instances] if job_config[:instances]
+        end
+      end
+
       runtime.for_job('ha_proxy') do |job|
-        job.property('static_ips').value = environment.ers_configuration[:ha_proxy_ips].join(',')
+        job.property('static_ips').value = environment.ers_configuration.fetch(:ha_proxy_ips, []).join(',')
         job.property('ssl_rsa_certificate').value = ha_proxy_ssl_rsa_certificate_value
 
         skip_cert_verify = job.property('skip_cert_verify')
         skip_cert_verify.value = environment.ers_configuration.fetch(:trust_self_signed_certificates) unless skip_cert_verify.nil?
+      end
+
+      runtime.for_job('router') do |job|
+        job.elb_name = environment.ers_configuration[:elb_name]
       end
 
       runtime.for_job('cloud_controller') do |job|
@@ -62,20 +71,32 @@ class Runtime
         runtime.set_property('smtp_enable_starttls_auto', environment.ers_configuration[:smtp][:enable_starttls_auto])
         runtime.set_property('smtp_auth_mechanism', environment.ers_configuration[:smtp][:auth_mechanism])
       end
+
+      if environment.ers_configuration[:logging_port]
+        runtime.set_property('logger_endpoint_port', environment.ers_configuration[:logging_port])
+      end
     end
   end
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
 
   private
 
   attr_reader :ops_manager_configurator, :environment
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def ha_proxy_ssl_rsa_certificate_value
-    certificate = Tools::SelfSignedRsaCertificate.generate(environment.ers_configuration[:ssl_cert_domains].split(','))
-    {
-      'private_key_pem' => certificate.private_key_pem,
-      'cert_pem' => certificate.cert_pem
-    }
+    if environment.ers_configuration[:ssl_certificate]
+      {
+        'cert_pem' => environment.ers_configuration[:ssl_certificate],
+        'private_key_pem' => environment.ers_configuration[:ssl_private_key]
+      }
+    else
+      certificate = Tools::SelfSignedRsaCertificate.generate(environment.ers_configuration[:ssl_cert_domains].split(','))
+      {
+        'cert_pem' => certificate.cert_pem,
+        'private_key_pem' => certificate.private_key_pem
+      }
+    end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end
