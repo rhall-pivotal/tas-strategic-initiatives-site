@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: git@github.com:pivotal-cf/opsmgr
-  revision: 6b97220091527395cad94b21d9744ca8ced265db
+  revision: 358157a89184156bfe7f383aa379759eb611ee01
   specs:
     opsmgr (0.1.0)
       activesupport (~> 4.1.6)
@@ -30,7 +30,7 @@ GIT
       recursive-open-struct
       rubyzip
       sinatra
-      vm_shepherd (= 0.0.1)
+      vm_shepherd (= 0.1.0)
       vsphere_clients
 
 GIT
@@ -92,6 +92,8 @@ GEM
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
     diff-lcs (1.2.5)
+    domain_name (0.5.23)
+      unf (>= 0.0.5, < 1.0.0)
     excon (0.45.1)
     filesize (0.0.4)
     fog (1.23.0)
@@ -119,6 +121,8 @@ GEM
       fog-json
     formatador (0.2.5)
     highline (1.6.21)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     httpclient (2.4.0)
     i18n (0.7.0)
     inflecto (0.0.2)
@@ -160,7 +164,8 @@ GEM
       nokogiri (>= 1.4.1)
       trollop
     recursive-open-struct (0.6.1)
-    rest-client (1.7.3)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
     rspec (3.2.0)
@@ -207,11 +212,14 @@ GEM
     trollop (2.1.2)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    vm_shepherd (0.0.1)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.6)
+    vm_shepherd (0.1.0)
       aws-sdk-v1
+      fog
       rbvmomi
       ruby_vcloud_sdk (~> 0.7.0)
-      vsphere_clients
     webmock (1.20.4)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)

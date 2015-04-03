@@ -40,6 +40,104 @@ environments:
       system_domain: 'badger.wild.cf-app.com'
       apps_domain: 'badger.wild.cf-app.com'
       smtp: *releng_notifications_smtp_config
+  brinjal:
+    infrastructure:
+      networks:
+      - name: default
+        iaas_network_identifier: subnet-1b40de6c
+        reserved_ip_ranges: 10.0.2.2-10.0.2.4
+        dns: 10.0.0.2
+        gateway: 10.0.2.1
+        subnet: 10.0.2.0/24
+    aws:
+      aws_access_key: AKIAI43577ARGHXPWIMQ
+      aws_secret_key: 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
+      ops_manager_security_group_id: sg-dca5cdb8
+      internal_security_group_name: pcfVMs
+      public_subnet_id: subnet-1c40de6b
+      private_subnet_id: subnet-1b40de6c
+      elastic_ip_id: eipalloc-5cd84639
+      vm_name: 'OpsManager brinjal'
+      availability_zone: us-east-1d
+      vpc_id: vpc-72a9e817
+      ssh_key_name: releng-dev
+      ssh_private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpAIBAAKCAQEAhU5ETA/Pt42waL2WDKLBfhIXlaQ3YHem3Tojn044bs3GpGBWeHESchL6Ndjv
+        Q8ANoeEJ3/P9AsCZTkd3GP+c8JRUcdvg61wIipzP0ltK1KbVt1N0z/E29c+nTqwM4o4zBUQMT3vj
+        oG0Yf6iIx+88OcYRx7wUuUGb1NBXkn/GqnadfMO2g//i8UOF1tcz/jXdxf7i192aGPxeC/5bl70h
+        Gnk/PlsZjYrq/cDqX4uI3ZdWC2Dsp6pbHilx1umB8FNHUOzh7yvaF4380y3t5I4oPRlD/8hMz/5L
+        1R5GsMYHibkLgq48mjVgTsN3tMJU1DZUf6eHx7dqay7hr35vZFER3wIDAQABAoIBADe9OSuAtP7w
+        HOI+253e8/8N+5STfKA2h6wbIkf7Qfd6zWNv8Ngdl3PhYYPgeHMgu9KDMUjWUWW0OKYVlcP7JZkm
+        vIR7RvnCmsOyu+ceSxTNybEFEWPdXXi84h0wLZcRlF3QTUFy8QPkegju5HqNGuahXk/g4d1whIMg
+        tm1IRj6CDZchKLx3G+Ae+rISf7p+o1pEfEgwMfWcIapa3PD/fwMpfRBwrsWdV9wPn63pzJc7pPFW
+        H6y8ZEc2ldsrQThk4f1r0UMUFbD9I0yolVQMDA73ZzvCstamh3E4gga9N4XiUOSoT7JGbXdobumJ
+        JLOi3XOmcWJaBl9Ocff9Qpp2UBECgYEAxVL9n3pA3/k+zxh+t0MDWt5SP+gKDbqaXLJl5w7zCuTo
+        OFCAKnDxHDSxcbTNarcC32QOjV0F8plkxaNgFP3W9KvPk5mRnfTXJE67GsaOTtj0lYhHpo90NqYe
+        U5IH2eA6PHzpmHPdEemQBa5O+mQOFRgvt4iXJaDqfK7Iro3UXicCgYEArPH3ffG14/0LuNq3Mt+E
+        CAx0m2tmAIxTfpgd7BXz8scvg0DyGa49/8MO7pPEHrhjaocefuprJph0BawfdIR90GBu/ussuGS3
+        pYCcLDTT7ma8bomlOi4apmYNjKUZDijnVFycHxhNfZVg+bzCklMDm3vfPSh1W85JM//sUIosOYkC
+        gYBC7cxSzG+2yF6yddd9J4C60I/LV1QZpgJ3kJcZ0StEtbHCcCOYwag2bfUF4VKPcLXLua9p6XR7
+        /eV9V9XeKN9BLAmDQeJvVj2m9gFmqpRYUCRdl9TdvOipJJ1CsVRyZSi7nY7KA/qm+ba9BouJSGiy
+        ZPrCYNULkVIXql0tP7QZnwKBgQCmSjZlhA8Xu80UnkC+ispiDs/kTP0UE9mIhO1ofqdEzh8yPjVL
+        Wg3FKaHm5nAR9cupt2gsMmx6/OW6Ook4ONjcjozLUgd6+WTXnvULUHRi66fNRU54xbHcQ45NqMWR
+        puTfafi3sV95HDPVjZkspuN2EkJRhOBrOMuMU0y/GExzuQKBgQCbvIkXm3K6ZUCuOSzEHnprRBBt
+        /ntsCJQDSBXfrzPTgkBBiMVx3aaJZYnsvxb2+Vl3YYiv/HM/W+rJZsSsbffwAngHNbUfVdlwnayn
+        wB5+GnTcHRiog2K6DGyOfn1MXiQg2IX7ZpehJFoucNQ5IG4lioVZSmKwea9d8LFqIajoVA==
+        -----END RSA PRIVATE KEY-----
+    ers_configuration:
+      elb_name: brinjal
+      logging_port: 4443
+      trust_self_signed_certificates: true
+      ssl_cert_domains: '*.brinjal.cf-app.com'
+      system_domain: 'brinjal.cf-app.com'
+      apps_domain: 'brinjal.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+      ssl_certificate: |
+        -----BEGIN CERTIFICATE-----
+        MIICLzCCAZgCCQCE5TYXmTA1OzANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJV
+        UzELMAkGA1UECBMCQ0ExITAfBgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0
+        ZDEdMBsGA1UEAxQUKi5icmluamFsLmNmLWFwcC5jb20wHhcNMTUwNDAyMTgwMzM3
+        WhcNMTUwNTAyMTgwMzM3WjBcMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExITAf
+        BgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEdMBsGA1UEAxQUKi5icmlu
+        amFsLmNmLWFwcC5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAJW9yvBq
+        j1rWJmnLJeCR4d6asqEGGnLMFnXiFq3+Wfsu+AWzLk09B6AIyo2kHCBjeQ6eX279
+        mvEzZ1iW8r9xOUkJAvTxzg8h8RFNzyL8mNdcDPuPG5m+X+RlkFCwLojhOV/y8r4y
+        eyVYffn9Sfo1H1htHFW8gkr6GlZqelg4XRKnAgMBAAEwDQYJKoZIhvcNAQEFBQAD
+        gYEAdW5UAurPm4Rkc6utMayx/9Hogu8a4heyFNtxNrls7PmusNR28my3ivEqj2A0
+        EKiCDKKFgm6T9h+qA6LyuwCq8apTXfDj3tOpkb/IhLCQEbcZuhzv7bp4TGFlXbPM
+        vebMfaWLtpsxTr0jFIw5lD0n7RhajjXku+ItHabVNsrYy3w=
+        -----END CERTIFICATE-----
+      ssl_private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIICXQIBAAKBgQCVvcrwao9a1iZpyyXgkeHemrKhBhpyzBZ14hat/ln7LvgFsy5N
+        PQegCMqNpBwgY3kOnl9u/ZrxM2dYlvK/cTlJCQL08c4PIfERTc8i/JjXXAz7jxuZ
+        vl/kZZBQsC6I4Tlf8vK+MnslWH35/Un6NR9YbRxVvIJK+hpWanpYOF0SpwIDAQAB
+        AoGAcWRTtVM8U3EvjZWEjVZrUIKdGkrg5GWf7IzU19VwlkGvF8HkIiFBEPMXT8Mi
+        eXRaS7OqWQY6usROUkucb1RyJ6/fw48QNKqJ/donjXt1JrCGiduPU+PWVDDI7gwq
+        w2kKoYLcnGnEpOcP0kzY56sBWlY9tKnKSn9vheaEJ69H4KECQQDD0DznaIgyy9IK
+        bz3VudNhc+g+FyEkDXCssLT0UyNZRarqJm5ykSyc49nGn3ywGWCTw2Rw62emeRvt
+        4ffJT2mNAkEAw8RVIS1dMvRC2kfmdPSWTZmpWkFSefUQipt7hO0qC6+6KhbyWaDP
+        4UZt5TA2pNsF3HvHD6JBbV64QhFmyrWuAwJBAL1YQ0xRHEJiLLzCTLy6b9gwSEah
+        /v3psSaLyK7pJalRYLACcZJ/JvCesxsJZXyzTVwU+K7oMtYbDhK9CumyzJECQHx9
+        wdUTUA0zH8BHsNn3IA3BBd0LZTOBED/UmDvzxaUg3rYdWYh9pzSO4Ru6CUXUsml/
+        nRroB8tRTMNW5ZNK7ZkCQQCxPJ+wSsltmyhhJj54wArSFqNIwKdNItMr1blBUwwj
+        nrGQHOlvIstpJUPUqUnaTiWPf+1hkA2oMJ/925Do5TEa
+        -----END RSA PRIVATE KEY-----
+      jobs:
+        ha_proxy:
+          instances: 0
+    ops_manager_settings:
+      ip: "54.175.228.122"
+      netmask: "255.255.255.0"
+      gateway: "10.0.0.1"
+      reserved_ip_ranges: "10.0.1.1-10.0.1.3"
+      dns: "10.0.0.2"
+      ntp_servers: ["0.amazon.pool.ntp.org"]
+      vm_password: "pivotalcf"
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
   collie:
     krafa:
       has_internet: true
@@ -257,104 +355,6 @@ environments:
       system_domain: 'frog.wild.cf-app.com'
       apps_domain: 'frog.wild.cf-app.com'
       smtp: *releng_notifications_smtp_config
-  brinjal:
-    infrastructure:
-      networks:
-      - name: default
-        iaas_network_identifier: subnet-1b40de6c
-        reserved_ip_ranges: 10.0.2.2-10.0.2.4
-        dns: 10.0.0.2
-        gateway: 10.0.2.1
-        subnet: 10.0.2.0/24
-    aws:
-      aws_access_key: AKIAI43577ARGHXPWIMQ
-      aws_secret_key: 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
-      ops_manager_security_group_id: sg-dca5cdb8
-      internal_security_group_name: pcfVMs
-      public_subnet_id: subnet-1c40de6b
-      private_subnet_id: subnet-1b40de6c
-      elastic_ip_id: eipalloc-5cd84639
-      vm_name: 'OpsManager brinjal'
-      availability_zone: us-east-1d
-      vpc_id: vpc-72a9e817
-      ssh_key_name: releng-dev
-      ssh_private_key: |
-        -----BEGIN RSA PRIVATE KEY-----
-        MIIEpAIBAAKCAQEAhU5ETA/Pt42waL2WDKLBfhIXlaQ3YHem3Tojn044bs3GpGBWeHESchL6Ndjv
-        Q8ANoeEJ3/P9AsCZTkd3GP+c8JRUcdvg61wIipzP0ltK1KbVt1N0z/E29c+nTqwM4o4zBUQMT3vj
-        oG0Yf6iIx+88OcYRx7wUuUGb1NBXkn/GqnadfMO2g//i8UOF1tcz/jXdxf7i192aGPxeC/5bl70h
-        Gnk/PlsZjYrq/cDqX4uI3ZdWC2Dsp6pbHilx1umB8FNHUOzh7yvaF4380y3t5I4oPRlD/8hMz/5L
-        1R5GsMYHibkLgq48mjVgTsN3tMJU1DZUf6eHx7dqay7hr35vZFER3wIDAQABAoIBADe9OSuAtP7w
-        HOI+253e8/8N+5STfKA2h6wbIkf7Qfd6zWNv8Ngdl3PhYYPgeHMgu9KDMUjWUWW0OKYVlcP7JZkm
-        vIR7RvnCmsOyu+ceSxTNybEFEWPdXXi84h0wLZcRlF3QTUFy8QPkegju5HqNGuahXk/g4d1whIMg
-        tm1IRj6CDZchKLx3G+Ae+rISf7p+o1pEfEgwMfWcIapa3PD/fwMpfRBwrsWdV9wPn63pzJc7pPFW
-        H6y8ZEc2ldsrQThk4f1r0UMUFbD9I0yolVQMDA73ZzvCstamh3E4gga9N4XiUOSoT7JGbXdobumJ
-        JLOi3XOmcWJaBl9Ocff9Qpp2UBECgYEAxVL9n3pA3/k+zxh+t0MDWt5SP+gKDbqaXLJl5w7zCuTo
-        OFCAKnDxHDSxcbTNarcC32QOjV0F8plkxaNgFP3W9KvPk5mRnfTXJE67GsaOTtj0lYhHpo90NqYe
-        U5IH2eA6PHzpmHPdEemQBa5O+mQOFRgvt4iXJaDqfK7Iro3UXicCgYEArPH3ffG14/0LuNq3Mt+E
-        CAx0m2tmAIxTfpgd7BXz8scvg0DyGa49/8MO7pPEHrhjaocefuprJph0BawfdIR90GBu/ussuGS3
-        pYCcLDTT7ma8bomlOi4apmYNjKUZDijnVFycHxhNfZVg+bzCklMDm3vfPSh1W85JM//sUIosOYkC
-        gYBC7cxSzG+2yF6yddd9J4C60I/LV1QZpgJ3kJcZ0StEtbHCcCOYwag2bfUF4VKPcLXLua9p6XR7
-        /eV9V9XeKN9BLAmDQeJvVj2m9gFmqpRYUCRdl9TdvOipJJ1CsVRyZSi7nY7KA/qm+ba9BouJSGiy
-        ZPrCYNULkVIXql0tP7QZnwKBgQCmSjZlhA8Xu80UnkC+ispiDs/kTP0UE9mIhO1ofqdEzh8yPjVL
-        Wg3FKaHm5nAR9cupt2gsMmx6/OW6Ook4ONjcjozLUgd6+WTXnvULUHRi66fNRU54xbHcQ45NqMWR
-        puTfafi3sV95HDPVjZkspuN2EkJRhOBrOMuMU0y/GExzuQKBgQCbvIkXm3K6ZUCuOSzEHnprRBBt
-        /ntsCJQDSBXfrzPTgkBBiMVx3aaJZYnsvxb2+Vl3YYiv/HM/W+rJZsSsbffwAngHNbUfVdlwnayn
-        wB5+GnTcHRiog2K6DGyOfn1MXiQg2IX7ZpehJFoucNQ5IG4lioVZSmKwea9d8LFqIajoVA==
-        -----END RSA PRIVATE KEY-----
-    ers_configuration:
-      elb_name: brinjal
-      logging_port: 4443
-      trust_self_signed_certificates: true
-      ssl_cert_domains: '*.brinjal.cf-app.com'
-      system_domain: 'brinjal.cf-app.com'
-      apps_domain: 'brinjal.cf-app.com'
-      smtp: *releng_notifications_smtp_config
-      ssl_certificate: |
-        -----BEGIN CERTIFICATE-----
-        MIICLzCCAZgCCQCE5TYXmTA1OzANBgkqhkiG9w0BAQUFADBcMQswCQYDVQQGEwJV
-        UzELMAkGA1UECBMCQ0ExITAfBgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0
-        ZDEdMBsGA1UEAxQUKi5icmluamFsLmNmLWFwcC5jb20wHhcNMTUwNDAyMTgwMzM3
-        WhcNMTUwNTAyMTgwMzM3WjBcMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExITAf
-        BgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEdMBsGA1UEAxQUKi5icmlu
-        amFsLmNmLWFwcC5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAJW9yvBq
-        j1rWJmnLJeCR4d6asqEGGnLMFnXiFq3+Wfsu+AWzLk09B6AIyo2kHCBjeQ6eX279
-        mvEzZ1iW8r9xOUkJAvTxzg8h8RFNzyL8mNdcDPuPG5m+X+RlkFCwLojhOV/y8r4y
-        eyVYffn9Sfo1H1htHFW8gkr6GlZqelg4XRKnAgMBAAEwDQYJKoZIhvcNAQEFBQAD
-        gYEAdW5UAurPm4Rkc6utMayx/9Hogu8a4heyFNtxNrls7PmusNR28my3ivEqj2A0
-        EKiCDKKFgm6T9h+qA6LyuwCq8apTXfDj3tOpkb/IhLCQEbcZuhzv7bp4TGFlXbPM
-        vebMfaWLtpsxTr0jFIw5lD0n7RhajjXku+ItHabVNsrYy3w=
-        -----END CERTIFICATE-----
-      ssl_private_key: |
-        -----BEGIN RSA PRIVATE KEY-----
-        MIICXQIBAAKBgQCVvcrwao9a1iZpyyXgkeHemrKhBhpyzBZ14hat/ln7LvgFsy5N
-        PQegCMqNpBwgY3kOnl9u/ZrxM2dYlvK/cTlJCQL08c4PIfERTc8i/JjXXAz7jxuZ
-        vl/kZZBQsC6I4Tlf8vK+MnslWH35/Un6NR9YbRxVvIJK+hpWanpYOF0SpwIDAQAB
-        AoGAcWRTtVM8U3EvjZWEjVZrUIKdGkrg5GWf7IzU19VwlkGvF8HkIiFBEPMXT8Mi
-        eXRaS7OqWQY6usROUkucb1RyJ6/fw48QNKqJ/donjXt1JrCGiduPU+PWVDDI7gwq
-        w2kKoYLcnGnEpOcP0kzY56sBWlY9tKnKSn9vheaEJ69H4KECQQDD0DznaIgyy9IK
-        bz3VudNhc+g+FyEkDXCssLT0UyNZRarqJm5ykSyc49nGn3ywGWCTw2Rw62emeRvt
-        4ffJT2mNAkEAw8RVIS1dMvRC2kfmdPSWTZmpWkFSefUQipt7hO0qC6+6KhbyWaDP
-        4UZt5TA2pNsF3HvHD6JBbV64QhFmyrWuAwJBAL1YQ0xRHEJiLLzCTLy6b9gwSEah
-        /v3psSaLyK7pJalRYLACcZJ/JvCesxsJZXyzTVwU+K7oMtYbDhK9CumyzJECQHx9
-        wdUTUA0zH8BHsNn3IA3BBd0LZTOBED/UmDvzxaUg3rYdWYh9pzSO4Ru6CUXUsml/
-        nRroB8tRTMNW5ZNK7ZkCQQCxPJ+wSsltmyhhJj54wArSFqNIwKdNItMr1blBUwwj
-        nrGQHOlvIstpJUPUqUnaTiWPf+1hkA2oMJ/925Do5TEa
-        -----END RSA PRIVATE KEY-----
-      jobs:
-        ha_proxy:
-          instances: 0
-    ops_manager_settings:
-      ip: "54.175.228.122"
-      netmask: "255.255.255.0"
-      gateway: "10.0.0.1"
-      reserved_ip_ranges: "10.0.1.1-10.0.1.3"
-      dns: "10.0.0.2"
-      ntp_servers: ["0.amazon.pool.ntp.org"]
-      vm_password: "pivotalcf"
-    web_auth:
-      web_user: 'pivotalcf'
-      web_password: 'pivotalcf'
   hyena:
     krafa:
       has_internet: true
@@ -417,6 +417,104 @@ environments:
       system_domain: 'jackal.wild.cf-app.com'
       apps_domain: 'jackal.wild.cf-app.com'
       smtp: *releng_notifications_smtp_config
+  lime:
+    infrastructure:
+      networks:
+      - name: default
+        iaas_network_identifier: subnet-18961941
+        reserved_ip_ranges: 10.0.16.2-10.0.16.4
+        dns: 10.0.0.2
+        gateway: 10.0.16.1
+        subnet: 10.0.16.0/20
+    aws:
+      aws_access_key: AKIAI43577ARGHXPWIMQ
+      aws_secret_key: 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
+      ops_manager_security_group_id: sg-09493c6d
+      internal_security_group_name: lime-pcfVMs
+      public_subnet_id: subnet-1b961942
+      private_subnet_id: subnet-18961941
+      elastic_ip_id: eipalloc-825ac0e7
+      vm_name: 'OpsManager lime'
+      availability_zone: us-east-1a
+      vpc_id: vpc-4893cf2d
+      ssh_key_name: releng-dev
+      ssh_private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpAIBAAKCAQEAhU5ETA/Pt42waL2WDKLBfhIXlaQ3YHem3Tojn044bs3GpGBWeHESchL6Ndjv
+        Q8ANoeEJ3/P9AsCZTkd3GP+c8JRUcdvg61wIipzP0ltK1KbVt1N0z/E29c+nTqwM4o4zBUQMT3vj
+        oG0Yf6iIx+88OcYRx7wUuUGb1NBXkn/GqnadfMO2g//i8UOF1tcz/jXdxf7i192aGPxeC/5bl70h
+        Gnk/PlsZjYrq/cDqX4uI3ZdWC2Dsp6pbHilx1umB8FNHUOzh7yvaF4380y3t5I4oPRlD/8hMz/5L
+        1R5GsMYHibkLgq48mjVgTsN3tMJU1DZUf6eHx7dqay7hr35vZFER3wIDAQABAoIBADe9OSuAtP7w
+        HOI+253e8/8N+5STfKA2h6wbIkf7Qfd6zWNv8Ngdl3PhYYPgeHMgu9KDMUjWUWW0OKYVlcP7JZkm
+        vIR7RvnCmsOyu+ceSxTNybEFEWPdXXi84h0wLZcRlF3QTUFy8QPkegju5HqNGuahXk/g4d1whIMg
+        tm1IRj6CDZchKLx3G+Ae+rISf7p+o1pEfEgwMfWcIapa3PD/fwMpfRBwrsWdV9wPn63pzJc7pPFW
+        H6y8ZEc2ldsrQThk4f1r0UMUFbD9I0yolVQMDA73ZzvCstamh3E4gga9N4XiUOSoT7JGbXdobumJ
+        JLOi3XOmcWJaBl9Ocff9Qpp2UBECgYEAxVL9n3pA3/k+zxh+t0MDWt5SP+gKDbqaXLJl5w7zCuTo
+        OFCAKnDxHDSxcbTNarcC32QOjV0F8plkxaNgFP3W9KvPk5mRnfTXJE67GsaOTtj0lYhHpo90NqYe
+        U5IH2eA6PHzpmHPdEemQBa5O+mQOFRgvt4iXJaDqfK7Iro3UXicCgYEArPH3ffG14/0LuNq3Mt+E
+        CAx0m2tmAIxTfpgd7BXz8scvg0DyGa49/8MO7pPEHrhjaocefuprJph0BawfdIR90GBu/ussuGS3
+        pYCcLDTT7ma8bomlOi4apmYNjKUZDijnVFycHxhNfZVg+bzCklMDm3vfPSh1W85JM//sUIosOYkC
+        gYBC7cxSzG+2yF6yddd9J4C60I/LV1QZpgJ3kJcZ0StEtbHCcCOYwag2bfUF4VKPcLXLua9p6XR7
+        /eV9V9XeKN9BLAmDQeJvVj2m9gFmqpRYUCRdl9TdvOipJJ1CsVRyZSi7nY7KA/qm+ba9BouJSGiy
+        ZPrCYNULkVIXql0tP7QZnwKBgQCmSjZlhA8Xu80UnkC+ispiDs/kTP0UE9mIhO1ofqdEzh8yPjVL
+        Wg3FKaHm5nAR9cupt2gsMmx6/OW6Ook4ONjcjozLUgd6+WTXnvULUHRi66fNRU54xbHcQ45NqMWR
+        puTfafi3sV95HDPVjZkspuN2EkJRhOBrOMuMU0y/GExzuQKBgQCbvIkXm3K6ZUCuOSzEHnprRBBt
+        /ntsCJQDSBXfrzPTgkBBiMVx3aaJZYnsvxb2+Vl3YYiv/HM/W+rJZsSsbffwAngHNbUfVdlwnayn
+        wB5+GnTcHRiog2K6DGyOfn1MXiQg2IX7ZpehJFoucNQ5IG4lioVZSmKwea9d8LFqIajoVA==
+        -----END RSA PRIVATE KEY-----
+    ers_configuration:
+      elb_name: lime
+      logging_port: 4443
+      trust_self_signed_certificates: true
+      ssl_cert_domains: '*.lime.cf-app.com'
+      system_domain: 'lime.cf-app.com'
+      apps_domain: 'lime.cf-app.com'
+      smtp: *releng_notifications_smtp_config
+      ssl_certificate: |
+        -----BEGIN CERTIFICATE-----
+        MIICKTCCAZICCQCYjs8Jtc84cTANBgkqhkiG9w0BAQUFADBZMQswCQYDVQQGEwJV
+        UzELMAkGA1UECBMCQ0ExITAfBgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0
+        ZDEaMBgGA1UEAxQRKi5saW1lLmNmLWFwcC5jb20wHhcNMTUwNDAzMTkyMjEyWhcN
+        MTUwNTAzMTkyMjEyWjBZMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExITAfBgNV
+        BAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEaMBgGA1UEAxQRKi5saW1lLmNm
+        LWFwcC5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALkJZuJdzzp8XLia
+        kB/o+bFBOffp35uPx9QOjo1lDsHS3BNbmJD+l0BKQ2+BJZ6IUhjHN0ThiXI9mM1B
+        HiLd6vzf6GarOuieLvbCyie82W0IefvJzfSEttDXjyn8uEuDs4PeBYqd/YGy9j6A
+        gS5ylwnSx4s8S5SaABEpRhslQgETAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAV32g
+        d2n4QLXL2oT4l8mxEssHpWC4lp7V5KHWtCcjtxNNSIpiFl05lJ13x9hgATidS3P6
+        df+1OQt+VzUKM4fPqejPmtaE31qbFspAmIAViLqrRDdcrVpwExM8UGrxZ9atSOWB
+        sMmF33cdeRgR3/IrQgvbuO6XzXK0ZjLqKocO0ts=
+        -----END CERTIFICATE-----
+      ssl_private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIICXgIBAAKBgQC5CWbiXc86fFy4mpAf6PmxQTn36d+bj8fUDo6NZQ7B0twTW5iQ
+        /pdASkNvgSWeiFIYxzdE4YlyPZjNQR4i3er83+hmqzroni72wsonvNltCHn7yc30
+        hLbQ148p/LhLg7OD3gWKnf2BsvY+gIEucpcJ0seLPEuUmgARKUYbJUIBEwIDAQAB
+        AoGBAKsRCyIqUkSi5uHwW2B09isuv1X4zTa3daoSDy6fiEYfGEF5RBKAnPrd7Xxv
+        7ISlSSkJPIqc7IJGejcAhcj8W5r8oV7Yo1oCqLLPGnUK7qEWkOV/A88sX9MYZOaC
+        KaEt/et46UwK7ojT3uRucdlR2KU8A8cbENlnh7v3Mq0GqnQJAkEA5jgV2ET+l7VS
+        xvQZliW1ClkqQAxUVWMxy02e371t6FC1BG7i6C/yWYXaH9vM/ZIndg7isJrCefve
+        RfGh6HzybQJBAM3CB6kgTGvkw5fc4e/pQYnm2UDxPz3JBk5tPrV2VBZM77w9xjPQ
+        BSEIsBIDmWQ2H85rzk+iUWYabxFSmugOkX8CQCLXDgdCuby/xh0xx8V/Q1yjjc9P
+        jlu1vU1lG8wEYOOtgxd+qHw29Vgy94Wmv+kH+0zUh93uLcxEH6k6HiSO9CkCQQC1
+        0ZdjZB8j2Greb1lX3w8DBPNF5+iyeEkSVIbtYzq62hGejhfvAQsHPd4YjQWnAAzr
+        I2iUBiNXzlQHQq+QEA+RAkEAvBRUbFlc8YzIZhPH10ins0I+d1QIkcgO7PUyG2gv
+        bkFC8o11iFw06lCUA/xnBXQ0GuP3mWSb7MOOW1qmPkGD5w==
+        -----END RSA PRIVATE KEY-----
+      jobs:
+        ha_proxy:
+          instances: 0
+    ops_manager_settings:
+      ip: "52.4.189.82"
+      netmask: "255.255.255.0"
+      gateway: "10.0.0.1"
+      reserved_ip_ranges: "10.0.16.1-10.0.16.3"
+      dns: "10.0.0.2"
+      ntp_servers: ["0.amazon.pool.ntp.org"]
+      vm_password: "pivotalcf"
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
   mole:
     krafa:
       has_internet: false
