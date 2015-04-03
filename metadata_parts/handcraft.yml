@@ -355,6 +355,7 @@ job_types:
     description: Acts as the Pivotal CF Elastic Runtime message bus
     job_templates:
       - nats
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -423,10 +424,12 @@ job_types:
         address: (( first_ip ))
         machines: (( ips ))
         port: 4222
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: etcd_server
     label: etcd
@@ -435,6 +438,7 @@ job_types:
     job_templates:
     - etcd
     - etcd_metrics_server
+    - metron_agent
     release: cf
 
     resource_definitions:
@@ -492,10 +496,12 @@ job_types:
     manifest: |
       networks:
         apps: default
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
       etcd:
         machines: (( ips ))
       etcd_metrics_server:
@@ -510,6 +516,7 @@ job_types:
     description: Stores droplets and app packages on behalf of Cloud Controller
     job_templates:
       - debian_nfs_server
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -570,6 +577,12 @@ job_types:
       nfs_server:
         allow_from_entries:
         - (( ..cf.cloud_controller.first_network_deprecated ))
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: ccdb
     label: Cloud Controller Database
@@ -577,6 +590,7 @@ job_types:
     description: Stores Cloud Controller information
     job_templates:
       - postgres
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -651,6 +665,12 @@ job_types:
         - tag: cc
           name: ccdb
           citext: true
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: uaadb
     label: UAA Database
@@ -658,6 +678,7 @@ job_types:
     description: Stores user information for the UAA
     job_templates:
       - postgres
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -734,6 +755,12 @@ job_types:
           name: uaa
       networks:
         services: default
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: consoledb
     label: Web Console
@@ -741,6 +768,7 @@ job_types:
     description: A Web application will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
     job_templates:
       - postgres
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -817,6 +845,12 @@ job_types:
           name: console
       networks:
         services: default
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: cloud_controller
     label: Cloud Controller
@@ -1043,10 +1077,12 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: ha_proxy
     label: HAProxy
@@ -1054,6 +1090,7 @@ job_types:
     description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal CF Elastic Runtime router IP. Self signed certificates will function properly.
     job_templates:
       - haproxy
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -1130,10 +1167,12 @@ job_types:
         servers:
           z1: (( .router.ips ))
           z2: []
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: router
     label: Router
@@ -1232,10 +1271,12 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: health_manager
     label: Health Manager
@@ -1243,6 +1284,7 @@ job_types:
     description: Reports app health to the Cloud Controller
     job_templates:
       - hm9000
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -1327,10 +1369,12 @@ job_types:
         address: (( .nats.first_ip ))
         port: 4222
         machines:  (( .nats.ips ))
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: clock_global
     label: Clock Global
@@ -1475,10 +1519,12 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: cloud_controller_worker
     label: Cloud Controller Worker
@@ -1623,10 +1669,12 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: collector
     label: Collector
@@ -1634,6 +1682,7 @@ job_types:
     description: Collects system information in order to provide health and status metrics
     job_templates:
       - collector
+      - metron_agent
     release: cf
 
     requires_product_versions:
@@ -1705,10 +1754,12 @@ job_types:
         address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: uaa
     label: UAA
@@ -1716,6 +1767,7 @@ job_types:
     description: Pivotal CF Elastic Runtime's Authentication and Authorization server
     job_templates:
       - uaa
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -2049,10 +2101,12 @@ job_types:
         address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: login
     label: Login
@@ -2060,6 +2114,7 @@ job_types:
     description: Communicates between SAML endpoints and the UAA
     job_templates:
       - login
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -2183,10 +2238,12 @@ job_types:
         address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: mysql_proxy
     label: MySQL Proxy
@@ -2484,10 +2541,12 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
   - name: doppler
     label: Doppler Server
@@ -2594,10 +2653,12 @@ job_types:
         address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
 
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -2612,6 +2673,7 @@ job_types:
     description: Loggregator trafficcontroller distributes requests to Loggregator servers
     job_templates:
       - loggregator_trafficcontroller
+      - metron_agent
     release: cf
 
     resource_definitions:
@@ -2695,10 +2757,12 @@ job_types:
         address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
-      syslog_aggregator:
+      syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
       doppler:
         uaa_client_id: (( .uaa.doppler_client_credentials.identity ))
       uaa:
