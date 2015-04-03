@@ -3366,7 +3366,7 @@ job_types:
 
     manifest: |
       app_domains:
-        - (( .cloud_controller.apps_domain.value ))
+        - (( .cloud_controller.system_domain.value ))
       autoscale:
         broker:
           user: (( .autoscaling.broker_credentials.identity ))
