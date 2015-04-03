@@ -7,16 +7,6 @@ GIT
       rest-client
 
 GIT
-  remote: git@github.com:pivotal-cf-experimental/vm_shepherd.git
-  revision: 95586aaf484073a074edbb5138f4b8cd928d813d
-  specs:
-    vm_shepherd (0.0.1)
-      aws-sdk-v1
-      rbvmomi
-      ruby_vcloud_sdk (~> 0.7.0)
-      vsphere_clients
-
-GIT
   remote: git@github.com:pivotal-cf-experimental/vsphere_clients
   revision: 7af63571b837c8d1264f173c20335fc737d57421
   specs:
@@ -25,7 +15,7 @@ GIT
 
 GIT
   remote: git@github.com:pivotal-cf/opsmgr
-  revision: e9a79060415d04b87c4d7edcf1c5d6e441ee6aec
+  revision: 6b97220091527395cad94b21d9744ca8ced265db
   specs:
     opsmgr (0.1.0)
       activesupport (~> 4.1.6)
@@ -40,6 +30,7 @@ GIT
       recursive-open-struct
       rubyzip
       sinatra
+      vm_shepherd (= 0.0.1)
       vsphere_clients
 
 GIT
@@ -216,6 +207,11 @@ GEM
     trollop (2.1.2)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    vm_shepherd (0.0.1)
+      aws-sdk-v1
+      rbvmomi
+      ruby_vcloud_sdk (~> 0.7.0)
+      vsphere_clients
     webmock (1.20.4)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -231,6 +227,5 @@ DEPENDENCIES
   rspec
   rubocop
   vara (= 0.12.0)!
-  vm_shepherd!
   vsphere_clients!
   webmock
