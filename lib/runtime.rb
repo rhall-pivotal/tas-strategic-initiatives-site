@@ -36,7 +36,7 @@ class Runtime
         job.networks = [settings.network_guid('default')]
       end
 
-      environment.ers_configuration[:jobs].each do |job_name, job_config|
+      environment.ers_configuration.fetch(:jobs, []).each do |job_name, job_config|
         runtime.for_job(job_name.to_s) do |job|
           job.instances = job_config[:instances] if job_config[:instances]
         end
