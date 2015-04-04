@@ -428,6 +428,8 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
       etcd:
@@ -502,8 +504,15 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
       etcd:
         machines: (( ips ))
       etcd_metrics_server:
@@ -583,8 +592,15 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -673,8 +689,15 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -765,8 +788,15 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -857,8 +887,15 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -1071,10 +1108,8 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -1177,8 +1212,15 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -1263,10 +1305,8 @@ job_types:
           user: router_status
           password: (( status_credentials.password ))
 
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -1367,13 +1407,14 @@ job_types:
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
         port: 4222
         machines:  (( .nats.ips ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
       etcd:
@@ -1503,10 +1544,8 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -1649,11 +1688,8 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      metron_endpoint:
-        zone: z1
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -1747,13 +1783,14 @@ job_types:
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
       etcd:
@@ -2096,13 +2133,14 @@ job_types:
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
       etcd:
@@ -2235,13 +2273,14 @@ job_types:
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
       etcd:
@@ -2341,7 +2380,6 @@ job_types:
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
         machines: (( .nats.ips ))
         port: 4222
       syslog_aggregator:
@@ -2528,9 +2566,9 @@ job_types:
         zone: (( availability_zone ))
 
       metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -2617,10 +2655,7 @@ job_types:
       networks:
         apps: default
       doppler:
-        incoming_port: 3456
-        outgoing_port: 8081
-        maxRetainedLogMessages: 100
-        zone: z1
+        zone: (( availability_zone ))
         status:
           user: (( status_credentials.identity ))
           password: (( status_credentials.password ))
@@ -2631,7 +2666,7 @@ job_types:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
 
       doppler_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -2639,7 +2674,6 @@ job_types:
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
       syslog_daemon_config:
@@ -2732,9 +2766,9 @@ job_types:
       system_domain: (( $runtime.system_domain ))
 
       loggregator_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       traffic_controller:
-        zone: z1
+        zone: (( availability_zone ))
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -2742,7 +2776,6 @@ job_types:
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        address: (( .nats.first_ip ))
         port: 4222
         machines: (( .nats.ips ))
       syslog_daemon_config:
