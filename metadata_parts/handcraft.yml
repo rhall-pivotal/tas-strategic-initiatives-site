@@ -430,6 +430,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: etcd_server
     label: etcd
@@ -583,6 +585,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: ccdb
     label: Cloud Controller Database
@@ -671,6 +675,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: uaadb
     label: UAA Database
@@ -761,6 +767,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: consoledb
     label: Web Console
@@ -851,6 +859,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: cloud_controller
     label: Cloud Controller
@@ -1059,15 +1069,9 @@ job_types:
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
-      etcd:
-        machines: (( .etcd_server.ips ))
-
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      metron_agent:
-        zone: z1
       metron_endpoint:
-        zone: z1
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
@@ -1083,6 +1087,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: ha_proxy
     label: HAProxy
@@ -1173,6 +1179,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: router
     label: Router
@@ -1255,13 +1263,7 @@ job_types:
           user: router_status
           password: (( status_credentials.password ))
 
-      etcd:
-        machines: (( .etcd_server.ips ))
-
-      metron_agent:
-        zone: z1
       metron_endpoint:
-        zone: z1
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
@@ -1277,6 +1279,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: health_manager
     label: Health Manager
@@ -1357,9 +1361,6 @@ job_types:
       networks:
         apps: default
 
-      etcd:
-        machines: (( .etcd_server.ips ))
-
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -1375,6 +1376,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: clock_global
     label: Clock Global
@@ -1498,15 +1501,9 @@ job_types:
       login:
         url: (( $runtime.login_url ))
 
-      etcd:
-        machines: (( .etcd_server.ips ))
-
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      metron_agent:
-        zone: z1
       metron_endpoint:
-        zone: z1
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
@@ -1525,6 +1522,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: cloud_controller_worker
     label: Cloud Controller Worker
@@ -1648,13 +1647,8 @@ job_types:
       login:
         url: (( $runtime.login_url ))
 
-      etcd:
-        machines: (( .etcd_server.ips ))
-
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      metron_agent:
-        zone: z1
       metron_endpoint:
         zone: z1
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
@@ -1675,6 +1669,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: collector
     label: Collector
@@ -1760,6 +1756,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: uaa
     label: UAA
@@ -2107,6 +2105,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: login
     label: Login
@@ -2244,6 +2244,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: mysql_proxy
     label: MySQL Proxy
@@ -2525,13 +2527,7 @@ job_types:
         evacuation_bail_out_time_in_seconds: 600
         zone: (( availability_zone ))
 
-      etcd:
-        machines: (( .etcd_server.ips ))
-
-      metron_agent:
-        zone: z1
       metron_endpoint:
-        zone: z1
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
@@ -2547,6 +2543,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: doppler
     label: Doppler Server
@@ -2628,9 +2626,6 @@ job_types:
           password: (( status_credentials.password ))
           port: 5768
 
-      etcd:
-        machines: (( .etcd_server.ips ))
-
       uaa:
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
@@ -2640,12 +2635,6 @@ job_types:
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-
-      etcd:
-        machines: (( .etcd_server.ips ))
-
-      metron_agent:
-        zone: z1
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -2659,6 +2648,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
 
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -2745,9 +2736,6 @@ job_types:
       traffic_controller:
         zone: z1
 
-      etcd:
-        machines: (( .etcd_server.ips ))
-
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -2763,6 +2751,8 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+      etcd:
+        machines: (( .etcd_server.ips ))
       doppler:
         uaa_client_id: (( .uaa.doppler_client_credentials.identity ))
       uaa:
