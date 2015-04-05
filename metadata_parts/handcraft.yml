@@ -1108,6 +1108,8 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
+      metron_endpoint:
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
@@ -1305,6 +1307,8 @@ job_types:
           user: router_status
           password: (( status_credentials.password ))
 
+      metron_endpoint:
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
@@ -1544,6 +1548,8 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
+      metron_endpoint:
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
@@ -1688,6 +1694,8 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
+      metron_endpoint:
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
