@@ -191,6 +191,14 @@ class TeapotComponents
           },]
         }, {
           'identifier' => 'router'
+        }, {
+          'identifier' => 'acceptance-tests',
+          'properties' => [{
+            'identifier' => 'internet_available',
+            'value' => true
+          }],
+        }, {
+          'identifier' => 'router'
         }],
         'properties' => [
           {

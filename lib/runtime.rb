@@ -20,7 +20,7 @@ class Runtime
     @environment = ops_manager_configurator.environment
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
+  # rubocop:disable all
   def configure
     log.info "configuring #{environment.name}'s Elastic Runtime"
 
@@ -75,9 +75,15 @@ class Runtime
       if environment.ers_configuration[:logging_port]
         runtime.set_property('logger_endpoint_port', environment.ers_configuration[:logging_port])
       end
+
+      if ENV['INTERNET'] == 'false'
+        runtime.for_job('acceptance-tests') do |job|
+          job.property('internet_available').value = false
+        end
+      end
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
+  # rubocop:enable all
 
   private
 

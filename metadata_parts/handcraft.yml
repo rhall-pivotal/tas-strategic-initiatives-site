@@ -3511,6 +3511,11 @@ job_types:
         default:
           identity: vcap
 
+      - name: internet_available
+        type: boolean
+        configurable: true
+        default: true
+
     manifest: |
       acceptance_tests:
         api: (( $runtime.system_api_url ))
@@ -3518,6 +3523,7 @@ job_types:
         admin_user: (( .uaa.admin_credentials.identity ))
         admin_password: (( .uaa.admin_credentials.password ))
         include_logging: true
+        include_internet_dependent: (( .acceptance-tests.internet_available.value ))
         include_operator: true
         ginkgo_opts: -nodes=2
         include_services: true
