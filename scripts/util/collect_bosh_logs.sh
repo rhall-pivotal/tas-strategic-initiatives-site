@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [ $# -ne 2 ]; then
   echo "Usage: $0 ENV_NAME LOG_OUT_DIR" >&2
   exit 1

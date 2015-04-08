@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -ex
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../ && pwd )"
 

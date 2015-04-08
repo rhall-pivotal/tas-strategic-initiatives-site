@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [ $# -eq 0 ] || [ $# -gt 2 ]; then
   echo "Usage: $0 ENV_NAME [DEPLOYMENT_NAME] " >&2
   exit 1

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../ && pwd )"
 
 INSTALLATION_ZIP="$(echo ${SCRIPTS_DIR}/../../opsmgr-installation/*.zip)"

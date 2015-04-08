@@ -1,3 +1,5 @@
+set -e
+
 SCRIPT_DIR=$( cd "$( dirname $0 )" && pwd)
 RELEASE_NAME=$1
 BOSH_IO_RELEASE_NAME=$2
