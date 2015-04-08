@@ -212,6 +212,8 @@ form_types:
         label: SSL Certificate
       - reference: .ha_proxy.skip_cert_verify
         label: Trust Self-Signed Certificates
+      - reference: .ha_proxy.disable_http
+        label: Allow HTTPS Traffic Only
 
   - name: mysql_proxy
     label: MySQL Proxy Config
@@ -1031,6 +1033,7 @@ job_types:
       cc:
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
+        external_protocol: https
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
         default_stack: (( .properties.root_filesystem.selected_option.parsed_manifest(default_stack) ))
@@ -1201,7 +1204,12 @@ job_types:
         type: boolean
         configurable: true
 
+      - name: disable_http
+        type: boolean
+        configurable: true
+
     manifest: |
+      disable_http: (( disable_http.value ))
       networks:
         apps: default
       ha_proxy:
@@ -2239,6 +2247,7 @@ job_types:
 
       login:
         asset_base_url: '/resources/pivotal'
+        protocol: https
         tiles:
           - name: Pivotal Dev Console
             login-link:  (( $runtime.console_url ))
@@ -2274,6 +2283,7 @@ job_types:
         clients:
           login:
             secret: (( .uaa.login_client_credentials.password ))
+            redirect-uri: https://login.(( .cloud_controller.system_domain.value ))
 
       networks:
         apps: default
