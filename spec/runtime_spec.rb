@@ -134,6 +134,19 @@ describe Runtime, :teapot do
           end
         end
 
+        context 'when ENV[INTERNET] is false' do
+          before do
+            allow(ENV).to receive(:[]).with(anything)
+            allow(ENV).to receive(:[]).with('INTERNET').and_return('false')
+          end
+
+          it 'sets acceptance_tests.internet_available to false' do
+            runtime.configure
+
+            expect(property_value('acceptance-tests', 'internet_available')).to eq(false)
+          end
+        end
+
         it 'enters our configuration and appears in the installation.yml' do
           runtime.configure
 
