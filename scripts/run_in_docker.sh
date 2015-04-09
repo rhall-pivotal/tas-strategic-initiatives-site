@@ -13,5 +13,7 @@ DOCKER_IMAGE=${DOCKER_IMAGE:-releng/releng}
 docker run \
   -v ${SSH_KEY_LOCATION}:/root/.ssh/id_rsa \
   -v ${WORKSPACE_DIR}:/workspace \
+  -e AWS_ACCESS_KEY_ID \
+  -e AWS_SECRET_ACCESS_KEY \
   -w "/workspace/p-runtime" \
   ${DOCKER_REGISTRY}/${DOCKER_IMAGE} $@
