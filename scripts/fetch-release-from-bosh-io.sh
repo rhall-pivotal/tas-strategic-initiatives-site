@@ -15,4 +15,4 @@ if [ -e ./releases/${RELEASE_FILE} ]
 fi
 
 set -x
-${SCRIPT_DIR}/download.sh http://bosh.io/d/github.com/cloudfoundry/${BOSH_IO_RELEASE_NAME}?v=${RELEASE_VERSION} ./releases/${RELEASE_FILE}
+${SCRIPT_DIR}/run_in_docker aria2c -x 5 --out=${SCRIPT_DIR}/../releases/${RELEASE_FILE} http://bosh.io/d/github.com/cloudfoundry/${BOSH_IO_RELEASE_NAME}?v=${RELEASE_VERSION}
