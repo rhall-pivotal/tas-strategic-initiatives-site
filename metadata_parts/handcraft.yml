@@ -2642,7 +2642,10 @@ job_types:
       - name: instances
         type: integer
         label: Instances
+        configurable: true
         default: 1
+        constraints:
+          min: 1
 
     property_blueprints:
       - name: vm_credentials
@@ -2750,6 +2753,9 @@ job_types:
         type: integer
         label: Instances
         default: 1
+        configurable: true
+        constraints:
+          min: 1
 
     property_blueprints:
       - name: vm_credentials
