@@ -214,6 +214,9 @@ form_types:
         label: Trust Self-Signed Certificates
       - reference: .ha_proxy.disable_http
         label: Allow HTTPS Traffic Only
+      - reference: .ha_proxy.ssl_ciphers
+        label: SSL Ciphers
+        description: "If you would like secure the HAProxy service with a specific set of ciphers, enter the cipher string."
 
   - name: mysql_proxy
     label: MySQL Proxy Config
@@ -1208,11 +1211,16 @@ job_types:
         type: boolean
         configurable: true
 
+      - name: ssl_ciphers
+        type: text
+        configurable: true
+
     manifest: |
       networks:
         apps: default
       ha_proxy:
         disable_http: (( disable_http.value ))
+        ssl_ciphers: (( ssl_ciphers.value ))
         ssl_pem: (( ssl_rsa_certificate.cert_and_private_key_pems ))
       router:
         servers:
