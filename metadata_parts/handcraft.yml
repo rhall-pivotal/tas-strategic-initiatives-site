@@ -1095,9 +1095,9 @@ job_types:
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
-          cc_service_broker_client:
+          cc-service-dashboards:
             scope: cloud_controller.write,openid,cloud_controller.read,cloud_controller_service_permissions.read
-            secret: (( .uaa.cc_service_broker_client_credentials.password ))
+            secret: (( .uaa.cc_service_dashboards_credentials.password ))
           cloud_controller_username_lookup:
             secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
       login:
@@ -1541,8 +1541,8 @@ job_types:
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
-          cc_service_broker_client:
-            secret: (( .uaa.cc_service_broker_client_credentials.password ))
+          cc-service-dashboards:
+            secret: (( .uaa.cc_service_dashboards_credentials.password ))
       login:
         url: (( $runtime.login_url ))
 
@@ -1687,8 +1687,8 @@ job_types:
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
-          cc_service_broker_client:
-            secret: (( .uaa.cc_service_broker_client_credentials.password ))
+          cc-service-dashboards:
+            secret: (( .uaa.cc_service_dashboards_credentials.password ))
       login:
         url: (( $runtime.login_url ))
 
@@ -1923,11 +1923,11 @@ job_types:
         default:
           identity: autoscaling_service
 
-      - name: cc_service_broker_client_credentials
+      - name: cc_service_dashboards_credentials
         type: simple_credentials
         label: Cloud Controller Service Broker client credentials
         default:
-          identity: cc_service_broker_client
+          identity: cc-service-dashboards
 
       - name: cc_client_credentials
         type: simple_credentials
@@ -2086,9 +2086,9 @@ job_types:
             autoapprove: true
             authorities: "uaa.admin,scim.read,scim.write,password.write"
             authorized-grant-types: "client_credentials"
-          cc_service_broker_client:
-            id: cc_service_broker_client
-            secret: (( cc_service_broker_client_credentials.password ))
+          cc-service-dashboards:
+            id: (( cc_service_dashboards_credentials.identity ))
+            secret: (( cc_service_dashboards_credentials.password ))
             override: true
             authorities: clients.read,clients.write,clients.admin
             authorized-grant-types: client_credentials
