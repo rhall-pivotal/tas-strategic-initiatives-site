@@ -12,9 +12,11 @@ cd p-runtime
 bundle install # Installs vara
 bundle exec vara build-pivotal ~/workspace/p-runtime/ # Creates cf-1.N.0.0.alpha.XYZ.sOmEsHa.pivotal
 ```
+### Configuring p-runtime / opsmgr tasks
+
+The opsmgr gem's notion of environments is defined in a file called `environments.yml`. The default location is `config/environments.yml`, but you can override this by setting the environment variable `ENV_CONFIG` to the filepath of your environments.yml. See [the p-runtime environment.yml](https://github.com/pivotal-cf/p-runtime/blob/master/config/environments.yml) for an example of defining your environments.
 
 ### Deploying to Ops Manager
-
 
 If you want to start fresh, you can clear out your environment completely:
 
