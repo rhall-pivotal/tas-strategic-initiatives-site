@@ -30,7 +30,7 @@ describe Cmd::Runtime do
   subject(:runtime) { Cmd::Runtime.new(installer, upgrader, runtime_product) }
 
   before do
-    allow(Opsmgr::Api::EndpointsFactory).to receive(:create).and_return(Opsmgr::Api::Version12::Endpoints.new)
+    allow(Opsmgr::Api::EndpointsFactory).to receive(:create).and_return(Opsmgr::Api::Version11::Endpoints.new)
   end
 
   describe '.build' do
