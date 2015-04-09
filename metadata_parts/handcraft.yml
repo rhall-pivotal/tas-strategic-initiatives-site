@@ -1031,6 +1031,8 @@ job_types:
       cc:
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
+        info:
+          support_address: https://support.pivotal.io
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
         default_stack: (( .properties.root_filesystem.selected_option.parsed_manifest(default_stack) ))
