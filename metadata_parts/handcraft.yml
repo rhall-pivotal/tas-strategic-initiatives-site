@@ -1209,10 +1209,10 @@ job_types:
         configurable: true
 
     manifest: |
-      disable_http: (( disable_http.value ))
       networks:
         apps: default
       ha_proxy:
+        disable_http: (( disable_http.value ))
         ssl_pem: (( ssl_rsa_certificate.cert_and_private_key_pems ))
       router:
         servers:
