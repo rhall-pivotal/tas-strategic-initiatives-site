@@ -3527,7 +3527,6 @@ job_types:
         include_logging: true
         include_internet_dependent: (( .acceptance-tests.internet_available.value ))
         include_operator: true
-        ginkgo_opts: -nodes=2
         include_services: true
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
 
