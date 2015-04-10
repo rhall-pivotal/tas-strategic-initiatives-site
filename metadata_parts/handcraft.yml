@@ -1935,6 +1935,12 @@ job_types:
         default:
           identity: login
 
+      - name: gorouter_client_credentials
+        type: simple_credentials
+        label: "Router's client secret to connect to UAA"
+        default:
+          identity: gorouter
+
       - name: doppler_client_credentials
         type: simple_credentials
         label: "Doppler's client secret to connect to UAA"
@@ -2127,6 +2133,12 @@ job_types:
             id: (( doppler_client_credentials.identity ))
             secret: (( doppler_client_credentials.password ))
             authorities: uaa.resource
+          gorouter:
+            id: (( gorouter_client_credentials.identity ))
+            secret: (( gorouter_client_credentials.password ))
+            authorities: clients.read,clients.write,clients.admin,route.admin,route.advertise
+            authorized-grant-types: client_credentials,refresh_token
+            scope: openid,cloud_controller_service_permissions.read
           notifications:
             id: notifications
             secret: (( .uaa.notifications_client_credentials.password ))
