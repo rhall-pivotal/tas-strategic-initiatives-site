@@ -449,6 +449,89 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
 
+  - name: consul_server
+    label: consul
+    resource_label: consul
+    description:
+    job_templates:
+      - consul_agent
+      - metron_agent
+    release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 1024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        label: VM credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      networks:
+        apps: default
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+      metron_agent:
+        zone: (( availability_zone ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+      etcd:
+        machines: (( .etcd_server.ips ))
+      consul:
+        agent:
+          mode: server
+          servers:
+            lan: (( .consul_server.ips ))
+
   - name: etcd_server
     label: etcd
     resource_label: etcd
@@ -921,6 +1004,7 @@ job_types:
       - cloud_controller_ng
       - metron_agent
       - nfs_mounter
+      - consul_agent
     release: cf
 
     resource_definitions:
@@ -1047,6 +1131,9 @@ job_types:
       cc:
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
+        service_name: cloud-controller-ng
+        info:
+          support_address: https://support.pivotal.io
         external_protocol: https
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
@@ -1101,6 +1188,14 @@ job_types:
         uaa_resource_id: cloud_controller,cloud_controller_service_permissions
 
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
+
+      consul:
+        domain: consul
+        agent:
+          services:
+            - cloud_controller_ng
+          servers:
+            lan: (( .consul_server.ips ))
 
       networks:
         apps: default
@@ -1532,6 +1627,7 @@ job_types:
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
+        service_name: cloud-controller-ng
         resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
         default_stack: (( .properties.root_filesystem.selected_option.parsed_manifest(default_stack) ))
         logging_level: debug
@@ -1566,6 +1662,8 @@ job_types:
 
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
+      consul:
+        domain: consul
 
       networks:
         apps: default
@@ -1679,6 +1777,7 @@ job_types:
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
+        service_name: cloud-controller-ng
         default_stack: (( .properties.root_filesystem.selected_option.parsed_manifest(default_stack) ))
         logging_level: debug
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
@@ -1712,6 +1811,8 @@ job_types:
 
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
+      consul:
+        domain: consul
 
       networks:
         apps: default
