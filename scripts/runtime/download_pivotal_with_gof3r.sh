@@ -9,9 +9,12 @@ fi
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../ && pwd )"
 PIVOTAL_FILE="${SCRIPTS_DIR}/../${RUNTIME_DOT_PIVOTAL_FILE}"
+PIVOTAL_MD5="${SCRIPTS_DIR}/../${RUNTIME_DOT_PIVOTAL_FILE}.md5"
 
 BUCKET_NAME="releng-products"
 FOLDER_NAME="runtime"
 
-# NOTE: gof3r automatically checks MD5 by checking for a .md5 file with the same name
-gof3r cp s3://${BUCKET_NAME}/${FOLDER_NAME}/${RUNTIME_DOT_PIVOTAL_FILE} ${PIVOTAL_FILE}
+gof3r get -b ${BUCKET_NAME} -k ${FOLDER_NAME}/${RUNTIME_DOT_PIVOTAL_FILE} -p ${PIVOTAL_FILE}
+gof3r get -b ${BUCKET_NAME} -k ${FOLDER_NAME}/${RUNTIME_DOT_PIVOTAL_FILE}.md5 -p ${PIVOTAL_MD5}
+
+bundle exec rake md5:validate[${PIVOTAL_FILE},${PIVOTAL_MD5}]
