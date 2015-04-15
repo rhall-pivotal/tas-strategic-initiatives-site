@@ -16,5 +16,3 @@ FOLDER_NAME="runtime"
 
 gof3r cp s3://${BUCKET_NAME}/${FOLDER_NAME}/${RUNTIME_DOT_PIVOTAL_FILE} ${PIVOTAL_FILE} --no-md5
 gof3r cp s3://${BUCKET_NAME}/${FOLDER_NAME}/${RUNTIME_DOT_PIVOTAL_FILE}.md5 ${PIVOTAL_MD5} --no-md5
-
-bundle exec rake md5:validate[${PIVOTAL_FILE},${PIVOTAL_MD5}]
