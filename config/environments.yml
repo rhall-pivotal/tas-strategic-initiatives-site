@@ -9,6 +9,37 @@ releng_notifications_smtp_config: &releng_notifications_smtp_config
   enable_starttls_auto: true
   auth_mechanism: plain
 environments:
+  ashenvale:
+    krafa:
+      has_internet: true
+    web_auth:
+      web_user: 'pivotalcf'
+      web_password: 'pivotalcf'
+      vcenter:
+        host: "172.16.74.3"
+        user: "root"
+        password: "look74Beer"
+      location:
+        datacenter: "pizza-boxes-dc"
+        cluster: "pizza-boxes"
+        datastore: "emc-ds"
+        network: "brainiac"
+        folder: "ashenvale"
+      ops_manager_settings:
+        ip: "172.16.64.26"
+        netmask: "255.255.254.0"
+        gateway: "172.16.64.1"
+        reserved_ip_ranges: "172.16.64.1-172.16.64.26,172.16.64.126-172.16.65.255"
+        dns: "10.87.8.10,10.87.8.11"
+        ntp_servers: ["time1.sf.cf-app.com"]
+        vm_password: "pivotalcf"
+      ers_configuration:
+        trust_self_signed_certificates: true
+        ha_proxy_ips: [ '172.16.64.125' ]
+        ssl_cert_domains: '*.sys.ashenvale.cf-app.com'
+        system_domain: 'sys.ashenvale.cf-app.com'
+        apps_domain: 'apps.ashenvale.cf-app.com'
+        smtp: *releng_notifications_smtp_config
   badger:
     krafa:
       has_internet: true
