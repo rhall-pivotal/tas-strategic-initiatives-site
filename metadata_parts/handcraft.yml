@@ -1336,7 +1336,7 @@ job_types:
       networks:
         apps: default
       router:
-        cipher_suites: (( .router.ssl_ciphers ))
+        cipher_suites: (( .router.ssl_ciphers.value ))
         secure_cookies: (( .ha_proxy.disable_http.value ))
         status:
           user: router_status
