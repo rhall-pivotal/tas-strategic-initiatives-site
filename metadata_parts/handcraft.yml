@@ -1039,12 +1039,11 @@ job_types:
       system_domain: (( $runtime.system_domain ))
       system_domain_organization: system
       app_domains: ["(( $runtime.apps_domain ))"]
+      support_address: https://support.pivotal.io
 
       cc:
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
-        info:
-          support_address: https://support.pivotal.io
         external_protocol: https
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
