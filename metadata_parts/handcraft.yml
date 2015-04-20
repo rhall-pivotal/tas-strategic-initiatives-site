@@ -2746,6 +2746,7 @@ job_types:
       system_domain: (( $runtime.system_domain ))
       cc:
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
+        srv_api_uri: (( $runtime.system_api_url ))
 
   - name: loggregator_trafficcontroller
     label: Loggregator Trafficcontroller
