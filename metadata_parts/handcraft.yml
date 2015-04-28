@@ -212,7 +212,7 @@ form_types:
 
   - name: security_config
     label: Security Config
-    description: Security settings for HAProxy and Router
+    description: Security settings for HAProxy, Router, and DEAs
     property_inputs:
       - reference: .ha_proxy.disable_http
         label: Allow HTTPS Traffic Only
@@ -226,6 +226,9 @@ form_types:
         label: HAProxy SSL Ciphers
       - reference: .router.ssl_ciphers
         label: Router SSL Ciphers
+      - reference: .dea.allow_host_access
+        label: Enable cross-container traffic within each DEA
+        description: Not recommended for multi-tenant deployments
 
   - name: mysql_proxy
     label: MySQL Proxy Config
@@ -2724,12 +2727,18 @@ job_types:
         type: simple_credentials
         label: Loggregator Agent status credentials
 
+      - name: allow_host_access
+        type: boolean
+        configurable: true
+        default: false
+
     manifest: |
       networks:
         apps: default
       domain: (( $runtime.system_domain ))
 
       dea_next:
+        allow_host_access: (( allow_host_access ))
         directory_server_protocol: https
         memory_mb: (( ram ))
         memory_overcommit_factor: 1
