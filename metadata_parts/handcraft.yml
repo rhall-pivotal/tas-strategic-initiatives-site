@@ -269,6 +269,8 @@ form_types:
       - reference: .cloud_controller.default_quota_max_number_services
         label: Default Quota Service Instances
         description: Maximum allowed number of service instances in an org using the default quota. For initial install only. Use the CLI to manage quotas.
+      - reference: .cloud_controller.diego_docker
+        label: Enable Diego Docker support
 
   - name: syslog_aggregator
     label: External Endpoints
@@ -1121,6 +1123,11 @@ job_types:
           min: 0
           max: 1000
 
+      - name: diego_docker
+        type: boolean
+        configurable: true
+        default: false
+
     manifest: |
       domain: (( $runtime.system_domain ))
       system_domain: (( $runtime.system_domain ))
@@ -1129,6 +1136,7 @@ job_types:
       support_address: https://support.pivotal.io
 
       cc:
+        diego_docker: (( diego_docker.value ))
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         service_name: cloud-controller-ng
@@ -1625,6 +1633,7 @@ job_types:
 
       cc:
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
+        diego_docker: (( .cloud_controller.diego_docker.value ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         service_name: cloud-controller-ng
@@ -1776,6 +1785,7 @@ job_types:
 
       cc:
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
+        diego_docker: (( .cloud_controller.diego_docker.value ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))

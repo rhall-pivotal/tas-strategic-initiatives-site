@@ -10,7 +10,13 @@ fi
 PIVOTAL_FILE_CACHE_KEY="runtime/${RUNTIME_DOT_PIVOTAL_FILE}"
 
 bundle
-bundle exec rake artifacts:cf:clean[.]
-bundle exec rake artifacts:cf:retrieve[${PIVOTAL_FILE_CACHE_KEY}]
-bundle exec rake md5:validate[${RUNTIME_DOT_PIVOTAL_FILE},${RUNTIME_DOT_PIVOTAL_FILE}.md5]
+if [ ! -f ${RUNTIME_DOT_PIVOTAL_FILE} ]
+then
+  bundle exec rake artifacts:cf:clean[.]
+  bundle exec rake artifacts:cf:retrieve[${PIVOTAL_FILE_CACHE_KEY}]
+  bundle exec rake md5:validate[${RUNTIME_DOT_PIVOTAL_FILE},${RUNTIME_DOT_PIVOTAL_FILE}.md5]
+else
+  echo "Not downloading pivotal file because ${RUNTIME_PIVOTAL_FILE} already exists"
+fi
+
 bundle exec rake --trace runtime[${RELENG_ENV},${RUNTIME_DOT_PIVOTAL_FILE}]
