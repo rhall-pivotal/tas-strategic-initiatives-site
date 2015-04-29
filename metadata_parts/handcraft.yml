@@ -1122,10 +1122,10 @@ job_types:
         default: false
 
     manifest: |
-      domain: (( $runtime.system_domain ))
-      system_domain: (( $runtime.system_domain ))
+      domain: (( .cloud_controller.system_domain ))
+      system_domain: (( .cloud_controller.system_domain ))
       system_domain_organization: system
-      app_domains: ["(( $runtime.apps_domain ))"]
+      app_domains: ["(( .cloud_controller.apps_domain ))"]
       support_address: https://support.pivotal.io
 
       cc:
@@ -1533,7 +1533,7 @@ job_types:
         internal_api_user: (( internal_api_user_credentials.identity ))
         internal_api_password: (( internal_api_user_credentials.password ))
 
-      domain: (( $runtime.system_domain ))
+      domain: (( .cloud_controller.system_domain ))
 
       dea_next:
         heartbeat_interval_in_seconds: 10
@@ -1623,10 +1623,10 @@ job_types:
           identity: vcap
 
     manifest: |
-      domain: (( $runtime.system_domain ))
-      system_domain: (( $runtime.system_domain ))
+      domain: (( .cloud_controller.system_domain ))
+      system_domain: (( .cloud_controller.system_domain ))
       system_domain_organization: system
-      app_domains: ["(( $runtime.apps_domain ))"]
+      app_domains: ["(( .cloud_controller.apps_domain ))"]
 
       cc:
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
@@ -1774,10 +1774,10 @@ job_types:
           identity: vcap
 
     manifest: |
-      domain: (( $runtime.system_domain ))
-      system_domain: (( $runtime.system_domain ))
+      domain: (( .cloud_controller.system_domain ))
+      system_domain: (( .cloud_controller.system_domain ))
       system_domain_organization: system
-      app_domains: ["(( $runtime.apps_domain ))"]
+      app_domains: ["(( .cloud_controller.apps_domain ))"]
 
       cc:
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
@@ -2275,7 +2275,7 @@ job_types:
             authorities: notification_preferences.admin
             autoapprove: true
             override: true
-            redirect-uri: "https://notifications-ui.(( $runtime.system_domain ))/sessions/create"
+            redirect-uri: "https://notifications-ui.(( .cloud_controller.system_domain ))/sessions/create"
           cloud_controller_username_lookup:
             id: (( .uaa.cloud_controller_username_lookup_credentials.identity ))
             secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
@@ -2294,7 +2294,7 @@ job_types:
 
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
-      domain: (( $runtime.system_domain ))
+      domain: (( .cloud_controller.system_domain ))
 
       uaadb: (( .properties.system_database.selected_option.parsed_manifest(uaadb) ))
       networks:
@@ -2397,7 +2397,7 @@ job_types:
         optional: true
 
     manifest: |
-      domain: (( $runtime.system_domain ))
+      domain: (( .cloud_controller.system_domain ))
 
       login:
         asset_base_url: '/resources/pivotal'
@@ -2410,9 +2410,9 @@ job_types:
 
         brand: pivotal
         links:
-          home: "https://console.(( $runtime.system_domain ))"
-          passwd: "https://console.(( $runtime.system_domain ))/password_resets/new"
-          signup: "https://console.(( $runtime.system_domain ))/register"
+          home: "https://console.(( .cloud_controller.system_domain ))"
+          passwd: "https://console.(( .cloud_controller.system_domain ))/password_resets/new"
+          signup: "https://console.(( .cloud_controller.system_domain ))/register"
         uaa_base: (( $runtime.uaa_url ))
         uaa_certificate: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
         serviceProviderKey: (( service_provider_key_credentials.private_key_pem ))
@@ -2421,9 +2421,9 @@ job_types:
         idp_entity_alias: sso-sp
         idp_metadata_url: (( sso_url.value ))
         notifications:
-          url: "https://notifications.(( $runtime.system_domain ))"
+          url: "https://notifications.(( .cloud_controller.system_domain ))"
         saml:
-          entityid: "http://login.(( $runtime.system_domain ))"
+          entityid: "http://login.(( .cloud_controller.system_domain ))"
           providers:
             (( sso_name.value )):
               nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
@@ -2730,7 +2730,7 @@ job_types:
     manifest: |
       networks:
         apps: default
-      domain: (( $runtime.system_domain ))
+      domain: (( .cloud_controller.system_domain ))
 
       dea_next:
         allow_host_access: (( allow_host_access.value ))
@@ -2869,7 +2869,7 @@ job_types:
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
-      system_domain: (( $runtime.system_domain ))
+      system_domain: (( .cloud_controller.system_domain ))
       cc:
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
         srv_api_uri: (( $runtime.system_api_url ))
@@ -2948,7 +2948,7 @@ job_types:
       cc:
         srv_api_uri: (( $runtime.system_api_url ))
 
-      system_domain: (( $runtime.system_domain ))
+      system_domain: (( .cloud_controller.system_domain ))
 
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -3068,9 +3068,9 @@ job_types:
         cf_cc_api_url: (( $runtime.system_api_url ))
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
         cf_console_url: (( $runtime.console_url ))
-        cf_notifications_service_url: "https://notifications.(( $runtime.system_domain ))"
+        cf_notifications_service_url: "https://notifications.(( .cloud_controller.system_domain ))"
         default_from: (( .properties.smtp_from.value ))
-        usage_service_host: app-usage.(( $runtime.system_domain ))
+        usage_service_host: app-usage.(( .cloud_controller.system_domain ))
         bundle_without: test development hosted_only
         rack_env: production
         rails_env: production
@@ -3208,7 +3208,7 @@ job_types:
         cf_console_url: (( $runtime.console_url ))
         default_reply_to: (( reply_to.value ))
         default_from: (( .properties.smtp_from.value ))
-        usage_service_host: app-usage.(( $runtime.system_domain ))
+        usage_service_host: app-usage.(( .cloud_controller.system_domain ))
         bundle_without: test development hosted_only
         rack_env: production
         rails_env: production
@@ -3360,7 +3360,7 @@ job_types:
         type: simple_credentials
 
     manifest: |
-      domain: (( $runtime.system_domain ))
+      domain: (( .cloud_controller.system_domain ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
       notifications_with_ui:
@@ -3472,7 +3472,7 @@ job_types:
           admin_password: (( .uaa.admin_credentials.password ))
         database: (( .properties.system_database.selected_option.parsed_manifest(autoscaling) ))
         encryption_key: (( encryption_key.password ))
-        notifications_host: "https://notifications.(( $runtime.system_domain ))"
+        notifications_host: "https://notifications.(( .cloud_controller.system_domain ))"
         organization: system
         space: autoscaling
       domain: (( .cloud_controller.system_domain.value ))
