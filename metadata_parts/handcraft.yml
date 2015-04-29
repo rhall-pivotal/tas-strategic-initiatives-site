@@ -1208,7 +1208,7 @@ job_types:
         address: (( .nfs_server.first_ip ))
 
       uaa:
-        url: (( $runtime.uaa_url ))
+        url: "https://uaa.(( .cloud_controller.system_domain ))"
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
@@ -1218,7 +1218,7 @@ job_types:
           cloud_controller_username_lookup:
             secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
       login:
-        url: (( $runtime.login_url ))
+        url: "https://login.(( .cloud_controller.system_domain ))"
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -1527,7 +1527,7 @@ job_types:
 
     manifest: |
       cc:
-        srv_api_uri: (( $runtime.system_api_url ))
+        srv_api_uri: "https://api.(( .cloud_controller.system_domain ))"
         bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
         internal_api_user: (( internal_api_user_credentials.identity ))
@@ -1676,14 +1676,14 @@ job_types:
         address: (( .nfs_server.first_ip ))
 
       uaa:
-        url: (( $runtime.uaa_url ))
+        url: "https://uaa.(( .cloud_controller.system_domain ))"
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
           cc-service-dashboards:
             secret: (( .uaa.cc_service_dashboards_credentials.password ))
       login:
-        url: (( $runtime.login_url ))
+        url: "https://login.(( .cloud_controller.system_domain ))"
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
@@ -1830,14 +1830,14 @@ job_types:
         address: (( .nfs_server.first_ip ))
 
       uaa:
-        url: (( $runtime.uaa_url ))
+        url: "https://uaa.(( .cloud_controller.system_domain ))"
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
         clients:
           cc-service-dashboards:
             secret: (( .uaa.cc_service_dashboards_credentials.password ))
       login:
-        url: (( $runtime.login_url ))
+        url: "https://login.(( .cloud_controller.system_domain ))"
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
@@ -2187,7 +2187,7 @@ job_types:
         login:
           addnew: false
         catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
-        url: (( $runtime.uaa_url ))
+        url: "https://uaa.(( .cloud_controller.system_domain ))"
         jwt:
           signing_key: (( jwt_signing_key_credentials.private_key_pem ))
           verification_key: (( jwt_signing_key_credentials.public_key_pem ))
@@ -2404,7 +2404,7 @@ job_types:
         protocol: https
         tiles:
           - name: Pivotal Dev Console
-            login-link:  (( $runtime.console_url ))
+            login-link:  "https://console.(( .cloud_controller.system_domain ))"
             image: "/resources/pivotal/images/dev-console-logo-gray.png"
             image-hover: "/resources/pivotal/images/dev-console-logo-teal.png"
 
@@ -2413,7 +2413,7 @@ job_types:
           home: "https://console.(( .cloud_controller.system_domain ))"
           passwd: "https://console.(( .cloud_controller.system_domain ))/password_resets/new"
           signup: "https://console.(( .cloud_controller.system_domain ))/register"
-        uaa_base: (( $runtime.uaa_url ))
+        uaa_base: "https://uaa.(( .cloud_controller.system_domain ))"
         uaa_certificate: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
         serviceProviderKey: (( service_provider_key_credentials.private_key_pem ))
         serviceProviderCertificate: (( service_provider_key_credentials.cert_pem ))
@@ -2872,7 +2872,7 @@ job_types:
       system_domain: (( .cloud_controller.system_domain ))
       cc:
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
-        srv_api_uri: (( $runtime.system_api_url ))
+        srv_api_uri: "https://api.(( .cloud_controller.system_domain ))"
 
   - name: loggregator_trafficcontroller
     label: Loggregator Trafficcontroller
@@ -2946,7 +2946,7 @@ job_types:
         doppler_port: 8081
 
       cc:
-        srv_api_uri: (( $runtime.system_api_url ))
+        srv_api_uri: "https://api.(( .cloud_controller.system_domain ))"
 
       system_domain: (( .cloud_controller.system_domain ))
 
@@ -3045,7 +3045,7 @@ job_types:
     manifest: |
       cf:
         console_subdomain: console
-        api_url: (( $runtime.system_api_url ))
+        api_url: "https://api.(( .cloud_controller.system_domain ))"
         admin_username: (( .uaa.push_console_credentials.identity ))
         admin_password: (( .uaa.push_console_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
@@ -3055,8 +3055,8 @@ job_types:
         authentication:
           CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
           CF_CLIENT_SECRET: (( .uaa.console_client_credentials.password ))
-          CF_LOGIN_SERVER_URL: (( $runtime.login_url ))
-          CF_UAA_SERVER_URL: (( $runtime.uaa_url ))
+          CF_LOGIN_SERVER_URL: "https://login.(( .cloud_controller.system_domain ))"
+          CF_UAA_SERVER_URL: "https://uaa.(( .cloud_controller.system_domain ))"
         smtp:
           address: (( .properties.smtp_address.value ))
           port: (( .properties.smtp_port.value ))
@@ -3065,9 +3065,9 @@ job_types:
           enable_starttls_auto: (( .properties.smtp_enable_starttls_auto.value ))
       env:
         secret_token: (( secret_token.value ))
-        cf_cc_api_url: (( $runtime.system_api_url ))
+        cf_cc_api_url: "https://api.(( .cloud_controller.system_domain ))"
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
-        cf_console_url: (( $runtime.console_url ))
+        cf_console_url: "https://console.(( .cloud_controller.system_domain ))"
         cf_notifications_service_url: "https://notifications.(( .cloud_controller.system_domain ))"
         default_from: (( .properties.smtp_from.value ))
         usage_service_host: app-usage.(( .cloud_controller.system_domain ))
@@ -3185,7 +3185,7 @@ job_types:
     manifest: |
       cf:
         console_subdomain: console
-        api_url: (( $runtime.system_api_url ))
+        api_url: "https://api.(( .cloud_controller.system_domain ))"
         admin_username: (( .uaa.push_console_credentials.identity ))
         admin_password: (( .uaa.push_console_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
@@ -3193,8 +3193,8 @@ job_types:
         authentication:
           CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
           CF_CLIENT_SECRET: (( .uaa.console_client_credentials.password ))
-          CF_LOGIN_SERVER_URL: (( $runtime.login_url ))
-          CF_UAA_SERVER_URL: (( $runtime.uaa_url ))
+          CF_LOGIN_SERVER_URL: "https://login.(( .cloud_controller.system_domain ))"
+          CF_UAA_SERVER_URL: "https://uaa.(( .cloud_controller.system_domain ))"
         smtp:
           address: (( smtp_address.value ))
           port: (( smtp_port.value ))
@@ -3203,9 +3203,9 @@ job_types:
           enable_starttls_auto: (( smtp_enable_starttls_auto.value ))
       env:
         secret_token: (( secret_token.value ))
-        cf_cc_api_url: (( $runtime.system_api_url ))
+        cf_cc_api_url: "https://api.(( .cloud_controller.system_domain ))"
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
-        cf_console_url: (( $runtime.console_url ))
+        cf_console_url: "https://console.(( .cloud_controller.system_domain ))"
         default_reply_to: (( reply_to.value ))
         default_from: (( .properties.smtp_from.value ))
         usage_service_host: app-usage.(( .cloud_controller.system_domain ))
@@ -3287,7 +3287,7 @@ job_types:
       networks:
         apps: default
       smoke_tests:
-        api: (( $runtime.system_api_url ))
+        api: "https://api.(( .cloud_controller.system_domain ))"
         apps_domain: (( .cloud_controller.apps_domain.value ))
         user: (( .uaa.run_smoke_tests_credentials.identity ))
         password: (( .uaa.run_smoke_tests_credentials.password ))
@@ -3695,7 +3695,7 @@ job_types:
 
     manifest: |
       acceptance_tests:
-        api: (( $runtime.system_api_url ))
+        api: "https://api.(( .cloud_controller.system_domain ))"
         apps_domain: (( .cloud_controller.apps_domain.value ))
         admin_user: (( .uaa.admin_credentials.identity ))
         admin_password: (( .uaa.admin_credentials.password ))
