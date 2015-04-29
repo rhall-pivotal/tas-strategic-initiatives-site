@@ -22,7 +22,6 @@ describe Cmd::Runtime do
   end
 
   let(:environment) { Opsmgr::Environment.build(:test, settings) }
-  let(:endpoints) { Opsmgr::Api::Version12::Endpoints.new }
   let(:installer) { Opsmgr::Cmd::Installer.build(environment, Cmd::Runtime::PRODUCT_NAME) }
   let(:runtime_product) { Runtime.build(environment) }
   let(:upgrader) { Opsmgr::Cmd::Upgrader.build(environment, Cmd::Runtime::PRODUCT_NAME) }
