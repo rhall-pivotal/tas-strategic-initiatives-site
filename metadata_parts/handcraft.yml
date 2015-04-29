@@ -87,17 +87,6 @@ post_deploy_errands:
   - name: autoscaling-register-broker
 
 form_types:
-  - name: root_filesystem
-    label: Root Filesystem
-    description: This configures the default stack used when pushing a new app.
-    property_inputs:
-    - reference: .properties.root_filesystem
-      label: Default Root Filesystem
-      selector_property_inputs:
-      - reference: .properties.root_filesystem.lucid64
-        label: lucid64 - derived from Ubuntu 10.04 (Lucid Lynx)
-      - reference: .properties.root_filesystem.cflinuxfs2
-        label: cflinuxfs2 - derived from Ubuntu 14.04 (Trusty Tahr)
   - name: system_database
     label: System Database Config
     description: Select internal if you want to keep using the system-provided databases. Otherwise, select external if you want to use your own database service, such as the Amazon Relational Database Service (RDS), to host the system-required databases, in which case you will need to create the database schemas. Consult Pivotal Cloud Foundry documentation for schema requirements.
@@ -1145,7 +1134,6 @@ job_types:
         external_protocol: https
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
-        default_stack: (( .properties.root_filesystem.selected_option.parsed_manifest(default_stack) ))
         bootstrap_admin_email: admin
         bulk_api_password: (( bulk_api_credentials.password ))
         client_max_body_size: (( max_file_size.value ))M
@@ -1638,7 +1626,6 @@ job_types:
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         service_name: cloud-controller-ng
         resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
-        default_stack: (( .properties.root_filesystem.selected_option.parsed_manifest(default_stack) ))
         logging_level: debug
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
@@ -1790,7 +1777,6 @@ job_types:
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
         service_name: cloud-controller-ng
-        default_stack: (( .properties.root_filesystem.selected_option.parsed_manifest(default_stack) ))
         logging_level: debug
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
@@ -3853,22 +3839,6 @@ property_blueprints:
     type: string
     configurable: false
     default: uaa
-
-  - name: root_filesystem
-    type: selector
-    configurable: true
-    default: cflinuxfs2
-    option_templates:
-      - name: cflinuxfs2
-        select_value: cflinuxfs2
-        named_manifests:
-          - name: default_stack
-            manifest: cflinuxfs2
-      - name: lucid64
-        select_value: lucid64
-        named_manifests:
-          - name: default_stack
-            manifest: lucid64
 
   - name: system_database
     type: selector
