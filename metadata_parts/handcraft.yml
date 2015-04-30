@@ -324,13 +324,13 @@ form_types:
         description: 'Required for LDAP. Example ou=Users,dc=example,dc=com'
       - reference: .uaa.ldap_search_filter
         label: User Search Filter
-        description: ' Required for LDAP. User {0} where username should inserted.'
+        description: ' Required for LDAP. Use {0} where username should inserted.'
       - reference: .uaa.ldap_group_search_base
         label: Group Search Base
         description: 'Required if mapping LDAP groups to Admin role. Example ou=Groups,dc=example,dc=com'
       - reference: .uaa.ldap_group_search_filter
         label: Group Search Filter
-        description: 'Required if mapping LDAP groups to Admin role. User {0} where group name should inserted.'
+        description: 'Required if mapping LDAP groups to Admin role. Use {0} where group name should inserted.'
       - reference: .uaa.ldap_server_ssl_cert
         label: Server SSL Cert
         description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate'
