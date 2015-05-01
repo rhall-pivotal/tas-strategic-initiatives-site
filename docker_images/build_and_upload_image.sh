@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 DOCKER_IMAGE_NAME=releng
 IMAGE_FOLDER="$( cd "$( dirname ${BASH_SOURCE[0]} )"/${DOCKER_IMAGE_NAME} && pwd )"
