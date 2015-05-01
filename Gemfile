@@ -6,6 +6,8 @@ gem 'bosh_cli', '1.2818.0', require: false # a dependency of vara but version sh
 
 gem 'opsmgr', git: 'git@github.com:pivotal-cf/opsmgr'
 gem 'vsphere_clients', git: 'git@github.com:pivotal-cf-experimental/vsphere_clients'
+gem 'ops_manager_ui_drivers', git: 'https://github.com/pivotal-cf-experimental/ops_manager_ui_drivers'
+gem 'recursive-open-struct'
 
 group :development, :test do
   gem 'rspec'
