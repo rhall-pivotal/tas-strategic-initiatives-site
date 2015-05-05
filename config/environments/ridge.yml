@@ -1,0 +1,46 @@
+---
+name: ridge
+iaas_type: vsphere
+ops_manager:
+  url: https://pcf.ridge.cf-app.com
+  username: pivotalcf
+  password: pivotalcf
+  ntp_servers: time1.sf.cf-app.com
+  vcenter:
+    creds:
+      ip: 10.84.32.61
+      username: root
+      password: look74Beer
+    datacenter: private
+    datastore: public
+    microbosh_vm_folder: ridge_vms
+    microbosh_template_folder: ridge_templates
+    microbosh_disk_path: ridge_disk
+  availability_zones:
+  - name: first-az
+    cluster: geography
+    resource_pool: ridge
+  networks:
+  - name: first-network
+    identifier: ridge
+    subnet: 10.85.88.0/24
+    gateway: 10.85.88.1
+    reserved_ips: 10.85.88.0-10.85.88.90
+    dns: 10.87.8.10,10.87.8.11
+  elastic_runtime:
+    name: cf
+    ha_proxy_static_ips: 10.85.88.254
+    system_domain: sys.ridge.cf-app.com
+    apps_domain: app.ridge.cf-app.com
+    smtp:
+      from: 'identitystaging@mailinator.com'
+      address: 'smtp.sendgrid.net'
+      port: 587
+      credentials:
+        identity: 'cfidentitystaging'
+        password: 'incervolotbo'
+      enable_starttls_auto: true
+      smtp_auth_mechanism: plain
+    trust_self_signed_certificates: true
+
+
