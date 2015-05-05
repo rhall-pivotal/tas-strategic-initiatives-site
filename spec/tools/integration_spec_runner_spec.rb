@@ -70,25 +70,27 @@ RSpec.describe 'IntegrationSpecRunner' do
     end
   end
 
-  describe '#upload_ert' do
-    let(:ert_version) { '1.5' }
-    let(:product_path) { '/some/path/to.pivotal' }
+  %w(1.4 1.5).each do |version|
+    describe '#upload_ert' do
+      let(:ert_version) { version }
+      let(:product_path) { '/some/path/to.pivotal' }
 
-    it 'runs the correct version of configure ert' do
-      expect(RSpec::Core::Runner).to receive(:run).with(["integration/ERT-#{ert_version}/upload_ert_spec.rb"])
-      expect(ENV).to receive(:[]=).with('PRODUCT_PATH', product_path)
+      it 'runs the correct version of configure ert' do
+        expect(RSpec::Core::Runner).to receive(:run).with(["integration/ERT-#{ert_version}/upload_ert_spec.rb"])
+        expect(ENV).to receive(:[]=).with('PRODUCT_PATH', product_path)
 
-      integration_spec_runner.upload_ert(product_path)
+        integration_spec_runner.upload_ert(product_path)
+      end
     end
-  end
 
-  describe '#configure_ert' do
-    let(:ert_version) { '1.5' }
+    describe '#configure_ert' do
+      let(:ert_version) { version }
 
-    it 'runs the correct version of configure ert' do
-      expect(RSpec::Core::Runner).to receive(:run).with(["integration/ERT-#{ert_version}/configure_ert_spec.rb"])
+      it 'runs the correct version of configure ert' do
+        expect(RSpec::Core::Runner).to receive(:run).with(["integration/ERT-#{ert_version}/configure_ert_spec.rb"])
 
-      integration_spec_runner.configure_ert
+        integration_spec_runner.configure_ert
+      end
     end
   end
 

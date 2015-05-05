@@ -5,11 +5,12 @@ class IntegrationSpecRunner
   end
 
   INTEGRATION_SPEC_PREFIX = 'integration'
-  SUPPORTED_ERT_VERSIONS = ['1.5']
+  SUPPORTED_ERT_VERSIONS = %w(1.4 1.5)
 
   def initialize(environment:, om_version:, ert_version: nil)
     ENV['ENVIRONMENT_NAME'] = environment
     ENV['OM_VERSION'] = om_version
+    puts ert_version
     if ert_version.nil? || SUPPORTED_ERT_VERSIONS.include?(ert_version)
       @ert_version = ert_version
     else
