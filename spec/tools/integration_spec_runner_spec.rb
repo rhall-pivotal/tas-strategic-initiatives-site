@@ -92,16 +92,6 @@ RSpec.describe 'IntegrationSpecRunner' do
     end
   end
 
-  describe '#install_ert' do
-    let(:ert_version) { '1.5' }
-
-    it 'runs the correct version of configure ert' do
-      expect(RSpec::Core::Runner).to receive(:run).with(["integration/ERT-#{ert_version}/install_ert_spec.rb"])
-
-      integration_spec_runner.install_ert
-    end
-  end
-
   describe '#configure_microbosh' do
     let(:om_version) { '1.5' }
 

@@ -17,13 +17,4 @@ namespace :ert do
       om_version: args.om_version
     ).configure_ert
   end
-
-  desc '-  Install Elastic Runtime [:environment, :ert_version, :om_version]'
-  task :install, [:environment, :ert_version, :om_version] do |_, args|
-    IntegrationSpecRunner.new(
-      environment: args.environment,
-      ert_version: args.ert_version,
-      om_version: args.om_version
-    ).install_ert
-  end
 end

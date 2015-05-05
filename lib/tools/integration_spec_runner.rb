@@ -26,10 +26,6 @@ class IntegrationSpecRunner
     RSpec::Core::Runner.run([ert_spec_path + '/configure_ert_spec.rb'])
   end
 
-  def install_ert
-    RSpec::Core::Runner.run([ert_spec_path + '/install_ert_spec.rb'])
-  end
-
   def configure_microbosh
     RSpec::Core::Runner.run([microbosh_spec_path + '/configure_microbosh_spec.rb'])
   end
