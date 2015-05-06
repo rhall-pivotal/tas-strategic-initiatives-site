@@ -1,4 +1,4 @@
-require 'opsmgr/opsman_ui_helper'
+require 'opsmgr/ui_helpers/config_helper'
 
 RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
   let(:current_ops_manager) { ops_manager_driver }
