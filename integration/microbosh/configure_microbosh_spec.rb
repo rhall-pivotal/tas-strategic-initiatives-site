@@ -1,4 +1,4 @@
-require_relative '../opsman_ui_helper'
+require 'opsmgr/opsman_ui_helper'
 
 RSpec.describe 'Configuring µBosh', order: :defined do
   let(:current_ops_manager) { ops_manager_driver }
