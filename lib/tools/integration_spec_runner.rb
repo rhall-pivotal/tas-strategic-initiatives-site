@@ -10,7 +10,6 @@ class IntegrationSpecRunner
   def initialize(environment:, om_version:, ert_version: nil)
     ENV['ENVIRONMENT_NAME'] = environment
     ENV['OM_VERSION'] = om_version
-    puts ert_version
     if ert_version.nil? || SUPPORTED_ERT_VERSIONS.include?(ert_version)
       @ert_version = ert_version
     else
