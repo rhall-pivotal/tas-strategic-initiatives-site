@@ -71,19 +71,7 @@ RSpec.describe 'IntegrationSpecRunner' do
   end
 
   %w(1.4 1.5).each do |version|
-    describe '#upload_ert' do
-      let(:ert_version) { version }
-      let(:product_path) { '/some/path/to.pivotal' }
-
-      it 'runs the correct version of configure ert' do
-        expect(RSpec::Core::Runner).to receive(:run).with(["integration/ERT-#{ert_version}/upload_ert_spec.rb"])
-        expect(ENV).to receive(:[]=).with('PRODUCT_PATH', product_path)
-
-        integration_spec_runner.upload_ert(product_path)
-      end
-    end
-
-    describe '#configure_ert' do
+    describe "#configure_ert #{version}" do
       let(:ert_version) { version }
 
       it 'runs the correct version of configure ert' do
@@ -91,26 +79,6 @@ RSpec.describe 'IntegrationSpecRunner' do
 
         integration_spec_runner.configure_ert
       end
-    end
-  end
-
-  describe '#configure_microbosh' do
-    let(:om_version) { '1.5' }
-
-    it 'configures microbosh' do
-      expect(RSpec::Core::Runner).to receive(:run).with(['integration/microbosh/configure_microbosh_spec.rb'])
-
-      integration_spec_runner.configure_microbosh
-    end
-  end
-
-  describe '#install_microbosh' do
-    let(:om_version) { '1.5' }
-
-    it 'install microbosh' do
-      expect(RSpec::Core::Runner).to receive(:run).with(['integration/microbosh/install_microbosh_spec.rb'])
-
-      integration_spec_runner.install_microbosh
     end
   end
 end
