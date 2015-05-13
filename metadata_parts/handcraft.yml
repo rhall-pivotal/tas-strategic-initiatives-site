@@ -1570,7 +1570,7 @@ job_types:
     job_templates:
       - cloud_controller_clock
       - metron_agent
-      - nfs_mounter
+      - nfs_mounter # NOTE: NFS Mounter must be last until #94152506 is resolved
     release: cf
 
     resource_definitions:
@@ -1721,7 +1721,7 @@ job_types:
       - cloud_controller_worker
       - metron_agent
       - consul_agent
-      - nfs_mounter
+      - nfs_mounter # NOTE: NFS Mounter must be last until #94152506 is resolved
 
     release: cf
 
