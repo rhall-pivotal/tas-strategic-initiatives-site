@@ -307,32 +307,32 @@ form_types:
           credentials: .uaa.credentials
     property_inputs:
       - reference: .uaa.ldap_url
-        label: LDAP Server URL
-        description: 'Required for LDAP. The LDAP server url.  Must start with ldap:// or ldaps://'
+        label: Server URL
+        description: 'Required for LDAP. Must start with ldap:// or ldaps://'
       - reference: .uaa.credentials
         label: LDAP Credentials
-        description: Required for LDAP. This is the unique name and password for binding to the LDAP Server.
+        description:  Required for LDAP. This is the unique username and password for binding to the server
       - reference: .uaa.ldap_search_base
-        label: LDAP Search Base
-        description: 'Required for LDAP. Example: ou=cloud,dc=example,dc=com'
+        label: User Search Base
+        description: 'Required for LDAP. Example ou=Users,dc=example,dc=com'
       - reference: .uaa.ldap_search_filter
-        label: LDAP Search Filter
-        description: 'Required for LDAP. Use {0} where the username should be inserted. If unsure, use cn={0}'
+        label: User Search Filter
+        description: ' Required for LDAP. Use {0} where username should inserted.'
       - reference: .uaa.ldap_group_search_base
-        label: LDAP Group Search Base
-        description: 'Required for LDAP groups. Example: ou=cloud,dc=example,dc=com'
+        label: Group Search Base
+        description: 'Required if mapping LDAP groups to Admin role. Example ou=Groups,dc=example,dc=com'
       - reference: .uaa.ldap_group_search_filter
-        label: LDAP Group Search Filter
-        description: 'Required for LDAP groups. Use {0} where the group should be inserted. If unsure, use cn={0}'
+        label: Group Search Filter
+        description: 'Required if mapping LDAP groups to Admin role. Use {0} where group name should inserted.'
       - reference: .uaa.ldap_server_ssl_cert
-        label: LDAP Server SSL Cert
-        description: 'Required only for ldaps://. This is the server certificate to trust for self-signed certificates'
+        label: Server SSL Cert
+        description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate'
       - reference: .uaa.ldap_server_ssl_cert_alias
-        label: LDAP Server SSL Cert AltName
-        description: "Required only for ldaps:// + self-signed Cert. The SSL certificate's AltNames"
+        label: Server SSL Cert AltName
+        description: "Required only for ldaps:// + using a Self Signed Certificate"
       - reference: .uaa.ldap_mail_attribute_name
         label: Email Attribute
-        description: "The name of the attribute that contains the user's email address, default value is mail."
+        description: "The name of the attribute that contains the user's email address"
 
   - name: smtp_config
     label: SMTP Config
@@ -2135,7 +2135,7 @@ job_types:
       - name: ldap_search_filter
         type: string
         configurable: true
-        optional: true
+        default: "cn={0}"
 
       - name: ldap_server_ssl_cert
         type: text
@@ -2160,7 +2160,7 @@ job_types:
       - name: ldap_group_search_filter
         type: string
         configurable: true
-        optional: true
+        default: "member={0}"
 
     manifest: |
       uaa:
