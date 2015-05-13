@@ -2274,9 +2274,12 @@ job_types:
           cloud_controller_username_lookup:
             id: (( .uaa.cloud_controller_username_lookup_credentials.identity ))
             secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
+            authorized-grant-types: client_credentials
+            authorities: scim.userids
         scim:
           user:
             override: true
+          userids_enabled: true
           users:
           - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose,notification_preferences.read,notification_preferences.write,notifications.manage,notification_templates.read,notification_templates.write,emails.write,notifications.write
           - (( push_console_credentials.identity ))|(( push_console_credentials.password ))|cloud_controller.admin
