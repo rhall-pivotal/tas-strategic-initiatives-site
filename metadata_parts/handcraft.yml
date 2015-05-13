@@ -2052,6 +2052,12 @@ job_types:
         default:
           identity: login
 
+      - name: identity_client_credentials
+        type: simple_credentials
+        label: Identity client credentials
+        default:
+          identity: identity
+
       - name: gorouter_client_credentials
         type: simple_credentials
         label: "Router's client secret to connect to UAA"
@@ -2168,6 +2174,36 @@ job_types:
         default: "member={0}"
 
     manifest: |
+      login:
+        asset_base_url: '/resources/pivotal'
+        protocol: https
+        tiles:
+          - name: Pivotal Dev Console
+            login-link:  (( $runtime.console_url ))
+            image: "/resources/pivotal/images/dev-console-logo-gray.png"
+            image-hover: "/resources/pivotal/images/dev-console-logo-teal.png"
+
+        brand: pivotal
+        links:
+          home: "https://console.(( $runtime.system_domain ))"
+          passwd: "https://console.(( $runtime.system_domain ))/password_resets/new"
+          signup: "https://console.(( $runtime.system_domain ))/register"
+        uaa_base: (( $runtime.uaa_url ))
+        uaa_certificate: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
+        notifications:
+          url: "https://notifications.(( $runtime.system_domain ))"
+        saml:
+          entityid: "http://login.(( $runtime.system_domain ))"
+          serviceProviderKey: (( login.service_provider_key_credentials.private_key_pem ))
+          serviceProviderCertificate: (( login.service_provider_key_credentials.cert_pem ))
+          providers:
+            (( login.sso_name.value )):
+              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+              idpMetadataXML: (( login.sso_xml.value ))
+              idpMetadataURL: (( login.sso_url.value ))
+              showSamlLoginLink: true
+              linkText: (( login.sso_name.value ))
+              metadataTrustCheck: false
       uaa:
         ldap:
           profile_type: search-and-bind
@@ -2184,8 +2220,6 @@ job_types:
             profile_type: groups-map-to-scopes
             searchBase: (( ldap_group_search_base.value ))
             groupSearchFilter: (( ldap_group_search_filter.value ))
-        login:
-          addnew: false
         catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
         url: (( $runtime.uaa_url ))
         jwt:
@@ -2196,6 +2230,14 @@ job_types:
         admin:
           client_secret: (( admin_client_credentials.password ))
         clients:
+          identity:
+            id: (( identity_client_credentials.identity ))
+            secret: (( identity_client_credentials.password ))
+            scope: "cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,zones.*.admin,zones.read,zones.write"
+            resource_ids: none
+            authorized_grant_types: "authorization_code,client_credentials,refresh_token"
+            autoapprove: true
+            authorities: "scim.zones,zones.read,uaa.resource,zones.write,cloud_controller.admin"
           login:
             id: (( login_client_credentials.identity ))
             secret: (( login_client_credentials.password ))
@@ -2366,9 +2408,9 @@ job_types:
         type: integer
         label: Instances
         configurable: true
-        default: 1
+        default: 0
         constraints:
-          min: 1
+          min: 0
 
     property_blueprints:
       - name: vm_credentials
