@@ -12,4 +12,4 @@ docker run --privileged \
   -e RUNTIME_DOT_PIVOTAL_FILE \
   -e ENVIRONMENTS_DIR=config/environments \
   -w "/workspace/p-runtime" \
-  -t -i ${DOCKER_REGISTRY}/releng:`git describe --dirty` /bin/sh -c "$*"
+  ${DOCKER_REGISTRY}/releng:`git describe --dirty` /bin/sh -c "$*"
