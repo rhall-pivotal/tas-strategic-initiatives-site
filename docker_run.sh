@@ -7,8 +7,8 @@ workspace_dir="$( cd ${script_dir}/.. && pwd )"
 
 docker run --privileged \
   -v ${workspace_dir}:/workspace \
-  -e AWS_ACCESS_KEY_ID \
-  -e AWS_SECRET_ACCESS_KEY \
+  -e ACCESS_KEY_ID \
+  -e SECRET_ACCESS_KEY \
   -e RUNTIME_DOT_PIVOTAL_FILE \
   -e RELENG_ENV \
   -e ENVIRONMENTS_DIR=config/environments \
