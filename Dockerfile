@@ -21,12 +21,12 @@ ADD include/s3cfg.s3 /s3cfg.s3
 ADD include/gof3r.tar.gz /gof3r
 RUN mv /gof3r/*/gof3r /usr/bin
 
-#-# Create .ssh directory so we can add keys etc
-#-RUN mkdir -p /root/.ssh
-#-
-#-# Ignore ssh fingerprints
-#-RUN echo "Host * \n\tStrictHostKeyChecking no \n\tUserKnownHostsFile=/dev/null" >> /root/.ssh/config
-#-ADD include/id_rsa /root/.ssh/id_rsa
+# Create .ssh directory so we can add keys etc
+RUN mkdir -p /root/.ssh
+
+# Ignore ssh fingerprints
+RUN echo "Host * \n\tStrictHostKeyChecking no \n\tUserKnownHostsFile=/dev/null" >> /root/.ssh/config
+ADD include/id_rsa /root/.ssh/id_rsa
 
 ADD Gemfile /Gemfile
 ADD Gemfile.lock /Gemfile.lock
