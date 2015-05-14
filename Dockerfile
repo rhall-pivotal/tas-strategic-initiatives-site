@@ -32,3 +32,6 @@ ADD Gemfile /Gemfile
 ADD Gemfile.lock /Gemfile.lock
 
 RUN ssh-agent bundle
+
+#Don't publish ssh key
+RUN rm /root/.ssh/id_rsa
