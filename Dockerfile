@@ -27,6 +27,7 @@ RUN mkdir -p /root/.ssh
 # Ignore ssh fingerprints
 RUN echo "Host * \n\tStrictHostKeyChecking no \n\tUserKnownHostsFile=/dev/null" >> /root/.ssh/config
 ADD include/id_rsa /root/.ssh/id_rsa
+RUN chmod 600 /root/.ssh/id_rsa
 
 ADD Gemfile /Gemfile
 ADD Gemfile.lock /Gemfile.lock
