@@ -2206,6 +2206,13 @@ job_types:
               showSamlLoginLink: true
               linkText: (( .login.sso_name.value ))
               metadataTrustCheck: false
+        logout:
+          redirect:
+            parameter:
+              disable: false
+              whitelist:
+              - https://console.(( .cloud_controller.system_domain.value ))/
+            url: "/login"
       uaa:
         ldap:
           profile_type: search-and-bind
