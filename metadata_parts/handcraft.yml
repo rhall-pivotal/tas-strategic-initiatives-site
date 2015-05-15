@@ -3085,9 +3085,9 @@ job_types:
         scheduler_memory: 1536MB
       databases:
         console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
-
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+        https_only_mode: (( .ha_proxy.disable_http.value ))
   - name: push-app-usage-service
     label: Push App Usage Service
     resource_label: Push App Usage Service
