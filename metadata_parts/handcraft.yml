@@ -1191,6 +1191,8 @@ job_types:
         staging_upload_password: (( staging_upload_credentials.password ))
         tasks_disabled: true
         uaa_resource_id: cloud_controller,cloud_controller_service_permissions
+        min_cli_version: 6.7.0
+        min_recommended_cli_version: 6.11.2
 
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
