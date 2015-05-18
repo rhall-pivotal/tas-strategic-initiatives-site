@@ -414,13 +414,11 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: credentials
         type: simple_credentials
-        label: NATS credentials
         default:
           identity: nats
 
@@ -499,7 +497,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -585,7 +582,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -672,7 +668,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -754,13 +749,11 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: credentials
         type: simple_credentials
-        label: Database credentials
         default:
           identity: admin
 
@@ -852,13 +845,11 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: credentials
         type: simple_credentials
-        label: Database credentials
         default:
           identity: root
 
@@ -951,13 +942,11 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: credentials
         type: simple_credentials
-        label: Database credentials
         default:
           identity: root
 
@@ -1051,25 +1040,21 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: staging_upload_credentials
         type: simple_credentials
-        label: Application staging upload credentials
         default:
           identity: staging_upload_user
 
       - name: bulk_api_credentials
         type: simple_credentials
-        label: Bulk api credentials
         default:
           identity: bulk_api
 
       - name: db_encryption_credentials
         type: simple_credentials
-        label: Cloud Controller DB encryption credentials
         default:
           identity: db_encryption
 
@@ -1303,7 +1288,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -1414,13 +1398,11 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: status_credentials
         type: simple_credentials
-        label: Status credentials
         default:
           identity: router_status
 
@@ -1519,13 +1501,11 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: internal_api_user_credentials
         type: simple_credentials
-        label: Credentials for hm9000 API
 
     manifest: |
       cc:
@@ -1620,7 +1600,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -1771,7 +1750,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -1924,7 +1902,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -2010,13 +1987,11 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: admin_credentials
         type: simple_credentials
-        label: Administrator user credentials
         default:
           identity: admin
 
@@ -2032,95 +2007,79 @@ job_types:
 
       - name: system_services_credentials
         type: simple_credentials
-        label: System services user credentials
         default:
           identity: system_services
 
       - name: system_verification_credentials
         type: simple_credentials
-        label: System verification user credentials
         default:
           identity: system_verification
 
       - name: system_passwords_client_credentials
         type: simple_credentials
-        label: System passwords client credentials
         default:
           identity: system_passwords
 
       - name: login_client_credentials
         type: simple_credentials
-        label: Login client credentials
         default:
           identity: login
 
       - name: gorouter_client_credentials
         type: simple_credentials
-        label: "Router's client secret to connect to UAA"
         default:
           identity: gorouter
 
       - name: doppler_client_credentials
         type: simple_credentials
-        label: "Doppler's client secret to connect to UAA"
         default:
           identity: doppler
 
       - name: console_client_credentials
         type: simple_credentials
-        label: Apps Manager client credentials
         default:
           identity: portal
 
       - name: autoscale_client_credentials
         type: simple_credentials
-        label: Autoscaling Service client credentials
         default:
           identity: autoscaling_service
 
       - name: cc_service_dashboards_credentials
         type: simple_credentials
-        label: Cloud Controller Service Broker client credentials
         default:
           identity: cc-service-dashboards
 
       - name: cc_client_credentials
         type: simple_credentials
-        label: Cloud Controller client credentials
         default:
           identity: cloud_controller
 
       - name: admin_client_credentials
         type: simple_credentials
-        label: Administrator client credentials
         default:
           identity: admin
 
       - name: jwt_signing_key_credentials
         type: rsa_pkey_credentials
-        label: Access token signing RSA key
 
       - name: notifications_client_credentials
         type: simple_credentials
-        label: Notifications client credentials
         default:
           identity: notifications
 
       - name: notifications_template_client_credentials
         type: simple_credentials
-        label: Notifications client for modifying templates
         default:
           identity: notifications_template
 
       - name: notifications_ui_client_credentials
         type: simple_credentials
-        label: Notifications UI client credentials
         default:
           identity: notifications_ui_client
 
       - name: cloud_controller_username_lookup_credentials
         type: simple_credentials
-        label: Cloud Controller Username Lookup credentials
         default:
           identity: cloud_controller_username_lookup
 
@@ -2375,13 +2334,11 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: service_provider_key_credentials
         type: rsa_cert_credentials
-        label: Service provider RSA certificate
 
       - name: sso_url
         type: http_url
@@ -2516,7 +2473,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -2536,7 +2492,6 @@ job_types:
 
       - name: dashboard_credentials
         type: simple_credentials
-        label: Proxy Dashboard Credentials
         default:
           identity: admin
 
@@ -2611,25 +2566,20 @@ job_types:
     property_blueprints:
     - name: vm_credentials
       type: salted_credentials
-      label: VM credentials
       default:
         identity: vcap
     - name: mysql_admin_credentials
       type: simple_credentials
-      label: MySQL root credentials
       default:
         identity: root
     - name: app_usage_credentials
       type: simple_credentials
-      label: MySQL App Usage Service Credentials
       default:
         identity: app_usage
     - name: notifications_credentials
       type: simple_credentials
-      label: MySQL Notifications Credentials
     - name: autoscale_credentials
       type: simple_credentials
-      label: MySQL Notifications Credentials
     - name: max_user_connections
       type: integer
       default: 40
@@ -2716,13 +2666,11 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: loggregator_agent_status_credentials
         type: simple_credentials
-        label: Loggregator Agent status credentials
 
       - name: allow_host_access
         type: boolean
@@ -2822,17 +2770,14 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: status_credentials
         type: simple_credentials
-        label: Loggregator status credentials
 
       - name: shared_secret_credentials
         type: simple_credentials
-        label: Shared secret
 
     manifest: |
       networks:
@@ -2933,13 +2878,11 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: status_credentials
         type: simple_credentials
-        label: Loggregator status credentials
 
     manifest: |
       networks:
@@ -3035,13 +2978,11 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: secret_token
         type: secret
-        label: Secret Token
         configurable: false
 
     manifest: |
@@ -3145,13 +3086,11 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: secret_token
         type: secret
-        label: Secret Token
         configurable: false
 
       - name: reply_to
@@ -3281,7 +3220,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -3354,7 +3292,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -3450,17 +3387,14 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
       - name: broker_credentials
         type: salted_credentials
-        label: Broker credentials
 
       - name: encryption_key
         type: salted_credentials
-        label: Autoscaling encryption key
 
     manifest: |
       app_domains:
@@ -3539,7 +3473,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -3613,7 +3546,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -3686,7 +3618,6 @@ job_types:
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
-        label: VM credentials
         default:
           identity: vcap
 
@@ -3775,7 +3706,6 @@ property_blueprints:
 
   - name: syslog_protocol
     type: dropdown_select
-    label: Networking Protocol
     configurable: true
     optional: true
     options:
@@ -3813,7 +3743,6 @@ property_blueprints:
 
   - name: smtp_auth_mechanism
     type: dropdown_select
-    label: SMTP Authentication Mechanism
     configurable: true
     default: plain
     options:
@@ -3826,7 +3755,6 @@ property_blueprints:
 
   - name: smtp_crammd5_secret
     type: string
-    label: Secret to use with CRAMMD5 auth mechanism
     configurable: true
     optional: true
 
