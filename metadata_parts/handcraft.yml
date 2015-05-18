@@ -893,8 +893,8 @@ job_types:
         machines: (( .etcd_server.ips ))
 
   - name: consoledb
-    label: Web Console
-    resource_label: Console Database
+    label: Apps Manager Database
+    resource_label: Apps Manager Database
     description: A Web application will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
     job_templates:
       - postgres
@@ -2068,7 +2068,7 @@ job_types:
 
       - name: console_client_credentials
         type: simple_credentials
-        label: Console client credentials
+        label: Apps Manager client credentials
         default:
           identity: portal
 
@@ -2405,7 +2405,7 @@ job_types:
         asset_base_url: '/resources/pivotal'
         protocol: https
         tiles:
-          - name: Pivotal Dev Console
+          - name: Pivotal Apps Manager
             login-link:  (( $runtime.console_url ))
             image: "/resources/pivotal/images/dev-console-logo-gray.png"
             image-hover: "/resources/pivotal/images/dev-console-logo-teal.png"
@@ -2981,9 +2981,9 @@ job_types:
             secret: (( .uaa.doppler_client_credentials.password ))
 
   - name: push-console
-    label: Push Console
-    resource_label: Push Console
-    description: Pushes the Pivotal Dev Console application to your Elastic Runtime installation
+    label: Push Apps Manager
+    resource_label: Push Apps Manager
+    description: Pushes the Pivotal Apps Manager application to your Elastic Runtime installation
     job_templates:
       - push-apps-manager
     release: push-console-release
@@ -3398,7 +3398,7 @@ job_types:
   - name: autoscaling
     label: Deploy CF Autoscaling App
     resource_label: Deploy CF Autoscaling App
-    description: Deploys the CF Autoscaling AP
+    description: Deploys the CF Autoscaling App
     job_templates:
       - deploy-autoscaling
     release: cf-autoscaling
