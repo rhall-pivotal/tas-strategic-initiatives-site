@@ -13,6 +13,5 @@ docker run --privileged \
   -e AWS_SECRET_ACCESS_KEY \
   -e RUNTIME_DOT_PIVOTAL_FILE \
   -e RELENG_ENV \
-  -e ENVIRONMENTS_DIR=config/environments \
   -w "/workspace/p-runtime" \
   ${DOCKER_REGISTRY}/releng:`git describe --dirty` /bin/sh -c "$*"
