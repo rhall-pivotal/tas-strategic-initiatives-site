@@ -2,14 +2,14 @@ require 'opsmgr/ui_helpers/config_helper'
 
 RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
   let(:current_ops_manager) { ops_manager_driver }
-  let(:test_settings) { fetch_test_settings }
+  let(:env_settings) { fetch_environment_settings }
 
-  let(:elastic_runtime_settings) { test_settings.ops_manager.elastic_runtime }
+  let(:elastic_runtime_settings) { env_settings.ops_manager.elastic_runtime }
 
   it 'logs in' do
     current_ops_manager.setup_page.setup_or_login(
-      user: test_settings.ops_manager.username,
-      password: test_settings.ops_manager.password,
+      user: env_settings.ops_manager.username,
+      password: env_settings.ops_manager.password,
     )
   end
 
