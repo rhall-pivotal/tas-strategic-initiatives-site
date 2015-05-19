@@ -74,6 +74,7 @@ install_time_verifiers:
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
+      endpoint: .properties.system_blobstore.external.endpoint
       access_key_id: .properties.system_blobstore.external.access_key
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.bucket
