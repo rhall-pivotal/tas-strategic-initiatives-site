@@ -318,12 +318,20 @@ form_types:
       - reference: .uaa.ldap_search_filter
         label: User Search Filter
         description: ' Required for LDAP. Use {0} where username should inserted.'
-      - reference: .uaa.ldap_group_search_base
-        label: Group Search Base
-        description: 'Required if mapping LDAP groups to Admin role. Example ou=Groups,dc=example,dc=com'
-      - reference: .uaa.ldap_group_search_filter
-        label: Group Search Filter
-        description: 'Required if mapping LDAP groups to Admin role. Use {0} where group name should inserted.'
+      - reference: .properties.group_search
+        label:
+        description:
+        - reference: .properties.group_search.no_groups
+          label: No Groups
+        - reference: .properties.group_search.enable_admin_groups
+          label: Enable Admin Groups
+          property_inputs:
+            - reference: .properties.group_search.enable_admin_groups.ldap_group_search_base
+              label: Group Search Base
+              description: 'Required if mapping LDAP groups to Admin role. Example ou=Groups,dc=example,dc=com'
+            - reference: .properties.group_search.enable_admin_groups.ldap_group_search_filter
+              label: Group Search Filter
+              description: 'Required if mapping LDAP groups to Admin role. Use {0} where group name should inserted.'
       - reference: .uaa.ldap_server_ssl_cert
         label: Server SSL Cert
         description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate'
@@ -2118,16 +2126,6 @@ job_types:
         configurable: true
         default: 'mail'
 
-      - name: ldap_group_search_base
-        type: string
-        configurable: true
-        optional: true
-
-      - name: ldap_group_search_filter
-        type: string
-        configurable: true
-        default: "member={0}"
-
     manifest: |
       uaa:
         ldap:
@@ -2141,10 +2139,7 @@ job_types:
           sslCertificateAlias: (( ldap_server_ssl_cert_alias.value ))
           mailAttributeName: (( ldap_mail_attribute_name.value ))
           enabled: (( ldap_url.value_present? ))
-          groups:
-            profile_type: groups-map-to-scopes
-            searchBase: (( ldap_group_search_base.value ))
-            groupSearchFilter: (( ldap_group_search_filter.value ))
+          groups: (( .properties.group_search.selected_option.parsed_manifest(ldap_group_profile) ))
         login:
           addnew: false
         catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
@@ -3964,3 +3959,34 @@ property_blueprints:
             type: secret
             configurable: true
 
+  - name: group_search
+    type: selector
+    configurable: true
+    default: no_groups
+    option_templates:
+      - name: no_groups
+        select_value: no_groups
+        named_manifests:
+          - name: ldap_group_profile
+            manifest: |
+              groups:
+                profile_type: no-groups
+
+      - name: enable_admin_groups
+        select_value: enable_admin_groups
+        named_manifests:
+          - name: ldap_group_profile
+            manifest: |
+              profile_type: groups-map-to-scopes
+              searchBase: (( ldap_group_search_base.value ))
+              groupSearchFilter: (( ldap_group_search_filter.value ))
+        property_blueprints:
+          - name: ldap_group_search_base
+            type: string
+            configurable: true
+            optional: true
+
+          - name: ldap_group_search_filter
+            type: string
+            configurable: true
+            default: "member={0}"
