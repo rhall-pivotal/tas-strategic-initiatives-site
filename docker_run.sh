@@ -11,6 +11,8 @@ docker run --privileged \
   -e SECRET_ACCESS_KEY \
   -e AWS_ACCESS_KEY_ID \
   -e AWS_SECRET_ACCESS_KEY \
+  -e RIAK_BUCKET \
+  -e S3_BUCKET \
   -e RUNTIME_DOT_PIVOTAL_FILE \
   -e RELENG_ENV \
   -w "/workspace/p-runtime" \
