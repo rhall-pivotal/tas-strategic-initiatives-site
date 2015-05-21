@@ -2937,8 +2937,6 @@ job_types:
         admin_username: (( .uaa.push_console_credentials.identity ))
         admin_password: (( .uaa.push_console_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
-        console_space_name: apps_manager
-        console_app_name: apps_manager
       services:
         authentication:
           CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
@@ -2966,11 +2964,6 @@ job_types:
         on_premise: true
         include_app_statuses_on_org_dashboard: true
         release_version: (( .properties.product_version.value ))
-      console:
-        web_instances: 1
-        web_memory: 2G
-        workers_memory: 1536MB
-        scheduler_memory: 1536MB
       databases:
         console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
       ssl:
