@@ -2032,10 +2032,10 @@ job_types:
         default:
           identity: admin
 
-      - name: push_console_credentials
+      - name: push_apps_manager_credentials
         type: simple_credentials
         default:
-          identity: push_console
+          identity: push_apps_manager
 
       - name: run_smoke_tests_credentials
         type: simple_credentials
@@ -2343,7 +2343,7 @@ job_types:
           userids_enabled: true
           users:
           - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose,notification_preferences.read,notification_preferences.write,notifications.manage,notification_templates.read,notification_templates.write,emails.write,notifications.write,zones.read,zones.write
-          - (( push_console_credentials.identity ))|(( push_console_credentials.password ))|cloud_controller.admin
+          - (( push_apps_manager_credentials.identity ))|(( push_apps_manager_credentials.password ))|cloud_controller.admin
           - (( run_smoke_tests_credentials.identity ))|(( run_smoke_tests_credentials.password ))|cloud_controller.admin
           - (( system_services_credentials.identity ))|(( system_services_credentials.password ))|cloud_controller.admin
           - (( system_verification_credentials.identity ))|(( system_verification_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support
@@ -2934,8 +2934,8 @@ job_types:
       cf:
         console_subdomain: apps
         api_url: "https://api.(( .cloud_controller.system_domain.value ))"
-        admin_username: (( .uaa.push_console_credentials.identity ))
-        admin_password: (( .uaa.push_console_credentials.password ))
+        admin_username: (( .uaa.push_apps_manager_credentials.identity ))
+        admin_password: (( .uaa.push_apps_manager_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
       services:
         authentication:
@@ -3065,8 +3065,8 @@ job_types:
       cf:
         console_subdomain: apps
         api_url: "https://api.(( .cloud_controller.system_domain.value ))"
-        admin_username: (( .uaa.push_console_credentials.identity ))
-        admin_password: (( .uaa.push_console_credentials.password ))
+        admin_username: (( .uaa.push_apps_manager_credentials.identity ))
+        admin_password: (( .uaa.push_apps_manager_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
       services:
         authentication:
