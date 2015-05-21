@@ -2078,7 +2078,7 @@ job_types:
         default:
           identity: doppler
 
-      - name: console_client_credentials
+      - name: apps_manager_client_credentials
         type: simple_credentials
         default:
           identity: portal
@@ -2260,9 +2260,9 @@ job_types:
             authorities: "oauth.login,scim.write,clients.read,notifications.write,critical_notifications.write,emails.write,scim.userids,password.write"
             authorized-grant-types: "authorization_code,client_credentials,refresh_token"
             scope: "openid,oauth.approvals"
-          (( console_client_credentials.identity )):
-            id: (( console_client_credentials.identity ))
-            secret: (( console_client_credentials.password ))
+          (( apps_manager_client_credentials.identity )):
+            id: (( apps_manager_client_credentials.identity ))
+            secret: (( apps_manager_client_credentials.password ))
             override: true
             autoapprove: true
             authorities: "scim.write,scim.read,cloud_controller.read,cloud_controller.write,password.write,uaa.admin,uaa.resource,cloud_controller.admin,emails.write,notifications.write"
@@ -2939,8 +2939,8 @@ job_types:
         system_domain: (( .cloud_controller.system_domain.value ))
       services:
         authentication:
-          CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
-          CF_CLIENT_SECRET: (( .uaa.console_client_credentials.password ))
+          CF_CLIENT_ID: (( .uaa.apps_manager_client_credentials.identity ))
+          CF_CLIENT_SECRET: (( .uaa.apps_manager_client_credentials.password ))
           CF_LOGIN_SERVER_URL: "https://login.(( .cloud_controller.system_domain.value ))"
           CF_UAA_SERVER_URL: "https://uaa.(( .cloud_controller.system_domain.value ))"
         smtp:
@@ -3070,8 +3070,8 @@ job_types:
         system_domain: (( .cloud_controller.system_domain.value ))
       services:
         authentication:
-          CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
-          CF_CLIENT_SECRET: (( .uaa.console_client_credentials.password ))
+          CF_CLIENT_ID: (( .uaa.apps_manager_client_credentials.identity ))
+          CF_CLIENT_SECRET: (( .uaa.apps_manager_client_credentials.password ))
           CF_LOGIN_SERVER_URL: "https://login.(( .cloud_controller.system_domain.value ))"
           CF_UAA_SERVER_URL: "https://uaa.(( .cloud_controller.system_domain.value ))"
         smtp:
