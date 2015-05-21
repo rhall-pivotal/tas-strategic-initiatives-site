@@ -17,10 +17,20 @@ class IntegrationSpecRunner
   end
 
   def configure_ert
-    RSpec::Core::Runner.run(["integration/ERT-#{ert_version}/configure_ert_spec.rb"])
+    run_spec(["integration/ERT-#{ert_version}/configure_ert_spec.rb"])
   end
 
   private
 
+  def run_spec(spec_to_run)
+    RSpecExiter.exit_rspec(RSpec::Core::Runner.run(spec_to_run))
+  end
+
   attr_reader :ert_version
+end
+
+module RSpecExiter
+  def self.exit_rspec(exit_code)
+    exit exit_code
+  end
 end

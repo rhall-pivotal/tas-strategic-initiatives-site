@@ -75,7 +75,10 @@ RSpec.describe 'IntegrationSpecRunner' do
       let(:ert_version) { version }
 
       it 'runs the correct version of configure ert' do
-        expect(RSpec::Core::Runner).to receive(:run).with(["integration/ERT-#{ert_version}/configure_ert_spec.rb"])
+        expect(RSpecExiter).to receive(:exit_rspec).with(0)
+        expect(RSpec::Core::Runner).to receive(:run).with(
+          ["integration/ERT-#{ert_version}/configure_ert_spec.rb"]
+        ).and_return(0)
 
         integration_spec_runner.configure_ert
       end
