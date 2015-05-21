@@ -80,7 +80,7 @@ install_time_verifiers:
       bucket_name: .properties.system_blobstore.external.bucket
 
 post_deploy_errands:
-  - name: push-console
+  - name: push-apps-manager
   - name: smoke-tests
   - name: push-app-usage-service
   - name: notifications
@@ -906,7 +906,7 @@ job_types:
   - name: consoledb
     label: Apps Manager Database
     resource_label: Apps Manager Database
-    description: A Web application will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
+    description: Apps Manager Database
     templates:
       - name: postgres
         release: cf
@@ -2184,16 +2184,16 @@ job_types:
         asset_base_url: '/resources/pivotal'
         protocol: https
         tiles:
-          - name: Pivotal Dev Console
-            login-link:  "https://console.(( .cloud_controller.system_domain.value ))"
+          - name: Pivotal Apps Manager
+            login-link: "https://apps.(( .cloud_controller.system_domain.value ))"
             image: "/resources/pivotal/images/dev-console-logo-gray.png"
             image-hover: "/resources/pivotal/images/dev-console-logo-teal.png"
 
         brand: pivotal
         links:
-          home: "https://console.(( .cloud_controller.system_domain.value ))"
-          passwd: "https://console.(( .cloud_controller.system_domain.value ))/password_resets/new"
-          signup: "https://console.(( .cloud_controller.system_domain.value ))/register"
+          home: "https://apps.(( .cloud_controller.system_domain.value ))"
+          passwd: "https://apps.(( .cloud_controller.system_domain.value ))/password_resets/new"
+          signup: "https://apps.(( .cloud_controller.system_domain.value ))/register"
         uaa_base: "https://uaa.(( .cloud_controller.system_domain.value ))"
         notifications:
           url: "https://notifications.(( .cloud_controller.system_domain.value ))"
@@ -2215,6 +2215,7 @@ job_types:
               disable: false
               whitelist:
               - https://console.(( .cloud_controller.system_domain.value ))/
+              - https://apps.(( .cloud_controller.system_domain.value ))/
             url: "/login"
       uaa:
         require_https: true
@@ -2867,7 +2868,7 @@ job_types:
           doppler:
             secret: (( .uaa.doppler_client_credentials.password ))
 
-  - name: push-console
+  - name: push-apps-manager
     label: Push Apps Manager
     resource_label: Push Apps Manager
     description: Pushes the Pivotal Apps Manager application to your Elastic Runtime installation
@@ -2931,7 +2932,7 @@ job_types:
 
     manifest: |
       cf:
-        console_subdomain: console
+        console_subdomain: apps
         api_url: "https://api.(( .cloud_controller.system_domain.value ))"
         admin_username: (( .uaa.push_console_credentials.identity ))
         admin_password: (( .uaa.push_console_credentials.password ))
@@ -2954,7 +2955,7 @@ job_types:
         secret_token: (( secret_token.value ))
         cf_cc_api_url: "https://api.(( .cloud_controller.system_domain.value ))"
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
-        cf_console_url: "https://console.(( .cloud_controller.system_domain.value ))"
+        cf_console_url: "https://apps.(( .cloud_controller.system_domain.value ))"
         cf_notifications_service_url: "https://notifications.(( .cloud_controller.system_domain.value ))"
         default_from: (( .properties.smtp_from.value ))
         usage_service_host: app-usage.(( .cloud_controller.system_domain.value ))
@@ -3069,7 +3070,7 @@ job_types:
 
     manifest: |
       cf:
-        console_subdomain: console
+        console_subdomain: apps
         api_url: "https://api.(( .cloud_controller.system_domain.value ))"
         admin_username: (( .uaa.push_console_credentials.identity ))
         admin_password: (( .uaa.push_console_credentials.password ))
@@ -3090,7 +3091,7 @@ job_types:
         secret_token: (( secret_token.value ))
         cf_cc_api_url: "https://api.(( .cloud_controller.system_domain.value ))"
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
-        cf_console_url: "https://console.(( .cloud_controller.system_domain.value ))"
+        cf_console_url: "https://apps.(( .cloud_controller.system_domain.value ))"
         default_reply_to: (( reply_to.value ))
         default_from: (( .properties.smtp_from.value ))
         usage_service_host: app-usage.(( .cloud_controller.system_domain.value ))
