@@ -2177,6 +2177,7 @@ job_types:
               - https://console.(( .cloud_controller.system_domain.value ))/
             url: "/login"
       uaa:
+        require_https: true
         ldap:
           profile_type: search-and-bind
           url: (( ldap_url.value ))
