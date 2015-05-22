@@ -9,7 +9,7 @@ fi
 
 env_name=$1
 target_log_dir=$2
-bosh_command="bundle exec $(bundle exec rake opsmgr:bosh:command[$env_name])"
+bosh_command="bundle exec $(bundle exec rake opsmgr:microbosh:command[$env_name])"
 
 mkdir -p ${target_log_dir}
 

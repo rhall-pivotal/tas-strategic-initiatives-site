@@ -35,7 +35,7 @@ bundle exec rake opsmgr[faux,/path/to/your/pivotal-vsphere-1.M.N.0.ova]
 Once the Ops Manager is deployed, you can configure and deploy the µBOSH:
 
 ```
-bundle exec rake opsmgr:bosh:redeploy[faux]
+bundle exec rake opsmgr:microbosh:redeploy[faux]
 ```
 
 Once the µBOSH is deployed, you can configure and deploy the Elastic Runtime product:
