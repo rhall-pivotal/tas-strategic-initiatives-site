@@ -1,4 +1,6 @@
-require 'opsmgr/ui_helpers/config_helper'
+$LOAD_PATH << File.expand_path('..', File.dirname(__FILE__))
+
+require 'integration_spec_helper'
 
 RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
   let(:current_ops_manager) { ops_manager_driver }
