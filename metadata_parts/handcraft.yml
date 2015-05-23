@@ -3978,8 +3978,8 @@ property_blueprints:
           - name: ldap_group_profile
             manifest: |
               profile_type: groups-map-to-scopes
-              searchBase: (( ldap_group_search_base.value ))
-              groupSearchFilter: (( ldap_group_search_filter.value ))
+              searchBase: (( .properties.group_search.enable_admin_groups.ldap_group_search_base.value ))
+              groupSearchFilter: (( .properties.group_search.enable_admin_groups.ldap_group_search_filter.value ))
         property_blueprints:
           - name: ldap_group_search_base
             type: string
