@@ -1,0 +1,75 @@
+---
+name: cersei
+iaas_type: vsphere
+vm_shepherd_configs:
+- vcenter_creds:
+    ip: 172.16.74.3
+    username: root
+    password: look74Beer
+  vsphere:
+    host: vcenter
+    resource_pool: cersei
+    datacenter: pizza-boxes-dc
+    cluster: pizza-boxes
+    datastore: emc-ds
+    network: luthor
+    folder: cersei
+  cleanup:
+    datacenter: pizza-boxes-dc
+    datastores:
+    - emc-ds
+    datacenter_folders_to_clean:
+    - cersei
+    - cersei_vms
+    - cersei_templates
+    datastore_folders_to_clean:
+    - cersei
+    - cersei_disk
+  vm:
+    ip: 172.16.78.26
+    gateway: 172.16.78.1
+    netmask: 255.255.254.0
+    dns: 10.87.8.10,10.87.8.11
+    ntp_servers: time1.sf.cf-app.com
+    vm_password: pivotalcf
+ops_manager:
+  url: https://pcf.cersei.cf-app.com
+  username: pivotalcf
+  password: pivotalcf
+  ntp_servers: time1.sf.cf-app.com
+  vcenter:
+    creds:
+      ip: 172.16.74.3
+      username: root
+      password: look74Beer
+    datacenter: pizza-boxes-dc
+    datastore: emc-ds
+    microbosh_vm_folder: cersei_vms
+    microbosh_template_folder: cersei_templates
+    microbosh_disk_path: cersei_disk
+  availability_zones:
+  - name: first-az
+    cluster: pizza-boxes
+    resource_pool: cersei
+  networks:
+  - name: first-network
+    identifier: cersei
+    subnet: 172.16.78.0/23
+    gateway: 172.16.78.1
+    reserved_ips: 172.16.78.1-172.16.78.26,172.16.78.126-172.16.79.255
+    dns: 10.87.8.10,10.87.8.11
+  elastic_runtime:
+    name: cf
+    ha_proxy_static_ips: 172.16.78.125
+    system_domain: sys.cersei.cf-app.com
+    apps_domain: apps.cersei.cf-app.com
+    smtp:
+      from: identitystaging@mailinator.com
+      address: smtp.sendgrid.net
+      port: 587
+      credentials:
+        identity: PCFRelEng
+        password: 4H-9Lh-wD{ZST28x{Q
+      enable_starttls_auto: true
+      smtp_auth_mechanism: plain
+    trust_self_signed_certificates: true

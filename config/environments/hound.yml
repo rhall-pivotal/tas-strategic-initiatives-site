@@ -1,68 +1,68 @@
 ---
-name: dodo
+name: hound
 iaas_type: vsphere
 vm_shepherd_configs:
 - vcenter_creds:
-    ip: 10.84.32.61
+    ip: 172.16.74.3
     username: root
     password: look74Beer
   vsphere:
     host: vcenter
-    resource_pool: dodo
-    datacenter: private
-    cluster: private
-    datastore: private
-    network: dodo
-    folder: dodo
+    resource_pool: hound
+    datacenter: pizza-boxes-dc
+    cluster: pizza-boxes
+    datastore: emc-ds
+    network: magneto
+    folder: hound
   cleanup:
-    datacenter: private
+    datacenter: pizza-boxes-dc
     datastores:
-    - private
+    - emc-ds
     datacenter_folders_to_clean:
-    - dodo
-    - dodo_vms
-    - dodo_templates
+    - hound
+    - hound_vms
+    - hound_templates
     datastore_folders_to_clean:
-    - dodo
-    - dodo_disk
+    - hound
+    - hound_disk
   vm:
-    ip: 10.85.17.16
-    gateway: 10.85.17.1
-    netmask: 255.255.255.0
+    ip: 172.16.80.26
+    gateway: 172.16.80.1
+    netmask: 255.255.254.0
     dns: 10.87.8.10,10.87.8.11
     ntp_servers: time1.sf.cf-app.com
     vm_password: pivotalcf
 ops_manager:
-  url: https://pcf.dodo.wild.cf-app.com
+  url: https://pcf.hound.cf-app.com
   username: pivotalcf
   password: pivotalcf
   ntp_servers: time1.sf.cf-app.com
   vcenter:
     creds:
-      ip: 10.84.32.61
+      ip: 172.16.74.3
       username: root
       password: look74Beer
-    datacenter: private
-    datastore: private
-    microbosh_vm_folder: dodo_vms
-    microbosh_template_folder: dodo_templates
-    microbosh_disk_path: dodo_disk
+    datacenter: pizza-boxes-dc
+    datastore: emc-ds
+    microbosh_vm_folder: hound_vms
+    microbosh_template_folder: hound_templates
+    microbosh_disk_path: hound_disk
   availability_zones:
   - name: first-az
-    cluster: private
-    resource_pool: dodo
+    cluster: pizza-boxes
+    resource_pool: hound
   networks:
   - name: first-network
-    identifier: dodo
-    subnet: 10.85.17.0/24
-    gateway: 10.85.17.1
-    reserved_ips: 10.85.17.0-10.85.17.90
+    identifier: hound
+    subnet: 172.16.80.0/23
+    gateway: 172.16.80.1
+    reserved_ips: 172.16.80.1-172.16.80.26,172.16.80.126-172.16.81.255
     dns: 10.87.8.10,10.87.8.11
   elastic_runtime:
     name: cf
-    ha_proxy_static_ips: 10.85.17.254
-    system_domain: sys.dodo.wild.cf-app.com
-    apps_domain: apps.dodo.wild.cf-app.com
+    ha_proxy_static_ips: 172.16.80.125
+    system_domain: sys.hound.cf-app.com
+    apps_domain: apps.hound.cf-app.com
     smtp:
       from: identitystaging@mailinator.com
       address: smtp.sendgrid.net

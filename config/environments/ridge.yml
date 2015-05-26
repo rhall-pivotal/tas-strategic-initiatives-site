@@ -15,23 +15,23 @@ vm_shepherd_configs:
     network: ridge
     folder: ridge
   cleanup:
-    datacenter:  private
+    datacenter: private
     datastores:
-      - public
+    - public
     datacenter_folders_to_clean:
-      - ridge
-      - ridge_vms
-      - ridge_templates
+    - ridge
+    - ridge_vms
+    - ridge_templates
     datastore_folders_to_clean:
-      - ridge
-      - ridge_disk
+    - ridge
+    - ridge_disk
   vm:
     ip: 10.85.88.16
     gateway: 10.85.88.1
     netmask: 255.255.255.0
     dns: 10.87.8.10,10.87.8.11
     ntp_servers: time1.sf.cf-app.com
-
+    vm_password: pivotalcf
 ops_manager:
   url: https://pcf.ridge.cf-app.com
   username: pivotalcf
@@ -62,16 +62,14 @@ ops_manager:
     name: cf
     ha_proxy_static_ips: 10.85.88.254
     system_domain: sys.ridge.cf-app.com
-    apps_domain: app.ridge.cf-app.com
+    apps_domain: apps.ridge.cf-app.com
     smtp:
-      from: 'identitystaging@mailinator.com'
-      address: 'smtp.sendgrid.net'
+      from: identitystaging@mailinator.com
+      address: smtp.sendgrid.net
       port: 587
       credentials:
-        identity: 'PCFRelEng'
-        password: '4H-9Lh-wD{ZST28x{Q'
+        identity: PCFRelEng
+        password: 4H-9Lh-wD{ZST28x{Q
       enable_starttls_auto: true
       smtp_auth_mechanism: plain
     trust_self_signed_certificates: true
-
-

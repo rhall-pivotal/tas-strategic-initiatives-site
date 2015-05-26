@@ -1,5 +1,5 @@
 ---
-name: dodo
+name: mesa
 iaas_type: vsphere
 vm_shepherd_configs:
 - vcenter_creds:
@@ -8,32 +8,32 @@ vm_shepherd_configs:
     password: look74Beer
   vsphere:
     host: vcenter
-    resource_pool: dodo
+    resource_pool: mesa
     datacenter: private
-    cluster: private
-    datastore: private
-    network: dodo
-    folder: dodo
+    cluster: geography
+    datastore: public
+    network: mesa
+    folder: mesa
   cleanup:
     datacenter: private
     datastores:
-    - private
+    - public
     datacenter_folders_to_clean:
-    - dodo
-    - dodo_vms
-    - dodo_templates
+    - mesa
+    - mesa_vms
+    - mesa_templates
     datastore_folders_to_clean:
-    - dodo
-    - dodo_disk
+    - mesa
+    - mesa_disk
   vm:
-    ip: 10.85.17.16
-    gateway: 10.85.17.1
+    ip: 10.85.87.16
+    gateway: 10.85.87.1
     netmask: 255.255.255.0
     dns: 10.87.8.10,10.87.8.11
     ntp_servers: time1.sf.cf-app.com
     vm_password: pivotalcf
 ops_manager:
-  url: https://pcf.dodo.wild.cf-app.com
+  url: https://pcf.mesa.cf-app.com
   username: pivotalcf
   password: pivotalcf
   ntp_servers: time1.sf.cf-app.com
@@ -43,26 +43,26 @@ ops_manager:
       username: root
       password: look74Beer
     datacenter: private
-    datastore: private
-    microbosh_vm_folder: dodo_vms
-    microbosh_template_folder: dodo_templates
-    microbosh_disk_path: dodo_disk
+    datastore: public
+    microbosh_vm_folder: mesa_vms
+    microbosh_template_folder: mesa_templates
+    microbosh_disk_path: mesa_disk
   availability_zones:
   - name: first-az
-    cluster: private
-    resource_pool: dodo
+    cluster: geography
+    resource_pool: mesa
   networks:
   - name: first-network
-    identifier: dodo
-    subnet: 10.85.17.0/24
-    gateway: 10.85.17.1
-    reserved_ips: 10.85.17.0-10.85.17.90
+    identifier: mesa
+    subnet: 10.85.87.0/24
+    gateway: 10.85.87.1
+    reserved_ips: 10.85.87.0-10.85.87.90
     dns: 10.87.8.10,10.87.8.11
   elastic_runtime:
     name: cf
-    ha_proxy_static_ips: 10.85.17.254
-    system_domain: sys.dodo.wild.cf-app.com
-    apps_domain: apps.dodo.wild.cf-app.com
+    ha_proxy_static_ips: 10.85.87.254
+    system_domain: sys.mesa.cf-app.com
+    apps_domain: apps.mesa.cf-app.com
     smtp:
       from: identitystaging@mailinator.com
       address: smtp.sendgrid.net

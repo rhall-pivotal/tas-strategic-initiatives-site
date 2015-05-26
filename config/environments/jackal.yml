@@ -1,5 +1,5 @@
 ---
-name: dodo
+name: jackal
 iaas_type: vsphere
 vm_shepherd_configs:
 - vcenter_creds:
@@ -8,32 +8,32 @@ vm_shepherd_configs:
     password: look74Beer
   vsphere:
     host: vcenter
-    resource_pool: dodo
+    resource_pool: jackal
     datacenter: private
     cluster: private
     datastore: private
-    network: dodo
-    folder: dodo
+    network: jackal
+    folder: jackal
   cleanup:
     datacenter: private
     datastores:
     - private
     datacenter_folders_to_clean:
-    - dodo
-    - dodo_vms
-    - dodo_templates
+    - jackal
+    - jackal_vms
+    - jackal_templates
     datastore_folders_to_clean:
-    - dodo
-    - dodo_disk
+    - jackal
+    - jackal_disk
   vm:
-    ip: 10.85.17.16
-    gateway: 10.85.17.1
+    ip: 10.85.36.16
+    gateway: 10.85.36.1
     netmask: 255.255.255.0
     dns: 10.87.8.10,10.87.8.11
     ntp_servers: time1.sf.cf-app.com
     vm_password: pivotalcf
 ops_manager:
-  url: https://pcf.dodo.wild.cf-app.com
+  url: https://pcf.jackal.wild.cf-app.com
   username: pivotalcf
   password: pivotalcf
   ntp_servers: time1.sf.cf-app.com
@@ -44,25 +44,25 @@ ops_manager:
       password: look74Beer
     datacenter: private
     datastore: private
-    microbosh_vm_folder: dodo_vms
-    microbosh_template_folder: dodo_templates
-    microbosh_disk_path: dodo_disk
+    microbosh_vm_folder: jackal_vms
+    microbosh_template_folder: jackal_templates
+    microbosh_disk_path: jackal_disk
   availability_zones:
   - name: first-az
     cluster: private
-    resource_pool: dodo
+    resource_pool: jackal
   networks:
   - name: first-network
-    identifier: dodo
-    subnet: 10.85.17.0/24
-    gateway: 10.85.17.1
-    reserved_ips: 10.85.17.0-10.85.17.90
+    identifier: jackal
+    subnet: 10.85.36.0/24
+    gateway: 10.85.36.1
+    reserved_ips: 10.85.36.0-10.85.36.90
     dns: 10.87.8.10,10.87.8.11
   elastic_runtime:
     name: cf
-    ha_proxy_static_ips: 10.85.17.254
-    system_domain: sys.dodo.wild.cf-app.com
-    apps_domain: apps.dodo.wild.cf-app.com
+    ha_proxy_static_ips: 10.85.36.254
+    system_domain: sys.jackal.wild.cf-app.com
+    apps_domain: apps.jackal.wild.cf-app.com
     smtp:
       from: identitystaging@mailinator.com
       address: smtp.sendgrid.net
