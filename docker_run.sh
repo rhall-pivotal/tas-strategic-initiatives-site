@@ -15,5 +15,6 @@ docker run --privileged \
   -e S3_BUCKET \
   -e RUNTIME_DOT_PIVOTAL_FILE \
   -e RELENG_ENV \
+  -e VARA_EXTRA_FLAGS \
   -w "/workspace/p-runtime" \
   ${DOCKER_REGISTRY}/releng:`git describe --dirty` /bin/sh -c "$*"
