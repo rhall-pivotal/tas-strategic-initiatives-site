@@ -2932,7 +2932,6 @@ job_types:
 
     manifest: |
       cf:
-        console_subdomain: apps
         api_url: "https://api.(( .cloud_controller.system_domain.value ))"
         admin_username: (( .uaa.push_apps_manager_credentials.identity ))
         admin_password: (( .uaa.push_apps_manager_credentials.password ))
@@ -2958,12 +2957,6 @@ job_types:
         default_from: (( .properties.smtp_from.value ))
         usage_service_host: app-usage.(( .cloud_controller.system_domain.value ))
         bundle_without: test development hosted_only
-        rack_env: production
-        rails_env: production
-        show_app_events: true
-        on_premise: true
-        include_app_statuses_on_org_dashboard: true
-        release_version: (( .properties.product_version.value ))
       databases:
         console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
       ssl:
@@ -3063,7 +3056,6 @@ job_types:
 
     manifest: |
       cf:
-        console_subdomain: apps
         api_url: "https://api.(( .cloud_controller.system_domain.value ))"
         admin_username: (( .uaa.push_apps_manager_credentials.identity ))
         admin_password: (( .uaa.push_apps_manager_credentials.password ))
@@ -3074,12 +3066,6 @@ job_types:
           CF_CLIENT_SECRET: (( .uaa.apps_manager_client_credentials.password ))
           CF_LOGIN_SERVER_URL: "https://login.(( .cloud_controller.system_domain.value ))"
           CF_UAA_SERVER_URL: "https://uaa.(( .cloud_controller.system_domain.value ))"
-        smtp:
-          address: (( smtp_address.value ))
-          port: (( smtp_port.value ))
-          user_name: (( smtp_credentials.identity ))
-          password: (( smtp_credentials.password ))
-          enable_starttls_auto: (( smtp_enable_starttls_auto.value ))
       env:
         secret_token: (( secret_token.value ))
         cf_cc_api_url: "https://api.(( .cloud_controller.system_domain.value ))"
@@ -3087,17 +3073,7 @@ job_types:
         cf_console_url: "https://apps.(( .cloud_controller.system_domain.value ))"
         default_reply_to: (( reply_to.value ))
         default_from: (( .properties.smtp_from.value ))
-        usage_service_host: app-usage.(( .cloud_controller.system_domain.value ))
         bundle_without: test development hosted_only
-        rack_env: production
-        rails_env: production
-        show_app_events: true
-        on_premise: true
-        include_app_statuses_on_org_dashboard: true
-      app_usage_service:
-        event_fetching_offset: 60
-        allow_test_data_creation: false
-        allow_viewing_logs: false
       databases:
         app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
       ssl:
