@@ -16,5 +16,8 @@ docker run --privileged \
   -e RUNTIME_DOT_PIVOTAL_FILE \
   -e RELENG_ENV \
   -e VARA_EXTRA_FLAGS \
+  -e KRAFA_BASE_URL \
+  -e KRAFA_USERNAME \
+  -e KRAFA_PASSWORD \
   -w "/workspace/p-runtime" \
   ${DOCKER_REGISTRY}/releng:`git describe --dirty` /bin/sh -c "$*"
