@@ -6,7 +6,7 @@ SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../ && pwd )"
 
 pushd ${SCRIPTS_DIR}/..
   bundle
-  DIRECTOR_IP=`rake opsmgr:bosh:director_ip[$RELENG_ENV]`
+  DIRECTOR_IP=`rake opsmgr:microbosh:director_ip[$RELENG_ENV]`
   OPSMGR_IP=`rake opsmgr:info:url[${RELENG_ENV}] | grep -o -e "[0-9.]\+"`
   PRIVATE_KEY=${SCRIPTS_DIR}/private.key
 

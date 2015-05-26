@@ -1,0 +1,77 @@
+---
+name: dodo
+iaas_type: vsphere
+vm_shepherd_configs:
+- vcenter_creds:
+    ip: 10.84.32.61
+    username: root
+    password: look74Beer
+  vsphere:
+    host: vcenter
+    resource_pool: dodo
+    datacenter: private
+    cluster: private
+    datastore: private
+    network: dodo
+    folder: dodo
+  cleanup:
+    datacenter:  private
+    datastores:
+      - private
+    datacenter_folders_to_clean:
+      - dodo
+      - dodo_vms
+      - dodo_templates
+    datastore_folders_to_clean:
+      - dodo
+      - dodo_disk
+  vm:
+    ip: 10.85.17.16
+    gateway: 10.85.17.1
+    netmask: 255.255.255.0
+    dns: 10.87.8.10,10.87.8.11
+    ntp_servers: time1.sf.cf-app.com
+
+ops_manager:
+  url: https://pcf.dodo.wild.cf-app.com
+  username: pivotalcf
+  password: pivotalcf
+  ntp_servers: time1.sf.cf-app.com
+  vcenter:
+    creds:
+      ip: 10.84.32.61
+      username: root
+      password: look74Beer
+    datacenter: private
+    datastore: private
+    microbosh_vm_folder: dodo_vms
+    microbosh_template_folder: dodo_templates
+    microbosh_disk_path: dodo_disk
+  availability_zones:
+  - name: first-az
+    cluster: private
+    resource_pool: dodo
+  networks:
+  - name: first-network
+    identifier: dodo
+    subnet: 10.85.17.0/24
+    gateway: 10.85.17.1
+    reserved_ips: 10.85.17.0-10.85.17.90
+    dns: 10.87.8.10,10.87.8.11
+  elastic_runtime:
+    name: cf
+    ha_proxy_static_ips: 10.85.17.254
+    system_domain: sys.dodo.wild.cf-app.com
+    apps_domain: app.dodo.wild.cf-app.com
+    smtp:
+      from: 'identitystaging@mailinator.com'
+      address: 'smtp.sendgrid.net'
+      port: 587
+      credentials:
+        identity: 'PCFRelEng'
+        password: '4H-9Lh-wD{ZST28x{Q'
+      enable_starttls_auto: true
+      smtp_auth_mechanism: plain
+    trust_self_signed_certificates: true
+
+
