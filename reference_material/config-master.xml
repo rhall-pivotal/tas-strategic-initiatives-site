@@ -1,0 +1,2550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+pipeline config before converting master pipelines to use capybara helpers
+-->
+<cruise>
+  <pipelines group="RelEng-Features">
+    <pipeline name="opsman-ui-driver-testing" isLocked="true" template="ERT-Upgrade">
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/ops-mananger-ui-drivers" dest="p-runtime">
+          <filter>
+            <ignore pattern="**/*"/>
+          </filter>
+        </git>
+        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build"/>
+        <pipeline pipelineName="ERT-1.5-Docker-Image" stageName="build_image"/>
+      </materials>
+    </pipeline>
+  </pipelines>
+  <pipelines group="ERT-1.5">
+    <pipeline name="ERT-1.5-kickoff" isLocked="false">
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git"/>
+      </materials>
+      <stage name="kickoff">
+        <approval type="manual"/>
+        <jobs>
+          <job name="save_vara_extra_flags">
+            <environmentvariables>
+              <variable name="VARA_EXTRA_FLAGS">
+                <value/>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <exec command="bash">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>echo "export VARA_EXTRA_FLAGS=${VARA_EXTRA_FLAGS}" &gt; vara_extra_flags.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="vara_extra_flags.sh"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-1.5-aws-build" isLocked="false">
+      <environmentvariables>
+        <variable name="DOCKER_REGISTRY">
+          <value>docker.gocd.cf-app.com:5000</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+          <filter>
+            <ignore pattern="**/*"/>
+          </filter>
+        </git>
+        <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff"/>
+        <pipeline pipelineName="ERT-1.5-Docker-Image" stageName="build_image"/>
+      </materials>
+      <stage name="ensure_not_vsphere">
+        <jobs>
+          <job name="ensure_not_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_not_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="vara-build" cleanWorkingDir="true">
+        <jobs>
+          <job name="runtime">
+            <environmentvariables>
+              <variable name="AWS_ACCESS_KEY_ID">
+                <value>AKIAJBWXIFB65EY4YTMQ</value>
+              </variable>
+              <variable name="AWS_SECRET_ACCESS_KEY">
+                <value>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</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-kickoff" stage="kickoff" job="save_vara_extra_flags"
+                             srcfile="vara_extra_flags.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="./scripts/fetch-release-from-bosh-io.sh" workingdir="p-runtime">
+                <arg>cf</arg>
+                <arg>cf-release</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../vara_extra_flags.sh &amp;&amp; ./docker_run.sh ./scripts/build_pivotal.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/run_in_docker.sh ./scripts/runtime/upload_pivotal_with_gof3r.sh untested</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata"/>
+              <artifact src="p-runtime/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata"/>
+              <artifact src="p-runtime/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-1.5-aws" isLocked="true">
+      <environmentvariables>
+        <variable name="KRAFA_BASE_URL">
+          <value>http://krafa.cfapps.io</value>
+        </variable>
+        <variable name="KRAFA_USERNAME">
+          <value>releng</value>
+        </variable>
+        <variable name="KRAFA_PASSWORD">
+          <value>bet90onions</value>
+        </variable>
+        <variable name="AMI_ID">
+          <value>ami-500f0c38</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+          <filter>
+            <ignore pattern="*/**"/>
+          </filter>
+        </git>
+        <pipeline pipelineName="ERT-1.5-aws-build" stageName="vara-build"/>
+      </materials>
+      <stage name="ensure_not_vsphere">
+        <jobs>
+          <job name="ensure_not_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_not_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="export-env">
+        <jobs>
+          <job name="export-env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>echo "export RELENG_ENV=brinjal" &gt; releng_env.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy" cleanWorkingDir="true">
+        <environmentvariables>
+          <variable name="S3_BUCKET">
+            <value>
+              {"endpoint":"https://s3.amazonaws.com","bucket":"cf-ops-manager","access_key_id":"AKIAIASXXU7XTCVWQITQ","secret_access_key":"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"}
+            </value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy">
+            <tasks>
+              <fetchartifact pipeline="" stage="export-env" job="export-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>echo "${AMI_ID}" &gt; ami.txt</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake opsmgr:destroy[${RELENG_ENV}]
+                  --trace
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle exec rake opsmgr:install[${RELENG_ENV},ami.txt] --trace
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle exec rake opsmgr:first_user[${RELENG_ENV}] --trace</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-microbosh">
+        <jobs>
+          <job name="deploy-microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="export-env" job="export-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:bosh:redeploy[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-runtime" cleanWorkingDir="true">
+        <jobs>
+          <job name="deploy-runtime">
+            <environmentvariables>
+              <variable name="MATERIALS_DIR">
+                <value>cf-pivotal-artifacts</value>
+              </variable>
+              <variable name="DISPLAY">
+                <value>localhost:1.0</value>
+              </variable>
+              <variable name="S3_BUCKET">
+                <value>
+                  {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
+                </value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="export-env" job="export-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="ERT-1.5-aws-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>bundle</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/deploy.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post-install-test">
+        <jobs>
+          <job name="post-install-test">
+            <environmentvariables>
+              <variable name="PRODUCT_REPO_URL">
+                <value>git@github.com:pivotal-cf/p-runtime.git</value>
+              </variable>
+              <variable name="MATERIALS_DIR">
+                <value>../cf-pivotal-artifacts-metadata</value>
+              </variable>
+              <variable name="GOROOT">
+                <value>/var/vcap/packages/golang-1.2</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="export-env" job="export-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/aws_post_install_test_gocd.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy-env">
+        <approval type="manual"/>
+        <jobs>
+          <job name="destroy">
+            <tasks>
+              <fetchartifact pipeline="" stage="export-env" job="export-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake opsmgr:destroy[${RELENG_ENV}]
+                  --trace
+                </arg>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-1.5-build" isLocked="false">
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime"/>
+        <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff"/>
+        <pipeline pipelineName="ERT-1.5-Docker-Image" stageName="build_image"/>
+      </materials>
+      <stage name="ensure_vsphere">
+        <jobs>
+          <job name="ensure_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="vara-build" cleanWorkingDir="true">
+        <jobs>
+          <job name="runtime">
+            <environmentvariables>
+              <variable name="RIAK_BUCKET">
+                <value>
+                  {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+                </value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-kickoff" stage="kickoff" job="save_vara_extra_flags"
+                             srcfile="vara_extra_flags.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="./scripts/fetch-release-from-bosh-io.sh" workingdir="p-runtime">
+                <arg>cf</arg>
+                <arg>cf-release</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../vara_extra_flags.sh &amp;&amp; ./docker_run.sh ./scripts/build_pivotal.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./docker_run.sh ./scripts/runtime/upload_pivotal.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata"/>
+              <artifact src="p-runtime/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata"/>
+              <artifact src="p-runtime/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-1.5" isLocked="false">
+      <environmentvariables>
+        <variable name="KRAFA_BASE_URL">
+          <value>http://krafa.cfapps.io</value>
+        </variable>
+        <variable name="KRAFA_USERNAME">
+          <value>releng</value>
+        </variable>
+        <variable name="KRAFA_PASSWORD">
+          <value>bet90onions</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals"/>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+          <filter>
+            <ignore pattern="*/**"/>
+          </filter>
+        </git>
+      </materials>
+      <stage name="ensure_vsphere">
+        <jobs>
+          <job name="ensure_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="claim-env">
+        <jobs>
+          <job name="claim-env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>bundle &amp;&amp; bundle exec rake --trace
+                  krafa:claim_with_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>echo "export RELENG_ENV=$(bundle exec rake --trace
+                  krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy">
+        <jobs>
+          <job name="destroy">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:destroy[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-ova" cleanWorkingDir="true">
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>
+              {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"cf-ops-manager","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+            </value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>
+              {"endpoint":"https://s3.amazonaws.com","bucket":"cf-ops-manager","access_key_id":"AKIAIASXXU7XTCVWQITQ","secret_access_key":"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"}
+            </value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy-ova-stable">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:deploy[${RELENG_ENV},stable.ova]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>bundle exec rake opsmgr:ova:stable:path &gt; ops_manager_ova.blobkey</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/ops_manager_ova.blobkey" dest="cf-pivotal-artifacts-metadata"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-microbosh">
+        <jobs>
+          <job name="deploy-microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:bosh:redeploy[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-runtime" cleanWorkingDir="true">
+        <jobs>
+          <job name="deploy-runtime">
+            <environmentvariables>
+              <variable name="MATERIALS_DIR">
+                <value>cf-pivotal-artifacts</value>
+              </variable>
+              <variable name="DISPLAY">
+                <value>localhost:1.0</value>
+              </variable>
+              <variable name="RIAK_BUCKET">
+                <value>
+                  {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+                </value>
+              </variable>
+              <variable name="S3_BUCKET">
+                <value>
+                  {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
+                </value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/deploy.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs
+                </arg>
+                <runif status="any"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="bosh_logs" dest="bosh_logs"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post-install-test">
+        <jobs>
+          <job name="post-install-test">
+            <environmentvariables>
+              <variable name="PRODUCT_REPO_URL">
+                <value>git@github.com:pivotal-cf/p-runtime.git</value>
+              </variable>
+              <variable name="MATERIALS_DIR">
+                <value>../cf-pivotal-artifacts-metadata</value>
+              </variable>
+              <variable name="GOROOT">
+                <value>/var/vcap/packages/golang-1.2</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/post_install_test.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>echo $GO_PIPELINE_LABEL &gt; last_successful_runtime_label</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="release-claim">
+        <approval type="manual"/>
+        <jobs>
+          <job name="release-claim">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>bundle &amp;&amp; bundle exec rake --trace
+                  krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-1.5-internetless">
+      <environmentvariables>
+        <variable name="KRAFA_BASE_URL">
+          <value>http://krafa.cfapps.io</value>
+        </variable>
+        <variable name="KRAFA_USERNAME">
+          <value>releng</value>
+        </variable>
+        <variable name="KRAFA_PASSWORD">
+          <value>bet90onions</value>
+        </variable>
+        <variable name="INTERNET">
+          <value>false</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build"/>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+          <filter>
+            <ignore pattern="**/*"/>
+          </filter>
+        </git>
+      </materials>
+      <stage name="ensure_vsphere">
+        <jobs>
+          <job name="ensure_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="claim-env">
+        <jobs>
+          <job name="claim-env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>bundle &amp;&amp; bundle exec rake --trace
+                  krafa:claim_without_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>echo "export RELENG_ENV=$(bundle exec rake --trace
+                  krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy">
+        <jobs>
+          <job name="destroy">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:destroy[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-ova" cleanWorkingDir="true">
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>
+              {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"cf-ops-manager","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+            </value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>
+              {"endpoint":"https://s3.amazonaws.com","bucket":"cf-ops-manager","access_key_id":"AKIAIASXXU7XTCVWQITQ","secret_access_key":"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"}
+            </value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy-ova-stable">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:deploy[${RELENG_ENV},stable.ova]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-microbosh">
+        <jobs>
+          <job name="deploy-microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:bosh:redeploy[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-runtime" cleanWorkingDir="true">
+        <jobs>
+          <job name="deploy-runtime">
+            <environmentvariables>
+              <variable name="MATERIALS_DIR">
+                <value>cf-pivotal-artifacts</value>
+              </variable>
+              <variable name="DISPLAY">
+                <value>localhost:1.0</value>
+              </variable>
+              <variable name="RIAK_BUCKET">
+                <value>
+                  {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+                </value>
+              </variable>
+              <variable name="S3_BUCKET">
+                <value>
+                  {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
+                </value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/deploy.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs
+                </arg>
+                <runif status="any"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="bosh_logs" dest="bosh_logs"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post-install-test">
+        <jobs>
+          <job name="post-install-test">
+            <environmentvariables>
+              <variable name="PRODUCT_REPO_URL">
+                <value>git@github.com:pivotal-cf/p-runtime.git</value>
+              </variable>
+              <variable name="MATERIALS_DIR">
+                <value>../cf-pivotal-artifacts-metadata</value>
+              </variable>
+              <variable name="GOROOT">
+                <value>/var/vcap/packages/golang-1.2</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/post_install_test.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>echo $GO_PIPELINE_LABEL &gt; last_successful_runtime_label</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="release-claim">
+        <approval type="manual"/>
+        <jobs>
+          <job name="release-claim">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>bundle &amp;&amp; bundle exec rake --trace
+                  krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-1.5-mysql" isLocked="false">
+      <environmentvariables>
+        <variable name="KRAFA_BASE_URL">
+          <value>http://krafa.cfapps.io</value>
+        </variable>
+        <variable name="KRAFA_USERNAME">
+          <value>releng</value>
+        </variable>
+        <variable name="KRAFA_PASSWORD">
+          <value>bet90onions</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build"/>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+          <filter>
+            <ignore pattern="**/*"/>
+          </filter>
+        </git>
+        <git url="git@github.com:pivotal-cf/p-mysql.git" dest="p-mysql">
+          <filter>
+            <ignore pattern="**/*"/>
+          </filter>
+        </git>
+      </materials>
+      <stage name="ensure_vsphere">
+        <jobs>
+          <job name="ensure_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="claim-env">
+        <jobs>
+          <job name="claim-env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>bundle &amp;&amp; bundle exec rake --trace
+                  krafa:claim_with_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>echo "export RELENG_ENV=$(bundle exec rake --trace
+                  krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy">
+        <jobs>
+          <job name="destroy">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:destroy[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-ova" cleanWorkingDir="true">
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>
+              {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"cf-ops-manager","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+            </value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>
+              {"endpoint":"https://s3.amazonaws.com","bucket":"cf-ops-manager","access_key_id":"AKIAIASXXU7XTCVWQITQ","secret_access_key":"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"}
+            </value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy-ova-stable">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:deploy[${RELENG_ENV},stable.ova]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-microbosh">
+        <jobs>
+          <job name="deploy-microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:bosh:redeploy[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-runtime" cleanWorkingDir="true">
+        <jobs>
+          <job name="deploy-runtime">
+            <environmentvariables>
+              <variable name="MATERIALS_DIR">
+                <value>cf-pivotal-artifacts</value>
+              </variable>
+              <variable name="DISPLAY">
+                <value>localhost:1.0</value>
+              </variable>
+              <variable name="RIAK_BUCKET">
+                <value>
+                  {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+                </value>
+              </variable>
+              <variable name="S3_BUCKET">
+                <value>
+                  {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
+                </value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/deploy.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs
+                </arg>
+                <runif status="any"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="bosh_logs" dest="bosh_logs"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-mysql">
+        <jobs>
+          <job name="deploy-mysql">
+            <environmentvariables>
+              <variable name="RIAK_BUCKET">
+                <value>
+                  {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+                </value>
+              </variable>
+              <variable name="S3_BUCKET">
+                <value>
+                  {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
+                </value>
+              </variable>
+              <variable name="ENV_CONFIG">
+                <value>../p-runtime/config/environments.yml</value>
+              </variable>
+              <variable name="DOCKERHUB_USERNAME">
+                <value>cloudfoundry</value>
+              </variable>
+              <variable name="DOCKERHUB_EMAIL">
+                <value>cfaccounts+docker.io@pivotallabs.com</value>
+              </variable>
+              <variable name="DOCKERHUB_PASSWORD">
+                <value>docker4stacks</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-mysql">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/ci/pull_docker_image</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-mysql">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/ci/run_in_docker ./scripts/download_pivotal_final</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-mysql">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/ci/run_in_docker ./scripts/provision_pivotal</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post-install-test">
+        <jobs>
+          <job name="post-install-test">
+            <environmentvariables>
+              <variable name="PRODUCT_REPO_URL">
+                <value>git@github.com:pivotal-cf/p-runtime.git</value>
+              </variable>
+              <variable name="MATERIALS_DIR">
+                <value>../cf-pivotal-artifacts-metadata</value>
+              </variable>
+              <variable name="GOROOT">
+                <value>/var/vcap/packages/golang-1.2</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/post_install_test.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>echo $GO_PIPELINE_LABEL &gt; last_successful_runtime_label</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="release-claim">
+        <approval type="manual"/>
+        <jobs>
+          <job name="release-claim">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>bundle &amp;&amp; bundle exec rake --trace
+                  krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-1.5-upgrade-1.4.2.0-OM1.4.2.0" template="ERT-1.5-from-OVAa_ERTx">
+      <environmentvariables>
+        <variable name="INITIAL_OVA">
+          <value>pcf-vsphere-1.4.2.0.ova</value>
+        </variable>
+        <variable name="RUNTIME_DOT_PIVOTAL_FILE">
+          <value>cf-1.4.2.0.pivotal</value>
+        </variable>
+        <variable name="KRAFA_USERNAME">
+          <value>releng</value>
+        </variable>
+        <variable name="KRAFA_PASSWORD">
+          <value>bet90onions</value>
+        </variable>
+        <variable name="KRAFA_BASE_URL">
+          <value>http://krafa.cfapps.io</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build"/>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+          <filter>
+            <ignore pattern="**/*"/>
+          </filter>
+        </git>
+      </materials>
+    </pipeline>
+    <pipeline name="ERT-1.5-publish">
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+          <filter>
+            <ignore pattern="**/*"/>
+          </filter>
+        </git>
+        <pipeline pipelineName="ERT-1.5" stageName="release-claim"/>
+        <pipeline pipelineName="ERT-1.5-internetless" stageName="release-claim"/>
+        <pipeline pipelineName="ERT-1.5-mysql" stageName="release-claim"/>
+        <pipeline pipelineName="ERT-1.5-upgrade-1.4.2.0-OM1.4.2.0" stageName="release-claim"/>
+        <pipeline pipelineName="ERT-1.5-aws" stageName="destroy-env"/>
+        <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff"/>
+        <pipeline pipelineName="ERT-1.5-aws-build" stageName="vara-build"/>
+        <pipeline pipelineName="ERT-1.5-aws-upgrade-1.4.2.0-OM1.4.2.0" stageName="destroy-env"/>
+      </materials>
+      <stage name="copy-to-release-buckets">
+        <jobs>
+          <job name="copy-to-release-buckets">
+            <environmentvariables>
+              <variable name="AWS_ACCESS_KEY_ID">
+                <value>AKIAJBWXIFB65EY4YTMQ</value>
+              </variable>
+              <variable name="AWS_SECRET_ACCESS_KEY">
+                <value>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</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-kickoff" stage="kickoff" job="save_vara_extra_flags"
+                             srcfile="vara_extra_flags.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="ERT-1.5" stage="deploy-ova" job="deploy-ova-stable"
+                             srcfile="cf-pivotal-artifacts-metadata/ops_manager_ova.blobkey">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="ERT-1.5-aws-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="cf-pivotal-artifacts-metadata">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>KEY=`grep -o -e cf.* cf-pivotal.blobkey` &amp;&amp; ../p-runtime/scripts/run_in_docker.sh gof3r cp
+                  s3://releng-products/untested/${KEY} ${KEY} &amp;&amp; ../p-runtime/scripts/run_in_docker.sh gof3r cp
+                  ${KEY} s3://releng-products/runtime/${KEY}
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="cf-pivotal-artifacts-metadata">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>KEY=`grep -o -e cf.* cf-pivotal.blobkey` &amp;&amp; ../p-runtime/scripts/run_in_docker.sh s3cmd -c
+                  s3cfg.s3 cp s3://releng-products/untested/${KEY}.md5 s3://releng-products/runtime/${KEY}.md5
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="cf-pivotal-artifacts-metadata">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>KEY=`grep -o -e cf.* cf-pivotal.blobkey` &amp;&amp; ../p-runtime/scripts/run_in_docker.sh s3cmd -c
+                  s3cfg.s3 cp s3://releng-products/untested/${KEY}.yml s3://releng-products/runtime/${KEY}.yml
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="cf-pivotal-artifacts-metadata/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata"/>
+              <artifact src="cf-pivotal-artifacts-metadata/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata"/>
+              <artifact src="cf-pivotal-artifacts-metadata/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata"/>
+              <artifact src="ops_manager_ova.blobkey" dest="cf-pivotal-artifacts-metadata"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-1.5-aws-upgrade-1.4.2.0-OM1.4.2.0" isLocked="true">
+      <environmentvariables>
+        <variable name="KRAFA_BASE_URL">
+          <value>http://krafa.cfapps.io</value>
+        </variable>
+        <variable name="KRAFA_USERNAME">
+          <value>releng</value>
+        </variable>
+        <variable name="KRAFA_PASSWORD">
+          <value>bet90onions</value>
+        </variable>
+        <variable name="OPSMGR_14_AMI">
+          <value>ami-a03126c8</value>
+        </variable>
+        <variable name="RUNTIME_DOT_PIVOTAL_FILE">
+          <value>cf-1.4.2.0.pivotal</value>
+        </variable>
+        <variable name="OPSMGR_STABLE_AMI">
+          <value>ami-a03126c8</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime"/>
+        <pipeline pipelineName="ERT-1.5-aws-build" stageName="vara-build"/>
+      </materials>
+      <stage name="ensure_not_vsphere">
+        <jobs>
+          <job name="ensure_not_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_not_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="export-env">
+        <jobs>
+          <job name="export-env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>echo "export RELENG_ENV=plum" &gt; releng_env.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy" cleanWorkingDir="true">
+        <environmentvariables>
+          <variable name="S3_BUCKET">
+            <value>
+              {"endpoint":"https://s3.amazonaws.com","bucket":"cf-ops-manager","access_key_id":"AKIAIASXXU7XTCVWQITQ","secret_access_key":"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"}
+            </value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy">
+            <tasks>
+              <fetchartifact pipeline="" stage="export-env" job="export-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>echo ${OPSMGR_14_AMI} &gt; ami.txt</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake opsmgr:destroy[${RELENG_ENV}]
+                  --trace
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle exec rake opsmgr:install[${RELENG_ENV},ami.txt] --trace
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle exec rake opsmgr:first_user[${RELENG_ENV}] --trace</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-microbosh">
+        <jobs>
+          <job name="deploy-microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="export-env" job="export-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:bosh:redeploy[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-runtime">
+        <jobs>
+          <job name="deploy-runtime">
+            <environmentvariables>
+              <variable name="AWS_ACCESS_KEY_ID">
+                <value>AKIAJBWXIFB65EY4YTMQ</value>
+              </variable>
+              <variable name="AWS_SECRET_ACCESS_KEY">
+                <value>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</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="export-env" job="export-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/run_in_docker.sh
+                  scripts/runtime/download_pivotal_with_gof3r.sh
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>bundle &amp;&amp; bundle exec rake
+                  md5:validate[${RUNTIME_DOT_PIVOTAL_FILE},${RUNTIME_DOT_PIVOTAL_FILE}.md5]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle exec rake --trace
+                  runtime[${RELENG_ENV},${RUNTIME_DOT_PIVOTAL_FILE}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upgrade-opsmgr">
+        <jobs>
+          <job name="upgrade-opsmgr">
+            <tasks>
+              <fetchartifact pipeline="" stage="export-env" job="export-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>echo ${OPSMGR_STABLE_AMI} &gt; ami.txt</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/opsmgr/export_installation.sh</arg>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:destroy:opsmgr[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:deploy[${RELENG_ENV},ami.txt]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/opsmgr/import_installation.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upgrade-runtime" cleanWorkingDir="true">
+        <jobs>
+          <job name="upgrade">
+            <environmentvariables>
+              <variable name="MATERIALS_DIR">
+                <value>cf-pivotal-artifacts</value>
+              </variable>
+              <variable name="DISPLAY">
+                <value>localhost:1.0</value>
+              </variable>
+              <variable name="S3_BUCKET">
+                <value>
+                  {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
+                </value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="export-env" job="export-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="ERT-1.5-aws-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>bundle</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/upgrade_to_latest.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post-install-test">
+        <jobs>
+          <job name="post-install-test">
+            <environmentvariables>
+              <variable name="PRODUCT_REPO_URL">
+                <value>git@github.com:pivotal-cf/p-runtime.git</value>
+              </variable>
+              <variable name="MATERIALS_DIR">
+                <value>../cf-pivotal-artifacts-metadata</value>
+              </variable>
+              <variable name="GOROOT">
+                <value>/var/vcap/packages/golang-1.2</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="export-env" job="export-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/aws_post_install_test_gocd.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy-env">
+        <approval type="manual"/>
+        <jobs>
+          <job name="destroy">
+            <tasks>
+              <fetchartifact pipeline="" stage="export-env" job="export-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake opsmgr:destroy[${RELENG_ENV}]
+                  --trace
+                </arg>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ert-spigot">
+      <materials>
+        <pipeline pipelineName="ERT-1.5-publish" stageName="copy-to-release-buckets"/>
+      </materials>
+      <stage name="spigot">
+        <jobs>
+          <job name="spigot">
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-publish" stage="copy-to-release-buckets" job="copy-to-release-buckets"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+            </tasks>
+            <artifacts>
+              <artifact src="cf-pivotal-artifacts-metadata"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-1.5-OpenStack" isLocked="true">
+      <environmentvariables>
+        <variable name="KRAFA_BASE_URL">
+          <value>http://krafa.cfapps.io</value>
+        </variable>
+        <variable name="KRAFA_USERNAME">
+          <value>releng</value>
+        </variable>
+        <variable name="KRAFA_PASSWORD">
+          <value>bet90onions</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals"/>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/openstack-ci-91958128" dest="p-runtime">
+          <filter>
+            <ignore pattern="*/**"/>
+          </filter>
+        </git>
+        <pipeline pipelineName="OpsManager-Promote-1.5" stageName="promote_artifacts"/>
+      </materials>
+      <stage name="ensure_vsphere">
+        <jobs>
+          <job name="ensure_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="claim-env">
+        <jobs>
+          <job name="claim-env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>echo "export RELENG_ENV=mars" &gt; releng_env.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy">
+        <jobs>
+          <job name="destroy">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:destroy[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-ops-man" cleanWorkingDir="true">
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>
+              {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"cf-ops-manager","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+            </value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>
+              {"endpoint":"https://s3.amazonaws.com","bucket":"cf-ops-manager","access_key_id":"AKIAIASXXU7XTCVWQITQ","secret_access_key":"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"}
+            </value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy-ops-man-edge">
+            <environmentvariables>
+              <variable name="ACCESS_KEY_ID">
+                <value>AKIAIFHBKH3ZINMIAQUQ</value>
+              </variable>
+              <variable name="SECRET_ACCESS_KEY">
+                <value>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</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:download[openstack,latest]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr[${RELENG_ENV},ops_man_image]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>bundle exec rake opsmgr:ova:stable:path &gt; ops_manager_ova.blobkey</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/ops_manager_ova.blobkey" dest="cf-pivotal-artifacts-metadata"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-microbosh">
+        <jobs>
+          <job name="deploy-microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:bosh:redeploy[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-runtime" cleanWorkingDir="true">
+        <jobs>
+          <job name="deploy-runtime">
+            <environmentvariables>
+              <variable name="MATERIALS_DIR">
+                <value>cf-pivotal-artifacts</value>
+              </variable>
+              <variable name="DISPLAY">
+                <value>localhost:1.0</value>
+              </variable>
+              <variable name="RIAK_BUCKET">
+                <value>
+                  {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+                </value>
+              </variable>
+              <variable name="S3_BUCKET">
+                <value>
+                  {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
+                </value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/deploy.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs
+                </arg>
+                <runif status="any"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="bosh_logs" dest="bosh_logs"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post-install-test">
+        <jobs>
+          <job name="post-install-test">
+            <environmentvariables>
+              <variable name="PRODUCT_REPO_URL">
+                <value>git@github.com:pivotal-cf/p-runtime.git</value>
+              </variable>
+              <variable name="MATERIALS_DIR">
+                <value>../cf-pivotal-artifacts-metadata</value>
+              </variable>
+              <variable name="GOROOT">
+                <value>/var/vcap/packages/golang-1.2</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/run_in_docker.sh
+                  ./scripts/runtime/post_install_test_ssh_tunnel.sh
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>echo $GO_PIPELINE_LABEL &gt; last_successful_runtime_label</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-1.5-Docker-Image">
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime"/>
+        <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff"/>
+      </materials>
+      <stage name="build_image">
+        <jobs>
+          <job name="build_image">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>./build_and_upload_image.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+
+  <templates>
+
+    <pipeline name="ERT-1.5-from-OVAa_ERTx">
+      <stage name="ensure_setup">
+        <jobs>
+          <job name="ensure_vsphere">
+            <tasks>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>pwd &amp;&amp; ls -alR</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+          <job name="ensure_environment_variables">
+            <tasks>
+              <exec command="bash">
+                <arg>-cx</arg>
+                <arg>[ -n "$INITIAL_OVA" ] &amp;&amp; [ -n "$RUNTIME_DOT_PIVOTAL_FILE" ]</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="claim-env">
+        <jobs>
+          <job name="claim-env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>bundle &amp;&amp; bundle exec rake --trace
+                  krafa:claim_with_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>echo "export RELENG_ENV=$(bundle exec rake --trace
+                  krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy">
+        <jobs>
+          <job name="destroy">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:destroy[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-ova-a">
+        <environmentvariables>
+          <variable name="KRAFA_BASE_URL">
+            <value>http://releng:bet90onions@krafa.cfapps.io</value>
+          </variable>
+          <variable name="RIAK_BUCKET">
+            <value>
+              {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+            </value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>
+              {"endpoint":"https://s3.amazonaws.com","bucket":"releng-binaries","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
+            </value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy-ova-a">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:deploy[${RELENG_ENV},${INITIAL_OVA}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-microbosh">
+        <jobs>
+          <job name="deploy-microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:bosh:redeploy[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-runtime" cleanWorkingDir="true">
+        <jobs>
+          <job name="deploy-runtime">
+            <environmentvariables>
+              <variable name="MATERIALS_DIR">
+                <value>cf-pivotal-artifacts</value>
+              </variable>
+              <variable name="DISPLAY">
+                <value>localhost:1.0</value>
+              </variable>
+              <variable name="RIAK_BUCKET">
+                <value>
+                  {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+                </value>
+              </variable>
+              <variable name="S3_BUCKET">
+                <value>
+                  {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
+                </value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/deploy_published_pivotal.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs
+                </arg>
+                <runif status="any"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="bosh_logs" dest="bosh_logs"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="export-import-installation">
+        <environmentvariables>
+          <variable name="KRAFA_BASE_URL">
+            <value>http://releng:bet90onions@krafa.cfapps.io</value>
+          </variable>
+          <variable name="RIAK_BUCKET">
+            <value>
+              {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"cf-ops-manager","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+            </value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>
+              {"endpoint":"https://s3.amazonaws.com","bucket":"cf-ops-manager","access_key_id":"AKIAIASXXU7XTCVWQITQ","secret_access_key":"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"}
+            </value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upgrade-opsmgr">
+            <environmentvariables>
+              <variable name="OVA_FILE">
+                <value>pcf-vsphere-1.3.3.0.ova</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/opsmgr/export_installation.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:destroy:opsmgr[${RELENG_ENV}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
+                  opsmgr:deploy[${RELENG_ENV},stable.ova]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/opsmgr/import_installation.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upgrade-runtime">
+        <environmentvariables>
+          <variable name="KRAFA_BASE_URL">
+            <value>http://releng:bet90onions@krafa.cfapps.io</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upgrade">
+            <environmentvariables>
+              <variable name="MATERIALS_DIR">
+                <value>cf-pivotal-artifacts</value>
+              </variable>
+              <variable name="RIAK_BUCKET">
+                <value>
+                  {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+                </value>
+              </variable>
+              <variable name="S3_BUCKET">
+                <value>
+                  {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
+                </value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/runtime/upgrade_to_latest.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs
+                </arg>
+                <runif status="any"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="bosh_logs" dest="bosh_logs"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post-install-test">
+        <jobs>
+          <job name="post-install-test">
+            <environmentvariables>
+              <variable name="PRODUCT_REPO_URL">
+                <value>git@github.com:pivotal-cf/p-runtime.git</value>
+              </variable>
+              <variable name="MATERIALS_DIR">
+                <value>../cf-pivotal-artifacts-metadata</value>
+              </variable>
+              <variable name="GOROOT">
+                <value>/var/vcap/packages/golang-1.2</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/post_install_test.sh</arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>echo $GO_PIPELINE_LABEL &gt; last_successful_runtime_label</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="release-claim">
+        <approval type="manual"/>
+        <jobs>
+          <job name="release-claim">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>bundle &amp;&amp; bundle exec rake --trace
+                  krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-Upgrade">
+      <stage name="ensure_vsphere">
+        <jobs>
+          <job name="ensure_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="claim_env">
+        <environmentvariables>
+          <variable name="KRAFA_BASE_URL">
+            <value>http://krafa.cfapps.io</value>
+          </variable>
+          <variable name="KRAFA_USERNAME">
+            <value>releng</value>
+          </variable>
+          <variable name="KRAFA_PASSWORD">
+            <value>bet90onions</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="claim_env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>echo 'export RELENG_ENV=ridge' &gt; releng_env.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy_env">
+        <jobs>
+          <job name="destroy_env">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_opsman">
+        <environmentvariables>
+          <variable name="ACCESS_KEY_ID">
+            <value>AKIAIFHBKH3ZINMIAQUQ</value>
+          </variable>
+          <variable name="SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy_opsman">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:download[vsphere,stable]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:install[$RELENG_ENV,ops_man_image]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_microbosh">
+        <jobs>
+          <job name="configure_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:add_first_user[$RELENG_ENV,1.4]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:microbosh:configure[$RELENG_ENV,1.4]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_microbosh">
+        <jobs>
+          <job name="deploy_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:trigger_install[$RELENG_ENV,1.4,45]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upload_ert">
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>
+              {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+            </value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>
+              {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
+            </value>
+          </variable>
+          <variable name="AWS_ACCESS_KEY_ID">
+            <value>AKIAI43577ARGHXPWIMQ</value>
+          </variable>
+          <variable name="AWS_SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upload_ert">
+            <environmentvariables>
+              <variable name="RUNTIME_DOT_PIVOTAL_FILE">
+                <value>cf-1.4.1.0.pivotal</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; scripts/run_in_docker.sh
+                  scripts/runtime/download_pivotal_with_gof3r.sh
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:product:upload_add[$RELENG_ENV,1.4,$RUNTIME_DOT_PIVOTAL_FILE,cf]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_ert">
+        <jobs>
+          <job name="configure_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  ert:configure[$RELENG_ENV,1.4,1.4]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_ert">
+        <jobs>
+          <job name="deploy_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:trigger_install[$RELENG_ENV,1.4,240]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="export_import_installation">
+        <environmentvariables>
+          <variable name="ACCESS_KEY_ID">
+            <value>AKIAIFHBKH3ZINMIAQUQ</value>
+          </variable>
+          <variable name="SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="export_import_installation">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:export_installation[$RELENG_ENV,1.4,export]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:destroy:opsmgr[$RELENG_ENV]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:download[vsphere,stable]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:install[$RELENG_ENV,ops_man_image]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:import_installation[$RELENG_ENV,1.4,export]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upload_upgrade_ert">
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>
+              {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
+            </value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>
+              {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
+            </value>
+          </variable>
+          <variable name="MATERIALS_DIR">
+            <value>cf-pivotal-artifacts</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upload_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed"/>
+              </fetchartifact>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
+                             srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh
+                  xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},new_runtime.pivotal]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:product:upload_upgrade[$RELENG_ENV,1.4,new_runtime.pivotal,cf]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_upgrade_ert">
+        <jobs>
+          <job name="configure_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  ert:configure[$RELENG_ENV,1.5,1.4]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_upgrade_ert">
+        <jobs>
+          <job name="deploy_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
+                  opsmgr:trigger_install[$RELENG_ENV,1.4,240]'
+                </arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp"/>
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post_install_test">
+        <jobs>
+          <job name="post_install_test">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed"/>
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test.sh</arg>
+                <runif status="passed"/>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="release_claim">
+        <approval type="manual"/>
+        <jobs>
+          <job name="release_claim">
+            <tasks>
+              <ant/>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+
+  </templates>
+
+</cruise>
+

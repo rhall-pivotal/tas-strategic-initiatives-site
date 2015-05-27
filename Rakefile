@@ -18,3 +18,8 @@ require 'rubocop/rake_task'
 RuboCop::RakeTask.new
 
 task default: [:rubocop, :spec]
+
+require 'opsmgr/ui_helpers/config_helper'
+require 'capybara'
+
+Capybara.save_and_open_page_path = File.expand_path(File.join(base_dir, 'tmp'))

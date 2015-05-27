@@ -1,6 +1,4 @@
-$LOAD_PATH << File.expand_path('..', File.dirname(__FILE__))
-
-require 'integration_spec_helper'
+require 'opsmgr/ui_helpers/config_helper'
 
 RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
   let(:current_ops_manager) { ops_manager_driver }
@@ -15,14 +13,17 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
     )
   end
 
-  it 'configures ha proxy' do
-    ips_and_ports_form =
-      current_ops_manager.product(elastic_runtime_settings.name).product_form('ha_proxy')
-    ips_and_ports_form.open_form
-    ips_and_ports_form.property('.ha_proxy.static_ips').set(elastic_runtime_settings.ha_proxy_static_ips)
-    ips_and_ports_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings.trust_self_signed_certificates)
-    ips_and_ports_form.generate_self_signed_cert("*.#{elastic_runtime_settings.system_domain}")
-    ips_and_ports_form.save_form
+  it 'configures the availability zone' do
+    current_ops_manager.assign_availability_zones_for_product(product: 'cf', zones: env_settings.ops_manager.availability_zones)
+  end
+
+  it 'configures ha proxy or an ELB' do
+    case env_settings.iaas_type
+    when 'aws'
+      configure_aws_load_balancers(elastic_runtime_settings)
+    when 'vsphere'
+      configure_vsphere_ha_proxy(elastic_runtime_settings)
+    end
   end
 
   it 'configures cloud controller' do
@@ -45,5 +46,27 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
     smtp_form.property('.properties.smtp_enable_starttls_auto').set(elastic_runtime_settings.smtp.enable_starttls_auto)
     smtp_form.property('.properties.smtp_auth_mechanism').set(elastic_runtime_settings.smtp.smtp_auth_mechanism)
     smtp_form.save_form
+  end
+
+  private
+
+  def configure_vsphere_ha_proxy(elastic_runtime_settings)
+    ips_and_ports_form =
+      current_ops_manager.product(elastic_runtime_settings.name).product_form('ha_proxy')
+    ips_and_ports_form.open_form
+    ips_and_ports_form.property('.ha_proxy.static_ips').set(elastic_runtime_settings.ha_proxy_static_ips)
+    ips_and_ports_form.save_form
+  end
+
+  def configure_aws_load_balancers(elastic_runtime_settings)
+    resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings.name)
+    resource_config.set_instances_for_job('ha_proxy', 0)
+    resource_config.set_elb_name_for_job('router', elastic_runtime_settings.elb_name)
+
+    ips_and_ports_form =
+      current_ops_manager.product(elastic_runtime_settings.name).product_form('ha_proxy')
+    ips_and_ports_form.open_form
+    ips_and_ports_form.property('.properties.logger_endpoint_port').set('4443')
+    ips_and_ports_form.save_form
   end
 end
