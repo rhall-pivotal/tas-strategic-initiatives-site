@@ -2491,9 +2491,9 @@ job_types:
         type: integer
         label: Ephemeral Disk
         configurable: true
-        default: 2_048
+        default: 4_096
         constraints:
-          min: 2_048
+          min: 4_096
 
       - name: persistent_disk
         type: integer
@@ -2552,13 +2552,11 @@ job_types:
       networks:
         apps: default
       network_name: default
-      external_domain: "internal.(( .cloud_controller.system_domain.value ))"
-      haproxy_stats_password: (( dashboard_credentials.password ))
-      ha_proxy:
-        ssl_pem: (( .ha_proxy.ssl_rsa_certificate.cert_and_private_key_pems ))
-      mysql_proxy:
-        static_ips: (( static_ips.value ))
-      mysql_ips: (( .mysql.ips ))
+      external_host: "p-mysql.internal.(( .cloud_controller.system_domain.value ))"
+      proxy:
+        api_password: (( dashboard_credentials.password ))
+        api_username: (( dashboard_credentials.identity ))
+      cluster_ips: (( .mysql.ips ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -2640,7 +2638,6 @@ job_types:
     manifest: |
         admin_password: (( mysql_admin_credentials.password ))
         cluster_ips: (( .mysql.ips ))
-        proxy_ips: []
         innodb_buffer_pool_size: 2147483648
         max_connections: 1500
         max_user_connections: (( max_user_connections.value ))
