@@ -1492,7 +1492,7 @@ pipeline config after converting master pipelines* to use capybara helpers
         <jobs>
           <job name="deploy-opsman-a">
             <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh">
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
                 <runif status="passed"/>
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
