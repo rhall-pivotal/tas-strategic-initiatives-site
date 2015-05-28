@@ -1,0 +1,82 @@
+iaas_type: openstack
+
+vm_shepherd_configs:
+- creds:
+    auth_url: http://23.246.208.98:5000/v2.0/tokens
+    username: releng-ci
+    api_key: 'x8esrkxQ3SBM'
+    tenant: mars
+  vm:
+    name: 'mars-ops-manager'
+    flavor_parameters:
+      min_disk_size: 150
+    network_name: 'net04'
+    key_name: releng-openstack-key
+    security_group_names:
+      - mars-ops-manager
+      - default
+    private_ip: 192.168.111.100
+    public_ip: 23.246.208.110
+
+ops_manager:
+  url: https://pcf.mars.cf-app.com
+  username: pivotalcf
+  password: pivotalcf
+  ntp_servers: us.pool.ntp.org
+  openstack:
+    identity_endpoint: http://23.246.208.98:5000/v2.0
+    username: releng-ci
+    password: 'x8esrkxQ3SBM'
+    tenant: mars
+    security_group_name: mars-ops-manager
+    key_pair_name: releng-openstack-key
+    ssh_private_key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEpAIBAAKCAQEA8a9s0uoecZiw7Mtl535WULQgxIcz7jKbuJj9j8ttLjq3Eg7H
+      sA/LyXFpkqpScz+nOySkpnJmxNp/AnTixKZKNN/u065g24fqFj2ZX4o5YTHD83c+
+      gj8vjWRDo9TqcxQY9wyUgxAwSvVM+wqCMgYpywgSNTWVpDk15bIZPVWVG5AW89ka
+      gVGhWwZqU1oqRdKRoKUe/ITt6Bsn0V2vUiw+kphHecNKoUg1n3LlWJ5O30TUSJkd
+      Hdl1DgwR3EYVfXqKdoL2joyh9HZWy/9CCJEiKaWYNm+h6Uyk2NYXvoSH0UYl+Gx3
+      qJwc4zKh3zDP7JFxIt8upXPhyt2i75kUqHrFvQIDAQABAoIBAQDTO05ynNqU0C46
+      F59uD1ZjXLuS6NQzaJn/Yf+jcNlw4TJmHvLaZ0PmQTBTVnePcN+5alJZg31cqdb+
+      D6iu1OPgiKOU8UCIPqcSXy4weX+i+jrYDK1eatkly67ufsWWZMdZDO60Ci8bJH/u
+      nYWjMQ3P/LLlPHsYOERqCBnVKHqUxczsjqpfTSYDF8a6zZIOID36SZT0phk2NM2M
+      1o7BQeDZehQfrXgSOlTsLhUbZwI9QjLX+RTBvsTXLdqdkiYE7L85GjRVcIZ+BVuQ
+      BVxbyfjhQK9DqtTAm2nyuz+GelREwjQJJq99daXSVKzyZAYnz8EU4A5YB3W/ZK36
+      xfT44v2hAoGBAPkbTDGBS5rf06ygy8AyqIF5eQImFCM5wQ0W2BtF7BQ8DnihJBLu
+      j+gusCSrJ9QlVf4yXgor5h4kPHk5rnbYdcuDs1GtHZQ1gxgE+vvl/QPlRBd3k8OZ
+      bHnpzusfJQBxPsJO8muzF0Rb5L2pSw1FIi96FUe6gJ8h7asuxdJ7MNZFAoGBAPhf
+      jbJzqUV+WZybuJZ5ibc4MGk8WJYaLM3coH6b9JH+fzMU2APlLVc7BEteS/I4374p
+      YLdR2Nn8ee7ejwEvPkQKvz56+8WDpsfsGEOAgCMiG3vWLM+bG4XO8jY/DOMc1aMs
+      pP+wpmsXkp2Mvv7H7VwWmHct23iVUu5Ubim0FIUZAoGANSRSq9j2ZRLM2G3xKY5l
+      DkH4w7GV6DHg8kbmUWMoSuTI/Yj65iMIhjK3lwsAUyyn3LOoBil5TQLT99SLWIUz
+      E/iDn6/7uGt2DQC6/lQBFvyo+wyidD7dumBbqSMaxK5kAhXPd5RcKVQlRyS/gxQ1
+      h8VWlte9qrUVO8idoRpwv7UCgYEAmiHCL0Hzg7q7JaLFVCwsOFVYRZY7azrnHwGR
+      X8Csb4U9rpd6zkAEeSOYsKTeAH0m7D2FVX4nUm+Jw6C9ogCNZXA96ior4BCpCVwM
+      Wqd93U+nOpxYxqT82XbpfJx4BOC5+z8TTdF0FPVV+QuE41tygzlKeHsuvY/9HQWs
+      L5kfOtECgYBzQEm4PYhWY0+BAfhGCuYa3eNEGMbwbrtwwkZAOActkLpmOPJ82p+s
+      CYR2B+z+nrFjorjpGg5Z+mD7o3q2o/UwOYbHK6Srj8pKeDaaf7PWj9nu0fd6uvBj
+      95BXw5v+NdVAynKdCt2Con/6akRmF2hM0cRpvcPEDX5NXb+s/l2Dyw==
+      -----END RSA PRIVATE KEY-----
+  networks:
+  - name: first-network
+    identifier: 78dae7e6-b446-40d5-beb7-92120b154337
+    subnet: 192.168.111.0/24
+    reserved_ips: 192.168.111.2-192.168.111.4
+    dns: 8.8.4.4,8.8.8.8
+    gateway: 192.168.111.1
+  elastic_runtime:
+    name: cf
+    ha_proxy_static_ips: 23.246.208.111
+    system_domain: sys.mars.cf-app.com
+    apps_domain: apps.mars.cf-app.com
+    smtp:
+      from: identitystaging@mailinator.com
+      address: smtp.sendgrid.net
+      port: 587
+      credentials:
+        identity: PCFRelEng
+        password: 4H-9Lh-wD{ZST28x{Q
+      enable_starttls_auto: true
+      smtp_auth_mechanism: plain
+    trust_self_signed_certificates: true
