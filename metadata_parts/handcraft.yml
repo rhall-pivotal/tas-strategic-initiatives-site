@@ -156,7 +156,7 @@ form_types:
 
   - name: system_blobstore
     label: File Storage Config
-    description: Select internal if you want to keep using the system-provided filestore. Otherwise select Amazon S3 if you want to use your own S3 filestore.
+    description: Select internal if you want to keep using the system-provided filestore. Otherwise select external if you want to use your own S3-compatible filestore.
     verifiers:
       - name: Verifiers::BlobstoreVerifier
         properties:
@@ -172,7 +172,7 @@ form_types:
         label: Internal
         description:
       - reference: .properties.system_blobstore.external
-        label: Amazon S3
+        label: External S3-Compatible Filestore
         description:
         property_inputs:
           - reference: .properties.system_blobstore.external.endpoint
