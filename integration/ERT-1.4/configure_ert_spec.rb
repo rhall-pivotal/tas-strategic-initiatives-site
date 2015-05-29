@@ -36,16 +36,18 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
   end
 
   it 'configures smtp' do
-    smtp_form = current_ops_manager.product(elastic_runtime_settings.name).product_form('smtp_config')
-    smtp_form.open_form
-    smtp_form.property('.properties.smtp_from').set(elastic_runtime_settings.smtp.from)
-    smtp_form.property('.properties.smtp_address').set(elastic_runtime_settings.smtp.address)
-    smtp_form.property('.properties.smtp_port').set(elastic_runtime_settings.smtp.port)
-    smtp_form.nested_property('.properties.smtp_credentials', 'identity').set(elastic_runtime_settings.smtp.credentials.identity)
-    smtp_form.nested_property('.properties.smtp_credentials', 'password').set(elastic_runtime_settings.smtp.credentials.password)
-    smtp_form.property('.properties.smtp_enable_starttls_auto').set(elastic_runtime_settings.smtp.enable_starttls_auto)
-    smtp_form.property('.properties.smtp_auth_mechanism').set(elastic_runtime_settings.smtp.smtp_auth_mechanism)
-    smtp_form.save_form
+    if elastic_runtime_settings.smtp
+      smtp_form = current_ops_manager.product(elastic_runtime_settings.name).product_form('smtp_config')
+      smtp_form.open_form
+      smtp_form.property('.properties.smtp_from').set(elastic_runtime_settings.smtp.from)
+      smtp_form.property('.properties.smtp_address').set(elastic_runtime_settings.smtp.address)
+      smtp_form.property('.properties.smtp_port').set(elastic_runtime_settings.smtp.port)
+      smtp_form.nested_property('.properties.smtp_credentials', 'identity').set(elastic_runtime_settings.smtp.credentials.identity)
+      smtp_form.nested_property('.properties.smtp_credentials', 'password').set(elastic_runtime_settings.smtp.credentials.password)
+      smtp_form.property('.properties.smtp_enable_starttls_auto').set(elastic_runtime_settings.smtp.enable_starttls_auto)
+      smtp_form.property('.properties.smtp_auth_mechanism').set(elastic_runtime_settings.smtp.smtp_auth_mechanism)
+      smtp_form.save_form
+    end
   end
 
   private
@@ -55,6 +57,8 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
       current_ops_manager.product(elastic_runtime_settings.name).product_form('ha_proxy')
     ips_and_ports_form.open_form
     ips_and_ports_form.property('.ha_proxy.static_ips').set(elastic_runtime_settings.ha_proxy_static_ips)
+    ips_and_ports_form.generate_self_signed_cert("*.#{elastic_runtime_settings.system_domain}")
+    ips_and_ports_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings.trust_self_signed_certificates)
     ips_and_ports_form.save_form
   end
 
@@ -71,6 +75,7 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
       .set(elastic_runtime_settings.ssl_certificate)
     ips_and_ports_form.nested_property('.ha_proxy.ssl_rsa_certificate', 'private_key_pem')
       .set(elastic_runtime_settings.ssl_private_key)
+    ips_and_ports_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings.trust_self_signed_certificates)
     ips_and_ports_form.save_form
   end
 end
