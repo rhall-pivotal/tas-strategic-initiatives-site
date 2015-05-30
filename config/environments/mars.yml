@@ -28,7 +28,7 @@ ops_manager:
     username: releng-ci
     password: 'x8esrkxQ3SBM'
     tenant: mars
-    security_group_name: mars-ops-manager
+    security_group_name: default
     key_pair_name: releng-openstack-key
     ssh_private_key: |
       -----BEGIN RSA PRIVATE KEY-----
@@ -67,7 +67,7 @@ ops_manager:
     gateway: 192.168.111.1
   elastic_runtime:
     name: cf
-    ha_proxy_static_ips: 23.246.208.111
+    ha_proxy_floating_ips: 23.246.208.111
     system_domain: sys.mars.cf-app.com
     apps_domain: apps.mars.cf-app.com
     smtp:

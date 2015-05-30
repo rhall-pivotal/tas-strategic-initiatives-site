@@ -4,6 +4,7 @@ set -ex
 
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 workspace_dir="$( cd ${script_dir}/.. && pwd )"
+docker_tag=${DOCKER_TAG:-"$( git describe --dirty )"}
 
 docker run --privileged \
   -v ${workspace_dir}:/workspace \
@@ -21,4 +22,4 @@ docker run --privileged \
   -e KRAFA_PASSWORD \
   -e INTERNETLESS \
   -w "/workspace/p-runtime" \
-  ${DOCKER_REGISTRY}/releng:`git describe --dirty` /bin/sh -c "$*"
+  ${DOCKER_REGISTRY}/releng:$docker_tag /bin/sh -c "$*"

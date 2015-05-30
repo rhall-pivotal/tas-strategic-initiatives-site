@@ -23,6 +23,8 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
       configure_aws_load_balancers(elastic_runtime_settings)
     when 'vsphere'
       configure_vsphere_ha_proxy(elastic_runtime_settings)
+    when 'openstack'
+      configure_openstack_ha_proxy(elastic_runtime_settings)
     end
   end
 
@@ -90,5 +92,10 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
     ips_and_ports_form.open_form
     ips_and_ports_form.property('.properties.logger_endpoint_port').set('4443')
     ips_and_ports_form.save_form
+  end
+
+  def configure_openstack_ha_proxy(elastic_runtime_settings)
+    resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings.name)
+    resource_config.set_floating_ips_for_job('ha_proxy', elastic_runtime_settings.ha_proxy_floating_ips)
   end
 end
