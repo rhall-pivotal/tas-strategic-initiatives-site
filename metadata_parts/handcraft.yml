@@ -3674,10 +3674,75 @@ job_types:
         default:
           identity: vcap
 
-      - name: internet_available
-        type: boolean
+    manifest: |
+      acceptance_tests:
+        api: "https://api.(( .cloud_controller.system_domain.value ))"
+        apps_domain: (( .cloud_controller.apps_domain.value ))
+        admin_user: (( .uaa.admin_credentials.identity ))
+        admin_password: (( .uaa.admin_credentials.password ))
+        include_logging: true
+        include_internet_dependent: true
+        include_operator: true
+        include_services: true
+        skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+
+  - name: acceptance-tests-internetless
+    label: Run CF Acceptance Tests without internet
+    resource_label: Run CF Acceptance Tests without internet
+    description: Runs CF Acceptance Tests against your Elastic Runtime installation without internet
+    job_templates:
+      - acceptance-tests
+    release: cf
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
         configurable: true
-        default: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
 
     manifest: |
       acceptance_tests:
@@ -3686,7 +3751,7 @@ job_types:
         admin_user: (( .uaa.admin_credentials.identity ))
         admin_password: (( .uaa.admin_credentials.password ))
         include_logging: true
-        include_internet_dependent: (( .acceptance-tests.internet_available.value ))
+        include_internet_dependent: false
         include_operator: true
         include_services: true
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))

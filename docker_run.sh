@@ -19,5 +19,6 @@ docker run --privileged \
   -e KRAFA_BASE_URL \
   -e KRAFA_USERNAME \
   -e KRAFA_PASSWORD \
+  -e INTERNETLESS \
   -w "/workspace/p-runtime" \
   ${DOCKER_REGISTRY}/releng:`git describe --dirty` /bin/sh -c "$*"

@@ -727,12 +727,15 @@ pipeline config after converting master pipelines* to use capybara helpers
         <variable name="KRAFA_PASSWORD">
           <value>bet90onions</value>
         </variable>
+        <variable name="INTERNETLESS">
+          <value>true</value>
+        </variable>
       </environmentvariables>
       <materials>
-        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals"/>
+        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals" />
         <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
           <filter>
-            <ignore pattern="**/*"/>
+            <ignore pattern="**/*" />
           </filter>
         </git>
       </materials>
@@ -741,7 +744,7 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="ensure_vsphere">
             <tasks>
               <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -773,14 +776,13 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="destroy_env">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -974,7 +976,7 @@ pipeline config after converting master pipelines* to use capybara helpers
         </jobs>
       </stage>
       <stage name="release-claim">
-        <approval type="manual"/>
+        <approval type="manual" />
         <jobs>
           <job name="release-claim">
             <tasks>
