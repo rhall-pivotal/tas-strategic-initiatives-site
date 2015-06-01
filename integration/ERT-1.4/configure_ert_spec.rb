@@ -42,8 +42,10 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
       smtp_form.property('.properties.smtp_from').set(elastic_runtime_settings.smtp.from)
       smtp_form.property('.properties.smtp_address').set(elastic_runtime_settings.smtp.address)
       smtp_form.property('.properties.smtp_port').set(elastic_runtime_settings.smtp.port)
-      smtp_form.nested_property('.properties.smtp_credentials', 'identity').set(elastic_runtime_settings.smtp.credentials.identity)
-      smtp_form.nested_property('.properties.smtp_credentials', 'password').set(elastic_runtime_settings.smtp.credentials.password)
+      smtp_form.nested_property('.properties.smtp_credentials', 'identity')
+        .set(elastic_runtime_settings.smtp.credentials.identity)
+      smtp_form.nested_property('.properties.smtp_credentials', 'password')
+        .set(elastic_runtime_settings.smtp.credentials.password)
       smtp_form.property('.properties.smtp_enable_starttls_auto').set(elastic_runtime_settings.smtp.enable_starttls_auto)
       smtp_form.property('.properties.smtp_auth_mechanism').set(elastic_runtime_settings.smtp.smtp_auth_mechanism)
       smtp_form.save_form
@@ -63,10 +65,17 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
   end
 
   def configure_aws_load_balancers(elastic_runtime_settings)
+    configure_aws_resources(elastic_runtime_settings)
+    configure_aws_ips_and_ports(elastic_runtime_settings)
+  end
+
+  def configure_aws_resources(elastic_runtime_settings)
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings.name)
     resource_config.set_instances_for_job('ha_proxy', 0)
     resource_config.set_elb_for_job('router', elastic_runtime_settings.elb_name)
+  end
 
+  def configure_aws_ips_and_ports(elastic_runtime_settings)
     ips_and_ports_form =
       current_ops_manager.product(elastic_runtime_settings.name).product_form('ha_proxy')
     ips_and_ports_form.open_form

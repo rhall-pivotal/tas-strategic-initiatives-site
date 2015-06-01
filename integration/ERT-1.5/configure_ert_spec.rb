@@ -60,8 +60,10 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
       smtp_form.property('.properties.smtp_from').set(elastic_runtime_settings.smtp.from)
       smtp_form.property('.properties.smtp_address').set(elastic_runtime_settings.smtp.address)
       smtp_form.property('.properties.smtp_port').set(elastic_runtime_settings.smtp.port)
-      smtp_form.nested_property('.properties.smtp_credentials', 'identity').set(elastic_runtime_settings.smtp.credentials.identity)
-      smtp_form.nested_property('.properties.smtp_credentials', 'password').set(elastic_runtime_settings.smtp.credentials.password)
+      smtp_form.nested_property('.properties.smtp_credentials', 'identity')
+        .set(elastic_runtime_settings.smtp.credentials.identity)
+      smtp_form.nested_property('.properties.smtp_credentials', 'password')
+        .set(elastic_runtime_settings.smtp.credentials.password)
       smtp_form.property('.properties.smtp_enable_starttls_auto').set(elastic_runtime_settings.smtp.enable_starttls_auto)
       smtp_form.property('.properties.smtp_auth_mechanism').set(elastic_runtime_settings.smtp.smtp_auth_mechanism)
       smtp_form.save_form
