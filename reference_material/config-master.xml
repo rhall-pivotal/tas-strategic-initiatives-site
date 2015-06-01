@@ -4041,31 +4041,66 @@ pipeline config after converting master pipelines* to use capybara helpers
               <test src="p-runtime/tmp" />
             </artifacts>
           </job>
+          <job name="build_runtime">
+            <environmentvariables>
+              <variable name="RIAK_BUCKET">
+                <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <exec command="./scripts/fetch-release-from-bosh-io.sh" workingdir="p-runtime">
+                <arg>cf</arg>
+                <arg>cf-release</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./docker_run.sh ./scripts/build_pivotal.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./docker_run.sh ./scripts/runtime/upload_pivotal.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="p-runtime/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="p-runtime/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata" />
+            </artifacts>
+          </job>
         </jobs>
       </stage>
       <stage name="upload_upgrade_ert">
+
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+          <variable name="MATERIALS_DIR">
+            <value>cf-pivotal-artifacts</value>
+          </variable>
+        </environmentvariables>
         <jobs>
           <job name="upload_upgrade_ert">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
                 <runif status="passed" />
               </fetchartifact>
-              <exec command="./scripts/fetch-release-from-bosh-io.sh" workingdir="p-runtime">
-                <arg>cf</arg>
-                <arg>cf-release</arg>
-                <runif status="passed"/>
-              </exec>
+              <fetchartifact pipeline="" stage="export_import_installation" job="build_runtime" srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed" />
+              </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh ./scripts/build_pivotal.sh</arg>
-                <runif status="passed"/>
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>mv *.pivotal new_runtime.pivotal</arg>
-                <runif status="passed"/>
+                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
