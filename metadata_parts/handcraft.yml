@@ -371,10 +371,11 @@ job_types:
     label: NATS
     resource_label: NATS
     description: Acts as the Pivotal CF Elastic Runtime message bus
-    job_templates:
-      - nats
-      - metron_agent
-    release: cf
+    templates:
+      - name: nats
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -455,10 +456,11 @@ job_types:
     label: consul
     resource_label: consul
     description:
-    job_templates:
-      - consul_agent
-      - metron_agent
-    release: cf
+    templates:
+      - name: consul_agent
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -537,11 +539,13 @@ job_types:
     label: etcd
     resource_label: etcd
     description: An etcd cluster node, which maintains the state of applications, and its metrics server
-    job_templates:
-    - etcd
-    - etcd_metrics_server
-    - metron_agent
-    release: cf
+    templates:
+      - name: etcd
+        release: cf
+      - name: etcd_metrics_server
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -622,10 +626,11 @@ job_types:
     label: NFS Server
     resource_label: NFS Server
     description: Stores droplets and app packages on behalf of Cloud Controller
-    job_templates:
-      - debian_nfs_server
-      - metron_agent
-    release: cf
+    templates:
+      - name: debian_nfs_server
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -704,10 +709,11 @@ job_types:
     label: Cloud Controller Database
     resource_label: Cloud Controller Database
     description: Stores Cloud Controller information
-    job_templates:
-      - postgres
-      - metron_agent
-    release: cf
+    templates:
+      - name: postgres
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -799,10 +805,11 @@ job_types:
     label: UAA Database
     resource_label: UAA Database
     description: Stores user information for the UAA
-    job_templates:
-      - postgres
-      - metron_agent
-    release: cf
+    templates:
+      - name: postgres
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -896,10 +903,11 @@ job_types:
     label: Apps Manager Database
     resource_label: Apps Manager Database
     description: A Web application will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
-    job_templates:
-      - postgres
-      - metron_agent
-    release: cf
+    templates:
+      - name: postgres
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -993,12 +1001,15 @@ job_types:
     label: Cloud Controller
     resource_label: Cloud Controller
     description: Coordinates Pivotal CF Elastic Runtime application lifecycles
-    job_templates:
-      - cloud_controller_ng
-      - metron_agent
-      - consul_agent
-      - nfs_mounter
-    release: cf
+    templates:
+      - name: cloud_controller_ng
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: consul_agent
+        release: cf
+      - name: nfs_mounter
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1248,10 +1259,11 @@ job_types:
     label: HAProxy
     resource_label: HAProxy
     description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal CF Elastic Runtime router IP. Self signed certificates will function properly.
-    job_templates:
-      - haproxy
-      - metron_agent
-    release: cf
+    templates:
+      - name: haproxy
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1358,10 +1370,11 @@ job_types:
     label: Router
     resource_label: Router
     description: Routers route Internet traffic to applications and between Pivotal CF Elastic Runtime components.
-    job_templates:
-      - gorouter
-      - metron_agent
-    release: cf
+    templates:
+      - name: gorouter
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1463,10 +1476,11 @@ job_types:
     label: Health Manager
     resource_label: Health Manager
     description: Reports app health to the Cloud Controller
-    job_templates:
-      - hm9000
-      - metron_agent
-    release: cf
+    templates:
+      - name: hm9000
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1559,11 +1573,13 @@ job_types:
     label: Clock Global
     resource_label: Clock Global
     description: Schedules asynchronous tasks for cloud controller
-    job_templates:
-      - cloud_controller_clock
-      - metron_agent
-      - nfs_mounter # NOTE: NFS Mounter must be last until #94152506 is resolved
-    release: cf
+    templates:
+      - name: cloud_controller_clock
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: nfs_mounter # NOTE: NFS Mounter must be last until #94152506 is resolved
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1707,13 +1723,15 @@ job_types:
     label: Cloud Controller Worker
     resource_label: Cloud Controller Worker
     description: Worker for cloud controller asynchronous tasks
-    job_templates:
-      - cloud_controller_worker
-      - metron_agent
-      - consul_agent
-      - nfs_mounter # NOTE: NFS Mounter must be last until #94152506 is resolved
-
-    release: cf
+    templates:
+      - name: cloud_controller_worker
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: consul_agent
+        release: cf
+      - name: nfs_mounter # NOTE: NFS Mounter must be last until #94152506 is resolved
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1860,10 +1878,11 @@ job_types:
     label: Collector
     resource_label: Collector
     description: Collects system information in order to provide health and status metrics
-    job_templates:
-      - collector
-      - metron_agent
-    release: cf
+    templates:
+      - name: collector
+        release: cf
+      - name: metron_agent
+        release: cf
 
     requires_product_versions:
       - name: p-metrics
@@ -1947,10 +1966,11 @@ job_types:
     label: UAA
     resource_label: UAA
     description: Pivotal CF Elastic Runtime's Authentication and Authorization server
-    job_templates:
-      - uaa
-      - metron_agent
-    release: cf
+    templates:
+      - name: uaa
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -2333,10 +2353,11 @@ job_types:
     label: Login
     resource_label: Login
     description: Communicates between SAML endpoints and the UAA
-    job_templates:
-      - login
-      - metron_agent
-    release: cf
+    templates:
+      - name: login
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -2473,9 +2494,9 @@ job_types:
     label: MySQL Proxy
     resource_label: MySQL Proxy
     description: MySQL Proxy
-    job_templates:
-      - proxy
-    release: cf-mysql
+    templates:
+      - name: proxy
+        release: cf-mysql
 
     resource_definitions:
       - name: ram
@@ -2661,11 +2682,13 @@ job_types:
     label: DEA
     resource_label: DEA
     description: Droplet Execution Agents run the applications pushed to Pivotal CF Elastic Runtime
-    job_templates:
-      - dea_next
-      - dea_logging_agent
-      - metron_agent
-    release: cf
+    templates:
+      - name: dea_next
+        release: cf
+      - name: dea_logging_agent
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -2765,11 +2788,13 @@ job_types:
     label: Doppler Server
     resource_label: Doppler Server
     description: Doppler server collects application logs
-    job_templates:
-      - doppler
-      - metron_agent
-      - syslog_drain_binder
-    release: cf
+    templates:
+      - name: doppler
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: syslog_drain_binder
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -2874,10 +2899,11 @@ job_types:
     label: Loggregator Trafficcontroller
     resource_label: Loggregator Trafficcontroller
     description: Loggregator trafficcontroller distributes requests to Loggregator servers
-    job_templates:
-      - loggregator_trafficcontroller
-      - metron_agent
-    release: cf
+    templates:
+      - name: loggregator_trafficcontroller
+        release: cf
+      - name: metron_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -2976,9 +3002,9 @@ job_types:
     label: Push Apps Manager
     resource_label: Push Apps Manager
     description: Pushes the Pivotal Apps Manager application to your Elastic Runtime installation
-    job_templates:
-      - push-apps-manager
-    release: push-console-release
+    templates:
+      - name: push-apps-manager
+        release: push-console-release
     errand: true
 
     resource_definitions:
@@ -3084,9 +3110,9 @@ job_types:
     label: Push App Usage Service
     resource_label: Push App Usage Service
     description: Monitors usage of an application pushed to your Elastic Runtime installation
-    job_templates:
-      - push-app-usage-service
-    release: push-console-release
+    templates:
+      - name: push-app-usage-service
+        release: push-console-release
     errand: true
 
     resource_definitions:
@@ -3218,9 +3244,9 @@ job_types:
     label: Run Smoke Tests
     resource_label: Run Smoke Tests
     description: Runs Smoke Tests against your Elastic Runtime installation
-    job_templates:
-      - smoke-tests
-    release: cf
+    templates:
+      - name: smoke-tests
+        release: cf
     errand: true
 
     resource_definitions:
@@ -3290,9 +3316,9 @@ job_types:
     label: Notifications
     resource_label: Notifications With UI
     description: Notifications release for PCF
-    job_templates:
-      - deploy-notifications-with-ui
-    release: notifications-with-ui
+    templates:
+      - name: deploy-notifications-with-ui
+        release: notifications-with-ui
     errand: true
 
     resource_definitions:
@@ -3385,9 +3411,9 @@ job_types:
     label: Deploy CF Autoscaling App
     resource_label: Deploy CF Autoscaling App
     description: Deploys the CF Autoscaling App
-    job_templates:
-      - deploy-autoscaling
-    release: cf-autoscaling
+    templates:
+      - name: deploy-autoscaling
+        release: cf-autoscaling
     errand: true
 
     resource_definitions:
@@ -3471,9 +3497,9 @@ job_types:
     label: Register autoscaling service broker
     resource_label: Register autoscaling service broker
     description: Register autoscaling service broker
-    job_templates:
-      - register-broker
-    release: cf-autoscaling
+    templates:
+      - name: register-broker
+        release: cf-autoscaling
     errand: true
 
     resource_definitions:
@@ -3544,9 +3570,9 @@ job_types:
     label: Destroy autoscaling service broker
     resource_label: Destroy autoscaling service broker
     description: Destroy autoscaling service broker
-    job_templates:
-      - destroy-broker
-    release: cf-autoscaling
+    templates:
+      - name: destroy-broker
+        release: cf-autoscaling
     errand: true
 
     resource_definitions:
@@ -3616,9 +3642,9 @@ job_types:
     label: Run CF Acceptance Tests
     resource_label: Run CF Acceptance Tests
     description: Runs CF Acceptance Tests against your Elastic Runtime installation
-    job_templates:
-      - acceptance-tests
-    release: cf
+    templates:
+      - name: acceptance-tests
+        release: cf
     errand: true
 
     resource_definitions:
@@ -3686,9 +3712,9 @@ job_types:
     label: Run CF Acceptance Tests without internet
     resource_label: Run CF Acceptance Tests without internet
     description: Runs CF Acceptance Tests against your Elastic Runtime installation without internet
-    job_templates:
-      - acceptance-tests
-    release: cf
+    templates:
+      - name: acceptance-tests
+        release: cf
     errand: true
 
     resource_definitions:
