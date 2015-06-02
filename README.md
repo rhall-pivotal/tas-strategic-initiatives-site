@@ -88,7 +88,7 @@ bundle exec rake opsmgr:trigger_install[environment,<OM version>,<wait time>]
 
 `cf` is the p-runtime product name
 
-`<ert version` is the ERT version. The p-runtime rake task supports ERT versions `1.4` and `1.5`
+`<ert version>` is the ERT version. The p-runtime rake task supports ERT versions `1.4` and `1.5`
 
 `<wait time>` is number of minutes to wait for install, recommended wait time is `240`
 
