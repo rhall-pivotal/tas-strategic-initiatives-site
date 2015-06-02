@@ -14,7 +14,7 @@ serial: false
 install_time_verifiers:
   - name: Verifiers::SsoUrlVerifier
     properties:
-      url: .login.sso_url
+      url: .uaa.sso_url
   - name: Verifiers::WildcardDomainVerifier
     ignorable: true
     properties:
@@ -279,21 +279,21 @@ form_types:
         label: Networking Protocol
         description: Transport to be used when forwarding logs
 
-  - name: login_sso
+  - name: uaa_sso
     label: SSO Config
     description: Configure Identity Provider
     verifiers:
       - name: Verifiers::SsoUrlVerifier
         properties:
-          url: .login.sso_url
+          url: .uaa.sso_url
     property_inputs:
-      - reference: .login.sso_name
+      - reference: .uaa.sso_name
         label: Provider Name
         description: "Name of Identity Provider. Allowed characters are alphanumeric, _, and -."
-      - reference: .login.sso_xml
+      - reference: .uaa.sso_xml
         label: Provider Metadata
         description: "Metadata XML content for the Identity Provider"
-      - reference: .login.sso_url
+      - reference: .uaa.sso_url
         label: "(OR) Provider Metadata URL"
         description: "Enter an SSO endpoint. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata."
 
@@ -2157,6 +2157,24 @@ job_types:
         configurable: true
         default: 'mail'
 
+      - name: service_provider_key_credentials
+        type: rsa_cert_credentials
+
+      - name: sso_url
+        type: http_url
+        configurable: true
+        optional: true
+
+      - name: sso_xml
+        type: text
+        configurable: true
+        optional: true
+
+      - name: sso_name
+        type: string
+        configurable: true
+        optional: true
+
     manifest: |
       login:
         asset_base_url: '/resources/pivotal'
@@ -2178,15 +2196,15 @@ job_types:
           url: "https://notifications.(( $runtime.system_domain ))"
         saml:
           entityid: "http://login.(( $runtime.system_domain ))"
-          serviceProviderKey: (( .login.service_provider_key_credentials.private_key_pem ))
-          serviceProviderCertificate: (( .login.service_provider_key_credentials.cert_pem ))
+          serviceProviderKey: (( service_provider_key_credentials.private_key_pem ))
+          serviceProviderCertificate: (( service_provider_key_credentials.cert_pem ))
           providers:
-            (( .login.sso_name.value )):
+            (( sso_name.value )):
               nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-              idpMetadataXML: (( .login.sso_xml.value ))
-              idpMetadataURL: (( .login.sso_url.value ))
+              idpMetadataXML: (( sso_xml.value ))
+              idpMetadataURL: (( sso_url.value ))
               showSamlLoginLink: true
-              linkText: (( .login.sso_name.value ))
+              linkText: (( sso_name.value ))
               metadataTrustCheck: false
         logout:
           redirect:
@@ -2331,147 +2349,6 @@ job_types:
       domain: (( .cloud_controller.system_domain.value ))
 
       uaadb: (( .properties.system_database.selected_option.parsed_manifest(uaadb) ))
-      networks:
-        apps: default
-
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines: (( .nats.ips ))
-      syslog_daemon_config:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-      metron_agent:
-        zone: (( availability_zone ))
-      etcd:
-        machines: (( .etcd_server.ips ))
-
-  - name: login
-    label: Login
-    resource_label: Login
-    description: Communicates between SAML endpoints and the UAA
-    templates:
-      - name: login
-        release: cf
-      - name: metron_agent
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 2_048
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 0
-        constraints:
-          min: 0
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-      - name: service_provider_key_credentials
-        type: rsa_cert_credentials
-
-      - name: sso_url
-        type: http_url
-        configurable: true
-        optional: true
-
-      - name: sso_xml
-        type: text
-        configurable: true
-        optional: true
-
-      - name: sso_name
-        type: string
-        configurable: true
-        optional: true
-
-    manifest: |
-      domain: (( .cloud_controller.system_domain.value ))
-
-      login:
-        asset_base_url: '/resources/pivotal'
-        protocol: https
-        tiles:
-          - name: Pivotal Apps Manager
-            login-link:  "https://console.(( .cloud_controller.system_domain.value ))"
-            image: "/resources/pivotal/images/dev-console-logo-gray.png"
-            image-hover: "/resources/pivotal/images/dev-console-logo-teal.png"
-
-        brand: pivotal
-        links:
-          home: "https://console.(( .cloud_controller.system_domain.value ))"
-          passwd: "https://console.(( .cloud_controller.system_domain.value ))/password_resets/new"
-          signup: "https://console.(( .cloud_controller.system_domain.value ))/register"
-        uaa_base: "https://uaa.(( .cloud_controller.system_domain.value ))"
-        uaa_certificate: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
-        serviceProviderKey: (( service_provider_key_credentials.private_key_pem ))
-        serviceProviderCertificate: (( service_provider_key_credentials.cert_pem ))
-        spring_profiles: saml,ldap
-        idp_entity_alias: sso-sp
-        idp_metadata_url: (( sso_url.value ))
-        notifications:
-          url: "https://notifications.(( .cloud_controller.system_domain.value ))"
-        saml:
-          entityid: "http://login.(( .cloud_controller.system_domain.value ))"
-          providers:
-            (( sso_name.value )):
-              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-              idpMetadataXML: (( sso_xml.value ))
-              idpMetadataURL: (( sso_url.value ))
-              showSamlLoginLink: true
-              linkText: (( sso_name.value ))
-              metadataTrustCheck: false
-
-      uaa:
-        clients:
-          login:
-            secret: (( .uaa.login_client_credentials.password ))
-            redirect-uri: https://login.(( .cloud_controller.system_domain.value ))
-
       networks:
         apps: default
 
