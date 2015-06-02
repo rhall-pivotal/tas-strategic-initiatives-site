@@ -3,7 +3,7 @@ RELEASE_NAME=$1
 BOSH_IO_RELEASE_NAME=$2
 
 RELEASE_DEFINITON=$(grep -B1 -A3 "^  name: ${RELEASE_NAME}$" ${SCRIPT_DIR}/../metadata_parts/binaries.yml)
-RELEASE_VERSION=$(echo "${RELEASE_DEFINITON}" | grep version | grep -o -E [0-9]+)
+RELEASE_VERSION=$(echo "${RELEASE_DEFINITON}" | grep version | grep -o -E [0-9.]+)
 RELEASE_FILE=$(echo "${RELEASE_DEFINITON}" | grep file | grep -o -E "\S+$")
 
 if [ -e ./releases/${RELEASE_FILE} ]
