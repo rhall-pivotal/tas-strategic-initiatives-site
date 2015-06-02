@@ -54,9 +54,9 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
 
   it 'increases the director persistent disk to 80G' do
     visit '/'
-    click_on "show-microbosh-configure-action"
-    click_on "show-microbosh-resource-sizes-action"
-    fill_in("product_resources_form[director][persistent_disk][value]", with: '81920')
+    click_on 'show-microbosh-configure-action'
+    click_on 'show-microbosh-resource-sizes-action'
+    fill_in('product_resources_form[director][persistent_disk][value]', with: '81920')
     click_on 'Save'
 
     fail('unexpected failure') unless has_css?('.flash-message')
