@@ -6,30 +6,55 @@ pipeline config after converting master pipelines* to use capybara helpers
 -->
 <cruise>
   <pipelines group="RelEng-Features">
-    <pipeline name="opsman-ui-driver-testing" isLocked="true" template="ERT-Upgrade">
+    <pipeline name="cert-tooltip-95065408" isLocked="false" template="ERT_Feature_Branch">
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/ops-mananger-ui-drivers" dest="p-runtime">
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/cert-tooltip-95065408" dest="p-runtime" />
+      </materials>
+    </pipeline>
+    <pipeline name="master-new" isLocked="false" template="ERT-Upgrade-Feature-Branch">
+      <environmentvariables>
+        <variable name="INITIAL_OVA">
+          <value>pcf-vsphere-1.4.2.0.ova</value>
+        </variable>
+        <variable name="RUNTIME_DOT_PIVOTAL_FILE">
+          <value>cf-1.4.2.0.pivotal</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
           <filter>
-            <ignore pattern="**/*"/>
+            <ignore pattern="**/*" />
           </filter>
         </git>
-        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build"/>
-        <pipeline pipelineName="ERT-1.5-Docker-Image" stageName="build_image"/>
+      </materials>
+    </pipeline>
+    <pipeline name="add-s3-url-endpoint" isLocked="false" template="ERT_Feature_Branch">
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/add-s3-url-field-92090440" dest="p-runtime" />
+      </materials>
+    </pipeline>
+    <pipeline name="feature-clean-master" isLocked="false" template="ERT_Feature_Branch">
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+          <filter>
+            <ignore pattern="**/*" />
+          </filter>
+        </git>
       </materials>
     </pipeline>
   </pipelines>
   <pipelines group="ERT-1.5">
     <pipeline name="ERT-1.5-kickoff" isLocked="false">
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git"/>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" />
       </materials>
       <stage name="kickoff">
-        <approval type="manual"/>
+        <approval type="manual" />
         <jobs>
           <job name="save_vara_extra_flags">
             <environmentvariables>
               <variable name="VARA_EXTRA_FLAGS">
-                <value/>
+                <value />
               </variable>
             </environmentvariables>
             <tasks>
@@ -37,11 +62,11 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>echo "export VARA_EXTRA_FLAGS=${VARA_EXTRA_FLAGS}" &gt; vara_extra_flags.sh</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <artifact src="vara_extra_flags.sh"/>
+              <artifact src="vara_extra_flags.sh" />
             </artifacts>
           </job>
         </jobs>
@@ -56,18 +81,18 @@ pipeline config after converting master pipelines* to use capybara helpers
       <materials>
         <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
           <filter>
-            <ignore pattern="**/*"/>
+            <ignore pattern="**/*" />
           </filter>
         </git>
-        <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff"/>
-        <pipeline pipelineName="ERT-1.5-Docker-Image" stageName="build_image"/>
+        <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff" />
+        <pipeline pipelineName="ERT-1.5-Docker-Image" stageName="build_image" />
       </materials>
       <stage name="ensure_not_vsphere">
         <jobs>
           <job name="ensure_not_vsphere">
             <tasks>
               <exec command="./scripts/util/ensure_not_vsphere.sh" workingdir="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -85,32 +110,31 @@ pipeline config after converting master pipelines* to use capybara helpers
               </variable>
             </environmentvariables>
             <tasks>
-              <fetchartifact pipeline="ERT-1.5-kickoff" stage="kickoff" job="save_vara_extra_flags"
-                             srcfile="vara_extra_flags.sh">
-                <runif status="passed"/>
+              <fetchartifact pipeline="ERT-1.5-kickoff" stage="kickoff" job="save_vara_extra_flags" srcfile="vara_extra_flags.sh">
+                <runif status="passed" />
               </fetchartifact>
               <exec command="./scripts/fetch-release-from-bosh-io.sh" workingdir="p-runtime">
                 <arg>cf</arg>
                 <arg>cf-release</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>source ../vara_extra_flags.sh &amp;&amp; ./docker_run.sh ./scripts/build_pivotal.sh</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>./scripts/run_in_docker.sh ./scripts/runtime/upload_pivotal_with_gof3r.sh untested</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <artifact src="p-runtime/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata"/>
-              <artifact src="p-runtime/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata"/>
-              <artifact src="p-runtime/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata"/>
+              <artifact src="p-runtime/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="p-runtime/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="p-runtime/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata" />
             </artifacts>
           </job>
         </jobs>
@@ -131,17 +155,17 @@ pipeline config after converting master pipelines* to use capybara helpers
       <materials>
         <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
           <filter>
-            <ignore pattern="**/*"/>
+            <ignore pattern="**/*" />
           </filter>
         </git>
-        <pipeline pipelineName="ERT-1.5-aws-build" stageName="vara-build"/>
+        <pipeline pipelineName="ERT-1.5-aws-build" stageName="vara-build" />
       </materials>
       <stage name="ensure_not_vsphere">
         <jobs>
           <job name="ensure_not_vsphere">
             <tasks>
               <exec command="./scripts/util/ensure_not_vsphere.sh" workingdir="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -154,11 +178,11 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>echo "export RELENG_ENV=brinjal" &gt; releng_env.sh</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <artifact src="p-runtime/releng_env.sh"/>
+              <artifact src="p-runtime/releng_env.sh" />
             </artifacts>
           </job>
         </jobs>
@@ -168,14 +192,13 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="destroy_env">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -333,13 +356,6 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
                 <runif status="passed" />
               </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs</arg>
-                <runif status="any" />
-              </exec>
             </tasks>
             <artifacts>
               <artifact src="bosh_logs" dest="bosh_logs" />
@@ -353,32 +369,31 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="post-install-test">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; scripts/runtime/aws_post_install_test_gocd.sh</arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test_ssh_tunnel.sh</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
         </jobs>
       </stage>
       <stage name="destroy_env_final">
-        <approval type="manual"/>
+        <approval type="manual" />
         <jobs>
           <job name="destroy_env">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -387,16 +402,16 @@ pipeline config after converting master pipelines* to use capybara helpers
     </pipeline>
     <pipeline name="ERT-1.5-build" isLocked="false">
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime"/>
-        <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff"/>
-        <pipeline pipelineName="ERT-1.5-Docker-Image" stageName="build_image"/>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime" />
+        <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff" />
+        <pipeline pipelineName="ERT-1.5-Docker-Image" stageName="build_image" />
       </materials>
       <stage name="ensure_vsphere">
         <jobs>
           <job name="ensure_vsphere">
             <tasks>
               <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -407,38 +422,35 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="runtime">
             <environmentvariables>
               <variable name="RIAK_BUCKET">
-                <value>
-                  {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
-                </value>
+                <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
               </variable>
             </environmentvariables>
             <tasks>
-              <fetchartifact pipeline="ERT-1.5-kickoff" stage="kickoff" job="save_vara_extra_flags"
-                             srcfile="vara_extra_flags.sh">
-                <runif status="passed"/>
+              <fetchartifact pipeline="ERT-1.5-kickoff" stage="kickoff" job="save_vara_extra_flags" srcfile="vara_extra_flags.sh">
+                <runif status="passed" />
               </fetchartifact>
               <exec command="./scripts/fetch-release-from-bosh-io.sh" workingdir="p-runtime">
                 <arg>cf</arg>
                 <arg>cf-release</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>source ../vara_extra_flags.sh &amp;&amp; ./docker_run.sh ./scripts/build_pivotal.sh</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>./docker_run.sh ./scripts/runtime/upload_pivotal.sh</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <artifact src="p-runtime/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata"/>
-              <artifact src="p-runtime/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata"/>
-              <artifact src="p-runtime/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata"/>
+              <artifact src="p-runtime/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="p-runtime/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="p-runtime/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata" />
             </artifacts>
           </job>
         </jobs>
@@ -457,10 +469,10 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
       </environmentvariables>
       <materials>
-        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals"/>
+        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals" />
         <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
           <filter>
-            <ignore pattern="**/*"/>
+            <ignore pattern="**/*" />
           </filter>
         </git>
       </materials>
@@ -469,7 +481,7 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="ensure_vsphere">
             <tasks>
               <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -501,14 +513,13 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="destroy_env">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -702,7 +713,7 @@ pipeline config after converting master pipelines* to use capybara helpers
         </jobs>
       </stage>
       <stage name="release-claim">
-        <approval type="manual"/>
+        <approval type="manual" />
         <jobs>
           <job name="release-claim">
             <tasks>
@@ -1003,15 +1014,15 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
       </environmentvariables>
       <materials>
-        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals"/>
+        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals" />
         <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
           <filter>
-            <ignore pattern="**/*"/>
+            <ignore pattern="**/*" />
           </filter>
         </git>
         <git url="git@github.com:pivotal-cf/p-mysql.git" dest="p-mysql">
           <filter>
-            <ignore pattern="**/*"/>
+            <ignore pattern="**/*" />
           </filter>
         </git>
       </materials>
@@ -1020,7 +1031,7 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="ensure_vsphere">
             <tasks>
               <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -1052,14 +1063,13 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="destroy_env">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -1240,14 +1250,10 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="deploy-mysql">
             <environmentvariables>
               <variable name="RIAK_BUCKET">
-                <value>
-                  {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
-                </value>
+                <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
               </variable>
               <variable name="S3_BUCKET">
-                <value>
-                  {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
-                </value>
+                <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
               </variable>
               <variable name="ENV_CONFIG">
                 <value>../p-runtime/config/environments.yml</value>
@@ -1264,25 +1270,25 @@ pipeline config after converting master pipelines* to use capybara helpers
             </environmentvariables>
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-mysql">
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>./scripts/ci/pull_docker_image</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-mysql">
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>./scripts/ci/run_in_docker ./scripts/download_pivotal_final</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-mysql">
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>source ../releng_env.sh &amp;&amp; ./scripts/ci/run_in_docker ./scripts/provision_pivotal</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -1306,7 +1312,7 @@ pipeline config after converting master pipelines* to use capybara helpers
         </jobs>
       </stage>
       <stage name="release-claim">
-        <approval type="manual"/>
+        <approval type="manual" />
         <jobs>
           <job name="release-claim">
             <tasks>
@@ -1339,10 +1345,10 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
       </environmentvariables>
       <materials>
-        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build"/>
+        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" />
         <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
           <filter>
-            <ignore pattern="**/*"/>
+            <ignore pattern="**/*" />
           </filter>
         </git>
       </materials>
@@ -1351,17 +1357,17 @@ pipeline config after converting master pipelines* to use capybara helpers
       <materials>
         <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
           <filter>
-            <ignore pattern="**/*"/>
+            <ignore pattern="**/*" />
           </filter>
         </git>
-        <pipeline pipelineName="ERT-1.5" stageName="release-claim"/>
-        <pipeline pipelineName="ERT-1.5-internetless" stageName="release-claim"/>
-        <pipeline pipelineName="ERT-1.5-mysql" stageName="release-claim"/>
-        <pipeline pipelineName="ERT-1.5-upgrade-1.4.2.0-OM1.4.2.0" stageName="release-claim"/>
-        <pipeline pipelineName="ERT-1.5-aws" stageName="destroy_env"/>
-        <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff"/>
-        <pipeline pipelineName="ERT-1.5-aws-build" stageName="vara-build"/>
-        <pipeline pipelineName="ERT-1.5-aws-upgrade-1.4.2.0-OM1.4.2.0" stageName="destroy_env"/>
+        <pipeline pipelineName="ERT-1.5" stageName="release-claim" />
+        <pipeline pipelineName="ERT-1.5-internetless" stageName="release-claim" />
+        <pipeline pipelineName="ERT-1.5-mysql" stageName="release-claim" />
+        <pipeline pipelineName="ERT-1.5-upgrade-1.4.2.0-OM1.4.2.0" stageName="release-claim" />
+        <pipeline pipelineName="ERT-1.5-aws" stageName="destroy_env" />
+        <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff" />
+        <pipeline pipelineName="ERT-1.5-aws-build" stageName="vara-build" />
+        <pipeline pipelineName="ERT-1.5-aws-upgrade-1.4.2.0-OM1.4.2.0" stageName="destroy_env" />
       </materials>
       <stage name="copy-to-release-buckets">
         <jobs>
@@ -1375,49 +1381,43 @@ pipeline config after converting master pipelines* to use capybara helpers
               </variable>
             </environmentvariables>
             <tasks>
-              <fetchartifact pipeline="ERT-1.5-kickoff" stage="kickoff" job="save_vara_extra_flags"
-                             srcfile="vara_extra_flags.sh">
-                <runif status="passed"/>
+              <fetchartifact pipeline="ERT-1.5-kickoff" stage="kickoff" job="save_vara_extra_flags" srcfile="vara_extra_flags.sh">
+                <runif status="passed" />
               </fetchartifact>
-              <fetchartifact pipeline="ERT-1.5" stage="deploy_opsman" job="deploy_opsman"
-                             srcfile="vm_image_reference.txt" dest="ops_manager_ova.blobkey">
-                <runif status="passed"/>
+              <fetchartifact pipeline="ERT-1.5" stage="deploy_opsman" job="deploy_opsman" srcfile="vm_image_reference.txt" dest="ops_manager_ova.blobkey">
+                <runif status="passed" />
               </fetchartifact>
-              <fetchartifact pipeline="ERT-1.5-aws-build" stage="vara-build" job="runtime"
-                             srcdir="cf-pivotal-artifacts-metadata">
-                <runif status="passed"/>
+              <fetchartifact pipeline="ERT-1.5-aws-build" stage="vara-build" job="runtime" srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="cf-pivotal-artifacts-metadata">
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>KEY=`grep -o -e cf.* cf-pivotal.blobkey` &amp;&amp; ../p-runtime/scripts/run_in_docker.sh gof3r cp
                   s3://releng-products/untested/${KEY} ${KEY} &amp;&amp; ../p-runtime/scripts/run_in_docker.sh gof3r cp
-                  ${KEY} s3://releng-products/runtime/${KEY}
-                </arg>
-                <runif status="passed"/>
+                  ${KEY} s3://releng-products/runtime/${KEY}</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="cf-pivotal-artifacts-metadata">
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>KEY=`grep -o -e cf.* cf-pivotal.blobkey` &amp;&amp; ../p-runtime/scripts/run_in_docker.sh s3cmd -c
-                  s3cfg.s3 cp s3://releng-products/untested/${KEY}.md5 s3://releng-products/runtime/${KEY}.md5
-                </arg>
-                <runif status="passed"/>
+                  s3cfg.s3 cp s3://releng-products/untested/${KEY}.md5 s3://releng-products/runtime/${KEY}.md5</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="cf-pivotal-artifacts-metadata">
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>KEY=`grep -o -e cf.* cf-pivotal.blobkey` &amp;&amp; ../p-runtime/scripts/run_in_docker.sh s3cmd -c
-                  s3cfg.s3 cp s3://releng-products/untested/${KEY}.yml s3://releng-products/runtime/${KEY}.yml
-                </arg>
-                <runif status="passed"/>
+                  s3cfg.s3 cp s3://releng-products/untested/${KEY}.yml s3://releng-products/runtime/${KEY}.yml</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <artifact src="cf-pivotal-artifacts-metadata/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata"/>
-              <artifact src="cf-pivotal-artifacts-metadata/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata"/>
-              <artifact src="cf-pivotal-artifacts-metadata/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata"/>
-              <artifact src="ops_manager_ova.blobkey" dest="cf-pivotal-artifacts-metadata"/>
+              <artifact src="cf-pivotal-artifacts-metadata/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="cf-pivotal-artifacts-metadata/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="cf-pivotal-artifacts-metadata/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="ops_manager_ova.blobkey" dest="cf-pivotal-artifacts-metadata" />
             </artifacts>
           </job>
         </jobs>
@@ -1442,15 +1442,15 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
       </environmentvariables>
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime"/>
-        <pipeline pipelineName="ERT-1.5-aws-build" stageName="vara-build"/>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime" />
+        <pipeline pipelineName="ERT-1.5-aws-build" stageName="vara-build" />
       </materials>
       <stage name="ensure_not_vsphere">
         <jobs>
           <job name="ensure_not_vsphere">
             <tasks>
               <exec command="./scripts/util/ensure_not_vsphere.sh" workingdir="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -1463,11 +1463,11 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>echo "export RELENG_ENV=plum" &gt; releng_env.sh</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <artifact src="p-runtime/releng_env.sh"/>
+              <artifact src="p-runtime/releng_env.sh" />
             </artifacts>
           </job>
         </jobs>
@@ -1477,14 +1477,13 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="destroy_env">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -1495,21 +1494,19 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="deploy-opsman-a">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>echo $INITIAL_AMI &gt; ami_reference.txt
-                </arg>
-                <runif status="passed"/>
+                <arg>echo $INITIAL_AMI &gt; ami_reference.txt</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ami_reference.txt]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ami_reference.txt]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -1520,29 +1517,25 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="configure_microbosh">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:add_first_user[$RELENG_ENV,1.4]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.4]'</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:microbosh:configure[$RELENG_ENV,1.4]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.4]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <test src="p-runtime/tmp"/>
+              <test src="p-runtime/tmp" />
             </artifacts>
           </job>
         </jobs>
@@ -1552,19 +1545,17 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="deploy_microbosh">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:trigger_install[$RELENG_ENV,1.4,45]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,45]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <test src="p-runtime/tmp"/>
+              <test src="p-runtime/tmp" />
             </artifacts>
           </job>
         </jobs>
@@ -1572,9 +1563,7 @@ pipeline config after converting master pipelines* to use capybara helpers
       <stage name="upload_ert">
         <environmentvariables>
           <variable name="S3_BUCKET">
-            <value>
-              {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
-            </value>
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
           </variable>
           <variable name="AWS_ACCESS_KEY_ID">
             <value>AKIAI43577ARGHXPWIMQ</value>
@@ -1587,26 +1576,22 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="upload_ert">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; scripts/run_in_docker.sh
-                  scripts/runtime/download_pivotal_with_gof3r.sh
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/download_pivotal_with_gof3r.sh</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:product:upload_add[$RELENG_ENV,1.4,$RUNTIME_DOT_PIVOTAL_FILE,cf]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.4,$RUNTIME_DOT_PIVOTAL_FILE,cf]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <test src="p-runtime/tmp"/>
+              <test src="p-runtime/tmp" />
             </artifacts>
           </job>
         </jobs>
@@ -1616,18 +1601,16 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="configure_ert">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  ert:configure[$RELENG_ENV,1.4,1.4]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.4,1.4]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <test src="p-runtime/tmp"/>
+              <test src="p-runtime/tmp" />
             </artifacts>
           </job>
         </jobs>
@@ -1637,18 +1620,16 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="deploy_ert">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:trigger_install[$RELENG_ENV,1.4,240]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,240]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <test src="p-runtime/tmp"/>
+              <test src="p-runtime/tmp" />
             </artifacts>
           </job>
         </jobs>
@@ -1666,51 +1647,41 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="export_import_installation">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:export_installation[$RELENG_ENV,1.4,export]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:export_installation[$RELENG_ENV,1.4,export]'</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:destroy:opsmgr[$RELENG_ENV]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy:opsmgr[$RELENG_ENV]'</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:download[aws,stable]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[aws,stable]'</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:install[$RELENG_ENV,ops_man_image]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:import_installation[$RELENG_ENV,1.5,export]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:import_installation[$RELENG_ENV,1.5,export]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <test src="p-runtime/tmp"/>
+              <test src="p-runtime/tmp" />
             </artifacts>
           </job>
         </jobs>
@@ -1718,9 +1689,7 @@ pipeline config after converting master pipelines* to use capybara helpers
       <stage name="upload_upgrade_ert">
         <environmentvariables>
           <variable name="S3_BUCKET">
-            <value>
-              {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
-            </value>
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
           </variable>
           <variable name="MATERIALS_DIR">
             <value>cf-pivotal-artifacts</value>
@@ -1730,31 +1699,26 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="upload_upgrade_ert">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
-              <fetchartifact pipeline="ERT-1.5-aws-build" stage="vara-build" job="runtime"
-                             srcdir="cf-pivotal-artifacts-metadata">
-                <runif status="passed"/>
+              <fetchartifact pipeline="ERT-1.5-aws-build" stage="vara-build" job="runtime" srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh
-                  xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},new_runtime.pivotal]'
-                </arg>
-                <runif status="passed"/>
+                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},new_runtime.pivotal]'</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:product:upload_upgrade[$RELENG_ENV,1.5,new_runtime.pivotal,cf]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_upgrade[$RELENG_ENV,1.5,new_runtime.pivotal,cf]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <test src="p-runtime/tmp"/>
+              <test src="p-runtime/tmp" />
             </artifacts>
           </job>
         </jobs>
@@ -1764,19 +1728,17 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="configure_upgrade_ert">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  ert:configure[$RELENG_ENV,1.5,1.5]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <test src="p-runtime/tmp"/>
+              <test src="p-runtime/tmp" />
             </artifacts>
           </job>
         </jobs>
@@ -1786,19 +1748,17 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="deploy_upgrade_ert">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:trigger_install[$RELENG_ENV,1.5,240]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <test src="p-runtime/tmp"/>
+              <test src="p-runtime/tmp" />
             </artifacts>
           </job>
         </jobs>
@@ -1808,32 +1768,31 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="post-install-test">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; scripts/runtime/aws_post_install_test_gocd.sh</arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test_ssh_tunnel.sh</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
         </jobs>
       </stage>
       <stage name="destroy_env_final">
-        <approval type="manual"/>
+        <approval type="manual" />
         <jobs>
           <job name="destroy_env">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'
-                </arg>
-                <runif status="passed"/>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -1842,19 +1801,18 @@ pipeline config after converting master pipelines* to use capybara helpers
     </pipeline>
     <pipeline name="ert-spigot">
       <materials>
-        <pipeline pipelineName="ERT-1.5-publish" stageName="copy-to-release-buckets"/>
+        <pipeline pipelineName="ERT-1.5-publish" stageName="copy-to-release-buckets" />
       </materials>
       <stage name="spigot">
         <jobs>
           <job name="spigot">
             <tasks>
-              <fetchartifact pipeline="ERT-1.5-publish" stage="copy-to-release-buckets" job="copy-to-release-buckets"
-                             srcdir="cf-pivotal-artifacts-metadata">
-                <runif status="passed"/>
+              <fetchartifact pipeline="ERT-1.5-publish" stage="copy-to-release-buckets" job="copy-to-release-buckets" srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed" />
               </fetchartifact>
             </tasks>
             <artifacts>
-              <artifact src="cf-pivotal-artifacts-metadata"/>
+              <artifact src="cf-pivotal-artifacts-metadata" />
             </artifacts>
           </job>
         </jobs>
@@ -1873,20 +1831,20 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
       </environmentvariables>
       <materials>
-        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals"/>
+        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals" />
         <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/openstack-ci-91958128" dest="p-runtime">
           <filter>
-            <ignore pattern="**/*"/>
+            <ignore pattern="*/**" />
           </filter>
         </git>
-        <pipeline pipelineName="OpsManager-Promote-1.5" stageName="promote_artifacts"/>
+        <pipeline pipelineName="OpsManager-Promote-1.5" stageName="promote_artifacts" />
       </materials>
       <stage name="ensure_vsphere">
         <jobs>
           <job name="ensure_vsphere">
             <tasks>
               <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -1899,11 +1857,11 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>echo "export RELENG_ENV=mars" &gt; releng_env.sh</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <artifact src="p-runtime/releng_env.sh"/>
+              <artifact src="p-runtime/releng_env.sh" />
             </artifacts>
           </job>
         </jobs>
@@ -1913,14 +1871,12 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="destroy">
             <tasks>
               <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
-                  opsmgr:destroy[${RELENG_ENV}]
-                </arg>
-                <runif status="passed"/>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace opsmgr:destroy[${RELENG_ENV}]</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -1929,14 +1885,10 @@ pipeline config after converting master pipelines* to use capybara helpers
       <stage name="deploy-ops-man" cleanWorkingDir="true">
         <environmentvariables>
           <variable name="RIAK_BUCKET">
-            <value>
-              {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"cf-ops-manager","access_key_id":"admin-key","secret_access_key":"admin-secret"}
-            </value>
+            <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"cf-ops-manager","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
           </variable>
           <variable name="S3_BUCKET">
-            <value>
-              {"endpoint":"https://s3.amazonaws.com","bucket":"cf-ops-manager","access_key_id":"AKIAIASXXU7XTCVWQITQ","secret_access_key":"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"}
-            </value>
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"cf-ops-manager","access_key_id":"AKIAIASXXU7XTCVWQITQ","secret_access_key":"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"}</value>
           </variable>
         </environmentvariables>
         <jobs>
@@ -1951,33 +1903,29 @@ pipeline config after converting master pipelines* to use capybara helpers
             </environmentvariables>
             <tasks>
               <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
-                  opsmgr:download[openstack,latest]
-                </arg>
-                <runif status="passed"/>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace opsmgr:download[openstack,latest]</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
-                  opsmgr[${RELENG_ENV},ops_man_image]
-                </arg>
-                <runif status="passed"/>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace opsmgr[${RELENG_ENV},ops_man_image]</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
                 <arg>bundle exec rake opsmgr:ova:stable:path &gt; ops_manager_ova.blobkey</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
-              <artifact src="p-runtime/ops_manager_ova.blobkey" dest="cf-pivotal-artifacts-metadata"/>
+              <artifact src="p-runtime/ops_manager_ova.blobkey" dest="cf-pivotal-artifacts-metadata" />
             </artifacts>
           </job>
         </jobs>
@@ -1987,14 +1935,12 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="deploy-microbosh">
             <tasks>
               <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace
-                  opsmgr:bosh:redeploy[${RELENG_ENV}]
-                </arg>
-                <runif status="passed"/>
+                <arg>source ../releng_env.sh &amp;&amp; bundle &amp;&amp; bundle exec rake --trace opsmgr:bosh:redeploy[${RELENG_ENV}]</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -2011,41 +1957,35 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <value>localhost:1.0</value>
               </variable>
               <variable name="RIAK_BUCKET">
-                <value>
-                  {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
-                </value>
+                <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
               </variable>
               <variable name="S3_BUCKET">
-                <value>
-                  {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
-                </value>
+                <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
               </variable>
             </environmentvariables>
             <tasks>
-              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
-                             srcdir="cf-pivotal-artifacts-metadata">
-                <runif status="passed"/>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime" srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed" />
               </fetchartifact>
               <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>source ../releng_env.sh &amp;&amp; scripts/runtime/deploy.sh</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ../releng_env.sh &amp;&amp; ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs
-                </arg>
-                <runif status="any"/>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs</arg>
+                <runif status="any" />
               </exec>
             </tasks>
             <artifacts>
-              <artifact src="bosh_logs" dest="bosh_logs"/>
+              <artifact src="bosh_logs" dest="bosh_logs" />
             </artifacts>
           </job>
         </jobs>
@@ -2065,24 +2005,21 @@ pipeline config after converting master pipelines* to use capybara helpers
               </variable>
             </environmentvariables>
             <tasks>
-              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
-                             srcdir="cf-pivotal-artifacts-metadata">
-                <runif status="passed"/>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime" srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed" />
               </fetchartifact>
               <fetchartifact pipeline="" stage="claim-env" job="claim-env" srcfile="releng_env.sh">
-                <runif status="passed"/>
+                <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ../releng_env.sh &amp;&amp; ./scripts/run_in_docker.sh
-                  ./scripts/runtime/post_install_test_ssh_tunnel.sh
-                </arg>
-                <runif status="passed"/>
+                <arg>source ../releng_env.sh &amp;&amp; ./scripts/run_in_docker.sh ./scripts/runtime/post_install_test_ssh_tunnel.sh</arg>
+                <runif status="passed" />
               </exec>
               <exec command="bash">
                 <arg>-c</arg>
                 <arg>echo $GO_PIPELINE_LABEL &gt; last_successful_runtime_label</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -2091,8 +2028,8 @@ pipeline config after converting master pipelines* to use capybara helpers
     </pipeline>
     <pipeline name="ERT-1.5-Docker-Image">
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime"/>
-        <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff"/>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime" />
+        <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff" />
       </materials>
       <stage name="build_image">
         <jobs>
@@ -2100,7 +2037,614 @@ pipeline config after converting master pipelines* to use capybara helpers
             <tasks>
               <exec command="bash" workingdir="p-runtime">
                 <arg>./build_and_upload_image.sh</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-1.5-build-docker-base-image" isLocked="false">
+      <timer>0 0 22 * * ?</timer>
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+          <filter>
+            <ignore pattern="**/*" />
+          </filter>
+        </git>
+      </materials>
+      <stage name="build-base-image">
+        <jobs>
+          <job name="build-base-image">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./build_and_upload_base_image.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+  <pipelines group="RelEng-OpsMgr-Latest">
+    <pipeline name="ERT-OM-edge" isLocked="true">
+      <environmentvariables>
+        <variable name="KRAFA_BASE_URL">
+          <value>http://krafa.cfapps.io</value>
+        </variable>
+        <variable name="KRAFA_USERNAME">
+          <value>releng</value>
+        </variable>
+        <variable name="KRAFA_PASSWORD">
+          <value>bet90onions</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+          <filter>
+            <ignore pattern="**/*" />
+          </filter>
+        </git>
+        <pipeline pipelineName="OpsManager-Promote-1.5" stageName="promote_artifacts" />
+        <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" />
+      </materials>
+      <stage name="ensure_vsphere">
+        <jobs>
+          <job name="ensure_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="claim_env">
+        <jobs>
+          <job name="claim_env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>./docker_run.sh bundle exec rake --trace krafa:claim_with_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>echo "export RELENG_ENV=$(./docker_run.sh bundle exec rake --trace krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy_env">
+        <jobs>
+          <job name="destroy_env">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_opsman">
+        <environmentvariables>
+          <variable name="ACCESS_KEY_ID">
+            <value>AKIAIFHBKH3ZINMIAQUQ</value>
+          </variable>
+          <variable name="SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy_opsman">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[vsphere,latest]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+              <artifact src="p-runtime/vm_image_reference.txt" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_microbosh">
+        <jobs>
+          <job name="configure_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.5]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.5]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_microbosh">
+        <jobs>
+          <job name="deploy_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,45]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upload_ert">
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+          <variable name="MATERIALS_DIR">
+            <value>cf-pivotal-artifacts</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upload_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime" srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.5,runtime.pivotal,cf]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_ert">
+        <jobs>
+          <job name="configure_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_ert">
+        <jobs>
+          <job name="deploy_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs</arg>
+                <runif status="any" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="bosh_logs" dest="bosh_logs" />
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post_install_test">
+        <jobs>
+          <job name="post_install_test">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="promote-om-stable">
+        <environmentvariables>
+          <variable name="AWS_ACCESS_KEY_ID">
+            <value>AKIAI43577ARGHXPWIMQ</value>
+          </variable>
+          <variable name="AWS_SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="promote-om-stable">
+            <tasks>
+              <fetchartifact pipeline="" stage="deploy_opsman" job="deploy_opsman" srcfile="vm_image_reference.txt" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/run_in_docker.sh s3cmd -c /s3cfg.s3 put vm_image_reference.txt s3://ops-man-references/vsphere/stable/</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="release-claim">
+        <jobs>
+          <job name="release-claim">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>./docker_run.sh bundle exec rake --trace krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-aws-OM-edge" isLocked="true">
+      <environmentvariables>
+        <variable name="KRAFA_BASE_URL">
+          <value>http://krafa.cfapps.io</value>
+        </variable>
+        <variable name="KRAFA_USERNAME">
+          <value>releng</value>
+        </variable>
+        <variable name="KRAFA_PASSWORD">
+          <value>bet90onions</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+          <filter>
+            <ignore pattern="**/*" />
+          </filter>
+        </git>
+        <pipeline pipelineName="OpsManager-Promote-1.5" stageName="promote_artifacts" />
+        <pipeline pipelineName="ERT-1.5-aws-build" stageName="vara-build" />
+      </materials>
+      <stage name="ensure_not_vsphere">
+        <jobs>
+          <job name="ensure_not_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_not_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="claim_env">
+        <jobs>
+          <job name="claim_env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>echo "export RELENG_ENV=lime" &gt; releng_env.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy_env">
+        <jobs>
+          <job name="destroy_env">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_opsman">
+        <environmentvariables>
+          <variable name="ACCESS_KEY_ID">
+            <value>AKIAIFHBKH3ZINMIAQUQ</value>
+          </variable>
+          <variable name="SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy_opsman">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[aws,latest]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+              <artifact src="p-runtime/vm_image_reference.txt" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_microbosh">
+        <jobs>
+          <job name="configure_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.5]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.5]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_microbosh">
+        <jobs>
+          <job name="deploy_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,45]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upload_ert">
+        <environmentvariables>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+          <variable name="MATERIALS_DIR">
+            <value>cf-pivotal-artifacts</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upload_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <fetchartifact pipeline="ERT-1.5-aws-build" stage="vara-build" job="runtime" srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.5,runtime.pivotal,cf]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_ert">
+        <jobs>
+          <job name="configure_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_ert">
+        <jobs>
+          <job name="deploy_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="bosh_logs" dest="bosh_logs" />
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post_install_test">
+        <jobs>
+          <job name="post_install_test">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; scripts/runtime/aws_post_install_test_gocd.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="promote-om-stable">
+        <environmentvariables>
+          <variable name="AWS_ACCESS_KEY_ID">
+            <value>AKIAI43577ARGHXPWIMQ</value>
+          </variable>
+          <variable name="AWS_SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="promote-om-stable">
+            <tasks>
+              <fetchartifact pipeline="" stage="deploy_opsman" job="deploy_opsman" srcfile="vm_image_reference.txt" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/run_in_docker.sh s3cmd -c /s3cfg.s3 put vm_image_reference.txt s3://ops-man-references/aws/stable/</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy_env_final">
+        <jobs>
+          <job name="destroy_env">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -2111,6 +2655,769 @@ pipeline config after converting master pipelines* to use capybara helpers
 
   <templates>
 
+    <pipeline name="ERT-1.5-from-OVAa_ERTx">
+      <stage name="ensure_setup">
+        <jobs>
+          <job name="ensure_vsphere">
+            <tasks>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>pwd &amp;&amp; ls -alR</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+          <job name="ensure_environment_variables">
+            <tasks>
+              <exec command="bash">
+                <arg>-cx</arg>
+                <arg>[ -n "$INITIAL_OVA" ] &amp;&amp; [ -n "$RUNTIME_DOT_PIVOTAL_FILE" ]</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="claim_env">
+        <jobs>
+          <job name="claim_env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>./docker_run.sh bundle exec rake --trace krafa:claim_with_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>echo "export RELENG_ENV=$(./docker_run.sh bundle exec rake --trace krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy_env">
+        <jobs>
+          <job name="destroy_env">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-ova-a">
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-binaries","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy-ova-a">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./docker_run.sh xvfb-run -a "rake opsmgr:bucket:get[ova/${INITIAL_OVA},${INITIAL_OVA}]"</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a "rake opsmgr:install[$RELENG_ENV,$INITIAL_OVA]"</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_microbosh">
+        <jobs>
+          <job name="configure_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.4]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.4]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_microbosh">
+        <jobs>
+          <job name="deploy_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,45]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upload_ert">
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+          <variable name="AWS_ACCESS_KEY_ID">
+            <value>AKIAI43577ARGHXPWIMQ</value>
+          </variable>
+          <variable name="AWS_SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upload_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; scripts/run_in_docker.sh scripts/runtime/download_pivotal_with_gof3r.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.4,$RUNTIME_DOT_PIVOTAL_FILE,cf]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_ert">
+        <jobs>
+          <job name="configure_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.4,1.4]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_ert">
+        <jobs>
+          <job name="deploy_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,240]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="export_import_installation">
+        <environmentvariables>
+          <variable name="ACCESS_KEY_ID">
+            <value>AKIAIFHBKH3ZINMIAQUQ</value>
+          </variable>
+          <variable name="SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="export_import_installation">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:export_installation[$RELENG_ENV,1.4,export]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy:opsmgr[$RELENG_ENV]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[vsphere,stable]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:import_installation[$RELENG_ENV,1.5,export]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upload_upgrade_ert">
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+          <variable name="MATERIALS_DIR">
+            <value>cf-pivotal-artifacts</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upload_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime" srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},new_runtime.pivotal]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_upgrade[$RELENG_ENV,1.5,new_runtime.pivotal,cf]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_upgrade_ert">
+        <jobs>
+          <job name="configure_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_upgrade_ert">
+        <jobs>
+          <job name="deploy_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post_install_test">
+        <jobs>
+          <job name="post_install_test">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="release-claim">
+        <approval type="manual" />
+        <jobs>
+          <job name="release-claim">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>./docker_run.sh bundle exec rake --trace krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-Upgrade">
+      <stage name="ensure_vsphere">
+        <jobs>
+          <job name="ensure_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="claim_env">
+        <environmentvariables>
+          <variable name="KRAFA_BASE_URL">
+            <value>http://krafa.cfapps.io</value>
+          </variable>
+          <variable name="KRAFA_USERNAME">
+            <value>releng</value>
+          </variable>
+          <variable name="KRAFA_PASSWORD">
+            <value>bet90onions</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="claim_env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>echo 'export RELENG_ENV=ridge' &gt; releng_env.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy_env">
+        <jobs>
+          <job name="destroy_env">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_opsman">
+        <environmentvariables>
+          <variable name="ACCESS_KEY_ID">
+            <value>AKIAIFHBKH3ZINMIAQUQ</value>
+          </variable>
+          <variable name="SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy_opsman">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[vsphere,stable]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_microbosh">
+        <jobs>
+          <job name="configure_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.4]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.4]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_microbosh">
+        <jobs>
+          <job name="deploy_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,45]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upload_ert">
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+          <variable name="AWS_ACCESS_KEY_ID">
+            <value>AKIAI43577ARGHXPWIMQ</value>
+          </variable>
+          <variable name="AWS_SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upload_ert">
+            <environmentvariables>
+              <variable name="RUNTIME_DOT_PIVOTAL_FILE">
+                <value>cf-1.4.1.0.pivotal</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; scripts/run_in_docker.sh scripts/runtime/download_pivotal_with_gof3r.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.4,$RUNTIME_DOT_PIVOTAL_FILE,cf]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_ert">
+        <jobs>
+          <job name="configure_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.4,1.4]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_ert">
+        <jobs>
+          <job name="deploy_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,240]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="export_import_installation">
+        <environmentvariables>
+          <variable name="ACCESS_KEY_ID">
+            <value>AKIAIFHBKH3ZINMIAQUQ</value>
+          </variable>
+          <variable name="SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="export_import_installation">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:export_installation[$RELENG_ENV,1.4,export]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy:opsmgr[$RELENG_ENV]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[vsphere,stable]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:import_installation[$RELENG_ENV,1.4,export]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upload_upgrade_ert">
+        <environmentvariables>
+          <variable name="RIAK_BUCKET">
+            <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
+          </variable>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+          <variable name="MATERIALS_DIR">
+            <value>cf-pivotal-artifacts</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upload_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime" srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},new_runtime.pivotal]'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_upgrade[$RELENG_ENV,1.4,new_runtime.pivotal,cf]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_upgrade_ert">
+        <jobs>
+          <job name="configure_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.4]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_upgrade_ert">
+        <jobs>
+          <job name="deploy_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,240]'</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post_install_test">
+        <jobs>
+          <job name="post_install_test">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="release_claim">
+        <approval type="manual" />
+        <jobs>
+          <job name="release_claim">
+            <tasks>
+              <ant />
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
     <pipeline name="ERT_Feature_Branch">
       <stage name="ensure_vsphere">
         <jobs>
@@ -2129,7 +3436,7 @@ pipeline config after converting master pipelines* to use capybara helpers
             <tasks>
               <exec command="bash" workingdir="p-runtime">
                 <arg>./build_and_upload_image.sh</arg>
-                <runif status="passed"/>
+                <runif status="passed" />
               </exec>
             </tasks>
           </job>
@@ -2403,7 +3710,7 @@ pipeline config after converting master pipelines* to use capybara helpers
         </jobs>
       </stage>
       <stage name="release_claim">
-        <approval type="manual"/>
+        <approval type="manual" />
         <environmentvariables>
           <variable name="KRAFA_BASE_URL">
             <value>http://krafa.cfapps.io</value>
@@ -2638,7 +3945,7 @@ pipeline config after converting master pipelines* to use capybara helpers
         </jobs>
       </stage>
     </pipeline>
-    <pipeline name="ERT-1.5-from-OVAa_ERTx">
+    <pipeline name="ERT-Upgrade-Feature-Branch">
       <stage name="ensure_setup">
         <jobs>
           <job name="ensure_vsphere">
@@ -2664,7 +3971,30 @@ pipeline config after converting master pipelines* to use capybara helpers
           </job>
         </jobs>
       </stage>
+      <stage name="build_image">
+        <jobs>
+          <job name="build_image">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>./build_and_upload_image.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
       <stage name="claim_env">
+        <environmentvariables>
+          <variable name="KRAFA_BASE_URL">
+            <value>http://krafa.cfapps.io</value>
+          </variable>
+          <variable name="KRAFA_USERNAME">
+            <value>releng</value>
+          </variable>
+          <variable name="KRAFA_PASSWORD">
+            <value>bet90onions</value>
+          </variable>
+        </environmentvariables>
         <jobs>
           <job name="claim_env">
             <tasks>
@@ -2744,16 +4074,14 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:add_first_user[$RELENG_ENV,1.4]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.4]'</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:microbosh:configure[$RELENG_ENV,1.4]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.4]'</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2773,8 +4101,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:trigger_install[$RELENG_ENV,1.4,45]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,45]'</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2808,14 +4135,12 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; scripts/run_in_docker.sh
-                  scripts/runtime/download_pivotal_with_gof3r.sh</arg>
+                <arg>source ./releng_env.sh &amp;&amp; scripts/run_in_docker.sh scripts/runtime/download_pivotal_with_gof3r.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:product:upload_add[$RELENG_ENV,1.4,$RUNTIME_DOT_PIVOTAL_FILE,cf]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.4,$RUNTIME_DOT_PIVOTAL_FILE,cf]'</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2834,8 +4159,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  ert:configure[$RELENG_ENV,1.4,1.4]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.4,1.4]'</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2854,8 +4178,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:trigger_install[$RELENG_ENV,1.4,240]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,240]'</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2883,41 +4206,67 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:export_installation[$RELENG_ENV,1.4,export]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:export_installation[$RELENG_ENV,1.4,export]'</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:destroy:opsmgr[$RELENG_ENV]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy:opsmgr[$RELENG_ENV]'</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:download[vsphere,stable]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[vsphere,stable]'</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:import_installation[$RELENG_ENV,1.5,export]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:import_installation[$RELENG_ENV,1.5,export]'</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
             <artifacts>
               <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+          <job name="build_runtime">
+            <environmentvariables>
+              <variable name="RIAK_BUCKET">
+                <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <exec command="./scripts/fetch-release-from-bosh-io.sh" workingdir="p-runtime">
+                <arg>cf</arg>
+                <arg>cf-release</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./docker_run.sh ./scripts/build_pivotal.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./docker_run.sh ./scripts/runtime/upload_pivotal.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="p-runtime/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="p-runtime/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata" />
             </artifacts>
           </job>
         </jobs>
@@ -2940,21 +4289,19 @@ pipeline config after converting master pipelines* to use capybara helpers
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
                 <runif status="passed" />
               </fetchartifact>
-              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime" srcdir="cf-pivotal-artifacts-metadata">
+              <fetchartifact pipeline="" stage="export_import_installation" job="build_runtime" srcdir="cf-pivotal-artifacts-metadata">
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh
-                  xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},new_runtime.pivotal]'</arg>
+                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:product:upload_upgrade[$RELENG_ENV,1.5,new_runtime.pivotal,cf]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_upgrade[$RELENG_ENV,1.5,new_runtime.pivotal,cf]'</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2974,8 +4321,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2995,8 +4341,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3027,6 +4372,17 @@ pipeline config after converting master pipelines* to use capybara helpers
         <approval type="manual" />
         <jobs>
           <job name="release-claim">
+            <environmentvariables>
+              <variable name="KRAFA_BASE_URL">
+                <value>http://krafa.cfapps.io</value>
+              </variable>
+              <variable name="KRAFA_USERNAME">
+                <value>releng</value>
+              </variable>
+              <variable name="KRAFA_PASSWORD">
+                <value>bet90onions</value>
+              </variable>
+            </environmentvariables>
             <tasks>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
@@ -3038,432 +4394,7 @@ pipeline config after converting master pipelines* to use capybara helpers
         </jobs>
       </stage>
     </pipeline>
-    <pipeline name="ERT-Upgrade">
-      <stage name="ensure_vsphere">
-        <jobs>
-          <job name="ensure_vsphere">
-            <tasks>
-              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="claim_env">
-        <environmentvariables>
-          <variable name="KRAFA_BASE_URL">
-            <value>http://krafa.cfapps.io</value>
-          </variable>
-          <variable name="KRAFA_USERNAME">
-            <value>releng</value>
-          </variable>
-          <variable name="KRAFA_PASSWORD">
-            <value>bet90onions</value>
-          </variable>
-        </environmentvariables>
-        <jobs>
-          <job name="claim_env">
-            <tasks>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>echo 'export RELENG_ENV=ridge' &gt; releng_env.sh</arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-            <artifacts>
-              <artifact src="p-runtime/releng_env.sh"/>
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="destroy_env">
-        <jobs>
-          <job name="destroy_env">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="deploy_opsman">
-        <environmentvariables>
-          <variable name="ACCESS_KEY_ID">
-            <value>AKIAIFHBKH3ZINMIAQUQ</value>
-          </variable>
-          <variable name="SECRET_ACCESS_KEY">
-            <value>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</value>
-          </variable>
-        </environmentvariables>
-        <jobs>
-          <job name="deploy_opsman">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:download[vsphere,stable]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:install[$RELENG_ENV,ops_man_image]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp"/>
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="configure_microbosh">
-        <jobs>
-          <job name="configure_microbosh">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:add_first_user[$RELENG_ENV,1.4]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:microbosh:configure[$RELENG_ENV,1.4]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp"/>
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="deploy_microbosh">
-        <jobs>
-          <job name="deploy_microbosh">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:trigger_install[$RELENG_ENV,1.4,45]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp"/>
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="upload_ert">
-        <environmentvariables>
-          <variable name="RIAK_BUCKET">
-            <value>
-              {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
-            </value>
-          </variable>
-          <variable name="S3_BUCKET">
-            <value>
-              {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
-            </value>
-          </variable>
-          <variable name="AWS_ACCESS_KEY_ID">
-            <value>AKIAI43577ARGHXPWIMQ</value>
-          </variable>
-          <variable name="AWS_SECRET_ACCESS_KEY">
-            <value>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</value>
-          </variable>
-        </environmentvariables>
-        <jobs>
-          <job name="upload_ert">
-            <environmentvariables>
-              <variable name="RUNTIME_DOT_PIVOTAL_FILE">
-                <value>cf-1.4.1.0.pivotal</value>
-              </variable>
-            </environmentvariables>
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; scripts/run_in_docker.sh
-                  scripts/runtime/download_pivotal_with_gof3r.sh
-                </arg>
-                <runif status="passed"/>
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:product:upload_add[$RELENG_ENV,1.4,$RUNTIME_DOT_PIVOTAL_FILE,cf]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp"/>
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="configure_ert">
-        <jobs>
-          <job name="configure_ert">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  ert:configure[$RELENG_ENV,1.4,1.4]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp"/>
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="deploy_ert">
-        <jobs>
-          <job name="deploy_ert">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:trigger_install[$RELENG_ENV,1.4,240]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp"/>
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="export_import_installation">
-        <environmentvariables>
-          <variable name="ACCESS_KEY_ID">
-            <value>AKIAIFHBKH3ZINMIAQUQ</value>
-          </variable>
-          <variable name="SECRET_ACCESS_KEY">
-            <value>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</value>
-          </variable>
-        </environmentvariables>
-        <jobs>
-          <job name="export_import_installation">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:export_installation[$RELENG_ENV,1.4,export]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:destroy:opsmgr[$RELENG_ENV]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:download[vsphere,stable]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:install[$RELENG_ENV,ops_man_image]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:import_installation[$RELENG_ENV,1.4,export]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp"/>
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="upload_upgrade_ert">
-        <environmentvariables>
-          <variable name="RIAK_BUCKET">
-            <value>
-              {"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}
-            </value>
-          </variable>
-          <variable name="S3_BUCKET">
-            <value>
-              {"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}
-            </value>
-          </variable>
-          <variable name="MATERIALS_DIR">
-            <value>cf-pivotal-artifacts</value>
-          </variable>
-        </environmentvariables>
-        <jobs>
-          <job name="upload_upgrade_ert">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <fetchartifact pipeline="ERT-1.5-build" stage="vara-build" job="runtime"
-                             srcdir="cf-pivotal-artifacts-metadata">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh
-                  xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},new_runtime.pivotal]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:product:upload_upgrade[$RELENG_ENV,1.4,new_runtime.pivotal,cf]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp"/>
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="configure_upgrade_ert">
-        <jobs>
-          <job name="configure_upgrade_ert">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  ert:configure[$RELENG_ENV,1.5,1.4]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp"/>
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="deploy_upgrade_ert">
-        <jobs>
-          <job name="deploy_upgrade_ert">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake
-                  opsmgr:trigger_install[$RELENG_ENV,1.4,240]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp"/>
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="post_install_test">
-        <jobs>
-          <job name="post_install_test">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test.sh</arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="release_claim">
-        <approval type="manual"/>
-        <jobs>
-          <job name="release_claim">
-            <tasks>
-              <ant/>
-            </tasks>
-          </job>
-        </jobs>
-      </stage>
-    </pipeline>
-    <pipeline name="ERT_Upgrade_Feature_Branch_Archive">
+    <pipeline name="ERT_Upgrade_Feature_Branch">
       <stage name="ensure_vsphere">
         <jobs>
           <job name="ensure_vsphere">
@@ -3747,460 +4678,8 @@ pipeline config after converting master pipelines* to use capybara helpers
         </jobs>
       </stage>
     </pipeline>
-    <pipeline name="ERT-Upgrade-Feature-Branch">
-      <stage name="ensure_setup">
-        <jobs>
-          <job name="ensure_vsphere">
-            <tasks>
-              <exec command="bash">
-                <arg>-c</arg>
-                <arg>pwd &amp;&amp; ls -alR</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
-                <runif status="passed" />
-              </exec>
-            </tasks>
-          </job>
-          <job name="ensure_environment_variables">
-            <tasks>
-              <exec command="bash">
-                <arg>-cx</arg>
-                <arg>[ -n "$INITIAL_OVA" ] &amp;&amp; [ -n "$RUNTIME_DOT_PIVOTAL_FILE" ]</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="build_image">
-        <jobs>
-          <job name="build_image">
-            <tasks>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>./build_and_upload_image.sh</arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="claim_env">
-        <environmentvariables>
-          <variable name="KRAFA_BASE_URL">
-            <value>http://krafa.cfapps.io</value>
-          </variable>
-          <variable name="KRAFA_USERNAME">
-            <value>releng</value>
-          </variable>
-          <variable name="KRAFA_PASSWORD">
-            <value>bet90onions</value>
-          </variable>
-        </environmentvariables>
-        <jobs>
-          <job name="claim_env">
-            <tasks>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:claim_with_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>echo "export RELENG_ENV=$(./docker_run.sh bundle exec rake --trace krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <artifacts>
-              <artifact src="p-runtime/releng_env.sh" />
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="destroy_env">
-        <jobs>
-          <job name="destroy_env">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed"/>
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'
-                </arg>
-                <runif status="passed"/>
-              </exec>
-            </tasks>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="deploy-ova-a">
-        <environmentvariables>
-          <variable name="RIAK_BUCKET">
-            <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
-          </variable>
-          <variable name="S3_BUCKET">
-            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-binaries","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
-          </variable>
-        </environmentvariables>
-        <jobs>
-          <job name="deploy-ova-a">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed" />
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>./docker_run.sh xvfb-run -a "rake opsmgr:bucket:get[ova/${INITIAL_OVA},${INITIAL_OVA}]"</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a "rake opsmgr:install[$RELENG_ENV,$INITIAL_OVA]"</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="configure_microbosh">
-        <jobs>
-          <job name="configure_microbosh">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed" />
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.4]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.4]'</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp" />
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="deploy_microbosh">
-        <jobs>
-          <job name="deploy_microbosh">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed" />
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,45]'</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp" />
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="upload_ert">
-        <environmentvariables>
-          <variable name="RIAK_BUCKET">
-            <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
-          </variable>
-          <variable name="S3_BUCKET">
-            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
-          </variable>
-          <variable name="AWS_ACCESS_KEY_ID">
-            <value>AKIAI43577ARGHXPWIMQ</value>
-          </variable>
-          <variable name="AWS_SECRET_ACCESS_KEY">
-            <value>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</value>
-          </variable>
-        </environmentvariables>
-        <jobs>
-          <job name="upload_ert">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed" />
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; scripts/run_in_docker.sh scripts/runtime/download_pivotal_with_gof3r.sh</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.4,$RUNTIME_DOT_PIVOTAL_FILE,cf]'</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp" />
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="configure_ert">
-        <jobs>
-          <job name="configure_ert">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed" />
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.4,1.4]'</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp" />
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="deploy_ert">
-        <jobs>
-          <job name="deploy_ert">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed" />
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,240]'</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp" />
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="export_import_installation">
-        <environmentvariables>
-          <variable name="ACCESS_KEY_ID">
-            <value>AKIAIFHBKH3ZINMIAQUQ</value>
-          </variable>
-          <variable name="SECRET_ACCESS_KEY">
-            <value>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</value>
-          </variable>
-        </environmentvariables>
-        <jobs>
-          <job name="export_import_installation">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed" />
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:export_installation[$RELENG_ENV,1.4,export]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy:opsmgr[$RELENG_ENV]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[vsphere,stable]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:import_installation[$RELENG_ENV,1.5,export]'</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp" />
-            </artifacts>
-          </job>
-          <job name="build_runtime">
-            <environmentvariables>
-              <variable name="RIAK_BUCKET">
-                <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
-              </variable>
-            </environmentvariables>
-            <tasks>
-              <exec command="./scripts/fetch-release-from-bosh-io.sh" workingdir="p-runtime">
-                <arg>cf</arg>
-                <arg>cf-release</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>./docker_run.sh ./scripts/build_pivotal.sh</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>./docker_run.sh ./scripts/runtime/upload_pivotal.sh</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <artifacts>
-              <artifact src="p-runtime/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata" />
-              <artifact src="p-runtime/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata" />
-              <artifact src="p-runtime/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata" />
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="upload_upgrade_ert">
-
-        <environmentvariables>
-          <variable name="RIAK_BUCKET">
-            <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
-          </variable>
-          <variable name="S3_BUCKET">
-            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
-          </variable>
-          <variable name="MATERIALS_DIR">
-            <value>cf-pivotal-artifacts</value>
-          </variable>
-        </environmentvariables>
-        <jobs>
-          <job name="upload_upgrade_ert">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed" />
-              </fetchartifact>
-              <fetchartifact pipeline="" stage="export_import_installation" job="build_runtime" srcdir="cf-pivotal-artifacts-metadata">
-                <runif status="passed" />
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_upgrade[$RELENG_ENV,1.5,new_runtime.pivotal,cf]'</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp" />
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="configure_upgrade_ert">
-        <jobs>
-          <job name="configure_upgrade_ert">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed" />
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp" />
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="deploy_upgrade_ert">
-        <jobs>
-          <job name="deploy_upgrade_ert">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed" />
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <artifacts>
-              <test src="p-runtime/tmp" />
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="post_install_test">
-        <jobs>
-          <job name="post_install_test">
-            <tasks>
-              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
-                <runif status="passed" />
-              </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test.sh</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="release-claim">
-        <approval type="manual" />
-        <jobs>
-          <job name="release-claim">
-            <environmentvariables>
-              <variable name="KRAFA_BASE_URL">
-                <value>http://krafa.cfapps.io</value>
-              </variable>
-              <variable name="KRAFA_USERNAME">
-                <value>releng</value>
-              </variable>
-              <variable name="KRAFA_PASSWORD">
-                <value>bet90onions</value>
-              </variable>
-            </environmentvariables>
-            <tasks>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-          </job>
-        </jobs>
-      </stage>
-    </pipeline>
 
 
   </templates>
 
 </cruise>
-
