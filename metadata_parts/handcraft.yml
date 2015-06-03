@@ -1,5 +1,5 @@
 ---
-metadata_version: '1.4'
+metadata_version: '1.5'
 provides_product_versions:
 - name: cf
   version: 1.5.0.0
@@ -2592,9 +2592,9 @@ job_types:
     label: MySQL Server
     resource_label: MySQL Server
     description: Multi-tenant MySQL server.
-    job_templates:
-      - mysql
-    release: cf-mysql
+    templates:
+      - name: mysql
+        release: cf-mysql
     max_in_flight: 1
     resource_definitions:
     - name: ram
