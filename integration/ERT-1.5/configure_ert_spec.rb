@@ -14,7 +14,10 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
   end
 
   it 'configures the availability zone' do
-    current_ops_manager.assign_availability_zones_for_product(product: 'cf', zones: env_settings.ops_manager.availability_zones)
+    availability_zones_for_product = availability_zones_for_product(product: 'cf')
+    unless availability_zones_for_product.length > 0
+      current_ops_manager.assign_availability_zones_for_product(product: 'cf', zones: env_settings.ops_manager.availability_zones)
+    end
   end
 
   it 'configures ha proxy or an ELB' do
@@ -97,5 +100,15 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
   def configure_openstack_ha_proxy(elastic_runtime_settings)
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings.name)
     resource_config.set_floating_ips_for_job('ha_proxy', elastic_runtime_settings.ha_proxy_floating_ips)
+  end
+  AVAILABILITY_ZONE_INPUT_SELECTOR = "input[name='product[availability_zone_references][]']"
+
+  def availability_zones_for_product(product:)
+    visit '/'
+    click_on "show-#{product}-configure-action"
+    click_on "show-#{product}-availability-zone-assignment-action"
+    all("#{AVAILABILITY_ZONE_INPUT_SELECTOR}[checked='checked']").map do |checkbox|
+      find("label[for='#{checkbox[:id]}']").text
+    end
   end
 end
