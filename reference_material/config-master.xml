@@ -688,7 +688,6 @@ pipeline config after converting master pipelines* to use capybara helpers
               </exec>
             </tasks>
             <artifacts>
-              <artifact src="bosh_logs" dest="bosh_logs" />
               <test src="p-runtime/tmp" />
             </artifacts>
           </job>
@@ -2620,7 +2619,6 @@ pipeline config after converting master pipelines* to use capybara helpers
               </exec>
             </tasks>
             <artifacts>
-              <artifact src="bosh_logs" dest="bosh_logs" />
               <test src="p-runtime/tmp" />
             </artifacts>
           </job>
@@ -4330,7 +4328,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
+                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},new_runtime.pivotal]'</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
