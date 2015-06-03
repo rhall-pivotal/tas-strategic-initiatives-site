@@ -2437,18 +2437,12 @@ job_types:
         configurable: true
         optional: true
 
-      - name: skip_cert_verify
-        type: boolean
-        configurable: true
-
       - name: dashboard_credentials
         type: simple_credentials
         default:
           identity: admin
 
     manifest: |
-      networks:
-        apps: default
       network_name: default
       external_host: "p-mysql.internal.(( .cloud_controller.system_domain.value ))"
       proxy:
@@ -2529,18 +2523,12 @@ job_types:
       type: simple_credentials
     - name: autoscale_credentials
       type: simple_credentials
-    - name: max_user_connections
-      type: integer
-      default: 40
-      configurable: true
     manifest: |
         admin_password: (( mysql_admin_credentials.password ))
         cluster_ips: (( .mysql.ips ))
         innodb_buffer_pool_size: 2147483648
         max_connections: 1500
-        max_user_connections: (( max_user_connections.value ))
         network_name: default
-        persistent_disk: (( .mysql.persistent_disk ))
         seeded_databases:
           - name: app_usage_service
             username: (( app_usage_credentials.identity ))
