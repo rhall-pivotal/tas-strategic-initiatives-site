@@ -1324,7 +1324,7 @@ job_types:
       - name: ssl_rsa_certificate
         type: rsa_cert_credentials
         configurable: true
-        optional: false
+        optional: true
 
       - name: skip_cert_verify
         type: boolean
@@ -2191,7 +2191,6 @@ job_types:
           passwd: "https://console.(( $runtime.system_domain ))/password_resets/new"
           signup: "https://console.(( $runtime.system_domain ))/register"
         uaa_base: (( $runtime.uaa_url ))
-        uaa_certificate: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
         notifications:
           url: "https://notifications.(( $runtime.system_domain ))"
         saml:
