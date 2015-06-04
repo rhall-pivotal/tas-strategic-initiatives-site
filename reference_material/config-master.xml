@@ -2668,7 +2668,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; scripts/runtime/aws_post_install_test_gocd.sh</arg>
+                <arg>source ./releng_env.sh &amp;&amp; scripts/runtime/post_install_test_ssh_tunnel.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
