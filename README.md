@@ -46,7 +46,7 @@ ACCESS_KEY_ID=<OpsMan Reader Access Key> SECRET_ACCESS_KEY=<OpsMan Reader Secret
 The above task saves the Ops Manager Image to a file `ops_man_image`
 
 ```
-bundle exec rake opsmgr:install[environment,ops_man_iamge]
+bundle exec rake opsmgr:install[environment,ops_man_image]
 ```
 
 #### Configure and Deploy Microbosh
