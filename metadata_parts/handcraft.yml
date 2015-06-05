@@ -2163,21 +2163,21 @@ job_types:
         protocol: https
         tiles:
           - name: Pivotal Dev Console
-            login-link:  (( $runtime.console_url ))
+            login-link:  "https://console.(( .cloud_controller.system_domain.value ))"
             image: "/resources/pivotal/images/dev-console-logo-gray.png"
             image-hover: "/resources/pivotal/images/dev-console-logo-teal.png"
 
         brand: pivotal
         links:
-          home: "https://console.(( $runtime.system_domain ))"
-          passwd: "https://console.(( $runtime.system_domain ))/password_resets/new"
-          signup: "https://console.(( $runtime.system_domain ))/register"
-        uaa_base: (( $runtime.uaa_url ))
+          home: "https://console.(( .cloud_controller.system_domain.value ))"
+          passwd: "https://console.(( .cloud_controller.system_domain.value ))/password_resets/new"
+          signup: "https://console.(( .cloud_controller.system_domain.value ))/register"
+        uaa_base: "https://uaa.(( .cloud_controller.system_domain.value ))"
         uaa_certificate: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
         notifications:
-          url: "https://notifications.(( $runtime.system_domain ))"
+          url: "https://notifications.(( .cloud_controller.system_domain.value ))"
         saml:
-          entityid: "http://login.(( $runtime.system_domain ))"
+          entityid: "http://login.(( .cloud_controller.system_domain.value ))"
           serviceProviderKey: (( .login.service_provider_key_credentials.private_key_pem ))
           serviceProviderCertificate: (( .login.service_provider_key_credentials.cert_pem ))
           providers:
