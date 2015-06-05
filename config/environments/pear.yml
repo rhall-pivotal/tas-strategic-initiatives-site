@@ -1,0 +1,116 @@
+name: pear
+iaas_type: aws
+vm_shepherd:
+  env_config:
+    stack_name: pear
+    aws_access_key: AKIAI43577ARGHXPWIMQ
+    aws_secret_key: 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
+    region: us-east-1
+    json_file: config/ert_cloudformation.json
+    parameters:
+      01NATKeyPair: releng-dev
+      05RdsUsername: bosh
+      06RdsPassword: bosh1234
+      07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/pear
+    outputs:
+      ssh_key_name: releng-dev
+      security_group: sg-642d2700
+      public_subnet_id: subnet-e31977ba
+      private_subnet_id: subnet-e11977b8
+      s3_bucket_name: pear-opsmanstack-16bxo3isxp-pcfopsmanagers3bucket-1ec8f90u4u8ay
+  vm_configs:
+    - vm_name: Pear OpsManager
+
+ops_manager:
+  url: https://52.5.184.4/
+  username: pivotalcf
+  password: pivotalcf
+  ntp_servers: 0.amazon.pool.ntp.org
+  availability_zones:
+  - iaas_identifier: us-east-1a
+
+  aws:
+    aws_access_key: AKIAI43577ARGHXPWIMQ
+    aws_secret_key: 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
+    vpc_id: vpc-0ee0db6b
+    security_group: pear-OpsManStack-16BXO3ISXPWAX-PcfVmsSecurityGroup-F3V3CA5U2HTW
+    key_pair_name: releng-dev
+    ssh_key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEpAIBAAKCAQEAhU5ETA/Pt42waL2WDKLBfhIXlaQ3YHem3Tojn044bs3GpGBWeHESchL6Ndjv
+      Q8ANoeEJ3/P9AsCZTkd3GP+c8JRUcdvg61wIipzP0ltK1KbVt1N0z/E29c+nTqwM4o4zBUQMT3vj
+      oG0Yf6iIx+88OcYRx7wUuUGb1NBXkn/GqnadfMO2g//i8UOF1tcz/jXdxf7i192aGPxeC/5bl70h
+      Gnk/PlsZjYrq/cDqX4uI3ZdWC2Dsp6pbHilx1umB8FNHUOzh7yvaF4380y3t5I4oPRlD/8hMz/5L
+      1R5GsMYHibkLgq48mjVgTsN3tMJU1DZUf6eHx7dqay7hr35vZFER3wIDAQABAoIBADe9OSuAtP7w
+      HOI+253e8/8N+5STfKA2h6wbIkf7Qfd6zWNv8Ngdl3PhYYPgeHMgu9KDMUjWUWW0OKYVlcP7JZkm
+      vIR7RvnCmsOyu+ceSxTNybEFEWPdXXi84h0wLZcRlF3QTUFy8QPkegju5HqNGuahXk/g4d1whIMg
+      tm1IRj6CDZchKLx3G+Ae+rISf7p+o1pEfEgwMfWcIapa3PD/fwMpfRBwrsWdV9wPn63pzJc7pPFW
+      H6y8ZEc2ldsrQThk4f1r0UMUFbD9I0yolVQMDA73ZzvCstamh3E4gga9N4XiUOSoT7JGbXdobumJ
+      JLOi3XOmcWJaBl9Ocff9Qpp2UBECgYEAxVL9n3pA3/k+zxh+t0MDWt5SP+gKDbqaXLJl5w7zCuTo
+      OFCAKnDxHDSxcbTNarcC32QOjV0F8plkxaNgFP3W9KvPk5mRnfTXJE67GsaOTtj0lYhHpo90NqYe
+      U5IH2eA6PHzpmHPdEemQBa5O+mQOFRgvt4iXJaDqfK7Iro3UXicCgYEArPH3ffG14/0LuNq3Mt+E
+      CAx0m2tmAIxTfpgd7BXz8scvg0DyGa49/8MO7pPEHrhjaocefuprJph0BawfdIR90GBu/ussuGS3
+      pYCcLDTT7ma8bomlOi4apmYNjKUZDijnVFycHxhNfZVg+bzCklMDm3vfPSh1W85JM//sUIosOYkC
+      gYBC7cxSzG+2yF6yddd9J4C60I/LV1QZpgJ3kJcZ0StEtbHCcCOYwag2bfUF4VKPcLXLua9p6XR7
+      /eV9V9XeKN9BLAmDQeJvVj2m9gFmqpRYUCRdl9TdvOipJJ1CsVRyZSi7nY7KA/qm+ba9BouJSGiy
+      ZPrCYNULkVIXql0tP7QZnwKBgQCmSjZlhA8Xu80UnkC+ispiDs/kTP0UE9mIhO1ofqdEzh8yPjVL
+      Wg3FKaHm5nAR9cupt2gsMmx6/OW6Ook4ONjcjozLUgd6+WTXnvULUHRi66fNRU54xbHcQ45NqMWR
+      puTfafi3sV95HDPVjZkspuN2EkJRhOBrOMuMU0y/GExzuQKBgQCbvIkXm3K6ZUCuOSzEHnprRBBt
+      /ntsCJQDSBXfrzPTgkBBiMVx3aaJZYnsvxb2+Vl3YYiv/HM/W+rJZsSsbffwAngHNbUfVdlwnayn
+      wB5+GnTcHRiog2K6DGyOfn1MXiQg2IX7ZpehJFoucNQ5IG4lioVZSmKwea9d8LFqIajoVA==
+      -----END RSA PRIVATE KEY-----
+
+  networks:
+  - name: first-network
+    identifier: subnet-e11977b8
+    subnet: 10.0.16.0/20
+    reserved_ips: 10.0.16.2-10.0.16.4
+    dns: 10.0.0.2
+    gateway: 10.0.16.1
+
+  elastic_runtime:
+    name: cf
+    system_domain: pear.cf-app.com
+    apps_domain: pear.cf-app.com
+    elb_name: PcfElb
+    smtp:
+      from: identitystaging@mailinator.com
+      address: smtp.sendgrid.net
+      port: 587
+      credentials:
+        identity: PCFRelEng
+        password: 4H-9Lh-wD{ZST28x{Q
+      enable_starttls_auto: true
+      smtp_auth_mechanism: plain
+    ssl_certificate: |
+      -----BEGIN CERTIFICATE-----
+      MIICKTCCAZICCQCTqZGx8T2dYDANBgkqhkiG9w0BAQUFADBZMQswCQYDVQQGEwJV
+      UzELMAkGA1UECBMCQ0ExITAfBgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0
+      ZDEaMBgGA1UEAxQRKi5wbHVtLmNmLWFwcC5jb20wHhcNMTUwNDEwMDAzMDIyWhcN
+      MTUwNTEwMDAzMDIyWjBZMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExITAfBgNV
+      BAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEaMBgGA1UEAxQRKi5wbHVtLmNm
+      LWFwcC5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALYf8AYNqZEanhQa
+      S/iMaJAQPVjOccbG3t4g4D1SJWLwOH8L9spzja54yyPIngvbHtrwERZZLWch8MpR
+      0Jew/AxmrsXbQtKn2CQnYenO5rt34PzzIhchBQBfQB+AiZfzgLvuJJjoRZhF6fzt
+      tTfL6yqLJrE0dgmD4oBeqoLYQhcXAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAjK+s
+      vSoHkOAC8mmLKHRydIvKCs6enDOrPbEUjILQNXVmi7TO73TvhpRUICRSH79X2sD2
+      oryUxyn/e7c2X0TS1PIXSkP/nT1jrLiXdkiLiq1Y2Iq8OccfBakXgbuQEPp2GrlV
+      hQ955JZyH6mDJrN35LWr7WajxDesxg0kPG9/aWg=
+      -----END CERTIFICATE-----
+    ssl_private_key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIICWwIBAAKBgQC2H/AGDamRGp4UGkv4jGiQED1YznHGxt7eIOA9UiVi8Dh/C/bK
+      c42ueMsjyJ4L2x7a8BEWWS1nIfDKUdCXsPwMZq7F20LSp9gkJ2Hpzua7d+D88yIX
+      IQUAX0AfgImX84C77iSY6EWYRen87bU3y+sqiyaxNHYJg+KAXqqC2EIXFwIDAQAB
+      AoGASqdszA5to301ryfYXFmxwtvlSbHWEZUTZhoz0O8LRDMT9YAB+ZrESPBa1KA3
+      qMR5MWWWm4KSiePvv/8pcgSqS/mso4rXJozp4VaSRkOSZCL+rfc1toVLh61oevjE
+      aUjLK7/OSd/SslLUPGL3muo7Hh6z9JXk6CwfCz4vTKT/gAECQQDl6GdA/aaEJGji
+      RPTJBjpCa77qdAAp4BcYF7SIit4cfxyQCQPtZN6M5zvhKTYCsPjsypaQs5777oXB
+      2t5ZvLQBAkEAystGcNk1jdF67DAL1oc8PYMbq/Ey6lEoKeG+W96v9LIkN+Tnoz1B
+      Xq9cC0oBxL+G6L8G4IFUQqmAqV2kmxHrFwJAMRBRyLrY6GZkw7T3kFb14+reiWZM
+      CqO6Cfg1HNaV4/r0e4CRB/54yBUo4DpNPnHKDa6GR0ct7JHQlbhBr2DoAQJAexF5
+      oipvUa17B7LwvDQ93qaeOG6cE49E7IXO3Dn8Vmd1i2YjHPGjpi6NkVxMTnZdDQpA
+      xiY2WG49Yostxd3N6QJAWysiaEd1GSvb13xP/HPwhitvs4YZd0xbf+gx/LYsNgj+
+      twmLkIa0MPbkjuy2Y7mGyZUFMCeXg7+v9c16znLoCw==
+      -----END RSA PRIVATE KEY-----
+    trust_self_signed_certificates: true
