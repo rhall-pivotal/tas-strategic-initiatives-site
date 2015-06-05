@@ -1,0 +1,11 @@
+---
+platform: linux
+
+image: docker:///cloudfoundry/releng-ci
+
+inputs:
+  - name: p-runtime
+
+run:
+  path: p-runtime/ci/scripts/build-pivotal
+

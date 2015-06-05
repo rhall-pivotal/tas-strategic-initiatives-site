@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -ex
+
+export RELENG_ENV=`cat aws-environments/name`
+export OPSMAN_VERSION=1.5
+export PIVOTAL_PATH=$PWD/ert-product/ert.pivotal
+
+pushd p-runtime
+  ./ci/scripts/helpers/bundle-gems.sh
+
+  xvfb-run -a rake opsmgr:product:upload_add[$RELENG_ENV,$OPSMAN_VERSION,$PIVOTAL_PATH,cf]
+popd

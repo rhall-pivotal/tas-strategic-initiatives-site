@@ -1,0 +1,15 @@
+---
+platform: linux
+
+image: docker:///cloudfoundry/releng-ci
+
+inputs:
+  - name: p-runtime
+  - name: aws-environments
+
+params:
+  ACCESS_KEY_ID:
+  SECRET_ACCESS_KEY:
+
+run:
+  path: p-runtime/ci/scripts/deploy-opsman

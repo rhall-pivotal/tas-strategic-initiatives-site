@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -ex
+
+export RELENG_ENV=`cat aws-environments/name`
+
+pushd p-runtime
+  ./ci/scripts/helpers/bundle-gems.sh
+
+  xvfb-run -a bundle exec rake opsmgr:add_first_user[$RELENG_ENV,$OPSMAN_VERSION]
+  xvfb-run -a bundle exec rake opsmgr:microbosh:configure[$RELENG_ENV,$OPSMAN_VERSION]
+popd
+

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -ex
+
+export RELENG_ENV=`cat aws-environments/name`
+
+pushd p-runtime
+  ./ci/scripts/helpers/bundle-gems.sh
+
+  bundle exec rake opsmgr:prepare[$RELENG_ENV]
+popd
