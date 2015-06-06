@@ -21,7 +21,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>echo "export VARA_EXTRA_FLAGS=${VARA_EXTRA_FLAGS}" &gt; vara_extra_flags.sh</arg>
+                <arg>./scripts/gocd/save_vara_extra_flags.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -73,21 +73,22 @@ pipeline config after converting master pipelines* to use capybara helpers
               <fetchartifact pipeline="ERT-1.5-kickoff" stage="kickoff" job="save_vara_extra_flags" srcfile="vara_extra_flags.sh">
                 <runif status="passed" />
               </fetchartifact>
-              <exec command="./scripts/fetch-release-from-bosh-io.sh" workingdir="p-runtime">
-                <arg>cf</arg>
-                <arg>cf-release</arg>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/fetch_cf_release_from_bosh_io.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ../vara_extra_flags.sh &amp;&amp; ./docker_run.sh ./scripts/build_pivotal.sh</arg>
+                <arg>./scripts/gocd/build_pivotal.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./scripts/run_in_docker.sh ./scripts/runtime/upload_pivotal_with_gof3r.sh untested</arg>
+                <arg>./scripts/gocd/upload_pivotal_to_untested.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -136,8 +137,9 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="claim_env">
             <tasks>
               <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>echo "export RELENG_ENV=brinjal" &gt; releng_env.sh</arg>
+                <arg>./scripts/gocd/claim_specific_environment.sh brinjal</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -157,7 +159,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -180,14 +182,15 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[aws,stable]'</arg>
+                <arg>./scripts/gocd/download_aws_stable_om.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <arg>./scripts/gocd/install_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -209,14 +212,7 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.5]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.5]'</arg>
+                <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -234,9 +230,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,45]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -265,15 +261,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.5,runtime.pivotal,cf]'</arg>
+                <arg>./scripts/gocd/upload_built_ert_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -293,7 +283,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -301,7 +291,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <test src="p-runtime/tmp" />
             </artifacts>
           </job>
-        </jobs>
+         </jobs>
       </stage>
       <stage name="deploy_ert">
         <jobs>
@@ -313,7 +303,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -333,7 +323,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test_ssh_tunnel.sh</arg>
+                <arg>./scripts/gocd/run_cats_through_tunnel.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -351,7 +341,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -388,21 +378,22 @@ pipeline config after converting master pipelines* to use capybara helpers
               <fetchartifact pipeline="ERT-1.5-kickoff" stage="kickoff" job="save_vara_extra_flags" srcfile="vara_extra_flags.sh">
                 <runif status="passed" />
               </fetchartifact>
-              <exec command="./scripts/fetch-release-from-bosh-io.sh" workingdir="p-runtime">
-                <arg>cf</arg>
-                <arg>cf-release</arg>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/fetch_cf_release_from_bosh_io.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ../vara_extra_flags.sh &amp;&amp; ./docker_run.sh ./scripts/build_pivotal.sh</arg>
+                <arg>./scripts/gocd/build_pivotal.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh ./scripts/runtime/upload_pivotal.sh</arg>
+                <arg>./scripts/gocd/upload_pivotal.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -451,13 +442,9 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="claim_env">
             <tasks>
               <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:claim_with_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>echo "export RELENG_ENV=$(./docker_run.sh bundle exec rake --trace krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh</arg>
+                <arg>./scripts/gocd/claim_environment_with_krafa.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -477,7 +464,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -501,13 +488,13 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[vsphere,stable]'</arg>
+                <arg>./scripts/gocd/download_vsphere_stable_om.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <arg>./scripts/gocd/install_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -529,14 +516,7 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.5]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.5]'</arg>
+                <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -554,9 +534,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,45]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -588,15 +568,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.5,runtime.pivotal,cf]'</arg>
+                <arg>./scripts/gocd/upload_built_ert_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -616,7 +590,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -636,14 +610,14 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs</arg>
+                <arg>./scripts/gocd/collect_bosh_logs.sh</arg>
                 <runif status="any" />
               </exec>
             </tasks>
@@ -662,9 +636,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test.sh</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/run_cats.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -678,7 +652,7 @@ pipeline config after converting master pipelines* to use capybara helpers
             <tasks>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
+                <arg>./scripts/gocd/release_claim.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -726,12 +700,7 @@ pipeline config after converting master pipelines* to use capybara helpers
             <tasks>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:claim_without_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>echo "export RELENG_ENV=$(./docker_run.sh bundle exec rake --trace krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh</arg>
+                <arg>./scripts/gocd/claim_internetless_environment_with_krafa.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -751,7 +720,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -775,13 +744,13 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[vsphere,stable]'</arg>
+                <arg>./scripts/gocd/download_vsphere_stable_om.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <arg>./scripts/gocd/install_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -803,14 +772,7 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.5]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.5]'</arg>
+                <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -828,9 +790,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,45]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -862,15 +824,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.5,runtime.pivotal,cf]'</arg>
+                <arg>./scripts/gocd/upload_built_ert_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -890,7 +846,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -910,14 +866,14 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs</arg>
+                <arg>./scripts/gocd/collect_bosh_logs.sh</arg>
                 <runif status="any" />
               </exec>
             </tasks>
@@ -936,9 +892,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test.sh</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/run_cats.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -952,7 +908,7 @@ pipeline config after converting master pipelines* to use capybara helpers
             <tasks>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
+                <arg>./scripts/gocd/release_claim.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1352,19 +1308,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="cf-pivotal-artifacts-metadata">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>KEY=`grep -o -e cf.* cf-pivotal.blobkey` &amp;&amp; ../p-runtime/scripts/run_in_docker.sh gof3r cp s3://releng-products/untested/${KEY} ${KEY} &amp;&amp; ../p-runtime/scripts/run_in_docker.sh gof3r cp ${KEY} s3://releng-products/runtime/${KEY}</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="cf-pivotal-artifacts-metadata">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>KEY=`grep -o -e cf.* cf-pivotal.blobkey` &amp;&amp; ../p-runtime/scripts/run_in_docker.sh s3cmd -c s3cfg.s3 cp s3://releng-products/untested/${KEY}.md5 s3://releng-products/runtime/${KEY}.md5</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="cf-pivotal-artifacts-metadata">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>KEY=`grep -o -e cf.* cf-pivotal.blobkey` &amp;&amp; ../p-runtime/scripts/run_in_docker.sh s3cmd -c s3cfg.s3 cp s3://releng-products/untested/${KEY}.yml s3://releng-products/runtime/${KEY}.yml</arg>
+                <arg>./scripts/gocd/copy_to_release_buckets.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1416,8 +1360,9 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="claim_env">
             <tasks>
               <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>echo "export RELENG_ENV=plum" &gt; releng_env.sh</arg>
+                <arg>./scripts/gocd/claim_specific_environment.sh plum</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1437,7 +1382,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1454,13 +1399,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>echo $INITIAL_AMI &gt; ami_reference.txt</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ami_reference.txt]'</arg>
+                <arg>./scripts/gocd/install_initial_ami_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1478,14 +1417,7 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.4]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.4]'</arg>
+                <arg>./scripts/gocd/configure_microbosh_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1503,9 +1435,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,45]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_microbosh_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1534,14 +1466,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/download_pivotal_with_gof3r.sh</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.4,$RUNTIME_DOT_PIVOTAL_FILE,cf]'</arg>
+                <arg>./scripts/gocd/upload_ert_1_4_on_om_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1560,7 +1487,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.4,1.4]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_4_on_om_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1579,7 +1506,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1605,33 +1532,33 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:export_installation[$RELENG_ENV,1.4,export]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/export_installation_from_om_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy:opsmgr[$RELENG_ENV]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/destroy_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[aws,stable]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/download_aws_stable_om.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/install_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:import_installation[$RELENG_ENV,1.5,export]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/import_installation_to_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1660,15 +1587,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},new_runtime.pivotal]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_upgrade[$RELENG_ENV,1.5,new_runtime.pivotal,cf]'</arg>
+                <arg>./scripts/gocd/upgrade_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1688,7 +1609,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1708,7 +1629,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1728,7 +1649,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test_ssh_tunnel.sh</arg>
+                <arg>./scripts/gocd/run_cats_through_tunnel.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1746,7 +1667,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1809,8 +1730,9 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="claim_env">
             <tasks>
               <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>echo "export RELENG_ENV=mars" &gt; releng_env.sh</arg>
+                <arg>./scripts/gocd/claim_specific_environment.sh mars</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1830,7 +1752,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1854,13 +1776,13 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[openstack,stable]'</arg>
+                <arg>./scripts/gocd/download_openstack_stable_om.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <arg>./scripts/gocd/install_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1882,14 +1804,7 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.5]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.5]'</arg>
+                <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1907,9 +1822,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,45]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1941,15 +1856,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.5,runtime.pivotal,cf]'</arg>
+                <arg>./scripts/gocd/upload_built_ert_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1969,7 +1878,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1989,7 +1898,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2009,7 +1918,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test_ssh_tunnel.sh</arg>
+                <arg>./scripts/gocd/run_cats_through_tunnel.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2098,13 +2007,9 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="claim_env">
             <tasks>
               <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:claim_with_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>echo "export RELENG_ENV=$(./docker_run.sh bundle exec rake --trace krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh</arg>
+                <arg>./scripts/gocd/claim_environment_with_krafa.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2124,7 +2029,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2148,13 +2053,13 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[vsphere,latest]'</arg>
+                <arg>./scripts/gocd/download_vsphere_latest_om.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <arg>./scripts/gocd/install_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2176,14 +2081,7 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.5]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.5]'</arg>
+                <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2201,9 +2099,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,45]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2235,15 +2133,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.5,runtime.pivotal,cf]'</arg>
+                <arg>./scripts/gocd/upload_built_ert_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2263,7 +2155,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2283,14 +2175,14 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs</arg>
+                <arg>./scripts/gocd/collect_bosh_logs.sh</arg>
                 <runif status="any" />
               </exec>
             </tasks>
@@ -2309,9 +2201,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test.sh</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/run_cats.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2336,7 +2228,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./scripts/run_in_docker.sh s3cmd -c /s3cfg.s3 put vm_image_reference.txt s3://ops-man-references/vsphere/stable/</arg>
+                <arg>./scripts/gocd/update_om_vsphere_stable.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2349,7 +2241,7 @@ pipeline config after converting master pipelines* to use capybara helpers
             <tasks>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
+                <arg>./scripts/gocd/release_claim.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2394,8 +2286,9 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="claim_env">
             <tasks>
               <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>echo "export RELENG_ENV=lime" &gt; releng_env.sh</arg>
+                <arg>./scripts/gocd/claim_specific_environment.sh lime</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2415,7 +2308,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2439,13 +2332,13 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[aws,latest]'</arg>
+                <arg>./scripts/gocd/download_aws_latest_om.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <arg>./scripts/gocd/install_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2467,14 +2360,7 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.5]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.5]'</arg>
+                <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2492,9 +2378,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,45]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2523,15 +2409,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.5,runtime.pivotal,cf]'</arg>
+                <arg>./scripts/gocd/upload_built_ert_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2551,7 +2431,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2571,7 +2451,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2589,9 +2469,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test_ssh_tunnel.sh</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/run_cats_through_tunnel.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2616,7 +2496,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./scripts/run_in_docker.sh s3cmd -c /s3cfg.s3 put vm_image_reference.txt s3://ops-man-references/aws/stable/</arg>
+                <arg>./scripts/gocd/update_om_aws_stable.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2633,7 +2513,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2683,13 +2563,9 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="claim_env">
             <tasks>
               <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:claim_with_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>echo "export RELENG_ENV=$(./docker_run.sh bundle exec rake --trace krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh</arg>
+                <arg>./scripts/gocd/claim_environment_with_krafa.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2709,7 +2585,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2725,21 +2601,22 @@ pipeline config after converting master pipelines* to use capybara helpers
               </variable>
             </environmentvariables>
             <tasks>
-              <exec command="./scripts/fetch-release-from-bosh-io.sh" workingdir="p-runtime">
-                <arg>cf</arg>
-                <arg>cf-release</arg>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/fetch_cf_release_from_bosh_io.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh ./scripts/build_pivotal.sh</arg>
+                <arg>./scripts/gocd/build_pivotal.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh ./scripts/runtime/upload_pivotal.sh</arg>
+                <arg>./scripts/gocd/upload_pivotal.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2764,13 +2641,13 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[vsphere,stable]'</arg>
+                <arg>./scripts/gocd/download_vsphere_stable_om.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
+                <arg>./scripts/gocd/install_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2792,14 +2669,7 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.5]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.5]'</arg>
+                <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2817,9 +2687,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,45]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_microbosh_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2851,15 +2721,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},runtime.pivotal]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.5,runtime.pivotal,cf]'</arg>
+                <arg>./scripts/gocd/upload_built_ert_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2879,7 +2743,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2899,14 +2763,14 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh ./scripts/util/collect_bosh_logs.sh $RELENG_ENV ../bosh_logs</arg>
+                <arg>./scripts/gocd/collect_bosh_logs.sh</arg>
                 <runif status="any" />
               </exec>
             </tasks>
@@ -2925,9 +2789,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test.sh</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/run_cats.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2952,7 +2816,7 @@ pipeline config after converting master pipelines* to use capybara helpers
             <tasks>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
+                <arg>./scripts/gocd/release_claim.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3014,13 +2878,9 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="claim_env">
             <tasks>
               <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:claim_with_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>echo "export RELENG_ENV=$(./docker_run.sh bundle exec rake --trace krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh</arg>
+                <arg>./scripts/gocd/claim_environment_with_krafa.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3040,7 +2900,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3065,13 +2925,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh xvfb-run -a "rake opsmgr:bucket:get[ova/${INITIAL_OVA},${INITIAL_OVA}]"</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a "rake opsmgr:install[$RELENG_ENV,$INITIAL_OVA]"</arg>
+                <arg>./scripts/gocd/install_initial_ova_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3089,14 +2943,7 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.4]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.4]'</arg>
+                <arg>./scripts/gocd/configure_microbosh_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3114,9 +2961,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,45]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_microbosh_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3148,14 +2995,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; scripts/run_in_docker.sh scripts/runtime/download_pivotal_with_gof3r.sh</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.4,$RUNTIME_DOT_PIVOTAL_FILE,cf]'</arg>
+                <arg>./scripts/gocd/upload_ert_1_4_on_om_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3174,7 +3016,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.4,1.4]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_4_on_om_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3193,7 +3035,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3219,33 +3061,33 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:export_installation[$RELENG_ENV,1.4,export]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/export_installation_from_om_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/destroy_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy:opsmgr[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/download_vsphere_stable_om.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[vsphere,stable]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/install_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:import_installation[$RELENG_ENV,1.5,export]'</arg>
+                <arg>./scripts/gocd/import_installation_to_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3260,21 +3102,22 @@ pipeline config after converting master pipelines* to use capybara helpers
               </variable>
             </environmentvariables>
             <tasks>
-              <exec command="./scripts/fetch-release-from-bosh-io.sh" workingdir="p-runtime">
-                <arg>cf</arg>
-                <arg>cf-release</arg>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/fetch_cf_release_from_bosh_io.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh ./scripts/build_pivotal.sh</arg>
+                <arg>./scripts/gocd/build_pivotal.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh ./scripts/runtime/upload_pivotal.sh</arg>
+                <arg>./scripts/gocd/upload_pivotal.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3308,15 +3151,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},new_runtime.pivotal]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_upgrade[$RELENG_ENV,1.5,new_runtime.pivotal,cf]'</arg>
+                <arg>./scripts/gocd/upgrade_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3336,7 +3173,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3356,7 +3193,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3374,9 +3211,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test.sh</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/run_cats.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3401,7 +3238,7 @@ pipeline config after converting master pipelines* to use capybara helpers
             <tasks>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
+                <arg>./scripts/gocd/release_claim.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3440,13 +3277,9 @@ pipeline config after converting master pipelines* to use capybara helpers
           <job name="claim_env">
             <tasks>
               <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:claim_with_internet[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>echo "export RELENG_ENV=$(./docker_run.sh bundle exec rake --trace krafa:print_environment_name[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}])" &gt; releng_env.sh</arg>
+                <arg>./scripts/gocd/claim_environment_with_krafa.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3466,7 +3299,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3491,13 +3324,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./docker_run.sh xvfb-run -a "rake opsmgr:bucket:get[ova/${INITIAL_OVA},${INITIAL_OVA}]"</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a "rake opsmgr:install[$RELENG_ENV,$INITIAL_OVA]"</arg>
+                <arg>./scripts/gocd/install_initial_ova_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3515,14 +3342,7 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-e</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:add_first_user[$RELENG_ENV,1.4]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:microbosh:configure[$RELENG_ENV,1.4]'</arg>
+                <arg>./scripts/gocd/configure_microbosh_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3540,9 +3360,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,45]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_microbosh_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3574,14 +3394,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; scripts/run_in_docker.sh scripts/runtime/download_pivotal_with_gof3r.sh</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_add[$RELENG_ENV,1.4,$RUNTIME_DOT_PIVOTAL_FILE,cf]'</arg>
+                <arg>./scripts/gocd/upload_ert_1_4_on_om_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3600,7 +3415,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.4,1.4]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_4_on_om_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3619,7 +3434,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.4,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_4.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3645,33 +3460,33 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:export_installation[$RELENG_ENV,1.4,export]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/export_installation_from_om_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/destroy_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:destroy:opsmgr[$RELENG_ENV]'</arg>
+                <arg>./scripts/gocd/download_vsphere_stable_om.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:download[vsphere,stable]'</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/install_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:install[$RELENG_ENV,ops_man_image]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:import_installation[$RELENG_ENV,1.5,export]'</arg>
+                <arg>./scripts/gocd/import_installation_to_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3703,15 +3518,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>RUNTIME_DOT_PIVOTAL_FILE=$(cat ../cf-pivotal-artifacts-metadata/cf-pivotal.blobkey) ./docker_run.sh xvfb-run -a 'rake opsmgr:bucket:get[${RUNTIME_DOT_PIVOTAL_FILE},new_runtime.pivotal]'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:product:upload_upgrade[$RELENG_ENV,1.5,new_runtime.pivotal,cf]'</arg>
+                <arg>./scripts/gocd/upgrade_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3731,7 +3540,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake ert:configure[$RELENG_ENV,1.5,1.5]'</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3751,7 +3560,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh xvfb-run -a 'rake opsmgr:trigger_install[$RELENG_ENV,1.5,240]'</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3769,9 +3578,9 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
                 <arg>-x</arg>
-                <arg>source ./releng_env.sh &amp;&amp; ./docker_run.sh scripts/runtime/post_install_test.sh</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/run_cats.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -3785,7 +3594,7 @@ pipeline config after converting master pipelines* to use capybara helpers
             <tasks>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
-                <arg>./docker_run.sh bundle exec rake --trace krafa:release_claim[${GO_PIPELINE_NAME}-${GO_PIPELINE_COUNTER}]</arg>
+                <arg>./scripts/gocd/release_claim.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
