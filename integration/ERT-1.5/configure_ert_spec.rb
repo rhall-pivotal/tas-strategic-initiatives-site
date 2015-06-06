@@ -106,7 +106,11 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
   def availability_zones_for_product(product:)
     visit '/'
     click_on "show-#{product}-configure-action"
-    click_on "show-#{product}-availability-zone-assignment-action"
+
+    az_selector = "show-#{product}-availability-zone-assignment-action"
+    return [] unless has_link? az_selector
+
+    click_on az_selector
     all("#{AVAILABILITY_ZONE_INPUT_SELECTOR}[checked='checked']").map do |checkbox|
       find("label[for='#{checkbox[:id]}']").text
     end
