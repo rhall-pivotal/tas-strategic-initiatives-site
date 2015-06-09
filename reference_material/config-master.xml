@@ -112,6 +112,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         <variable name="KRAFA_PASSWORD">
           <value>bet90onions</value>
         </variable>
+        <variable name="IAAS">
+          <value>aws</value>
+        </variable>
       </environmentvariables>
       <materials>
         <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
@@ -417,6 +420,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         <variable name="KRAFA_PASSWORD">
           <value>bet90onions</value>
         </variable>
+        <variable name="IAAS">
+          <value>vsphere</value>
+        </variable>
       </environmentvariables>
       <materials>
         <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals" />
@@ -650,6 +656,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         <jobs>
           <job name="release-claim">
             <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>./scripts/gocd/release_claim.sh</arg>
@@ -673,6 +682,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
         <variable name="INTERNETLESS">
           <value>true</value>
+        </variable>
+        <variable name="IAAS">
+          <value>vsphere</value>
         </variable>
       </environmentvariables>
       <materials>
@@ -906,6 +918,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         <jobs>
           <job name="release-claim">
             <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>./scripts/gocd/release_claim.sh</arg>
@@ -926,6 +941,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
         <variable name="KRAFA_PASSWORD">
           <value>bet90onions</value>
+        </variable>
+        <variable name="IAAS">
+          <value>vsphere</value>
         </variable>
       </environmentvariables>
       <materials>
@@ -1214,6 +1232,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         <jobs>
           <job name="release-claim">
             <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>./scripts/gocd/release_claim.sh</arg>
@@ -1240,6 +1261,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
         <variable name="KRAFA_BASE_URL">
           <value>http://krafa.cfapps.io</value>
+        </variable>
+        <variable name="IAAS">
+          <value>vsphere</value>
         </variable>
       </environmentvariables>
       <materials>
@@ -1321,6 +1345,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
         <variable name="RUNTIME_DOT_PIVOTAL_FILE">
           <value>cf-1.4.2.0.pivotal</value>
+        </variable>
+        <variable name="IAAS">
+          <value>aws</value>
         </variable>
       </environmentvariables>
       <materials>
@@ -1688,6 +1715,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         <variable name="KRAFA_PASSWORD">
           <value>bet90onions</value>
         </variable>
+        <variable name="IAAS">
+          <value>openstack</value>
+        </variable>
       </environmentvariables>
       <materials>
         <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals" />
@@ -1964,6 +1994,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         <variable name="KRAFA_PASSWORD">
           <value>bet90onions</value>
         </variable>
+        <variable name="IAAS">
+          <value>vsphere</value>
+        </variable>
       </environmentvariables>
       <materials>
         <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
@@ -2222,6 +2255,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         <jobs>
           <job name="release-claim">
             <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>./scripts/gocd/release_claim.sh</arg>
@@ -2242,6 +2278,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
         <variable name="KRAFA_PASSWORD">
           <value>bet90onions</value>
+        </variable>
+        <variable name="IAAS">
+          <value>aws</value>
         </variable>
       </environmentvariables>
       <materials>
@@ -2797,6 +2836,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         <jobs>
           <job name="release_claim">
             <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>./scripts/gocd/release_claim.sh</arg>
@@ -3219,6 +3261,9 @@ pipeline config after converting master pipelines* to use capybara helpers
               </variable>
             </environmentvariables>
             <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>./scripts/gocd/release_claim.sh</arg>
@@ -3575,6 +3620,9 @@ pipeline config after converting master pipelines* to use capybara helpers
         <jobs>
           <job name="release-claim">
             <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>./scripts/gocd/release_claim.sh</arg>
