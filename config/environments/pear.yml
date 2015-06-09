@@ -14,20 +14,26 @@ vm_shepherd:
       07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/pear
     outputs:
       ssh_key_name: releng-dev
-      security_group: sg-642d2700
-      public_subnet_id: subnet-e31977ba
-      private_subnet_id: subnet-e11977b8
-      s3_bucket_name: pear-opsmanstack-16bxo3isxp-pcfopsmanagers3bucket-1ec8f90u4u8ay
+      security_group: sg-080a1b6c
+      public_subnet_id: subnet-3c781065
+      private_subnet_id: subnet-3f781066
+      s3_bucket_name: pear-opsmanstack-2cgiylcbeu-pcfopsmanagers3bucket-16v2lxdb52g7a
   vm_configs:
     - vm_name: Pear OpsManager
 
 ops_manager:
-  url: https://52.5.184.4/
+  url: https://54.85.194.135/
   username: pivotalcf
   password: pivotalcf
   ntp_servers: 0.amazon.pool.ntp.org
   availability_zones:
   - iaas_identifier: us-east-1a
+  mysql:
+    host: pp184mkt671zqmt.cttr7yicvgz4.us-east-1.rds.amazonaws.com
+    port: 3306
+    user: bosh
+    password: bosh1234
+    dbname: bosh
 
   aws:
     aws_access_key: AKIAI43577ARGHXPWIMQ

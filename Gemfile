@@ -7,6 +7,8 @@ gem 'bosh_cli', '1.2818.0', require: false # a dependency of vara but version sh
 gem 'opsmgr', git: 'git@github.com:pivotal-cf/opsmgr', branch: 'features/cloudformation-spike'
 gem 'vsphere_clients', git: 'git@github.com:pivotal-cf-experimental/vsphere_clients'
 gem 'recursive-open-struct', '0.5.0'
+gem 'mysql2'
+gem 'net-ssh-gateway'
 
 group :development, :test do
   gem 'rspec'
