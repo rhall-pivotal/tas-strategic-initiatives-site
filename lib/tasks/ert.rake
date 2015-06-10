@@ -15,6 +15,20 @@ namespace :ert do
     creator.create_dbs
   end
 
+  desc 'Update DNS for an ELB for Elastic Runtime [:environment]'
+  task :update_dns_elb, [:environment] do |_, args|
+    require 'opsmgr/log'
+    require 'opsmgr/environments'
+    require 'ert/dns_updater'
+
+    logger = Opsmgr.logger_for('Rake')
+    logger.info "Updating DNS record for #{args[:environment]}"
+
+    environment = Opsmgr::Environments.for(args.environment)
+    dns_updater = Ert::DnsUpdater.new(settings: environment.settings)
+    dns_updater.update_record
+  end
+
   desc 'Configure Elastic Runtime [:environment, :ert_version, :om_version]'
   task :configure, [:environment, :ert_version, :om_version] do |_, args|
     IntegrationSpecRunner.new(
