@@ -88,6 +88,17 @@ describe Ert::DnsUpdater do
     it 'creates a route53 object using environment variables for credentials' do
       expect(dns_updater.route53).to eq(r53)
     end
+
+    context 'when the AWS credentials are not set as environment variables' do
+      before do
+        stub_const('ENV', {})
+      end
+
+      it 'raises if the environment variables are not set' do
+        expect { Ert::DnsUpdater.new(settings: settings) }
+          .to raise_error(AWS::Errors::MissingCredentialsError)
+      end
+    end
   end
 
   describe '#update_record' do
