@@ -34,7 +34,7 @@ bundle exec rake opsmgr:destroy[environment]
 ```
 
 #### Download an Ops Manager Image
-Obtain the ACCESS_KEY_ID and SECRET_ACCESS_KEY from Last Pass. The credentials are in `Shared - Ops Manager Secure` as `AWS "+opsmanager" Account "RelengToolsReader" IAM User access key`. Contact the Ops Manager team for access.
+Obtain the ACCESS_KEY_ID and SECRET_ACCESS_KEY from LastPass. The credentials are in `Shared - Release Engineering<->Ops Manager` as `AWS "+opsmanager" Account "RelengToolsReader" IAM User access key`. Contact ask+cf@pivotal.io for access to this credential in LastPass.
 
 Replace \<iaas> with `openstack`, `aws`, or `vsphere`
 
