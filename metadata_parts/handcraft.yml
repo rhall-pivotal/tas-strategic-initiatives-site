@@ -80,7 +80,7 @@ install_time_verifiers:
       bucket_name: .properties.system_blobstore.external.bucket
 
 post_deploy_errands:
-  - name: push-console
+  - name: push-apps-manager
   - name: smoke-tests
   - name: push-app-usage-service
   - name: notifications
@@ -906,7 +906,7 @@ job_types:
   - name: consoledb
     label: Apps Manager Database
     resource_label: Apps Manager Database
-    description: A Web application will be deployed to Pivotal CF Elastic Runtime at console.your-app-domain for managing applications. These fields are for the console to send invitations and other emails.
+    description: Apps Manager Database
     templates:
       - name: postgres
         release: cf
@@ -2032,10 +2032,10 @@ job_types:
         default:
           identity: admin
 
-      - name: push_console_credentials
+      - name: push_apps_manager_credentials
         type: simple_credentials
         default:
-          identity: push_console
+          identity: push_apps_manager
 
       - name: run_smoke_tests_credentials
         type: simple_credentials
@@ -2078,7 +2078,7 @@ job_types:
         default:
           identity: doppler
 
-      - name: console_client_credentials
+      - name: apps_manager_client_credentials
         type: simple_credentials
         default:
           identity: portal
@@ -2184,16 +2184,16 @@ job_types:
         asset_base_url: '/resources/pivotal'
         protocol: https
         tiles:
-          - name: Pivotal Dev Console
-            login-link:  "https://console.(( .cloud_controller.system_domain.value ))"
+          - name: Pivotal Apps Manager
+            login-link: "https://apps.(( .cloud_controller.system_domain.value ))"
             image: "/resources/pivotal/images/dev-console-logo-gray.png"
             image-hover: "/resources/pivotal/images/dev-console-logo-teal.png"
 
         brand: pivotal
         links:
-          home: "https://console.(( .cloud_controller.system_domain.value ))"
-          passwd: "https://console.(( .cloud_controller.system_domain.value ))/password_resets/new"
-          signup: "https://console.(( .cloud_controller.system_domain.value ))/register"
+          home: "https://apps.(( .cloud_controller.system_domain.value ))"
+          passwd: "https://apps.(( .cloud_controller.system_domain.value ))/password_resets/new"
+          signup: "https://apps.(( .cloud_controller.system_domain.value ))/register"
         uaa_base: "https://uaa.(( .cloud_controller.system_domain.value ))"
         notifications:
           url: "https://notifications.(( .cloud_controller.system_domain.value ))"
@@ -2215,6 +2215,7 @@ job_types:
               disable: false
               whitelist:
               - https://console.(( .cloud_controller.system_domain.value ))/
+              - https://apps.(( .cloud_controller.system_domain.value ))/
             url: "/login"
       uaa:
         require_https: true
@@ -2259,9 +2260,9 @@ job_types:
             authorities: "oauth.login,scim.write,clients.read,notifications.write,critical_notifications.write,emails.write,scim.userids,password.write"
             authorized-grant-types: "authorization_code,client_credentials,refresh_token"
             scope: "openid,oauth.approvals"
-          (( console_client_credentials.identity )):
-            id: (( console_client_credentials.identity ))
-            secret: (( console_client_credentials.password ))
+          (( apps_manager_client_credentials.identity )):
+            id: (( apps_manager_client_credentials.identity ))
+            secret: (( apps_manager_client_credentials.password ))
             override: true
             autoapprove: true
             authorities: "scim.write,scim.read,cloud_controller.read,cloud_controller.write,password.write,uaa.admin,uaa.resource,cloud_controller.admin,emails.write,notifications.write"
@@ -2342,7 +2343,7 @@ job_types:
           userids_enabled: true
           users:
           - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose,notification_preferences.read,notification_preferences.write,notifications.manage,notification_templates.read,notification_templates.write,emails.write,notifications.write,zones.read,zones.write
-          - (( push_console_credentials.identity ))|(( push_console_credentials.password ))|cloud_controller.admin
+          - (( push_apps_manager_credentials.identity ))|(( push_apps_manager_credentials.password ))|cloud_controller.admin
           - (( run_smoke_tests_credentials.identity ))|(( run_smoke_tests_credentials.password ))|cloud_controller.admin
           - (( system_services_credentials.identity ))|(( system_services_credentials.password ))|cloud_controller.admin
           - (( system_verification_credentials.identity ))|(( system_verification_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support
@@ -2867,7 +2868,7 @@ job_types:
           doppler:
             secret: (( .uaa.doppler_client_credentials.password ))
 
-  - name: push-console
+  - name: push-apps-manager
     label: Push Apps Manager
     resource_label: Push Apps Manager
     description: Pushes the Pivotal Apps Manager application to your Elastic Runtime installation
@@ -2931,17 +2932,14 @@ job_types:
 
     manifest: |
       cf:
-        console_subdomain: console
         api_url: "https://api.(( .cloud_controller.system_domain.value ))"
-        admin_username: (( .uaa.push_console_credentials.identity ))
-        admin_password: (( .uaa.push_console_credentials.password ))
+        admin_username: (( .uaa.push_apps_manager_credentials.identity ))
+        admin_password: (( .uaa.push_apps_manager_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
-        console_space_name: apps_manager
-        console_app_name: apps_manager
       services:
         authentication:
-          CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
-          CF_CLIENT_SECRET: (( .uaa.console_client_credentials.password ))
+          CF_CLIENT_ID: (( .uaa.apps_manager_client_credentials.identity ))
+          CF_CLIENT_SECRET: (( .uaa.apps_manager_client_credentials.password ))
           CF_LOGIN_SERVER_URL: "https://login.(( .cloud_controller.system_domain.value ))"
           CF_UAA_SERVER_URL: "https://uaa.(( .cloud_controller.system_domain.value ))"
         smtp:
@@ -2954,22 +2952,11 @@ job_types:
         secret_token: (( secret_token.value ))
         cf_cc_api_url: "https://api.(( .cloud_controller.system_domain.value ))"
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
-        cf_console_url: "https://console.(( .cloud_controller.system_domain.value ))"
+        cf_console_url: "https://apps.(( .cloud_controller.system_domain.value ))"
         cf_notifications_service_url: "https://notifications.(( .cloud_controller.system_domain.value ))"
         default_from: (( .properties.smtp_from.value ))
         usage_service_host: app-usage.(( .cloud_controller.system_domain.value ))
         bundle_without: test development hosted_only
-        rack_env: production
-        rails_env: production
-        show_app_events: true
-        on_premise: true
-        include_app_statuses_on_org_dashboard: true
-        release_version: (( .properties.product_version.value ))
-      console:
-        web_instances: 1
-        web_memory: 2G
-        workers_memory: 1536MB
-        scheduler_memory: 1536MB
       databases:
         console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
       ssl:
@@ -3069,41 +3056,24 @@ job_types:
 
     manifest: |
       cf:
-        console_subdomain: console
         api_url: "https://api.(( .cloud_controller.system_domain.value ))"
-        admin_username: (( .uaa.push_console_credentials.identity ))
-        admin_password: (( .uaa.push_console_credentials.password ))
+        admin_username: (( .uaa.push_apps_manager_credentials.identity ))
+        admin_password: (( .uaa.push_apps_manager_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
       services:
         authentication:
-          CF_CLIENT_ID: (( .uaa.console_client_credentials.identity ))
-          CF_CLIENT_SECRET: (( .uaa.console_client_credentials.password ))
+          CF_CLIENT_ID: (( .uaa.apps_manager_client_credentials.identity ))
+          CF_CLIENT_SECRET: (( .uaa.apps_manager_client_credentials.password ))
           CF_LOGIN_SERVER_URL: "https://login.(( .cloud_controller.system_domain.value ))"
           CF_UAA_SERVER_URL: "https://uaa.(( .cloud_controller.system_domain.value ))"
-        smtp:
-          address: (( smtp_address.value ))
-          port: (( smtp_port.value ))
-          user_name: (( smtp_credentials.identity ))
-          password: (( smtp_credentials.password ))
-          enable_starttls_auto: (( smtp_enable_starttls_auto.value ))
       env:
         secret_token: (( secret_token.value ))
         cf_cc_api_url: "https://api.(( .cloud_controller.system_domain.value ))"
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
-        cf_console_url: "https://console.(( .cloud_controller.system_domain.value ))"
+        cf_console_url: "https://apps.(( .cloud_controller.system_domain.value ))"
         default_reply_to: (( reply_to.value ))
         default_from: (( .properties.smtp_from.value ))
-        usage_service_host: app-usage.(( .cloud_controller.system_domain.value ))
         bundle_without: test development hosted_only
-        rack_env: production
-        rails_env: production
-        show_app_events: true
-        on_premise: true
-        include_app_statuses_on_org_dashboard: true
-      app_usage_service:
-        event_fetching_offset: 60
-        allow_test_data_creation: false
-        allow_viewing_logs: false
       databases:
         app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
       ssl:
