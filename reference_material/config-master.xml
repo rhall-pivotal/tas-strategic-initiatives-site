@@ -1315,7 +1315,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="cf-pivotal-artifacts-metadata">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./scripts/gocd/copy_to_release_buckets.sh</arg>
+                <arg>../p-runtime/scripts/gocd/copy_to_release_buckets.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
