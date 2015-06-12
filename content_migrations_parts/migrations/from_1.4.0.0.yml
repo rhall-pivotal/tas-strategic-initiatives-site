@@ -23,3 +23,7 @@ rules:
     selector: ""
     from: "jobs.[identifier=login].properties.[identifier=sso_xml]"
     to: "jobs.[identifier=uaa].properties"
+
+  - type: update
+    selector: jobs.[identifier=uaa].properties.[identifier=console_client_credentials]
+    to: apps_manager_client_credentials
