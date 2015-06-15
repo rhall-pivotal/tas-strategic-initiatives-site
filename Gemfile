@@ -4,7 +4,7 @@ gem 'krafa-client', '0.0.11', git: 'git@github.com:pivotal-cf-experimental/krafa
 gem 'vara',     '0.12.0',   require: false, git: 'git@github.com:pivotal-cf/vara.git'
 gem 'bosh_cli', '1.2818.0', require: false # a dependency of vara but version should match bosh stemcell: metadata_parts/binaries.yml
 
-gem 'opsmgr', git: 'git@github.com:pivotal-cf/opsmgr', branch: 'features/cloudformation-spike'
+gem 'opsmgr', git: 'git@github.com:pivotal-cf/opsmgr', branch: 'features/mustache-cloudformation-96499896'
 gem 'vsphere_clients', git: 'git@github.com:pivotal-cf-experimental/vsphere_clients'
 gem 'recursive-open-struct', '0.5.0'
 gem 'mysql2'

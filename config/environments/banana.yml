@@ -1,28 +1,29 @@
-name: {{ name }}
+name: banana
 iaas_type: aws
 vm_shepherd:
   env_config:
-    stack_name: {{ name }}
+    stack_name: banana
     aws_access_key: AKIAI43577ARGHXPWIMQ
     aws_secret_key: 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
     region: us-east-1
     json_file: config/ert_cloudformation.json
     parameters:
       01NATKeyPair: releng-dev
-      05RdsUsername: bosh
-      06RdsPassword: bosh1234
-      07SSLCertificateARN: {{ ssl_certificate_arn }}
+      05RdsUsername: pivotalcf
+      06RdsPassword: pivotalcf
+      07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/banana
     outputs:
       ssh_key_name: releng-dev
-      security_group: {{ security_group }}
-      public_subnet_id: {{ public_subnet_id }}
-      private_subnet_id: {{ private_subnet_id }}
-      s3_bucket_name: {{ s3_bucket_name }}
+      ssh_key_name: {{ssh_key_pair_name}}
+      security_group: {{ops_manager_security_group_id}}
+      public_subnet_id: {{public_subnet_id}}
+      private_subnet_id: {{private_subnet_id}}
+      s3_bucket_name: {{ ops_manager_s3_bucket_name }}
   vm_configs:
-    - vm_name: {{ ops_manager_name }}
+    - vm_name: Banana OpsManager
 
 ops_manager:
-  url: {{ ops_manager_url }}
+  url: https://54.86.46.89
   username: pivotalcf
   password: pivotalcf
   ntp_servers: 0.amazon.pool.ntp.org
@@ -30,11 +31,12 @@ ops_manager:
   - iaas_identifier: us-east-1a
 
   aws:
-    aws_access_key: AKIAI43577ARGHXPWIMQ
-    aws_secret_key: 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
-    vpc_id: {{ vpc_id }}
-    security_group: {{ pcf_vms_security_group }}
-    key_pair_name: releng-dev
+    aws_access_key: {{iam_aws_access_key_id}}
+    aws_secret_key: {{iam_aws_secret_access_key}}
+    vpc_id: {{vpc}}
+    security_group: {{vms_security_group_name}}
+    key_pair_name: {{ssh_key_pair_name}}
+    region: {{region}}
     ssh_key: |
       -----BEGIN RSA PRIVATE KEY-----
       MIIEpAIBAAKCAQEAhU5ETA/Pt42waL2WDKLBfhIXlaQ3YHem3Tojn044bs3GpGBWeHESchL6Ndjv
@@ -70,9 +72,10 @@ ops_manager:
 
   elastic_runtime:
     name: cf
-    system_domain: {{ system_domain }}
-    apps_domain: {{ apps_domain }}
-    elb_name: {{ elb_name }}
+    system_domain: banana.cf-app.com
+    apps_domain: banana.cf-app.com
+    elb_name: banana-pcf-elb
+    elb_dns_name: {{ ert_elb_dns_name }}
     smtp:
       from: identitystaging@mailinator.com
       address: smtp.sendgrid.net
@@ -83,7 +86,24 @@ ops_manager:
       enable_starttls_auto: true
       smtp_auth_mechanism: plain
     ssl_certificate: |
-      {{ ssl_certificate }}
+      -----BEGIN CERTIFICATE-----
+      MIIDKjCCAhKgAwIBAgIUSmRqW5Dbjdhwhcn9NKffk91jY84wDQYJKoZIhvcNAQEF
+      BQAwPTELMAkGA1UEBhMCVVMxEDAOBgNVBAoMB1Bpdm90YWwxHDAaBgNVBAMMEyou
+      YmFuYW5hLmNmLWFwcC5jb20wHhcNMTUwNjA5MjIwNjExWhcNMTcwNjA4MjIwNjEx
+      WjA9MQswCQYDVQQGEwJVUzEQMA4GA1UECgwHUGl2b3RhbDEcMBoGA1UEAwwTKi5i
+      YW5hbmEuY2YtYXBwLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB
+      AKbFhFXB6S4JVQ2Xn6wHDxRf8R9HCEDQy0nnNI5nog5oH6FsA+Tc3AdShTyZiePd
+      XJ94reO2f51yCLP1fU4JeYhX7Sffn7eYVrgpsf6ucUMRhUmaVcGSyolMEo/mB/lW
+      ikvAC7Vvh/OnfeTCcXEaYSdQRHAJ/i+ooQOWIsYmPmWf6IEESrGp1QGX4/0P47Fm
+      AORrO1k3iQXd7l28RzZ5FmrPXuKyVBV3s1oqtX0dqR8hyi5SUs8Pbtv9F1UCpdGq
+      a0FQ0dtMEcxowJshoVvNVGAarZmXpw8eLPcf73Qn64qt40ExpMGLUMYaRxGVR+EW
+      AcDOiCRFsEWaKfLejdULfWcCAwEAAaMiMCAwHgYDVR0RBBcwFYITKi5iYW5hbmEu
+      Y2YtYXBwLmNvbTANBgkqhkiG9w0BAQUFAAOCAQEAEhsat3v4/Aw4+ZyisYXpc+YE
+      XtXwAVje5OVXj9skLioHsP5rNhtKtZGP/3A5xbFMWYbsc4hM6+WH75jDmEohJQ0Q
+      vNKAWtD6qVMCEGiV6Ujzq98A5F85lErB/lrSrTpuCSFPfB+qwjtTbMxSO+afxffE
+      wXm7MppEOqq+GVE6IJZPsTeYhTCBBymNVi6TaRUCplpohuS6n7lG/MwIA/HdJWK6
+      im9JeB57bPzrnZQrGcLGi37e+owauwhIN5brT5G1AVUpDGohmn6s6PLOxIbkOnLp
+      4r9UdJubhNaas35wCaQrZNuJJzyrJ3s4ot0tAik1yjYGQInweyAA4JkmuLy/FQ==
+      -----END CERTIFICATE-----
     ssl_private_key: |
-      {{ ssl_private_key }}
     trust_self_signed_certificates: true
