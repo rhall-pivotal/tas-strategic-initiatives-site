@@ -21,9 +21,10 @@ vm_shepherd:
       s3_bucket_name: {{ ops_manager_s3_bucket_name }}
   vm_configs:
     - vm_name: Pear OpsManager
+      vm_ip_address: 52.6.145.125
 
 ops_manager:
-  url: https://54.85.194.135/
+  url: https://pcf.pear.cf-app.com
   username: pivotalcf
   password: pivotalcf
   ntp_servers: 0.amazon.pool.ntp.org
