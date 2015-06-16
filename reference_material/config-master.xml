@@ -2945,6 +2945,14 @@ pipeline config after converting master pipelines* to use capybara helpers
             </artifacts>
           </job>
           <job name="prepare_environment_and_deploy_opsman">
+            <environmentvariables>
+              <variable name="ACCESS_KEY_ID">
+                <value>AKIAIFHBKH3ZINMIAQUQ</value>
+              </variable>
+              <variable name="SECRET_ACCESS_KEY">
+                <value>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</value>
+              </variable>
+            </environmentvariables>
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
                 <runif status="passed" />
@@ -3072,6 +3080,18 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5_external_dbs.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5_external_file_storage.sh</arg>
+                <runif status="passed" />
+              </exec>
             </tasks>
             <artifacts>
               <test src="p-runtime/tmp" />
@@ -3092,16 +3112,8 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-e</arg>
-                <arg>-c</arg>
-                <arg>./scripts/gocd/collect_bosh_logs.sh</arg>
-                <runif status="any" />
-              </exec>
             </tasks>
             <artifacts>
-              <artifact src="bosh_logs" dest="bosh_logs" />
               <test src="p-runtime/tmp" />
             </artifacts>
           </job>
