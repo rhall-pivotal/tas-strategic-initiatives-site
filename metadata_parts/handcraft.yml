@@ -1198,8 +1198,6 @@ job_types:
             description: Cloud Foundry Linux-based filesystem
           - name: windows2012R2
             description: "Microsoft Windows / .Net 64 bit"
-          - name: lucid64
-            description: "Ubuntu 10.04 on x86-64"
         staging_upload_user: (( staging_upload_credentials.identity ))
         staging_upload_password: (( staging_upload_credentials.password ))
         tasks_disabled: true
@@ -3546,6 +3544,7 @@ job_types:
         include_operator: true
         include_services: true
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+        skip_regex: lucid64
 
   - name: acceptance-tests-internetless
     label: Run CF Acceptance Tests without internet
@@ -3616,6 +3615,7 @@ job_types:
         include_operator: true
         include_services: true
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+        skip_regex: lucid64
 
   - name: compilation
     label: Compilation
