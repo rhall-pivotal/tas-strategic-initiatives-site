@@ -1,14 +1,27 @@
 name: lime
 iaas_type: aws
-vm_shepherd_configs:
-  - aws_access_key: AKIAI43577ARGHXPWIMQ
+vm_shepherd:
+  env_config:
+    stack_name: lime
+    aws_access_key: AKIAI43577ARGHXPWIMQ
     aws_secret_key: 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
-    ssh_key_name: releng-dev
-    public_subnet_id: subnet-1b961942
-    private_subnet_id: subnet-18961941
-    security_group: sg-09493c6d
-    elastic_ip_id: eipalloc-825ac0e7
-    vm_name: 'OpsManager lime'
+    region: us-east-1
+    json_file: config/ert_cloudformation.json
+    parameters:
+      01NATKeyPair: releng-dev
+      05RdsUsername: pivotalcf
+      06RdsPassword: pivotalcf
+      07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/lime
+    outputs:
+      ssh_key_name: releng-dev
+      ssh_key_name: {{ssh_key_pair_name}}
+      security_group: {{ops_manager_security_group_id}}
+      public_subnet_id: {{public_subnet_id}}
+      private_subnet_id: {{private_subnet_id}}
+      s3_bucket_name: {{ s3_bucket_name }}
+  vm_configs:
+    - vm_name: Lime OpsManager
+      vm_ip_address: 52.4.189.82
 
 ops_manager:
   url: https://pcf.lime.cf-app.com/
@@ -19,12 +32,12 @@ ops_manager:
   - iaas_identifier: us-east-1a
 
   aws:
-    aws_access_key: AKIAI43577ARGHXPWIMQ
-    aws_secret_key: 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
-    vpc_id: vpc-4893cf2d
-    security_group: lime-pcfVMs
-    key_pair_name: releng-dev
-    region: us-east-1
+    aws_access_key: {{iam_aws_access_key_id}}
+    aws_secret_key: {{iam_aws_secret_access_key}}
+    vpc_id: {{vpc}}
+    security_group: {{vms_security_group_name}}
+    key_pair_name: {{ssh_key_pair_name}}
+    region: {{region}}
     ssh_key: |
       -----BEGIN RSA PRIVATE KEY-----
       MIIEpAIBAAKCAQEAhU5ETA/Pt42waL2WDKLBfhIXlaQ3YHem3Tojn044bs3GpGBWeHESchL6Ndjv
@@ -52,7 +65,7 @@ ops_manager:
 
   networks:
   - name: first-network
-    identifier: subnet-18961941
+    identifier: {{ private_subnet_id }}
     subnet: 10.0.16.0/20
     reserved_ips: 10.0.16.2-10.0.16.4
     dns: 10.0.0.2
@@ -62,7 +75,18 @@ ops_manager:
     name: cf
     system_domain: lime.cf-app.com
     apps_domain: lime.cf-app.com
-    elb_name: lime
+    elb_name: lime-pcf-elb
+    elb_dns_name: {{ ert_elb_dns_name }}
+    file_storage:
+      endpoint: https://s3.amazonaws.com
+      bucket: {{ s3_bucket_name }}
+      access_key: {{iam_aws_access_key_id}}
+      secret_key: {{iam_aws_secret_access_key}}
+    rds:
+      host: {{rds_address}}
+      port: {{rds_port}}
+      username: {{rds_username}}
+      password: {{rds_password}}
     smtp:
       from: identitystaging@mailinator.com
       address: smtp.sendgrid.net
