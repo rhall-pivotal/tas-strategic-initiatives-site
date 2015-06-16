@@ -5,10 +5,8 @@ module Ert
     def initialize(settings:)
       self.name = settings.name
       self.elb_dns_name = settings.ops_manager.elastic_runtime.elb_dns_name
-      access_key = ENV['ACCESS_KEY_ID']
-      secret_access_key = ENV['SECRET_ACCESS_KEY']
-      fail AWS::Errors::MissingCredentialsError,
-           'No credentials found; set ACCESS_KEY_ID and SECRET_ACCESS_KEY' unless access_key && secret_access_key
+      access_key = settings.vm_shepherd.env_config.aws_access_key
+      secret_access_key = settings.vm_shepherd.env_config.aws_secret_key
       self.route53 = AWS::Route53.new(
         access_key_id: access_key,
         secret_access_key: secret_access_key

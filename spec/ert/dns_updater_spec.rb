@@ -7,6 +7,12 @@ describe Ert::DnsUpdater do
   let(:settings) do
     RecursiveOpenStruct.new(
       'name' => 'some',
+      'vm_shepherd' => {
+        'env_config' => {
+          'aws_access_key' => 'some-access-key',
+          'aws_secret_key' => 'some-secret-key'
+        }
+      },
       'ops_manager' => {
         'elastic_runtime' => {
           'elb_dns_name' => 'some-fake-elb-dns-name'
@@ -73,7 +79,6 @@ describe Ert::DnsUpdater do
   subject(:dns_updater) { Ert::DnsUpdater.new(settings: settings) }
 
   before do
-    stub_const('ENV', 'ACCESS_KEY_ID' => 'some-access-key', 'SECRET_ACCESS_KEY' => 'some-secret-key')
     allow(AWS::Route53).to receive(:new)
       .with(
         access_key_id: 'some-access-key',
@@ -87,17 +92,6 @@ describe Ert::DnsUpdater do
   describe '#initialize' do
     it 'creates a route53 object using environment variables for credentials' do
       expect(dns_updater.route53).to eq(r53)
-    end
-
-    context 'when the AWS credentials are not set as environment variables' do
-      before do
-        stub_const('ENV', {})
-      end
-
-      it 'raises if the environment variables are not set' do
-        expect { Ert::DnsUpdater.new(settings: settings) }
-          .to raise_error(AWS::Errors::MissingCredentialsError)
-      end
     end
   end
 

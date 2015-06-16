@@ -37,4 +37,22 @@ namespace :ert do
       om_version: args.om_version
     ).configure_ert
   end
+
+  desc 'Configure Elastic Runtime External Databases [:environment, :ert_version, :om_version]'
+  task :configure_external_dbs, [:environment, :ert_version, :om_version] do |_, args|
+    IntegrationSpecRunner.new(
+      environment: args.environment,
+      ert_version: args.ert_version,
+      om_version: args.om_version
+    ).configure_external_dbs
+  end
+
+  desc 'Configure Elastic Runtime External File Storage [:environment, :ert_version, :om_version]'
+  task :configure_external_file_storage, [:environment, :ert_version, :om_version] do |_, args|
+    IntegrationSpecRunner.new(
+      environment: args.environment,
+      ert_version: args.ert_version,
+      om_version: args.om_version
+    ).configure_external_file_storage
+  end
 end

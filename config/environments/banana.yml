@@ -18,7 +18,7 @@ vm_shepherd:
       security_group: {{ops_manager_security_group_id}}
       public_subnet_id: {{public_subnet_id}}
       private_subnet_id: {{private_subnet_id}}
-      s3_bucket_name: {{ ops_manager_s3_bucket_name }}
+      s3_bucket_name: {{ s3_bucket_name }}
   vm_configs:
     - vm_name: Banana OpsManager
       vm_ip_address: 54.86.46.89
@@ -77,6 +77,16 @@ ops_manager:
     apps_domain: banana.cf-app.com
     elb_name: banana-pcf-elb
     elb_dns_name: {{ ert_elb_dns_name }}
+    file_storage:
+      endpoint: https://s3.amazonaws.com
+      bucket: {{ s3_bucket_name }}
+      access_key: {{iam_aws_access_key_id}}
+      secret_key: {{iam_aws_secret_access_key}}
+    rds:
+      host: {{rds_address}}
+      port: {{rds_port}}
+      username: {{rds_username}}
+      password: {{rds_password}}
     smtp:
       from: identitystaging@mailinator.com
       address: smtp.sendgrid.net

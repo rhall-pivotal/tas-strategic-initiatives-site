@@ -8,13 +8,13 @@ module Ert
     end
 
     def create_dbs
-      mysql_settings = settings.ops_manager.mysql
-      gateway.open(mysql_settings.host, mysql_settings.port) do |port|
+      rds_settings = settings.ops_manager.elastic_runtime.rds
+      gateway.open(rds_settings.host, rds_settings.port) do |port|
         mysql_client = Mysql2::Client.new(
           host: '127.0.0.1',
           port: port,
-          username: mysql_settings.user,
-          password: mysql_settings.password
+          username: rds_settings.username,
+          password: rds_settings.password
         )
 
         %w(ccdb uaa notifications autoscale console app_usage_service).each do |db_name|

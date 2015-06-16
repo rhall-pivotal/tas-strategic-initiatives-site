@@ -7,12 +7,14 @@ describe Ert::AwsDatabaseCreator do
     RecursiveOpenStruct.new(
       'ops_manager' => {
         'url' => 'https://some.host.name/',
-        'mysql' => {
-          'host' => 'some-host',
-          'port' => 555,
-          'user' => 'some-user',
-          'password' => 'some-password',
-          'dbname' => 'some-dbname',
+        'elastic_runtime' => {
+          'rds' => {
+            'host' => 'some-host',
+            'port' => 555,
+            'username' => 'some-user',
+            'password' => 'some-password',
+            'dbname' => 'some-dbname',
+          },
         },
         'aws' => {
           'ssh_key' => 'ops-manager-pem-data'
@@ -41,8 +43,8 @@ describe Ert::AwsDatabaseCreator do
       ).and_return(gateway)
 
       expect(gateway).to receive(:open).with(
-        settings.ops_manager.mysql.host,
-        settings.ops_manager.mysql.port,
+        settings.ops_manager.elastic_runtime.rds.host,
+        settings.ops_manager.elastic_runtime.rds.port,
       ).and_yield(444)
 
       aws_database_creator.create_dbs
@@ -52,8 +54,8 @@ describe Ert::AwsDatabaseCreator do
       expect(Mysql2::Client).to receive(:new).with(
         host: '127.0.0.1',
         port: 444,
-        username: settings.ops_manager.mysql.user,
-        password: settings.ops_manager.mysql.password,
+        username: settings.ops_manager.elastic_runtime.rds.username,
+        password: settings.ops_manager.elastic_runtime.rds.password,
       ).and_return(mysql2_client)
 
       aws_database_creator.create_dbs
