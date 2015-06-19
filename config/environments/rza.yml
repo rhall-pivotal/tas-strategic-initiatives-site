@@ -12,11 +12,11 @@ vm_shepherd:
       <<: *vcloud_creds
     vdc:
       name: VDC-M127900816-4614-293
-      catalog: release-engineering-1.5-clean
+      catalog: rza-releng-ops-manager-catalog
       network: VDC-M127900816-4614-293-default-routed
     vapp:
       ops_manager_name: releng-ops-manager
-      product_catalog: releng-pcf
+      product_catalog: rza-releng-cf
       product_names:
         - releng-pcf
       ip: 192.168.109.16
@@ -38,7 +38,7 @@ ops_manager:
     vdc:
       name: VDC-M127900816-4614-293
       storage_profile: SSD-Accelerated
-      catalog_name: cf
+      catalog_name: rza-releng-cf
   networks:
     - name: first-network
       identifier: VDC-M127900816-4614-293-default-routed
