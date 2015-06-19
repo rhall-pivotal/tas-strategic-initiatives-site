@@ -1,0 +1,64 @@
+vcloud_creds: &vcloud_creds
+  url: https://p3v13-vcd.vchs.vmware.com
+  organization: VDC-M127900816-4614-293
+  user: cf-release-engineering@pivotal.io
+  password: NmJSSDasP$2$
+
+name: rza
+iaas_type: vcloud
+vm_shepherd:
+  vm_configs:
+  - creds:
+      <<: *vcloud_creds
+    vdc:
+      name: VDC-M127900816-4614-293
+      catalog: release-engineering-1.5-clean
+      network: VDC-M127900816-4614-293-default-routed
+    vapp:
+      ops_manager_name: releng-ops-manager
+      product_catalog: releng-pcf
+      product_names:
+        - releng-pcf
+      ip: 192.168.109.16
+      public_ip: 23.92.224.83
+      gateway: 192.168.109.1
+      dns: 8.8.8.8
+      ntp: us.pool.ntp.org
+      netmask: 255.255.255.0
+
+ops_manager:
+  url: https://pcf.rza.cf-app.com
+  ip_address: 23.92.224.83
+  username: pivotalcf
+  password: pivotalcf
+  ntp_servers: us.pool.ntp.org
+  vcloud:
+    creds:
+      <<: *vcloud_creds
+    vdc:
+      name: VDC-M127900816-4614-293
+      storage_profile: SSD-Accelerated
+      catalog_name: cf
+  networks:
+    - name: first-network
+      identifier: VDC-M127900816-4614-293-default-routed
+      subnet: 192.168.109.0/24
+      reserved_ips: 192.168.109.0 - 192.168.109.49, 192.168.109.136 - 192.168.109.255
+      dns: 8.8.8.8
+      gateway: 192.168.109.1
+
+  elastic_runtime:
+    name: cf
+    ha_proxy_static_ips: 192.168.109.119
+    system_domain: sys.rza.cf-app.com
+    apps_domain: apps.rza.cf-app.com
+    smtp:
+      from: identitystaging@mailinator.com
+      address: smtp.sendgrid.net
+      port: 587
+      credentials:
+        identity: PCFRelEng
+        password: 4H-9Lh-wD{ZST28x{Q
+      enable_starttls_auto: true
+      smtp_auth_mechanism: plain
+    trust_self_signed_certificates: true
