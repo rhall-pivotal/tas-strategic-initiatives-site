@@ -105,7 +105,9 @@
           "Timeout": "5",
           "UnhealthyThreshold": "2"
         },
-        "IdleTimeout": "3600",
+        "ConnectionSettings": {
+          "IdleTimeout": 3600
+        },
         "LoadBalancerName": { "Fn::Join" : ["", [ { "Ref" : "AWS::StackName" }, "-pcf-elb" ] ] },
         "Listeners": [ 
           {
