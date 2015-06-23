@@ -1,4 +1,4 @@
-FROM docker.vsphere.gocd.cf-app.com:5000/releng:releng_base
+FROM docker.vsphere.gocd.cf-app.com:5000/releng:releng_base_ruby_22
 
 ADD include/id_rsa /root/.ssh/id_rsa
 RUN chmod 600 /root/.ssh/id_rsa
