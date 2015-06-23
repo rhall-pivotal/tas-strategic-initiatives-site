@@ -3910,6 +3910,9 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+                aws_signature_version: 2
+                path_style: true
+                endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccdroplet
             manifest: |
               droplet_directory_key: (( .properties.system_blobstore.external.bucket.value ))
@@ -3917,6 +3920,9 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+                aws_signature_version: 2
+                path_style: true
+                endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccpackage
             manifest: |
               app_package_directory_key: (( .properties.system_blobstore.external.bucket.value ))
@@ -3924,6 +3930,9 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+                aws_signature_version: 2
+                path_style: true
+                endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccresource
             manifest: |
               resource_directory_key: (( .properties.system_blobstore.external.bucket.value ))
@@ -3931,6 +3940,9 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+                aws_signature_version: 2
+                path_style: true
+                endpoint: (( .properties.system_blobstore.external.endpoint.value ))
         select_value: external
         property_blueprints:
           - name: endpoint
