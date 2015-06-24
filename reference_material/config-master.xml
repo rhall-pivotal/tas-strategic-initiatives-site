@@ -2850,11 +2850,11 @@ pipeline config after converting master pipelines* to use capybara helpers
       </stage>
     </pipeline>
     <pipeline name="ERT_Feature_Branch_vCloud">
-      <stage name="ensure_vsphere">
+      <stage name="ensure_not_vsphere">
         <jobs>
-          <job name="ensure_vsphere">
+          <job name="ensure_not_vsphere">
             <tasks>
-              <exec command="./scripts/util/ensure_vsphere.sh" workingdir="p-runtime">
+              <exec command="./scripts/util/ensure_not_vsphere.sh" workingdir="p-runtime">
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -2911,8 +2911,8 @@ pipeline config after converting master pipelines* to use capybara helpers
         <jobs>
           <job name="build_runtime">
             <environmentvariables>
-              <variable name="RIAK_BUCKET">
-                <value>{"endpoint":"http://cache.vsphere.gocd.cf-app.com","bucket":"releng-products","access_key_id":"admin-key","secret_access_key":"admin-secret"}</value>
+              <variable name="S3_BUCKET">
+                <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
               </variable>
             </environmentvariables>
             <tasks>
@@ -3054,18 +3054,6 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./scripts/gocd/create_aws_dbs.sh</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>./scripts/gocd/update_dns_elb.sh</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
                 <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
@@ -3089,12 +3077,6 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-x</arg>
-                <arg>-c</arg>
-                <arg>./scripts/gocd/collect_bosh_logs.sh</arg>
-                <runif status="any" />
-              </exec>
             </tasks>
             <artifacts>
               <artifact src="bosh_logs" dest="bosh_logs" />
@@ -3113,7 +3095,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./scripts/gocd/run_cats.sh</arg>
+                <arg>./scripts/gocd/run_cats_through_password_tunnel.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>

@@ -7,6 +7,7 @@ gem 'bosh_cli', '1.2818.0', require: false # a dependency of vara but version sh
 gem 'opsmgr', git: 'git@github.com:pivotal-cf/opsmgr', branch: 'features/vcloud-air-92037728'
 gem 'vsphere_clients', git: 'git@github.com:pivotal-cf-experimental/vsphere_clients'
 gem 'recursive-open-struct'
+gem 'net-ssh-gateway'
 
 group :development, :test do
   gem 'rspec'
