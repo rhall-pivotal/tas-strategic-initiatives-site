@@ -39,4 +39,9 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X External File Storage', order: :
     )
     file_storage_form.save_form
   end
+
+  it 'scales nfs down to zero' do
+    resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings.name)
+    resource_config.set_instances_for_job('nfs_server', 0)
+  end
 end
