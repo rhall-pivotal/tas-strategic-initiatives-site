@@ -18,12 +18,15 @@ vm_shepherd:
       security_group: {{ops_manager_security_group_id}}
       public_subnet_id: {{public_subnet_id}}
       private_subnet_id: {{private_subnet_id}}
-      s3_bucket_name: {{ ops_manager_s3_bucket_name }}
+      s3_bucket_names:
+        - {{ ops_manager_s3_bucket_name }}
+        - {{ ert_s3_bucket_name }}
   vm_configs:
     - vm_name: Banana OpsManager
+      vm_ip_address: 54.86.46.89
 
 ops_manager:
-  url: https://54.86.46.89
+  url: https://pcf.banana.cf-app.com
   username: pivotalcf
   password: pivotalcf
   ntp_servers: 0.amazon.pool.ntp.org
@@ -76,6 +79,16 @@ ops_manager:
     apps_domain: banana.cf-app.com
     elb_name: banana-pcf-elb
     elb_dns_name: {{ ert_elb_dns_name }}
+    file_storage:
+      endpoint: https://s3.amazonaws.com
+      bucket: {{ ert_s3_bucket_name }}
+      access_key: {{iam_aws_access_key_id}}
+      secret_key: {{iam_aws_secret_access_key}}
+    rds:
+      host: {{rds_address}}
+      port: {{rds_port}}
+      username: {{rds_username}}
+      password: {{rds_password}}
     smtp:
       from: identitystaging@mailinator.com
       address: smtp.sendgrid.net
@@ -87,23 +100,50 @@ ops_manager:
       smtp_auth_mechanism: plain
     ssl_certificate: |
       -----BEGIN CERTIFICATE-----
-      MIIDKjCCAhKgAwIBAgIUSmRqW5Dbjdhwhcn9NKffk91jY84wDQYJKoZIhvcNAQEF
-      BQAwPTELMAkGA1UEBhMCVVMxEDAOBgNVBAoMB1Bpdm90YWwxHDAaBgNVBAMMEyou
-      YmFuYW5hLmNmLWFwcC5jb20wHhcNMTUwNjA5MjIwNjExWhcNMTcwNjA4MjIwNjEx
-      WjA9MQswCQYDVQQGEwJVUzEQMA4GA1UECgwHUGl2b3RhbDEcMBoGA1UEAwwTKi5i
-      YW5hbmEuY2YtYXBwLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB
-      AKbFhFXB6S4JVQ2Xn6wHDxRf8R9HCEDQy0nnNI5nog5oH6FsA+Tc3AdShTyZiePd
-      XJ94reO2f51yCLP1fU4JeYhX7Sffn7eYVrgpsf6ucUMRhUmaVcGSyolMEo/mB/lW
-      ikvAC7Vvh/OnfeTCcXEaYSdQRHAJ/i+ooQOWIsYmPmWf6IEESrGp1QGX4/0P47Fm
-      AORrO1k3iQXd7l28RzZ5FmrPXuKyVBV3s1oqtX0dqR8hyi5SUs8Pbtv9F1UCpdGq
-      a0FQ0dtMEcxowJshoVvNVGAarZmXpw8eLPcf73Qn64qt40ExpMGLUMYaRxGVR+EW
-      AcDOiCRFsEWaKfLejdULfWcCAwEAAaMiMCAwHgYDVR0RBBcwFYITKi5iYW5hbmEu
-      Y2YtYXBwLmNvbTANBgkqhkiG9w0BAQUFAAOCAQEAEhsat3v4/Aw4+ZyisYXpc+YE
-      XtXwAVje5OVXj9skLioHsP5rNhtKtZGP/3A5xbFMWYbsc4hM6+WH75jDmEohJQ0Q
-      vNKAWtD6qVMCEGiV6Ujzq98A5F85lErB/lrSrTpuCSFPfB+qwjtTbMxSO+afxffE
-      wXm7MppEOqq+GVE6IJZPsTeYhTCBBymNVi6TaRUCplpohuS6n7lG/MwIA/HdJWK6
-      im9JeB57bPzrnZQrGcLGi37e+owauwhIN5brT5G1AVUpDGohmn6s6PLOxIbkOnLp
-      4r9UdJubhNaas35wCaQrZNuJJzyrJ3s4ot0tAik1yjYGQInweyAA4JkmuLy/FQ==
+      MIIDKzCCAhOgAwIBAgIVAN7yZiTcrnP4v0c9P5PLTQa3adj+MA0GCSqGSIb3DQEB
+      BQUAMD0xCzAJBgNVBAYTAlVTMRAwDgYDVQQKDAdQaXZvdGFsMRwwGgYDVQQDDBMq
+      LmJhbmFuYS5jZi1hcHAuY29tMB4XDTE1MDYxNDIzNDkxOVoXDTE3MDYxMzIzNDkx
+      OVowPTELMAkGA1UEBhMCVVMxEDAOBgNVBAoMB1Bpdm90YWwxHDAaBgNVBAMMEyou
+      YmFuYW5hLmNmLWFwcC5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
+      AQCu/5wdoSpy9hS9+WbE7XC3CR0nxW/ERxC45kMHIXJftHq1UQHVxFITHyrsx6Ed
+      ZKEyLxjrkfI4fhkytFDebeyp2E7lxp0d0xlMmYYCYPzHGi0RvCH61VkEOtB0asqO
+      84Y38GBWdR0XTc7feGvaeQASs73jAHSkK+BSS2rbVU9vmxQBEOgs3YyHj8yLw8oU
+      MFzBKvaPmitvP7wl63ZJplnDQQIZGTB8/nm2izUpMgvwkeLTJ9m+jZIHDwoNJ0O9
+      q5/iQal6QMub2G9/mcJSbte6j4M5bp0j8+033cmoD44WHk6XRr9x199feutmG4Pg
+      ZEHWiWyLOSzcCN3rRoQo5oTFAgMBAAGjIjAgMB4GA1UdEQQXMBWCEyouYmFuYW5h
+      LmNmLWFwcC5jb20wDQYJKoZIhvcNAQEFBQADggEBAEmAToLEP15eq8jiDinGicCw
+      2cTdQDzlo9BFU9DdzyrI+lrOkZmyk4T0lHqJZhjaaVNSMuuEpeZNUp+GYcAVHMG1
+      BMxg35uZiFLhMYxqoeDofEKXt93o8D6qiRKzLGkWNR/52DjEb6tKo8lXeZkSiQ7O
+      QLd11t+mmz4zwEaAYLlFq7jY4l3dMtLiC0xAgAbVlSh92gJtTaKKi7CaVvEIo3sd
+      E1VuJ0RFh8lQAdVeIvxb9nLchidQSbYh7Wpzx7db8lrDHmGC7Ap+wBVHPUG7GSVM
+      05NWvA50tD7SPcJxhvpXuvhbBMksA9aWXEeGLwxyj9tGggCbP7qiwMzGir7JWoc=
       -----END CERTIFICATE-----
     ssl_private_key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEowIBAAKCAQEArv+cHaEqcvYUvflmxO1wtwkdJ8VvxEcQuOZDByFyX7R6tVEB
+      1cRSEx8q7MehHWShMi8Y65HyOH4ZMrRQ3m3sqdhO5cadHdMZTJmGAmD8xxotEbwh
+      +tVZBDrQdGrKjvOGN/BgVnUdF03O33hr2nkAErO94wB0pCvgUktq21VPb5sUARDo
+      LN2Mh4/Mi8PKFDBcwSr2j5orbz+8Jet2SaZZw0ECGRkwfP55tos1KTIL8JHi0yfZ
+      vo2SBw8KDSdDvauf4kGpekDLm9hvf5nCUm7Xuo+DOW6dI/PtN93JqA+OFh5Ol0a/
+      cdffX3rrZhuD4GRB1olsizks3Ajd60aEKOaExQIDAQABAoIBABDlrXVO8oJXMHmH
+      c1zgcFm8D4yfi8Mv+XVhBmfR2vFSw+ZuA/dYFXSzNbnXLL9h0A7AbW+RkAnUYyp6
+      LrTLeGaN9FBLdTBECdVTnZTtOHshE+j6eW123DmEVExpY1WaPgN4ulSeykhNwwPg
+      5Mkbld44bMVWbezML8TCc3bqLdlgvxRwUmpwmle1DhRYeyz23G2XRXfrHZ8L+Hjt
+      PGAd7PEJM/Kgm6Yahhcu13oiOBd0FlZoD8YdMEvM5rTbZa4+2YQbsMI90A3y76hi
+      Ec+h0sIet9MRH+8SufJVmxdpgNTMBpnE5u27xnbVmmgVLtk+cHVFCGvKag5Poe39
+      T4LSE6ECgYEA1yPHdliwN5SZt6SqB7Rr1UJncBcHcPvWUvRrqMkAJGm/bx+CQzoU
+      k1sVjhezrAoYllk4f3LxdSJcXACZdvmuJEezmvWROYYYi1mDBZHeyY/2hJ4T+M2l
+      np381j8MDt3pY7STMQnSwzcvtVpW8akLIKoiFa4A3OWohNwhhftzprcCgYEA0Dwj
+      TSVJ8UFOhnGtW+Ic07G/12n8VbYEdFKac1BVasrbBWOPOqnnyc7MxCgUdDjVTViq
+      Kss/Ss9zd+4L6sw4uAFDGUg5BnGK6TFYq9qhb2w8rZ/YvZK4GKwFTYDG91vvMn/Z
+      ZN+oYPzC6Hc7ttns9vM4gTpQWVGTJlf+lKpPVGMCgYBEPBLdVE+/sR/4AP/0paK1
+      5vPLt2Ii0Z0ufltPE0E6S1fuNL4p+FfiTLdPc/EGlcUqmm2y7o/qqNVGUOJbu+Eh
+      nKQ4d75x0jgiqmdF8vgIUeLMOR74gLEQ1+cDRMfcR0Ho37L3kLgKNoypJlgBGa5v
+      08YvvhqD9Us3qGHxjskljQKBgAiIznGU+6jVomBEPHStmbzbZh9wCpWAtkIGOKpN
+      OpL76WoZIH+pAwT0YtQPSHdS9PsMjTzfw6JPSk46BWcEI7b25kcc/KlU8fqIuTeh
+      6Efmyb3b9UgfwUfRlQ4OHxl4PR92ufQ2bnI7KcnZSSs/V0TvxvsU5sIiY8OIi7iQ
+      Glw9AoGBAKpO0qC4RqbHW4BzJwXDGr9vefVBWJNiGptvQuDnDS4B6Vom2XiREWnM
+      jH7AgEdOMY+5quT1nke/jE9iKpYG3dnHNh026kxMHCxBm69r4FBUzXCRjISn7aez
+      NGc0RKpabZ25YMhOO6gklfRsdI56kLQ5b+27qdrFLBuT8iAls67Q
+      -----END RSA PRIVATE KEY-----
     trust_self_signed_certificates: true
