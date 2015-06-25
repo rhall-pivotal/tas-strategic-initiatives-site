@@ -9,8 +9,8 @@ vm_shepherd:
     json_file: config/ert_cloudformation.json
     parameters:
       01NATKeyPair: releng-dev
-      05RdsUsername: bosh
-      06RdsPassword: bosh1234
+      05RdsUsername: pivotalcf
+      06RdsPassword: pivotalcf
       07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/pear
     outputs:
       ssh_key_name: releng-dev
@@ -18,7 +18,9 @@ vm_shepherd:
       security_group: {{ops_manager_security_group_id}}
       public_subnet_id: {{public_subnet_id}}
       private_subnet_id: {{private_subnet_id}}
-      s3_bucket_name: {{ s3_bucket_name }}
+      s3_bucket_names:
+        - {{ s3_bucket_name }}
+        - {{ ert_s3_bucket_name }}
   vm_configs:
     - vm_name: Pear OpsManager
       vm_ip_address: 52.6.145.125
@@ -79,7 +81,7 @@ ops_manager:
     elb_dns_name: {{ ert_elb_dns_name }}
     file_storage:
       endpoint: https://s3.amazonaws.com
-      bucket: {{ s3_bucket_name }}
+      bucket: {{ ert_s3_bucket_name }}
       access_key: {{iam_aws_access_key_id}}
       secret_key: {{iam_aws_secret_access_key}}
     rds:
