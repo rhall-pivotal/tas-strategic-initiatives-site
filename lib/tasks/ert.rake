@@ -55,6 +55,16 @@ namespace :ert do
       om_version: args.om_version
     ).configure_external_file_storage
   end
+  namespace :pipeline do
+    desc 'create a feature pipeline'
+    task :create_feature_pipeline, [:branch_name, :iaas_type] do |_, args|
+      require 'pipeline/create_feature_pipeline'
+      Pipeline::CreateFeaturePipeline.new(
+        branch_name: args.branch_name,
+        iaas_type: args.iaas_type
+      ).create_pipeline
+    end
+  end
 
   desc '- Run CATS in as SSH tunnel established with a password [:environment] '
   task :run_cats_ssh_password_tunnel, [:environment] do |_, args|
