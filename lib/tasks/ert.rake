@@ -64,6 +64,14 @@ namespace :ert do
         iaas_type: args.iaas_type
       ).create_pipeline
     end
+
+    desc 'deploy feature pipeline to concourse'
+    task :deploy_feature_pipeline, [:branch_name] do |_, args|
+      require 'pipeline/deploy_feature_pipeline'
+      Pipeline::DeployFeaturePipeline.new(
+        branch_name: args.branch_name,
+      ).deploy_pipeline
+    end
   end
 
   desc '- Run CATS in as SSH tunnel established with a password [:environment] '
