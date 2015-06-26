@@ -75,7 +75,7 @@ YAML
     end
 
     it 'raises' do
-      expect { pipeline_creator.product_version }.to raise_error
+      expect { pipeline_creator.product_version }.to raise_error('unknown product')
     end
   end
 end
