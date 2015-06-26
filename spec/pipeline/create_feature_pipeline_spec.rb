@@ -14,6 +14,7 @@ describe Pipeline::CreateFeaturePipeline do
     allow(File).to receive(:open).and_yield(file)
     allow(file).to receive(:write)
     allow(FileUtils).to receive(:mkdir_p)
+    allow(File).to receive(:read).and_return('')
   end
 
   it 'has a constructor that takes two arguments' do
@@ -32,8 +33,13 @@ describe Pipeline::CreateFeaturePipeline do
     pipeline_creator.create_pipeline
   end
 
-  it 'puts some content into the configuration file' do
-    expect(file).to receive(:write).with('hello')
+  it 'puts the rendered content from the template into the configuration file' do
+    expect(File).to(
+      receive(:read)
+        .with('ci/pipelines/feature-pipeline-template.yml')
+        .and_return('{{branch_name}} {{iaas_type}}')
+    )
+    expect(file).to receive(:write).with('features/branch aws')
 
     pipeline_creator.create_pipeline
   end
