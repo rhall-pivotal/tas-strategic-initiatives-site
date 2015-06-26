@@ -1,10 +1,13 @@
 require 'mustache'
+require 'yaml'
 
 module Pipeline
   class CreateFeaturePipeline < Mustache
     def initialize(branch_name:, iaas_type:)
       @branch_name = branch_name
       @iaas_type = iaas_type
+      @ert_version = product_version
+      @om_version = @ert_version
     end
 
     def create_pipeline
@@ -17,6 +20,13 @@ module Pipeline
       end
     end
 
-    attr_reader :branch_name, :iaas_type
+    def product_version
+      handcraft = YAML.load(File.read(File.join('metadata_parts', 'handcraft.yml')))
+      fail 'unknown product' unless handcraft['provides_product_versions'][0]['name'] == 'cf'
+      full_version = handcraft['provides_product_versions'][0]['version']
+      full_version.split('.')[0..1].join('.')
+    end
+
+    attr_reader :branch_name, :iaas_type, :om_version, :ert_version
   end
 end
