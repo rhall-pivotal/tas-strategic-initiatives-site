@@ -108,7 +108,7 @@ describe Ert::DnsUpdater do
               ],
               name: '\\\\052.some.cf-app.com.',
               type: 'CNAME',
-              ttl: 30
+              ttl: 5
             }
 
           }]
