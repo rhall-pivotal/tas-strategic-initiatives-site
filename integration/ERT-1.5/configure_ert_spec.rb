@@ -88,7 +88,7 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
   def configure_aws_load_balancers(elastic_runtime_settings)
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings.name)
     resource_config.set_instances_for_job('ha_proxy', 0)
-    resource_config.set_elb_name_for_job('router', elastic_runtime_settings.elb_name)
+    resource_config.set_elb_names_for_job('router', elastic_runtime_settings.elb_name)
 
     ips_and_ports_form =
       current_ops_manager.product(elastic_runtime_settings.name).product_form('ha_proxy')
