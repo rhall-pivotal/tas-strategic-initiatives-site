@@ -156,7 +156,7 @@ form_types:
 
   - name: system_blobstore
     label: File Storage Config
-    description: Select internal if you want to keep using the system-provided filestore. Otherwise select external if you want to use your own S3-compatible filestore.
+    description: "Select internal if you want to keep using the system-provided filestore. Otherwise select external if you want to use your own S3-compatible filestore. Consult Pivotal Cloud Foundry documentation to determine if a particular non-AWS filestore is compatible."
     verifiers:
       - name: Verifiers::BlobstoreVerifier
         properties:
