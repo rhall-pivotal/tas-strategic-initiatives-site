@@ -65,6 +65,18 @@ namespace :ert do
       ).create_pipeline
     end
 
+    desc 'create a feature upgrade pipeline'
+    task :create_upgrade_pipeline, [:branch_name, :iaas_type, :ert_initial_full_version, :om_initial_full_version] do |_, args|
+      require 'pipeline/create_feature_pipeline'
+      Pipeline::CreateFeaturePipeline.new(
+        branch_name: args.branch_name,
+        iaas_type: args.iaas_type
+      ).create_upgrade_pipeline(
+        ert_initial_full_version: args.ert_initial_full_version,
+        om_initial_full_version: args.om_initial_full_version
+      )
+    end
+
     desc 'deploy feature pipeline to concourse'
     task :deploy_feature_pipeline, [:branch_name] do |_, args|
       require 'pipeline/deploy_feature_pipeline'

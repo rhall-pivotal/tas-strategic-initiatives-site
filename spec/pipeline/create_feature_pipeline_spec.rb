@@ -33,27 +33,68 @@ YAML
     expect(pipeline_creator).to be_a(Pipeline::CreateFeaturePipeline)
   end
 
-  it 'creates the directory for the pipeline config file' do
-    expect(FileUtils).to receive(:mkdir_p).with('ci/pipelines/features/branch')
+  context 'clean install pipeline' do
+    it 'puts the rendered content from the template into the configuration file' do
+      expect(File).to(
+        receive(:read)
+          .with('ci/pipelines/feature-pipeline-template.yml')
+          .and_return('{{branch_name}} {{iaas_type}} {{om_version}} {{ert_version}}')
+      )
+      expect(file).to receive(:write).with('features/branch aws 1.5 1.5')
 
-    pipeline_creator.create_pipeline
+      pipeline_creator.create_pipeline
+    end
+
+    it 'creates the directory for the pipeline config file' do
+      expect(FileUtils).to receive(:mkdir_p).with('ci/pipelines/features/branch')
+
+      pipeline_creator.create_pipeline
+    end
+
+    it 'creates the pipeline configuration file with the correct name' do
+      expect(File).to receive(:open).with('ci/pipelines/features/branch/pipeline.yml', 'w')
+
+      pipeline_creator.create_pipeline
+    end
   end
 
-  it 'creates the pipeline configuration file with the correct name' do
-    expect(File).to receive(:open).with('ci/pipelines/features/branch/pipeline.yml', 'w')
+  context 'upgrade pipeline' do
+    let(:ert_initial_full_version) { '1.4.2.0' }
+    let(:om_initial_full_version) { '1.4.2.0' }
 
-    pipeline_creator.create_pipeline
-  end
+    it 'puts the rendered content from the upgrade template into the configuration file' do
+      expect(File).to(
+        receive(:read)
+          .with('ci/pipelines/feature-upgrade-template.yml')
+          .and_return('{{branch_name}} {{iaas_type}} {{om_version}} {{ert_version}}' \
+              ' {{om_initial_full_version}} {{ert_initial_full_version}}' \
+              ' {{om_initial_version}} {{ert_initial_version}}')
+      )
+      expect(file).to receive(:write).with('features/branch aws 1.5 1.5 1.4.2.0 1.4.2.0 1.4 1.4')
 
-  it 'puts the rendered content from the template into the configuration file' do
-    expect(File).to(
-      receive(:read)
-        .with('ci/pipelines/feature-pipeline-template.yml')
-        .and_return('{{branch_name}} {{iaas_type}} {{om_version}} {{ert_version}}')
-    )
-    expect(file).to receive(:write).with('features/branch aws 1.5 1.5')
+      pipeline_creator.create_upgrade_pipeline(
+        ert_initial_full_version: ert_initial_full_version,
+        om_initial_full_version: om_initial_full_version
+      )
+    end
 
-    pipeline_creator.create_pipeline
+    it 'creates the directory for the pipeline config file' do
+      expect(FileUtils).to receive(:mkdir_p).with('ci/pipelines/features/branch')
+
+      pipeline_creator.create_upgrade_pipeline(
+        ert_initial_full_version: ert_initial_full_version,
+        om_initial_full_version: om_initial_full_version
+      )
+    end
+
+    it 'creates the pipeline configuration file with the correct name' do
+      expect(File).to receive(:open).with('ci/pipelines/features/branch/pipeline.yml', 'w')
+
+      pipeline_creator.create_upgrade_pipeline(
+        ert_initial_full_version: ert_initial_full_version,
+        om_initial_full_version: om_initial_full_version
+      )
+    end
   end
 
   it 'returns the product version from the handcraft.yml file' do
