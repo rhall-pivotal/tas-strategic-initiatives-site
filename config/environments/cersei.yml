@@ -1,37 +1,38 @@
 ---
 name: cersei
 iaas_type: vsphere
-vm_shepherd_configs:
-- vcenter_creds:
-    ip: 172.16.74.3
-    username: root
-    password: look74Beer
-  vsphere:
-    host: vcenter
-    resource_pool: cersei
-    datacenter: pizza-boxes-dc
-    cluster: pizza-boxes
-    datastore: emc-ds
-    network: luthor
-    folder: cersei
-  cleanup:
-    datacenter: pizza-boxes-dc
-    datastores:
-    - emc-ds
-    datacenter_folders_to_clean:
-    - cersei
-    - cersei_vms
-    - cersei_templates
-    datastore_folders_to_clean:
-    - cersei
-    - cersei_disk
-  vm:
-    ip: 172.16.78.26
-    gateway: 172.16.78.1
-    netmask: 255.255.254.0
-    dns: 10.87.8.10,10.87.8.11
-    ntp_servers: time1.sf.cf-app.com
-    vm_password: pivotalcf
+vm_shepherd:
+  vm_configs:
+  - vcenter_creds:
+      ip: 172.16.74.3
+      username: root
+      password: look74Beer
+    vsphere:
+      host: vcenter
+      resource_pool: cersei
+      datacenter: pizza-boxes-dc
+      cluster: pizza-boxes
+      datastore: emc-ds
+      network: luthor
+      folder: cersei
+    cleanup:
+      datacenter: pizza-boxes-dc
+      datastores:
+      - emc-ds
+      datacenter_folders_to_clean:
+      - cersei
+      - cersei_vms
+      - cersei_templates
+      datastore_folders_to_clean:
+      - cersei
+      - cersei_disk
+    vm:
+      ip: 172.16.78.26
+      gateway: 172.16.78.1
+      netmask: 255.255.254.0
+      dns: 10.87.8.10,10.87.8.11
+      ntp_servers: time1.sf.cf-app.com
+      vm_password: pivotalcf
 ops_manager:
   url: https://pcf.cersei.cf-app.com
   username: pivotalcf

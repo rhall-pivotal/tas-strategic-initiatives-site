@@ -19,7 +19,7 @@ vm_shepherd:
       public_subnet_id: {{public_subnet_id}}
       private_subnet_id: {{private_subnet_id}}
       s3_bucket_names:
-        - {{ s3_bucket_name }}
+        - {{ ops_manager_s3_bucket_name }}
         - {{ ert_s3_bucket_name }}
   vm_configs:
     - vm_name: Plum OpsManager

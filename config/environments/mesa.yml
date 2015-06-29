@@ -1,37 +1,38 @@
 ---
 name: mesa
 iaas_type: vsphere
-vm_shepherd_configs:
-- vcenter_creds:
-    ip: 10.84.32.61
-    username: root
-    password: look74Beer
-  vsphere:
-    host: vcenter
-    resource_pool: mesa
-    datacenter: private
-    cluster: private
-    datastore: public
-    network: mesa
-    folder: mesa
-  cleanup:
-    datacenter: private
-    datastores:
-    - public
-    datacenter_folders_to_clean:
-    - mesa
-    - mesa_vms
-    - mesa_templates
-    datastore_folders_to_clean:
-    - mesa
-    - mesa_disk
-  vm:
-    ip: 10.85.87.16
-    gateway: 10.85.87.1
-    netmask: 255.255.255.0
-    dns: 10.87.8.10,10.87.8.11
-    ntp_servers: time1.sf.cf-app.com
-    vm_password: pivotalcf
+vm_shepherd:
+  vm_configs:
+  - vcenter_creds:
+      ip: 10.84.32.61
+      username: root
+      password: look74Beer
+    vsphere:
+      host: vcenter
+      resource_pool: mesa
+      datacenter: private
+      cluster: private
+      datastore: public
+      network: mesa
+      folder: mesa
+    cleanup:
+      datacenter: private
+      datastores:
+      - public
+      datacenter_folders_to_clean:
+      - mesa
+      - mesa_vms
+      - mesa_templates
+      datastore_folders_to_clean:
+      - mesa
+      - mesa_disk
+    vm:
+      ip: 10.85.87.16
+      gateway: 10.85.87.1
+      netmask: 255.255.255.0
+      dns: 10.87.8.10,10.87.8.11
+      ntp_servers: time1.sf.cf-app.com
+      vm_password: pivotalcf
 ops_manager:
   url: https://pcf.mesa.cf-app.com
   username: pivotalcf
