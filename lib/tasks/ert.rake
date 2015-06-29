@@ -68,4 +68,17 @@ namespace :ert do
     runner = Ert::VCloudCatsRunner.new(environment: environment, logger: logger)
     runner.run_cats
   end
+
+  desc '- Run CATS in as SSH tunnel established with a password [:environment] '
+  task :run_cats_ssh_password_tunnel, [:environment] do |_, args|
+    require 'opsmgr/log'
+    require 'opsmgr/environments'
+    require 'ert/vcloud_cats_runner'
+    logger = Opsmgr.logger_for('Rake')
+    logger.info "Run CATS for #{args[:environment]}"
+
+    environment = Opsmgr::Environments.for(args.environment)
+    runner = Ert::VCloudCatsRunner.new(environment: environment, logger: logger)
+    runner.run_cats
+  end
 end
