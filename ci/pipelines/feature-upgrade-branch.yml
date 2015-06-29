@@ -4,7 +4,7 @@ resources:
     type: git
     source:
       uri: git@github.com:pivotal-cf/p-runtime.git
-      branch: features/concourse-spike
+      branch: features/concourse-upgrade-pipeline-97916940
       private_key: |
         -----BEGIN RSA PRIVATE KEY-----
         MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
@@ -41,7 +41,7 @@ resources:
       secret_access_key: cWVBcDs3WGqH5VV6S3NN89ooElhFmOkp787JHEEH
       bucket: ert-concourse-products
       private: true
-      versioned_file: features/upgrade-pipeline/ert.pivotal
+      versioned_file: features/concourse-upgrade-pipeline-97916940/ert.pivotal
 
   - name: initial-ert-product
     type: s3
@@ -68,7 +68,7 @@ resources:
       secret_access_key: cWVBcDs3WGqH5VV6S3NN89ooElhFmOkp787JHEEH
       bucket: ert-concourse-products
       private: true
-      versioned_file: exported_installations/features/upgrade-pipeline/installation.zip
+      versioned_file: exported_installations/features/concourse-upgrade-pipeline-97916940/installation.zip
 
   - name: aws-environments
     type: pool
