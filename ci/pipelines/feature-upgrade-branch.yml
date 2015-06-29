@@ -143,9 +143,10 @@ jobs:
       - get: aws-environments
         trigger: true
         passed: [destroy-environment]
-      - get: initial-ops-manager
-      - task: prepare
-        file: p-runtime/ci/jobs/prepare-environment.yml
+      - aggregate:
+        - get: initial-ops-manager
+        - task: prepare
+          file: p-runtime/ci/jobs/prepare-environment.yml
       - task: deploy
         file: p-runtime/ci/jobs/deploy-opsman-initial.yml
 
@@ -186,7 +187,7 @@ jobs:
         trigger: true
         passed: [deploy-microbosh-initial]
       - get: initial-ert-product
-      - task: deploy
+      - task: upload
         file: p-runtime/ci/jobs/upload-pivotal-initial.yml
         config:
           params:

@@ -9,5 +9,5 @@ export OPS_MAN_PATH=$PWD/initial-ops-manager/ops_man_image
 pushd p-runtime
   ./ci/scripts/helpers/bundle-gems.sh
 
-  bundle exec rake opsmgr:install[$RELENG_ENV,ops_man_image]
+  bundle exec rake opsmgr:install[$RELENG_ENV,$OPS_MAN_PATH]
 popd
