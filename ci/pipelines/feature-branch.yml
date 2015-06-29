@@ -43,7 +43,7 @@ resources:
       private: true
       versioned_file: features/concourse-spike/ert.pivotal
 
-  - name: aws-environments
+  - name: environment
     type: pool
     source:
       uri: git@github.com:pivotal-cf-experimental/releng-env-resource-pool
@@ -82,7 +82,7 @@ jobs:
   - name: claim-environment
     plan:
       - get: p-runtime
-      - put: aws-environments
+      - put: environment
         params:
           acquire: true
 
@@ -91,7 +91,7 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [claim-environment]
-      - get: aws-environments
+      - get: environment
         trigger: true
         passed: [claim-environment]
       - task: destroy
@@ -102,7 +102,7 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [destroy-environment]
-      - get: aws-environments
+      - get: environment
         trigger: true
         passed: [destroy-environment]
       - task: prepare
@@ -119,7 +119,7 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [deploy-ops-manager]
-      - get: aws-environments
+      - get: environment
         trigger: true
         passed: [deploy-ops-manager]
       - task: configure
@@ -133,7 +133,7 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [configure-microbosh]
-      - get: aws-environments
+      - get: environment
         trigger: true
         passed: [configure-microbosh]
       - task: deploy
@@ -159,7 +159,7 @@ jobs:
         - get: p-runtime
           trigger: true
           passed: [build-runtime, deploy-microbosh]
-        - get: aws-environments
+        - get: environment
           trigger: true
           passed: [deploy-microbosh]
         - get: ert-product
@@ -177,7 +177,7 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [upload-pivotal]
-      - get: aws-environments
+      - get: environment
         trigger: true
         passed: [upload-pivotal]
       - task: configure-ert
@@ -193,7 +193,7 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [configure-ert]
-      - get: aws-environments
+      - get: environment
         trigger: true
         passed: [configure-ert]
       - task: deploy-ert
@@ -207,7 +207,7 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [deploy-ert]
-      - get: aws-environments
+      - get: environment
         trigger: true
         passed: [deploy-ert]
       - task: run-cats
@@ -217,8 +217,8 @@ jobs:
     plan:
       - get: p-runtime
         passed: [run-cats]
-      - get: aws-environments
+      - get: environment
         passed: [run-cats]
-      - put: aws-environments
+      - put: environment
         params:
-          release: aws-environments
+          release: environment
