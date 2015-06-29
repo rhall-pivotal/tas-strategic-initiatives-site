@@ -1,0 +1,12 @@
+---
+platform: linux
+
+image: docker:///cloudfoundry/releng-ci
+
+inputs:
+  - name: p-runtime
+  - name: aws-environments
+  - name: initial-ops-manager
+
+run:
+  path: p-runtime/ci/scripts/deploy-opsman-initial

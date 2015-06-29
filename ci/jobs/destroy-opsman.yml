@@ -1,0 +1,11 @@
+---
+platform: linux
+
+image: docker:///cloudfoundry/releng-ci
+
+inputs:
+  - name: p-runtime
+  - name: aws-environments
+
+run:
+  path: p-runtime/ci/scripts/destroy-opsman
