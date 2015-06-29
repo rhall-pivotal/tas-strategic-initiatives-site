@@ -218,9 +218,6 @@ form_types:
         label: Trust Self-Signed Certificates
       - reference: .ha_proxy.ssl_ciphers
         label: HAProxy SSL Ciphers
-      - reference: .router.ssl_ciphers
-        label: Router SSL Ciphers
-        description: "Golang format with underscores required, eg: TLS_RSA_WITH_RC4_128_SHA"
       - reference: .dea.allow_host_access
         label: Enable cross-container traffic within each DEA
         description: Not recommended for untrusted workloads
@@ -1440,17 +1437,11 @@ job_types:
         configurable: true
         optional: true
 
-      - name: ssl_ciphers
-        type: text
-        configurable: true
-        optional: true
-
     manifest: |
       request_timeout_in_seconds: 900
       networks:
         apps: default
       router:
-        cipher_suites: (( .router.ssl_ciphers.value ))
         secure_cookies: (( .ha_proxy.disable_http.value ))
         status:
           user: router_status
