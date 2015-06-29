@@ -1,14 +1,29 @@
 name: plum
 iaas_type: aws
-vm_shepherd_configs:
-  - aws_access_key: AKIAI43577ARGHXPWIMQ
+vm_shepherd:
+  env_config:
+    stack_name: plum
+    aws_access_key: AKIAI43577ARGHXPWIMQ
     aws_secret_key: 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
-    ssh_key_name: releng-dev
-    public_subnet_id: subnet-9209b9b9
-    private_subnet_id: subnet-9309b9b8
-    security_group: sg-86a0dde2
-    elastic_ip_id: eipalloc-b895f2dd
-    vm_name: 'OpsManager plum'
+    region: us-east-1
+    json_file: config/ert_cloudformation.json
+    parameters:
+      01NATKeyPair: releng-dev
+      05RdsUsername: pivotalcf
+      06RdsPassword: pivotalcf
+      07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/plum
+    outputs:
+      ssh_key_name: releng-dev
+      ssh_key_name: {{ssh_key_pair_name}}
+      security_group: {{ops_manager_security_group_id}}
+      public_subnet_id: {{public_subnet_id}}
+      private_subnet_id: {{private_subnet_id}}
+      s3_bucket_names:
+        - {{ s3_bucket_name }}
+        - {{ ert_s3_bucket_name }}
+  vm_configs:
+    - vm_name: Plum OpsManager
+      vm_ip_address: 52.4.136.120
 
 ops_manager:
   url: https://pcf.plum.cf-app.com/
@@ -19,12 +34,12 @@ ops_manager:
   - iaas_identifier: us-east-1c
 
   aws:
-    aws_access_key: AKIAI43577ARGHXPWIMQ
-    aws_secret_key: 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
-    vpc_id: vpc-e5194180
-    security_group: plum-pcfVMs
-    key_pair_name: releng-dev
-    region: us-east-1
+    aws_access_key: {{iam_aws_access_key_id}}
+    aws_secret_key: {{iam_aws_secret_access_key}}
+    vpc_id: {{vpc}}
+    security_group: {{vms_security_group_name}}
+    key_pair_name: {{ssh_key_pair_name}}
+    region: {{region}}
     ssh_key: |
       -----BEGIN RSA PRIVATE KEY-----
       MIIEpAIBAAKCAQEAhU5ETA/Pt42waL2WDKLBfhIXlaQ3YHem3Tojn044bs3GpGBWeHESchL6Ndjv
@@ -52,7 +67,7 @@ ops_manager:
 
   networks:
   - name: first-network
-    identifier: subnet-9309b9b8
+    identifier: {{ private_subnet_id }}
     subnet: 10.0.16.0/20
     reserved_ips: 10.0.16.2-10.0.16.4
     dns: 10.0.0.2
@@ -62,7 +77,18 @@ ops_manager:
     name: cf
     system_domain: plum.cf-app.com
     apps_domain: plum.cf-app.com
-    elb_name: plum
+    elb_name: plum-pcf-elb
+    elb_dns_name: {{ ert_elb_dns_name }}
+    file_storage:
+      endpoint: https://s3.amazonaws.com
+      bucket: {{ ert_s3_bucket_name }}
+      access_key: {{iam_aws_access_key_id}}
+      secret_key: {{iam_aws_secret_access_key}}
+    rds:
+      host: {{rds_address}}
+      port: {{rds_port}}
+      username: {{rds_username}}
+      password: {{rds_password}}
     smtp:
       from: identitystaging@mailinator.com
       address: smtp.sendgrid.net
