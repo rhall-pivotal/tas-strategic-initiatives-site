@@ -46,6 +46,10 @@
     "07SSLCertificateARN": {
       "Type": "String",
       "Description": "ARN for pre-uploaded SSL certificate"
+    },
+    "08OpsManagerTemplate": {
+      "Type": "String",
+      "Description": "S3 Location for OpsManager CloudFormation Template"
     }
   },
   "Resources": {
@@ -60,7 +64,7 @@
           "05RdsUsername": {"Ref": "05RdsUsername"},
           "06RdsPassword": {"Ref": "06RdsPassword"}
         },
-        "TemplateURL": "https://s3.amazonaws.com/releng-test/ops_manager_cloudformation.json"
+        "TemplateURL": {"Ref": "08OpsManagerTemplate"}
       }
     },
     "PcfElbSecurityGroup": {
