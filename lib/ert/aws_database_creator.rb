@@ -18,7 +18,7 @@ module Ert
         )
 
         %w(ccdb uaa notifications autoscale console app_usage_service).each do |db_name|
-          mysql_client.query("create database #{db_name}")
+          mysql_client.query("CREATE DATABASE IF NOT EXISTS #{db_name}")
         end
       end
     end
