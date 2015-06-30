@@ -3,7 +3,7 @@
 set -ex
 
 export RELENG_ENV=`cat environment/name`
-export INSTALLATION_PATH=$PWD/export-installation/installation.zip
+export INSTALLATION_PATH=$PWD/exported-installation/installation.zip
 
 pushd p-runtime
   ./ci/scripts/helpers/bundle-gems.sh
