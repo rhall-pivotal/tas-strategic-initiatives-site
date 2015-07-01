@@ -269,10 +269,10 @@ jobs:
     plan:
       - get: p-runtime
         trigger: true
-        passed: [deploy-opsman]
+        passed: [export-installation,deploy-opsman]
       - get: environment
         trigger: true
-        passed: [deploy-opsman]
+        passed: [export-installation,deploy-opsman]
       - get: exported-installation
         trigger: true
         passed: [export-installation]
