@@ -282,7 +282,7 @@ jobs:
           params:
             OPSMAN_VERSION: &om_version 1.5
 
-  - name: upload-pivotal
+  - name: upgrade-pivotal
     plan:
       - aggregate:
         - get: p-runtime
@@ -294,8 +294,8 @@ jobs:
         - get: ert-product
           trigger: true
           passed: [build-runtime]
-      - task: upload-pivotal
-        file: p-runtime/ci/jobs/upload-pivotal.yml
+      - task: upgrade-pivotal
+        file: p-runtime/ci/jobs/upgrade-pivotal.yml
         config:
           params:
             OPSMAN_VERSION: *om_version
@@ -304,10 +304,10 @@ jobs:
     plan:
       - get: p-runtime
         trigger: true
-        passed: [upload-pivotal]
+        passed: [upgrade-pivotal]
       - get: environment
         trigger: true
-        passed: [upload-pivotal]
+        passed: [upgrade-pivotal]
       - task: configure-ert
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
