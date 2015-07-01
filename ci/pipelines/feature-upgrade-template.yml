@@ -61,6 +61,16 @@ resources:
       private: true
       versioned_file: ops_manager_images/{{iaas_type}}/{{om_initial_full_version}}/ops_man_image
 
+
+  - name: ops-manager-stable
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: ops_manager_images/{{iaas_type}}/stable/ops_man_image
+
   - name: exported-installation
     type: s3
     source:
@@ -119,6 +129,7 @@ jobs:
         trigger: true
         passed: [claim-environment]
       - task: built-product
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/build-pivotal.yml
       - put: ert-product
         params:
@@ -133,6 +144,7 @@ jobs:
         trigger: true
         passed: [claim-environment]
       - task: destroy
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/destroy-environment.yml
 
   - name: deploy-ops-manager-initial
@@ -144,11 +156,14 @@ jobs:
         trigger: true
         passed: [destroy-environment]
       - aggregate:
-        - get: initial-ops-manager
+        - get: ops-manager
+          resource: initial-ops-manager
         - task: prepare
+          tags: [{{iaas_type}}]
           file: p-runtime/ci/jobs/prepare-environment.yml
       - task: deploy
-        file: p-runtime/ci/jobs/deploy-opsman-initial.yml
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/deploy-opsman.yml
 
   - name: configure-microbosh-initial
     plan:
@@ -159,6 +174,7 @@ jobs:
         trigger: true
         passed: [deploy-ops-manager-initial]
       - task: configure
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/configure-microbosh.yml
         config:
           params:
@@ -173,6 +189,7 @@ jobs:
         trigger: true
         passed: [configure-microbosh-initial]
       - task: deploy
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/deploy-microbosh.yml
         config:
           params:
@@ -186,10 +203,12 @@ jobs:
       - get: environment
         trigger: true
         passed: [deploy-microbosh-initial]
-      - get: initial-ert-product
+      - get: ert-product
+        resource: initial-ert-product
         trigger: true
       - task: upload
-        file: p-runtime/ci/jobs/upload-pivotal-initial.yml
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/upload-pivotal.yml
         config:
           params:
             OPSMAN_VERSION: {{om_initial_version}}
@@ -203,6 +222,7 @@ jobs:
         trigger: true
         passed: [upload-pivotal-initial]
       - task: configure-ert
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
@@ -218,6 +238,7 @@ jobs:
         trigger: true
         passed: [configure-ert-initial]
       - task: deploy-ert
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/deploy-ert.yml
         config:
           params:
@@ -232,6 +253,7 @@ jobs:
         trigger: true
         passed: [deploy-ert-initial]
       - task: export-installation
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/export-installation.yml
         config:
           params:
@@ -249,22 +271,23 @@ jobs:
         trigger: true
         passed: [export-installation]
       - task: destroy-opsman
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/destroy-opsman.yml
 
   - name: deploy-opsman
     plan:
-      - get: p-runtime
-        trigger: true
-        passed: [destroy-opsman]
-      - get: environment
-        trigger: true
-        passed: [destroy-opsman]
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [destroy-opsman]
+        - get: environment
+          trigger: true
+          passed: [destroy-opsman]
+        - get: ops-manager
+          resource: ops-manager-stable
       - task: deploy
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/deploy-opsman.yml
-        config:
-          params:
-            ACCESS_KEY_ID: AKIAIFHBKH3ZINMIAQUQ
-            SECRET_ACCESS_KEY: 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
 
   - name: import-installation
     plan:
@@ -278,6 +301,7 @@ jobs:
         trigger: true
         passed: [export-installation]
       - task: import-installation
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/import-installation.yml
         config:
           params:
@@ -296,6 +320,7 @@ jobs:
           trigger: true
           passed: [build-runtime]
       - task: upgrade-pivotal
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/upgrade-pivotal.yml
         config:
           params:
@@ -310,6 +335,7 @@ jobs:
         trigger: true
         passed: [upgrade-pivotal]
       - task: configure-ert
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
@@ -325,6 +351,7 @@ jobs:
         trigger: true
         passed: [configure-ert]
       - task: deploy-ert
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/deploy-ert.yml
         config:
           params:
@@ -339,6 +366,7 @@ jobs:
         trigger: true
         passed: [deploy-ert]
       - task: run-cats
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/run-cats.yml
 
   - name: release-environment

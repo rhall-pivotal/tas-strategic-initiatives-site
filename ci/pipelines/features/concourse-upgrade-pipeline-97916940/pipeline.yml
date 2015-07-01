@@ -4,7 +4,7 @@ resources:
     type: git
     source:
       uri: git@github.com:pivotal-cf/p-runtime.git
-      branch: features/concourse-spike
+      branch: features/concourse-upgrade-pipeline-97916940
       private_key: |
         -----BEGIN RSA PRIVATE KEY-----
         MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
@@ -41,7 +41,44 @@ resources:
       secret_access_key: cWVBcDs3WGqH5VV6S3NN89ooElhFmOkp787JHEEH
       bucket: ert-concourse-products
       private: true
-      versioned_file: features/concourse-spike/ert.pivotal
+      versioned_file: features/concourse-upgrade-pipeline-97916940/ert.pivotal
+
+  - name: initial-ert-product
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: ert-releases/1.4.2.0/ert.pivotal
+
+  - name: initial-ops-manager
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: ops_manager_images/aws/1.4.2.0/ops_man_image
+
+
+  - name: ops-manager-stable
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: ops_manager_images/aws/stable/ops_man_image
+
+  - name: exported-installation
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: exported_installations/features/concourse-upgrade-pipeline-97916940/installation.zip
 
   - name: environment
     type: pool
@@ -86,6 +123,18 @@ jobs:
         params:
           acquire: true
 
+  - name: build-runtime
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [claim-environment]
+      - task: built-product
+        tags: [aws]
+        file: p-runtime/ci/jobs/build-pivotal.yml
+      - put: ert-product
+        params:
+          from: built-product/ert.pivotal
+
   - name: destroy-environment
     plan:
       - get: p-runtime
@@ -95,9 +144,10 @@ jobs:
         trigger: true
         passed: [claim-environment]
       - task: destroy
+        tags: [aws]
         file: p-runtime/ci/jobs/destroy-environment.yml
 
-  - name: deploy-ops-manager
+  - name: deploy-ops-manager-initial
     plan:
       - get: p-runtime
         trigger: true
@@ -105,88 +155,192 @@ jobs:
       - get: environment
         trigger: true
         passed: [destroy-environment]
-      - task: prepare
-        file: p-runtime/ci/jobs/prepare-environment.yml
+      - aggregate:
+        - get: ops-manager
+          resource: initial-ops-manager
+        - task: prepare
+          tags: [aws]
+          file: p-runtime/ci/jobs/prepare-environment.yml
       - task: deploy
+        tags: [aws]
         file: p-runtime/ci/jobs/deploy-opsman.yml
-        config:
-          params:
-            ACCESS_KEY_ID: AKIAIFHBKH3ZINMIAQUQ
-            SECRET_ACCESS_KEY: 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
 
-  - name: configure-microbosh
+  - name: configure-microbosh-initial
     plan:
       - get: p-runtime
         trigger: true
-        passed: [deploy-ops-manager]
+        passed: [deploy-ops-manager-initial]
       - get: environment
         trigger: true
-        passed: [deploy-ops-manager]
+        passed: [deploy-ops-manager-initial]
       - task: configure
+        tags: [aws]
         file: p-runtime/ci/jobs/configure-microbosh.yml
         config:
           params:
-            OPSMAN_VERSION: &om_version 1.5
+            OPSMAN_VERSION: 1.4
 
-  - name: deploy-microbosh
+  - name: deploy-microbosh-initial
     plan:
       - get: p-runtime
         trigger: true
-        passed: [configure-microbosh]
+        passed: [configure-microbosh-initial]
       - get: environment
         trigger: true
-        passed: [configure-microbosh]
+        passed: [configure-microbosh-initial]
       - task: deploy
+        tags: [aws]
         file: p-runtime/ci/jobs/deploy-microbosh.yml
         config:
           params:
-            OPSMAN_VERSION: *om_version
+            OPSMAN_VERSION: 1.4
 
-  - name: build-runtime
+  - name: upload-pivotal-initial
     plan:
       - get: p-runtime
         trigger: true
-        passed: [claim-environment]
-      - task: built-product
-        file: p-runtime/ci/jobs/build-pivotal.yml
-      - put: ert-product
-        params:
-          from: built-product/ert.pivotal
+        passed: [deploy-microbosh-initial]
+      - get: environment
+        trigger: true
+        passed: [deploy-microbosh-initial]
+      - get: ert-product
+        resource: initial-ert-product
+        trigger: true
+      - task: upload
+        tags: [aws]
+        file: p-runtime/ci/jobs/upload-pivotal.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.4
 
-  - name: upload-pivotal
+  - name: configure-ert-initial
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [upload-pivotal-initial]
+      - get: environment
+        trigger: true
+        passed: [upload-pivotal-initial]
+      - task: configure-ert
+        tags: [aws]
+        file: p-runtime/ci/jobs/configure-ert.yml
+        config:
+          params:
+            ERT_VERSION: 1.4
+            OPSMAN_VERSION: 1.4
+
+  - name: deploy-ert-initial
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [configure-ert-initial]
+      - get: environment
+        trigger: true
+        passed: [configure-ert-initial]
+      - task: deploy-ert
+        tags: [aws]
+        file: p-runtime/ci/jobs/deploy-ert.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.4
+
+  - name: export-installation
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [deploy-ert-initial]
+      - get: environment
+        trigger: true
+        passed: [deploy-ert-initial]
+      - task: export-installation
+        tags: [aws]
+        file: p-runtime/ci/jobs/export-installation.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.4
+      - put: exported-installation
+        params:
+          from: p-runtime/installation.zip
+
+  - name: destroy-opsman
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [export-installation]
+      - get: environment
+        trigger: true
+        passed: [export-installation]
+      - task: destroy-opsman
+        tags: [aws]
+        file: p-runtime/ci/jobs/destroy-opsman.yml
+
+  - name: deploy-opsman
     plan:
       - aggregate:
         - get: p-runtime
           trigger: true
-          passed: [build-runtime, deploy-microbosh]
+          passed: [destroy-opsman]
         - get: environment
           trigger: true
-          passed: [deploy-microbosh]
+          passed: [destroy-opsman]
+        - get: ops-manager
+          resource: ops-manager-stable
+      - task: deploy
+        tags: [aws]
+        file: p-runtime/ci/jobs/deploy-opsman.yml
+
+  - name: import-installation
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [export-installation,deploy-opsman]
+      - get: environment
+        trigger: true
+        passed: [export-installation,deploy-opsman]
+      - get: exported-installation
+        trigger: true
+        passed: [export-installation]
+      - task: import-installation
+        tags: [aws]
+        file: p-runtime/ci/jobs/import-installation.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.5
+
+  - name: upgrade-pivotal
+    plan:
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [import-installation]
+        - get: environment
+          trigger: true
+          passed: [import-installation]
         - get: ert-product
           trigger: true
           passed: [build-runtime]
-      - task: upload-pivotal
-        file: p-runtime/ci/jobs/upload-pivotal.yml
+      - task: upgrade-pivotal
+        tags: [aws]
+        file: p-runtime/ci/jobs/upgrade-pivotal.yml
         config:
           params:
-            OPSMAN_VERSION: *om_version
-
+            OPSMAN_VERSION: 1.5
 
   - name: configure-ert
     plan:
       - get: p-runtime
         trigger: true
-        passed: [upload-pivotal]
+        passed: [upgrade-pivotal]
       - get: environment
         trigger: true
-        passed: [upload-pivotal]
+        passed: [upgrade-pivotal]
       - task: configure-ert
+        tags: [aws]
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
             ERT_VERSION: 1.5
-            OPSMAN_VERSION: *om_version
-
+            OPSMAN_VERSION: 1.5
 
   - name: deploy-ert
     plan:
@@ -197,10 +351,11 @@ jobs:
         trigger: true
         passed: [configure-ert]
       - task: deploy-ert
+        tags: [aws]
         file: p-runtime/ci/jobs/deploy-ert.yml
         config:
           params:
-            OPSMAN_VERSION: *om_version
+            OPSMAN_VERSION: 1.5
 
   - name: run-cats
     plan:
@@ -211,6 +366,7 @@ jobs:
         trigger: true
         passed: [deploy-ert]
       - task: run-cats
+        tags: [aws]
         file: p-runtime/ci/jobs/run-cats.yml
 
   - name: release-environment

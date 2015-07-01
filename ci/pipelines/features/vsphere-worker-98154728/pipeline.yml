@@ -78,6 +78,15 @@ resources:
         1SYykNNYKIkR5x7VO2kGNs68zwiBCxllIqCKQZJeeJvctQVewYLs
         -----END RSA PRIVATE KEY-----
 
+  - name: ops-manager-stable
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: ops_manager_images/vsphere/stable/ops_man_image
+
 jobs:
   - name: claim-environment
     plan:
@@ -106,16 +115,15 @@ jobs:
       - get: environment
         trigger: true
         passed: [destroy-environment]
-      - task: prepare
-        tags: [vsphere]
-        file: p-runtime/ci/jobs/prepare-environment.yml
+      - aggregate:
+        - get: ops-manager
+          resource: ops-manager-stable
+        - task: prepare
+          tags: [vsphere]
+          file: p-runtime/ci/jobs/prepare-environment.yml
       - task: deploy
         tags: [vsphere]
         file: p-runtime/ci/jobs/deploy-opsman.yml
-        config:
-          params:
-            ACCESS_KEY_ID: AKIAIFHBKH3ZINMIAQUQ
-            SECRET_ACCESS_KEY: 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
 
   - name: configure-microbosh
     plan:

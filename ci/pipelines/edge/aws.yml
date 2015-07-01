@@ -113,6 +113,7 @@ jobs:
         trigger: true
         passed: [claim-environment]
       - task: destroy
+        tags: [aws]
         file: p-runtime/ci/jobs/destroy-environment.yml
 
   - name: deploy-ops-manager
@@ -124,11 +125,14 @@ jobs:
         trigger: true
         passed: [destroy-environment]
       - aggregate:
-        - get: latest-opsman
+        - get: ops-manager
+          resource: latest-opsman
         - task: prepare
+          tags: [aws]
           file: p-runtime/ci/jobs/prepare-environment.yml
       - task: deploy
-        file: p-runtime/ci/jobs/deploy-opsman-latest.yml
+        tags: [aws]
+        file: p-runtime/ci/jobs/deploy-opsman.yml
 
   - name: configure-microbosh
     plan:
@@ -139,6 +143,7 @@ jobs:
         trigger: true
         passed: [deploy-ops-manager]
       - task: configure
+        tags: [aws]
         file: p-runtime/ci/jobs/configure-microbosh.yml
         config:
           params:
@@ -153,6 +158,7 @@ jobs:
         trigger: true
         passed: [configure-microbosh]
       - task: deploy
+        tags: [aws]
         file: p-runtime/ci/jobs/deploy-microbosh.yml
         config:
           params:
@@ -170,6 +176,7 @@ jobs:
         - get: ert-product
           trigger: true
       - task: upload-pivotal
+        tags: [aws]
         file: p-runtime/ci/jobs/upload-pivotal.yml
         config:
           params:
@@ -185,6 +192,7 @@ jobs:
         trigger: true
         passed: [upload-pivotal]
       - task: configure-ert
+        tags: [aws]
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
@@ -201,6 +209,7 @@ jobs:
         trigger: true
         passed: [configure-ert]
       - task: deploy-ert
+        tags: [aws]
         file: p-runtime/ci/jobs/deploy-ert.yml
         config:
           params:
@@ -215,6 +224,7 @@ jobs:
         trigger: true
         passed: [deploy-ert]
       - task: run-cats
+        tags: [aws]
         file: p-runtime/ci/jobs/run-cats.yml
 
   - name: promote-ops-manager
