@@ -21,7 +21,7 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
     case env_settings.iaas_type
     when 'aws'
       configure_aws_load_balancers(elastic_runtime_settings)
-    when 'vsphere'
+    when 'vsphere', 'vcloud'
       configure_vsphere_ha_proxy(elastic_runtime_settings)
     end
   end
