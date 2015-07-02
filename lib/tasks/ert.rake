@@ -8,11 +8,17 @@ namespace :ert do
     require 'ert/aws_database_creator'
 
     logger = Opsmgr.logger_for('Rake')
-    logger.info "Creating AWS DBs for #{args[:environment]}"
-
     environment = Opsmgr::Environments.for(args.environment)
-    creator = Ert::AwsDatabaseCreator.new(settings: environment.settings)
-    creator.create_dbs
+
+    iaas = environment.settings.iaas_type
+    if (iaas == 'aws')
+      logger.info "Creating AWS DBs for #{args[:environment]}"
+
+      creator = Ert::AwsDatabaseCreator.new(settings: environment.settings)
+      creator.create_dbs
+    else
+      logger.info "Not creating AWS databases because environment is: #{iaas}"
+    end
   end
 
   desc 'Update DNS for an ELB for Elastic Runtime [:environment]'
@@ -22,11 +28,17 @@ namespace :ert do
     require 'ert/dns_updater'
 
     logger = Opsmgr.logger_for('Rake')
-    logger.info "Updating DNS record for #{args[:environment]}"
 
     environment = Opsmgr::Environments.for(args.environment)
-    dns_updater = Ert::DnsUpdater.new(settings: environment.settings)
-    dns_updater.update_record
+    iaas = environment.settings.iaas_type
+    if (iaas == 'aws')
+      logger.info "Updating DNS record for #{args[:environment]}"
+
+      dns_updater = Ert::DnsUpdater.new(settings: environment.settings)
+      dns_updater.update_record
+    else
+      logger.info "Not updating ELB's DNS because environment is: #{iaas}"
+    end
   end
 
   desc 'Configure Elastic Runtime [:environment, :ert_version, :om_version]'
