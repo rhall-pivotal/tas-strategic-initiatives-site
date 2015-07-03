@@ -1,0 +1,255 @@
+jobs:
+  - name: claim-environment-aws-upgrade
+    plan:
+        - get: p-runtime
+          trigger: true
+          passed: [kickoff]
+        - put: environment-aws
+          resource: environment-aws
+          params:
+            acquire: true
+            
+  - name: destroy-environment-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [claim-environment-aws-upgrade]
+      - get: environment-aws
+        resource: environment-aws
+        trigger: true
+        passed: [claim-environment-aws-upgrade]
+      - task: destroy
+        tags: [aws]
+        file: p-runtime/ci/jobs/destroy-environment.yml
+
+  - name: deploy-ops-manager-initial-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [destroy-environment-aws-upgrade]
+      - get: environment-aws
+        trigger: true
+        passed: [destroy-environment-aws-upgrade]
+      - aggregate:
+        - get: ops-manager
+          resource: initial-ops-manager-aws
+        - task: prepare
+          tags: [aws]
+          file: p-runtime/ci/jobs/prepare-environment.yml
+      - task: deploy
+        tags: [aws]
+        file: p-runtime/ci/jobs/deploy-opsman.yml
+
+  - name: configure-microbosh-initial-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [deploy-ops-manager-initial-aws-upgrade]
+      - get: environment-aws
+        trigger: true
+        passed: [deploy-ops-manager-initial-aws-upgrade]
+      - task: configure
+        tags: [aws]
+        file: p-runtime/ci/jobs/configure-microbosh.yml
+        config:
+          params:
+            OPSMAN_VERSION: &om_initial_version 1.6
+
+  - name: deploy-microbosh-initial-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [configure-microbosh-initial-aws-upgrade]
+      - get: environment-aws
+        trigger: true
+        passed: [configure-microbosh-initial-aws-upgrade]
+      - task: deploy
+        tags: [aws]
+        file: p-runtime/ci/jobs/deploy-microbosh.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_initial_version
+
+  - name: upload-pivotal-initial-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [deploy-microbosh-initial-aws-upgrade]
+      - get: environment-aws
+        trigger: true
+        passed: [deploy-microbosh-initial-aws-upgrade]
+      - get: ert-product
+        resource: initial-ert-product
+        trigger: true
+      - task: upload
+        tags: [aws]
+        file: p-runtime/ci/jobs/upload-pivotal.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_initial_version
+
+  - name: configure-ert-initial-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [upload-pivotal-initial-aws-upgrade]
+      - get: environment-aws
+        trigger: true
+        passed: [upload-pivotal-initial-aws-upgrade]
+      - task: configure-ert
+        tags: [aws]
+        file: p-runtime/ci/jobs/configure-ert.yml
+        config:
+          params:
+            ERT_VERSION: 1.5
+            OPSMAN_VERSION: *om_initial_version
+
+  - name: deploy-ert-initial-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [configure-ert-initial-aws-upgrade]
+      - get: environment-aws
+        trigger: true
+        passed: [configure-ert-initial-aws-upgrade]
+      - task: deploy-ert
+        tags: [aws]
+        file: p-runtime/ci/jobs/deploy-ert.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_initial_version
+
+  - name: export-installation-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [deploy-ert-initial-aws-upgrade]
+      - get: environment-aws
+        trigger: true
+        passed: [deploy-ert-initial-aws-upgrade]
+      - task: export-installation
+        tags: [aws]
+        file: p-runtime/ci/jobs/export-installation.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_initial_version
+      - put: exported-installation-aws
+        params:
+          from: p-runtime/installation.zip
+
+  - name: destroy-opsman-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [export-installation-aws-upgrade]
+      - get: environment-aws
+        trigger: true
+        passed: [export-installation-aws-upgrade]
+      - task: destroy-opsman-aws-upgrade
+        tags: [aws]
+        file: p-runtime/ci/jobs/destroy-opsman.yml
+
+  - name: deploy-opsman-aws-upgrade
+    plan:
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [destroy-opsman-aws-upgrade]
+        - get: environment-aws
+          trigger: true
+          passed: [destroy-opsman-aws-upgrade]
+        - get: ops-manager
+          resource: ops-manager-stable-aws
+      - task: deploy
+        tags: [aws]
+        file: p-runtime/ci/jobs/deploy-opsman.yml
+
+  - name: import-installation-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [export-installation-aws-upgrade,deploy-opsman-aws-upgrade]
+      - get: environment-aws
+        trigger: true
+        passed: [export-installation-aws-upgrade,deploy-opsman-aws-upgrade]
+      - get: exported-installation-aws
+        trigger: true
+        passed: [export-installation-aws-upgrade]
+      - task: import-installation
+        tags: [aws]
+        file: p-runtime/ci/jobs/import-installation.yml
+        config:
+          params:
+            OPSMAN_VERSION: &om_version 1.6
+
+  - name: upgrade-pivotal-aws-upgrade
+    plan:
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [import-installation-aws-upgrade]
+        - get: environment-aws
+          trigger: true
+          passed: [import-installation-aws-upgrade]
+        - get: ert-product
+          trigger: true
+          passed: [build-runtime]
+      - task: upgrade-pivotal-aws
+        tags: [aws]
+        file: p-runtime/ci/jobs/upgrade-pivotal.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+
+  - name: configure-ert-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [upgrade-pivotal-aws-upgrade]
+      - get: environment-aws
+        trigger: true
+        passed: [upgrade-pivotal-aws-upgrade]
+      - task: configure-ert-aws
+        tags: [aws]
+        file: p-runtime/ci/jobs/configure-ert.yml
+        config:
+          params:
+            ERT_VERSION: 1.6
+            OPSMAN_VERSION: *om_version
+
+  - name: deploy-ert-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [configure-ert-aws-upgrade]
+      - get: environment-aws
+        trigger: true
+        passed: [configure-ert-aws-upgrade]
+      - task: deploy-ert
+        tags: [aws]
+        file: p-runtime/ci/jobs/deploy-ert.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+
+  - name: run-cats-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [deploy-ert-aws-upgrade]
+      - get: environment-aws
+        trigger: true
+        passed: [deploy-ert-aws-upgrade]
+      - task: run-cats
+        tags: [aws]
+        file: p-runtime/ci/jobs/run-cats.yml
+
+  - name: release-environment-aws-upgrade
+    plan:
+      - get: p-runtime
+        passed: [run-cats-aws-upgrade]
+      - get: environment-aws
+        passed: [run-cats-aws-upgrade]
+      - put: environment-aws
+        params:
+          release: environment-aws

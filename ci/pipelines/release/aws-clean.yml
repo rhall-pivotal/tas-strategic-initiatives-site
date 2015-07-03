@@ -1,0 +1,150 @@
+jobs:
+  - name: claim-environment-aws-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [kickoff]
+      - put: environment
+        resource: environment-aws
+        params:
+          acquire: true
+
+  - name: destroy-environment-aws-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [claim-environment-aws-clean]
+      - get: environment
+        resource: environment-aws
+        trigger: true
+        passed: [claim-environment-aws-clean]
+      - task: destroy
+        tags: [aws]
+        file: p-runtime/ci/jobs/destroy-environment.yml
+
+  - name: deploy-ops-manager-aws-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [destroy-environment-aws-clean]
+      - get: environment
+        resource: environment-aws
+        trigger: true
+        passed: [destroy-environment-aws-clean]
+      - aggregate:
+        - get: ops-manager
+          resource: ops-manager-stable-aws
+        - task: prepare
+          tags: [aws]
+          file: p-runtime/ci/jobs/prepare-environment.yml
+      - task: deploy
+        tags: [aws]
+        file: p-runtime/ci/jobs/deploy-opsman.yml
+  - name: configure-microbosh-aws-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [deploy-ops-manager-aws-clean]
+      - get: environment
+        resource: environment-aws
+        trigger: true
+        passed: [deploy-ops-manager-aws-clean]
+      - task: configure
+        tags: [aws]
+        file: p-runtime/ci/jobs/configure-microbosh.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.6
+  - name: deploy-microbosh-aws-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [configure-microbosh-aws-clean]
+      - get: environment
+        resource: environment-aws
+        trigger: true
+        passed: [configure-microbosh-aws-clean]
+      - task: deploy
+        tags: [aws]
+        file: p-runtime/ci/jobs/deploy-microbosh.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.6
+  - name: upload-pivotal-aws-clean
+    plan:
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [build-runtime, deploy-microbosh-aws-clean]
+        - get: environment
+          resource: environment-aws
+          trigger: true
+          passed: [deploy-microbosh-aws-clean]
+        - get: ert-product
+          trigger: true
+          passed: [build-runtime]
+      - task: upload-pivotal
+        tags: [aws]
+        file: p-runtime/ci/jobs/upload-pivotal.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.6
+
+
+  - name: configure-ert-aws-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [upload-pivotal-aws-clean]
+      - get: environment
+        resource: environment-aws
+        trigger: true
+        passed: [upload-pivotal-aws-clean]
+      - task: configure-ert
+        tags: [aws]
+        file: p-runtime/ci/jobs/configure-ert.yml
+        config:
+          params:
+            ERT_VERSION: 1.6
+            OPSMAN_VERSION: 1.6
+
+
+  - name: deploy-ert-aws-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [configure-ert-aws-clean]
+      - get: environment
+        resource: environment-aws
+        trigger: true
+        passed: [configure-ert-aws-clean]
+      - task: deploy-ert
+        tags: [aws]
+        file: p-runtime/ci/jobs/deploy-ert.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.6
+
+  - name: run-cats-aws-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [deploy-ert-aws-clean]
+      - get: environment
+        resource: environment-aws
+        trigger: true
+        passed: [deploy-ert-aws-clean]
+      - task: run-cats
+        tags: [aws]
+        file: p-runtime/ci/jobs/run-cats.yml
+
+  - name: release-environment-aws-clean
+    plan:
+      - get: p-runtime
+        passed: [run-cats-aws-clean]
+      - get: environment
+        resource: environment-aws
+        passed: [run-cats-aws-clean]
+      - put: environment-aws
+        params:
+          release: environment

@@ -1,0 +1,280 @@
+resources:
+  - name: p-runtime
+    type: git
+    source:
+      uri: git@github.com:pivotal-cf/p-runtime.git
+      branch: master
+      private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
+        seLKMSp4Q080DOuUXlMsmvlx5ZJYmWeyR1V24l2iw1N6Ww9WaCTBBb6K69CkWi6R
+        AoDNg1EkrsThGxNTUD6BFUzI64FydgCKv0GpX+I7LyMJSPGVZKi34lIDKfn2uGyE
+        xZLPt833LvctrRW9g154Dc1Ok/SWqxL4I8uZFBSiNJqdXCx4dtXvnpRJ9da/SejB
+        YmfWOBlVXjivOaJmz4m4jOkYJj8cOLoDGJBADgCBB1vdkbRuXShks2ft/PuxPVsm
+        ZXpfOQxT0Qr9v4B0zubXncrloJvRduMV9IoccwIDAQABAoIBAHCpYw5P7W3GheKh
+        WxzRl5h6rRPh2LQtF4qNWHRN4DNHRYspyWjEMWUa7lRiEJwzHJShgF9P0YLD3D5F
+        0H9lqypFriqXRcmc/tllc+P3dVHGY4enKrgxrC0emZWvuvNhrDC2k5DsAx1YMIFC
+        mY7l4Q/dPHGx7mb5SIFMeMrDxmUZ95EuCFBFpuyzgQvdS1Y2Kev7qfgu8oqxgGIN
+        jMYy0m02LVq9A/dRulx7oWhjoCmZ8vFRD7YiHJj4QhQ909OjtesMoCU5cXzUarPL
+        1tw+ki6h8l+HPToojVQsacSSdIQUvc2TYufyh0S5orSnc92fpZRyZmHjcnv4fkwx
+        gDDzLsECgYEAzsjVaZkXXjMk/c1nFpMFaXWRKK8UYUnOh9uGp3WXa+spMEcAzbTW
+        umHqJcQAGewkAk4PafM4BwqmcwL0zmoKxoDVGAGVLoezH/ln8KKZl94sfAsEbWlI
+        VIs7SPfCGmo0ROHm+eDFiWS4+GJgLS+FLvqeHSXnhg4dgVqRHDlf05kCgYEAw9XZ
+        AElXqouZ6i5jto2mO7DAkzRgR9IZ4xb9uLbOUAq1BgebWpwuT1L++WqTyiu8MNKr
+        o1iJSAUIjbyxxICSjMRenF2kpziWmysfjiCjDt/Lw90+8109hz7A3qahJcjqjvEG
+        FYIykaYTCWRM6kpUXogMS1kvrFwt6v4Rc84lN+sCgYA68jEz6vooVjgDSZxLaRmv
+        2F3K1S3gFeQUAlY+Ql0p3F1fb74g5Z4Yf3T50wecXB5fsdTfBQBBsZ2FR6B1fvEX
+        aP5V242lN/Wt9bDVfeR+0EyqB5H5hnuh7ha2VDo2wXOo9ySasqJc6iN4WsLD3rn+
+        jF6qPHXlVvy+NQ0MmKZicQKBgG5PozCaH5udj1FuWBSYra6p3ZANzL4oBxT3+mt1
+        7bkAjv+agVQE7cEZCy8LbbxP7m3B/ZTBZnL/AtZ0F96MXgCVDIYf6YOYSJ2XKOsy
+        TyctwOXPVopXVzU7kADa86MJDbb+5WJwOHP6jHaZ3QmMXQHyuJoo3sXEFslr3ADT
+        efuJAoGBAJcIUJRJdWBj3D7iLPOHRqJCwXdcxEaV9px9J+QUfnRZ4lGp5cdLlzcl
+        KDZ97Z8GkcNEWmVNqygX06AgJmHhNNDRXJCT5fwcJlF8ZcjXZ6NJa3zVQ3y1VMFE
+        hYI0vHHTGhvOQR1PYJlS5JuNvDCWo8PeeG/LV+zUEVW7LJMYzvWj
+        -----END RSA PRIVATE KEY-----
+
+  - name: ert-product
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: ert-1.6/untested/ert.pivotal
+
+  - name: ert-product-promoted
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: ert-1.6/tested/ert.pivotal
+
+  - name: environment-vsphere
+    type: pool
+    source:
+      uri: git@github.com:pivotal-cf-experimental/releng-env-resource-pool
+      branch: master
+      pool: vsphere
+      private_key: &env_private_key |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEowIBAAKCAQEAusDLytuEM/eX5vkwEFlTTKhnpDpUrKtxIOqcfGwg2gyH29jm
+        RGIYLAIYGqfsAXP1pbd/EMSE3CgzQUcwRiNTNRZTAXC3QXioz52xhziI7NrSu71P
+        LuwMuj7YtqjFdsFt57ho5O8iGXCmcwHdLvN4ADByRn4p4aMg59IK5aG8B+Btn0gz
+        dJBTz8Px1LkdVpSitZPrZdpjDoYymSABfQ/oTvMSTffiiOC634EFCkJmr9Uc1M2C
+        mX2LwtM/ZDVnpmY/hWjI3dNhEolvVl1TAQzfokoszJiFMSKPRJhF5SctdnBmzgDC
+        GOuxdU1Jtrhj22CxvzRGoVFI1BrxNcDzg3fBBwIDAQABAoIBAG6cvNgVNvOUxbr/
+        gxFb5vOzl1d1WSvAi8wESdWEMd0UqO91Q8XjGBAQ2XgIV8fwh+G0kqU60LqZcOpM
+        IPKZ/7Gk3FsxCMnVjp8R9tFxkeBAJ6sdEKZpF4zEppVh1ztkjBVAa5iVbuwEhgH+
+        a6RgfoYWK8lG9sV3WokUJnImXnmG1vAq55B1/M7FuboHKO/1raE7w3rnydqpGOlm
+        rdTTR9VghuJSI+zcPy90k/tWxqQW5fohjmvdFp3Tjlu68Gz9wYgBzlBfOsE0Oo64
+        ssMw0j2wAdbz6E3/g4w0k5j7c3UFECVyqfciY1u3CbXNAZz+UXvF6mgV6hGFsLha
+        55T1SFECgYEA8ed76C56IIGAVz9n+QltdRFijZyZXDrrmp4m5wTrjBabG+0quZ5e
+        CwYhr5J86G/HQiM/dVMlX8xUW7dLkJanLaeBaG+VA8VWvijcRRMG4CaRIeYquLCW
+        kJSW9fgcH+0zr2GxKoxA81dDSgSmu0rz+JXVxBZrzRAEesCTxwwuwV8CgYEAxaKd
+        osZDsqheY78/wDox3x8OVdkPgYtV7ckGXVA6YiNbFIS815Dtxun5RBjYC5AuLslu
+        ml+B/N5B+ezdGPCd1Xo+aoAG4SWbqRRQ4YhbXjfCW5+ve9vHAPb0Lsnq6YzmjRRa
+        n26QmLxlkXk9xs8eIH+yG4qEtOpwheqNDzzT2VkCgYAMAsheMOCTeJqcumM5NESh
+        CWnxShM7Rxmnpa6czdu8KussqcvzR2+38Gf/xbA6AkLMf9+IvcYfSY/utd0korZO
+        SADe5JtrgoLaEkFNlLJEsuWF313DqdDwANC2CcmrtCVa0ejwCeK3sl9+71gv+HrA
+        nv/sKojTt7XhOmqb+Xjg1QKBgFDNwtupakZidm0b5YnHgVpzTR4maCOT/2cAGN0Q
+        Dz7Oq8+A0eDk/YKlaOfBrJtVsLwqWVE+mVv0107C3Eb1IeMFXv2WKLnm8XS4vLTp
+        Vkn4TDu/1zSxz/SCA6YZojUpCZ5G4yJqRy5bYL+QrYRabDvnWb/O66E4dRcbpd7E
+        BO3JAoGBAKjGoOR90tzEtLrEvAYQ7C4hBaAEr5Q9qVTY8YX3Buu7IjOXnp+hPjM2
+        NsvohmptLBEY+xFa+uM7I7yzlp3NeLNeM37UyCQiEjuyoTotN1hjRLiWUWi6KrYS
+        1SYykNNYKIkR5x7VO2kGNs68zwiBCxllIqCKQZJeeJvctQVewYLs
+        -----END RSA PRIVATE KEY-----
+
+  - name: environment-aws
+    type: pool
+    source:
+      uri: git@github.com:pivotal-cf-experimental/releng-env-resource-pool
+      branch: master
+      pool: aws
+      private_key: *env_private_key
+
+  - name: environment-internetless
+    type: pool
+    source:
+      uri: git@github.com:pivotal-cf-experimental/releng-env-resource-pool
+      branch: master
+      pool: internetless
+      private_key: *env_private_key
+
+  - name: ops-manager-stable-aws
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: ops_manager_images/aws/stable/ops_man_image
+
+  - name: ops-manager-stable-vsphere
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: ops_manager_images/vsphere/stable/ops_man_image
+
+  - name: initial-ert-product
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: ert-releases/1.5.0.0/ert.pivotal
+
+  - name: initial-ops-manager-aws
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: ops_manager_images/aws/1.5.0.0/ops_man_image
+
+  - name: initial-ops-manager-vsphere
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: ops_manager_images/vsphere/1.5.0.0/ops_man_image
+
+  - name: exported-installation-aws
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: exported_installations/master/aws/installation.zip
+
+  - name: exported-installation-vsphere
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      private: true
+      versioned_file: exported_installations/master/vsphere/installation.zip
+jobs:
+  - name: kickoff
+    plan:
+      - get: p-runtime
+
+  - name: build-runtime
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [kickoff]
+      - task: built-product
+        file: p-runtime/ci/jobs/build-pivotal.yml
+      - put: ert-product
+        params:
+          from: built-product/ert.pivotal
+
+  - name: promote-ert
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [release-environment-aws-clean,release-environment-aws-upgrade,release-environment-vsphere-clean,release-environment-vsphere-upgrade,release-environment-internetless]
+      - get: ert-product
+        passed: [build-runtime]
+      - put: ert-product-promoted
+        params:
+          from: ert-product/ert.pivotal
+
+groups:
+  - name: aws-clean
+    jobs:
+    - claim-environment-aws-clean
+    - destroy-environment-aws-clean
+    - deploy-ops-manager-aws-clean
+    - configure-microbosh-aws-clean
+    - deploy-microbosh-aws-clean
+    - upload-pivotal-aws-clean
+    - configure-ert-aws-clean
+    - deploy-ert-aws-clean
+    - run-cats-aws-clean
+    - release-environment-aws-clean
+
+  - name: vsphere-clean
+    jobs:
+    - claim-environment-vsphere-clean
+    - destroy-environment-vsphere-clean
+    - deploy-ops-manager-vsphere-clean
+    - configure-microbosh-vsphere-clean
+    - deploy-microbosh-vsphere-clean
+    - upload-pivotal-vsphere-clean
+    - configure-ert-vsphere-clean
+    - deploy-ert-vsphere-clean
+    - run-cats-vsphere-clean
+    - release-environment-vsphere-clean
+
+  - name: vsphere-internetless
+    jobs:
+    - claim-environment-internetless
+    - destroy-environment-internetless
+    - deploy-ops-manager-internetless
+    - configure-microbosh-internetless
+    - deploy-microbosh-internetless
+    - upload-pivotal-internetless
+    - configure-ert-internetless
+    - deploy-ert-internetless
+    - run-cats-internetless
+    - release-environment-internetless
+
+  - name: aws-upgrade
+    jobs:
+    - claim-environment-aws-upgrade
+    - destroy-environment-aws-upgrade
+    - deploy-ops-manager-initial-aws-upgrade
+    - configure-microbosh-initial-aws-upgrade
+    - deploy-microbosh-initial-aws-upgrade
+    - upload-pivotal-initial-aws-upgrade
+    - configure-ert-initial-aws-upgrade
+    - deploy-ert-initial-aws-upgrade
+    - export-installation-aws-upgrade
+    - destroy-opsman-aws-upgrade
+    - deploy-ert-aws-upgrade
+    - import-installation-aws-upgrade
+    - upgrade-pivotal-aws-upgrade
+    - configure-ert-aws-upgrade
+    - deploy-ert-aws-upgrade
+    - run-cats-aws-upgrade
+    - release-environment-aws-upgrade
+
+  - name: vsphere-upgrade
+    jobs:
+    - claim-environment-vsphere-upgrade
+    - destroy-environment-vsphere-upgrade
+    - deploy-ops-manager-initial-vsphere-upgrade
+    - configure-microbosh-initial-vsphere-upgrade
+    - deploy-microbosh-initial-vsphere-upgrade
+    - upload-pivotal-initial-vsphere-upgrade
+    - configure-ert-initial-vsphere-upgrade
+    - deploy-ert-initial-vsphere-upgrade
+    - export-installation-vsphere-upgrade
+    - destroy-opsman-vsphere-upgrade
+    - deploy-ert-vsphere-upgrade
+    - import-installation-vsphere-upgrade
+    - upgrade-pivotal-vsphere-upgrade
+    - configure-ert-vsphere-upgrade
+    - deploy-ert-vsphere-upgrade
+    - run-cats-vsphere-upgrade
+    - release-environment-vsphere-upgrade
+
+  - name: common
+    jobs:
+      - kickoff
+      - build-runtime
+      - promote-ert
+    resources:
+      - ops-manager-stable-aws

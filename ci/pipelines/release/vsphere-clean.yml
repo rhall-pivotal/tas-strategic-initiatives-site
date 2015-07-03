@@ -1,0 +1,150 @@
+jobs:
+  - name: claim-environment-vsphere-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [kickoff]
+      - put: environment
+        resource: environment-vsphere
+        params:
+          acquire: true
+
+  - name: destroy-environment-vsphere-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [claim-environment-vsphere-clean]
+      - get: environment
+        resource: environment-vsphere
+        trigger: true
+        passed: [claim-environment-vsphere-clean]
+      - task: destroy
+        tags: [vsphere]
+        file: p-runtime/ci/jobs/destroy-environment.yml
+
+  - name: deploy-ops-manager-vsphere-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [destroy-environment-vsphere-clean]
+      - get: environment
+        resource: environment-vsphere
+        trigger: true
+        passed: [destroy-environment-vsphere-clean]
+      - aggregate:
+        - get: ops-manager
+          resource: ops-manager-stable-vsphere
+        - task: prepare
+          tags: [vsphere]
+          file: p-runtime/ci/jobs/prepare-environment.yml
+      - task: deploy
+        tags: [vsphere]
+        file: p-runtime/ci/jobs/deploy-opsman.yml
+  - name: configure-microbosh-vsphere-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [deploy-ops-manager-vsphere-clean]
+      - get: environment
+        resource: environment-vsphere
+        trigger: true
+        passed: [deploy-ops-manager-vsphere-clean]
+      - task: configure
+        tags: [vsphere]
+        file: p-runtime/ci/jobs/configure-microbosh.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.6
+  - name: deploy-microbosh-vsphere-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [configure-microbosh-vsphere-clean]
+      - get: environment
+        resource: environment-vsphere
+        trigger: true
+        passed: [configure-microbosh-vsphere-clean]
+      - task: deploy
+        tags: [vsphere]
+        file: p-runtime/ci/jobs/deploy-microbosh.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.6
+  - name: upload-pivotal-vsphere-clean
+    plan:
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [build-runtime, deploy-microbosh-vsphere-clean]
+        - get: environment
+          resource: environment-vsphere
+          trigger: true
+          passed: [deploy-microbosh-vsphere-clean]
+        - get: ert-product
+          trigger: true
+          passed: [build-runtime]
+      - task: upload-pivotal
+        tags: [vsphere]
+        file: p-runtime/ci/jobs/upload-pivotal.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.6
+
+
+  - name: configure-ert-vsphere-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [upload-pivotal-vsphere-clean]
+      - get: environment
+        resource: environment-vsphere
+        trigger: true
+        passed: [upload-pivotal-vsphere-clean]
+      - task: configure-ert
+        tags: [vsphere]
+        file: p-runtime/ci/jobs/configure-ert.yml
+        config:
+          params:
+            ERT_VERSION: 1.6
+            OPSMAN_VERSION: 1.6
+
+
+  - name: deploy-ert-vsphere-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [configure-ert-vsphere-clean]
+      - get: environment
+        resource: environment-vsphere
+        trigger: true
+        passed: [configure-ert-vsphere-clean]
+      - task: deploy-ert
+        tags: [vsphere]
+        file: p-runtime/ci/jobs/deploy-ert.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.6
+
+  - name: run-cats-vsphere-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [deploy-ert-vsphere-clean]
+      - get: environment
+        resource: environment-vsphere
+        trigger: true
+        passed: [deploy-ert-vsphere-clean]
+      - task: run-cats
+        tags: [vsphere]
+        file: p-runtime/ci/jobs/run-cats.yml
+
+  - name: release-environment-vsphere-clean
+    plan:
+      - get: p-runtime
+        passed: [run-cats-vsphere-clean]
+      - get: environment
+        resource: environment-vsphere
+        passed: [run-cats-vsphere-clean]
+      - put: environment-vsphere
+        params:
+          release: environment
