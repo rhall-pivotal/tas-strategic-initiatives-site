@@ -1,14 +1,29 @@
 name: brinjal
 iaas_type: aws
-vm_shepherd_configs:
-  - aws_access_key: AKIAI43577ARGHXPWIMQ
+vm_shepherd:
+  env_config:
+    stack_name: brinjal
+    aws_access_key: AKIAI43577ARGHXPWIMQ
     aws_secret_key: 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
-    ssh_key_name: releng-dev
-    public_subnet_id: subnet-1c40de6b
-    private_subnet_id: subnet-1b40de6c
-    security_group: sg-dca5cdb8
-    elastic_ip_id: eipalloc-5cd84639
-    vm_name: 'OpsManager brinjal'
+    region: us-east-1
+    json_file: config/ert_cloudformation.json
+    parameters:
+      01NATKeyPair: releng-dev
+      05RdsUsername: pivotalcf
+      06RdsPassword: pivotalcf
+      07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/brinjal
+    outputs:
+      ssh_key_name: releng-dev
+      ssh_key_name: {{ssh_key_pair_name}}
+      security_group: {{ops_manager_security_group_id}}
+      public_subnet_id: {{public_subnet_id}}
+      private_subnet_id: {{private_subnet_id}}
+      s3_bucket_names:
+        - {{ ops_manager_s3_bucket_name }}
+        - {{ ert_s3_bucket_name }}
+  vm_configs:
+    - vm_name: Brinjal OpsManager
+      vm_ip_address: 54.175.228.122
 
 ops_manager:
   url: https://pcf.brinjal.cf-app.com/
@@ -19,12 +34,12 @@ ops_manager:
   - iaas_identifier: us-east-1d
 
   aws:
-    aws_access_key: AKIAI43577ARGHXPWIMQ
-    aws_secret_key: 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
-    vpc_id: vpc-72a9e817
-    security_group: pcfVMs
-    key_pair_name: releng-dev
-    region: us-east-1
+    aws_access_key: {{iam_aws_access_key_id}}
+    aws_secret_key: {{iam_aws_secret_access_key}}
+    vpc_id: {{vpc}}
+    security_group: {{vms_security_group_name}}
+    key_pair_name: {{ssh_key_pair_name}}
+    region: {{region}}
     ssh_key: |
       -----BEGIN RSA PRIVATE KEY-----
       MIIEpAIBAAKCAQEAhU5ETA/Pt42waL2WDKLBfhIXlaQ3YHem3Tojn044bs3GpGBWeHESchL6Ndjv
@@ -52,7 +67,7 @@ ops_manager:
 
   networks:
   - name: first-network
-    identifier: subnet-1b40de6c
+    identifier: {{ private_subnet_id }}
     subnet: 10.0.2.0/24
     reserved_ips: 10.0.2.2-10.0.2.4
     dns: 10.0.0.2
@@ -62,7 +77,18 @@ ops_manager:
     name: cf
     system_domain: brinjal.cf-app.com
     apps_domain: brinjal.cf-app.com
-    elb_name: brinjal
+    elb_name: brinjal-pcf-elb
+    elb_dns_name: {{ ert_elb_dns_name }}
+    file_storage:
+      endpoint: https://s3.amazonaws.com
+      bucket: {{ ert_s3_bucket_name }}
+      access_key: {{iam_aws_access_key_id}}
+      secret_key: {{iam_aws_secret_access_key}}
+    rds:
+      host: {{rds_address}}
+      port: {{rds_port}}
+      username: {{rds_username}}
+      password: {{rds_password}}
     smtp:
       from: identitystaging@mailinator.com
       address: smtp.sendgrid.net

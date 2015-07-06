@@ -1,22 +1,23 @@
 iaas_type: openstack
 
-vm_shepherd_configs:
-- creds:
-    auth_url: http://23.246.208.98:5000/v2.0/tokens
-    username: releng-ci
-    api_key: 'x8esrkxQ3SBM'
-    tenant: mars
-  vm:
-    name: 'mars-ops-manager'
-    flavor_parameters:
-      min_disk_size: 150
-    network_name: 'net04'
-    key_name: releng-openstack-key
-    security_group_names:
-      - mars-ops-manager
-      - default
-    private_ip: 192.168.111.100
-    public_ip: 23.246.208.110
+vm_shepherd:
+  vm_configs:
+  - creds:
+      auth_url: http://23.246.208.98:5000/v2.0/tokens
+      username: releng-ci
+      api_key: 'x8esrkxQ3SBM'
+      tenant: mars
+    vm:
+      name: 'mars-ops-manager'
+      flavor_parameters:
+        min_disk_size: 150
+      network_name: 'net04'
+      key_name: releng-openstack-key
+      security_group_names:
+        - mars-ops-manager
+        - default
+      private_ip: 192.168.111.100
+      public_ip: 23.246.208.110
 
 ops_manager:
   url: https://pcf.mars.cf-app.com

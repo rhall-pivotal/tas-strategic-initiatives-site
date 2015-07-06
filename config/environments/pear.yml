@@ -1,8 +1,8 @@
-name: plum
+name: pear
 iaas_type: aws
 vm_shepherd:
   env_config:
-    stack_name: plum
+    stack_name: pear
     aws_access_key: AKIAI43577ARGHXPWIMQ
     aws_secret_key: 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
     region: us-east-1
@@ -11,7 +11,7 @@ vm_shepherd:
       01NATKeyPair: releng-dev
       05RdsUsername: pivotalcf
       06RdsPassword: pivotalcf
-      07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/plum
+      07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/pear
     outputs:
       ssh_key_name: releng-dev
       ssh_key_name: {{ssh_key_pair_name}}
@@ -22,16 +22,16 @@ vm_shepherd:
         - {{ ops_manager_s3_bucket_name }}
         - {{ ert_s3_bucket_name }}
   vm_configs:
-    - vm_name: Plum OpsManager
-      vm_ip_address: 52.4.136.120
+    - vm_name: Pear OpsManager
+      vm_ip_address: 52.6.145.125
 
 ops_manager:
-  url: https://pcf.plum.cf-app.com/
+  url: https://pcf.pear.cf-app.com
   username: pivotalcf
   password: pivotalcf
   ntp_servers: 0.amazon.pool.ntp.org
   availability_zones:
-  - iaas_identifier: us-east-1c
+  - iaas_identifier: us-east-1a
 
   aws:
     aws_access_key: {{iam_aws_access_key_id}}
@@ -75,9 +75,9 @@ ops_manager:
 
   elastic_runtime:
     name: cf
-    system_domain: plum.cf-app.com
-    apps_domain: plum.cf-app.com
-    elb_name: plum-pcf-elb
+    system_domain: pear.cf-app.com
+    apps_domain: pear.cf-app.com
+    elb_name: pear-pcf-elb
     elb_dns_name: {{ ert_elb_dns_name }}
     file_storage:
       endpoint: https://s3.amazonaws.com

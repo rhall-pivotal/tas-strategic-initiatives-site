@@ -20,6 +20,14 @@ class IntegrationSpecRunner
     run_spec(["integration/ERT-#{ert_version}/configure_ert_spec.rb"])
   end
 
+  def configure_external_dbs
+    run_spec(["integration/ERT-#{ert_version}/configure_external_dbs_spec.rb"])
+  end
+
+  def configure_external_file_storage
+    run_spec(["integration/ERT-#{ert_version}/configure_external_file_storage_spec.rb"])
+  end
+
   private
 
   def run_spec(spec_to_run)

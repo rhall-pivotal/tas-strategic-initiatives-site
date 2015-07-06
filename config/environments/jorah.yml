@@ -1,37 +1,38 @@
 ---
 name: jorah
 iaas_type: vsphere
-vm_shepherd_configs:
-- vcenter_creds:
-    ip: 172.16.74.3
-    username: root
-    password: look74Beer
-  vsphere:
-    host: vcenter
-    resource_pool: jorah
-    datacenter: pizza-boxes-dc
-    cluster: pizza-boxes
-    datastore: emc-ds
-    network: magneto
-    folder: jorah
-  cleanup:
-    datacenter: pizza-boxes-dc
-    datastores:
-    - emc-ds
-    datacenter_folders_to_clean:
-    - jorah
-    - jorah_vms
-    - jorah_templates
-    datastore_folders_to_clean:
-    - jorah
-    - jorah_disk
-  vm:
-    ip: 172.16.81.126
-    gateway: 172.16.80.1
-    netmask: 255.255.254.0
-    dns: 10.87.8.10,10.87.8.11
-    ntp_servers: time1.sf.cf-app.com
-    vm_password: pivotalcf
+vm_shepherd:
+  vm_configs:
+  - vcenter_creds:
+      ip: 172.16.74.3
+      username: root
+      password: look74Beer
+    vsphere:
+      host: vcenter
+      resource_pool: jorah
+      datacenter: pizza-boxes-dc
+      cluster: pizza-boxes
+      datastore: emc-ds
+      network: magneto
+      folder: jorah
+    cleanup:
+      datacenter: pizza-boxes-dc
+      datastores:
+      - emc-ds
+      datacenter_folders_to_clean:
+      - jorah
+      - jorah_vms
+      - jorah_templates
+      datastore_folders_to_clean:
+      - jorah
+      - jorah_disk
+    vm:
+      ip: 172.16.81.126
+      gateway: 172.16.80.1
+      netmask: 255.255.254.0
+      dns: 10.87.8.10,10.87.8.11
+      ntp_servers: time1.sf.cf-app.com
+      vm_password: pivotalcf
 ops_manager:
   url: https://pcf.jorah.cf-app.com
   username: pivotalcf

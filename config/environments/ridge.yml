@@ -1,37 +1,38 @@
 ---
 name: ridge
 iaas_type: vsphere
-vm_shepherd_configs:
-- vcenter_creds:
-    ip: 10.84.32.61
-    username: root
-    password: look74Beer
-  vsphere:
-    host: vcenter
-    resource_pool: ridge
-    datacenter: private
-    cluster: private
-    datastore: public
-    network: ridge
-    folder: ridge
-  cleanup:
-    datacenter: private
-    datastores:
-    - public
-    datacenter_folders_to_clean:
-    - ridge
-    - ridge_vms
-    - ridge_templates
-    datastore_folders_to_clean:
-    - ridge
-    - ridge_disk
-  vm:
-    ip: 10.85.88.16
-    gateway: 10.85.88.1
-    netmask: 255.255.255.0
-    dns: 10.87.8.10,10.87.8.11
-    ntp_servers: time1.sf.cf-app.com
-    vm_password: pivotalcf
+vm_shepherd:
+  vm_configs:
+  - vcenter_creds:
+      ip: 10.84.32.61
+      username: root
+      password: look74Beer
+    vsphere:
+      host: vcenter
+      resource_pool: ridge
+      datacenter: private
+      cluster: private
+      datastore: public
+      network: ridge
+      folder: ridge
+    cleanup:
+      datacenter: private
+      datastores:
+      - public
+      datacenter_folders_to_clean:
+      - ridge
+      - ridge_vms
+      - ridge_templates
+      datastore_folders_to_clean:
+      - ridge
+      - ridge_disk
+    vm:
+      ip: 10.85.88.16
+      gateway: 10.85.88.1
+      netmask: 255.255.255.0
+      dns: 10.87.8.10,10.87.8.11
+      ntp_servers: time1.sf.cf-app.com
+      vm_password: pivotalcf
 ops_manager:
   url: https://pcf.ridge.cf-app.com
   username: pivotalcf
