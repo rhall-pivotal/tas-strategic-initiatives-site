@@ -1,9 +1,9 @@
 require 'spec_helper'
-require 'pipeline/deploy_feature_pipeline'
+require 'pipeline/feature_pipeline_deployer'
 
-describe Pipeline::DeployFeaturePipeline do
+describe Pipeline::FeaturePipelineDeployer do
   subject(:pipeline_deployer) do
-    Pipeline::DeployFeaturePipeline.new(
+    Pipeline::FeaturePipelineDeployer.new(
       branch_name: branch_name
     )
   end
@@ -20,7 +20,7 @@ describe Pipeline::DeployFeaturePipeline do
   end
 
   it 'has a constructor that takes one argument' do
-    expect(pipeline_deployer).to be_a(Pipeline::DeployFeaturePipeline)
+    expect(pipeline_deployer).to be_a(Pipeline::FeaturePipelineDeployer)
   end
 
   it 'uses the pipeline configuration file with the same name as the branch' do
@@ -39,7 +39,7 @@ describe Pipeline::DeployFeaturePipeline do
     it 'raises an error' do
       expect { pipeline_deployer.deploy_pipeline }
         .to raise_error(
-          Pipeline::DeployFeaturePipeline::NoConfigFileError,
+          Pipeline::FeaturePipelineDeployer::NoConfigFileError,
           "Unable to find pipeline configuration for #{branch_name}"
         )
     end

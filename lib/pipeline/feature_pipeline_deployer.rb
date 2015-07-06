@@ -1,5 +1,5 @@
 module Pipeline
-  class DeployFeaturePipeline
+  class FeaturePipelineDeployer
     class NoConfigFileError < StandardError; end
 
     def initialize(branch_name:)

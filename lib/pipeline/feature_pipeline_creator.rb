@@ -2,7 +2,7 @@ require 'mustache'
 require 'yaml'
 
 module Pipeline
-  class CreateFeaturePipeline < Mustache
+  class FeaturePipelineCreator < Mustache
     def initialize(branch_name:, iaas_type:)
       @branch_name = branch_name
       @iaas_type = iaas_type

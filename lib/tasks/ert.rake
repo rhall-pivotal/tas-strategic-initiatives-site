@@ -70,8 +70,8 @@ namespace :ert do
   namespace :pipeline do
     desc 'create a feature pipeline'
     task :create_feature_pipeline, [:branch_name, :iaas_type] do |_, args|
-      require 'pipeline/create_feature_pipeline'
-      Pipeline::CreateFeaturePipeline.new(
+      require 'pipeline/feature_pipeline_creator'
+      Pipeline::FeaturePipelineCreator.new(
         branch_name: args.branch_name,
         iaas_type: args.iaas_type
       ).create_pipeline
@@ -79,8 +79,8 @@ namespace :ert do
 
     desc 'create a feature upgrade pipeline'
     task :create_upgrade_pipeline, [:branch_name, :iaas_type, :ert_initial_full_version, :om_initial_full_version] do |_, args|
-      require 'pipeline/create_feature_pipeline'
-      Pipeline::CreateFeaturePipeline.new(
+      require 'pipeline/feature_pipeline_creator'
+      Pipeline::FeaturePipelineCreator.new(
         branch_name: args.branch_name,
         iaas_type: args.iaas_type
       ).create_upgrade_pipeline(
@@ -91,8 +91,8 @@ namespace :ert do
 
     desc 'deploy feature pipeline to concourse'
     task :deploy_feature_pipeline, [:branch_name] do |_, args|
-      require 'pipeline/deploy_feature_pipeline'
-      Pipeline::DeployFeaturePipeline.new(
+      require 'pipeline/feature_pipeline_deployer'
+      Pipeline::FeaturePipelineDeployer.new(
         branch_name: args.branch_name,
       ).deploy_pipeline
     end

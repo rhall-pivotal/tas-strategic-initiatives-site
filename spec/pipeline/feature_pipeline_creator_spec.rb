@@ -1,9 +1,9 @@
 require 'spec_helper'
-require 'pipeline/create_feature_pipeline'
+require 'pipeline/feature_pipeline_creator'
 
-describe Pipeline::CreateFeaturePipeline do
+describe Pipeline::FeaturePipelineCreator do
   subject(:pipeline_creator) do
-    Pipeline::CreateFeaturePipeline.new(
+    Pipeline::FeaturePipelineCreator.new(
       branch_name: 'features/branch',
       iaas_type: 'aws',
     )
@@ -30,7 +30,7 @@ YAML
   end
 
   it 'has a constructor that takes two arguments' do
-    expect(pipeline_creator).to be_a(Pipeline::CreateFeaturePipeline)
+    expect(pipeline_creator).to be_a(Pipeline::FeaturePipelineCreator)
   end
 
   context 'clean install pipeline' do
