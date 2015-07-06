@@ -182,7 +182,7 @@
             }
           ]
         },
-        "Users" : [ {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUser" ]} ]
+        "Users" : [ {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUserName" ]} ]
       }
     },
     "PcfElasticRuntimeS3Bucket": {
@@ -204,8 +204,8 @@
     "PcfVpc": {
       "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfVpc" ]}
     },
-    "PcfIamUser": {
-      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUser" ]}
+    "PcfIamUserName": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUserName" ]}
     },
     "PcfIamUserAccessKey": {
       "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUserAccessKey" ]}
