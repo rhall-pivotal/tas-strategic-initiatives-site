@@ -6,7 +6,11 @@ pipeline config after converting master pipelines* to use capybara helpers
   <pipelines group="ERT-1.5">
     <pipeline name="ERT-1.5-kickoff" isLocked="false">
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" />
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5">
+          <filter>
+            <ignore pattern="**/*" />
+          </filter>
+        </git>
       </materials>
       <stage name="kickoff">
         <approval type="manual" />
@@ -39,7 +43,7 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
       </environmentvariables>
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime">
           <filter>
             <ignore pattern="**/*" />
           </filter>
@@ -117,7 +121,7 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
       </environmentvariables>
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime">
           <filter>
             <ignore pattern="**/*" />
           </filter>
@@ -294,7 +298,7 @@ pipeline config after converting master pipelines* to use capybara helpers
               <test src="p-runtime/tmp" />
             </artifacts>
           </job>
-         </jobs>
+        </jobs>
       </stage>
       <stage name="deploy_ert">
         <jobs>
@@ -354,7 +358,7 @@ pipeline config after converting master pipelines* to use capybara helpers
     </pipeline>
     <pipeline name="ERT-1.5-build" isLocked="false">
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime" />
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime" />
         <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff" />
         <pipeline pipelineName="ERT-1.5-Docker-Image" stageName="build_image" />
       </materials>
@@ -426,7 +430,7 @@ pipeline config after converting master pipelines* to use capybara helpers
       </environmentvariables>
       <materials>
         <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals" />
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime">
           <filter>
             <ignore pattern="**/*" />
           </filter>
@@ -689,7 +693,7 @@ pipeline config after converting master pipelines* to use capybara helpers
       </environmentvariables>
       <materials>
         <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals" />
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime">
           <filter>
             <ignore pattern="**/*" />
           </filter>
@@ -948,7 +952,7 @@ pipeline config after converting master pipelines* to use capybara helpers
       </environmentvariables>
       <materials>
         <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals" />
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime">
           <filter>
             <ignore pattern="**/*" />
           </filter>
@@ -1268,7 +1272,7 @@ pipeline config after converting master pipelines* to use capybara helpers
       </environmentvariables>
       <materials>
         <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" />
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime">
           <filter>
             <ignore pattern="**/*" />
           </filter>
@@ -1277,14 +1281,13 @@ pipeline config after converting master pipelines* to use capybara helpers
     </pipeline>
     <pipeline name="ERT-1.5-publish">
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime">
           <filter>
             <ignore pattern="**/*" />
           </filter>
         </git>
         <pipeline pipelineName="ERT-1.5" stageName="release-claim" />
         <pipeline pipelineName="ERT-1.5-internetless" stageName="release-claim" />
-        <pipeline pipelineName="ERT-1.5-mysql" stageName="release-claim" />
         <pipeline pipelineName="ERT-1.5-upgrade-1.4.2.0-OM1.4.2.0" stageName="release-claim" />
         <pipeline pipelineName="ERT-1.5-aws" stageName="destroy_env" />
         <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff" />
@@ -1351,7 +1354,7 @@ pipeline config after converting master pipelines* to use capybara helpers
         </variable>
       </environmentvariables>
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime" />
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime" />
         <pipeline pipelineName="ERT-1.5-aws-build" stageName="vara-build" />
       </materials>
       <stage name="ensure_not_vsphere">
@@ -1721,7 +1724,7 @@ pipeline config after converting master pipelines* to use capybara helpers
       </environmentvariables>
       <materials>
         <pipeline pipelineName="ERT-1.5-build" stageName="vara-build" materialName="pivotals" />
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime">
           <filter>
             <ignore pattern="**/*" />
           </filter>
@@ -1941,7 +1944,7 @@ pipeline config after converting master pipelines* to use capybara helpers
     </pipeline>
     <pipeline name="ERT-1.5-Docker-Image">
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime" />
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime" />
         <pipeline pipelineName="ERT-1.5-kickoff" stageName="kickoff" />
       </materials>
       <stage name="build_image">
@@ -1960,7 +1963,7 @@ pipeline config after converting master pipelines* to use capybara helpers
     <pipeline name="ERT-1.5-build-docker-base-image" isLocked="false">
       <timer>0 0 22 * * ?</timer>
       <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" dest="p-runtime">
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime">
           <filter>
             <ignore pattern="**/*" />
           </filter>
@@ -1974,6 +1977,377 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>./build_and_upload_base_image.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-1.5-vCloud-upgrade-1.4.2.0-OM1.4.2.0" isLocked="false">
+      <environmentvariables>
+        <variable name="KRAFA_BASE_URL">
+          <value>http://krafa.cfapps.io</value>
+        </variable>
+        <variable name="KRAFA_USERNAME">
+          <value>releng</value>
+        </variable>
+        <variable name="KRAFA_PASSWORD">
+          <value>bet90onions</value>
+        </variable>
+        <variable name="INITIAL_VCD">
+          <value>pcf-vcd-1.4.2.0.tgz</value>
+        </variable>
+        <variable name="RUNTIME_DOT_PIVOTAL_FILE">
+          <value>cf-1.4.2.0.pivotal</value>
+        </variable>
+        <variable name="IAAS">
+          <value>vcloud</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5" dest="p-runtime" />
+        <pipeline pipelineName="ERT-1.5-aws-build" stageName="vara-build" />
+      </materials>
+      <stage name="ensure_not_vsphere">
+        <jobs>
+          <job name="ensure_not_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_not_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="claim_env">
+        <jobs>
+          <job name="claim_env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/claim_specific_environment.sh rza</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy_env">
+        <jobs>
+          <job name="destroy_env">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-opsman-a">
+        <environmentvariables>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-binaries","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy-opsman-a">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/install_initial_vcd_opsmgr.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_microbosh">
+        <jobs>
+          <job name="configure_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/configure_microbosh_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_microbosh">
+        <jobs>
+          <job name="deploy_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_microbosh_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upload_ert">
+        <environmentvariables>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+          <variable name="AWS_ACCESS_KEY_ID">
+            <value>AKIAI43577ARGHXPWIMQ</value>
+          </variable>
+          <variable name="AWS_SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upload_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/upload_ert_1_4_on_om_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_ert">
+        <jobs>
+          <job name="configure_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>./scripts/gocd/configure_ert_1_4_on_om_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_ert">
+        <jobs>
+          <job name="deploy_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="export_import_installation">
+        <environmentvariables>
+          <variable name="ACCESS_KEY_ID">
+            <value>AKIAIFHBKH3ZINMIAQUQ</value>
+          </variable>
+          <variable name="SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="export_import_installation">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/export_installation_from_om_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/destroy_opsmgr.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>./scripts/gocd/download_vcloud_stable_om.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/install_opsmgr.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/import_installation_to_om_1_5.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upload_upgrade_ert">
+        <environmentvariables>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+          <variable name="MATERIALS_DIR">
+            <value>cf-pivotal-artifacts</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upload_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <fetchartifact pipeline="ERT-1.5-aws-build" stage="vara-build" job="runtime" srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/upgrade_ert_on_om_1_5.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_upgrade_ert">
+        <jobs>
+          <job name="configure_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_upgrade_ert">
+        <jobs>
+          <job name="deploy_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post_install_test">
+        <jobs>
+          <job name="post_install_test">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/run_cats_through_password_tunnel.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="release_claim">
+        <approval type="manual" />
+        <environmentvariables>
+          <variable name="KRAFA_BASE_URL">
+            <value>http://krafa.cfapps.io</value>
+          </variable>
+          <variable name="KRAFA_USERNAME">
+            <value>releng</value>
+          </variable>
+          <variable name="KRAFA_PASSWORD">
+            <value>bet90onions</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="release_claim">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>./scripts/gocd/release_claim.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -4130,6 +4504,398 @@ pipeline config after converting master pipelines* to use capybara helpers
                 <value>bet90onions</value>
               </variable>
             </environmentvariables>
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>./scripts/gocd/release_claim.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="ERT-Upgrade-Branch-vCloud">
+      <stage name="ensure_not_vsphere">
+        <jobs>
+          <job name="ensure_not_vsphere">
+            <tasks>
+              <exec command="./scripts/util/ensure_not_vsphere.sh" workingdir="p-runtime">
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="build_docker_image">
+        <jobs>
+          <job name="build_docker_image">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>./build_and_upload_image.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="claim_env">
+        <jobs>
+          <job name="claim_env">
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/claim_specific_environment.sh rza</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/releng_env.sh" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="destroy_env">
+        <jobs>
+          <job name="destroy_env">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/destroy_env.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy-opsman-a">
+        <environmentvariables>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-binaries","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="deploy-opsman-a">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/install_initial_vcd_opsmgr.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_microbosh">
+        <jobs>
+          <job name="configure_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-e</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/configure_microbosh_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_microbosh">
+        <jobs>
+          <job name="deploy_microbosh">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_microbosh_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upload_ert">
+        <environmentvariables>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+          <variable name="AWS_ACCESS_KEY_ID">
+            <value>AKIAI43577ARGHXPWIMQ</value>
+          </variable>
+          <variable name="AWS_SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upload_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/upload_ert_1_4_on_om_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_ert">
+        <jobs>
+          <job name="configure_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>./scripts/gocd/configure_ert_1_4_on_om_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_ert">
+        <jobs>
+          <job name="deploy_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="export_import_installation">
+        <environmentvariables>
+          <variable name="ACCESS_KEY_ID">
+            <value>AKIAIFHBKH3ZINMIAQUQ</value>
+          </variable>
+          <variable name="SECRET_ACCESS_KEY">
+            <value>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</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="export_import_installation">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/export_installation_from_om_1_4.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/destroy_opsmgr.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>-x</arg>
+                <arg>./scripts/gocd/download_vcloud_stable_om.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/install_opsmgr.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/import_installation_to_om_1_5.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+          <job name="build_runtime">
+            <environmentvariables>
+              <variable name="S3_BUCKET">
+                <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+              </variable>
+            </environmentvariables>
+            <tasks>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/fetch_cf_release_from_bosh_io.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/build_pivotal.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/upload_pivotal.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="p-runtime/cf-*.pivotal.yml" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="p-runtime/cf-*.pivotal.md5" dest="cf-pivotal-artifacts-metadata" />
+              <artifact src="p-runtime/cf-pivotal.blobkey" dest="cf-pivotal-artifacts-metadata" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="upload_upgrade_ert">
+        <approval type="manual" />
+        <environmentvariables>
+          <variable name="S3_BUCKET">
+            <value>{"endpoint":"https://s3.amazonaws.com","bucket":"releng-products","access_key_id":"AKIAJBWXIFB65EY4YTMQ","secret_access_key":"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"}</value>
+          </variable>
+          <variable name="MATERIALS_DIR">
+            <value>cf-pivotal-artifacts</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="upload_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <fetchartifact pipeline="" stage="export_import_installation" job="build_runtime" srcdir="cf-pivotal-artifacts-metadata">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/upgrade_ert_on_om_1_5.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="configure_upgrade_ert">
+        <jobs>
+          <job name="configure_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="deploy_upgrade_ert">
+        <jobs>
+          <job name="deploy_upgrade_ert">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/deploy_ert_on_om_1_5.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <test src="p-runtime/tmp" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="post_install_test">
+        <jobs>
+          <job name="post_install_test">
+            <tasks>
+              <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/run_cats_through_password_tunnel.sh</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="release_claim">
+        <approval type="manual" />
+        <environmentvariables>
+          <variable name="KRAFA_BASE_URL">
+            <value>http://krafa.cfapps.io</value>
+          </variable>
+          <variable name="KRAFA_USERNAME">
+            <value>releng</value>
+          </variable>
+          <variable name="KRAFA_PASSWORD">
+            <value>bet90onions</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="release_claim">
             <tasks>
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
                 <runif status="passed" />
