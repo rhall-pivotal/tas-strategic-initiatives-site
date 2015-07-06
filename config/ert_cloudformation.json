@@ -46,6 +46,11 @@
     "07SSLCertificateARN": {
       "Type": "String",
       "Description": "ARN for pre-uploaded SSL certificate"
+    },
+    "08OpsManagerTemplate": {
+      "Type": "String",
+      "Default": "https://s3.amazonaws.com/pcf-cloudformation/1.5.0.0/pcf.json",
+      "Description": "S3 Location for OpsManager CloudFormation Template"
     }
   },
   "Resources": {
@@ -60,7 +65,7 @@
           "05RdsUsername": {"Ref": "05RdsUsername"},
           "06RdsPassword": {"Ref": "06RdsPassword"}
         },
-        "TemplateURL": "https://s3.amazonaws.com/releng-test/ops_manager_cloudformation.json"
+        "TemplateURL": {"Ref": "08OpsManagerTemplate"}
       }
     },
     "PcfElbSecurityGroup": {
@@ -178,7 +183,7 @@
             }
           ]
         },
-        "Users" : [ {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUser" ]} ]
+        "Users" : [ {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUserName" ]} ]
       }
     },
     "PcfElasticRuntimeS3Bucket": {
@@ -200,8 +205,8 @@
     "PcfVpc": {
       "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfVpc" ]}
     },
-    "PcfIamUser": {
-      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUser" ]}
+    "PcfIamUserName": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUserName" ]}
     },
     "PcfIamUserAccessKey": {
       "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUserAccessKey" ]}
