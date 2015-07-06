@@ -1,4 +1,4 @@
-FROM ruby:2.1
+FROM ruby:2.2
 
 RUN apt-get update && apt-get -y upgrade && \
     apt-get install -y \
@@ -12,6 +12,7 @@ RUN apt-get update && apt-get -y upgrade && \
     qt5-default \
     libqt5webkit5-dev \
     libmysqlclient-dev \
+    vim-tiny \
     && apt-get clean
 
 RUN apt-get install -y s3cmd
