@@ -67,6 +67,13 @@ namespace :ert do
       om_version: args.om_version
     ).configure_external_file_storage
   end
+
+  desc 'run the cats errand'
+  task :run_cats, [:environment_name] do |_, args|
+    require 'ert/cats_runner'
+    Ert::CatsRunner.new(environment_name: args.environment_name).run_cats
+  end
+
   namespace :pipeline do
     desc 'create a feature pipeline'
     task :create_feature_pipeline, [:branch_name, :iaas_type] do |_, args|

@@ -7,5 +7,5 @@ export RELENG_ENV=`cat environment/name`
 pushd p-runtime
   ./ci/scripts/helpers/bundle-gems.sh
 
-  ./scripts/runtime/post_install_test_ssh_tunnel.sh
+  rake ert:run_cats[$RELENG_ENV]
 popd
