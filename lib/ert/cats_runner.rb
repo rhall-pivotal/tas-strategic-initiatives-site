@@ -37,14 +37,16 @@ module Ert
     end
 
     def system_or_fail(command, failure_message)
-      system(command) || fail(failure_message)
+      Bundler.clean_system(command) || fail(failure_message)
     end
 
     def bosh_deployment_name(command)
       @bosh_deployment_name ||= begin
-        bosh_deployment, status = Open3.capture2("#{command} deployments | grep -Eoh 'cf-[0-9a-f]{8,}'")
-        fail('bosh deployments failed') unless status.success?
-        bosh_deployment.chomp
+        Bundler.with_clean_env do
+          bosh_deployment, status = Open3.capture2("#{command} deployments | grep -Eoh 'cf-[0-9a-f]{8,}'")
+          fail('bosh deployments failed') unless status.success?
+          bosh_deployment.chomp
+        end
       end
     end
 

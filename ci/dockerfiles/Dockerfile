@@ -1,4 +1,4 @@
-FROM ruby:2.1
+FROM ruby:2.2
 
 RUN apt-get update && apt-get -y upgrade && \
     apt-get install -y \
@@ -28,3 +28,7 @@ ADD ./Gemfile /tmp/Gemfile
 ADD ./ci/scripts/helpers/bundle_rubygem_installer.rb /tmp/bundle_rubygem_installer.rb
 RUN cd /tmp && ./bundle_rubygem_installer.rb
 RUN rm -Rf /tmp/*
+
+# We have dependency conflicts with bosh_cli
+# Install it outside of our bundle context
+RUN gem install bosh_cli
