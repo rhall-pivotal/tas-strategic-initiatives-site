@@ -4,7 +4,6 @@ gem 'krafa-client', '0.0.11', git: 'git@github.com:pivotal-cf-experimental/krafa
 gem 'vara',     '0.12.0',   require: false, git: 'git@github.com:pivotal-cf/vara.git'
 
 gem 'opsmgr', git: 'git@github.com:pivotal-cf/opsmgr'
-gem 'vsphere_clients', git: 'git@github.com:pivotal-cf-experimental/vsphere_clients'
 gem 'recursive-open-struct', '0.5.0'
 gem 'mysql2'
 gem 'net-ssh-gateway'
