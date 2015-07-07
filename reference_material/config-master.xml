@@ -143,7 +143,7 @@
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./scripts/gocd/claim_specific_environment.sh brinjal</arg>
+                <arg>./scripts/gocd/claim_environment_with_krafa.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -188,6 +188,12 @@
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
+                <arg>./scripts/gocd/prepare_aws_environment.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
                 <arg>./scripts/gocd/download_aws_stable_om.sh</arg>
                 <runif status="passed" />
               </exec>
@@ -214,7 +220,6 @@
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
@@ -521,7 +526,6 @@
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
@@ -622,7 +626,6 @@
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/collect_bosh_logs.sh</arg>
                 <runif status="any" />
@@ -783,7 +786,6 @@
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
@@ -884,7 +886,6 @@
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/collect_bosh_logs.sh</arg>
                 <runif status="any" />
@@ -1048,7 +1049,6 @@
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
@@ -1149,7 +1149,6 @@
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/collect_bosh_logs.sh</arg>
                 <runif status="any" />
@@ -1341,7 +1340,7 @@
           <value>bet90onions</value>
         </variable>
         <variable name="INITIAL_AMI">
-          <value>ami-a03126c8</value>
+          <value>us-east-1: ami-a03126c8</value>
         </variable>
         <variable name="RUNTIME_DOT_PIVOTAL_FILE">
           <value>cf-1.4.2.0.pivotal</value>
@@ -1372,7 +1371,7 @@
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./scripts/gocd/claim_specific_environment.sh plum</arg>
+                <arg>./scripts/gocd/claim_environment_with_krafa.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1409,6 +1408,12 @@
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
+                <arg>./scripts/gocd/prepare_aws_environment.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
                 <arg>./scripts/gocd/install_initial_ami_opsmgr.sh</arg>
                 <runif status="passed" />
               </exec>
@@ -1425,7 +1430,6 @@
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/configure_microbosh_1_4.sh</arg>
                 <runif status="passed" />
@@ -1815,7 +1819,6 @@
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
@@ -2082,7 +2085,6 @@
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/configure_microbosh_1_4.sh</arg>
                 <runif status="passed" />
@@ -2618,7 +2620,6 @@
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
@@ -2719,7 +2720,6 @@
               </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/collect_bosh_logs.sh</arg>
                 <runif status="any" />
@@ -2903,7 +2903,6 @@
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/configure_microbosh_1_5.sh</arg>
                 <runif status="passed" />
@@ -4501,7 +4500,6 @@
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
-                <arg>-e</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/configure_microbosh_1_4.sh</arg>
                 <runif status="passed" />

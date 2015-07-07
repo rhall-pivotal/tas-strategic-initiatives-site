@@ -13,7 +13,6 @@ vm_shepherd:
       06RdsPassword: pivotalcf
       07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/fig
     outputs:
-      ssh_key_name: releng-dev
       ssh_key_name: {{ssh_key_pair_name}}
       security_group: {{ops_manager_security_group_id}}
       public_subnet_id: {{public_subnet_id}}
