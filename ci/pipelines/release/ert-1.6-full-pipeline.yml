@@ -302,7 +302,7 @@ jobs:
     file: p-runtime/ci/jobs/configure-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: deploy-microbosh-aws-clean
   plan:
   - get: p-runtime
@@ -320,7 +320,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: upload-pivotal-aws-clean
   plan:
   - aggregate:
@@ -344,7 +344,7 @@ jobs:
     file: p-runtime/ci/jobs/upload-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: configure-ert-aws-clean
   plan:
   - get: p-runtime
@@ -362,8 +362,8 @@ jobs:
     file: p-runtime/ci/jobs/configure-ert.yml
     config:
       params:
-        ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.6
+        ERT_VERSION: 1.5
+        OPSMAN_VERSION: 1.5
 - name: deploy-ert-aws-clean
   plan:
   - get: p-runtime
@@ -381,7 +381,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: run-cats-aws-clean
   plan:
   - get: p-runtime
@@ -473,7 +473,7 @@ jobs:
     file: p-runtime/ci/jobs/configure-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: deploy-microbosh-vsphere-clean
   plan:
   - get: p-runtime
@@ -491,7 +491,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: upload-pivotal-vsphere-clean
   plan:
   - aggregate:
@@ -515,7 +515,7 @@ jobs:
     file: p-runtime/ci/jobs/upload-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: configure-ert-vsphere-clean
   plan:
   - get: p-runtime
@@ -533,8 +533,8 @@ jobs:
     file: p-runtime/ci/jobs/configure-ert.yml
     config:
       params:
-        ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.6
+        ERT_VERSION: 1.5
+        OPSMAN_VERSION: 1.5
 - name: deploy-ert-vsphere-clean
   plan:
   - get: p-runtime
@@ -552,7 +552,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: run-cats-vsphere-clean
   plan:
   - get: p-runtime
@@ -644,7 +644,7 @@ jobs:
     file: p-runtime/ci/jobs/configure-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: deploy-microbosh-internetless
   plan:
   - get: p-runtime
@@ -662,7 +662,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: upload-pivotal-internetless
   plan:
   - aggregate:
@@ -686,7 +686,7 @@ jobs:
     file: p-runtime/ci/jobs/upload-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: configure-ert-internetless
   plan:
   - get: p-runtime
@@ -704,8 +704,8 @@ jobs:
     file: p-runtime/ci/jobs/configure-ert.yml
     config:
       params:
-        ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.6
+        ERT_VERSION: 1.5
+        OPSMAN_VERSION: 1.5
 - name: deploy-ert-internetless
   plan:
   - get: p-runtime
@@ -723,7 +723,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: run-cats-internetless
   plan:
   - get: p-runtime
