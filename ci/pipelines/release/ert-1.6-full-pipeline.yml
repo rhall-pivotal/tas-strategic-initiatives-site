@@ -767,7 +767,7 @@ jobs:
     trigger: true
     passed:
     - claim-environment-aws-upgrade
-  - get: environment-aws
+  - get: environment
     resource: environment-aws
     trigger: true
     passed:
@@ -782,7 +782,8 @@ jobs:
     trigger: true
     passed:
     - destroy-environment-aws-upgrade
-  - get: environment-aws
+  - get: environment
+    resource: environment-aws
     trigger: true
     passed:
     - destroy-environment-aws-upgrade
@@ -803,7 +804,8 @@ jobs:
     trigger: true
     passed:
     - deploy-ops-manager-initial-aws-upgrade
-  - get: environment-aws
+  - get: environment
+    resource: environment-aws
     trigger: true
     passed:
     - deploy-ops-manager-initial-aws-upgrade
@@ -820,7 +822,8 @@ jobs:
     trigger: true
     passed:
     - configure-microbosh-initial-aws-upgrade
-  - get: environment-aws
+  - get: environment
+    resource: environment-aws
     trigger: true
     passed:
     - configure-microbosh-initial-aws-upgrade
@@ -837,7 +840,8 @@ jobs:
     trigger: true
     passed:
     - deploy-microbosh-initial-aws-upgrade
-  - get: environment-aws
+  - get: environment
+    resource: environment-aws
     trigger: true
     passed:
     - deploy-microbosh-initial-aws-upgrade
@@ -857,7 +861,8 @@ jobs:
     trigger: true
     passed:
     - upload-pivotal-initial-aws-upgrade
-  - get: environment-aws
+  - get: environment
+    resource: environment-aws
     trigger: true
     passed:
     - upload-pivotal-initial-aws-upgrade
@@ -875,7 +880,8 @@ jobs:
     trigger: true
     passed:
     - configure-ert-initial-aws-upgrade
-  - get: environment-aws
+  - get: environment
+    resource: environment-aws
     trigger: true
     passed:
     - configure-ert-initial-aws-upgrade
@@ -892,7 +898,8 @@ jobs:
     trigger: true
     passed:
     - deploy-ert-initial-aws-upgrade
-  - get: environment-aws
+  - get: environment
+    resource: environment-aws
     trigger: true
     passed:
     - deploy-ert-initial-aws-upgrade
@@ -912,7 +919,8 @@ jobs:
     trigger: true
     passed:
     - export-installation-aws-upgrade
-  - get: environment-aws
+  - get: environment
+    resource: environment-aws
     trigger: true
     passed:
     - export-installation-aws-upgrade
@@ -927,7 +935,8 @@ jobs:
       trigger: true
       passed:
       - destroy-opsman-aws-upgrade
-    - get: environment-aws
+    - get: environment
+      resource: environment-aws
       trigger: true
       passed:
       - destroy-opsman-aws-upgrade
@@ -944,7 +953,8 @@ jobs:
     passed:
     - export-installation-aws-upgrade
     - deploy-opsman-aws-upgrade
-  - get: environment-aws
+  - get: environment
+    resource: environment-aws
     trigger: true
     passed:
     - export-installation-aws-upgrade
@@ -967,7 +977,8 @@ jobs:
       trigger: true
       passed:
       - import-installation-aws-upgrade
-    - get: environment-aws
+    - get: environment
+      resource: environment-aws
       trigger: true
       passed:
       - import-installation-aws-upgrade
@@ -988,7 +999,8 @@ jobs:
     trigger: true
     passed:
     - upgrade-pivotal-aws-upgrade
-  - get: environment-aws
+  - get: environment
+    resource: environment-aws
     trigger: true
     passed:
     - upgrade-pivotal-aws-upgrade
@@ -1006,7 +1018,8 @@ jobs:
     trigger: true
     passed:
     - configure-ert-aws-upgrade
-  - get: environment-aws
+  - get: environment
+    resource: environment-aws
     trigger: true
     passed:
     - configure-ert-aws-upgrade
@@ -1023,7 +1036,8 @@ jobs:
     trigger: true
     passed:
     - deploy-ert-aws-upgrade
-  - get: environment-aws
+  - get: environment
+    resource: environment-aws
     trigger: true
     passed:
     - deploy-ert-aws-upgrade
@@ -1058,7 +1072,7 @@ jobs:
     trigger: true
     passed:
     - claim-environment-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
     resource: environment-vsphere
     trigger: true
     passed:
@@ -1073,7 +1087,8 @@ jobs:
     trigger: true
     passed:
     - destroy-environment-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     trigger: true
     passed:
     - destroy-environment-vsphere-upgrade
@@ -1094,7 +1109,8 @@ jobs:
     trigger: true
     passed:
     - deploy-ops-manager-initial-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     trigger: true
     passed:
     - deploy-ops-manager-initial-vsphere-upgrade
@@ -1111,7 +1127,8 @@ jobs:
     trigger: true
     passed:
     - configure-microbosh-initial-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     trigger: true
     passed:
     - configure-microbosh-initial-vsphere-upgrade
@@ -1128,7 +1145,8 @@ jobs:
     trigger: true
     passed:
     - deploy-microbosh-initial-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     trigger: true
     passed:
     - deploy-microbosh-initial-vsphere-upgrade
@@ -1148,7 +1166,8 @@ jobs:
     trigger: true
     passed:
     - upload-pivotal-initial-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     trigger: true
     passed:
     - upload-pivotal-initial-vsphere-upgrade
@@ -1166,7 +1185,8 @@ jobs:
     trigger: true
     passed:
     - configure-ert-initial-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     trigger: true
     passed:
     - configure-ert-initial-vsphere-upgrade
@@ -1183,7 +1203,8 @@ jobs:
     trigger: true
     passed:
     - deploy-ert-initial-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     trigger: true
     passed:
     - deploy-ert-initial-vsphere-upgrade
@@ -1203,7 +1224,8 @@ jobs:
     trigger: true
     passed:
     - export-installation-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     trigger: true
     passed:
     - export-installation-vsphere-upgrade
@@ -1218,7 +1240,8 @@ jobs:
       trigger: true
       passed:
       - destroy-opsman-vsphere-upgrade
-    - get: environment-vsphere
+    - get: environment
+      resource: environment-vsphere
       trigger: true
       passed:
       - destroy-opsman-vsphere-upgrade
@@ -1235,7 +1258,8 @@ jobs:
     passed:
     - export-installation-vsphere-upgrade
     - deploy-opsman-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     trigger: true
     passed:
     - export-installation-vsphere-upgrade
@@ -1258,7 +1282,8 @@ jobs:
       trigger: true
       passed:
       - import-installation-vsphere-upgrade
-    - get: environment-vsphere
+    - get: environment
+      resource: environment-vsphere
       trigger: true
       passed:
       - import-installation-vsphere-upgrade
@@ -1279,7 +1304,8 @@ jobs:
     trigger: true
     passed:
     - upgrade-pivotal-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     trigger: true
     passed:
     - upgrade-pivotal-vsphere-upgrade
@@ -1297,7 +1323,8 @@ jobs:
     trigger: true
     passed:
     - configure-ert-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     trigger: true
     passed:
     - configure-ert-vsphere-upgrade
@@ -1314,7 +1341,8 @@ jobs:
     trigger: true
     passed:
     - deploy-ert-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     trigger: true
     passed:
     - deploy-ert-vsphere-upgrade
@@ -1327,7 +1355,8 @@ jobs:
   - get: p-runtime
     passed:
     - run-cats-vsphere-upgrade
-  - get: environment-vsphere
+  - get: environment
+    resource: environment-vsphere
     passed:
     - run-cats-vsphere-upgrade
   - put: environment-vsphere

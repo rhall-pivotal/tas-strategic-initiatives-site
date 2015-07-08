@@ -14,7 +14,7 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [claim-environment-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
         resource: environment-vsphere
         trigger: true
         passed: [claim-environment-vsphere-upgrade]
@@ -27,7 +27,8 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [destroy-environment-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         trigger: true
         passed: [destroy-environment-vsphere-upgrade]
       - aggregate:
@@ -45,7 +46,8 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [deploy-ops-manager-initial-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         trigger: true
         passed: [deploy-ops-manager-initial-vsphere-upgrade]
       - task: configure
@@ -60,7 +62,8 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [configure-microbosh-initial-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         trigger: true
         passed: [configure-microbosh-initial-vsphere-upgrade]
       - task: deploy
@@ -75,7 +78,8 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [deploy-microbosh-initial-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         trigger: true
         passed: [deploy-microbosh-initial-vsphere-upgrade]
       - get: ert-product
@@ -93,7 +97,8 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [upload-pivotal-initial-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         trigger: true
         passed: [upload-pivotal-initial-vsphere-upgrade]
       - task: configure-ert
@@ -109,7 +114,8 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [configure-ert-initial-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         trigger: true
         passed: [configure-ert-initial-vsphere-upgrade]
       - task: deploy-ert
@@ -124,7 +130,8 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [deploy-ert-initial-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         trigger: true
         passed: [deploy-ert-initial-vsphere-upgrade]
       - task: export-installation
@@ -142,7 +149,8 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [export-installation-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         trigger: true
         passed: [export-installation-vsphere-upgrade]
       - task: destroy-opsman-vsphere-upgrade
@@ -155,7 +163,8 @@ jobs:
         - get: p-runtime
           trigger: true
           passed: [destroy-opsman-vsphere-upgrade]
-        - get: environment-vsphere
+        - get: environment
+          resource: environment-vsphere
           trigger: true
           passed: [destroy-opsman-vsphere-upgrade]
         - get: ops-manager
@@ -169,7 +178,8 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [export-installation-vsphere-upgrade,deploy-opsman-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         trigger: true
         passed: [export-installation-vsphere-upgrade,deploy-opsman-vsphere-upgrade]
       - get: exported-installation-vsphere
@@ -188,7 +198,8 @@ jobs:
         - get: p-runtime
           trigger: true
           passed: [import-installation-vsphere-upgrade]
-        - get: environment-vsphere
+        - get: environment
+          resource: environment-vsphere
           trigger: true
           passed: [import-installation-vsphere-upgrade]
         - get: ert-product
@@ -206,7 +217,8 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [upgrade-pivotal-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         trigger: true
         passed: [upgrade-pivotal-vsphere-upgrade]
       - task: configure-ert-vsphere
@@ -222,7 +234,8 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [configure-ert-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         trigger: true
         passed: [configure-ert-vsphere-upgrade]
       - task: deploy-ert
@@ -237,7 +250,8 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [deploy-ert-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         trigger: true
         passed: [deploy-ert-vsphere-upgrade]
       - task: run-cats
@@ -248,7 +262,8 @@ jobs:
     plan:
       - get: p-runtime
         passed: [run-cats-vsphere-upgrade]
-      - get: environment-vsphere
+      - get: environment
+        resource: environment-vsphere
         passed: [run-cats-vsphere-upgrade]
       - put: environment-vsphere
         params:
