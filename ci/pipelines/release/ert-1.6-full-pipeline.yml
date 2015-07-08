@@ -959,7 +959,8 @@ jobs:
     passed:
     - export-installation-aws-upgrade
     - deploy-opsman-aws-upgrade
-  - get: exported-installation-aws
+  - get: exported-installation
+    resource: exported-installation-aws
     trigger: true
     passed:
     - export-installation-aws-upgrade
@@ -1264,7 +1265,8 @@ jobs:
     passed:
     - export-installation-vsphere-upgrade
     - deploy-opsman-vsphere-upgrade
-  - get: exported-installation-vsphere
+  - get: exported-installation
+    resource: exported-installation-vsphere
     trigger: true
     passed:
     - export-installation-vsphere-upgrade

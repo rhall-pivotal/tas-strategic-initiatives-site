@@ -8,7 +8,7 @@ jobs:
           resource: environment-aws
           params:
             acquire: true
-            
+
   - name: destroy-environment-aws-upgrade
     plan:
       - get: p-runtime
@@ -182,7 +182,8 @@ jobs:
         resource: environment-aws
         trigger: true
         passed: [export-installation-aws-upgrade,deploy-opsman-aws-upgrade]
-      - get: exported-installation-aws
+      - get: exported-installation
+        resource: exported-installation-aws
         trigger: true
         passed: [export-installation-aws-upgrade]
       - task: import-installation

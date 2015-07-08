@@ -8,7 +8,7 @@ jobs:
           resource: environment-vsphere
           params:
             acquire: true
-            
+
   - name: destroy-environment-vsphere-upgrade
     plan:
       - get: p-runtime
@@ -182,7 +182,8 @@ jobs:
         resource: environment-vsphere
         trigger: true
         passed: [export-installation-vsphere-upgrade,deploy-opsman-vsphere-upgrade]
-      - get: exported-installation-vsphere
+      - get: exported-installation
+        resource: exported-installation-vsphere
         trigger: true
         passed: [export-installation-vsphere-upgrade]
       - task: import-installation
