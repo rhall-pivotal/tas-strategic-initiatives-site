@@ -4,7 +4,7 @@ resources:
   type: git
   source:
     uri: git@github.com:pivotal-cf/p-runtime.git
-    branch: master
+    branch: features/concourse-ert-1.6-97484564
     private_key: |
       -----BEGIN RSA PRIVATE KEY-----
       MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
@@ -1413,3 +1413,6 @@ groups:
   - kickoff
   - build-runtime
   - promote-ert
+  resources:
+  - ops-manager-stable-aws
+  - ops-manager-stable-vsphere
