@@ -16,9 +16,6 @@ RUN apt-get update && apt-get -y upgrade && \
     aria2 \
     && apt-get clean
 
-ADD include/gof3r.tar.gz /gof3r
-RUN mv /gof3r/*/gof3r /usr/bin
-
 RUN chmod -R a+w /usr/local/bundle
 RUN chmod -R a+x /usr/local/bundle/bin
 
