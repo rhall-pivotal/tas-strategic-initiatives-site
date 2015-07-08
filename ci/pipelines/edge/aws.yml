@@ -247,3 +247,18 @@ jobs:
       - put: environment
         params:
           release: environment
+
+groups:
+  - name: aws-edge
+    jobs:
+    - claim-environment
+    - destroy-environment
+    - deploy-ops-manager
+    - configure-microbosh
+    - deploy-microbosh
+    - upload-pivotal
+    - configure-ert
+    - deploy-ert
+    - run-cats
+    - promote-ops-manager
+    - release-environment

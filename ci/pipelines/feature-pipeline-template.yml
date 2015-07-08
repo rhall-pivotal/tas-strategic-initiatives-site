@@ -240,3 +240,18 @@ jobs:
       - put: environment
         params:
           release: environment
+
+groups:
+  - name: {{branch_name}}
+    jobs:
+    - claim-environment
+    - destroy-environment
+    - deploy-ops-manager
+    - configure-microbosh
+    - deploy-microbosh
+    - build-runtime
+    - upload-pivotal
+    - configure-ert
+    - deploy-ert
+    - run-cats
+    - release-environment

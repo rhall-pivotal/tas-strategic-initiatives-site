@@ -378,3 +378,25 @@ jobs:
       - put: environment
         params:
           release: environment
+
+groups:
+  - name: {{branch_name}}
+    jobs:
+    - claim-environment
+    - build-runtime
+    - destroy-environment
+    - deploy-ops-manager-initial
+    - configure-microbosh-initial
+    - deploy-microbosh-initial
+    - upload-pivotal-initial
+    - configure-ert-initial
+    - deploy-ert-initial
+    - export-installation
+    - destroy-opsman
+    - deploy-opsman
+    - import-installation
+    - upgrade-pivotal
+    - configure-ert
+    - deploy-ert
+    - run-cats
+    - release-environment
