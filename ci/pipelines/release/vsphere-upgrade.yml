@@ -193,7 +193,7 @@ jobs:
           params:
             OPSMAN_VERSION: &om_version 1.5
 
-  - name: upload-current-pivotal-vsphere-upgrade
+  - name: upgrade-pivotal-vsphere-upgrade
     plan:
       - aggregate:
         - get: p-runtime
@@ -206,22 +206,6 @@ jobs:
         - get: ert-product
           trigger: true
           passed: [build-runtime]
-      - task: upload
-        tags: [vsphere]
-        file: p-runtime/ci/jobs/upload-pivotal.yml
-        config:
-          params:
-            OPSMAN_VERSION: *om_initial_version
-
-  - name: upgrade-pivotal-vsphere-upgrade
-    plan:
-      - get: p-runtime
-        trigger: true
-        passed: [upload-current-pivotal-vsphere-upgrade]
-      - get: environment
-        resource: environment-vsphere
-        trigger: true
-        passed: [upload-current-pivotal-vsphere-upgrade]
       - task: upgrade-pivotal-vsphere
         tags: [vsphere]
         file: p-runtime/ci/jobs/upgrade-pivotal.yml
