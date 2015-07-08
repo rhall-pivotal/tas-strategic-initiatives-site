@@ -4,7 +4,7 @@ resources:
     type: git
     source:
       uri: git@github.com:pivotal-cf/p-runtime.git
-      branch: features/concourse-upgrade-pipeline-97916940
+      branch: features/concourse
       private_key: |
         -----BEGIN RSA PRIVATE KEY-----
         MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
@@ -378,3 +378,25 @@ jobs:
       - put: environment
         params:
           release: environment
+
+groups:
+  - name: features/concourse-upgrade-pipeline-97916940
+    jobs:
+    - claim-environment
+    - build-runtime
+    - destroy-environment
+    - deploy-ops-manager-initial
+    - configure-microbosh-initial
+    - deploy-microbosh-initial
+    - upload-pivotal-initial
+    - configure-ert-initial
+    - deploy-ert-initial
+    - export-installation
+    - destroy-opsman
+    - deploy-opsman
+    - import-installation
+    - upgrade-pivotal
+    - configure-ert
+    - deploy-ert
+    - run-cats
+    - release-environment
