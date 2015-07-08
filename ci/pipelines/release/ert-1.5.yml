@@ -3,7 +3,7 @@ resources:
     type: git
     source:
       uri: git@github.com:pivotal-cf/p-runtime.git
-      branch: features/concourse-ert-1.6-97484564
+      branch: features/concourse
       private_key: |
         -----BEGIN RSA PRIVATE KEY-----
         MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
@@ -40,7 +40,7 @@ resources:
       secret_access_key: cWVBcDs3WGqH5VV6S3NN89ooElhFmOkp787JHEEH
       bucket: ert-concourse-products
       private: true
-      versioned_file: ert-1.6/untested/ert.pivotal
+      versioned_file: ert-1.5/untested/ert.pivotal
 
   - name: ert-product-promoted
     type: s3
@@ -49,7 +49,7 @@ resources:
       secret_access_key: cWVBcDs3WGqH5VV6S3NN89ooElhFmOkp787JHEEH
       bucket: ert-concourse-products
       private: true
-      versioned_file: ert-1.6/tested/ert.pivotal
+      versioned_file: ert-1.5/tested/ert.pivotal
 
   - name: environment-vsphere
     type: pool
@@ -127,7 +127,7 @@ resources:
       secret_access_key: cWVBcDs3WGqH5VV6S3NN89ooElhFmOkp787JHEEH
       bucket: ert-concourse-products
       private: true
-      versioned_file: ert-releases/1.5.0.0/ert.pivotal
+      versioned_file: ert-releases/1.4.2.0/ert.pivotal
 
   - name: initial-ops-manager-aws
     type: s3
@@ -136,7 +136,7 @@ resources:
       secret_access_key: cWVBcDs3WGqH5VV6S3NN89ooElhFmOkp787JHEEH
       bucket: ert-concourse-products
       private: true
-      versioned_file: ops_manager_images/aws/1.5.0.0/ops_man_image
+      versioned_file: ops_manager_images/aws/1.4.2.0/ops_man_image
 
   - name: initial-ops-manager-vsphere
     type: s3
@@ -145,7 +145,7 @@ resources:
       secret_access_key: cWVBcDs3WGqH5VV6S3NN89ooElhFmOkp787JHEEH
       bucket: ert-concourse-products
       private: true
-      versioned_file: ops_manager_images/vsphere/1.5.0.0/ops_man_image
+      versioned_file: ops_manager_images/vsphere/1.4.2.0/ops_man_image
 
   - name: exported-installation-aws
     type: s3

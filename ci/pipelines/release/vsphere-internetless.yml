@@ -54,7 +54,7 @@ jobs:
         file: p-runtime/ci/jobs/configure-microbosh.yml
         config:
           params:
-            OPSMAN_VERSION: 1.5
+            OPSMAN_VERSION: &om_version 1.5
   - name: deploy-microbosh-internetless
     plan:
       - get: p-runtime
@@ -69,7 +69,7 @@ jobs:
         file: p-runtime/ci/jobs/deploy-microbosh.yml
         config:
           params:
-            OPSMAN_VERSION: 1.5
+            OPSMAN_VERSION: *om_version
 
   - name: upload-pivotal-internetless
     plan:
@@ -89,7 +89,7 @@ jobs:
         file: p-runtime/ci/jobs/upload-pivotal.yml
         config:
           params:
-            OPSMAN_VERSION: 1.5
+            OPSMAN_VERSION: *om_version
 
   - name: configure-ert-internetless
     plan:
@@ -106,7 +106,7 @@ jobs:
         config:
           params:
             ERT_VERSION: 1.5
-            OPSMAN_VERSION: 1.5
+            OPSMAN_VERSION: *om_version
 
   - name: deploy-ert-internetless
     plan:
@@ -122,7 +122,7 @@ jobs:
         file: p-runtime/ci/jobs/deploy-ert.yml
         config:
           params:
-            OPSMAN_VERSION: 1.5
+            OPSMAN_VERSION: *om_version
 
   - name: run-cats-internetless
     plan:
