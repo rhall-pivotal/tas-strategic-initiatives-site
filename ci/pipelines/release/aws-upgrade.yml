@@ -193,7 +193,7 @@ jobs:
           params:
             OPSMAN_VERSION: &om_version 1.5
 
-  - name: upgrade-pivotal-aws-upgrade
+  - name: upload-current-pivotal-aws-upgrade
     plan:
       - aggregate:
         - get: p-runtime
@@ -206,6 +206,22 @@ jobs:
         - get: ert-product
           trigger: true
           passed: [build-runtime]
+      - task: upload
+        tags: [aws]
+        file: p-runtime/ci/jobs/upload-pivotal.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_initial_version
+
+  - name: upgrade-pivotal-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [upload-current-pivotal-aws-upgrade]
+      - get: environment
+        resource: environment-aws
+        trigger: true
+        passed: [upload-current-pivotal-aws-upgrade]
       - task: upgrade-pivotal-aws
         tags: [aws]
         file: p-runtime/ci/jobs/upgrade-pivotal.yml

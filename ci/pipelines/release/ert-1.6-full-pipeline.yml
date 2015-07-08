@@ -971,7 +971,7 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
-- name: upgrade-pivotal-aws-upgrade
+- name: upload-current-pivotal-aws-upgrade
   plan:
   - aggregate:
     - get: p-runtime
@@ -987,6 +987,24 @@ jobs:
       trigger: true
       passed:
       - build-runtime
+  - task: upload
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/upload-pivotal.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
+- name: upgrade-pivotal-aws-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - upload-current-pivotal-aws-upgrade
+  - get: environment
+    resource: environment-aws
+    trigger: true
+    passed:
+    - upload-current-pivotal-aws-upgrade
   - task: upgrade-pivotal-aws
     tags:
     - aws
@@ -1277,7 +1295,7 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
-- name: upgrade-pivotal-vsphere-upgrade
+- name: upload-current-pivotal-vsphere-upgrade
   plan:
   - aggregate:
     - get: p-runtime
@@ -1293,6 +1311,24 @@ jobs:
       trigger: true
       passed:
       - build-runtime
+  - task: upload
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/upload-pivotal.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
+- name: upgrade-pivotal-vsphere-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - upload-current-pivotal-vsphere-upgrade
+  - get: environment
+    resource: environment-vsphere
+    trigger: true
+    passed:
+    - upload-current-pivotal-vsphere-upgrade
   - task: upgrade-pivotal-vsphere
     tags:
     - vsphere
@@ -1415,6 +1451,7 @@ groups:
   - destroy-opsman-aws-upgrade
   - deploy-ert-aws-upgrade
   - import-installation-aws-upgrade
+  - upload-current-pivotal-aws-upgrade
   - upgrade-pivotal-aws-upgrade
   - configure-ert-aws-upgrade
   - deploy-ert-aws-upgrade
@@ -1434,6 +1471,7 @@ groups:
   - destroy-opsman-vsphere-upgrade
   - deploy-ert-vsphere-upgrade
   - import-installation-vsphere-upgrade
+  - upload-current-pivotal-vsphere-upgrade
   - upgrade-pivotal-vsphere-upgrade
   - configure-ert-vsphere-upgrade
   - deploy-ert-vsphere-upgrade
