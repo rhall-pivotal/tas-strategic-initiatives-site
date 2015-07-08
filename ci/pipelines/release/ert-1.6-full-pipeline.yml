@@ -815,7 +815,7 @@ jobs:
     file: p-runtime/ci/jobs/configure-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: deploy-microbosh-initial-aws-upgrade
   plan:
   - get: p-runtime
@@ -833,7 +833,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: upload-pivotal-initial-aws-upgrade
   plan:
   - get: p-runtime
@@ -854,7 +854,7 @@ jobs:
     file: p-runtime/ci/jobs/upload-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: configure-ert-initial-aws-upgrade
   plan:
   - get: p-runtime
@@ -873,7 +873,7 @@ jobs:
     config:
       params:
         ERT_VERSION: 1.5
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: deploy-ert-initial-aws-upgrade
   plan:
   - get: p-runtime
@@ -891,7 +891,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: export-installation-aws-upgrade
   plan:
   - get: p-runtime
@@ -909,7 +909,7 @@ jobs:
     file: p-runtime/ci/jobs/export-installation.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
   - put: exported-installation-aws
     params:
       from: p-runtime/installation.zip
@@ -969,7 +969,7 @@ jobs:
     file: p-runtime/ci/jobs/import-installation.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: upgrade-pivotal-aws-upgrade
   plan:
   - aggregate:
@@ -992,7 +992,7 @@ jobs:
     file: p-runtime/ci/jobs/upgrade-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: configure-ert-aws-upgrade
   plan:
   - get: p-runtime
@@ -1010,8 +1010,8 @@ jobs:
     file: p-runtime/ci/jobs/configure-ert.yml
     config:
       params:
-        ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.6
+        ERT_VERSION: 1.5
+        OPSMAN_VERSION: 1.5
 - name: deploy-ert-aws-upgrade
   plan:
   - get: p-runtime
@@ -1029,7 +1029,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: run-cats-aws-upgrade
   plan:
   - get: p-runtime
@@ -1120,7 +1120,7 @@ jobs:
     file: p-runtime/ci/jobs/configure-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: deploy-microbosh-initial-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -1138,7 +1138,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: upload-pivotal-initial-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -1159,7 +1159,7 @@ jobs:
     file: p-runtime/ci/jobs/upload-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: configure-ert-initial-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -1178,7 +1178,7 @@ jobs:
     config:
       params:
         ERT_VERSION: 1.5
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: deploy-ert-initial-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -1196,7 +1196,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: export-installation-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -1214,7 +1214,7 @@ jobs:
     file: p-runtime/ci/jobs/export-installation.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
   - put: exported-installation-vsphere
     params:
       from: p-runtime/installation.zip
@@ -1274,7 +1274,7 @@ jobs:
     file: p-runtime/ci/jobs/import-installation.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: upgrade-pivotal-vsphere-upgrade
   plan:
   - aggregate:
@@ -1297,7 +1297,7 @@ jobs:
     file: p-runtime/ci/jobs/upgrade-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: configure-ert-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -1315,8 +1315,8 @@ jobs:
     file: p-runtime/ci/jobs/configure-ert.yml
     config:
       params:
-        ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.6
+        ERT_VERSION: 1.5
+        OPSMAN_VERSION: 1.5
 - name: deploy-ert-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -1334,7 +1334,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.6
+        OPSMAN_VERSION: 1.5
 - name: run-cats-vsphere-upgrade
   plan:
   - get: p-runtime
