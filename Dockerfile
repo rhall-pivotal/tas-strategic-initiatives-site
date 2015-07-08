@@ -16,16 +16,16 @@ RUN apt-get update && apt-get -y upgrade && \
     aria2 \
     && apt-get clean
 
-ADD ./include/gof3r.tar.gz /gof3r
+ADD include/gof3r.tar.gz /gof3r
 RUN mv /gof3r/*/gof3r /usr/bin
 
 RUN chmod -R a+w /usr/local/bundle
 RUN chmod -R a+x /usr/local/bundle/bin
 
 # Install gems from rubygems
-ADD ./Gemfile.lock /tmp/Gemfile.lock
-ADD ./Gemfile /tmp/Gemfile
-ADD ./ci/scripts/helpers/bundle_rubygem_installer.rb /tmp/bundle_rubygem_installer.rb
+ADD Gemfile.lock /tmp/Gemfile.lock
+ADD Gemfile /tmp/Gemfile
+ADD ci/scripts/helpers/bundle_rubygem_installer.rb /tmp/bundle_rubygem_installer.rb
 RUN cd /tmp && ./bundle_rubygem_installer.rb
 RUN rm -Rf /tmp/*
 
