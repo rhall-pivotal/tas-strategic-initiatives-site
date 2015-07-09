@@ -37,6 +37,9 @@ resources:
     type: docker-image
     source:
       repository: cloudfoundry/releng-ci
+      username: cloudfoundry
+      password: docker4stacks
+      email: cfaccounts+docker.io@pivotallabs.com
 
 jobs:
   - name: build-and-push
