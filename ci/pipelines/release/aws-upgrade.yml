@@ -4,8 +4,8 @@ jobs:
         - get: p-runtime
           trigger: true
           passed: [kickoff]
-        - put: environment-aws
-          resource: environment-aws
+        - put: environment-aws-east
+          resource: environment-aws-east
           params:
             acquire: true
 
@@ -15,7 +15,7 @@ jobs:
         trigger: true
         passed: [claim-environment-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [claim-environment-aws-upgrade]
       - task: destroy
@@ -28,7 +28,7 @@ jobs:
         trigger: true
         passed: [destroy-environment-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [destroy-environment-aws-upgrade]
       - aggregate:
@@ -47,7 +47,7 @@ jobs:
         trigger: true
         passed: [deploy-ops-manager-initial-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [deploy-ops-manager-initial-aws-upgrade]
       - task: configure
@@ -63,7 +63,7 @@ jobs:
         trigger: true
         passed: [configure-microbosh-initial-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [configure-microbosh-initial-aws-upgrade]
       - task: deploy
@@ -79,7 +79,7 @@ jobs:
         trigger: true
         passed: [deploy-microbosh-initial-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [deploy-microbosh-initial-aws-upgrade]
       - get: ert-product
@@ -98,7 +98,7 @@ jobs:
         trigger: true
         passed: [upload-pivotal-initial-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [upload-pivotal-initial-aws-upgrade]
       - task: configure-ert
@@ -106,8 +106,23 @@ jobs:
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
-            ERT_VERSION: 1.4
+            ERT_VERSION: &ert_initial_version 1.4
             OPSMAN_VERSION: *om_initial_version
+      - task: configure-external-dbs
+        tags: [aws]
+        file: p-runtime/ci/jobs/configure-external-dbs.yml
+        config:
+          params:
+            ERT_VERSION: *ert_initial_version
+            OPSMAN_VERSION: *om_initial_version
+      - task: configure-external-file-storage
+        tags: [aws]
+        file: p-runtime/ci/jobs/configure-external-file-storage.yml
+        config:
+          params:
+            ERT_VERSION: *ert_initial_version
+            OPSMAN_VERSION: *om_initial_version
+
 
   - name: deploy-ert-initial-aws-upgrade
     plan:
@@ -115,7 +130,7 @@ jobs:
         trigger: true
         passed: [configure-ert-initial-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [configure-ert-initial-aws-upgrade]
       - task: deploy-ert
@@ -131,7 +146,7 @@ jobs:
         trigger: true
         passed: [deploy-ert-initial-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [deploy-ert-initial-aws-upgrade]
       - task: export-installation
@@ -150,7 +165,7 @@ jobs:
         trigger: true
         passed: [export-installation-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [export-installation-aws-upgrade]
       - task: destroy-opsman-aws-upgrade
@@ -164,7 +179,7 @@ jobs:
           trigger: true
           passed: [destroy-opsman-aws-upgrade]
         - get: environment
-          resource: environment-aws
+          resource: environment-aws-east
           trigger: true
           passed: [destroy-opsman-aws-upgrade]
         - get: ops-manager
@@ -179,7 +194,7 @@ jobs:
         trigger: true
         passed: [export-installation-aws-upgrade,deploy-opsman-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [export-installation-aws-upgrade,deploy-opsman-aws-upgrade]
       - get: exported-installation
@@ -200,7 +215,7 @@ jobs:
           trigger: true
           passed: [import-installation-aws-upgrade]
         - get: environment
-          resource: environment-aws
+          resource: environment-aws-east
           trigger: true
           passed: [import-installation-aws-upgrade]
         - get: ert-product
@@ -219,7 +234,7 @@ jobs:
         trigger: true
         passed: [upgrade-pivotal-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [upgrade-pivotal-aws-upgrade]
       - task: configure-ert-aws
@@ -236,7 +251,7 @@ jobs:
         trigger: true
         passed: [configure-ert-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [configure-ert-aws-upgrade]
       - task: deploy-ert
@@ -252,7 +267,7 @@ jobs:
         trigger: true
         passed: [deploy-ert-aws-upgrade]
       - get: environment
-        resource: environment-aws
+        resource: environment-aws-east
         trigger: true
         passed: [deploy-ert-aws-upgrade]
       - task: run-cats
@@ -263,8 +278,8 @@ jobs:
     plan:
       - get: p-runtime
         passed: [run-cats-aws-upgrade]
-      - get: environment-aws
+      - get: environment-aws-east
         passed: [run-cats-aws-upgrade]
-      - put: environment-aws
+      - put: environment-aws-east
         params:
-          release: environment-aws
+          release: environment-aws-east
