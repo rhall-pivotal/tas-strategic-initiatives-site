@@ -16,7 +16,7 @@ module Ert
     def update_record
       record = wildcard_record
       record[:resource_records].first[:value] = elb_dns_name
-      record[:ttl] = 30
+      record[:ttl] = 5
       change_record = {
         hosted_zone_id: hosted_zone_id,
         change_batch: {
