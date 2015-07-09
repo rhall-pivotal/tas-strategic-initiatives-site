@@ -292,6 +292,12 @@
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
+                <arg>./scripts/gocd/update_dns_elb.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
                 <arg>./scripts/gocd/configure_ert_1_5_on_om_1_5.sh</arg>
                 <runif status="passed" />
               </exec>
@@ -351,6 +357,11 @@
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/destroy_env.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>./scripts/gocd/release_claim.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1500,6 +1511,12 @@
                 <runif status="passed" />
               </fetchartifact>
               <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/update_dns_elb.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
                 <arg>-c</arg>
                 <arg>./scripts/gocd/configure_ert_1_4_on_om_1_4.sh</arg>
                 <runif status="passed" />
@@ -1682,6 +1699,11 @@
                 <arg>-x</arg>
                 <arg>-c</arg>
                 <arg>./scripts/gocd/destroy_env.sh</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-c</arg>
+                <arg>./scripts/gocd/release_claim.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -1984,7 +2006,7 @@
         </jobs>
       </stage>
     </pipeline>
-    <pipeline name="ERT-1.5-vCloud-upgrade-1.4.2.0-OM1.4.2.0" isLocked="false">
+    <pipeline name="ERT-1.5-vCloud-upgrade-1.4.2.0-OM1.4.2.0" isLocked="true">
       <environmentvariables>
         <variable name="KRAFA_BASE_URL">
           <value>http://krafa.cfapps.io</value>
@@ -2044,6 +2066,12 @@
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
                 <runif status="passed" />
               </fetchartifact>
+              <exec command="bash" workingdir="p-runtime">
+                <arg>-x</arg>
+                <arg>-c</arg>
+                <arg>./scripts/gocd/delete_installation_on_om_1_5.sh</arg>
+                <runif status="passed" />
+              </exec>
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
@@ -2344,11 +2372,6 @@
               <fetchartifact pipeline="" stage="claim_env" job="claim_env" srcfile="releng_env.sh" dest="p-runtime">
                 <runif status="passed" />
               </fetchartifact>
-              <exec command="bash" workingdir="p-runtime">
-                <arg>-c</arg>
-                <arg>./scripts/gocd/release_claim.sh</arg>
-                <runif status="passed" />
-              </exec>
             </tasks>
           </job>
         </jobs>
@@ -2356,74 +2379,6 @@
     </pipeline>
   </pipelines>
   <pipelines group="RelEng-Features">
-    <pipeline name="aws-sdk-v2" isLocked="false" template="ERT-Upgrade-Feature-Branch">
-      <environmentvariables>
-        <variable name="INITIAL_OVA">
-          <value>pcf-vsphere-1.4.2.0.ova</value>
-        </variable>
-        <variable name="RUNTIME_DOT_PIVOTAL_FILE">
-          <value>cf-1.4.2.0.pivotal</value>
-        </variable>
-      </environmentvariables>
-      <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/opsmgr-aws-sdk-v2" dest="p-runtime">
-          <filter>
-            <ignore pattern="**/*" />
-          </filter>
-        </git>
-      </materials>
-    </pipeline>
-    <pipeline name="cloudformation-96501774" template="ERT_Feature_Branch_AWS">
-      <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/cloudformation-pipeline-96501774" dest="p-runtime" />
-      </materials>
-    </pipeline>
-    <pipeline name="ruby-2-2-2-95676336" isLocked="false" template="ERT_Feature_Branch">
-      <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/ruby-2-2-2-95676336" dest="p-runtime">
-          <filter>
-            <ignore pattern="**/*" />
-          </filter>
-        </git>
-      </materials>
-    </pipeline>
-    <pipeline name="vcloud-air-92037728" isLocked="true" template="ERT_Feature_Branch_vCloud">
-      <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/vcloud-air-92037728" dest="p-runtime" />
-      </materials>
-    </pipeline>
-    <pipeline name="separate-s3-bucket-97577568" isLocked="true" template="ERT_Feature_Branch_AWS">
-      <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/separate-s3-bucket-97577568" dest="p-runtime" />
-      </materials>
-    </pipeline>
-    <pipeline name="batch20-vsphere" isLocked="false" template="ERT-Upgrade-Feature-Branch">
-      <environmentvariables>
-        <variable name="INITIAL_OVA">
-          <value>pcf-vsphere-1.4.2.0.ova</value>
-        </variable>
-        <variable name="RUNTIME_DOT_PIVOTAL_FILE">
-          <value>cf-1.4.2.0.pivotal</value>
-        </variable>
-      </environmentvariables>
-      <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="batches/20" dest="p-runtime">
-          <filter>
-            <ignore pattern="**/*" />
-          </filter>
-        </git>
-      </materials>
-    </pipeline>
-    <pipeline name="batch20-vcloud" isLocked="true" template="ERT_Feature_Branch_vCloud">
-      <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="batches/20" dest="p-runtime" />
-      </materials>
-    </pipeline>
-    <pipeline name="batch20-aws" isLocked="true" template="ERT_Feature_Branch_AWS">
-      <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="batches/20" dest="p-runtime" />
-      </materials>
-    </pipeline>
     <pipeline name="appsmgr-203-96726964" isLocked="false" template="ERT-Upgrade-Feature-Branch">
       <environmentvariables>
         <variable name="INITIAL_OVA">
@@ -2441,48 +2396,9 @@
         </git>
       </materials>
     </pipeline>
-    <pipeline name="experimental-https-98128038" isLocked="false" template="ERT_Feature_Branch">
-      <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/experimental-https-98128038" dest="p-runtime">
-          <filter>
-            <ignore pattern="**/*" />
-          </filter>
-        </git>
-      </materials>
-    </pipeline>
-    <pipeline name="vcloud-air-upgrade-98156648" template="ERT-Upgrade-Branch-vCloud">
-      <environmentvariables>
-        <variable name="INITIAL_VCD">
-          <value>pcf-vcd-1.4.2.0.tgz</value>
-        </variable>
-        <variable name="RUNTIME_DOT_PIVOTAL_FILE">
-          <value>cf-1.4.2.0.pivotal</value>
-        </variable>
-      </environmentvariables>
-      <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/vcloud-air-upgrade-98156648" dest="p-runtime" />
-      </materials>
-    </pipeline>
     <pipeline name="notifications-18-97777438" isLocked="false" template="ERT_Feature_Branch">
       <materials>
         <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/notifications-18-97777438" dest="p-runtime">
-          <filter>
-            <ignore pattern="**/*" />
-          </filter>
-        </git>
-      </materials>
-    </pipeline>
-    <pipeline name="releases-1.5.1-dry-run" isLocked="false" template="ERT-Upgrade-Feature-Branch">
-      <environmentvariables>
-        <variable name="INITIAL_OVA">
-          <value>pcf-vsphere-1.4.2.0.ova</value>
-        </variable>
-        <variable name="RUNTIME_DOT_PIVOTAL_FILE">
-          <value>cf-1.4.2.0.pivotal</value>
-        </variable>
-      </environmentvariables>
-      <materials>
-        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="releases/1.5.1-dryrun" dest="p-runtime">
           <filter>
             <ignore pattern="**/*" />
           </filter>
@@ -2500,6 +2416,23 @@
       </environmentvariables>
       <materials>
         <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/bump-version-1.5.1-98486290" dest="p-runtime">
+          <filter>
+            <ignore pattern="**/*" />
+          </filter>
+        </git>
+      </materials>
+    </pipeline>
+    <pipeline name="openssl-cf208.4-97032228" isLocked="false" template="ERT-Upgrade-Feature-Branch">
+      <environmentvariables>
+        <variable name="INITIAL_OVA">
+          <value>pcf-vsphere-1.4.2.0.ova</value>
+        </variable>
+        <variable name="RUNTIME_DOT_PIVOTAL_FILE">
+          <value>cf-1.4.2.0.pivotal</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="git@github.com:pivotal-cf/p-runtime.git" branch="features/openssl-cf208.4-97032228" dest="p-runtime">
           <filter>
             <ignore pattern="**/*" />
           </filter>
@@ -2833,7 +2766,7 @@
               <exec command="bash" workingdir="p-runtime">
                 <arg>-x</arg>
                 <arg>-c</arg>
-                <arg>./scripts/gocd/claim_specific_environment.sh lime</arg>
+                <arg>./scripts/gocd/claim_environment_with_krafa.sh</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
