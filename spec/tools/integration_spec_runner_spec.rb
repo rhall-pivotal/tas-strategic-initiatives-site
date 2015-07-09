@@ -9,9 +9,8 @@ RSpec.describe 'IntegrationSpecRunner' do
     )
   end
 
-  let(:environment) { nil }
-  let(:ert_version) { nil }
-  let(:om_version) { nil }
+  let(:environment) { 'some-env' }
+  let(:om_version) { 'some-version' }
 
   before { allow(ENV).to receive(:[]=) }
 
@@ -47,25 +46,14 @@ RSpec.describe 'IntegrationSpecRunner' do
     end
 
     context 'with an unsupported ert_version' do
-      let(:ert_version) { 'UNSUPPORTED' }
-
       it 'raises a helpful error' do
-        expect do
-          integration_spec_runner.configure_ert
-        end.to raise_error(IntegrationSpecRunner::UnsupportedErtVersion, 'Version "UNSUPPORTED" is not supported')
-      end
-    end
-
-    context 'when ert_version is not passed' do
-      let(:ert_version) { nil }
-
-      it 'does not raise an error' do
         expect do
           IntegrationSpecRunner.new(
             environment: 'foo',
             om_version: '1.5',
+            ert_version: 'UNSUPPORTED',
           )
-        end.not_to raise_error
+        end.to raise_error(IntegrationSpecRunner::UnsupportedErtVersion, 'Version "UNSUPPORTED" is not supported')
       end
     end
   end
