@@ -2,16 +2,17 @@
 name: concourse
 
 # replace with bosh status --uuid
-director_uuid: f3c0dc42-c19c-4983-bf04-728132c6f065
+director_uuid: 3fcab573-7a98-40dd-b2f1-a032821b53be
 
 # pick a sane db name and password
 atc_db_name: &atc-db-name atc
 atc_db_role: &atc-db-role
   name: atc
   password: richpear91
+atc_db_address: &atc-db-address concoursedb.chskomywcsf9.us-west-1.rds.amazonaws.com:5432
 
 # replace with an AZ from your account
-availability_zone: &az us-east-1a
+availability_zone: &az us-west-1b
 
 # replace all addresses with your VPC range
 #
@@ -27,8 +28,8 @@ networks:
         dns: [10.0.0.2]
         gateway: 10.0.16.1
         cloud_properties:
-          security_groups: [concourse-InternalSecurityGroup-11AIF7LOGQ1OX]
-          subnet: subnet-535e2f0a
+          security_groups: [concourse-InternalSecurityGroup-1NG976INKZJIS]
+          subnet: subnet-6a19e233
 
 releases:
   - name: concourse
@@ -66,6 +67,7 @@ jobs:
         postgresql:
           database: *atc-db-name
           role: *atc-db-role
+          address: *atc-db-address
 
       tsa:
         host_key: |
@@ -125,23 +127,6 @@ jobs:
         atc:
           username: releng
           password: eyed1+kipsey
-
-      consul:
-        agent:
-          servers: {lan: [*discovery_static_ip]}
-
-  - name: db
-    instances: 1
-    resource_pool: databases
-    persistent_disk_pool: database
-    templates:
-      - {release: concourse, name: consul-agent}
-      - {release: concourse, name: postgresql}
-    networks: [{name: concourse}]
-    properties:
-      postgresql:
-        databases: [{name: *atc-db-name}]
-        roles: [*atc-db-role]
 
       consul:
         agent:
@@ -207,7 +192,7 @@ resource_pools:
     cloud_properties:
       instance_type: m3.medium
       availability_zone: *az
-      elbs: [concourse-WebELBLo-1AAKIHPBXWUWC]
+      elbs: [concourse-WebELBLo-1SZ5ILPCZCQ6B]
 
   - name: discovery
     network: concourse
