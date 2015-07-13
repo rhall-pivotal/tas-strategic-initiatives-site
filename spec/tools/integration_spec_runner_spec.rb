@@ -9,9 +9,8 @@ RSpec.describe 'IntegrationSpecRunner' do
     )
   end
 
-  let(:environment) { nil }
-  let(:ert_version) { nil }
-  let(:om_version) { nil }
+  let(:environment) { 'some-env' }
+  let(:om_version) { 'some-version' }
 
   before { allow(ENV).to receive(:[]=) }
 
@@ -47,40 +46,53 @@ RSpec.describe 'IntegrationSpecRunner' do
     end
 
     context 'with an unsupported ert_version' do
-      let(:ert_version) { 'UNSUPPORTED' }
-
       it 'raises a helpful error' do
-        expect do
-          integration_spec_runner.configure_ert
-        end.to raise_error(IntegrationSpecRunner::UnsupportedErtVersion, 'Version "UNSUPPORTED" is not supported')
-      end
-    end
-
-    context 'when ert_version is not passed' do
-      let(:ert_version) { nil }
-
-      it 'does not raise an error' do
         expect do
           IntegrationSpecRunner.new(
             environment: 'foo',
             om_version: '1.5',
+            ert_version: 'UNSUPPORTED',
           )
-        end.not_to raise_error
+        end.to raise_error(IntegrationSpecRunner::UnsupportedErtVersion, 'Version "UNSUPPORTED" is not supported')
       end
     end
   end
 
   %w(1.4 1.5).each do |version|
-    describe "#configure_ert #{version}" do
+    describe 'configuring ert' do
       let(:ert_version) { version }
 
-      it 'runs the correct version of configure ert' do
-        expect(RSpecExiter).to receive(:exit_rspec).with(0)
-        expect(RSpec::Core::Runner).to receive(:run).with(
-          ["integration/ERT-#{ert_version}/configure_ert_spec.rb"]
-        ).and_return(0)
+      describe "#configure_ert #{version}" do
+        it 'runs the correct version of configure ert' do
+          expect(RSpecExiter).to receive(:exit_rspec).with(0)
+          expect(RSpec::Core::Runner).to receive(:run).with(
+            ["integration/ERT-#{ert_version}/configure_ert_spec.rb"]
+          ).and_return(0)
 
-        integration_spec_runner.configure_ert
+          integration_spec_runner.configure_ert
+        end
+      end
+
+      describe "#configure_external_dbs #{version}" do
+        it 'runs the correct version of configure external dbs' do
+          expect(RSpecExiter).to receive(:exit_rspec).with(0)
+          expect(RSpec::Core::Runner).to receive(:run).with(
+            ["integration/ERT-#{ert_version}/configure_external_dbs_spec.rb"]
+          ).and_return(0)
+
+          integration_spec_runner.configure_external_dbs
+        end
+      end
+
+      describe "#configure_external_file_storage #{version}" do
+        it 'runs the correct version of configure external file storage' do
+          expect(RSpecExiter).to receive(:exit_rspec).with(0)
+          expect(RSpec::Core::Runner).to receive(:run).with(
+            ["integration/ERT-#{ert_version}/configure_external_file_storage_spec.rb"]
+          ).and_return(0)
+
+          integration_spec_runner.configure_external_file_storage
+        end
       end
     end
   end

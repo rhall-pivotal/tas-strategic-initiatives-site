@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -ex
+
+export RELENG_ENV=`cat environment/name`
+
+pushd p-runtime
+  ./ci/scripts/helpers/bundle-gems.sh
+
+  rake ert:run_cats[$RELENG_ENV]
+popd

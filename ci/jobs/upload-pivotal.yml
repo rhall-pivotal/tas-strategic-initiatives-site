@@ -1,0 +1,15 @@
+---
+platform: linux
+
+image: docker:///cloudfoundry/releng-ci
+
+inputs:
+  - name: p-runtime
+  - name: ert-product
+  - name: environment
+
+params:
+  OPSMAN_VERSION:
+
+run:
+  path: p-runtime/ci/scripts/upload-pivotal

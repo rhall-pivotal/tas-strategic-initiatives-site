@@ -1,0 +1,15 @@
+---
+platform: linux
+
+image: docker:///cloudfoundry/releng-ci
+
+inputs:
+  - name: p-runtime
+  - name: environment
+
+params:
+  ERT_VERSION:
+  OPSMAN_VERSION:
+
+run:
+  path: p-runtime/ci/scripts/configure-ert

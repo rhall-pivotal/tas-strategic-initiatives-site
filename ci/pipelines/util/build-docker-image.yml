@@ -1,0 +1,55 @@
+resources:
+  - name: p-runtime
+    type: git
+    source:
+      uri: git@github.com:pivotal-cf/p-runtime.git
+      branch: features/concourse
+      private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
+        seLKMSp4Q080DOuUXlMsmvlx5ZJYmWeyR1V24l2iw1N6Ww9WaCTBBb6K69CkWi6R
+        AoDNg1EkrsThGxNTUD6BFUzI64FydgCKv0GpX+I7LyMJSPGVZKi34lIDKfn2uGyE
+        xZLPt833LvctrRW9g154Dc1Ok/SWqxL4I8uZFBSiNJqdXCx4dtXvnpRJ9da/SejB
+        YmfWOBlVXjivOaJmz4m4jOkYJj8cOLoDGJBADgCBB1vdkbRuXShks2ft/PuxPVsm
+        ZXpfOQxT0Qr9v4B0zubXncrloJvRduMV9IoccwIDAQABAoIBAHCpYw5P7W3GheKh
+        WxzRl5h6rRPh2LQtF4qNWHRN4DNHRYspyWjEMWUa7lRiEJwzHJShgF9P0YLD3D5F
+        0H9lqypFriqXRcmc/tllc+P3dVHGY4enKrgxrC0emZWvuvNhrDC2k5DsAx1YMIFC
+        mY7l4Q/dPHGx7mb5SIFMeMrDxmUZ95EuCFBFpuyzgQvdS1Y2Kev7qfgu8oqxgGIN
+        jMYy0m02LVq9A/dRulx7oWhjoCmZ8vFRD7YiHJj4QhQ909OjtesMoCU5cXzUarPL
+        1tw+ki6h8l+HPToojVQsacSSdIQUvc2TYufyh0S5orSnc92fpZRyZmHjcnv4fkwx
+        gDDzLsECgYEAzsjVaZkXXjMk/c1nFpMFaXWRKK8UYUnOh9uGp3WXa+spMEcAzbTW
+        umHqJcQAGewkAk4PafM4BwqmcwL0zmoKxoDVGAGVLoezH/ln8KKZl94sfAsEbWlI
+        VIs7SPfCGmo0ROHm+eDFiWS4+GJgLS+FLvqeHSXnhg4dgVqRHDlf05kCgYEAw9XZ
+        AElXqouZ6i5jto2mO7DAkzRgR9IZ4xb9uLbOUAq1BgebWpwuT1L++WqTyiu8MNKr
+        o1iJSAUIjbyxxICSjMRenF2kpziWmysfjiCjDt/Lw90+8109hz7A3qahJcjqjvEG
+        FYIykaYTCWRM6kpUXogMS1kvrFwt6v4Rc84lN+sCgYA68jEz6vooVjgDSZxLaRmv
+        2F3K1S3gFeQUAlY+Ql0p3F1fb74g5Z4Yf3T50wecXB5fsdTfBQBBsZ2FR6B1fvEX
+        aP5V242lN/Wt9bDVfeR+0EyqB5H5hnuh7ha2VDo2wXOo9ySasqJc6iN4WsLD3rn+
+        jF6qPHXlVvy+NQ0MmKZicQKBgG5PozCaH5udj1FuWBSYra6p3ZANzL4oBxT3+mt1
+        7bkAjv+agVQE7cEZCy8LbbxP7m3B/ZTBZnL/AtZ0F96MXgCVDIYf6YOYSJ2XKOsy
+        TyctwOXPVopXVzU7kADa86MJDbb+5WJwOHP6jHaZ3QmMXQHyuJoo3sXEFslr3ADT
+        efuJAoGBAJcIUJRJdWBj3D7iLPOHRqJCwXdcxEaV9px9J+QUfnRZ4lGp5cdLlzcl
+        KDZ97Z8GkcNEWmVNqygX06AgJmHhNNDRXJCT5fwcJlF8ZcjXZ6NJa3zVQ3y1VMFE
+        hYI0vHHTGhvOQR1PYJlS5JuNvDCWo8PeeG/LV+zUEVW7LJMYzvWj
+        -----END RSA PRIVATE KEY-----
+
+  - name: releng-ci-docker
+    type: docker-image
+    source:
+      repository: cloudfoundry/releng-ci
+      username: cloudfoundry
+      password: docker4stacks
+      email: cfaccounts+docker.io@pivotallabs.com
+
+jobs:
+  - name: build-and-push
+    plan:
+      - get: p-runtime
+      - put: releng-ci-docker
+        params:
+          build: p-runtime
+
+groups:
+  - name: docker-build-and-push
+    jobs:
+    - build-and-push

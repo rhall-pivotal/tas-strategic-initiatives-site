@@ -1,7 +1,7 @@
 ---
 stemcell_criteria:
   os: ubuntu-trusty
-  version: '2989'
+  version: '3012'
   requires_cpi: false
 releases:
 # MySQL release is first because its packages take the longest to compile.
@@ -10,21 +10,21 @@ releases:
   version: '20'
   md5: d7e9a5a39a1197c66fb95a6486ecda79
   url: http://releng-artifacts.cf-app.com/cf-mysql-20.tgz
-- file: cf-208.3.tgz
+- file: cf-208.5.tgz
   name: cf
-  version: '208.3'
-  md5: 72ca9d5e29b8c582cd7fa2935e2c8e56
-  url: http://releng-artifacts.cf-app.com/cf/cf-208.3.tgz
-- file: push-console-release-console-du-jour-186.tgz
+  version: '208.5'
+  md5: 62163e5a58810195c5491952e2ad6648
+  url: http://releng-artifacts.cf-app.com/cf/cf-208.5.tgz
+- file: push-console-release-console-du-jour-203.tgz
   name: push-console-release
-  version: 'console-du-jour-186'
-  md5: b5b86cced6bf9682e0809022380a2ff5
-  url: http://releng-artifacts.cf-app.com/console/push-console-release-console-du-jour-186.tgz
-- file: notifications-with-ui-17.tgz
+  version: 'console-du-jour-203'
+  md5: 89d369b7b49f85cf00559a214ca4821b
+  url: http://apps-manager-releases.s3.amazonaws.com/push-console-release-console-du-jour-203.tgz
+- file: notifications-with-ui-18.tgz
   name: 'notifications-with-ui'
-  version: '17'
-  md5: b82fbc3cf82e4083d0f8ceaf7c56a774
-  url: http://cfla-dropbox.cf-app.com/notifications-with-ui-17.tgz
+  version: '18'
+  md5: 707e04c374956737cbd9c5ee98067e86
+  url: http://cfla-dropbox.cf-app.com/notifications-with-ui-18.tgz
 - file: cf-autoscaling-13.tgz
   name: 'cf-autoscaling'
   version: '13'

@@ -6,18 +6,30 @@ class IntegrationSpecRunner
 
   SUPPORTED_ERT_VERSIONS = %w(1.4 1.5)
 
-  def initialize(environment:, om_version:, ert_version: nil)
+  def initialize(environment:, om_version:, ert_version:)
+    fail 'No Environment Name provided' if environment.nil? || environment.empty?
+    fail 'No Ops Manager Version provided' if om_version.nil? || om_version.empty?
+
     ENV['ENVIRONMENT_NAME'] = environment
     ENV['OM_VERSION'] = om_version
-    if ert_version.nil? || SUPPORTED_ERT_VERSIONS.include?(ert_version)
-      @ert_version = ert_version
-    else
+
+    unless SUPPORTED_ERT_VERSIONS.include?(ert_version)
       fail UnsupportedErtVersion, "Version #{ert_version.inspect} is not supported"
     end
+
+    @ert_version = ert_version
   end
 
   def configure_ert
     run_spec(["integration/ERT-#{ert_version}/configure_ert_spec.rb"])
+  end
+
+  def configure_external_dbs
+    run_spec(["integration/ERT-#{ert_version}/configure_external_dbs_spec.rb"])
+  end
+
+  def configure_external_file_storage
+    run_spec(["integration/ERT-#{ert_version}/configure_external_file_storage_spec.rb"])
   end
 
   private

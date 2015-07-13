@@ -1,37 +1,38 @@
 ---
 name: hyena
 iaas_type: vsphere
-vm_shepherd_configs:
-- vcenter_creds:
-    ip: 10.84.32.61
-    username: root
-    password: look74Beer
-  vsphere:
-    host: vcenter
-    resource_pool: hyena
-    datacenter: private
-    cluster: private
-    datastore: private
-    network: hyena
-    folder: hyena
-  cleanup:
-    datacenter: private
-    datastores:
-    - private
-    datacenter_folders_to_clean:
-    - hyena
-    - hyena_vms
-    - hyena_templates
-    datastore_folders_to_clean:
-    - hyena
-    - hyena_disk
-  vm:
-    ip: 10.85.35.16
-    gateway: 10.85.35.1
-    netmask: 255.255.255.0
-    dns: 10.87.8.10,10.87.8.11
-    ntp_servers: time1.sf.cf-app.com
-    vm_password: pivotalcf
+vm_shepherd:
+  vm_configs:
+  - vcenter_creds:
+      ip: 10.84.32.61
+      username: root
+      password: look74Beer
+    vsphere:
+      host: vcenter
+      resource_pool: hyena
+      datacenter: private
+      cluster: private
+      datastore: private
+      network: hyena
+      folder: hyena
+    cleanup:
+      datacenter: private
+      datastores:
+      - private
+      datacenter_folders_to_clean:
+      - hyena
+      - hyena_vms
+      - hyena_templates
+      datastore_folders_to_clean:
+      - hyena
+      - hyena_disk
+    vm:
+      ip: 10.85.35.16
+      gateway: 10.85.35.1
+      netmask: 255.255.255.0
+      dns: 10.87.8.10,10.87.8.11
+      ntp_servers: time1.sf.cf-app.com
+      vm_password: pivotalcf
 ops_manager:
   url: https://pcf.hyena.wild.cf-app.com
   username: pivotalcf

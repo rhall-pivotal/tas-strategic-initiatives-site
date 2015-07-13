@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -ex
+
+export RELENG_ENV=`cat environment/name`
+
+pushd p-runtime
+  ./ci/scripts/helpers/bundle-gems.sh
+
+  xvfb-run -a bundle exec rake ert:update_dns_elb[$RELENG_ENV]
+  sleep 60 # allow DNS to propagate (5sec TTL)
+  xvfb-run -a bundle exec rake ert:configure[$RELENG_ENV,$ERT_VERSION,$OPSMAN_VERSION]
+popd
+

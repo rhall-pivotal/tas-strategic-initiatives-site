@@ -3,7 +3,7 @@ set -e
 set -x
 
 docker_image_name=releng
-docker_image_ref=releng:releng_base
+docker_image_ref=releng:releng_base_ruby_22
 base_docker_file=Dockerfile_base
 image_folder=.
 docker_registry_vsphere=docker.vsphere.gocd.cf-app.com:5000

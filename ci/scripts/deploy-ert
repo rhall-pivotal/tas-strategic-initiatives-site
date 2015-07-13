@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -ex
+
+export RELENG_ENV=`cat environment/name`
+
+pushd p-runtime
+  ./ci/scripts/helpers/bundle-gems.sh
+
+  xvfb-run -a bundle exec rake opsmgr:trigger_install[$RELENG_ENV,$OPSMAN_VERSION,240]
+popd
+

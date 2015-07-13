@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:pivotal-cf-experimental/krafa.git
-  revision: 6533216b412a308a8fcdc2178bb8bf1f08642a3f
+  revision: a397b18ee0bafe02a815f479d3cd636af335e88d
   specs:
     krafa-client (0.0.11)
       rake
@@ -8,32 +8,25 @@ GIT
       thor
 
 GIT
-  remote: git@github.com:pivotal-cf-experimental/vsphere_clients
-  revision: 7af63571b837c8d1264f173c20335fc737d57421
-  specs:
-    vsphere_clients (0.1.0)
-      rbvmomi
-
-GIT
   remote: git@github.com:pivotal-cf/opsmgr
-  revision: 95176d203563bbbed31f009a493df6b143286387
+  revision: d321c2c1d015d2c93b23da3db9b6015e139687c4
   specs:
-    opsmgr (0.5.0)
+    opsmgr (0.6.0)
       activesupport (~> 4.1.6)
-      aws-sdk (~> 1.60)
+      aws-sdk (~> 2.0)
       filesize (~> 0.0.3)
       fog
       multipart-post
+      mustache
       netaddr
       open4
-      ops_manager_ui_drivers (~> 0.2)
+      ops_manager_ui_drivers (= 0.9.7)
       rake
       rbvmomi (~> 1.8.0)
-      recursive-open-struct
+      recursive-open-struct (~> 0.5.0)
       rubyzip
       sinatra
-      vm_shepherd (= 1.0.3)
-      vsphere_clients
+      vm_shepherd (= 1.8.4)
 
 GIT
   remote: git@github.com:pivotal-cf/vara.git
@@ -46,7 +39,8 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (4.1.10)
+    CFPropertyList (2.3.1)
+    activesupport (4.1.12)
       i18n (~> 0.6, >= 0.6.9)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
@@ -56,37 +50,15 @@ GEM
     ast (2.0.0)
     astrolabe (1.3.0)
       parser (>= 2.2.0.pre.3, < 3.0)
-    aws-sdk (1.60.2)
-      aws-sdk-v1 (= 1.60.2)
-    aws-sdk-v1 (1.60.2)
+    aws-sdk (2.1.3)
+      aws-sdk-resources (= 2.1.3)
+    aws-sdk-core (2.1.3)
+      jmespath (~> 1.0)
+    aws-sdk-resources (2.1.3)
+      aws-sdk-core (= 2.1.3)
+    aws-sdk-v1 (1.64.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
-    blobstore_client (1.2818.0)
-      aws-sdk (= 1.60.2)
-      bosh_common (~> 1.2818.0)
-      fog (~> 1.23.0)
-      httpclient (= 2.4.0)
-      multi_json (~> 1.1)
-      ruby-atmos-pure (~> 1.0.5)
-    bosh-template (1.2818.0)
-      semi_semantic (~> 1.1.0)
-    bosh_cli (1.2818.0)
-      blobstore_client (~> 1.2818.0)
-      bosh-template (~> 1.2818.0)
-      bosh_common (~> 1.2818.0)
-      highline (~> 1.6.2)
-      httpclient (= 2.4.0)
-      json_pure (~> 1.7)
-      minitar (~> 0.5.4)
-      net-scp (~> 1.1.0)
-      net-ssh (>= 2.2.1)
-      net-ssh-gateway (~> 1.2.0)
-      netaddr (~> 1.5.0)
-      progressbar (~> 0.9.0)
-      terminal-table (~> 1.4.3)
-    bosh_common (1.2818.0)
-      logging (~> 1.8.2)
-      semi_semantic (~> 1.1.0)
     builder (3.2.2)
     byebug (5.0.0)
       columnize (= 0.9.0)
@@ -96,7 +68,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    capybara-webkit (1.5.1)
+    capybara-webkit (1.6.0)
       capybara (>= 2.3.0, < 2.5.0)
       json
     childprocess (0.5.6)
@@ -108,54 +80,122 @@ GEM
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
     excon (0.45.3)
-    ffi (1.9.8)
+    ffi (1.9.10)
     filesize (0.0.4)
-    fog (1.23.0)
-      fog-brightbox
-      fog-core (~> 1.23)
+    fission (0.5.0)
+      CFPropertyList (~> 2.2)
+    fog (1.32.0)
+      fog-atmos
+      fog-aws (>= 0.6.0)
+      fog-brightbox (~> 0.4)
+      fog-core (~> 1.32)
+      fog-ecloud (= 0.1.1)
+      fog-google (>= 0.0.2)
       fog-json
+      fog-local
+      fog-powerdns (>= 0.1.1)
+      fog-profitbricks
+      fog-radosgw (>= 0.0.2)
+      fog-riakcs
+      fog-sakuracloud (>= 0.0.4)
+      fog-serverlove
       fog-softlayer
+      fog-storm_on_demand
+      fog-terremark
+      fog-vmfusion
+      fog-voxel
+      fog-xml (~> 0.1.1)
       ipaddress (~> 0.5)
       nokogiri (~> 1.5, >= 1.5.11)
-    fog-brightbox (0.7.1)
+    fog-atmos (0.1.0)
+      fog-core
+      fog-xml
+    fog-aws (0.7.2)
+      fog-core (~> 1.27)
+      fog-json (~> 1.0)
+      fog-xml (~> 0.1)
+      ipaddress (~> 0.8)
+    fog-brightbox (0.7.2)
       fog-core (~> 1.22)
       fog-json
       inflecto (~> 0.0.2)
-    fog-core (1.30.0)
+    fog-core (1.32.0)
       builder
       excon (~> 0.45)
       formatador (~> 0.2)
       mime-types
       net-scp (~> 1.1)
       net-ssh (>= 2.1.3)
+    fog-ecloud (0.1.1)
+      fog-core
+      fog-xml
+    fog-google (0.0.7)
+      fog-core
+      fog-json
+      fog-xml
     fog-json (1.0.2)
       fog-core (~> 1.0)
       multi_json (~> 1.10)
-    fog-softlayer (0.4.6)
+    fog-local (0.2.1)
+      fog-core (~> 1.27)
+    fog-powerdns (0.1.1)
+      fog-core (~> 1.27)
+      fog-json (~> 1.0)
+      fog-xml (~> 0.1)
+    fog-profitbricks (0.0.3)
+      fog-core
+      fog-xml
+      nokogiri
+    fog-radosgw (0.0.4)
+      fog-core (>= 1.21.0)
+      fog-json
+      fog-xml (>= 0.0.1)
+    fog-riakcs (0.1.0)
       fog-core
       fog-json
+      fog-xml
+    fog-sakuracloud (1.0.1)
+      fog-core
+      fog-json
+    fog-serverlove (0.1.2)
+      fog-core
+      fog-json
+    fog-softlayer (0.4.7)
+      fog-core
+      fog-json
+    fog-storm_on_demand (0.1.1)
+      fog-core
+      fog-json
+    fog-terremark (0.1.0)
+      fog-core
+      fog-xml
+    fog-vmfusion (0.1.0)
+      fission
+      fog-core
+    fog-voxel (0.1.0)
+      fog-core
+      fog-xml
+    fog-xml (0.1.2)
+      fog-core
+      nokogiri (~> 1.5, >= 1.5.11)
     formatador (0.2.5)
-    highline (1.6.21)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
-    httpclient (2.4.0)
+    httpclient (2.6.0.1)
     i18n (0.7.0)
     inflecto (0.0.2)
     ipaddress (0.8.0)
+    jmespath (1.0.2)
+      multi_json (~> 1.0)
     json (1.8.3)
-    json_pure (1.8.2)
-    little-plugger (1.1.3)
-    log4r (1.1.10)
-    logging (1.8.2)
-      little-plugger (>= 1.1.3)
-      multi_json (>= 1.8.4)
     mime-types (2.6.1)
     mini_portile (0.6.2)
-    minitar (0.5.4)
     minitest (5.7.0)
-    multi_json (1.11.0)
+    multi_json (1.11.2)
     multipart-post (2.0.0)
-    net-scp (1.1.2)
+    mustache (1.0.2)
+    mysql2 (0.3.18)
+    net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
     net-ssh-gateway (1.2.0)
@@ -165,15 +205,14 @@ GEM
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     open4 (1.3.4)
-    ops_manager_ui_drivers (0.9.1)
+    ops_manager_ui_drivers (0.9.7)
       capybara
       capybara-webkit
       selenium-webdriver
-    parser (2.2.2.5)
+    parser (2.2.2.6)
       ast (>= 1.1, < 3.0)
     powerpack (0.1.1)
-    progressbar (0.9.2)
-    rack (1.6.1)
+    rack (1.6.4)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -184,34 +223,30 @@ GEM
       builder
       nokogiri (>= 1.4.1)
       trollop
-    recursive-open-struct (0.6.4)
+    recursive-open-struct (0.5.0)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
-    rspec (3.2.0)
-      rspec-core (~> 3.2.0)
-      rspec-expectations (~> 3.2.0)
-      rspec-mocks (~> 3.2.0)
-    rspec-core (3.2.3)
-      rspec-support (~> 3.2.0)
-    rspec-expectations (3.2.1)
+    rspec (3.3.0)
+      rspec-core (~> 3.3.0)
+      rspec-expectations (~> 3.3.0)
+      rspec-mocks (~> 3.3.0)
+    rspec-core (3.3.1)
+      rspec-support (~> 3.3.0)
+    rspec-expectations (3.3.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.2.0)
-    rspec-mocks (3.2.1)
+      rspec-support (~> 3.3.0)
+    rspec-mocks (3.3.1)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.2.0)
-    rspec-support (3.2.2)
-    rubocop (0.31.0)
+      rspec-support (~> 3.3.0)
+    rspec-support (3.3.0)
+    rubocop (0.32.1)
       astrolabe (~> 1.3)
-      parser (>= 2.2.2.1, < 3.0)
+      parser (>= 2.2.2.5, < 3.0)
       powerpack (~> 0.1)
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.4)
-    ruby-atmos-pure (1.0.5)
-      log4r (>= 1.1.9)
-      ruby-hmac (>= 0.4.0)
-    ruby-hmac (0.4.0)
     ruby-progressbar (1.7.5)
     ruby_vcloud_sdk (0.7.2)
       builder (>= 3.1)
@@ -221,17 +256,15 @@ GEM
       rest-client (>= 1.6.7)
     rubyzip (1.1.7)
     safe_yaml (1.0.4)
-    selenium-webdriver (2.45.0)
+    selenium-webdriver (2.46.2)
       childprocess (~> 0.5)
       multi_json (~> 1.0)
       rubyzip (~> 1.0)
       websocket (~> 1.0)
-    semi_semantic (1.1.0)
     sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
-    terminal-table (1.4.5)
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (2.0.1)
@@ -241,11 +274,11 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
-    vm_shepherd (1.0.3)
+    vm_shepherd (1.8.4)
       aws-sdk-v1
       fog
       rbvmomi
-      ruby_vcloud_sdk (~> 0.7.0)
+      ruby_vcloud_sdk (= 0.7.2)
     webmock (1.21.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -257,16 +290,16 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bosh_cli (= 1.2818.0)
   byebug
   krafa-client (= 0.0.11)!
+  mysql2
+  net-ssh-gateway
   opsmgr!
-  recursive-open-struct
+  recursive-open-struct (= 0.5.0)
   rspec
   rubocop
   vara (= 0.12.0)!
-  vsphere_clients!
   webmock
 
 BUNDLED WITH
-   1.10.3
+   1.10.5
