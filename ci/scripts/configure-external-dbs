@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -ex
+
+export RELENG_ENV=`cat environment/name`
+
+pushd p-runtime
+  ./ci/scripts/helpers/bundle-gems.sh
+
+  xvfb-run -a bundle exec rake ert:configure_external_dbs[$RELENG_ENV,$ERT_VERSION,$OPSMAN_VERSION]
+popd

@@ -1,0 +1,125 @@
+---
+name: bosh
+
+releases:
+- name: bosh
+  url: https://bosh.io/d/github.com/cloudfoundry/bosh?v=180
+  sha1: cd0f4bac9fda4238d8c25a62ca8439b88353c7cd
+- name: bosh-vsphere-cpi
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-vsphere-cpi-release?v=6
+  sha1: 2a790cb95fb201bd3db4647f39d2a3681f50f9e2
+
+resource_pools:
+- name: vms
+  network: private
+  stemcell:
+    url: https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-trusty-go_agent?v=3003
+    sha1: 8e6cc471c3f217faec61de8fde0933b1ab29e10f
+  cloud_properties:
+    cpu: 2
+    ram: 4_096
+    disk: 20_000
+  env:
+    bosh:
+      # c1oudc0w is a default password for vcap user
+      password: "$6$4gDD3aV0rdqlrKC$2axHCxGKIObs6tAmMTqYCspcdvQXh3JJcvWOY2WGb4SrdXtnCyNaWlrf3WEqvYR2MYizEGp3kMmbpwBC6jsHt0"
+
+disk_pools:
+- name: disks
+  disk_size: 20_000
+
+networks:
+- name: private
+  type: manual
+  subnets:
+  - range: 10.85.1.0/24
+    reserved: [10.85.1.1-10.85.1.1]
+    dns: [10.87.8.10,10.87.8.11]
+    gateway: 10.85.1.1
+    cloud_properties:
+      name: badger
+
+jobs:
+- name: bosh
+  instances: 1
+
+  templates:
+  - {name: nats, release: bosh}
+  - {name: redis, release: bosh}
+  - {name: postgres, release: bosh}
+  - {name: blobstore, release: bosh}
+  - {name: director, release: bosh}
+  - {name: health_monitor, release: bosh}
+  - {name: cpi, release: bosh-vsphere-cpi}
+
+  resource_pool: vms
+  persistent_disk_pool: disks
+
+  networks:
+  - {name: private, static_ips: [10.85.1.91]}
+
+  properties:
+    nats:
+      address: 127.0.0.1
+      user: nats
+      password: nats-password
+
+    redis:
+      listen_addresss: 127.0.0.1
+      address: 127.0.0.1
+      password: redis-password
+
+    postgres: &db
+      host: 127.0.0.1
+      user: postgres
+      password: postgres-password
+      database: bosh
+      adapter: postgres
+
+    blobstore:
+      address: 10.85.1.91
+      port: 25250
+      provider: dav
+      director: {user: director, password: director-password}
+      agent: {user: agent, password: agent-password}
+
+    director:
+      address: 127.0.0.1
+      name: my-bosh
+      db: *db
+      cpi_job: cpi
+      max_threads: 1
+
+    hm:
+      http: {user: hm, password: hm-password}
+      director_account: {user: admin, password: admin}
+      resurrector_enabled: true
+
+    vcenter: &vcenter # <--- Replace values below
+      address: vcenter.wild.cf-app.com
+      user: root
+      password: look74Beer
+      datacenters:
+      - name: private
+        vm_folder: badger/vm
+        template_folder: badger/template
+        datastore_pattern: private
+        persistent_datastore_pattern: private
+        disk_path: badger/disk
+        clusters:
+        - private: {resource_pool: badger}
+
+    agent: {mbus: "nats://nats:nats-password@10.85.1.91:4222"}
+
+    ntp: &ntp [0.pool.ntp.org, 1.pool.ntp.org]
+
+cloud_provider:
+  template: {name: cpi, release: bosh-vsphere-cpi}
+
+  mbus: "https://mbus:mbus-password@10.85.1.91:6868"
+
+  properties:
+    vcenter: *vcenter
+    agent: {mbus: "https://mbus:mbus-password@0.0.0.0:6868"}
+    blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
+    ntp: *ntp

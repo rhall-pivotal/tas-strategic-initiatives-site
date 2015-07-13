@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -ex
+
+export RELENG_ENV=`cat environment/name`
+export OPS_MAN_PATH=$PWD/ops-manager/ops_man_image
+
+
+pushd p-runtime
+  ./ci/scripts/helpers/bundle-gems.sh
+
+  bundle exec rake opsmgr:install[$RELENG_ENV,$OPS_MAN_PATH]
+popd

@@ -1,2 +1,2 @@
 source ./releng_env.sh
-./docker_run.sh scripts/runtime/post_install_test.sh
+./docker_run.sh bundle exec rake ert:run_cats[$RELENG_ENV]

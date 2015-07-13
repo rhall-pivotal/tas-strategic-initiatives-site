@@ -1,2 +1,2 @@
 source ./releng_env.sh
-./docker_run.sh bundle exec rake ert:run_cats_ssh_password_tunnel[$RELENG_ENV]
+./docker_run.sh bundle exec rake ert:run_cats[$RELENG_ENV]

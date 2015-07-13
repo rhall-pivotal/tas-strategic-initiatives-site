@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -ex
+
+if [ "$USE_ERT_DUMMY" == "true" ]; then
+  pushd p-runtime
+    ./ci/scripts/helpers/bundle-gems.sh
+
+    pushd ert-dummy
+      cat ./metadata_parts/binaries.yml
+      bundle exec vara build-pivotal .
+    popd
+
+  popd
+
+  mv p-runtime/ert-dummy/*.pivotal ./ert.pivotal
+
+else
+
+  pushd p-runtime
+    ./ci/scripts/helpers/bundle-gems.sh
+
+    cat ./metadata_parts/binaries.yml
+    bundle exec vara build-pivotal .
+
+    # concourse streams working directory between containers
+    # this won't be needed soon (#94235474, #93927268)
+    rm releases/*.tgz
+  popd
+
+  mv p-runtime/*.pivotal ./ert.pivotal
+fi

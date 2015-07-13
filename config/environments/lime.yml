@@ -5,10 +5,10 @@ vm_shepherd:
     stack_name: lime
     aws_access_key: AKIAI43577ARGHXPWIMQ
     aws_secret_key: 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
-    region: us-east-1
+    region: us-west-1
     json_file: config/ert_cloudformation.json
     parameters:
-      01NATKeyPair: releng-dev
+      01NATKeyPair: releng-dev-west
       05RdsUsername: pivotalcf
       06RdsPassword: pivotalcf
       07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/lime
@@ -22,7 +22,7 @@ vm_shepherd:
         - {{ ert_s3_bucket_name }}
   vm_configs:
     - vm_name: Lime OpsManager
-      vm_ip_address: 52.4.189.82
+      vm_ip_address: 52.8.215.184
 
 ops_manager:
   url: https://pcf.lime.cf-app.com/
@@ -30,7 +30,7 @@ ops_manager:
   password: pivotalcf
   ntp_servers: 0.amazon.pool.ntp.org
   availability_zones:
-  - iaas_identifier: us-east-1a
+  - iaas_identifier: us-west-1b
 
   aws:
     aws_access_key: {{iam_aws_access_key_id}}
@@ -41,27 +41,27 @@ ops_manager:
     region: {{region}}
     ssh_key: |
       -----BEGIN RSA PRIVATE KEY-----
-      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
+      MIIEowIBAAKCAQEAhjHuhEToOnffT0anE3LAu9ijudz+P7yzVmXW7Ignn+RP56GpFswvBS+rdMoF
+      9d13dzom/QdR76EMch16uz0V3SrFyphB2XdHQ34cvJMjlgVxXsNfVHA96rTIP5QVaaB5TRgXsKD8
+      /3pJ0q/dWoLq0a4MQT48DI8HCTYT9XnVjYHYJGZHKEj+5ztr4T0CuOuIwmElJJAXu33ooEDJZPYK
+      57z7zfy3RtSs0t40A/KJN12fY2ra25P4k7q2o47349Hz+aBsHK9YMAQhGGdPwNOe4yw8Qt1LuK1B
+      hxSgt4IWLMXljtHBA8tfBCD12DFQIej+5zBMnjxa9ONML47yZpX6qQIDAQABAoIBAAstj5Oe9cUh
+      BQ3icbpR/bHn+sNZoCgI/Ns+gmeTc9GCwBEoSyBmA6in7t08ksCHIRNiWasL+AxA2vuKbxW3oeGZ
+      VX5prlqB8AK0N4qRqw4tB+N/3Kn4639obaG2IQ56WoBMeHSzBD/3nLya/5Ixg4PRvp2UpIXbSBfB
+      VGpHKr2tq0O4NHGfvNL5OQeI7bXFcDvgiRMTcmY0T0OcU3s2cROnMTgCjMiHSUwZqgaWYKxNCo0v
+      jP8CgAHKOj4nNOJwbVcXxmClQocQwnwkyWKuCNWQaPb2js8u9xdekLS6/B+LQYrBfGjR4uFAfWgp
+      IS30h+Ws8qplM4ryafHAFBcA14ECgYEAvWtzb6yrwJ6DgANiubhXSlP25z5Mh5O1vFkgYTcJCy4f
+      1/u5Rnkeg5ZNNwl/iSVqrv1VT0JdD/HYAhY8iWAJApyYX/xbKilzd33iQtKQjj4uDQAkWRm56FjE
+      eKs27u3vppWMLs4d2AAUZSba8gNBmcvNp+WubK2gEZSNBynBz7ECgYEAtV0zLI75LvaCXfk9yPIs
+      4xCiwKk6oXncpOVGn0F8D+Y+ywogU3GPPxJQ1HL/WEt0qFt7KIenCLHppOsLSkgSrBM2l5KJBbpA
+      3kVwfFTZPubedXHr1usGX/cKO37fZTdE3gqHH2VzND1WZNy8rTpJ5Kbbwd+fzPnXSBqDl1ar0HkC
+      gYBmJp9fV0BcpV+HVswUGizBAd0CQh+lcewtQedrZfGznNFBehglwEXLcu/7QV0NCiepbSdnkgN8
+      CNGT9of5EdhqFyc5hG9pomcJxtKRdNrOSwwsqKnxfyU5/z0dUkBSw/Bc5wNtbmy7wvc8waKLp2Pm
+      W/lxlTTmmQ/cyz7u4P8LUQKBgQCywG4cn7nnWJz7JBmKQW6OSaove1vHJUWb3EIz2qX9QbBoC836
+      kDVgM5wpGEKlcpFDEg8bzj+KKVgf7G2PQ+PrZ3BqCco1M/KVYBlS4YnRHljppmOMys3YrbKPGyfx
+      KX0d34B4KFRYi4/oD0uC7K1ByFdWCSMGMsTFUySZd5oV+QKBgBop5BJF1e0qw2virzT7ZRbrrsVP
+      IBk3hbF/UJ7zaF/pGynZmyjW1zBkO29c7zJxaCqnPdOCGibyFNTfcXNPw3jJcEPzzNa3TtrQLP8Z
+      cBzOTY3vQeGxRW5wjIqg98ST3GzN4C2Rd+PpSFS6OvG9CYqBVl1mdde00nyVbcXPNkRv
       -----END RSA PRIVATE KEY-----
 
   networks:
@@ -79,7 +79,7 @@ ops_manager:
     elb_name: lime-pcf-elb
     elb_dns_name: {{ ert_elb_dns_name }}
     file_storage:
-      endpoint: https://s3.amazonaws.com
+      endpoint: https://s3-us-west-1.amazonaws.com
       bucket: {{ ert_s3_bucket_name }}
       access_key: {{iam_aws_access_key_id}}
       secret_key: {{iam_aws_secret_access_key}}
