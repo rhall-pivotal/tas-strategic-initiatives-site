@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -ex
+
+export RELENG_ENV=`cat environment/name`
+
+pushd p-runtime
+  ./ci/scripts/helpers/bundle-gems.sh
+
+  bundle exec rake opsmgr:delete_installation[$RELENG_ENV,$OPSMAN_VERSION]
+popd

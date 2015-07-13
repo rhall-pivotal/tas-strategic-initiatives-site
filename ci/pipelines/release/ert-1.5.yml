@@ -112,6 +112,14 @@ resources:
       pool: internetless
       private_key: *env_private_key
 
+  - name: environment-vcloud
+    type: pool
+    source:
+      uri: git@github.com:pivotal-cf-experimental/releng-env-resource-pool
+      branch: master
+      pool: vcloud
+      private_key: *env_private_key
+
   - name: ops-manager-stable-aws
     type: s3
     source:
@@ -131,6 +139,16 @@ resources:
       region_name: us-west-1
       private: true
       versioned_file: ops_manager_images/vsphere/stable/ops_man_image
+
+  - name: ops-manager-stable-vcloud
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: ops_manager_images/vcloud/stable/ops_man_image
 
   - name: initial-ert-product
     type: s3
@@ -162,6 +180,16 @@ resources:
       private: true
       versioned_file: ops_manager_images/vsphere/1.4.2.0/ops_man_image
 
+  - name: initial-ops-manager-vcloud
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: ops_manager_images/vcloud/1.4.2.0/ops_man_image
+
   - name: exported-installation-aws
     type: s3
     source:
@@ -181,6 +209,17 @@ resources:
       region_name: us-west-1
       private: true
       versioned_file: exported_installations/master/vsphere/installation.zip
+
+  - name: exported-installation-vcloud
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: exported_installations/master/vcloud/installation.zip
+
 jobs:
   - name: kickoff
     plan:
@@ -288,6 +327,26 @@ groups:
     - run-cats-vsphere-upgrade
     - release-environment-vsphere-upgrade
 
+  - name: vcloud-upgrade
+    jobs:
+    - claim-environment-vcloud-upgrade
+    - destroy-environment-vcloud-upgrade
+    - deploy-ops-manager-initial-vcloud-upgrade
+    - configure-microbosh-initial-vcloud-upgrade
+    - deploy-microbosh-initial-vcloud-upgrade
+    - upload-pivotal-initial-vcloud-upgrade
+    - configure-ert-initial-vcloud-upgrade
+    - deploy-ert-initial-vcloud-upgrade
+    - export-installation-vcloud-upgrade
+    - destroy-opsman-vcloud-upgrade
+    - deploy-opsman-vcloud-upgrade
+    - import-installation-vcloud-upgrade
+    - upgrade-pivotal-vcloud-upgrade
+    - configure-ert-vcloud-upgrade
+    - deploy-ert-vcloud-upgrade
+    - run-cats-vcloud-upgrade
+    - release-environment-vcloud-upgrade
+
   - name: common
     jobs:
       - kickoff
@@ -296,3 +355,4 @@ groups:
     resources:
       - ops-manager-stable-aws
       - ops-manager-stable-vsphere
+      - ops-manager-stable-vcloud

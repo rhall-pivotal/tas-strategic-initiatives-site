@@ -1,7 +1,7 @@
 require 'yaml'
 require 'active_support/core_ext/hash/deep_merge'
 
-files = ['aws-clean.yml', 'vsphere-clean.yml', 'vsphere-internetless.yml', 'aws-upgrade.yml', 'vsphere-upgrade.yml']
+files = ['aws-clean.yml', 'vsphere-clean.yml', 'vsphere-internetless.yml', 'aws-upgrade.yml', 'vsphere-upgrade.yml', 'vcloud-upgrade.yml']
 
 result = YAML.load_file('ert-1.5.yml')
 files.each do |f|
