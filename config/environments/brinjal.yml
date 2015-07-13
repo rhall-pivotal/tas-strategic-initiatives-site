@@ -13,7 +13,6 @@ vm_shepherd:
       06RdsPassword: pivotalcf
       07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/brinjal
     outputs:
-      ssh_key_name: releng-dev
       ssh_key_name: {{ssh_key_pair_name}}
       security_group: {{ops_manager_security_group_id}}
       public_subnet_id: {{public_subnet_id}}
@@ -23,7 +22,7 @@ vm_shepherd:
         - {{ ert_s3_bucket_name }}
   vm_configs:
     - vm_name: Brinjal OpsManager
-      vm_ip_address: 54.175.228.122
+      vm_ip_address: 52.8.88.172
 
 ops_manager:
   url: https://pcf.brinjal.cf-app.com/

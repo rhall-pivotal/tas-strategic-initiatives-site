@@ -13,7 +13,6 @@ vm_shepherd:
       06RdsPassword: pivotalcf
       07SSLCertificateARN: arn:aws:iam::491337929596:server-certificate/lime
     outputs:
-      ssh_key_name: releng-dev
       ssh_key_name: {{ssh_key_pair_name}}
       security_group: {{ops_manager_security_group_id}}
       public_subnet_id: {{public_subnet_id}}
@@ -23,7 +22,7 @@ vm_shepherd:
         - {{ ert_s3_bucket_name }}
   vm_configs:
     - vm_name: Lime OpsManager
-      vm_ip_address: 52.4.189.82
+      vm_ip_address: 52.8.215.184
 
 ops_manager:
   url: https://pcf.lime.cf-app.com/
