@@ -108,6 +108,9 @@ jobs:
           params:
             ERT_VERSION: &ert_initial_version 1.4
             OPSMAN_VERSION: *om_initial_version
+      - task: create-external-dbs
+        tags: [aws]
+        file: p-runtime/ci/jobs/create-aws-dbs.yml
       - task: configure-external-dbs
         tags: [aws]
         file: p-runtime/ci/jobs/configure-external-dbs.yml

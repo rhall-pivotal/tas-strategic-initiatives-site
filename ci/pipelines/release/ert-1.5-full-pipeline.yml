@@ -398,6 +398,26 @@ jobs:
       params:
         ERT_VERSION: 1.5
         OPSMAN_VERSION: 1.5
+  - task: create-external-dbs
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/create-aws-dbs.yml
+  - task: configure-external-dbs
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/configure-external-dbs.yml
+    config:
+      params:
+        ERT_VERSION: 1.5
+        OPSMAN_VERSION: 1.5
+  - task: configure-external-file-storage
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/configure-external-file-storage.yml
+    config:
+      params:
+        ERT_VERSION: 1.5
+        OPSMAN_VERSION: 1.5
 - name: deploy-ert-aws-clean
   plan:
   - get: p-runtime
@@ -908,6 +928,10 @@ jobs:
       params:
         ERT_VERSION: 1.4
         OPSMAN_VERSION: 1.4
+  - task: create-external-dbs
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/create-aws-dbs.yml
   - task: configure-external-dbs
     tags:
     - aws

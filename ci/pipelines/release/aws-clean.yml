@@ -105,7 +105,24 @@ jobs:
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
-            ERT_VERSION: 1.5
+            ERT_VERSION: &ert_version 1.5
+            OPSMAN_VERSION: *om_version
+      - task: create-external-dbs
+        tags: [aws]
+        file: p-runtime/ci/jobs/create-aws-dbs.yml
+      - task: configure-external-dbs
+        tags: [aws]
+        file: p-runtime/ci/jobs/configure-external-dbs.yml
+        config:
+          params:
+            ERT_VERSION: *ert_version
+            OPSMAN_VERSION: *om_version
+      - task: configure-external-file-storage
+        tags: [aws]
+        file: p-runtime/ci/jobs/configure-external-file-storage.yml
+        config:
+          params:
+            ERT_VERSION: *ert_version
             OPSMAN_VERSION: *om_version
 
 
