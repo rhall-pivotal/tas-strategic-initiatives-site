@@ -31,7 +31,6 @@ jobs:
         tags: ["vsphere"]
         garden:
           forward_address: 127.0.0.1:7777
-          btrfs_store_size_mb: 70000
         tsa:
           host_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCwXiUB8Qd2BdWZmm9imfYznzH2dQY0Y0HYsVXwNnBQHPoGq8mZb13Ze2WDTMsKpQpBRVXSemy8DECVEZeqxTwatVPxbi5q06q+jTughUewJzQH1ztUd9MBVoPpwu55ws80/KwkmHMjHPUgzA8fSlPkemmH52iiilLuQPiFpQiCP2Rrg904y/GZ1+PK8Kym9uu8Bfd5cg2NyzOBfIefzHWwG/M9UxZ0CHRsr3EY5dC7KXlVyBmte+f09vIpEt4vGHCuO8p3CfqRIHKC/S+AfXVlvdA2dF23cLfyAUsnnHgS7eqFqcHyUZRI8U2h2wv58jkmRUhE1n8rw6Xlbu95N5c0f4NkrwSX3jVp5H0nWBO3M4aZYfKwu3VnY3mgcdkgI6p3rMs0+BOd9NfSD5Wp/bqQEjf8dWDAME+VXRLAiCpb59OBHikLOkAevz3sp4Nl9HBAvvWks8kpwT3q4EAYgON6dXGgCPOD5eqhyiO9xXfSuRX/BawEmQN7oeXvlW4PHCq4uZxohvXxglJT0fFTWqvhH3aofQVP4BUhg9GnMj1Teijrj10sit0QWwOicDznPWmXvHqEPS8lrh0YXBuJliSylAMXPHSGMehdHNT+m8+j0XsGbU6T6Z0XKSjRbCZtAaP+hHBF/1Y9YF4BXnvC7MJZA75xx7NEz9UZtwSKWMffQw=="
           host: releng.ci.cf-app.com
@@ -92,6 +91,7 @@ jobs:
         listen_address: 0.0.0.0:7777
         allow_host_access: true
         default_container_grace_time: 30m
+        btrfs_store_size_mb: 50000
 
 resource_pools:
   - name: workers
