@@ -19,11 +19,13 @@ jobs:
         trigger: true
         passed: [claim-environment-vcloud-upgrade]
       - task: delete-installation
+        tags: [vcloud]
         file: p-runtime/ci/jobs/delete-installation.yml
         config:
           params:
             OPSMAN_VERSION: &om_version 1.5
       - task: destroy
+        tags: [vcloud]
         file: p-runtime/ci/jobs/destroy-environment.yml
 
   - name: deploy-ops-manager-initial-vcloud-upgrade
@@ -39,8 +41,10 @@ jobs:
         - get: ops-manager
           resource: initial-ops-manager-vcloud
         - task: prepare
+          tags: [vcloud]
           file: p-runtime/ci/jobs/prepare-environment.yml
       - task: deploy
+        tags: [vcloud]
         file: p-runtime/ci/jobs/deploy-opsman.yml
 
   - name: configure-microbosh-initial-vcloud-upgrade
@@ -53,6 +57,7 @@ jobs:
         trigger: true
         passed: [deploy-ops-manager-initial-vcloud-upgrade]
       - task: configure
+        tags: [vcloud]
         file: p-runtime/ci/jobs/configure-microbosh.yml
         config:
           params:
@@ -68,6 +73,7 @@ jobs:
         trigger: true
         passed: [configure-microbosh-initial-vcloud-upgrade]
       - task: deploy
+        tags: [vcloud]
         file: p-runtime/ci/jobs/deploy-microbosh.yml
         config:
           params:
@@ -86,6 +92,7 @@ jobs:
         resource: initial-ert-product
         trigger: true
       - task: upload
+        tags: [vcloud]
         file: p-runtime/ci/jobs/upload-pivotal.yml
         config:
           params:
@@ -101,6 +108,7 @@ jobs:
         trigger: true
         passed: [upload-pivotal-initial-vcloud-upgrade]
       - task: configure-ert
+        tags: [vcloud]
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
@@ -117,6 +125,7 @@ jobs:
         trigger: true
         passed: [configure-ert-initial-vcloud-upgrade]
       - task: deploy-ert
+        tags: [vcloud]
         file: p-runtime/ci/jobs/deploy-ert.yml
         config:
           params:
@@ -132,6 +141,7 @@ jobs:
         trigger: true
         passed: [deploy-ert-initial-vcloud-upgrade]
       - task: export-installation
+        tags: [vcloud]
         file: p-runtime/ci/jobs/export-installation.yml
         config:
           params:
@@ -150,6 +160,7 @@ jobs:
         trigger: true
         passed: [export-installation-vcloud-upgrade]
       - task: destroy-opsman-vcloud-upgrade
+        tags: [vcloud]
         file: p-runtime/ci/jobs/destroy-opsman.yml
 
   - name: deploy-opsman-vcloud-upgrade
@@ -165,6 +176,7 @@ jobs:
         - get: ops-manager
           resource: ops-manager-stable-vcloud
       - task: deploy
+        tags: [vcloud]
         file: p-runtime/ci/jobs/deploy-opsman.yml
 
   - name: import-installation-vcloud-upgrade
@@ -181,6 +193,7 @@ jobs:
         trigger: true
         passed: [export-installation-vcloud-upgrade]
       - task: import-installation
+        tags: [vcloud]
         file: p-runtime/ci/jobs/import-installation.yml
         config:
           params:
@@ -200,6 +213,7 @@ jobs:
           trigger: true
           passed: [build-runtime]
       - task: upgrade-pivotal-vcloud
+        tags: [vcloud]
         file: p-runtime/ci/jobs/upgrade-pivotal.yml
         config:
           params:
@@ -215,6 +229,7 @@ jobs:
         trigger: true
         passed: [upgrade-pivotal-vcloud-upgrade]
       - task: configure-ert-vcloud
+        tags: [vcloud]
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
@@ -231,6 +246,7 @@ jobs:
         trigger: true
         passed: [configure-ert-vcloud-upgrade]
       - task: deploy-ert
+        tags: [vcloud]
         file: p-runtime/ci/jobs/deploy-ert.yml
         config:
           params:
@@ -246,6 +262,7 @@ jobs:
         trigger: true
         passed: [deploy-ert-vcloud-upgrade]
       - task: run-cats
+        tags: [vcloud]
         file: p-runtime/ci/jobs/run-cats.yml
 
   - name: release-environment-vcloud-upgrade
