@@ -230,6 +230,26 @@ resources:
       private: true
       versioned_file: stemcells/1.5.1/vsphere/bosh-stemcell-3012-vsphere-esxi-ubuntu-trusty-go_agent.tgz
 
+  - name: stemcell-1.5.1-vcloud
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: stemcells/1.5.1/vcloud/bosh-stemcell-3012-vcloud-esxi-ubuntu-trusty-go_agent.tgz
+
+  - name: stemcell-1.5.1-aws
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: stemcells/1.5.1/aws/light-bosh-stemcell-3012-aws-xen-hvm-ubuntu-trusty-go_agent.tgz
+
 jobs:
   - name: kickoff
     plan:
@@ -267,6 +287,7 @@ groups:
     - deploy-microbosh-aws-clean
     - upload-pivotal-aws-clean
     - configure-ert-aws-clean
+    - import-stemcell-aws-clean
     - deploy-ert-aws-clean
     - run-cats-aws-clean
     - release-environment-aws-clean
@@ -294,6 +315,7 @@ groups:
     - deploy-microbosh-internetless
     - upload-pivotal-internetless
     - configure-ert-internetless
+    - import-stemcell-internetless
     - deploy-ert-internetless
     - run-cats-internetless
     - release-environment-internetless
@@ -314,6 +336,7 @@ groups:
     - import-installation-aws-upgrade
     - upgrade-pivotal-aws-upgrade
     - configure-ert-aws-upgrade
+    - import-stemcell-aws-upgrade
     - deploy-ert-aws-upgrade
     - run-cats-aws-upgrade
     - release-environment-aws-upgrade
@@ -334,6 +357,7 @@ groups:
     - import-installation-vsphere-upgrade
     - upgrade-pivotal-vsphere-upgrade
     - configure-ert-vsphere-upgrade
+    - import-stemcell-vsphere-upgrade
     - deploy-ert-vsphere-upgrade
     - run-cats-vsphere-upgrade
     - release-environment-vsphere-upgrade
@@ -354,6 +378,7 @@ groups:
     - import-installation-vcloud-upgrade
     - upgrade-pivotal-vcloud-upgrade
     - configure-ert-vcloud-upgrade
+    - import-stemcell-vcloud-upgrade
     - deploy-ert-vcloud-upgrade
     - run-cats-vcloud-upgrade
     - release-environment-vcloud-upgrade

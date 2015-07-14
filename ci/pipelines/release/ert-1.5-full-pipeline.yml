@@ -320,6 +320,24 @@ resources:
     region_name: us-west-1
     private: true
     versioned_file: stemcells/1.5.1/vsphere/bosh-stemcell-3012-vsphere-esxi-ubuntu-trusty-go_agent.tgz
+- name: stemcell-1.5.1-vcloud
+  type: s3
+  source:
+    access_key_id: AKIAI43577ARGHXPWIMQ
+    secret_access_key: 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
+    bucket: ert-concourse-products
+    region_name: us-west-1
+    private: true
+    versioned_file: stemcells/1.5.1/vcloud/bosh-stemcell-3012-vcloud-esxi-ubuntu-trusty-go_agent.tgz
+- name: stemcell-1.5.1-aws
+  type: s3
+  source:
+    access_key_id: AKIAI43577ARGHXPWIMQ
+    secret_access_key: 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
+    bucket: ert-concourse-products
+    region_name: us-west-1
+    private: true
+    versioned_file: stemcells/1.5.1/aws/light-bosh-stemcell-3012-aws-xen-hvm-ubuntu-trusty-go_agent.tgz
 jobs:
 - name: kickoff
   plan:
@@ -497,7 +515,7 @@ jobs:
       params:
         ERT_VERSION: 1.5
         OPSMAN_VERSION: 1.5
-- name: deploy-ert-aws-clean
+- name: import-stemcell-aws-clean
   plan:
   - get: p-runtime
     trigger: true
@@ -508,6 +526,27 @@ jobs:
     trigger: true
     passed:
     - configure-ert-aws-clean
+  - get: stemcell
+    resource: stemcell-1.5.1-aws
+  - task: import-stemcell
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
+        PRODUCT_NAME: cf
+- name: deploy-ert-aws-clean
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - import-stemcell-aws-clean
+  - get: environment
+    resource: environment-aws
+    trigger: true
+    passed:
+    - import-stemcell-aws-clean
   - task: deploy-ert
     tags:
     - aws
@@ -860,7 +899,7 @@ jobs:
       params:
         ERT_VERSION: 1.5
         OPSMAN_VERSION: 1.5
-- name: deploy-ert-internetless
+- name: import-stemcell-internetless
   plan:
   - get: p-runtime
     trigger: true
@@ -871,6 +910,27 @@ jobs:
     trigger: true
     passed:
     - configure-ert-internetless
+  - get: stemcell
+    resource: stemcell-1.5.1-vsphere
+  - task: import-stemcell
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
+        PRODUCT_NAME: cf
+- name: deploy-ert-internetless
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - import-stemcell-internetless
+  - get: environment
+    resource: environment-internetless
+    trigger: true
+    passed:
+    - import-stemcell-internetless
   - task: deploy-ert
     tags:
     - vsphere
@@ -1187,7 +1247,7 @@ jobs:
       params:
         ERT_VERSION: 1.5
         OPSMAN_VERSION: 1.5
-- name: deploy-ert-aws-upgrade
+- name: import-stemcell-aws-upgrade
   plan:
   - get: p-runtime
     trigger: true
@@ -1198,6 +1258,27 @@ jobs:
     trigger: true
     passed:
     - configure-ert-aws-upgrade
+  - get: stemcell
+    resource: stemcell-1.5.1-aws
+  - task: import-stemcell
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
+        PRODUCT_NAME: cf
+- name: deploy-ert-aws-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - import-stemcell-aws-upgrade
+  - get: environment
+    resource: environment-aws-east
+    trigger: true
+    passed:
+    - import-stemcell-aws-upgrade
   - task: deploy-ert
     tags:
     - aws
@@ -1493,7 +1574,7 @@ jobs:
       params:
         ERT_VERSION: 1.5
         OPSMAN_VERSION: 1.5
-- name: deploy-ert-vsphere-upgrade
+- name: import-stemcell-vsphere-upgrade
   plan:
   - get: p-runtime
     trigger: true
@@ -1504,6 +1585,27 @@ jobs:
     trigger: true
     passed:
     - configure-ert-vsphere-upgrade
+  - get: stemcell
+    resource: stemcell-1.5.1-vsphere
+  - task: import-stemcell
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
+        PRODUCT_NAME: cf
+- name: deploy-ert-vsphere-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - import-stemcell-vsphere-upgrade
+  - get: environment
+    resource: environment-vsphere
+    trigger: true
+    passed:
+    - import-stemcell-vsphere-upgrade
   - task: deploy-ert
     tags:
     - vsphere
@@ -1807,7 +1909,7 @@ jobs:
       params:
         ERT_VERSION: 1.5
         OPSMAN_VERSION: 1.5
-- name: deploy-ert-vcloud-upgrade
+- name: import-stemcell-vcloud-upgrade
   plan:
   - get: p-runtime
     trigger: true
@@ -1818,6 +1920,27 @@ jobs:
     trigger: true
     passed:
     - configure-ert-vcloud-upgrade
+  - get: stemcell
+    resource: stemcell-1.5.1-vcloud
+  - task: import-stemcell
+    tags:
+    - vcloud
+    file: p-runtime/ci/jobs/import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
+        PRODUCT_NAME: cf
+- name: deploy-ert-vcloud-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - import-stemcell-vcloud-upgrade
+  - get: environment
+    resource: environment-vcloud
+    trigger: true
+    passed:
+    - import-stemcell-vcloud-upgrade
   - task: deploy-ert
     tags:
     - vcloud
@@ -1862,6 +1985,7 @@ groups:
   - deploy-microbosh-aws-clean
   - upload-pivotal-aws-clean
   - configure-ert-aws-clean
+  - import-stemcell-aws-clean
   - deploy-ert-aws-clean
   - run-cats-aws-clean
   - release-environment-aws-clean
@@ -1887,6 +2011,7 @@ groups:
   - deploy-microbosh-internetless
   - upload-pivotal-internetless
   - configure-ert-internetless
+  - import-stemcell-internetless
   - deploy-ert-internetless
   - run-cats-internetless
   - release-environment-internetless
@@ -1906,6 +2031,7 @@ groups:
   - import-installation-aws-upgrade
   - upgrade-pivotal-aws-upgrade
   - configure-ert-aws-upgrade
+  - import-stemcell-aws-upgrade
   - deploy-ert-aws-upgrade
   - run-cats-aws-upgrade
   - release-environment-aws-upgrade
@@ -1925,6 +2051,7 @@ groups:
   - import-installation-vsphere-upgrade
   - upgrade-pivotal-vsphere-upgrade
   - configure-ert-vsphere-upgrade
+  - import-stemcell-vsphere-upgrade
   - deploy-ert-vsphere-upgrade
   - run-cats-vsphere-upgrade
   - release-environment-vsphere-upgrade
@@ -1944,6 +2071,7 @@ groups:
   - import-installation-vcloud-upgrade
   - upgrade-pivotal-vcloud-upgrade
   - configure-ert-vcloud-upgrade
+  - import-stemcell-vcloud-upgrade
   - deploy-ert-vcloud-upgrade
   - run-cats-vcloud-upgrade
   - release-environment-vcloud-upgrade
