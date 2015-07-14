@@ -311,6 +311,15 @@ resources:
     region_name: us-west-1
     private: true
     versioned_file: exported_installations/master/vcloud/installation.zip
+- name: stemcell-1.5.1-vsphere
+  type: s3
+  source:
+    access_key_id: AKIAI43577ARGHXPWIMQ
+    secret_access_key: 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
+    bucket: ert-concourse-products
+    region_name: us-west-1
+    private: true
+    versioned_file: stemcells/1.5.1/vsphere/bosh-stemcell-3012-vsphere-esxi-ubuntu-trusty-go_agent.tgz
 jobs:
 - name: kickoff
   plan:
@@ -659,7 +668,7 @@ jobs:
       params:
         ERT_VERSION: 1.5
         OPSMAN_VERSION: 1.5
-- name: deploy-ert-vsphere-clean
+- name: import-stemcell-vsphere-clean
   plan:
   - get: p-runtime
     trigger: true
@@ -670,6 +679,27 @@ jobs:
     trigger: true
     passed:
     - configure-ert-vsphere-clean
+  - get: stemcell
+    resource: stemcell-1.5.1-vsphere
+  - task: import-stemcell
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
+        PRODUCT_NAME: cf
+- name: deploy-ert-vsphere-clean
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - import-stemcell-vsphere-clean
+  - get: environment
+    resource: environment-vsphere
+    trigger: true
+    passed:
+    - import-stemcell-vsphere-clean
   - task: deploy-ert
     tags:
     - vsphere
@@ -1844,6 +1874,7 @@ groups:
   - deploy-microbosh-vsphere-clean
   - upload-pivotal-vsphere-clean
   - configure-ert-vsphere-clean
+  - import-stemcell-vsphere-clean
   - deploy-ert-vsphere-clean
   - run-cats-vsphere-clean
   - release-environment-vsphere-clean

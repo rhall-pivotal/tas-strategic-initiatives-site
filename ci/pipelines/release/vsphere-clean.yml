@@ -109,7 +109,7 @@ jobs:
             OPSMAN_VERSION: *om_version
 
 
-  - name: deploy-ert-vsphere-clean
+  - name: import-stemcell-vsphere-clean
     plan:
       - get: p-runtime
         trigger: true
@@ -118,6 +118,25 @@ jobs:
         resource: environment-vsphere
         trigger: true
         passed: [configure-ert-vsphere-clean]
+      - get: stemcell
+        resource: stemcell-1.5.1-vsphere
+      - task: import-stemcell
+        tags: [vsphere]
+        file: p-runtime/ci/jobs/import-stemcell.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+            PRODUCT_NAME: cf
+
+  - name: deploy-ert-vsphere-clean
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [import-stemcell-vsphere-clean]
+      - get: environment
+        resource: environment-vsphere
+        trigger: true
+        passed: [import-stemcell-vsphere-clean]
       - task: deploy-ert
         tags: [vsphere]
         file: p-runtime/ci/jobs/deploy-ert.yml
