@@ -3,7 +3,7 @@
 set -ex
 
 export RELENG_ENV=`cat environment/name`
-export STEMCELL_PATH=$PWD/stemcell/*bosh-stemcell-*.tgz
+export STEMCELL_PATH=`echo $PWD/stemcell/*bosh-stemcell-*.tgz`
 
 pushd p-runtime
   ./ci/scripts/helpers/bundle-gems.sh
