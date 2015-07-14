@@ -1,6 +1,6 @@
 require 'opsmgr/ui_helpers/config_helper'
 
-RSpec.describe 'Configure Elastic Runtime 1.4.X External Databases', order: :defined do
+RSpec.describe 'Configure Elastic Runtime 1.6.X External Databases', order: :defined do
   let(:current_ops_manager) { ops_manager_driver }
   let(:env_settings) { fetch_environment_settings }
 
@@ -40,7 +40,7 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X External Databases', order: :def
     database_form.save_form
   end
 
-  it 'scales down internal databases to zero' do
+  it 'scales down internal resources to zero' do
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings.name)
     resource_config.set_instances_for_job('uaadb', 0)
     resource_config.set_instances_for_job('ccdb', 0)
