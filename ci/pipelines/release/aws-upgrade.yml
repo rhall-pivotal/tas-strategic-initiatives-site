@@ -216,7 +216,7 @@ jobs:
       - aggregate:
         - get: p-runtime
           trigger: true
-          passed: [import-installation-aws-upgrade]
+          passed: [build-runtime, import-installation-aws-upgrade]
         - get: environment
           resource: environment-aws-east
           trigger: true
@@ -248,7 +248,7 @@ jobs:
             ERT_VERSION: 1.5
             OPSMAN_VERSION: *om_version
 
-  - name: deploy-ert-aws-upgrade
+  - name: import-stemcell-aws-upgrade
     plan:
       - get: p-runtime
         trigger: true
@@ -257,6 +257,25 @@ jobs:
         resource: environment-aws-east
         trigger: true
         passed: [configure-ert-aws-upgrade]
+      - get: stemcell
+        resource: stemcell-1.5.1-aws
+      - task: import-stemcell
+        tags: [aws]
+        file: p-runtime/ci/jobs/import-stemcell.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+            PRODUCT_NAME: cf
+
+  - name: deploy-ert-aws-upgrade
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [import-stemcell-aws-upgrade]
+      - get: environment
+        resource: environment-aws-east
+        trigger: true
+        passed: [import-stemcell-aws-upgrade]
       - task: deploy-ert
         tags: [aws]
         file: p-runtime/ci/jobs/deploy-ert.yml

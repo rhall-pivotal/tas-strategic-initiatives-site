@@ -1,0 +1,16 @@
+---
+platform: linux
+
+image: docker:///cloudfoundry/releng-ci
+
+inputs:
+  - name: p-runtime
+  - name: stemcell
+  - name: environment
+
+params:
+  OPSMAN_VERSION:
+  PRODUCT_NAME:
+
+run:
+  path: p-runtime/ci/scripts/import-stemcell

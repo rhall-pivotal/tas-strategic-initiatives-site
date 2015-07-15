@@ -7,5 +7,5 @@ export RELENG_ENV=`cat environment/name`
 pushd p-runtime
   ./ci/scripts/helpers/bundle-gems.sh
 
-  bundle exec rake ert:create_aws_dbs[$RELENG_ENV]
+  xvfb-run -a bundle exec rake opsmgr:delete_installation[$RELENG_ENV,$OPSMAN_VERSION]
 popd
