@@ -198,7 +198,7 @@ jobs:
       - aggregate:
         - get: p-runtime
           trigger: true
-          passed: [import-installation-vsphere-upgrade]
+          passed: [build-runtime, import-installation-vsphere-upgrade]
         - get: environment
           resource: environment-vsphere
           trigger: true

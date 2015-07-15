@@ -216,7 +216,7 @@ jobs:
       - aggregate:
         - get: p-runtime
           trigger: true
-          passed: [import-installation-aws-upgrade]
+          passed: [build-runtime, import-installation-aws-upgrade]
         - get: environment
           resource: environment-aws-east
           trigger: true

@@ -1211,6 +1211,7 @@ jobs:
     - get: p-runtime
       trigger: true
       passed:
+      - build-runtime
       - import-installation-aws-upgrade
     - get: environment
       resource: environment-aws-east
@@ -1538,6 +1539,7 @@ jobs:
     - get: p-runtime
       trigger: true
       passed:
+      - build-runtime
       - import-installation-vsphere-upgrade
     - get: environment
       resource: environment-vsphere
@@ -1873,6 +1875,7 @@ jobs:
     - get: p-runtime
       trigger: true
       passed:
+      - build-runtime
       - import-installation-vcloud-upgrade
     - get: environment
       resource: environment-vcloud
