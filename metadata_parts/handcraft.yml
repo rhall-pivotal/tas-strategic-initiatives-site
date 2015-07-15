@@ -92,7 +92,7 @@ post_deploy_errands:
 form_types:
   - name: system_database
     label: System Database Config
-    description: Select internal if you want to keep using the system-provided databases. Otherwise, select external if you want to use your own database service, such as the Amazon Relational Database Service (RDS), to host the system-required databases, in which case you will need to create the database schemas. Consult Pivotal Cloud Foundry documentation for schema requirements.
+    description: Select the database configuration that fits your installation
     verifiers:
       - name: Verifiers::MysqlDatabaseVerifier
         properties:
@@ -141,11 +141,11 @@ form_types:
       label: System Database Config
       selector_property_inputs:
       - reference: .properties.system_database.internal
-        label: Internal Databases
-        description:
+        label: Internal Databases using MySQL and Postgres (required for Pivotal Elastic Runtime deployments upgraded from pre-1.6 versions that used internal databases)
+      - reference: .properties.system_database.internal_mysql
+        label: Internal Databases using only MySQL (preferred over the above option if this is a new installation of Pivotal Elastic Runtime)
       - reference: .properties.system_database.external
-        label: External Databases
-        description:
+        label: External Databases (optional for installations that can use an external RDS)
         property_inputs:
           - reference: .properties.system_database.external.host
             label: Hostname DNS Name
@@ -3038,6 +3038,12 @@ job_types:
         max_connections: 1500
         network_name: default
         seeded_databases:
+          - name: ccdb
+            username: (( .ccdb.credentials.identity ))
+            password: (( .ccdb.credentials.password ))
+          - name: uaa
+            username: (( .uaadb.credentials.identity ))
+            password: (( .uaadb.credentials.password ))
           - name: app_usage_service
             username: (( app_usage_credentials.identity ))
             password: (( app_usage_credentials.password ))
@@ -3047,6 +3053,9 @@ job_types:
           - name: autoscale
             username: (( autoscale_credentials.identity ))
             password: (( autoscale_credentials.password ))
+          - name: console
+            username: (( .consoledb.credentials.identity ))
+            password: (( .consoledb.credentials.password ))
         syslog_aggregator:
           address: (( .properties.syslog_host.value ))
           port: (( .properties.syslog_port.value ))
@@ -4577,7 +4586,7 @@ property_blueprints:
   - name: system_database
     type: selector
     configurable: true
-    default: internal
+    default: internal_mysql
     option_templates:
       - name: internal
         select_value: internal
@@ -4627,6 +4636,55 @@ property_blueprints:
               ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
               username: (( .mysql.app_usage_credentials.identity ))
               password: (( .mysql.app_usage_credentials.password ))
+
+      - name: internal_mysql
+        select_value: internal_mysql
+        named_manifests:
+        - name: ccdb
+          manifest: |
+            address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            port: 3306
+            db_scheme: mysql
+            roles:
+            - tag: admin
+              name: (( .ccdb.credentials.identity ))
+              password: (( .ccdb.credentials.password ))
+            databases:
+            - tag: cc
+              name: ccdb
+              citext: true
+        - name: uaadb
+          manifest: |
+            address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            port: 3306
+            db_scheme: mysql
+            roles:
+            - tag: admin
+              name: (( .uaadb.credentials.identity ))
+              password: (( .uaadb.credentials.password ))
+            databases:
+            - tag: uaa
+              name: uaa
+        - name: notifications
+          manifest: |
+            url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
+            max_open_connections: 10
+        - name: autoscaling
+          manifest: |
+            url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
+        - name: push-app-usage-service
+          manifest: |
+            name: app_usage_service
+            port: 3306
+            ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            username: (( .mysql.app_usage_credentials.identity ))
+            password: (( .mysql.app_usage_credentials.password ))
+        - name: console
+          manifest: |
+            ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            username: (( .consoledb.credentials.identity ))
+            password: (( .consoledb.credentials.password ))
+            adapter: mysql
 
       - name: external
         named_manifests:
