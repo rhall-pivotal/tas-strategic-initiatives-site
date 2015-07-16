@@ -459,6 +459,7 @@ job_types:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -532,6 +533,7 @@ job_types:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -619,6 +621,7 @@ job_types:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -707,6 +710,7 @@ job_types:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -803,6 +807,7 @@ job_types:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -901,6 +906,7 @@ job_types:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -999,6 +1005,7 @@ job_types:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1244,6 +1251,8 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
+      doppler:
+        port: (( .properties.logger_endpoint_port.value || "443" ))
       metron_endpoint:
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
@@ -1260,6 +1269,7 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -1366,6 +1376,7 @@ job_types:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1471,6 +1482,7 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -1568,6 +1580,7 @@ job_types:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -1718,6 +1731,7 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -1873,6 +1887,7 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -1961,6 +1976,7 @@ job_types:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -2372,6 +2388,7 @@ job_types:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -2654,6 +2671,7 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -2757,6 +2775,7 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
 
@@ -2862,6 +2881,7 @@ job_types:
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
+        deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
       doppler:
