@@ -17,11 +17,15 @@ if [ "$USE_ERT_DUMMY" == "true" ]; then
 
 else
 
+  if [ "$EXTERNAL_RELEASE" != "" ]; then
+    $external_release_metadata = $PWD/$EXTERNAL_RELEASE
+  fi
+
   pushd p-runtime
     ./ci/scripts/helpers/bundle-gems.sh
 
     cat ./metadata_parts/binaries.yml
-    bundle exec vara build-pivotal .
+    bundle exec vara build-pivotal . --external-releases=$external_release_metadata
 
     # concourse streams working directory between containers
     # this won't be needed soon (#94235474, #93927268)
