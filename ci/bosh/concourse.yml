@@ -53,7 +53,7 @@ jobs:
           mode: server
 
   - name: web
-    instances: 3
+    instances: 1
     resource_pool: web
     templates:
       - {release: concourse, name: consul-agent}
