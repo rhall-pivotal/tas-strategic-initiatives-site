@@ -18,7 +18,7 @@ if [ "$USE_ERT_DUMMY" == "true" ]; then
 else
 
   if [ "$EXTERNAL_RELEASE" != "" ]; then
-    $external_release_metadata = $PWD/$EXTERNAL_RELEASE
+    external_release_metadata="$PWD/$EXTERNAL_RELEASE"
   fi
 
   pushd p-runtime
