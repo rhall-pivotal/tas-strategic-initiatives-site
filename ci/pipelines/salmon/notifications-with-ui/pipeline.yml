@@ -103,6 +103,8 @@ jobs:
   - name: claim-environment
     plan:
       - get: p-runtime
+      - get: upstream-release-metadata
+        trigger: true
       - put: environment
         params:
           acquire: true
@@ -174,6 +176,7 @@ jobs:
         passed: [claim-environment]
       - get: upstream-release-metadata
         trigger: true
+        passed: [claim-environment]
       - task: built-product
         tags: [aws]
         file: p-runtime/ci/jobs/build-pivotal-with-upstream-metadata.yml
