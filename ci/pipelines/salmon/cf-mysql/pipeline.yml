@@ -176,7 +176,7 @@ jobs:
         trigger: true
       - task: built-product
         tags: [aws]
-        file: p-runtime/ci/jobs/build-pivotal.yml
+        file: p-runtime/ci/jobs/build-pivotal-with-upstream-metadata.yml
         config:
           params:
             EXTERNAL_RELEASE: upstream-release-metadata/metadata.yml

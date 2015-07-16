@@ -5,8 +5,10 @@ image: docker:///cloudfoundry/releng-ci
 
 inputs:
   - name: p-runtime
+  - name: upstream-release-metadata
 
 params:
+  EXTERNAL_RELEASE:
   USE_ERT_DUMMY:
 
 run:
