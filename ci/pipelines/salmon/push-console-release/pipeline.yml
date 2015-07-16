@@ -42,7 +42,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: salmon/cf-mysql/ert.pivotal
+      versioned_file: salmon/push-console-release/ert.pivotal
 
   - name: environment
     type: pool
@@ -97,7 +97,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: upstream-release-metadata/cf-mysql/metadata.yml
+      versioned_file: upstream-release-metadata/push-console-release/metadata.yml
 
 jobs:
   - name: claim-environment
@@ -259,7 +259,7 @@ jobs:
           release: environment
 
 groups:
-  - name: salmon/cf-mysql
+  - name: salmon/push-console-release
     jobs:
     - claim-environment
     - destroy-environment
