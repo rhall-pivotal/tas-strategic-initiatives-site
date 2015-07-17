@@ -158,13 +158,26 @@ jobs:
         tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/run-cats.yml
 
-  - name: release-environment-{{pipeline_name}}
+  - name: destroy-environment-final-{{pipeline_name}}
     plan:
       - get: p-runtime
         passed: [run-cats-{{pipeline_name}}]
       - get: environment
         resource: environment-{{environment_pool}}
         passed: [run-cats-{{pipeline_name}}]
+      - task: destroy
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/destroy-environment.yml
+
+  - name: release-environment-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [destroy-environment-final-{{pipeline_name}}]
+      - get: environment
+        trigger: true
+        resource: environment-{{environment_pool}}
+        passed: [destroy-environment-final-{{pipeline_name}}]
       - put: environment-{{environment_pool}}
         params:
           release: environment

@@ -49,14 +49,15 @@ module Pipeline
     ].freeze
 
     def full_suite_pipeline
-      pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert.yml')))
+      full_pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert.yml')))
 
       PIPELINES.each do |config|
         jobs = send(config[:method], config[:params])['jobs']
-        pipeline_yaml['jobs'].concat(jobs)
+        full_pipeline_yaml['jobs'].concat(jobs)
       end
 
-      yaml = YAML.dump(pipeline_yaml)
+      yaml = YAML.dump(full_pipeline_yaml)
+
       File.write(File.join('ci', 'pipelines', 'release', 'ert-1.5.yml'), yaml)
     end
 
@@ -122,11 +123,14 @@ module Pipeline
     def add_vcloud_delete_installation_tasks(pipeline_yaml)
       extra_config = YAML.load(File.read(File.join(template_directory, 'vcloud-delete-installation.yml')))
 
-      job = pipeline_yaml['jobs'].find { |j| j['name'] =~ /destroy-environment/ }
-      index = job['plan'].find_index { |p| p['task'] == 'destroy' }
+      destroy_jobs = pipeline_yaml['jobs'].find_all { |j| j['name'] =~ /destroy-environment/ }
 
-      extra_config.each_with_index do |config, i|
-        job['plan'].insert(index + i, config)
+      destroy_jobs.each do |job|
+        index = job['plan'].find_index { |p| p['task'] == 'destroy' }
+
+        extra_config.each_with_index do |config, i|
+          job['plan'].insert(index + i, config)
+        end
       end
     end
 

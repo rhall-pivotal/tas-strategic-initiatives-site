@@ -49,6 +49,15 @@ jobs:
       - task: another-task
         tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
+  - name: destroy-environment-final-{{pipeline_name}}
+    plan:
+      - get: environment
+        resource: environment-{{environment_pool}}
+        trigger: true
+        passed: [claim-environment-{{pipeline_name}}]
+      - task: destroy
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/destroy-environment.yml
 YAML
   end
 
@@ -143,6 +152,9 @@ YAML
 
       expect(vcloud_clean_pipeline_jobs.first['plan'][1]).to eq('task' => 'some-vcloud-task', 'tags' => 'vcloud')
       expect(vcloud_clean_pipeline_jobs.first['plan'][2]).to eq('task' => 'another-vcloud-task', 'tags' => 'vcloud')
+
+      expect(vcloud_clean_pipeline_jobs[3]['plan'][1]).to eq('task' => 'some-vcloud-task', 'tags' => 'vcloud')
+      expect(vcloud_clean_pipeline_jobs[3]['plan'][2]).to eq('task' => 'another-vcloud-task', 'tags' => 'vcloud')
     end
   end
 

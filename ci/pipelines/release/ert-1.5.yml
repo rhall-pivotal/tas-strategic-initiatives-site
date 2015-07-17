@@ -569,7 +569,7 @@ jobs:
     tags:
     - aws
     file: p-runtime/ci/jobs/run-cats.yml
-- name: release-environment-aws-clean
+- name: destroy-environment-final-aws-clean
   plan:
   - get: p-runtime
     passed:
@@ -578,6 +578,21 @@ jobs:
     resource: environment-aws
     passed:
     - run-cats-aws-clean
+  - task: destroy
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-aws-clean
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - destroy-environment-final-aws-clean
+  - get: environment
+    trigger: true
+    resource: environment-aws
+    passed:
+    - destroy-environment-final-aws-clean
   - put: environment-aws
     params:
       release: environment
@@ -761,7 +776,7 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/run-cats.yml
-- name: release-environment-vsphere-clean
+- name: destroy-environment-final-vsphere-clean
   plan:
   - get: p-runtime
     passed:
@@ -770,6 +785,21 @@ jobs:
     resource: environment-vsphere
     passed:
     - run-cats-vsphere-clean
+  - task: destroy
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-vsphere-clean
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - destroy-environment-final-vsphere-clean
+  - get: environment
+    trigger: true
+    resource: environment-vsphere
+    passed:
+    - destroy-environment-final-vsphere-clean
   - put: environment-vsphere
     params:
       release: environment
@@ -953,7 +983,7 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/run-cats.yml
-- name: release-environment-internetless
+- name: destroy-environment-final-internetless
   plan:
   - get: p-runtime
     passed:
@@ -962,6 +992,21 @@ jobs:
     resource: environment-internetless
     passed:
     - run-cats-internetless
+  - task: destroy
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-internetless
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - destroy-environment-final-internetless
+  - get: environment
+    trigger: true
+    resource: environment-internetless
+    passed:
+    - destroy-environment-final-internetless
   - put: environment-internetless
     params:
       release: environment
@@ -1302,7 +1347,7 @@ jobs:
     tags:
     - aws
     file: p-runtime/ci/jobs/run-cats.yml
-- name: release-environment-aws-upgrade
+- name: destroy-environment-final-aws-upgrade
   plan:
   - get: p-runtime
     passed:
@@ -1311,6 +1356,21 @@ jobs:
     resource: environment-aws-east
     passed:
     - run-cats-aws-upgrade
+  - task: destroy
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-aws-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - destroy-environment-final-aws-upgrade
+  - get: environment
+    trigger: true
+    resource: environment-aws-east
+    passed:
+    - destroy-environment-final-aws-upgrade
   - put: environment-aws-east
     params:
       release: environment
@@ -1631,7 +1691,7 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/run-cats.yml
-- name: release-environment-vsphere-upgrade
+- name: destroy-environment-final-vsphere-upgrade
   plan:
   - get: p-runtime
     passed:
@@ -1640,6 +1700,21 @@ jobs:
     resource: environment-vsphere
     passed:
     - run-cats-vsphere-upgrade
+  - task: destroy
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-vsphere-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - destroy-environment-final-vsphere-upgrade
+  - get: environment
+    trigger: true
+    resource: environment-vsphere
+    passed:
+    - destroy-environment-final-vsphere-upgrade
   - put: environment-vsphere
     params:
       release: environment
@@ -1664,7 +1739,8 @@ jobs:
     trigger: true
     passed:
     - claim-environment-vcloud-upgrade
-  - task: delete-installation
+  - &1
+    task: delete-installation
     tags:
     - vcloud
     file: p-runtime/ci/jobs/delete-installation.yml
@@ -1967,7 +2043,7 @@ jobs:
     tags:
     - vcloud
     file: p-runtime/ci/jobs/run-cats.yml
-- name: release-environment-vcloud-upgrade
+- name: destroy-environment-final-vcloud-upgrade
   plan:
   - get: p-runtime
     passed:
@@ -1976,6 +2052,22 @@ jobs:
     resource: environment-vcloud
     passed:
     - run-cats-vcloud-upgrade
+  - *1
+  - task: destroy
+    tags:
+    - vcloud
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-vcloud-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - destroy-environment-final-vcloud-upgrade
+  - get: environment
+    trigger: true
+    resource: environment-vcloud
+    passed:
+    - destroy-environment-final-vcloud-upgrade
   - put: environment-vcloud
     params:
       release: environment
@@ -1992,6 +2084,7 @@ groups:
   - import-stemcell-aws-clean
   - deploy-ert-aws-clean
   - run-cats-aws-clean
+  - destroy-environment-final-aws-clean
   - release-environment-aws-clean
 - name: vsphere-clean
   jobs:
@@ -2005,6 +2098,7 @@ groups:
   - import-stemcell-vsphere-clean
   - deploy-ert-vsphere-clean
   - run-cats-vsphere-clean
+  - destroy-environment-final-vsphere-clean
   - release-environment-vsphere-clean
 - name: vsphere-internetless
   jobs:
@@ -2018,6 +2112,7 @@ groups:
   - import-stemcell-internetless
   - deploy-ert-internetless
   - run-cats-internetless
+  - destroy-environment-final-internetless
   - release-environment-internetless
 - name: aws-upgrade
   jobs:
@@ -2038,6 +2133,7 @@ groups:
   - import-stemcell-aws-upgrade
   - deploy-ert-aws-upgrade
   - run-cats-aws-upgrade
+  - destroy-environment-final-aws-upgrade
   - release-environment-aws-upgrade
 - name: vsphere-upgrade
   jobs:
@@ -2058,6 +2154,7 @@ groups:
   - import-stemcell-vsphere-upgrade
   - deploy-ert-vsphere-upgrade
   - run-cats-vsphere-upgrade
+  - destroy-environment-final-vsphere-upgrade
   - release-environment-vsphere-upgrade
 - name: vcloud-upgrade
   jobs:
@@ -2078,6 +2175,7 @@ groups:
   - import-stemcell-vcloud-upgrade
   - deploy-ert-vcloud-upgrade
   - run-cats-vcloud-upgrade
+  - destroy-environment-final-vcloud-upgrade
   - release-environment-vcloud-upgrade
 - name: common
   jobs:
