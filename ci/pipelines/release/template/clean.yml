@@ -1,169 +1,170 @@
 jobs:
-  - name: claim-environment-vsphere-clean
+  - name: claim-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
         trigger: true
         passed: [kickoff]
       - put: environment
-        resource: environment-vsphere
+        resource: environment-{{environment_pool}}
         params:
           acquire: true
 
-  - name: destroy-environment-vsphere-clean
+  - name: destroy-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
         trigger: true
-        passed: [claim-environment-vsphere-clean]
+        passed: [claim-environment-{{pipeline_name}}]
       - get: environment
-        resource: environment-vsphere
+        resource: environment-{{environment_pool}}
         trigger: true
-        passed: [claim-environment-vsphere-clean]
+        passed: [claim-environment-{{pipeline_name}}]
       - task: destroy
-        tags: [vsphere]
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/destroy-environment.yml
 
-  - name: deploy-ops-manager-vsphere-clean
+  - name: deploy-ops-manager-{{pipeline_name}}
     plan:
       - get: p-runtime
         trigger: true
-        passed: [destroy-environment-vsphere-clean]
+        passed: [destroy-environment-{{pipeline_name}}]
       - get: environment
-        resource: environment-vsphere
+        resource: environment-{{environment_pool}}
         trigger: true
-        passed: [destroy-environment-vsphere-clean]
+        passed: [destroy-environment-{{pipeline_name}}]
       - aggregate:
         - get: ops-manager
-          resource: ops-manager-stable-vsphere
+          resource: ops-manager-stable-{{iaas_type}}
         - task: prepare
-          tags: [vsphere]
+          tags: [{{iaas_type}}]
           file: p-runtime/ci/jobs/prepare-environment.yml
       - task: deploy
-        tags: [vsphere]
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/deploy-opsman.yml
-  - name: configure-microbosh-vsphere-clean
+
+  - name: configure-microbosh-{{pipeline_name}}
     plan:
       - get: p-runtime
         trigger: true
-        passed: [deploy-ops-manager-vsphere-clean]
+        passed: [deploy-ops-manager-{{pipeline_name}}]
       - get: environment
-        resource: environment-vsphere
+        resource: environment-{{environment_pool}}
         trigger: true
-        passed: [deploy-ops-manager-vsphere-clean]
+        passed: [deploy-ops-manager-{{pipeline_name}}]
       - task: configure
-        tags: [vsphere]
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/configure-microbosh.yml
         config:
           params:
             OPSMAN_VERSION: &om_version 1.5
-  - name: deploy-microbosh-vsphere-clean
+
+  - name: deploy-microbosh-{{pipeline_name}}
     plan:
       - get: p-runtime
         trigger: true
-        passed: [configure-microbosh-vsphere-clean]
+        passed: [configure-microbosh-{{pipeline_name}}]
       - get: environment
-        resource: environment-vsphere
+        resource: environment-{{environment_pool}}
         trigger: true
-        passed: [configure-microbosh-vsphere-clean]
+        passed: [configure-microbosh-{{pipeline_name}}]
       - task: deploy
-        tags: [vsphere]
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/deploy-microbosh.yml
         config:
           params:
             OPSMAN_VERSION: *om_version
-  - name: upload-pivotal-vsphere-clean
+
+  - name: upload-pivotal-{{pipeline_name}}
     plan:
       - aggregate:
         - get: p-runtime
           trigger: true
-          passed: [build-runtime, deploy-microbosh-vsphere-clean]
+          passed: [build-runtime, deploy-microbosh-{{pipeline_name}}]
         - get: environment
-          resource: environment-vsphere
+          resource: environment-{{environment_pool}}
           trigger: true
-          passed: [deploy-microbosh-vsphere-clean]
+          passed: [deploy-microbosh-{{pipeline_name}}]
         - get: ert-product
           trigger: true
           passed: [build-runtime]
       - task: upload-pivotal
-        tags: [vsphere]
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/upload-pivotal.yml
         config:
           params:
             OPSMAN_VERSION: *om_version
 
-
-  - name: configure-ert-vsphere-clean
+  - name: configure-ert-{{pipeline_name}}
     plan:
       - get: p-runtime
         trigger: true
-        passed: [upload-pivotal-vsphere-clean]
+        passed: [upload-pivotal-{{pipeline_name}}]
       - get: environment
-        resource: environment-vsphere
+        resource: environment-{{environment_pool}}
         trigger: true
-        passed: [upload-pivotal-vsphere-clean]
+        passed: [upload-pivotal-{{pipeline_name}}]
       - task: configure-ert
-        tags: [vsphere]
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
             ERT_VERSION: 1.5
             OPSMAN_VERSION: *om_version
 
-
-  - name: import-stemcell-vsphere-clean
+  - name: import-stemcell-{{pipeline_name}}
     plan:
       - get: p-runtime
         trigger: true
-        passed: [configure-ert-vsphere-clean]
+        passed: [configure-ert-{{pipeline_name}}]
       - get: environment
-        resource: environment-vsphere
+        resource: environment-{{environment_pool}}
         trigger: true
-        passed: [configure-ert-vsphere-clean]
+        passed: [configure-ert-{{pipeline_name}}]
       - get: stemcell
-        resource: stemcell-1.5.1-vsphere
+        resource: stemcell-1.5.1-{{iaas_type}}
       - task: import-stemcell
-        tags: [vsphere]
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/import-stemcell.yml
         config:
           params:
             OPSMAN_VERSION: *om_version
             PRODUCT_NAME: cf
 
-  - name: deploy-ert-vsphere-clean
+  - name: deploy-ert-{{pipeline_name}}
     plan:
       - get: p-runtime
         trigger: true
-        passed: [import-stemcell-vsphere-clean]
+        passed: [import-stemcell-{{pipeline_name}}]
       - get: environment
-        resource: environment-vsphere
+        resource: environment-{{environment_pool}}
         trigger: true
-        passed: [import-stemcell-vsphere-clean]
+        passed: [import-stemcell-{{pipeline_name}}]
       - task: deploy-ert
-        tags: [vsphere]
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/deploy-ert.yml
         config:
           params:
             OPSMAN_VERSION: *om_version
 
-  - name: run-cats-vsphere-clean
+  - name: run-cats-{{pipeline_name}}
     plan:
       - get: p-runtime
         trigger: true
-        passed: [deploy-ert-vsphere-clean]
+        passed: [deploy-ert-{{pipeline_name}}]
       - get: environment
-        resource: environment-vsphere
+        resource: environment-{{environment_pool}}
         trigger: true
-        passed: [deploy-ert-vsphere-clean]
+        passed: [deploy-ert-{{pipeline_name}}]
       - task: run-cats
-        tags: [vsphere]
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/run-cats.yml
 
-  - name: release-environment-vsphere-clean
+  - name: release-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
-        passed: [run-cats-vsphere-clean]
+        passed: [run-cats-{{pipeline_name}}]
       - get: environment
-        resource: environment-vsphere
-        passed: [run-cats-vsphere-clean]
-      - put: environment-vsphere
+        resource: environment-{{environment_pool}}
+        passed: [run-cats-{{pipeline_name}}]
+      - put: environment-{{environment_pool}}
         params:
           release: environment

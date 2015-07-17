@@ -78,6 +78,12 @@ namespace :ert do
   end
 
   namespace :pipeline do
+    desc 'create full pipeline'
+    task :create_full_pipeline do |_, _|
+      require 'pipeline/full_suite_pipeline_creator'
+      Pipeline::FullSuitePipelineCreator.new.full_suite_pipeline
+    end
+
     desc 'create a feature pipeline'
     task :create_feature_pipeline, [:branch_name, :iaas_type] do |_, args|
       require 'pipeline/feature_pipeline_creator'
