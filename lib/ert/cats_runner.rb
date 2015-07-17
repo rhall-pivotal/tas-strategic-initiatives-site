@@ -5,9 +5,10 @@ require 'net/ssh/gateway'
 
 module Ert
   class CatsRunner
-    def initialize(environment_name:, logger:)
+    def initialize(environment_name:, om_version:, logger:)
       @environment = Opsmgr::Environments.for(environment_name)
       @logger = logger
+      @om_version = om_version
     end
 
     def run_cats
@@ -96,7 +97,10 @@ module Ert
     end
 
     def bosh_command
-      @bosh_command ||= Opsmgr::Cmd::BoshCommand.build(environment)
+      @bosh_command ||= Opsmgr::Cmd::BoshCommand.new(
+        env_name: environment.settings.name,
+        om_version: om_version
+      )
     end
 
     def bosh_command_prefix
@@ -116,6 +120,6 @@ module Ert
       end
     end
 
-    attr_reader :environment, :logger
+    attr_reader :environment, :logger, :om_version
   end
 end

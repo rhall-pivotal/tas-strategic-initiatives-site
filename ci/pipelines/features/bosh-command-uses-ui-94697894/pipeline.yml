@@ -4,7 +4,7 @@ resources:
     type: git
     source:
       uri: git@github.com:pivotal-cf/p-runtime.git
-      branch: master
+      branch: features/bosh-command-uses-ui-94697894
       private_key: |
         -----BEGIN RSA PRIVATE KEY-----
         MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
@@ -42,27 +42,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ert-1.5/tested/ert.pivotal
-
-  - name: latest-opsman
-    type: s3
-    source:
-      access_key_id: AKIAI43577ARGHXPWIMQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: ops_manager_images/aws/latest/ops_man_image
-
-  - name: stable-opsman
-    type: s3
-    source:
-      access_key_id: AKIAI43577ARGHXPWIMQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: ops_manager_images/aws/stable/ops_man_image
+      versioned_file: features/bosh-command-uses-ui-94697894/ert.pivotal
 
   - name: environment
     type: pool
@@ -99,6 +79,16 @@ resources:
         1SYykNNYKIkR5x7VO2kGNs68zwiBCxllIqCKQZJeeJvctQVewYLs
         -----END RSA PRIVATE KEY-----
 
+  - name: ops-manager-stable
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: ops_manager_images/aws/stable/ops_man_image
+
 jobs:
   - name: claim-environment
     plan:
@@ -129,7 +119,7 @@ jobs:
         passed: [destroy-environment]
       - aggregate:
         - get: ops-manager
-          resource: latest-opsman
+          resource: ops-manager-stable
         - task: prepare
           tags: [aws]
           file: p-runtime/ci/jobs/prepare-environment.yml
@@ -150,7 +140,7 @@ jobs:
         file: p-runtime/ci/jobs/configure-microbosh.yml
         config:
           params:
-            OPSMAN_VERSION: &om_version 1.5
+            OPSMAN_VERSION: 1.5
 
   - name: deploy-microbosh
     plan:
@@ -165,25 +155,38 @@ jobs:
         file: p-runtime/ci/jobs/deploy-microbosh.yml
         config:
           params:
-            OPSMAN_VERSION: *om_version
+            OPSMAN_VERSION: 1.5
+
+  - name: build-runtime
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [claim-environment]
+      - task: built-product
+        tags: [aws]
+        file: p-runtime/ci/jobs/build-pivotal.yml
+      - put: ert-product
+        params:
+          from: built-product/ert.pivotal
 
   - name: upload-pivotal
     plan:
       - aggregate:
         - get: p-runtime
           trigger: true
-          passed: [deploy-microbosh]
+          passed: [build-runtime, deploy-microbosh]
         - get: environment
           trigger: true
           passed: [deploy-microbosh]
         - get: ert-product
           trigger: true
+          passed: [build-runtime]
       - task: upload-pivotal
         tags: [aws]
         file: p-runtime/ci/jobs/upload-pivotal.yml
         config:
           params:
-            OPSMAN_VERSION: *om_version
+            OPSMAN_VERSION: 1.5
 
 
   - name: configure-ert
@@ -199,8 +202,8 @@ jobs:
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
-            ERT_VERSION: &ert_version 1.5
-            OPSMAN_VERSION: *om_version
+            ERT_VERSION: 1.5
+            OPSMAN_VERSION: 1.5
       - task: create-external-dbs
         tags: [aws]
         file: p-runtime/ci/jobs/create-aws-dbs.yml
@@ -209,16 +212,15 @@ jobs:
         file: p-runtime/ci/jobs/configure-external-dbs.yml
         config:
           params:
-            ERT_VERSION: *ert_version
-            OPSMAN_VERSION: *om_version
+            ERT_VERSION: 1.5
+            OPSMAN_VERSION: 1.5
       - task: configure-external-file-storage
         tags: [aws]
         file: p-runtime/ci/jobs/configure-external-file-storage.yml
         config:
           params:
-            ERT_VERSION: *ert_version
-            OPSMAN_VERSION: *om_version
-
+            ERT_VERSION: 1.5
+            OPSMAN_VERSION: 1.5
 
   - name: deploy-ert
     plan:
@@ -233,7 +235,7 @@ jobs:
         file: p-runtime/ci/jobs/deploy-ert.yml
         config:
           params:
-            OPSMAN_VERSION: *om_version
+            OPSMAN_VERSION: 1.5
 
   - name: run-cats
     plan:
@@ -248,18 +250,7 @@ jobs:
         file: p-runtime/ci/jobs/run-cats.yml
         config:
           params:
-            OPSMAN_VERSION: {{om_version}}
-
-  - name: promote-ops-manager
-    plan:
-     - get: p-runtime
-       trigger: true
-       passed: [run-cats]
-     - get: latest-opsman
-       passed: [deploy-ops-manager]
-     - put: stable-opsman
-       params:
-         from: latest-opsman/ops_man_image
+            OPSMAN_VERSION: 1.5
 
   - name: release-environment
     plan:
@@ -272,16 +263,16 @@ jobs:
           release: environment
 
 groups:
-  - name: aws-edge
+  - name: features/bosh-command-uses-ui-94697894
     jobs:
     - claim-environment
     - destroy-environment
     - deploy-ops-manager
     - configure-microbosh
     - deploy-microbosh
+    - build-runtime
     - upload-pivotal
     - configure-ert
     - deploy-ert
     - run-cats
-    - promote-ops-manager
     - release-environment

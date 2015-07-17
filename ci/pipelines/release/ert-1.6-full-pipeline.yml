@@ -569,6 +569,9 @@ jobs:
     tags:
     - aws
     file: p-runtime/ci/jobs/run-cats.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
 - name: release-environment-aws-clean
   plan:
   - get: p-runtime
@@ -761,6 +764,9 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/run-cats.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
 - name: release-environment-vsphere-clean
   plan:
   - get: p-runtime
@@ -953,6 +959,9 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/run-cats.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
 - name: release-environment-internetless
   plan:
   - get: p-runtime
@@ -1302,6 +1311,9 @@ jobs:
     tags:
     - aws
     file: p-runtime/ci/jobs/run-cats.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
 - name: release-environment-aws-upgrade
   plan:
   - get: p-runtime
@@ -1630,6 +1642,9 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/run-cats.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
 - name: release-environment-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -1966,6 +1981,9 @@ jobs:
     tags:
     - vcloud
     file: p-runtime/ci/jobs/run-cats.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.5
 - name: release-environment-vcloud-upgrade
   plan:
   - get: p-runtime

@@ -69,12 +69,15 @@ namespace :ert do
   end
 
   desc 'run the cats errand'
-  task :run_cats, [:environment_name] do |_, args|
+  task :run_cats, [:environment_name, :om_version] do |_, args|
     require 'ert/cats_runner'
     require 'opsmgr/log'
 
     logger = Opsmgr.logger_for('Rake')
-    Ert::CatsRunner.new(environment_name: args.environment_name, logger: logger).run_cats
+    Ert::CatsRunner.new(
+      environment_name: args.environment_name,
+      om_version: args.om_version,
+      logger: logger).run_cats
   end
 
   namespace :pipeline do

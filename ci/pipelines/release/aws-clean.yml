@@ -173,6 +173,9 @@ jobs:
       - task: run-cats
         tags: [aws]
         file: p-runtime/ci/jobs/run-cats.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
 
   - name: release-environment-aws-clean
     plan:
