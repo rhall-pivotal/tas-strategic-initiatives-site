@@ -165,6 +165,9 @@ jobs:
       - task: built-product
         tags: [aws]
         file: p-runtime/ci/jobs/build-pivotal.yml
+        config:
+          params:
+            USE_ERT_DUMMY: "true"
       - put: ert-product
         params:
           from: built-product/ert.pivotal
