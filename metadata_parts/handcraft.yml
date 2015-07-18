@@ -4687,6 +4687,7 @@ property_blueprints:
         - name: console
           manifest: |
             ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            port: 3306
             username: (( .mysql.consoledb_credentials.identity ))
             password: (( .mysql.consoledb_credentials.password ))
             adapter: mysql
