@@ -1,0 +1,230 @@
+---
+resources:
+- name: some-resource
+  type: git
+- name: another-resource
+  type: s3
+  source:
+    some_key: just-a-key
+jobs:
+- name: a-generic-job
+  plan:
+  - get: a-get-task
+    resource: some-resource
+  - task: a-generic-task
+- name: destroy-environment-aws-clean
+  plan:
+  - get: environment
+    resource: environment-aws
+    trigger: true
+    passed:
+    - claim-environment-aws-clean
+  - task: destroy
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: configure-ert-aws-clean
+  plan:
+  - task: some-task
+    tags:
+    - aws
+    resource: environment-aws
+  - task: some-aws-task
+    tags: aws
+- name: another-job-aws-clean
+  plan:
+  - task: another-task
+    tags:
+    - aws
+    resource: environment-aws
+- name: destroy-environment-final-aws-clean
+  plan:
+  - get: environment
+    resource: environment-aws
+    trigger: true
+    passed:
+    - claim-environment-aws-clean
+  - task: destroy
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: destroy-environment-vsphere-clean
+  plan:
+  - get: environment
+    resource: environment-vsphere
+    trigger: true
+    passed:
+    - claim-environment-vsphere-clean
+  - task: destroy
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: configure-ert-vsphere-clean
+  plan:
+  - task: some-task
+    tags:
+    - vsphere
+    resource: environment-vsphere
+- name: another-job-vsphere-clean
+  plan:
+  - task: another-task
+    tags:
+    - vsphere
+    resource: environment-vsphere
+- name: destroy-environment-final-vsphere-clean
+  plan:
+  - get: environment
+    resource: environment-vsphere
+    trigger: true
+    passed:
+    - claim-environment-vsphere-clean
+  - task: destroy
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: destroy-environment-internetless
+  plan:
+  - get: environment
+    resource: environment-internetless
+    trigger: true
+    passed:
+    - claim-environment-internetless
+  - task: destroy
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: configure-ert-internetless
+  plan:
+  - task: some-task
+    tags:
+    - vsphere
+    resource: environment-internetless
+- name: another-job-internetless
+  plan:
+  - task: another-task
+    tags:
+    - vsphere
+    resource: environment-internetless
+- name: destroy-environment-final-internetless
+  plan:
+  - get: environment
+    resource: environment-internetless
+    trigger: true
+    passed:
+    - claim-environment-internetless
+  - task: destroy
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: destroy-environment-aws-upgrade
+  plan:
+  - get: environment
+    resource: environment-aws-east
+    trigger: true
+    passed:
+    - claim-environment-aws-upgrade
+  - task: destroy
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: configure-ert-aws-upgrade
+  plan:
+  - task: some-task
+    tags:
+    - aws
+    resource: environment-aws-east
+  - task: some-aws-upgrade-task
+    tags: aws
+- name: another-job-aws-upgrade
+  plan:
+  - task: another-task
+    tags:
+    - aws
+    resource: environment-aws-east
+- name: destroy-environment-final-aws-upgrade
+  plan:
+  - get: environment
+    resource: environment-aws-east
+    trigger: true
+    passed:
+    - claim-environment-aws-upgrade
+  - task: destroy
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: destroy-environment-vsphere-upgrade
+  plan:
+  - get: environment
+    resource: environment-vsphere
+    trigger: true
+    passed:
+    - claim-environment-vsphere-upgrade
+  - task: destroy
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: configure-ert-vsphere-upgrade
+  plan:
+  - task: some-task
+    tags:
+    - vsphere
+    resource: environment-vsphere
+- name: another-job-vsphere-upgrade
+  plan:
+  - task: another-task
+    tags:
+    - vsphere
+    resource: environment-vsphere
+- name: destroy-environment-final-vsphere-upgrade
+  plan:
+  - get: environment
+    resource: environment-vsphere
+    trigger: true
+    passed:
+    - claim-environment-vsphere-upgrade
+  - task: destroy
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: destroy-environment-vcloud-upgrade
+  plan:
+  - get: environment
+    resource: environment-vcloud
+    trigger: true
+    passed:
+    - claim-environment-vcloud-upgrade
+  - &1
+    task: some-vcloud-task
+    tags: vcloud
+  - &2
+    task: another-vcloud-task
+    tags: vcloud
+  - task: destroy
+    tags:
+    - vcloud
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: configure-ert-vcloud-upgrade
+  plan:
+  - task: some-task
+    tags:
+    - vcloud
+    resource: environment-vcloud
+- name: another-job-vcloud-upgrade
+  plan:
+  - task: another-task
+    tags:
+    - vcloud
+    resource: environment-vcloud
+- name: destroy-environment-final-vcloud-upgrade
+  plan:
+  - get: environment
+    resource: environment-vcloud
+    trigger: true
+    passed:
+    - claim-environment-vcloud-upgrade
+  - *1
+  - *2
+  - task: destroy
+    tags:
+    - vcloud
+    file: p-runtime/ci/jobs/destroy-environment.yml

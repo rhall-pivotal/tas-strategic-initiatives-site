@@ -258,12 +258,24 @@ jobs:
        params:
          from: latest-opsman/ops_man_image
 
+  - name: destroy-environment-final
+    plan:
+     - get: p-runtime
+       passed: [run-cats]
+     - get: environment
+       passed: [run-cats]
+     - task: destroy
+       tags: [aws]
+       file: p-runtime/ci/jobs/destroy-environment.yml
+
   - name: release-environment
     plan:
       - get: p-runtime
-        passed: [run-cats]
+        trigger: true
+        passed: [destroy-environment-final]
       - get: environment
-        passed: [run-cats]
+        trigger: true
+        passed: [destroy-environment-final]
       - put: environment
         params:
           release: environment
@@ -280,5 +292,6 @@ groups:
     - configure-ert
     - deploy-ert
     - run-cats
+    - destroy-environment-final
     - promote-ops-manager
     - release-environment

@@ -14,3 +14,7 @@ Dir['./spec/support/*.rb'].each { |f| require f }
 RSpec.configure do |config|
   config.after(:suite) { WebMock.disable! } # for codeclimate coverage reporting
 end
+
+def fixture_path
+  File.expand_path(File.join(__FILE__, '..', 'fixtures'))
+end

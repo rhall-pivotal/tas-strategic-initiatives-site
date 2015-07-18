@@ -1,0 +1,183 @@
+jobs:
+  - name: claim-environment-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [kickoff]
+      - put: environment
+        resource: environment-{{environment_pool}}
+        params:
+          acquire: true
+
+  - name: destroy-environment-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [claim-environment-{{pipeline_name}}]
+      - get: environment
+        resource: environment-{{environment_pool}}
+        trigger: true
+        passed: [claim-environment-{{pipeline_name}}]
+      - task: destroy
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/destroy-environment.yml
+
+  - name: deploy-ops-manager-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [destroy-environment-{{pipeline_name}}]
+      - get: environment
+        resource: environment-{{environment_pool}}
+        trigger: true
+        passed: [destroy-environment-{{pipeline_name}}]
+      - aggregate:
+        - get: ops-manager
+          resource: ops-manager-stable-{{iaas_type}}
+        - task: prepare
+          tags: [{{iaas_type}}]
+          file: p-runtime/ci/jobs/prepare-environment.yml
+      - task: deploy
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/deploy-opsman.yml
+
+  - name: configure-microbosh-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [deploy-ops-manager-{{pipeline_name}}]
+      - get: environment
+        resource: environment-{{environment_pool}}
+        trigger: true
+        passed: [deploy-ops-manager-{{pipeline_name}}]
+      - task: configure
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/configure-microbosh.yml
+        config:
+          params:
+            OPSMAN_VERSION: &om_version 1.5
+
+  - name: deploy-microbosh-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [configure-microbosh-{{pipeline_name}}]
+      - get: environment
+        resource: environment-{{environment_pool}}
+        trigger: true
+        passed: [configure-microbosh-{{pipeline_name}}]
+      - task: deploy
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/deploy-microbosh.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+
+  - name: upload-pivotal-{{pipeline_name}}
+    plan:
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [build-runtime, deploy-microbosh-{{pipeline_name}}]
+        - get: environment
+          resource: environment-{{environment_pool}}
+          trigger: true
+          passed: [deploy-microbosh-{{pipeline_name}}]
+        - get: ert-product
+          trigger: true
+          passed: [build-runtime]
+      - task: upload-pivotal
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/upload-pivotal.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+
+  - name: configure-ert-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [upload-pivotal-{{pipeline_name}}]
+      - get: environment
+        resource: environment-{{environment_pool}}
+        trigger: true
+        passed: [upload-pivotal-{{pipeline_name}}]
+      - task: configure-ert
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/configure-ert.yml
+        config:
+          params:
+            ERT_VERSION: 1.6
+            OPSMAN_VERSION: *om_version
+
+  - name: import-stemcell-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [configure-ert-{{pipeline_name}}]
+      - get: environment
+        resource: environment-{{environment_pool}}
+        trigger: true
+        passed: [configure-ert-{{pipeline_name}}]
+      - get: stemcell
+        resource: stemcell-1.5.1-{{iaas_type}}
+      - task: import-stemcell
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/import-stemcell.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+            PRODUCT_NAME: cf
+
+  - name: deploy-ert-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [import-stemcell-{{pipeline_name}}]
+      - get: environment
+        resource: environment-{{environment_pool}}
+        trigger: true
+        passed: [import-stemcell-{{pipeline_name}}]
+      - task: deploy-ert
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/deploy-ert.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+
+  - name: run-cats-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [deploy-ert-{{pipeline_name}}]
+      - get: environment
+        resource: environment-{{environment_pool}}
+        trigger: true
+        passed: [deploy-ert-{{pipeline_name}}]
+      - task: run-cats
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/run-cats.yml
+
+  - name: destroy-environment-final-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        passed: [run-cats-{{pipeline_name}}]
+      - get: environment
+        resource: environment-{{environment_pool}}
+        passed: [run-cats-{{pipeline_name}}]
+      - task: destroy
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/destroy-environment.yml
+
+  - name: release-environment-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [destroy-environment-final-{{pipeline_name}}]
+      - get: environment
+        trigger: true
+        resource: environment-{{environment_pool}}
+        passed: [destroy-environment-final-{{pipeline_name}}]
+      - put: environment-{{environment_pool}}
+        params:
+          release: environment
