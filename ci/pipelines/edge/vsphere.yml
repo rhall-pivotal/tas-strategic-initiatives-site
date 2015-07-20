@@ -42,7 +42,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ert-1.5/tested/ert.pivotal
+      versioned_file: ert-1.6/tested/ert.pivotal
 
   - name: latest-opsman
     type: s3
@@ -103,6 +103,9 @@ jobs:
   - name: claim-environment
     plan:
       - get: p-runtime
+      - get: ops-manager
+        resource: latest-opsman
+        trigger: true
       - put: environment
         params:
           acquire: true
@@ -110,7 +113,6 @@ jobs:
   - name: destroy-environment
     plan:
       - get: p-runtime
-        trigger: true
         passed: [claim-environment]
       - get: environment
         trigger: true
@@ -122,14 +124,14 @@ jobs:
   - name: deploy-ops-manager
     plan:
       - get: p-runtime
-        trigger: true
-        passed: [destroy-environment]
+        passed: [destroy-environment, claim-environment]
       - get: environment
         trigger: true
         passed: [destroy-environment]
       - aggregate:
         - get: ops-manager
           resource: latest-opsman
+          passed: [claim-environment]
         - task: prepare
           tags: [vsphere]
           file: p-runtime/ci/jobs/prepare-environment.yml
@@ -140,7 +142,6 @@ jobs:
   - name: configure-microbosh
     plan:
       - get: p-runtime
-        trigger: true
         passed: [deploy-ops-manager]
       - get: environment
         trigger: true
@@ -155,7 +156,6 @@ jobs:
   - name: deploy-microbosh
     plan:
       - get: p-runtime
-        trigger: true
         passed: [configure-microbosh]
       - get: environment
         trigger: true
@@ -171,13 +171,11 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
           passed: [deploy-microbosh]
         - get: environment
           trigger: true
           passed: [deploy-microbosh]
         - get: ert-product
-          trigger: true
       - task: upload-pivotal
         tags: [vsphere]
         file: p-runtime/ci/jobs/upload-pivotal.yml
@@ -189,7 +187,6 @@ jobs:
   - name: configure-ert
     plan:
       - get: p-runtime
-        trigger: true
         passed: [upload-pivotal]
       - get: environment
         trigger: true
@@ -199,14 +196,13 @@ jobs:
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
-            ERT_VERSION: 1.5
+            ERT_VERSION: 1.6
             OPSMAN_VERSION: *om_version
 
 
   - name: deploy-ert
     plan:
       - get: p-runtime
-        trigger: true
         passed: [configure-ert]
       - get: environment
         trigger: true
@@ -221,7 +217,6 @@ jobs:
   - name: run-cats
     plan:
       - get: p-runtime
-        trigger: true
         passed: [deploy-ert]
       - get: environment
         trigger: true
@@ -234,9 +229,9 @@ jobs:
     plan:
      - get: p-runtime
        trigger: true
-       passed: [run-cats]
+       passed: [run-cats, claim-environment]
      - get: latest-opsman
-       passed: [deploy-ops-manager]
+       passed: [claim-environment]
      - put: stable-opsman
        params:
          from: latest-opsman/ops_man_image
@@ -254,7 +249,6 @@ jobs:
   - name: release-environment
     plan:
       - get: p-runtime
-        trigger: true
         passed: [destroy-environment-final]
       - get: environment
         trigger: true
