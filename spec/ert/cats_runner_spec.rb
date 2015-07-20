@@ -20,12 +20,12 @@ YAML
   let(:deployment_name) { 'cf-deadbeef12345678' }
   let(:logger) { instance_double(Opsmgr::LoggerWithProgName) }
 
-  subject(:cats_runner) { Ert::CatsRunner.new(environment_name: environment_name, logger: logger) }
+  subject(:cats_runner) { Ert::CatsRunner.new(environment_name: environment_name, om_version: '1.5', logger: logger) }
 
   before do
     allow(Opsmgr::Environments).to receive(:for).and_return(opsmgr_environment)
     allow(Opsmgr::Cmd::BoshCommand).to(
-      receive(:build)
+      receive(:new)
         .and_return(bosh_command)
     )
     allow(logger).to receive(:info)
