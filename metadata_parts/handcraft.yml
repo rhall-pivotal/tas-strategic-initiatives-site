@@ -82,6 +82,7 @@ install_time_verifiers:
 post_deploy_errands:
   - name: push-apps-manager
   - name: smoke-tests
+  - name: diego-smoke-tests
   - name: push-app-usage-service
   - name: notifications
   - name: autoscaling
@@ -1150,7 +1151,7 @@ job_types:
       - name: diego_docker
         type: boolean
         configurable: true
-        default: false
+        default: true
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -2423,6 +2424,273 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
 
+  - name: diego_brain
+    label: Diego Brain
+    resource_label: Diego Brain
+    description: Diego Brain
+    templates:
+      - name: auctioneer
+        release: diego
+      - name: converger
+        release: diego
+      - name: etcd
+        release: diego
+      - name: file_server
+        release: diego
+      - name: nsync
+        release: diego
+      - name: receptor
+        release: diego
+      - name: rep
+        release: diego
+      - name: route_emitter
+        release: diego
+      - name: runtime_metrics_server
+        release: diego
+      - name: ssh_proxy
+        release: diego
+      - name: stager
+        release: diego
+      - name: tps
+        release: diego
+      - name: consul_agent
+        release: cf
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 4_096
+        constraints:
+          min: 4_096
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 5_120
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 0
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      diego:
+        auctioneer:
+          etcd:
+            machines: (( ips ))
+        converger:
+          etcd:
+            machines: (( ips ))
+        etcd:
+          machines: (( ips ))
+        file_server:
+          cc:
+            job_polling_interval_in_seconds: 25
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            external_port: 9022
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+        nsync:
+          cc:
+            base_url: https://api.(( .cloud_controller.system_domain.value ))
+            basic_auth_username: bulk_api
+            basic_auth_password: (( .cloud_controller.bulk_api_credentials.password ))
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+          etcd:
+            machines: (( ips ))
+        receptor:
+          register_with_router: true
+          domain_names: ["(( .cloud_controller.system_domain.value ))","(( .cloud_controller.apps_domain.value ))"]
+          nats:
+            username: (( .nats.credentials.identity ))
+            password: (( .nats.credentials.password ))
+            port: 4222
+            machines: (( .nats.ips ))
+          etcd:
+            machines: (( ips ))
+        route_emitter:
+          nats:
+            username: (( .nats.credentials.identity ))
+            password: (( .nats.credentials.password ))
+            port: 4222
+            machines: (( .nats.ips ))
+        runtime_metrics_server:
+          diego_api_url: (( first_ip ))
+          etcd:
+            machines: (( ips ))
+        ssh_proxy:
+          host_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem))
+          cc:
+            external_port: 9022
+        ssl:
+          skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+        stager:
+          cc:
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            external_port: 9022
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+        tps:
+          cc:
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            external_port: 9022
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+      consul:
+        domain: consul
+        agent:
+          servers:
+            lan: (( .consul_server.ips ))
+          services:
+            - file_server
+            - nsync
+            - receptor
+            - ssh_proxy
+            - stager
+            - tps
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+      metron_agent:
+        zone: (( availability_zone ))
+        deployment: cf
+      etcd:
+        machines: (( .etcd_server.ips ))
+
+  - name: diego_cell
+    label: Diego Cell
+    resource_label: Diego Cell
+    description: Diego Cell
+    templates:
+      - name: rep
+        release: diego
+      - name: consul_agent
+        release: cf
+      - name: garden-linux
+        release: diego
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 16_384
+        constraints:
+          min: 16_384
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 32_768
+        constraints:
+          min: 32_768
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 0
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      diego:
+        rep:
+          zone: (( availability_zone ))
+          etcd:
+            require_ssl: false
+            machines: (( .diego_brain.ips ))
+      consul:
+        domain: consul
+        agent:
+          servers:
+            lan: (( .consul_server.ips ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+      metron_agent:
+        zone: (( availability_zone ))
+        deployment: cf
+      etcd:
+        machines: (( .etcd_server.ips ))
+
   - name: mysql_proxy
     label: MySQL Proxy
     resource_label: MySQL Proxy
@@ -3016,6 +3284,7 @@ job_types:
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
         https_only_mode: true
+
   - name: push-app-usage-service
     label: Push App Usage Service
     resource_label: Push App Usage Service
@@ -3204,6 +3473,78 @@ job_types:
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         use_existing_org: false
         use_existing_space: false
+
+  - name: diego-smoke-tests
+    label: Run Diego Smoke Tests
+    resource_label: Run Diego Smoke Tests
+    description: Runs Diego Smoke Tests against your Elastic Runtime installation
+    templates:
+      - name: smoke-tests
+        release: diego
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      networks:
+        apps: default
+      diego:
+        ssl:
+          skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+        smoke_tests:
+          api: "https://api.(( .cloud_controller.system_domain.value ))"
+          apps_domain: (( .cloud_controller.apps_domain.value ))
+          user: (( .uaa.run_smoke_tests_credentials.identity ))
+          password: (( .uaa.run_smoke_tests_credentials.password ))
+          org: system
+          space: DIEGO_CF_SMOKE_TEST_SPACE
 
   - name: notifications
     label: Notifications
@@ -3530,6 +3871,72 @@ job_types:
       domain: (( .cloud_controller.system_domain.value ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+
+  - name: diego-acceptance-tests
+    label: Run Diego Acceptance Tests
+    resource_label: Run Diego Acceptance Tests
+    description: Runs Diego Acceptance Tests against your Elastic Runtime installation
+    templates:
+      - name: acceptance-tests
+        release: diego
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      acceptance_tests:
+        api: "https://api.(( .cloud_controller.system_domain.value ))"
+        apps_domain: (( .cloud_controller.apps_domain.value ))
+        admin_user: (( .uaa.admin_credentials.identity ))
+        admin_password: (( .uaa.admin_credentials.password ))
+        skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
 
   - name: acceptance-tests
     label: Run CF Acceptance Tests
