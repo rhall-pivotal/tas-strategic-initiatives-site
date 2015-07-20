@@ -1,6 +1,6 @@
 require 'opsmgr/ui_helpers/config_helper'
 
-RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
+RSpec.describe 'Configure Elastic Runtime 1.6.X', order: :defined do
   let(:current_ops_manager) { ops_manager_driver }
   let(:env_settings) { fetch_environment_settings }
 
@@ -14,7 +14,10 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
   end
 
   it 'configures the availability zone' do
-    current_ops_manager.assign_availability_zones_for_product(product: 'cf', zones: env_settings.ops_manager.availability_zones)
+    availability_zones_for_product = availability_zones_for_product(product: 'cf')
+    unless availability_zones_for_product.length > 0
+      current_ops_manager.assign_availability_zones_for_product(product: 'cf', zones: env_settings.ops_manager.availability_zones)
+    end
   end
 
   it 'configures ha proxy or an ELB' do
@@ -23,7 +26,27 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
       configure_aws_load_balancers(elastic_runtime_settings)
     when 'vsphere', 'vcloud'
       configure_vsphere_ha_proxy(elastic_runtime_settings)
+    when 'openstack'
+      configure_openstack_ha_proxy(elastic_runtime_settings)
     end
+  end
+
+  it 'configures ssl certificates' do
+    security_config_form =
+      current_ops_manager.product(elastic_runtime_settings.name).product_form('security_config')
+    security_config_form.open_form
+    security_config_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings.trust_self_signed_certificates)
+
+    if elastic_runtime_settings.ssl_certificate
+      security_config_form.nested_property('.ha_proxy.ssl_rsa_certificate', 'cert_pem')
+        .set(elastic_runtime_settings.ssl_certificate)
+      security_config_form.nested_property('.ha_proxy.ssl_rsa_certificate', 'private_key_pem')
+        .set(elastic_runtime_settings.ssl_private_key)
+    else
+      security_config_form.generate_self_signed_cert("*.#{elastic_runtime_settings.system_domain}")
+    end
+
+    security_config_form.save_form
   end
 
   it 'configures cloud controller' do
@@ -52,16 +75,6 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
     end
   end
 
-  it 'increases the director persistent disk to 80G' do
-    visit '/'
-    click_on 'show-microbosh-configure-action'
-    click_on 'show-microbosh-resource-sizes-action'
-    fill_in('product_resources_form[director][persistent_disk][value]', with: '81920')
-    click_on 'Save'
-
-    fail('unexpected failure') unless has_css?('.flash-message')
-  end
-
   private
 
   def configure_vsphere_ha_proxy(elastic_runtime_settings)
@@ -69,32 +82,37 @@ RSpec.describe 'Configure Elastic Runtime 1.4.X', order: :defined do
       current_ops_manager.product(elastic_runtime_settings.name).product_form('ha_proxy')
     ips_and_ports_form.open_form
     ips_and_ports_form.property('.ha_proxy.static_ips').set(elastic_runtime_settings.ha_proxy_static_ips)
-    ips_and_ports_form.generate_self_signed_cert("*.#{elastic_runtime_settings.system_domain}")
-    ips_and_ports_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings.trust_self_signed_certificates)
     ips_and_ports_form.save_form
   end
 
   def configure_aws_load_balancers(elastic_runtime_settings)
-    configure_aws_resources(elastic_runtime_settings)
-    configure_aws_ips_and_ports(elastic_runtime_settings)
-  end
-
-  def configure_aws_resources(elastic_runtime_settings)
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings.name)
     resource_config.set_instances_for_job('ha_proxy', 0)
-    resource_config.set_elb_for_job('router', elastic_runtime_settings.elb_name)
-  end
+    resource_config.set_elb_names_for_job('router', elastic_runtime_settings.elb_name)
 
-  def configure_aws_ips_and_ports(elastic_runtime_settings)
     ips_and_ports_form =
       current_ops_manager.product(elastic_runtime_settings.name).product_form('ha_proxy')
     ips_and_ports_form.open_form
     ips_and_ports_form.property('.properties.logger_endpoint_port').set('4443')
-    ips_and_ports_form.nested_property('.ha_proxy.ssl_rsa_certificate', 'cert_pem')
-      .set(elastic_runtime_settings.ssl_certificate)
-    ips_and_ports_form.nested_property('.ha_proxy.ssl_rsa_certificate', 'private_key_pem')
-      .set(elastic_runtime_settings.ssl_private_key)
-    ips_and_ports_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings.trust_self_signed_certificates)
     ips_and_ports_form.save_form
+  end
+
+  def configure_openstack_ha_proxy(elastic_runtime_settings)
+    resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings.name)
+    resource_config.set_floating_ips_for_job('ha_proxy', elastic_runtime_settings.ha_proxy_floating_ips)
+  end
+  AVAILABILITY_ZONE_INPUT_SELECTOR = "input[name='product[availability_zone_references][]']"
+
+  def availability_zones_for_product(product:)
+    visit '/'
+    click_on "show-#{product}-configure-action"
+
+    az_selector = "show-#{product}-availability-zone-assignment-action"
+    return [] unless has_link? az_selector
+
+    click_on az_selector
+    all("#{AVAILABILITY_ZONE_INPUT_SELECTOR}[checked='checked']").map do |checkbox|
+      find("label[for='#{checkbox[:id]}']").text
+    end
   end
 end
