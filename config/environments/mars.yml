@@ -24,11 +24,14 @@ ops_manager:
   username: pivotalcf
   password: pivotalcf
   ntp_servers: us.pool.ntp.org
+  availability_zones:
+    - iaas_identifier: nova
   openstack:
     identity_endpoint: http://23.246.208.98:5000/v2.0
     username: releng-ci
     password: 'x8esrkxQ3SBM'
     tenant: mars
+    region: RegionOne
     security_group_name: default
     key_pair_name: releng-openstack-key
     ssh_private_key: |
