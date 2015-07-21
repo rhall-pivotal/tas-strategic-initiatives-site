@@ -261,8 +261,6 @@ form_types:
       - reference: .cloud_controller.default_quota_max_number_services
         label: Default Quota Service Instances
         description: Maximum allowed number of service instances in an org using the default quota. For initial install only. Use the CLI to manage quotas.
-      - reference: .cloud_controller.diego_docker
-        label: Enable Diego Docker support
 
   - name: syslog_aggregator
     label: External Endpoints
@@ -375,6 +373,8 @@ form_types:
       - reference: .uaa.disable_http
         label: Disable HTTP traffic to UAA
         description: "Allows only HTTPS traffic to UAA"
+      - reference: .cloud_controller.diego_docker
+        label: Enable Diego Docker support
 
 job_types:
   - name: nats
