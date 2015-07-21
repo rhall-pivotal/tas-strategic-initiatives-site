@@ -4,7 +4,7 @@ class IntegrationSpecRunner
   class UnsupportedErtVersion < StandardError
   end
 
-  SUPPORTED_ERT_VERSIONS = %w(1.4 1.5 1.6)
+  SUPPORTED_ERT_VERSIONS = %w(1.5 1.6)
 
   def initialize(environment:, om_version:, ert_version:)
     fail 'No Environment Name provided' if environment.nil? || environment.empty?

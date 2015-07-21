@@ -58,7 +58,7 @@ RSpec.describe 'IntegrationSpecRunner' do
     end
   end
 
-  %w(1.4 1.5 1.6).each do |version|
+  %w(1.5 1.6).each do |version|
     describe 'configuring ert' do
       let(:ert_version) { version }
 
