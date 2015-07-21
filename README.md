@@ -78,6 +78,17 @@ Once the µBOSH is deployed, you can configure and deploy the Elastic Runtime pr
 ```
 bundle exec rake opsmgr:product:upload_add[environment,<OM version>,<p-runtime .pivotal file>,cf]
 bundle exec rake ert:configure[environment,<ert version>,<OM version>]
+```
+
+##### Turn on all experimental features
+After running `bundle exec rake ert:configure[...]`, you can optionally turn on all experimental features
+
+```
+bundle exec rake ert:configure_experimental_features[environment,<ert version>,<OM version>]
+```
+
+##### Deploy ERT
+```
 bundle exec rake opsmgr:trigger_install[environment,<OM version>,<wait time>]
 ```
 
