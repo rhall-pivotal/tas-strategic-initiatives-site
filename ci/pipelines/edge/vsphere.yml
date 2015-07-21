@@ -224,6 +224,9 @@ jobs:
       - task: run-cats
         tags: [vsphere]
         file: p-runtime/ci/jobs/run-cats.yml
+        config:
+          params:
+            OPSMAN_VERSION: {{om_version}}
 
   - name: promote-ops-manager
     plan:

@@ -4,7 +4,7 @@ resources:
     type: git
     source:
       uri: git@github.com:pivotal-cf/p-runtime.git
-      branch: {{branch_name}}
+      branch: batches/22
       private_key: |
         -----BEGIN RSA PRIVATE KEY-----
         MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
@@ -42,7 +42,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: {{branch_name}}/ert.pivotal
+      versioned_file: batches/22/ert.pivotal
 
   - name: initial-ert-product
     type: s3
@@ -52,7 +52,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ert-releases/{{ert_initial_full_version}}/ert.pivotal
+      versioned_file: ert-releases/1.5.1.0/ert.pivotal
 
   - name: initial-ops-manager
     type: s3
@@ -62,7 +62,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/{{iaas_type}}/{{om_initial_full_version}}/ops_man_image
+      versioned_file: ops_manager_images/aws/1.5.0.0/ops_man_image
 
 
   - name: ops-manager-stable
@@ -73,7 +73,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/{{iaas_type}}/stable/ops_man_image
+      versioned_file: ops_manager_images/aws/stable/ops_man_image
 
   - name: exported-installation
     type: s3
@@ -83,14 +83,14 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: exported_installations/{{branch_name}}/installation.zip
+      versioned_file: exported_installations/batches/22/installation.zip
 
   - name: environment
     type: pool
     source:
       uri: git@github.com:pivotal-cf-experimental/releng-env-resource-pool
       branch: master
-      pool: {{iaas_type}}
+      pool: aws
       private_key: |
         -----BEGIN RSA PRIVATE KEY-----
         MIIEowIBAAKCAQEAusDLytuEM/eX5vkwEFlTTKhnpDpUrKtxIOqcfGwg2gyH29jm
@@ -134,7 +134,7 @@ jobs:
         trigger: true
         passed: [claim-environment]
       - task: built-product
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/build-pivotal.yml
       - put: ert-product
         params:
@@ -149,7 +149,7 @@ jobs:
         trigger: true
         passed: [claim-environment]
       - task: destroy
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/destroy-environment.yml
 
   - name: deploy-ops-manager-initial
@@ -164,10 +164,10 @@ jobs:
         - get: ops-manager
           resource: initial-ops-manager
         - task: prepare
-          tags: [{{iaas_type}}]
+          tags: [aws]
           file: p-runtime/ci/jobs/prepare-environment.yml
       - task: deploy
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/deploy-opsman.yml
 
   - name: configure-microbosh-initial
@@ -179,11 +179,11 @@ jobs:
         trigger: true
         passed: [deploy-ops-manager-initial]
       - task: configure
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/configure-microbosh.yml
         config:
           params:
-            OPSMAN_VERSION: {{om_initial_version}}
+            OPSMAN_VERSION: 1.5
 
   - name: deploy-microbosh-initial
     plan:
@@ -194,11 +194,11 @@ jobs:
         trigger: true
         passed: [configure-microbosh-initial]
       - task: deploy
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/deploy-microbosh.yml
         config:
           params:
-            OPSMAN_VERSION: {{om_initial_version}}
+            OPSMAN_VERSION: 1.5
 
   - name: upload-pivotal-initial
     plan:
@@ -212,11 +212,11 @@ jobs:
         resource: initial-ert-product
         trigger: true
       - task: upload
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/upload-pivotal.yml
         config:
           params:
-            OPSMAN_VERSION: {{om_initial_version}}
+            OPSMAN_VERSION: 1.5
 
   - name: configure-ert-initial
     plan:
@@ -227,29 +227,29 @@ jobs:
         trigger: true
         passed: [upload-pivotal-initial]
       - task: configure-ert
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
-            ERT_VERSION: {{ert_initial_version}}
-            OPSMAN_VERSION: {{om_initial_version}}
+            ERT_VERSION: 1.5
+            OPSMAN_VERSION: 1.5
       - task: create-external-dbs
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/create-aws-dbs.yml
       - task: configure-external-dbs
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/configure-external-dbs.yml
         config:
           params:
-            ERT_VERSION: {{ert_initial_version}}
-            OPSMAN_VERSION: {{om_initial_version}}
+            ERT_VERSION: 1.5
+            OPSMAN_VERSION: 1.5
       - task: configure-external-file-storage
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/configure-external-file-storage.yml
         config:
           params:
-            ERT_VERSION: {{ert_initial_version}}
-            OPSMAN_VERSION: {{om_initial_version}}
+            ERT_VERSION: 1.5
+            OPSMAN_VERSION: 1.5
 
   - name: deploy-ert-initial
     plan:
@@ -260,11 +260,11 @@ jobs:
         trigger: true
         passed: [configure-ert-initial]
       - task: deploy-ert
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/deploy-ert.yml
         config:
           params:
-            OPSMAN_VERSION: {{om_initial_version}}
+            OPSMAN_VERSION: 1.5
 
   - name: export-installation
     plan:
@@ -275,11 +275,11 @@ jobs:
         trigger: true
         passed: [deploy-ert-initial]
       - task: export-installation
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/export-installation.yml
         config:
           params:
-            OPSMAN_VERSION: {{om_initial_version}}
+            OPSMAN_VERSION: 1.5
       - put: exported-installation
         params:
           from: p-runtime/installation.zip
@@ -293,7 +293,7 @@ jobs:
         trigger: true
         passed: [export-installation]
       - task: destroy-opsman
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/destroy-opsman.yml
 
   - name: deploy-opsman
@@ -308,7 +308,7 @@ jobs:
         - get: ops-manager
           resource: ops-manager-stable
       - task: deploy
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/deploy-opsman.yml
 
   - name: import-installation
@@ -323,11 +323,11 @@ jobs:
         trigger: true
         passed: [export-installation]
       - task: import-installation
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/import-installation.yml
         config:
           params:
-            OPSMAN_VERSION: {{om_version}}
+            OPSMAN_VERSION: 1.5
 
   - name: upgrade-pivotal
     plan:
@@ -342,11 +342,11 @@ jobs:
           trigger: true
           passed: [build-runtime]
       - task: upgrade-pivotal
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/upgrade-pivotal.yml
         config:
           params:
-            OPSMAN_VERSION: {{om_version}}
+            OPSMAN_VERSION: 1.5
 
   - name: configure-ert
     plan:
@@ -357,12 +357,12 @@ jobs:
         trigger: true
         passed: [upgrade-pivotal]
       - task: configure-ert
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
-            ERT_VERSION: {{ert_version}}
-            OPSMAN_VERSION: {{om_version}}
+            ERT_VERSION: 1.6
+            OPSMAN_VERSION: 1.5
 
   - name: deploy-ert
     plan:
@@ -373,11 +373,11 @@ jobs:
         trigger: true
         passed: [configure-ert]
       - task: deploy-ert
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/deploy-ert.yml
         config:
           params:
-            OPSMAN_VERSION: {{om_version}}
+            OPSMAN_VERSION: 1.5
 
   - name: run-cats
     plan:
@@ -388,11 +388,11 @@ jobs:
         trigger: true
         passed: [deploy-ert]
       - task: run-cats
-        tags: [{{iaas_type}}]
+        tags: [aws]
         file: p-runtime/ci/jobs/run-cats.yml
         config:
           params:
-            OPSMAN_VERSION: {{om_version}}
+            OPSMAN_VERSION: 1.5
 
   - name: destroy-environment-final
     plan:
@@ -401,7 +401,7 @@ jobs:
      - get: environment
        passed: [run-cats]
      - task: destroy
-       tags: [{{iaas_type}}]
+       tags: [aws]
        file: p-runtime/ci/jobs/destroy-environment.yml
 
   - name: release-environment
@@ -417,7 +417,7 @@ jobs:
           release: environment
 
 groups:
-  - name: {{branch_name}}
+  - name: batches/22
     jobs:
     - claim-environment
     - build-runtime
