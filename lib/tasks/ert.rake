@@ -68,6 +68,15 @@ namespace :ert do
     ).configure_external_file_storage
   end
 
+  desc 'Turn On Elastic Runtime Experimental Features'
+  task :configure_experimental_features, [:environment_name, :ert_version, :om_version] do |_, args|
+    IntegrationSpecRunner.new(
+      environment: args.environment_name,
+      ert_version: args.ert_version,
+      om_version: args.om_version
+    ).configure_experimental_features
+  end
+
   desc 'run the cats errand'
   task :run_cats, [:environment_name, :om_version] do |_, args|
     require 'ert/cats_runner'

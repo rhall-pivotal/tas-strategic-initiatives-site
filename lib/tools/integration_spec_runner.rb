@@ -24,6 +24,10 @@ class IntegrationSpecRunner
     run_spec(["integration/ERT-#{ert_version}/configure_ert_spec.rb"])
   end
 
+  def configure_experimental_features
+    run_spec(["integration/ERT-#{ert_version}/configure_experimental_features_spec.rb"])
+  end
+
   def configure_external_dbs
     run_spec(["integration/ERT-#{ert_version}/configure_external_dbs_spec.rb"])
   end
