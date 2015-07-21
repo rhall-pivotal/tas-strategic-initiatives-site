@@ -14,6 +14,14 @@ atc_db_address: &atc-db-address concoursedb.chskomywcsf9.us-west-1.rds.amazonaws
 # replace with an AZ from your account
 availability_zone: &az us-west-1b
 
+blackbox_config: &blackbox_config
+  expvar:
+    datadog:
+      api_key: bc6ef2a698fdb4fb1400d4542aec0c39
+
+  syslog:
+    destination:
+      address: logs3.papertrailapp.com:25911
 # replace all addresses with your VPC range
 #
 # e.g. X.X.0.2 -> 10.0.0.2
@@ -44,10 +52,12 @@ jobs:
     persistent_disk: 1024
     templates:
       - {release: concourse, name: consul-agent}
+      - {release: concourse, name: blackbox}
     networks:
       - name: concourse
         static_ips: [*discovery_static_ip]
     properties:
+      blackbox: *blackbox_config
       consul:
         agent:
           mode: server
@@ -57,10 +67,12 @@ jobs:
     resource_pool: web
     templates:
       - {release: concourse, name: consul-agent}
+      - {release: concourse, name: blackbox}
       - {release: concourse, name: tsa}
       - {release: concourse, name: atc}
     networks: [{name: concourse}]
     properties:
+      blackbox: *blackbox_config
       atc:
         basic_auth_username: releng
         basic_auth_password: eyed1+kipsey
@@ -137,10 +149,12 @@ jobs:
     resource_pool: workers
     templates:
       - {release: concourse, name: consul-agent}
+      - {release: concourse, name: blackbox}
       - {release: concourse, name: groundcrew}
       - {release: garden-linux, name: garden}
     networks: [{name: concourse}]
     properties:
+      blackbox: *blackbox_config
       garden:
         listen_network: tcp
         listen_address: 0.0.0.0:7777
@@ -161,10 +175,12 @@ jobs:
     resource_pool: default_workers
     templates:
       - {release: concourse, name: consul-agent}
+      - {release: concourse, name: blackbox}
       - {release: concourse, name: groundcrew}
       - {release: garden-linux, name: garden}
     networks: [{name: concourse}]
     properties:
+      blackbox: *blackbox_config
       garden:
         listen_network: tcp
         listen_address: 0.0.0.0:7777

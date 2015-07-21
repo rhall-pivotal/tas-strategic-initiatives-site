@@ -92,8 +92,12 @@ jobs:
 
     hm:
       http: {user: hm, password: hm-password}
-      director_account: {user: admin, password: admin}
+      director_account: {user: admin, password: "fa$tSheep94"}
       resurrector_enabled: true
+      datadog_enabled: true
+      datadog:
+        api_key: bc6ef2a698fdb4fb1400d4542aec0c39
+        application_key: 52b55fe9529c9cab820573e15232bf0f431df784
 
     vcenter: &vcenter # <--- Replace values below
       address: vcenter.wild.cf-app.com

@@ -1,4 +1,15 @@
 ---
+
+blackbox_config: &blackbox_config
+  expvar:
+    datadog:
+      api_key: bc6ef2a698fdb4fb1400d4542aec0c39
+
+  syslog:
+    destination:
+      address: logs3.papertrailapp.com:25911
+
+
 name: vsphere-concourse-worker
 
 director_uuid: 3f9c052c-8afe-4ad6-8a89-85328792bc60
@@ -23,10 +34,12 @@ jobs:
     instances: 1
     resource_pool: workers
     templates:
+      - {release: concourse, name: blackbox}
       - {release: concourse, name: groundcrew}
       - {release: garden-linux, name: garden}
     networks: [{name: private}]
     properties:
+      blackbox: *blackbox_config
       groundcrew:
         tags: ["vsphere"]
         garden:
