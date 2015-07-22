@@ -218,6 +218,9 @@ form_types:
       - reference: .dea.allow_host_access
         label: Enable cross-container traffic within each DEA
         description: Not recommended for untrusted workloads
+      - reference: .router.enable_ssl
+        label: Enable TLS on the Router
+        description: Disable only if your load-balancer does not send HTTPS traffic to the Router
 
   - name: mysql_proxy
     label: MySQL Proxy Config
@@ -1460,6 +1463,11 @@ job_types:
         configurable: true
         optional: true
 
+      - name: enable_ssl
+        type: boolean
+        configurable: true
+        default: true
+
     manifest: |
       request_timeout_in_seconds: 900
       networks:
@@ -1469,6 +1477,7 @@ job_types:
         status:
           user: router_status
           password: (( status_credentials.password ))
+        enable_ssl: (( enable_ssl.value ))
 
       metron_endpoint:
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
