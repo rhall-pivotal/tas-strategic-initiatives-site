@@ -119,24 +119,32 @@ jobs:
 
   - name: destroy-environment
     plan:
-      - get: p-runtime
-        trigger: true
-        passed: [claim-environment]
-      - get: environment
-        trigger: true
-        passed: [claim-environment]
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [claim-environment]
+        - get: environment
+          trigger: true
+          passed: [claim-environment]
+        - get: upstream-release-metadata
+          trigger: true
+          passed: [claim-environment]
       - task: destroy
         tags: [aws]
         file: p-runtime/ci/jobs/destroy-environment.yml
 
   - name: deploy-ops-manager
     plan:
-      - get: p-runtime
-        trigger: true
-        passed: [destroy-environment]
-      - get: environment
-        trigger: true
-        passed: [destroy-environment]
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [destroy-environment]
+        - get: environment
+          trigger: true
+          passed: [destroy-environment]
+        - get: upstream-release-metadata
+          trigger: true
+          passed: [destroy-environment]
       - aggregate:
         - get: ops-manager
           resource: ops-manager-stable
@@ -149,12 +157,16 @@ jobs:
 
   - name: configure-microbosh
     plan:
-      - get: p-runtime
-        trigger: true
-        passed: [deploy-ops-manager]
-      - get: environment
-        trigger: true
-        passed: [deploy-ops-manager]
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [deploy-ops-manager]
+        - get: environment
+          trigger: true
+          passed: [deploy-ops-manager]
+        - get: upstream-release-metadata
+          trigger: true
+          passed: [deploy-ops-manager]
       - task: configure
         tags: [aws]
         file: p-runtime/ci/jobs/configure-microbosh.yml
@@ -164,12 +176,16 @@ jobs:
 
   - name: deploy-microbosh
     plan:
-      - get: p-runtime
-        trigger: true
-        passed: [configure-microbosh]
-      - get: environment
-        trigger: true
-        passed: [configure-microbosh]
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [configure-microbosh]
+        - get: environment
+          trigger: true
+          passed: [configure-microbosh]
+        - get: upstream-release-metadata
+          trigger: true
+          passed: [configure-microbosh]
       - task: deploy
         tags: [aws]
         file: p-runtime/ci/jobs/deploy-microbosh.yml
@@ -179,12 +195,13 @@ jobs:
 
   - name: build-runtime
     plan:
-      - get: p-runtime
-        trigger: true
-        passed: [claim-environment]
-      - get: upstream-release-metadata
-        trigger: true
-        passed: [claim-environment]
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [claim-environment]
+        - get: upstream-release-metadata
+          trigger: true
+          passed: [claim-environment]
       - task: build-product
         tags: [aws]
         file: p-runtime/ci/jobs/build-pivotal-with-upstream-metadata.yml
@@ -204,6 +221,9 @@ jobs:
         - get: environment
           trigger: true
           passed: [deploy-microbosh]
+        - get: upstream-release-metadata
+          trigger: true
+          passed: [deploy-microbosh,build-runtime]
         - get: ert-product
           trigger: true
           passed: [build-runtime]
@@ -217,29 +237,31 @@ jobs:
 
   - name: configure-ert
     plan:
-      - get: p-runtime
-        trigger: true
-        passed: [upload-pivotal]
-      - get: environment
-        trigger: true
-        passed: [upload-pivotal]
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [upload-pivotal]
+        - get: environment
+          trigger: true
+          passed: [upload-pivotal]
       - task: configure-ert
         tags: [aws]
         file: p-runtime/ci/jobs/configure-ert.yml
         config:
           params:
-            ERT_VERSION: 1.5
+            ERT_VERSION: 1.6
             OPSMAN_VERSION: 1.5
 
 
   - name: deploy-ert
     plan:
-      - get: p-runtime
-        trigger: true
-        passed: [configure-ert]
-      - get: environment
-        trigger: true
-        passed: [configure-ert]
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [configure-ert]
+        - get: environment
+          trigger: true
+          passed: [configure-ert]
       - task: deploy-ert
         tags: [aws]
         file: p-runtime/ci/jobs/deploy-ert.yml
@@ -249,22 +271,24 @@ jobs:
 
   - name: run-cats
     plan:
-      - get: p-runtime
-        trigger: true
-        passed: [deploy-ert]
-      - get: environment
-        trigger: true
-        passed: [deploy-ert]
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [deploy-ert]
+        - get: environment
+          trigger: true
+          passed: [deploy-ert]
       - task: run-cats
         tags: [aws]
         file: p-runtime/ci/jobs/run-cats.yml
 
   - name: release-environment
     plan:
-      - get: p-runtime
-        passed: [run-cats]
-      - get: environment
-        passed: [run-cats]
+      - aggregate:
+        - get: p-runtime
+          passed: [run-cats]
+        - get: environment
+          passed: [run-cats]
       - put: environment
         params:
           release: environment
