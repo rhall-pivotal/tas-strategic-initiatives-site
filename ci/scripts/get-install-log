@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -ex
+
+export RELENG_ENV=`cat environment/name`
+
+pushd p-runtime
+  ./ci/scripts/helpers/bundle-gems.sh
+
+  xvfb-run -a bundle exec rake opsmgr:get_latest_install_log[$RELENG_ENV,$OPSMAN_VERSION]
+popd
+

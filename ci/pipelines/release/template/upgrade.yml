@@ -72,6 +72,13 @@ jobs:
         config:
           params:
             OPSMAN_VERSION: *om_initial_version
+        ensure:
+          task: get-install-log
+          tags: [{{iaas_type}}]
+          file: p-runtime/ci/jobs/get-install-log.yml
+          config:
+            params:
+              OPSMAN_VERSION: *om_initial_version
 
   - name: upload-pivotal-initial-{{pipeline_name}}
     plan:
@@ -124,6 +131,13 @@ jobs:
         config:
           params:
             OPSMAN_VERSION: *om_initial_version
+        ensure:
+          task: get-install-log
+          tags: [{{iaas_type}}]
+          file: p-runtime/ci/jobs/get-install-log.yml
+          config:
+            params:
+              OPSMAN_VERSION: *om_initial_version
 
   - name: export-installation-{{pipeline_name}}
     plan:
@@ -264,6 +278,13 @@ jobs:
         config:
           params:
             OPSMAN_VERSION: *om_version
+        ensure:
+          task: get-install-log
+          tags: [{{iaas_type}}]
+          file: p-runtime/ci/jobs/get-install-log.yml
+          config:
+            params:
+              OPSMAN_VERSION: *om_version
 
   - name: run-cats-{{pipeline_name}}
     plan:

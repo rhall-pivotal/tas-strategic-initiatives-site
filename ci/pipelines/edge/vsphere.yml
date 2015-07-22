@@ -166,6 +166,13 @@ jobs:
         config:
           params:
             OPSMAN_VERSION: *om_version
+        ensure:
+          task: get-install-log
+          tags: [vsphere]
+          file: p-runtime/ci/jobs/get-install-log.yml
+          config:
+            params:
+              OPSMAN_VERSION: *om_version
 
   - name: upload-pivotal
     plan:
@@ -213,6 +220,13 @@ jobs:
         config:
           params:
             OPSMAN_VERSION: *om_version
+        ensure:
+          task: get-install-log
+          tags: [vsphere]
+          file: p-runtime/ci/jobs/get-install-log.yml
+          config:
+            params:
+              OPSMAN_VERSION: *om_version
 
   - name: run-cats
     plan:

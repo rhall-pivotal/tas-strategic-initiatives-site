@@ -452,6 +452,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - aws
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: upload-pivotal-aws-clean
   plan:
   - aggregate:
@@ -554,6 +562,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - aws
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: run-cats-aws-clean
   plan:
   - get: p-runtime
@@ -679,6 +695,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - vsphere
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: upload-pivotal-vsphere-clean
   plan:
   - aggregate:
@@ -761,6 +785,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - vsphere
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: run-cats-vsphere-clean
   plan:
   - get: p-runtime
@@ -886,6 +918,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - vsphere
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: upload-pivotal-internetless
   plan:
   - aggregate:
@@ -968,6 +1008,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - vsphere
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: run-cats-internetless
   plan:
   - get: p-runtime
@@ -1093,6 +1141,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - aws
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: upload-pivotal-initial-aws-upgrade
   plan:
   - get: p-runtime
@@ -1171,6 +1227,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - aws
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: export-installation-aws-upgrade
   plan:
   - get: p-runtime
@@ -1332,6 +1396,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - aws
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: run-cats-aws-upgrade
   plan:
   - get: p-runtime
@@ -1457,6 +1529,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - vsphere
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: upload-pivotal-initial-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -1515,6 +1595,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - vsphere
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: export-installation-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -1676,6 +1764,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - vsphere
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: run-cats-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -1809,6 +1905,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - vcloud
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: upload-pivotal-initial-vcloud-upgrade
   plan:
   - get: p-runtime
@@ -1867,6 +1971,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - vcloud
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: export-installation-vcloud-upgrade
   plan:
   - get: p-runtime
@@ -2028,6 +2140,14 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.5
+    ensure:
+      task: get-install-log
+      tags:
+      - vcloud
+      file: p-runtime/ci/jobs/get-install-log.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
 - name: run-cats-vcloud-upgrade
   plan:
   - get: p-runtime
