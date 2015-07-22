@@ -1,0 +1,14 @@
+---
+platform: linux
+
+image: docker:///pivotalcf/releng-ci
+
+inputs:
+  - name: p-runtime
+
+params:
+  CLAIM_REASON:
+
+run:
+  path: p-runtime/ci/scripts/update-krafa
+

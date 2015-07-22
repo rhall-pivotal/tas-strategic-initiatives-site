@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -ex
+
+export RELENG_ENV=`cat environment/name`
+
+pushd p-runtime
+  ./ci/scripts/helpers/bundle-gems.sh
+
+  bundle exec krafa_client release-claim --environment-name=$RELENG_ENV
+
+  bundle exec krafa_client claim --environment-name=$RELENG_ENV --claim-reason=$CLAIM_REASON
+popd
+
