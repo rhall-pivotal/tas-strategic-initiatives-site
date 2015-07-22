@@ -108,6 +108,14 @@ jobs:
       - put: environment
         params:
           acquire: true
+      - task: update-krafa
+        file: p-runtime/ci/jobs/update-krafa.yml
+        config:
+          params:
+            CLAIM_REASON: salmon/cf-autoscaling
+            KRAFA_BASE_URL: http://krafa.cfapps.io
+            KRAFA_USERNAME: releng
+            KRAFA_PASSWORD: bet90onions
 
   - name: destroy-environment
     plan:
