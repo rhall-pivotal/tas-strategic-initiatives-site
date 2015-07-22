@@ -379,6 +379,14 @@ jobs:
     resource: environment-aws
     params:
       acquire: true
+  - task: update-krafa
+    file: p-runtime/ci/jobs/update-krafa.yml
+    config:
+      params:
+        CLAIM_REASON: aws-clean
+        KRAFA_BASE_URL: http://krafa.cfapps.io
+        KRAFA_USERNAME: releng
+        KRAFA_PASSWORD: bet90onions
 - name: destroy-environment-aws-clean
   plan:
   - get: p-runtime
@@ -622,6 +630,14 @@ jobs:
     resource: environment-vsphere
     params:
       acquire: true
+  - task: update-krafa
+    file: p-runtime/ci/jobs/update-krafa.yml
+    config:
+      params:
+        CLAIM_REASON: vsphere-clean
+        KRAFA_BASE_URL: http://krafa.cfapps.io
+        KRAFA_USERNAME: releng
+        KRAFA_PASSWORD: bet90onions
 - name: destroy-environment-vsphere-clean
   plan:
   - get: p-runtime
@@ -845,6 +861,14 @@ jobs:
     resource: environment-internetless
     params:
       acquire: true
+  - task: update-krafa
+    file: p-runtime/ci/jobs/update-krafa.yml
+    config:
+      params:
+        CLAIM_REASON: internetless
+        KRAFA_BASE_URL: http://krafa.cfapps.io
+        KRAFA_USERNAME: releng
+        KRAFA_PASSWORD: bet90onions
 - name: destroy-environment-internetless
   plan:
   - get: p-runtime
@@ -1068,6 +1092,14 @@ jobs:
     resource: environment-aws-east
     params:
       acquire: true
+  - task: update-krafa
+    file: p-runtime/ci/jobs/update-krafa.yml
+    config:
+      params:
+        CLAIM_REASON: aws-upgrade
+        KRAFA_BASE_URL: http://krafa.cfapps.io
+        KRAFA_USERNAME: releng
+        KRAFA_PASSWORD: bet90onions
 - name: destroy-environment-aws-upgrade
   plan:
   - get: p-runtime
@@ -1456,6 +1488,14 @@ jobs:
     resource: environment-vsphere
     params:
       acquire: true
+  - task: update-krafa
+    file: p-runtime/ci/jobs/update-krafa.yml
+    config:
+      params:
+        CLAIM_REASON: vsphere-upgrade
+        KRAFA_BASE_URL: http://krafa.cfapps.io
+        KRAFA_USERNAME: releng
+        KRAFA_PASSWORD: bet90onions
 - name: destroy-environment-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -1824,6 +1864,14 @@ jobs:
     resource: environment-vcloud
     params:
       acquire: true
+  - task: update-krafa
+    file: p-runtime/ci/jobs/update-krafa.yml
+    config:
+      params:
+        CLAIM_REASON: vcloud-upgrade
+        KRAFA_BASE_URL: http://krafa.cfapps.io
+        KRAFA_USERNAME: releng
+        KRAFA_PASSWORD: bet90onions
 - name: destroy-environment-vcloud-upgrade
   plan:
   - get: p-runtime
