@@ -178,12 +178,12 @@ jobs:
       - get: p-runtime
         trigger: true
         passed: [claim-environment]
-      - task: built-product
+      - task: build-product
         tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/build-pivotal.yml
       - put: ert-product
         params:
-          from: built-product/ert.pivotal
+          from: build-product/ert.pivotal
 
   - name: upload-pivotal
     plan:
