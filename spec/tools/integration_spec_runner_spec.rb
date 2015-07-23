@@ -58,7 +58,7 @@ RSpec.describe 'IntegrationSpecRunner' do
     end
   end
 
-  %w(1.4 1.5 1.6).each do |version|
+  %w(1.5 1.6).each do |version|
     describe 'configuring ert' do
       let(:ert_version) { version }
 
@@ -92,6 +92,19 @@ RSpec.describe 'IntegrationSpecRunner' do
           ).and_return(0)
 
           integration_spec_runner.configure_external_file_storage
+        end
+      end
+
+      describe "#configure_experimental_features #{version}" do
+        it 'runs the correct version of configure experimental features' do
+          expect(RSpecExiter).to receive(:exit_rspec).with(0)
+          expect(RSpec::Core::Runner).to(
+            receive(:run).with(
+              ["integration/ERT-#{ert_version}/configure_experimental_features_spec.rb"]
+            ).and_return(0)
+          )
+
+          integration_spec_runner.configure_experimental_features
         end
       end
     end
