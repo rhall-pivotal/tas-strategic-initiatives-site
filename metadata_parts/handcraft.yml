@@ -1372,6 +1372,8 @@ job_types:
         servers:
           z1: (( .router.ips ))
           z2: []
+      cc:
+        allow_app_ssh_access: false
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
