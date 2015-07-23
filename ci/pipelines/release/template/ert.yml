@@ -270,7 +270,7 @@ jobs:
     plan:
       - get: p-runtime
         trigger: true
-        passed: [release-environment-aws-clean,release-environment-aws-upgrade,release-environment-vsphere-clean,release-environment-vsphere-upgrade,release-environment-internetless]
+        passed: [release-environment-aws-clean,release-environment-aws-upgrade,release-environment-vsphere-clean,release-environment-vsphere-upgrade,release-environment-internetless,release-environment-vcloud-upgrade]
       - get: ert-product
         passed: [build-runtime]
       - put: ert-product-promoted
