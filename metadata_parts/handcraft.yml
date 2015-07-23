@@ -210,7 +210,7 @@ form_types:
     property_inputs:
       - reference: .ha_proxy.ssl_rsa_certificate
         label: SSL Termination Certificate
-        description: "This certificate is used by HAProxy for SSL termination. If you use an external load-balancer instead, that load-balancer's certificate is still required here in case you have other Pivotal Cloud Foundry services installed that reference this certificate. You can also generate a self-signed certificate with your system wildcard domain if you do not have a certificate available."
+        description: "This certificate is used by HAProxy and Router for SSL termination. You can generate a self-signed certificate with your system wildcard domain if you do not have a certificate available."
       - reference: .ha_proxy.skip_cert_verify
         label: Trust Self-Signed Certificates
       - reference: .ha_proxy.ssl_ciphers
@@ -1478,6 +1478,8 @@ job_types:
           user: router_status
           password: (( status_credentials.password ))
         enable_ssl: (( enable_ssl.value ))
+        ssl_cert: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
+        ssl_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem ))
 
       metron_endpoint:
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
