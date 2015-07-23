@@ -41,9 +41,18 @@ resources:
       password: Mw7yE4NYt1gE
       email: cf-toolsmiths+pivotal-cf-dockerhub@pivotal.io
 
+  - name: once-a-day
+    type: time
+    source:
+      interval: 24h
+      start: 9:30 AM -0800
+      stop: 6:00 PM -0800
+
 jobs:
   - name: build-and-push
     plan:
+      - get: once-a-day
+        trigger: true
       - get: p-runtime
       - put: releng-ci-docker
         params:
