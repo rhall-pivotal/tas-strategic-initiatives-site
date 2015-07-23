@@ -4,22 +4,22 @@ vm_shepherd:
   vm_configs:
   - creds:
       auth_url: http://10.85.38.2:5000/v2.0/tokens
-      username: ryan
-      api_key: 'R&*O83LpO61U'
-      tenant: ryan
+      username: releng-ci
+      api_key: '&65RaGc@mLQ7'
+      tenant: venus
     vm:
-      name: 'ryan-ops-manager'
+      name: 'venus-ops-manager'
       flavor_name: opsman
-      network_name: 'ryan_net'
+      network_name: 'venus_net'
       key_name: releng-openstack-key
       security_group_names:
-        - ryan-ops-manager
-        - ryan-products
-      private_ip: 192.168.114.100
-      public_ip: 10.85.38.50
+        - venus-ops-manager
+        - venus-products
+      private_ip: 192.168.115.100
+      public_ip: 10.85.38.56
 
 ops_manager:
-  url: https://pcf.ryan-openstack.cf-app.com
+  url: https://pcf.venus.cf-app.com
   username: pivotalcf
   password: pivotalcf
   ntp_servers: time1.sf.cf-app.com
@@ -27,11 +27,11 @@ ops_manager:
     - iaas_identifier: nova
   openstack:
     identity_endpoint: http://10.85.38.2:5000/v2.0
-    username: ryan
-    password: 'R&*O83LpO61U'
-    tenant: ryan
+    username: releng-ci
+    password: '&65RaGc@mLQ7'
+    tenant: venus
     region: RegionOne
-    security_group_name: ryan-products
+    security_group_name: venus-products
     key_pair_name: releng-openstack-key
     ssh_private_key: |
       -----BEGIN RSA PRIVATE KEY-----
@@ -63,16 +63,16 @@ ops_manager:
       -----END RSA PRIVATE KEY-----
   networks:
   - name: first-network
-    identifier: 21ae4283-1cea-4250-8c37-80e5aaef5435
-    subnet: 192.168.114.0/24
-    reserved_ips: 192.168.114.2-192.168.114.4
+    identifier: 1de7aeb0-514e-42e6-9213-66835ae24ffc
+    subnet: 192.168.115.0/24
+    reserved_ips: 192.168.115.2-192.168.115.4
     dns: 10.87.8.10,10.87.8.11
-    gateway: 192.168.114.1
+    gateway: 192.168.115.1
   elastic_runtime:
     name: cf
-    ha_proxy_floating_ips: 10.85.38.51
-    system_domain: sys.ryan-openstack.cf-app.com
-    apps_domain: apps.ryan-openstack.cf-app.com
+    ha_proxy_floating_ips: 10.85.38.57
+    system_domain: sys.venus.cf-app.com
+    apps_domain: apps.venus.cf-app.com
     smtp:
       from: identitystaging@mailinator.com
       address: smtp.sendgrid.net
