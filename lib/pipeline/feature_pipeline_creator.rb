@@ -13,7 +13,8 @@ module Pipeline
     def create_pipeline
       dir_name = make_pipeline_directory
 
-      template_content = File.read(File.join('ci', 'pipelines', 'feature-pipeline-template.yml'))
+      template_yaml = YAML.load(render(File.read(File.join('ci', 'pipelines', 'feature-pipeline-template.yml'))))
+      template_content = YAML.dump(template_yaml)
       write_pipeline_config(dir_name, template_content)
     end
 
@@ -23,7 +24,8 @@ module Pipeline
 
       dir_name = make_pipeline_directory
 
-      template_content = File.read(File.join('ci', 'pipelines', 'feature-upgrade-template.yml'))
+      template_yaml = YAML.load(render(File.read(File.join('ci', 'pipelines', 'feature-upgrade-template.yml'))))
+      template_content = YAML.dump(template_yaml)
       write_pipeline_config(dir_name, template_content)
     end
 
@@ -54,7 +56,7 @@ module Pipeline
 
     def write_pipeline_config(dir_name, template_content)
       File.open(File.join(dir_name, 'pipeline.yml'), 'w') do |f|
-        f.write(render(template_content))
+        f.write(template_content)
       end
     end
 

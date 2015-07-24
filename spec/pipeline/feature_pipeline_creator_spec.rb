@@ -38,9 +38,9 @@ YAML
       expect(File).to(
         receive(:read)
           .with('ci/pipelines/feature-pipeline-template.yml')
-          .and_return('{{branch_name}} {{iaas_type}} {{om_version}} {{ert_version}}')
+          .and_return('key: "{{branch_name}} {{iaas_type}} {{om_version}} {{ert_version}}"')
       )
-      expect(file).to receive(:write).with('features/branch aws 1.5 1.5')
+      expect(file).to receive(:write).with("---\nkey: features/branch aws 1.5 1.5\n")
 
       pipeline_creator.create_pipeline
     end
@@ -66,11 +66,11 @@ YAML
       expect(File).to(
         receive(:read)
           .with('ci/pipelines/feature-upgrade-template.yml')
-          .and_return('{{branch_name}} {{iaas_type}} {{om_version}} {{ert_version}}' \
+          .and_return('key: "{{branch_name}} {{iaas_type}} {{om_version}} {{ert_version}}' \
               ' {{om_initial_full_version}} {{ert_initial_full_version}}' \
-              ' {{om_initial_version}} {{ert_initial_version}}')
+              ' {{om_initial_version}} {{ert_initial_version}}"')
       )
-      expect(file).to receive(:write).with('features/branch aws 1.5 1.5 1.4.2.0 1.4.2.0 1.4 1.4')
+      expect(file).to receive(:write).with("---\nkey: features/branch aws 1.5 1.5 1.4.2.0 1.4.2.0 1.4 1.4\n")
 
       pipeline_creator.create_upgrade_pipeline(
         ert_initial_full_version: ert_initial_full_version,
