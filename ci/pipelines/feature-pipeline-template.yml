@@ -220,23 +220,6 @@ jobs:
           params:
             ERT_VERSION: {{ert_version}}
             OPSMAN_VERSION: {{om_version}}
-      - task: create-external-dbs
-        tags: [{{iaas_type}}]
-        file: p-runtime/ci/jobs/create-aws-dbs.yml
-      - task: configure-external-dbs
-        tags: [{{iaas_type}}]
-        file: p-runtime/ci/jobs/configure-external-dbs.yml
-        config:
-          params:
-            ERT_VERSION: {{ert_version}}
-            OPSMAN_VERSION: {{om_version}}
-      - task: configure-external-file-storage
-        tags: [{{iaas_type}}]
-        file: p-runtime/ci/jobs/configure-external-file-storage.yml
-        config:
-          params:
-            ERT_VERSION: {{ert_version}}
-            OPSMAN_VERSION: {{om_version}}
 
   - name: deploy-ert
     plan:

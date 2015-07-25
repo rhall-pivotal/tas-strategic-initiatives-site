@@ -1,19 +1,26 @@
 require 'mustache'
 require 'yaml'
+require 'pipeline/iaas_specific_task_adder'
 
 module Pipeline
   class FeaturePipelineCreator < Mustache
+    include IaasSpecificTaskAdder
+
     def initialize(branch_name:, iaas_type:)
       @branch_name = branch_name
       @iaas_type = iaas_type
       @ert_version = product_version
-      @om_version = @ert_version
+      @om_version = '1.5'
     end
 
     def create_pipeline
       dir_name = make_pipeline_directory
 
       template_yaml = YAML.load(render(File.read(File.join('ci', 'pipelines', 'feature-pipeline-template.yml'))))
+
+      add_aws_configure_tasks(template_yaml, 'aws-external-config.yml') if iaas_type == 'aws'
+      add_vcloud_delete_installation_tasks(template_yaml) if iaas_type == 'vcloud'
+
       template_content = YAML.dump(template_yaml)
       write_pipeline_config(dir_name, template_content)
     end
@@ -25,6 +32,10 @@ module Pipeline
       dir_name = make_pipeline_directory
 
       template_yaml = YAML.load(render(File.read(File.join('ci', 'pipelines', 'feature-upgrade-template.yml'))))
+
+      add_aws_configure_tasks(template_yaml, 'aws-external-config-upgrade.yml') if iaas_type == 'aws'
+      add_vcloud_delete_installation_tasks(template_yaml) if iaas_type == 'vcloud'
+
       template_content = YAML.dump(template_yaml)
       write_pipeline_config(dir_name, template_content)
     end
