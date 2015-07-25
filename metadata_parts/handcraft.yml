@@ -215,6 +215,9 @@ form_types:
         label: Trust Self-Signed Certificates
       - reference: .ha_proxy.ssl_ciphers
         label: HAProxy SSL Ciphers
+      - reference: .router.ssl_ciphers
+        label: Router SSL Ciphers
+        description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
       - reference: .dea.allow_host_access
         label: Enable cross-container traffic within each DEA
         description: Not recommended for untrusted workloads
@@ -1462,6 +1465,11 @@ job_types:
         configurable: true
         optional: true
 
+      - name: ssl_ciphers
+        type: text
+        configurable: true
+        optional: true
+
     manifest: |
       request_timeout_in_seconds: 900
       networks:
@@ -1471,6 +1479,7 @@ job_types:
         status:
           user: router_status
           password: (( status_credentials.password ))
+        cipher_suites: (( ssl_ciphers.value ))
 
       metron_endpoint:
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
