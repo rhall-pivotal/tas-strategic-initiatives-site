@@ -1900,13 +1900,14 @@ jobs:
     passed:
     - claim-environment-vcloud-upgrade
   - &1
-    task: delete-installation
-    tags:
-    - vcloud
-    file: p-runtime/ci/jobs/delete-installation.yml
-    config:
-      params:
-        OPSMAN_VERSION: 1.5
+    try:
+      task: delete-installation
+      tags:
+      - vcloud
+      file: p-runtime/ci/jobs/delete-installation.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.5
   - task: destroy
     tags:
     - vcloud
