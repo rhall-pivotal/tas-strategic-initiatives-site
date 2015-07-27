@@ -339,7 +339,7 @@ jobs:
       - aggregate:
         - get: p-runtime
           trigger: true
-          passed: [import-installation]
+          passed: [import-installation,build-runtime]
         - get: environment
           trigger: true
           passed: [import-installation]
