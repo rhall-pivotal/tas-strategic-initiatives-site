@@ -29,6 +29,5 @@ module Pipeline
     def template_directory
       File.join('ci', 'pipelines', 'release', 'template')
     end
-
   end
 end
