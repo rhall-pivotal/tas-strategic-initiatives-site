@@ -34,6 +34,16 @@ resources:
         hYI0vHHTGhvOQR1PYJlS5JuNvDCWo8PeeG/LV+zUEVW7LJMYzvWj
         -----END RSA PRIVATE KEY-----
 
+  - name: version
+    type: semver
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      key: ert-1.6/version
+      initial_version: 1.6.0-build.0
+
   - name: ert-product
     type: s3
     source:
@@ -63,7 +73,6 @@ resources:
       region_name: us-west-1
       private: true
       versioned_file: ops_manager_images/{{iaas_type}}/{{om_initial_full_version}}/ops_man_image
-
 
   - name: ops-manager-stable
     type: s3
@@ -138,6 +147,12 @@ jobs:
 
   - name: build-runtime
     plan:
+      - get: version
+        params:
+          pre: build
+      - put: version
+        params:
+          file: version/number
       - get: p-runtime
         trigger: true
         passed: [claim-environment]
