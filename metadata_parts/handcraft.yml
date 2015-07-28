@@ -210,11 +210,14 @@ form_types:
     property_inputs:
       - reference: .ha_proxy.ssl_rsa_certificate
         label: SSL Termination Certificate
-        description: "This certificate is used by HAProxy for SSL termination. If you use an external load-balancer instead, that load-balancer's certificate is still required here in case you have other Pivotal Cloud Foundry services installed that reference this certificate. You can also generate a self-signed certificate with your system wildcard domain if you do not have a certificate available."
+        description: "This certificate is used by HAProxy and Router for SSL termination. You can generate a self-signed certificate with your system wildcard domain if you do not have a certificate available."
       - reference: .ha_proxy.skip_cert_verify
         label: Trust Self-Signed Certificates
       - reference: .ha_proxy.ssl_ciphers
         label: HAProxy SSL Ciphers
+      - reference: .router.ssl_ciphers
+        label: Router SSL Ciphers
+        description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
       - reference: .dea.allow_host_access
         label: Enable cross-container traffic within each DEA
         description: Not recommended for untrusted workloads
@@ -1462,6 +1465,16 @@ job_types:
         configurable: true
         optional: true
 
+      - name: ssl_ciphers
+        type: text
+        configurable: true
+        optional: true
+
+      - name: enable_ssl
+        type: boolean
+        configurable: true
+        default: true
+
     manifest: |
       request_timeout_in_seconds: 900
       networks:
@@ -1471,6 +1484,10 @@ job_types:
         status:
           user: router_status
           password: (( status_credentials.password ))
+        cipher_suites: (( ssl_ciphers.value ))
+        enable_ssl: (( enable_ssl.value ))
+        ssl_cert: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
+        ssl_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem ))
 
       metron_endpoint:
         shared_secret:  (( .doppler.shared_secret_credentials.password ))
