@@ -371,6 +371,15 @@ form_types:
       - reference: .properties.smtp_crammd5_secret
         label: SMTP CRAMMD5 secret
 
+  - name: diego
+    label: Diego
+    description: Diego is an in-place replacement for DEAs. If you do not wish to use Diego, you may scale down Diego Brain and Diego Cell instances to zero in Resource Config, and turn off "Diego Smoke Tests" in Errands.
+    property_inputs:
+      - reference: .cloud_controller.default_to_diego_backend
+        label: Use Diego by default instead of DEAs
+      - reference: .cloud_controller.diego_docker
+        label: Enable Diego Docker support
+
   - name: experimental_features
     label: Experimental Features
     description: Experimental Features
@@ -381,8 +390,6 @@ form_types:
       - reference: .uaa.disable_http
         label: Disable HTTP traffic to UAA
         description: "Allows only HTTPS traffic to UAA"
-      - reference: .cloud_controller.diego_docker
-        label: Enable Diego Docker support
 
 job_types:
   - name: nats
@@ -1148,6 +1155,11 @@ job_types:
           min: 0
           max: 1000
 
+      - name: default_to_diego_backend
+        type: boolean
+        configurable: true
+        default: false
+
       - name: diego_docker
         type: boolean
         configurable: true
@@ -1161,6 +1173,7 @@ job_types:
       support_address: https://support.pivotal.io
 
       cc:
+        default_to_diego_backend: (( default_to_diego_backend.value ))
         diego_docker: (( diego_docker.value ))
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
