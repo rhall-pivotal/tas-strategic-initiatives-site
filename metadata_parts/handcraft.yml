@@ -703,7 +703,7 @@ job_types:
     manifest: |
       nfs_server:
         allow_from_entries:
-        - (( ..cf.cloud_controller.first_network_deprecated ))
+        - (( .cloud_controller.first_network_deprecated ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -2574,8 +2574,8 @@ job_types:
             username: (( autoscale_credentials.identity ))
             password: (( autoscale_credentials.password ))
         syslog_aggregator:
-          address: (( ..cf.properties.syslog_host.value ))
-          port: (( ..cf.properties.syslog_port.value ))
+          address: (( .properties.syslog_host.value ))
+          port: (( .properties.syslog_port.value ))
           transport: (( .properties.syslog_protocol.value ))
 
   - name: dea
