@@ -27,7 +27,7 @@ else
     TARBALL_FILENAME=$RELEASE_DIR/$RELEASE_NAME-$RELEASE_VERSION.tgz
     TARBALL_MD5=`md5sum $RELEASES_DIR/$TARBALL_FILENAME | awk '{ print $1 }'`
 
-    cat > ./metadata_parts/binaries.yml <<EOF
+    cat > $PWD/p-runtime/metadata_parts/binaries.yml <<EOF
 ---
 releases:
 - file: $TARBALL_FILENAME
