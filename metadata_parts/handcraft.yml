@@ -4034,6 +4034,9 @@ job_types:
         admin_user: (( .uaa.admin_credentials.identity ))
         admin_password: (( .uaa.admin_credentials.password ))
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+        run_security_groups_tests: false
+        run_ssh_tests: false
+        nodes: 1
 
   - name: acceptance-tests
     label: Run CF Acceptance Tests
