@@ -6,12 +6,13 @@ image: docker:///cloudfoundry/releng-ci
 inputs:
   - name: p-runtime
   - name: version
-  - name: upstream-release-metadata
+  - name: upstream-release
 
 params:
+  RELASE_NAME:
   EXTERNAL_RELEASE:
   USE_ERT_DUMMY:
+  DERIVE_METADATA: true
 
 run:
   path: p-runtime/ci/scripts/build-pivotal
-
