@@ -3380,7 +3380,7 @@ job_types:
     description: Pushes the Pivotal Apps Manager application to your Elastic Runtime installation
     templates:
       - name: push-apps-manager
-        release: push-console-release
+        release: push-apps-manager-release
     errand: true
 
     resource_definitions:
@@ -3546,7 +3546,7 @@ job_types:
     description: Monitors usage of an application pushed to your Elastic Runtime installation
     templates:
       - name: push-app-usage-service
-        release: push-console-release
+        release: push-apps-manager-release
     errand: true
 
     resource_definitions:
