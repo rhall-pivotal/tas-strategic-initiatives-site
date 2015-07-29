@@ -2448,10 +2448,6 @@ job_types:
         release: diego
       - name: etcd
         release: diego
-      - name: file_server
-        release: diego
-      - name: nsync
-        release: diego
       - name: receptor
         release: diego
       - name: route_emitter
@@ -2459,10 +2455,6 @@ job_types:
       - name: runtime_metrics_server
         release: diego
       - name: ssh_proxy
-        release: diego
-      - name: stager
-        release: diego
-      - name: tps
         release: diego
       - name: consul_agent
         release: cf
@@ -2490,7 +2482,7 @@ job_types:
         type: integer
         label: Persistent Disk
         configurable: true
-        default: 5_120
+        default: 1_024
 
       - name: cpu
         type: integer
@@ -2530,23 +2522,6 @@ job_types:
             machines: (( ips ))
         etcd:
           machines: (( ips ))
-        file_server:
-          cc:
-            job_polling_interval_in_seconds: 25
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
-            external_port: 9022
-            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
-            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
-        nsync:
-          cc:
-            base_url: https://api.(( .cloud_controller.system_domain.value ))
-            basic_auth_username: bulk_api
-            basic_auth_password: (( .cloud_controller.bulk_api_credentials.password ))
-            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
-            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
-          etcd:
-            machines: (( ips ))
         receptor:
           register_with_router: true
           domain_names: ["(( .cloud_controller.system_domain.value ))","(( .cloud_controller.apps_domain.value ))"]
@@ -2573,6 +2548,102 @@ job_types:
             external_port: 9022
         ssl:
           skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+      consul:
+        domain: consul
+        agent:
+          servers:
+            lan: (( .consul_server.ips ))
+          services:
+            - receptor
+            - ssh_proxy
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+      metron_agent:
+        zone: (( availability_zone ))
+        deployment: cf
+      etcd:
+        machines: (( .etcd_server.ips ))
+
+  - name: cc_bridge
+    label: Diego CC Bridge
+    resource_label: Diego CC Bridge
+    description: Diego CC Bridge
+    templates:
+      - name: stager
+        release: diego
+      - name: nsync
+        release: diego
+      - name: tps
+        release: diego
+      - name: file_server
+        release: diego
+      - name: consul_agent
+        release: cf
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 4_096
+        constraints:
+          min: 4_096
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 4_096
+        constraints:
+          min: 4_096
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 0
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      diego:
+        ssl:
+          skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
         stager:
           cc:
             basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
@@ -2580,8 +2651,25 @@ job_types:
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+        nsync:
+          cc:
+            base_url: https://api.(( .cloud_controller.system_domain.value ))
+            basic_auth_username: bulk_api
+            basic_auth_password: (( .cloud_controller.bulk_api_credentials.password ))
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+          etcd:
+            machines: (( .diego_brain.ips ))
         tps:
           cc:
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            external_port: 9022
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+        file_server:
+          cc:
+            job_polling_interval_in_seconds: 25
             basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
             basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
             external_port: 9022
@@ -2595,8 +2683,6 @@ job_types:
           services:
             - file_server
             - nsync
-            - receptor
-            - ssh_proxy
             - stager
             - tps
       nats:
