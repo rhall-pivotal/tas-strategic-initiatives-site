@@ -17,6 +17,13 @@ module Pipeline
       {
         method: :clean_pipeline_jobs,
         params: {
+          pipeline_name: 'openstack-clean',
+          iaas_type: 'openstack'
+        },
+      },
+      {
+        method: :clean_pipeline_jobs,
+        params: {
           pipeline_name: 'vsphere-clean',
           iaas_type: 'vsphere'
         },
@@ -33,6 +40,13 @@ module Pipeline
         params: {
           pipeline_name: 'aws-upgrade',
           iaas_type: 'aws'
+        },
+      },
+      {
+        method: :upgrade_pipeline_jobs,
+        params: {
+          pipeline_name: 'openstack-upgrade',
+          iaas_type: 'openstack'
         },
       },
       {

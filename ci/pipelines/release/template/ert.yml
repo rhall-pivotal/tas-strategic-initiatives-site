@@ -122,6 +122,14 @@ resources:
       pool: internetless
       private_key: *env_private_key
 
+  - name: environment-openstack
+    type: pool
+    source:
+      uri: git@github.com:pivotal-cf-experimental/releng-env-resource-pool
+      branch: master
+      pool: openstack
+      private_key: *env_private_key
+
   - name: environment-vcloud
     type: pool
     source:
@@ -139,6 +147,16 @@ resources:
       region_name: us-west-1
       private: true
       versioned_file: ops_manager_images/aws/stable/ops_man_image
+
+  - name: ops-manager-stable-openstack
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: ops_manager_images/openstack/stable/ops_man_image
 
   - name: ops-manager-stable-vsphere
     type: s3
@@ -180,6 +198,16 @@ resources:
       private: true
       versioned_file: ops_manager_images/aws/1.5.0.0/ops_man_image
 
+  - name: initial-ops-manager-openstack
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: ops_manager_images/openstack/1.5.0.0/ops_man_image
+
   - name: initial-ops-manager-vsphere
     type: s3
     source:
@@ -210,6 +238,16 @@ resources:
       private: true
       versioned_file: exported_installations/master/aws/installation.zip
 
+  - name: exported-installation-openstack
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: exported_installations/master/openstack/installation.zip
+
   - name: exported-installation-vsphere
     type: s3
     source:
@@ -229,6 +267,16 @@ resources:
       region_name: us-west-1
       private: true
       versioned_file: exported_installations/master/vcloud/installation.zip
+
+  - name: stemcell-1.5.1-openstack
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: stemcells/1.5.1/openstack/bosh-stemcell-3012-openstack-kvm-ubuntu-trusty-go_agent-raw.tgz
 
   - name: stemcell-1.5.1-vsphere
     type: s3
@@ -309,6 +357,21 @@ groups:
     - destroy-environment-final-aws-clean
     - release-environment-aws-clean
 
+  - name: openstack-clean
+    jobs:
+    - claim-environment-openstack-clean
+    - destroy-environment-openstack-clean
+    - deploy-ops-manager-openstack-clean
+    - configure-microbosh-openstack-clean
+    - deploy-microbosh-openstack-clean
+    - upload-pivotal-openstack-clean
+    - configure-ert-openstack-clean
+    - import-stemcell-openstack-clean
+    - deploy-ert-openstack-clean
+    - run-cats-openstack-clean
+    - destroy-environment-final-openstack-clean
+    - release-environment-openstack-clean
+
   - name: vsphere-clean
     jobs:
     - claim-environment-vsphere-clean
@@ -360,6 +423,28 @@ groups:
     - run-cats-aws-upgrade
     - destroy-environment-final-aws-upgrade
     - release-environment-aws-upgrade
+
+  - name: openstack-upgrade
+    jobs:
+    - claim-environment-openstack-upgrade
+    - destroy-environment-openstack-upgrade
+    - deploy-ops-manager-initial-openstack-upgrade
+    - configure-microbosh-initial-openstack-upgrade
+    - deploy-microbosh-initial-openstack-upgrade
+    - upload-pivotal-initial-openstack-upgrade
+    - configure-ert-initial-openstack-upgrade
+    - deploy-ert-initial-openstack-upgrade
+    - export-installation-openstack-upgrade
+    - destroy-opsman-openstack-upgrade
+    - deploy-opsman-openstack-upgrade
+    - import-installation-openstack-upgrade
+    - upgrade-pivotal-openstack-upgrade
+    - configure-ert-openstack-upgrade
+    - import-stemcell-openstack-upgrade
+    - deploy-ert-openstack-upgrade
+    - run-cats-openstack-upgrade
+    - destroy-environment-final-openstack-upgrade
+    - release-environment-openstack-upgrade
 
   - name: vsphere-upgrade
     jobs:
@@ -414,3 +499,4 @@ groups:
       - ops-manager-stable-aws
       - ops-manager-stable-vsphere
       - ops-manager-stable-vcloud
+      - ops-manager-stable-openstack
