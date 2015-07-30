@@ -102,7 +102,7 @@ resources:
   - name: upstream-release
     type: github-release
     source:
-      access_token: 11dac90b528b93263bbdd9103b3aa0acf94c020e
+      access_token: 6e2749ee83cd2ffe595a42861ec0d6d0052b3ab7
       user: pivotal-cf
       repository: cf-autoscaling-release
 
@@ -228,7 +228,6 @@ jobs:
         config:
           params:
             RELEASE_NAME: cf-autoscaling
-            RELEASE_URL: https://github.com/pivotal-cf/cf-autoscaling-release/releases/download/v15/cf-autoscaling-15.tgz
       - put: ert-product
         params:
           from: build-product/ert.pivotal
