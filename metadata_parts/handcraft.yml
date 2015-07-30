@@ -1307,6 +1307,8 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
+      - name: consul_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1394,7 +1396,7 @@ job_types:
           z1: (( .router.ips ))
           z2: []
       cc:
-        allow_app_ssh_access: false
+        allow_app_ssh_access: true
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -4035,7 +4037,7 @@ job_types:
         admin_password: (( .uaa.admin_credentials.password ))
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         run_security_groups_tests: false
-        run_ssh_tests: false
+        run_ssh_tests: true
         nodes: 1
 
   - name: acceptance-tests
