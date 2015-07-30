@@ -215,6 +215,7 @@ form_types:
         label: Trust Self-Signed Certificates
       - reference: .ha_proxy.ssl_ciphers
         label: HAProxy SSL Ciphers
+        description: "HAProxy ciphers should use dashes in their names, e.g. ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384"
       - reference: .router.ssl_ciphers
         label: Router SSL Ciphers
         description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
