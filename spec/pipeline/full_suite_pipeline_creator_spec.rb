@@ -226,7 +226,10 @@ YAML
       full_pipeline_fixture = File.join(fixture_path, 'full-pipeline.yml')
       allow(File).to receive(:read).with(full_pipeline_fixture).and_call_original
 
-      expect(File).to receive(:write).with('ci/pipelines/release/ert-1.6.yml', File.read(full_pipeline_fixture))
+      expect(File).to receive(:write) do |filename, contents|
+        expect(filename).to eq('ci/pipelines/release/ert-1.6.yml')
+        expect(contents).to eq(File.read(full_pipeline_fixture))
+      end
 
       pipeline_creator.full_suite_pipeline
     end

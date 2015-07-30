@@ -48,6 +48,40 @@ jobs:
     tags:
     - aws
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: destroy-environment-openstack-clean
+  plan:
+  - get: environment
+    resource: environment-openstack
+    trigger: true
+    passed:
+    - claim-environment-openstack-clean
+  - task: destroy
+    tags:
+    - openstack
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: configure-ert-openstack-clean
+  plan:
+  - task: some-task
+    tags:
+    - openstack
+    resource: environment-openstack
+- name: another-job-openstack-clean
+  plan:
+  - task: another-task
+    tags:
+    - openstack
+    resource: environment-openstack
+- name: destroy-environment-final-openstack-clean
+  plan:
+  - get: environment
+    resource: environment-openstack
+    trigger: true
+    passed:
+    - claim-environment-openstack-clean
+  - task: destroy
+    tags:
+    - openstack
+    file: p-runtime/ci/jobs/destroy-environment.yml
 - name: destroy-environment-vsphere-clean
   plan:
   - get: environment
@@ -151,6 +185,40 @@ jobs:
   - task: destroy
     tags:
     - aws
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: destroy-environment-openstack-upgrade
+  plan:
+  - get: environment
+    resource: environment-openstack
+    trigger: true
+    passed:
+    - claim-environment-openstack-upgrade
+  - task: destroy
+    tags:
+    - openstack
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: configure-ert-openstack-upgrade
+  plan:
+  - task: some-task
+    tags:
+    - openstack
+    resource: environment-openstack
+- name: another-job-openstack-upgrade
+  plan:
+  - task: another-task
+    tags:
+    - openstack
+    resource: environment-openstack
+- name: destroy-environment-final-openstack-upgrade
+  plan:
+  - get: environment
+    resource: environment-openstack
+    trigger: true
+    passed:
+    - claim-environment-openstack-upgrade
+  - task: destroy
+    tags:
+    - openstack
     file: p-runtime/ci/jobs/destroy-environment.yml
 - name: destroy-environment-vsphere-upgrade
   plan:
