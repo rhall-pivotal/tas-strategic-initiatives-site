@@ -14,6 +14,7 @@ RUN apt-get update && apt-get -y upgrade && \
     libmysqlclient-dev \
     s3cmd \
     aria2 \
+    jq \
     && apt-get clean
 
 RUN chmod -R a+w /usr/local/bundle
