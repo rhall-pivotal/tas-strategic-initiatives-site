@@ -24,7 +24,7 @@ else
 
   if [ $DERIVE_METADATA ]; then
     RELEASE_VERSION=`cat $RELEASE_DIR/version`
-    TARBALL_FILENAME=$RELEASE_DIR/$RELEASE_NAME-$RELEASE_VERSION.tgz
+    TARBALL_FILENAME=$RELEASE_NAME-$RELEASE_VERSION.tgz
     TARBALL_MD5=`md5sum $RELEASES_DIR/$TARBALL_FILENAME | awk '{ print $1 }'`
 
     cat > $PWD/p-runtime/metadata_parts/binaries.yml <<EOF
