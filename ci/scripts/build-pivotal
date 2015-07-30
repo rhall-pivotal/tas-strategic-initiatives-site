@@ -42,7 +42,7 @@ EOF
     ./ci/scripts/helpers/bundle-gems.sh
 
     cat ./metadata_parts/binaries.yml
-    bundle exec vara build-pivotal . --version=$VERSION --external-releases=$external_release_metadata
+    bundle exec vara build-pivotal . --version=$VERSION
 
     # concourse streams working directory between containers
     # this won't be needed soon (#94235474, #93927268)
