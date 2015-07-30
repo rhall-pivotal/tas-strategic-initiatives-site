@@ -229,6 +229,10 @@ jobs:
           params:
             RELEASE_NAME: cf-autoscaling
             EXTERNAL_RELEASE: artisinal-binaries.yml
+            GITHUB_ACCESS_TOKEN: 6e2749ee83cd2ffe595a42861ec0d6d0052b3ab7
+            GITHUB_USER_NAME: cfla-botbot
+            GITHUB_RELEASE_ORG: pivotal-cf
+            GITHUB_RELEASE_REPO: cf-autoscaling-release
       - put: ert-product
         params:
           from: build-product/ert.pivotal
