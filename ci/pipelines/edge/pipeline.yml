@@ -887,12 +887,12 @@ jobs:
         trigger: true
         passed: [claim-environment-vcloud]
       - try:
-        task: delete-installation
-        tags: [vcloud]
-        file: p-runtime/ci/jobs/delete-installation.yml
-        config:
-          params:
-            OPSMAN_VERSION: *om_version
+          task: delete-installation
+          tags: [vcloud]
+          file: p-runtime/ci/jobs/delete-installation.yml
+          config:
+            params:
+              OPSMAN_VERSION: *om_version
       - task: destroy
         tags: [vcloud]
         file: p-runtime/ci/jobs/destroy-environment.yml
@@ -1044,12 +1044,12 @@ jobs:
         resource: environment-vcloud
         passed: [run-cats-vcloud]
       - try:
-        task: delete-installation
-        tags: [vcloud]
-        file: p-runtime/ci/jobs/delete-installation.yml
-        config:
-          params:
-            OPSMAN_VERSION: *om_version
+          task: delete-installation
+          tags: [vcloud]
+          file: p-runtime/ci/jobs/delete-installation.yml
+          config:
+            params:
+              OPSMAN_VERSION: *om_version
       - task: destroy
         tags: [vcloud]
         file: p-runtime/ci/jobs/destroy-environment.yml
