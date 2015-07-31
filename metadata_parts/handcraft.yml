@@ -2546,6 +2546,8 @@ job_types:
             machines: (( ips ))
         ssh_proxy:
           host_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem))
+          enable_cf_auth: true
+          enable_diego_auth: false
           cc:
             external_port: 9022
         ssl:
