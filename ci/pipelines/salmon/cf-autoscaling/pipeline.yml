@@ -313,6 +313,9 @@ jobs:
       - task: run-cats
         tags: [aws]
         file: p-runtime/ci/jobs/run-cats.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.5
 
   - name: destroy-environment-final
     plan:
