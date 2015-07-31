@@ -8,11 +8,11 @@ function append_release_to_metadata() {
   release_version="$5"
 
   cat >> $external_release_metadata <<EOF
-file: $tarball_filename
-name: $release_name
-version: "$release_version"
-md5: $tarball_md5
-url: ""
+- file: $tarball_filename
+  name: $release_name
+  version: "$release_version"
+  md5: $tarball_md5
+  url: ""
 EOF
 }
 
@@ -49,7 +49,10 @@ else
   fi
 
   if [ $DERIVE_METADATA ]; then
-    > $external_release_metadata
+    cat > $external_release_metadata <<EOF
+---
+releases:
+EOF
     RELEASE_NAME=( $RELEASE_NAMES )
     GITHUB_RELEASE_ORG=( $GITHUB_RELEASE_ORGS )
     GITHUB_RELEASE_REPO=( $GITHUB_RELEASE_REPOS )
@@ -66,6 +69,8 @@ else
 
       append_release_to_metadata $external_release_metadata $TARBALL_FILENAME $TARBALL_MD5 ${RELEASE_NAME[i]} $RELEASE_VERSION
     done
+
+    cat $external_release_metadata
   fi
 
   pushd p-runtime
