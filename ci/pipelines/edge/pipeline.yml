@@ -208,6 +208,60 @@ resources:
         1SYykNNYKIkR5x7VO2kGNs68zwiBCxllIqCKQZJeeJvctQVewYLs
         -----END RSA PRIVATE KEY-----
 
+  - name: latest-opsman-vcloud
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: ops_manager_images/vcloud/latest/ops_man_image
+
+  - name: stable-opsman-vcloud
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: ops_manager_images/vcloud/stable/ops_man_image
+
+  - name: environment-vcloud
+    type: pool
+    source:
+      uri: git@github.com:pivotal-cf-experimental/releng-env-resource-pool
+      branch: master
+      pool: vcloud
+      private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEowIBAAKCAQEAusDLytuEM/eX5vkwEFlTTKhnpDpUrKtxIOqcfGwg2gyH29jm
+        RGIYLAIYGqfsAXP1pbd/EMSE3CgzQUcwRiNTNRZTAXC3QXioz52xhziI7NrSu71P
+        LuwMuj7YtqjFdsFt57ho5O8iGXCmcwHdLvN4ADByRn4p4aMg59IK5aG8B+Btn0gz
+        dJBTz8Px1LkdVpSitZPrZdpjDoYymSABfQ/oTvMSTffiiOC634EFCkJmr9Uc1M2C
+        mX2LwtM/ZDVnpmY/hWjI3dNhEolvVl1TAQzfokoszJiFMSKPRJhF5SctdnBmzgDC
+        GOuxdU1Jtrhj22CxvzRGoVFI1BrxNcDzg3fBBwIDAQABAoIBAG6cvNgVNvOUxbr/
+        gxFb5vOzl1d1WSvAi8wESdWEMd0UqO91Q8XjGBAQ2XgIV8fwh+G0kqU60LqZcOpM
+        IPKZ/7Gk3FsxCMnVjp8R9tFxkeBAJ6sdEKZpF4zEppVh1ztkjBVAa5iVbuwEhgH+
+        a6RgfoYWK8lG9sV3WokUJnImXnmG1vAq55B1/M7FuboHKO/1raE7w3rnydqpGOlm
+        rdTTR9VghuJSI+zcPy90k/tWxqQW5fohjmvdFp3Tjlu68Gz9wYgBzlBfOsE0Oo64
+        ssMw0j2wAdbz6E3/g4w0k5j7c3UFECVyqfciY1u3CbXNAZz+UXvF6mgV6hGFsLha
+        55T1SFECgYEA8ed76C56IIGAVz9n+QltdRFijZyZXDrrmp4m5wTrjBabG+0quZ5e
+        CwYhr5J86G/HQiM/dVMlX8xUW7dLkJanLaeBaG+VA8VWvijcRRMG4CaRIeYquLCW
+        kJSW9fgcH+0zr2GxKoxA81dDSgSmu0rz+JXVxBZrzRAEesCTxwwuwV8CgYEAxaKd
+        osZDsqheY78/wDox3x8OVdkPgYtV7ckGXVA6YiNbFIS815Dtxun5RBjYC5AuLslu
+        ml+B/N5B+ezdGPCd1Xo+aoAG4SWbqRRQ4YhbXjfCW5+ve9vHAPb0Lsnq6YzmjRRa
+        n26QmLxlkXk9xs8eIH+yG4qEtOpwheqNDzzT2VkCgYAMAsheMOCTeJqcumM5NESh
+        CWnxShM7Rxmnpa6czdu8KussqcvzR2+38Gf/xbA6AkLMf9+IvcYfSY/utd0korZO
+        SADe5JtrgoLaEkFNlLJEsuWF313DqdDwANC2CcmrtCVa0ejwCeK3sl9+71gv+HrA
+        nv/sKojTt7XhOmqb+Xjg1QKBgFDNwtupakZidm0b5YnHgVpzTR4maCOT/2cAGN0Q
+        Dz7Oq8+A0eDk/YKlaOfBrJtVsLwqWVE+mVv0107C3Eb1IeMFXv2WKLnm8XS4vLTp
+        Vkn4TDu/1zSxz/SCA6YZojUpCZ5G4yJqRy5bYL+QrYRabDvnWb/O66E4dRcbpd7E
+        BO3JAoGBAKjGoOR90tzEtLrEvAYQ7C4hBaAEr5Q9qVTY8YX3Buu7IjOXnp+hPjM2
+        NsvohmptLBEY+xFa+uM7I7yzlp3NeLNeM37UyCQiEjuyoTotN1hjRLiWUWi6KrYS
+        1SYykNNYKIkR5x7VO2kGNs68zwiBCxllIqCKQZJeeJvctQVewYLs
+        -----END RSA PRIVATE KEY-----
 jobs:
   - name: claim-environment-aws
     plan:
@@ -800,6 +854,211 @@ jobs:
         params:
           release: environment
 
+  - name: claim-environment-vcloud
+    plan:
+      - get: p-runtime
+      - get: ops-manager
+        resource: latest-opsman-vcloud
+        trigger: true
+      - put: environment-vcloud
+        params:
+          acquire: true
+      - task: update-krafa
+        file: p-runtime/ci/jobs/update-krafa.yml
+        config:
+          params:
+            CLAIM_REASON: vcloud-edge
+            KRAFA_BASE_URL: http://krafa.cfapps.io
+            KRAFA_USERNAME: releng
+            KRAFA_PASSWORD: bet90onions
+
+  - name: destroy-environment-vcloud
+    plan:
+      - get: p-runtime
+        passed: [claim-environment-vcloud]
+      - get: environment
+        resource: environment-vcloud
+        trigger: true
+        passed: [claim-environment-vcloud]
+      - try:
+        task: delete-installation
+        tags: [vcloud]
+        file: p-runtime/ci/jobs/delete-installation.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+      - task: destroy
+        tags: [vcloud]
+        file: p-runtime/ci/jobs/destroy-environment.yml
+
+  - name: deploy-ops-manager-vcloud
+    plan:
+      - get: p-runtime
+        passed: [destroy-environment-vcloud, claim-environment-vcloud]
+      - get: environment
+        resource: environment-vcloud
+        trigger: true
+        passed: [destroy-environment-vcloud]
+      - aggregate:
+        - get: ops-manager
+          resource: latest-opsman-vcloud
+          passed: [claim-environment-vcloud]
+        - task: prepare
+          tags: [vcloud]
+          file: p-runtime/ci/jobs/prepare-environment.yml
+      - task: deploy
+        tags: [vcloud]
+        file: p-runtime/ci/jobs/deploy-opsman.yml
+
+  - name: configure-microbosh-vcloud
+    plan:
+      - get: p-runtime
+        passed: [deploy-ops-manager-vcloud]
+      - get: environment
+        resource: environment-vcloud
+        trigger: true
+        passed: [deploy-ops-manager-vcloud]
+      - task: configure
+        tags: [vcloud]
+        file: p-runtime/ci/jobs/configure-microbosh.yml
+        config:
+          params:
+            OPSMAN_VERSION: &om_version 1.5
+
+  - name: deploy-microbosh-vcloud
+    plan:
+      - get: p-runtime
+        passed: [configure-microbosh-vcloud]
+      - get: environment
+        resource: environment-vcloud
+        trigger: true
+        passed: [configure-microbosh-vcloud]
+      - task: deploy
+        tags: [vcloud]
+        file: p-runtime/ci/jobs/deploy-microbosh.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+        ensure:
+          task: get-install-log
+          tags: [vcloud]
+          file: p-runtime/ci/jobs/get-install-log.yml
+          config:
+            params:
+              OPSMAN_VERSION: *om_version
+
+  - name: upload-pivotal-vcloud
+    plan:
+      - aggregate:
+        - get: p-runtime
+          passed: [deploy-microbosh-vcloud]
+        - get: environment
+          resource: environment-vcloud
+          trigger: true
+          passed: [deploy-microbosh-vcloud]
+        - get: ert-product
+      - task: upload-pivotal
+        tags: [vcloud]
+        file: p-runtime/ci/jobs/upload-pivotal.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+
+
+  - name: configure-ert-vcloud
+    plan:
+      - get: p-runtime
+        passed: [upload-pivotal-vcloud]
+      - get: environment
+        resource: environment-vcloud
+        trigger: true
+        passed: [upload-pivotal-vcloud]
+      - task: configure-ert
+        tags: [vcloud]
+        file: p-runtime/ci/jobs/configure-ert.yml
+        config:
+          params:
+            ERT_VERSION: 1.6
+            OPSMAN_VERSION: *om_version
+
+
+  - name: deploy-ert-vcloud
+    plan:
+      - get: p-runtime
+        passed: [configure-ert-vcloud]
+      - get: environment
+        resource: environment-vcloud
+        trigger: true
+        passed: [configure-ert-vcloud]
+      - task: deploy-ert
+        tags: [vcloud]
+        file: p-runtime/ci/jobs/deploy-ert.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+        ensure:
+          task: get-install-log
+          tags: [vcloud]
+          file: p-runtime/ci/jobs/get-install-log.yml
+          config:
+            params:
+              OPSMAN_VERSION: *om_version
+
+  - name: run-cats-vcloud
+    plan:
+      - get: p-runtime
+        passed: [deploy-ert-vcloud]
+      - get: environment
+        resource: environment-vcloud
+        trigger: true
+        passed: [deploy-ert-vcloud]
+      - task: run-cats
+        tags: [vcloud]
+        file: p-runtime/ci/jobs/run-cats.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+
+  - name: promote-ops-manager-vcloud
+    plan:
+      - get: p-runtime
+        trigger: true
+        passed: [run-cats-vcloud, claim-environment-vcloud]
+      - get: latest-opsman-vcloud
+        passed: [claim-environment-vcloud]
+      - put: stable-opsman-vcloud
+        params:
+          from: latest-opsman-vcloud/ops_man_image
+
+  - name: destroy-environment-final-vcloud
+    plan:
+      - get: p-runtime
+        passed: [run-cats-vcloud]
+      - get: environment
+        resource: environment-vcloud
+        passed: [run-cats-vcloud]
+      - try:
+        task: delete-installation
+        tags: [vcloud]
+        file: p-runtime/ci/jobs/delete-installation.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+      - task: destroy
+        tags: [vcloud]
+        file: p-runtime/ci/jobs/destroy-environment.yml
+
+  - name: release-environment-vcloud
+    plan:
+      - get: p-runtime
+        passed: [destroy-environment-final-vcloud]
+      - get: environment
+        resource: environment-vcloud
+        trigger: true
+        passed: [destroy-environment-final-vcloud]
+      - put: environment-vcloud
+        params:
+          release: environment
 groups:
   - name: vsphere-edge
     jobs:
@@ -830,6 +1089,7 @@ groups:
     - promote-ops-manager-openstack
     - destroy-environment-final-openstack
     - release-environment-openstack
+
   - name: aws-edge
     jobs:
     - claim-environment-aws
@@ -844,3 +1104,18 @@ groups:
     - destroy-environment-final-aws
     - promote-ops-manager-aws
     - release-environment-aws
+
+  - name: vcloud-edge
+    jobs:
+    - claim-environment-vcloud
+    - destroy-environment-vcloud
+    - deploy-ops-manager-vcloud
+    - configure-microbosh-vcloud
+    - deploy-microbosh-vcloud
+    - upload-pivotal-vcloud
+    - configure-ert-vcloud
+    - deploy-ert-vcloud
+    - run-cats-vcloud
+    - destroy-environment-final-vcloud
+    - promote-ops-manager-vcloud
+    - release-environment-vcloud
