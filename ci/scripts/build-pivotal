@@ -78,7 +78,7 @@ else
       RELEASE_METADATAS[$i]=$RELEASE_METADATA
     done
 
-    external_release_metadata = join , "${RELEASE_METADATAS[@]}"
+    external_release_metadata=join , "${RELEASE_METADATAS[@]}"
   fi
 
   pushd p-runtime
