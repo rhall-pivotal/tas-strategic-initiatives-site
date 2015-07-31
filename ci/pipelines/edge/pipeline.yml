@@ -269,7 +269,8 @@ jobs:
       - get: ops-manager
         resource: latest-opsman-aws
         trigger: true
-      - put: environment-aws
+      - put: environment
+        resource: environment-aws
         params:
           acquire: true
       - task: update-krafa
@@ -471,13 +472,15 @@ jobs:
       - put: environment-aws
         params:
           release: environment
+
   - name: claim-environment-openstack
     plan:
       - get: p-runtime
       - get: ops-manager
         resource: latest-opsman-openstack
         trigger: true
-      - put: environment-openstack
+      - put: environment
+        resource: environment-openstack
         params:
           acquire: true
       - task: update-krafa
@@ -662,13 +665,15 @@ jobs:
       - put: environment-openstack
         params:
           release: environment
+
   - name: claim-environment-vsphere
     plan:
       - get: p-runtime
       - get: ops-manager
         resource: latest-opsman-vsphere
         trigger: true
-      - put: environment-vsphere
+      - put: environment
+        resource: environment-vsphere
         params:
           acquire: true
       - task: update-krafa
@@ -860,7 +865,8 @@ jobs:
       - get: ops-manager
         resource: latest-opsman-vcloud
         trigger: true
-      - put: environment-vcloud
+      - put: environment
+        resource: environment-vcloud
         params:
           acquire: true
       - task: update-krafa
@@ -1059,6 +1065,7 @@ jobs:
       - put: environment-vcloud
         params:
           release: environment
+
 groups:
   - name: vsphere-edge
     jobs:
