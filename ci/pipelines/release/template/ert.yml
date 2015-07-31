@@ -186,7 +186,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ert-releases/1.5.1.0/ert.pivotal
+      versioned_file: ert-releases/1.5.2.0/ert.pivotal
 
   - name: initial-ops-manager-aws
     type: s3
@@ -196,7 +196,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/aws/1.5.0.0/ops_man_image
+      versioned_file: ops_manager_images/aws/1.5.2.0/ops_man_image
 
   - name: initial-ops-manager-openstack
     type: s3
@@ -206,7 +206,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/openstack/1.5.0.0/ops_man_image
+      versioned_file: ops_manager_images/openstack/1.5.2.0/ops_man_image
 
   - name: initial-ops-manager-vsphere
     type: s3
@@ -216,7 +216,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/vsphere/1.5.0.0/ops_man_image
+      versioned_file: ops_manager_images/vsphere/1.5.2.0/ops_man_image
 
   - name: initial-ops-manager-vcloud
     type: s3
@@ -226,7 +226,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/vcloud/1.5.0.0/ops_man_image
+      versioned_file: ops_manager_images/vcloud/1.5.2.0/ops_man_image
 
   - name: exported-installation-aws
     type: s3
@@ -267,46 +267,6 @@ resources:
       region_name: us-west-1
       private: true
       versioned_file: exported_installations/master/vcloud/installation.zip
-
-  - name: stemcell-1.5.1-openstack
-    type: s3
-    source:
-      access_key_id: AKIAI43577ARGHXPWIMQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: stemcells/1.5.1/openstack/bosh-stemcell-3012-openstack-kvm-ubuntu-trusty-go_agent-raw.tgz
-
-  - name: stemcell-1.5.1-vsphere
-    type: s3
-    source:
-      access_key_id: AKIAI43577ARGHXPWIMQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: stemcells/1.5.1/vsphere/bosh-stemcell-3012-vsphere-esxi-ubuntu-trusty-go_agent.tgz
-
-  - name: stemcell-1.5.1-vcloud
-    type: s3
-    source:
-      access_key_id: AKIAI43577ARGHXPWIMQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: stemcells/1.5.1/vcloud/bosh-stemcell-3012-vcloud-esxi-ubuntu-trusty-go_agent.tgz
-
-  - name: stemcell-1.5.1-aws
-    type: s3
-    source:
-      access_key_id: AKIAI43577ARGHXPWIMQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: stemcells/1.5.1/aws/light-bosh-stemcell-3012-aws-xen-hvm-ubuntu-trusty-go_agent.tgz
 
 jobs:
   - name: kickoff
@@ -351,7 +311,6 @@ groups:
     - deploy-microbosh-aws-clean
     - upload-pivotal-aws-clean
     - configure-ert-aws-clean
-    - import-stemcell-aws-clean
     - deploy-ert-aws-clean
     - run-cats-aws-clean
     - destroy-environment-final-aws-clean
@@ -366,7 +325,6 @@ groups:
     - deploy-microbosh-openstack-clean
     - upload-pivotal-openstack-clean
     - configure-ert-openstack-clean
-    - import-stemcell-openstack-clean
     - deploy-ert-openstack-clean
     - run-cats-openstack-clean
     - destroy-environment-final-openstack-clean
@@ -381,7 +339,6 @@ groups:
     - deploy-microbosh-vsphere-clean
     - upload-pivotal-vsphere-clean
     - configure-ert-vsphere-clean
-    - import-stemcell-vsphere-clean
     - deploy-ert-vsphere-clean
     - run-cats-vsphere-clean
     - destroy-environment-final-vsphere-clean
@@ -396,7 +353,6 @@ groups:
     - deploy-microbosh-internetless
     - upload-pivotal-internetless
     - configure-ert-internetless
-    - import-stemcell-internetless
     - deploy-ert-internetless
     - run-cats-internetless
     - destroy-environment-final-internetless
@@ -418,7 +374,6 @@ groups:
     - import-installation-aws-upgrade
     - upgrade-pivotal-aws-upgrade
     - configure-ert-aws-upgrade
-    - import-stemcell-aws-upgrade
     - deploy-ert-aws-upgrade
     - run-cats-aws-upgrade
     - destroy-environment-final-aws-upgrade
@@ -440,7 +395,6 @@ groups:
     - import-installation-openstack-upgrade
     - upgrade-pivotal-openstack-upgrade
     - configure-ert-openstack-upgrade
-    - import-stemcell-openstack-upgrade
     - deploy-ert-openstack-upgrade
     - run-cats-openstack-upgrade
     - destroy-environment-final-openstack-upgrade
@@ -462,7 +416,6 @@ groups:
     - import-installation-vsphere-upgrade
     - upgrade-pivotal-vsphere-upgrade
     - configure-ert-vsphere-upgrade
-    - import-stemcell-vsphere-upgrade
     - deploy-ert-vsphere-upgrade
     - run-cats-vsphere-upgrade
     - destroy-environment-final-vsphere-upgrade
@@ -484,7 +437,6 @@ groups:
     - import-installation-vcloud-upgrade
     - upgrade-pivotal-vcloud-upgrade
     - configure-ert-vcloud-upgrade
-    - import-stemcell-vcloud-upgrade
     - deploy-ert-vcloud-upgrade
     - run-cats-vcloud-upgrade
     - destroy-environment-final-vcloud-upgrade

@@ -125,34 +125,15 @@ jobs:
             ERT_VERSION: 1.6
             OPSMAN_VERSION: *om_version
 
-  - name: import-stemcell-{{pipeline_name}}
-    plan:
-      - get: p-runtime
-        trigger: true
-        passed: [configure-ert-{{pipeline_name}}]
-      - get: environment
-        resource: environment-{{environment_pool}}
-        trigger: true
-        passed: [configure-ert-{{pipeline_name}}]
-      - get: stemcell
-        resource: stemcell-1.5.1-{{iaas_type}}
-      - task: import-stemcell
-        tags: [{{iaas_type}}]
-        file: p-runtime/ci/jobs/import-stemcell.yml
-        config:
-          params:
-            OPSMAN_VERSION: *om_version
-            PRODUCT_NAME: cf
-
   - name: deploy-ert-{{pipeline_name}}
     plan:
       - get: p-runtime
         trigger: true
-        passed: [import-stemcell-{{pipeline_name}}]
+        passed: [configure-ert-{{pipeline_name}}]
       - get: environment
         resource: environment-{{environment_pool}}
         trigger: true
-        passed: [import-stemcell-{{pipeline_name}}]
+        passed: [configure-ert-{{pipeline_name}}]
       - task: deploy-ert
         tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/deploy-ert.yml

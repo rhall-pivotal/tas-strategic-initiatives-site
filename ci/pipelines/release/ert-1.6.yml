@@ -308,7 +308,7 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ert-releases/1.5.1.0/ert.pivotal
+    versioned_file: ert-releases/1.5.2.0/ert.pivotal
 - name: initial-ops-manager-aws
   type: s3
   source:
@@ -317,7 +317,7 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/aws/1.5.0.0/ops_man_image
+    versioned_file: ops_manager_images/aws/1.5.2.0/ops_man_image
 - name: initial-ops-manager-openstack
   type: s3
   source:
@@ -326,7 +326,7 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/openstack/1.5.0.0/ops_man_image
+    versioned_file: ops_manager_images/openstack/1.5.2.0/ops_man_image
 - name: initial-ops-manager-vsphere
   type: s3
   source:
@@ -335,7 +335,7 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/vsphere/1.5.0.0/ops_man_image
+    versioned_file: ops_manager_images/vsphere/1.5.2.0/ops_man_image
 - name: initial-ops-manager-vcloud
   type: s3
   source:
@@ -344,7 +344,7 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/vcloud/1.5.0.0/ops_man_image
+    versioned_file: ops_manager_images/vcloud/1.5.2.0/ops_man_image
 - name: exported-installation-aws
   type: s3
   source:
@@ -381,42 +381,6 @@ resources:
     region_name: us-west-1
     private: true
     versioned_file: exported_installations/master/vcloud/installation.zip
-- name: stemcell-1.5.1-openstack
-  type: s3
-  source:
-    access_key_id: AKIAI43577ARGHXPWIMQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: stemcells/1.5.1/openstack/bosh-stemcell-3012-openstack-kvm-ubuntu-trusty-go_agent-raw.tgz
-- name: stemcell-1.5.1-vsphere
-  type: s3
-  source:
-    access_key_id: AKIAI43577ARGHXPWIMQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: stemcells/1.5.1/vsphere/bosh-stemcell-3012-vsphere-esxi-ubuntu-trusty-go_agent.tgz
-- name: stemcell-1.5.1-vcloud
-  type: s3
-  source:
-    access_key_id: AKIAI43577ARGHXPWIMQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: stemcells/1.5.1/vcloud/bosh-stemcell-3012-vcloud-esxi-ubuntu-trusty-go_agent.tgz
-- name: stemcell-1.5.1-aws
-  type: s3
-  source:
-    access_key_id: AKIAI43577ARGHXPWIMQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: stemcells/1.5.1/aws/light-bosh-stemcell-3012-aws-xen-hvm-ubuntu-trusty-go_agent.tgz
 jobs:
 - name: kickoff
   plan:
@@ -617,38 +581,17 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.5
-- name: import-stemcell-aws-clean
-  plan:
-  - get: p-runtime
-    trigger: true
-    passed:
-    - configure-ert-aws-clean
-  - get: environment
-    resource: environment-aws
-    trigger: true
-    passed:
-    - configure-ert-aws-clean
-  - get: stemcell
-    resource: stemcell-1.5.1-aws
-  - task: import-stemcell
-    tags:
-    - aws
-    file: p-runtime/ci/jobs/import-stemcell.yml
-    config:
-      params:
-        OPSMAN_VERSION: 1.5
-        PRODUCT_NAME: cf
 - name: deploy-ert-aws-clean
   plan:
   - get: p-runtime
     trigger: true
     passed:
-    - import-stemcell-aws-clean
+    - configure-ert-aws-clean
   - get: environment
     resource: environment-aws
     trigger: true
     passed:
-    - import-stemcell-aws-clean
+    - configure-ert-aws-clean
   - task: deploy-ert
     tags:
     - aws
@@ -851,38 +794,17 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.5
-- name: import-stemcell-openstack-clean
-  plan:
-  - get: p-runtime
-    trigger: true
-    passed:
-    - configure-ert-openstack-clean
-  - get: environment
-    resource: environment-openstack
-    trigger: true
-    passed:
-    - configure-ert-openstack-clean
-  - get: stemcell
-    resource: stemcell-1.5.1-openstack
-  - task: import-stemcell
-    tags:
-    - openstack
-    file: p-runtime/ci/jobs/import-stemcell.yml
-    config:
-      params:
-        OPSMAN_VERSION: 1.5
-        PRODUCT_NAME: cf
 - name: deploy-ert-openstack-clean
   plan:
   - get: p-runtime
     trigger: true
     passed:
-    - import-stemcell-openstack-clean
+    - configure-ert-openstack-clean
   - get: environment
     resource: environment-openstack
     trigger: true
     passed:
-    - import-stemcell-openstack-clean
+    - configure-ert-openstack-clean
   - task: deploy-ert
     tags:
     - openstack
@@ -1085,38 +1007,17 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.5
-- name: import-stemcell-vsphere-clean
-  plan:
-  - get: p-runtime
-    trigger: true
-    passed:
-    - configure-ert-vsphere-clean
-  - get: environment
-    resource: environment-vsphere
-    trigger: true
-    passed:
-    - configure-ert-vsphere-clean
-  - get: stemcell
-    resource: stemcell-1.5.1-vsphere
-  - task: import-stemcell
-    tags:
-    - vsphere
-    file: p-runtime/ci/jobs/import-stemcell.yml
-    config:
-      params:
-        OPSMAN_VERSION: 1.5
-        PRODUCT_NAME: cf
 - name: deploy-ert-vsphere-clean
   plan:
   - get: p-runtime
     trigger: true
     passed:
-    - import-stemcell-vsphere-clean
+    - configure-ert-vsphere-clean
   - get: environment
     resource: environment-vsphere
     trigger: true
     passed:
-    - import-stemcell-vsphere-clean
+    - configure-ert-vsphere-clean
   - task: deploy-ert
     tags:
     - vsphere
@@ -1319,38 +1220,17 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.5
-- name: import-stemcell-internetless
-  plan:
-  - get: p-runtime
-    trigger: true
-    passed:
-    - configure-ert-internetless
-  - get: environment
-    resource: environment-internetless
-    trigger: true
-    passed:
-    - configure-ert-internetless
-  - get: stemcell
-    resource: stemcell-1.5.1-vsphere
-  - task: import-stemcell
-    tags:
-    - vsphere
-    file: p-runtime/ci/jobs/import-stemcell.yml
-    config:
-      params:
-        OPSMAN_VERSION: 1.5
-        PRODUCT_NAME: cf
 - name: deploy-ert-internetless
   plan:
   - get: p-runtime
     trigger: true
     passed:
-    - import-stemcell-internetless
+    - configure-ert-internetless
   - get: environment
     resource: environment-internetless
     trigger: true
     passed:
-    - import-stemcell-internetless
+    - configure-ert-internetless
   - task: deploy-ert
     tags:
     - vsphere
@@ -1718,38 +1598,17 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.5
-- name: import-stemcell-aws-upgrade
-  plan:
-  - get: p-runtime
-    trigger: true
-    passed:
-    - configure-ert-aws-upgrade
-  - get: environment
-    resource: environment-aws-east
-    trigger: true
-    passed:
-    - configure-ert-aws-upgrade
-  - get: stemcell
-    resource: stemcell-1.5.1-aws
-  - task: import-stemcell
-    tags:
-    - aws
-    file: p-runtime/ci/jobs/import-stemcell.yml
-    config:
-      params:
-        OPSMAN_VERSION: 1.5
-        PRODUCT_NAME: cf
 - name: deploy-ert-aws-upgrade
   plan:
   - get: p-runtime
     trigger: true
     passed:
-    - import-stemcell-aws-upgrade
+    - configure-ert-aws-upgrade
   - get: environment
     resource: environment-aws-east
     trigger: true
     passed:
-    - import-stemcell-aws-upgrade
+    - configure-ert-aws-upgrade
   - task: deploy-ert
     tags:
     - aws
@@ -2097,38 +1956,17 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.5
-- name: import-stemcell-openstack-upgrade
-  plan:
-  - get: p-runtime
-    trigger: true
-    passed:
-    - configure-ert-openstack-upgrade
-  - get: environment
-    resource: environment-openstack
-    trigger: true
-    passed:
-    - configure-ert-openstack-upgrade
-  - get: stemcell
-    resource: stemcell-1.5.1-openstack
-  - task: import-stemcell
-    tags:
-    - openstack
-    file: p-runtime/ci/jobs/import-stemcell.yml
-    config:
-      params:
-        OPSMAN_VERSION: 1.5
-        PRODUCT_NAME: cf
 - name: deploy-ert-openstack-upgrade
   plan:
   - get: p-runtime
     trigger: true
     passed:
-    - import-stemcell-openstack-upgrade
+    - configure-ert-openstack-upgrade
   - get: environment
     resource: environment-openstack
     trigger: true
     passed:
-    - import-stemcell-openstack-upgrade
+    - configure-ert-openstack-upgrade
   - task: deploy-ert
     tags:
     - openstack
@@ -2476,38 +2314,17 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.5
-- name: import-stemcell-vsphere-upgrade
-  plan:
-  - get: p-runtime
-    trigger: true
-    passed:
-    - configure-ert-vsphere-upgrade
-  - get: environment
-    resource: environment-vsphere
-    trigger: true
-    passed:
-    - configure-ert-vsphere-upgrade
-  - get: stemcell
-    resource: stemcell-1.5.1-vsphere
-  - task: import-stemcell
-    tags:
-    - vsphere
-    file: p-runtime/ci/jobs/import-stemcell.yml
-    config:
-      params:
-        OPSMAN_VERSION: 1.5
-        PRODUCT_NAME: cf
 - name: deploy-ert-vsphere-upgrade
   plan:
   - get: p-runtime
     trigger: true
     passed:
-    - import-stemcell-vsphere-upgrade
+    - configure-ert-vsphere-upgrade
   - get: environment
     resource: environment-vsphere
     trigger: true
     passed:
-    - import-stemcell-vsphere-upgrade
+    - configure-ert-vsphere-upgrade
   - task: deploy-ert
     tags:
     - vsphere
@@ -2864,38 +2681,17 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.5
-- name: import-stemcell-vcloud-upgrade
-  plan:
-  - get: p-runtime
-    trigger: true
-    passed:
-    - configure-ert-vcloud-upgrade
-  - get: environment
-    resource: environment-vcloud
-    trigger: true
-    passed:
-    - configure-ert-vcloud-upgrade
-  - get: stemcell
-    resource: stemcell-1.5.1-vcloud
-  - task: import-stemcell
-    tags:
-    - vcloud
-    file: p-runtime/ci/jobs/import-stemcell.yml
-    config:
-      params:
-        OPSMAN_VERSION: 1.5
-        PRODUCT_NAME: cf
 - name: deploy-ert-vcloud-upgrade
   plan:
   - get: p-runtime
     trigger: true
     passed:
-    - import-stemcell-vcloud-upgrade
+    - configure-ert-vcloud-upgrade
   - get: environment
     resource: environment-vcloud
     trigger: true
     passed:
-    - import-stemcell-vcloud-upgrade
+    - configure-ert-vcloud-upgrade
   - task: deploy-ert
     tags:
     - vcloud
@@ -2967,7 +2763,6 @@ groups:
   - deploy-microbosh-aws-clean
   - upload-pivotal-aws-clean
   - configure-ert-aws-clean
-  - import-stemcell-aws-clean
   - deploy-ert-aws-clean
   - run-cats-aws-clean
   - destroy-environment-final-aws-clean
@@ -2981,7 +2776,6 @@ groups:
   - deploy-microbosh-openstack-clean
   - upload-pivotal-openstack-clean
   - configure-ert-openstack-clean
-  - import-stemcell-openstack-clean
   - deploy-ert-openstack-clean
   - run-cats-openstack-clean
   - destroy-environment-final-openstack-clean
@@ -2995,7 +2789,6 @@ groups:
   - deploy-microbosh-vsphere-clean
   - upload-pivotal-vsphere-clean
   - configure-ert-vsphere-clean
-  - import-stemcell-vsphere-clean
   - deploy-ert-vsphere-clean
   - run-cats-vsphere-clean
   - destroy-environment-final-vsphere-clean
@@ -3009,7 +2802,6 @@ groups:
   - deploy-microbosh-internetless
   - upload-pivotal-internetless
   - configure-ert-internetless
-  - import-stemcell-internetless
   - deploy-ert-internetless
   - run-cats-internetless
   - destroy-environment-final-internetless
@@ -3030,7 +2822,6 @@ groups:
   - import-installation-aws-upgrade
   - upgrade-pivotal-aws-upgrade
   - configure-ert-aws-upgrade
-  - import-stemcell-aws-upgrade
   - deploy-ert-aws-upgrade
   - run-cats-aws-upgrade
   - destroy-environment-final-aws-upgrade
@@ -3051,7 +2842,6 @@ groups:
   - import-installation-openstack-upgrade
   - upgrade-pivotal-openstack-upgrade
   - configure-ert-openstack-upgrade
-  - import-stemcell-openstack-upgrade
   - deploy-ert-openstack-upgrade
   - run-cats-openstack-upgrade
   - destroy-environment-final-openstack-upgrade
@@ -3072,7 +2862,6 @@ groups:
   - import-installation-vsphere-upgrade
   - upgrade-pivotal-vsphere-upgrade
   - configure-ert-vsphere-upgrade
-  - import-stemcell-vsphere-upgrade
   - deploy-ert-vsphere-upgrade
   - run-cats-vsphere-upgrade
   - destroy-environment-final-vsphere-upgrade
@@ -3093,7 +2882,6 @@ groups:
   - import-installation-vcloud-upgrade
   - upgrade-pivotal-vcloud-upgrade
   - configure-ert-vcloud-upgrade
-  - import-stemcell-vcloud-upgrade
   - deploy-ert-vcloud-upgrade
   - run-cats-vcloud-upgrade
   - destroy-environment-final-vcloud-upgrade
