@@ -1,16 +1,23 @@
 ---
 platform: linux
 
-image: docker:///cloudfoundry/releng-ci
+image: docker:///pivotalcf/releng-ci
 
 inputs:
   - name: p-runtime
   - name: version
-  - name: upstream-release-metadata
+  - name: upstream-release-notifications
+  - name: upstream-release-notifications-ui
 
 params:
+  RELEASE_NAME:
   EXTERNAL_RELEASE:
+  GITHUB_ACCESS_TOKEN:
+  GITHUB_USER_NAME:
+  GITHUB_RELEASE_ORG:
+  GITHUB_RELEASE_REPO:
   USE_ERT_DUMMY:
+  DERIVE_METADATA: true
 
 run:
   path: p-runtime/ci/scripts/build-pivotal
