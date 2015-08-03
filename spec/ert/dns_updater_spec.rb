@@ -15,7 +15,8 @@ describe Ert::DnsUpdater do
       },
       'ops_manager' => {
         'elastic_runtime' => {
-          'elb_dns_name' => 'some-fake-elb-dns-name'
+          'elb_dns_name' => 'some-fake-elb-dns-name',
+          'ssh_elb_dns_name' => 'some-fake-ssh-elb-dns-name'
         }
       }
     )
@@ -44,10 +45,11 @@ describe Ert::DnsUpdater do
   let(:record_sets) do
     {
       resource_record_sets: [
-        { resource_records: [
-          { value: 'fake-hostname' },
-          { value: 'another-fake-hostname' },
-        ],
+        {
+          resource_records: [
+            { value: 'fake-hostname' },
+            { value: 'another-fake-hostname' },
+          ],
           name: 'some.cf-app.com.',
           type: 'NS', ttl: 172_800
         },
@@ -59,7 +61,9 @@ describe Ert::DnsUpdater do
           ],
           name: 'some.cf-app.com.',
           type: 'SOA', ttl: 900
-        }.merge(wildcard_record)
+        },
+        wildcard_record,
+        ssh_record
       ]
     }
   end
@@ -69,6 +73,15 @@ describe Ert::DnsUpdater do
         { value: 'elb-pcf-specific-hostname' }
       ],
       name: '\\\\052.some.cf-app.com.',
+      type: 'CNAME', ttl: 300
+    }
+  end
+  let(:ssh_record) do
+    {
+      resource_records: [
+        { value: 'ssh-elb-pcf-specific-hostname' }
+      ],
+      name: 'ssh.some.cf-app.com.',
       type: 'CNAME', ttl: 300
     }
   end
@@ -100,18 +113,32 @@ describe Ert::DnsUpdater do
       {
         hosted_zone_id: hosted_zone_id,
         change_batch: {
-          changes: [{
-            action: 'UPSERT',
-            resource_record_set: {
-              resource_records: [
-                { value: 'some-fake-elb-dns-name' }
-              ],
-              name: '\\\\052.some.cf-app.com.',
-              type: 'CNAME',
-              ttl: 5
-            }
+          changes: [
+            {
+              action: 'UPSERT',
+              resource_record_set: {
+                resource_records: [
+                  { value: 'some-fake-elb-dns-name' }
+                ],
+                name: '\\\\052.some.cf-app.com.',
+                type: 'CNAME',
+                ttl: 5
+              }
 
-          }]
+            },
+            {
+              action: 'UPSERT',
+              resource_record_set: {
+                resource_records: [
+                  { value: 'some-fake-ssh-elb-dns-name' }
+                ],
+                name: 'ssh.some.cf-app.com.',
+                type: 'CNAME',
+                ttl: 5
+              }
+
+            }
+          ]
         }
       }
     end

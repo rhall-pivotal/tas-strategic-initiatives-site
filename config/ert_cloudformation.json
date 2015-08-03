@@ -145,6 +145,58 @@
         ]
       }
     },
+    "PcfElbSshSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfVpc" ] },
+        "GroupDescription": "ELB Security Group",
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "FromPort": "2222",
+            "IpProtocol": "tcp",
+            "ToPort": "2222"
+          }
+        ]
+      }
+    },
+    "PcfElbSsh": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "DependsOn": [
+        "PcfElbSshSecurityGroup",
+        "OpsManStack"
+      ],
+      "Properties": {
+        "CrossZone": true,
+        "HealthCheck": {
+          "HealthyThreshold": "10",
+          "Interval": "30",
+          "Target": "TCP:2222",
+          "Timeout": "5",
+          "UnhealthyThreshold": "2"
+        },
+        "ConnectionSettings": {
+          "IdleTimeout": 3600
+        },
+        "LoadBalancerName": { "Fn::Join" : ["", [ { "Ref" : "AWS::StackName" }, "-pcf-ssh-elb" ] ] },
+        "Listeners": [
+          {
+            "InstancePort": "2222",
+            "LoadBalancerPort": "2222",
+            "Protocol": "tcp"
+          }
+        ],
+        "Scheme": "internet-facing",
+        "SecurityGroups": [
+          {
+            "Ref": "PcfElbSshSecurityGroup"
+          }
+        ],
+        "Subnets": [
+          { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId" ] }
+        ]
+      }
+    },
     "PcfErtS3BucketIamPolicy": {
       "DependsOn": [
         "OpsManStack"
@@ -201,6 +253,9 @@
   "Outputs": {
     "PcfElbDnsName": {
       "Value": { "Fn::GetAtt": [ "PcfElb", "DNSName"]}
+    },
+    "PcfElbSshDnsName": {
+      "Value": { "Fn::GetAtt": [ "PcfElbSsh", "DNSName"]}
     },
     "PcfVpc": {
       "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfVpc" ]}
