@@ -1413,6 +1413,11 @@ job_types:
         machines: (( .nats.ips ))
       etcd:
         machines: (( .etcd_server.ips ))
+      consul:
+        domain: consul
+        agent:
+          servers:
+            lan: (( .consul_server.ips ))
 
   - name: router
     label: Router
