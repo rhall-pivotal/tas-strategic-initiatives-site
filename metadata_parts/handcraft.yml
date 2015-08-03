@@ -3206,8 +3206,10 @@ job_types:
     resource_label: Notifications With UI
     description: Notifications release for PCF
     templates:
-      - name: deploy-notifications-with-ui
-        release: notifications-with-ui
+      - name: deploy-notifications-ui
+        release: notifications-ui
+      - name: deploy-notifications
+        release: notifications
     errand: true
 
     resource_definitions:
