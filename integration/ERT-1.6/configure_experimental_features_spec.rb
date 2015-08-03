@@ -28,6 +28,8 @@ RSpec.describe 'Configure Elastic Runtime 1.6.X Experimental Features', order: :
     diego_form =
       current_ops_manager.product(elastic_runtime_settings.name).product_form('diego')
 
+    diego_form.open_form
+
     diego_form.property('.cloud_controller.default_to_diego_backend').set(true)
     diego_form.property('.cloud_controller.diego_docker').set(true)
 
