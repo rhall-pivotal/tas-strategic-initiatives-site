@@ -1,0 +1,76 @@
+---
+name: croc
+iaas_type: vsphere
+vm_shepherd:
+  vm_configs:
+  - vcenter_creds:
+      ip: 10.84.32.61
+      username: root
+      password: look74Beer
+    vsphere:
+      host: vcenter
+      resource_pool: croc
+      datacenter: private
+      cluster: private
+      datastore: private
+      network: croc
+      folder: croc
+    cleanup:
+      datacenter: private
+      datastores:
+      - private
+      datacenter_folders_to_clean:
+      - croc
+      - croc_vms
+      - croc_templates
+      datastore_folders_to_clean:
+      - croc
+      - croc_disk
+    vm:
+      ip: 10.85.14.16
+      gateway: 10.85.14.1
+      netmask: 255.255.255.0
+      dns: 10.87.8.10,10.87.8.11
+      ntp_servers: time1.sf.cf-app.com
+      vm_password: pivotalcf
+ops_manager:
+  url: https://pcf.croc.wild.cf-app.com
+  username: pivotalcf
+  password: pivotalcf
+  ntp_servers: time1.sf.cf-app.com
+  vcenter:
+    creds:
+      ip: 10.84.32.61
+      username: root
+      password: look74Beer
+    datacenter: private
+    datastore: private
+    microbosh_vm_folder: croc_vms
+    microbosh_template_folder: croc_templates
+    microbosh_disk_path: croc_disk
+  availability_zones:
+  - name: first-az
+    cluster: private
+    resource_pool: croc
+  networks:
+  - name: first-network
+    identifier: croc
+    subnet: 10.85.14.0/24
+    gateway: 10.85.14.1
+    reserved_ips: 10.85.14.0-10.85.14.90
+    dns: 10.87.8.10,10.87.8.11
+  elastic_runtime:
+    name: cf
+    ha_proxy_static_ips: 10.85.14.254
+    system_domain: sys.croc.wild.cf-app.com
+    apps_domain: apps.croc.wild.cf-app.com
+    smtp:
+      from: identitystaging@mailinator.com
+      address: smtp.sendgrid.net
+      port: 587
+      credentials:
+        identity: PCFRelEng
+        password: 4H-9Lh-wD{ZST28x{Q
+      enable_starttls_auto: true
+      smtp_auth_mechanism: plain
+    trust_self_signed_certificates: true

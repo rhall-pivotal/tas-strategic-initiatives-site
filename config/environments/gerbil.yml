@@ -1,0 +1,76 @@
+---
+name: gerbil
+iaas_type: vsphere
+vm_shepherd:
+  vm_configs:
+  - vcenter_creds:
+      ip: 10.84.32.61
+      username: root
+      password: look74Beer
+    vsphere:
+      host: vcenter
+      resource_pool: gerbil
+      datacenter: private
+      cluster: private
+      datastore: private
+      network: gerbil
+      folder: gerbil
+    cleanup:
+      datacenter: private
+      datastores:
+      - private
+      datacenter_folders_to_clean:
+      - gerbil
+      - gerbil_vms
+      - gerbil_templates
+      datastore_folders_to_clean:
+      - gerbil
+      - gerbil_disk
+    vm:
+      ip: 10.85.26.16
+      gateway: 10.85.26.1
+      netmask: 255.255.255.0
+      dns: 10.87.8.10,10.87.8.11
+      ntp_servers: time1.sf.cf-app.com
+      vm_password: pivotalcf
+ops_manager:
+  url: https://pcf.gerbil.wild.cf-app.com
+  username: pivotalcf
+  password: pivotalcf
+  ntp_servers: time1.sf.cf-app.com
+  vcenter:
+    creds:
+      ip: 10.84.32.61
+      username: root
+      password: look74Beer
+    datacenter: private
+    datastore: private
+    microbosh_vm_folder: gerbil_vms
+    microbosh_template_folder: gerbil_templates
+    microbosh_disk_path: gerbil_disk
+  availability_zones:
+  - name: first-az
+    cluster: private
+    resource_pool: gerbil
+  networks:
+  - name: first-network
+    identifier: gerbil
+    subnet: 10.85.26.0/24
+    gateway: 10.85.26.1
+    reserved_ips: 10.85.26.0-10.85.26.90
+    dns: 10.87.8.10,10.87.8.11
+  elastic_runtime:
+    name: cf
+    ha_proxy_static_ips: 10.85.26.254
+    system_domain: sys.gerbil.wild.cf-app.com
+    apps_domain: apps.gerbil.wild.cf-app.com
+    smtp:
+      from: identitystaging@mailinator.com
+      address: smtp.sendgrid.net
+      port: 587
+      credentials:
+        identity: PCFRelEng
+        password: 4H-9Lh-wD{ZST28x{Q
+      enable_starttls_auto: true
+      smtp_auth_mechanism: plain
+    trust_self_signed_certificates: true
