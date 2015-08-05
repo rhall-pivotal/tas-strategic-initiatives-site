@@ -257,7 +257,6 @@ jobs:
           params:
             OPSMAN_VERSION: 1.5
 
-
   - name: configure-ert
     plan:
       - aggregate:
@@ -275,8 +274,7 @@ jobs:
             ERT_VERSION: 1.6
             OPSMAN_VERSION: 1.5
 
-
-  - name: deploy-ert
+  - name: import-stemcell
     plan:
       - aggregate:
         - get: p-runtime
@@ -285,6 +283,24 @@ jobs:
         - get: environment
           trigger: true
           passed: [configure-ert]
+      - task: import-stemcell
+        tags: [aws]
+        file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.5
+            PRODUCT_NAME: cf
+            IAAS: aws
+
+  - name: deploy-ert
+    plan:
+      - aggregate:
+        - get: p-runtime
+          trigger: true
+          passed: [import-stemcell]
+        - get: environment
+          trigger: true
+          passed: [import-stemcell]
       - task: deploy-ert
         tags: [aws]
         file: p-runtime/ci/jobs/deploy-ert.yml
@@ -345,6 +361,7 @@ groups:
     - deploy-microbosh
     - build-runtime
     - upload-pivotal
+    - import-stemcell
     - configure-ert
     - deploy-ert
     - run-cats
