@@ -3203,11 +3203,9 @@ job_types:
 
   - name: notifications
     label: Notifications
-    resource_label: Notifications With UI
+    resource_label: Notifications
     description: Notifications release for PCF
     templates:
-      - name: deploy-notifications-ui
-        release: notifications-ui
       - name: deploy-notifications
         release: notifications
     errand: true
@@ -3268,26 +3266,18 @@ job_types:
       domain: (( .cloud_controller.system_domain.value ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-      notifications_with_ui:
+      notifications:
+        app_domain: (( .cloud_controller.system_domain.value ))
+        network: notifications
+        sender: (( .properties.smtp_from.value ))
+        encryption_key: (( encryption_credentials.password ))
+        instance_count: 3
+        syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
+        organization: system
+        space: notifications-with-ui
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
           admin_password: (( .uaa.admin_credentials.password ))
-        app_domain: (( .cloud_controller.system_domain.value ))
-        app_subdomain: notifications-ui
-        database: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
-        notifications_instance_count: 1
-        notifications_ui_instance_count: 1
-        network: default
-        organization: system
-        space: notifications-with-ui
-        sender: (( .properties.smtp_from.value ))
-        uaa:
-          admin_client: (( .uaa.notifications_template_client_credentials.identity ))
-          admin_secret: (( .uaa.notifications_template_client_credentials.password ))
-          notifications_client_id: notifications
-          notifications_client_secret: (( .uaa.notifications_client_credentials.password ))
-          notifications_ui_client_id: notifications_ui_client
-          notifications_ui_client_secret: (( .uaa.notifications_ui_client_credentials.password ))
         smtp:
           host: (( .properties.smtp_address.value ))
           pass: (( .properties.smtp_credentials.password ))
@@ -3296,7 +3286,14 @@ job_types:
           tls: (( .properties.smtp_enable_starttls_auto.value ))
           auth_mechanism: (( .properties.smtp_auth_mechanism.value ))
           crammd5_secret: (( .properties.smtp_crammd5_secret.value ))
-        encryption_key: (( encryption_credentials.password ))
+        uaa:
+          admin_client_id: (( .uaa.notifications_template_client_credentials.identity ))
+          admin_client_secret: (( .uaa.notifications_template_client_credentials.password ))
+          client_id: notifications
+          client_secret: (( .uaa.notifications_client_credentials.password ))
+        database:
+          url: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
+          max_open_connections: 10
 
   - name: autoscaling
     label: Deploy CF Autoscaling App
