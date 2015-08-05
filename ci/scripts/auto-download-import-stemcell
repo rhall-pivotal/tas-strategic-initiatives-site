@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -ex
+
+export RELENG_ENV=`cat environment/name`
+
+pushd p-runtime
+  ./ci/scripts/helpers/bundle-gems.sh
+
+  STEMCELL_VERSION=`grep -A3 stemcell metadata_parts/binaries.yml | grep version | grep -oE '[0-9]+'`
+  xvfb-run -a bundle exec rake opsmgr:download_stemcell[$IAAS,$STEMCELL_VERSION]
+
+  STEMCELL_PATH=`cat stemcell_reference.txt`
+
+  xvfb-run -a bundle exec rake opsmgr:product:import_stemcell[$RELENG_ENV,$OPSMAN_VERSION,$STEMCELL_PATH,$PRODUCT_NAME]
+popd
+
