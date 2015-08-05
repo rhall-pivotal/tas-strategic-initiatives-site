@@ -79,14 +79,37 @@ namespace :ert do
 
   desc 'run the cats errand'
   task :run_cats, [:environment_name, :om_version] do |_, args|
-    require 'ert/cats_runner'
+    require 'opsmgr/cmd/bosh_command'
     require 'opsmgr/log'
+    require 'ert/iaas_gateway'
+    require 'ert/cats_runner'
 
     logger = Opsmgr.logger_for('Rake')
+    bosh_command = Opsmgr::Cmd::BoshCommand.new(
+      env_name: args.environment_name,
+      om_version: args.om_version
+    )
+    iaas_gateway =  Ert::IaasGateway.new(
+      bosh_command: bosh_command,
+      environment_name: args.environment_name,
+      om_version: args.om_version,
+      logger: logger
+    )
     Ert::CatsRunner.new(
+      iaas_gateway: iaas_gateway,
+      bosh_command: bosh_command,
       environment_name: args.environment_name,
       om_version: args.om_version,
       logger: logger).run_cats
+  end
+
+  desc 'is this environment "internetless"'
+  task :internetless, [:environment_name] do |_, args|
+    require 'ert/internet_checker'
+
+    unless Ert::InternetChecker.new(environment_name: args.environment_name).internetless?
+      fail "#{args.environment_name} is not internetless"
+    end
   end
 
   namespace :pipeline do
