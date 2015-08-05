@@ -377,8 +377,6 @@ form_types:
     property_inputs:
       - reference: .cloud_controller.default_to_diego_backend
         label: Use Diego by default instead of DEAs
-      - reference: .cloud_controller.diego_docker
-        label: Enable Diego Docker support
 
   - name: experimental_features
     label: Experimental Features
@@ -1160,11 +1158,6 @@ job_types:
         configurable: true
         default: false
 
-      - name: diego_docker
-        type: boolean
-        configurable: true
-        default: true
-
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
       system_domain: (( .cloud_controller.system_domain.value ))
@@ -1174,7 +1167,6 @@ job_types:
 
       cc:
         default_to_diego_backend: (( default_to_diego_backend.value ))
-        diego_docker: (( diego_docker.value ))
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         service_name: cloud-controller-ng
@@ -1249,7 +1241,7 @@ job_types:
         domain: consul
         agent:
           services:
-            - cloud_controller_ng
+            cloud_controller_ng: {}
           servers:
             lan: (( .consul_server.ips ))
 
@@ -1705,7 +1697,6 @@ job_types:
 
       cc:
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
-        diego_docker: (( .cloud_controller.diego_docker.value ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         service_name: cloud-controller-ng
@@ -1859,7 +1850,6 @@ job_types:
 
       cc:
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
-        diego_docker: (( .cloud_controller.diego_docker.value ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
@@ -2451,6 +2441,8 @@ job_types:
     templates:
       - name: auctioneer
         release: diego
+      - name: bbs
+        release: diego
       - name: converger
         release: diego
       - name: etcd
@@ -2522,14 +2514,29 @@ job_types:
     manifest: |
       diego:
         auctioneer:
+          bbs:
+            api_url: http://bbs.service.cf.internal:8889
           etcd:
-            machines: (( ips ))
+            machines: ['etcd.service.cf.internal']
+            require_ssl: false
+        bbs:
+          etcd:
+            machines: ['etcd.service.cf.internal']
+            require_ssl: false
         converger:
           etcd:
-            machines: (( ips ))
+            machines: ['etcd.service.cf.internal']
+            require_ssl: false
         etcd:
-          machines: (( ips ))
+          machines: ['etcd.service.cf.internal']
+          cluster:
+            - name:  (( name ))-partition-(( availability-zone ))
+              instances: (( property.instances.value ))
+          require_ssl: false
+          peer_require_ssl: false
         receptor:
+          bbs:
+            api_url: http://bbs.service.cf.internal:8889
           register_with_router: true
           domain_names: ["(( .cloud_controller.system_domain.value ))","(( .cloud_controller.apps_domain.value ))"]
           nats:
@@ -2538,7 +2545,8 @@ job_types:
             port: 4222
             machines: (( .nats.ips ))
           etcd:
-            machines: (( ips ))
+            machines: ['etcd.service.cf.internal']
+            require_ssl: false
         route_emitter:
           nats:
             username: (( .nats.credentials.identity ))
@@ -2548,7 +2556,8 @@ job_types:
         runtime_metrics_server:
           diego_api_url: (( first_ip ))
           etcd:
-            machines: (( ips ))
+            machines: ['etcd.service.cf.internal']
+            require_ssl: false
         ssh_proxy:
           host_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem))
           enable_cf_auth: true
@@ -2563,8 +2572,10 @@ job_types:
           servers:
             lan: (( .consul_server.ips ))
           services:
-            - receptor
-            - ssh_proxy
+            bbs: {}
+            etcd: {}
+            receptor: {}
+            ssh_proxy: {}
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -2616,10 +2627,8 @@ job_types:
       - name: persistent_disk
         type: integer
         label: Persistent Disk
-        configurable: true
-        default: 4_096
-        constraints:
-          min: 4_096
+        configurable: false
+        default: 0
 
       - name: cpu
         type: integer
@@ -2667,8 +2676,6 @@ job_types:
             basic_auth_password: (( .cloud_controller.bulk_api_credentials.password ))
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
-          etcd:
-            machines: (( .diego_brain.ips ))
         tps:
           cc:
             basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
@@ -2690,10 +2697,10 @@ job_types:
           servers:
             lan: (( .consul_server.ips ))
           services:
-            - file_server
-            - nsync
-            - stager
-            - tps
+            file_server: {}
+            nsync: {}
+            stager: {}
+            tps: {}
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -2775,10 +2782,12 @@ job_types:
     manifest: |
       diego:
         rep:
-          zone: (( availability_zone ))
+          bbs:
+            api_url: http://bbs.service.cf.internal:8889
           etcd:
+            machines: ['etcd.service.cf.internal']
             require_ssl: false
-            machines: (( .diego_brain.ips ))
+          zone: (( availability_zone ))
       consul:
         domain: consul
         agent:
