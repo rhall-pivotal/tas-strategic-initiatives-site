@@ -4,7 +4,7 @@ resources:
     type: git
     source:
       uri: git@github.com:pivotal-cf/p-runtime.git
-      branch: salmon/push-console-release
+      branch: salmon/push-apps-manager-release
       private_key: |
         -----BEGIN RSA PRIVATE KEY-----
         MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
@@ -34,16 +34,6 @@ resources:
         hYI0vHHTGhvOQR1PYJlS5JuNvDCWo8PeeG/LV+zUEVW7LJMYzvWj
         -----END RSA PRIVATE KEY-----
 
-  - name: version
-    type: semver
-    source:
-      access_key_id: AKIAI43577ARGHXPWIMQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      key: ert-1.6/version
-      initial_version: 1.6.0-build.0
-
   - name: ert-product
     type: s3
     source:
@@ -52,7 +42,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: salmon/push-console-release/ert.pivotal
+      versioned_file: salmon/push-apps-manager-release/ert.pivotal
 
   - name: environment
     type: pool
@@ -107,7 +97,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: upstream-release-metadata/push-console-release/metadata.yml
+      versioned_file: upstream-release-metadata/push-apps-manager-release/metadata.yml
 
 jobs:
   - name: claim-environment
@@ -122,7 +112,7 @@ jobs:
         file: p-runtime/ci/jobs/update-krafa.yml
         config:
           params:
-            CLAIM_REASON: salmon/push-console-release
+            CLAIM_REASON: salmon/push-apps-manager-release
             KRAFA_BASE_URL: http://krafa.cfapps.io
             KRAFA_USERNAME: releng
             KRAFA_PASSWORD: bet90onions
@@ -212,12 +202,6 @@ jobs:
 
   - name: build-runtime
     plan:
-      - get: version
-        params:
-          pre: build
-      - put: version
-        params:
-          file: version/number
       - aggregate:
         - get: p-runtime
           trigger: true
@@ -354,7 +338,7 @@ jobs:
           release: environment
 
 groups:
-  - name: salmon/push-console-release
+  - name: salmon/push-apps-manager-release
     jobs:
     - claim-environment
     - destroy-environment
