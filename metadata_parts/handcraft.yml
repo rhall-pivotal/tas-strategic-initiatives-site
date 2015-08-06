@@ -1525,6 +1525,11 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
+      uaa:
+        clients:
+          gorouter:
+            secret: (( .uaa.gorouter_client_credentials.password ))
+
 
   - name: health_manager
     label: Health Manager
@@ -2519,37 +2524,55 @@ job_types:
           etcd:
             machines: ['etcd.service.cf.internal']
             require_ssl: false
+            ca_cert: "foo"
+            client_cert: "bar"
+            client_key: "baz"
         bbs:
           etcd:
             machines: ['etcd.service.cf.internal']
             require_ssl: false
+            ca_cert: "foo"
+            client_cert: "bar"
+            client_key: "baz"
         converger:
           etcd:
             machines: ['etcd.service.cf.internal']
             require_ssl: false
+            ca_cert: "foo"
+            client_cert: "bar"
+            client_key: "baz"
         etcd:
           machines: ['etcd.service.cf.internal']
           cluster:
             - name:  (( name ))-partition-(( availability_zone ))
               instances: (( instances ))
           require_ssl: false
+          ca_cert: "foo"
+          client_cert: "bar"
+          client_key: "baz"
           peer_require_ssl: false
+          peer_ca_cert: "foo"
+          peer_cert: "bar"
+          peer_key: "baz"
         receptor:
           bbs:
             api_url: http://bbs.service.cf.internal:8889
           register_with_router: true
           domain_names: ["(( .cloud_controller.system_domain.value ))","(( .cloud_controller.apps_domain.value ))"]
           nats:
-            username: (( .nats.credentials.identity ))
+            user: (( .nats.credentials.identity ))
             password: (( .nats.credentials.password ))
             port: 4222
             machines: (( .nats.ips ))
           etcd:
             machines: ['etcd.service.cf.internal']
             require_ssl: false
+            ca_cert: "foo"
+            client_cert: "bar"
+            client_key: "baz"
         route_emitter:
           nats:
-            username: (( .nats.credentials.identity ))
+            user: (( .nats.credentials.identity ))
             password: (( .nats.credentials.password ))
             port: 4222
             machines: (( .nats.ips ))
@@ -2558,6 +2581,9 @@ job_types:
           etcd:
             machines: ['etcd.service.cf.internal']
             require_ssl: false
+            ca_cert: "foo"
+            client_cert: "bar"
+            client_key: "baz"
         ssh_proxy:
           host_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem))
           enable_cf_auth: true
@@ -2789,6 +2815,9 @@ job_types:
           etcd:
             machines: ['etcd.service.cf.internal']
             require_ssl: false
+            ca_cert: "foo"
+            client_cert: "bar"
+            client_key: "baz"
           zone: (( availability_zone ))
       consul:
         domain: consul
