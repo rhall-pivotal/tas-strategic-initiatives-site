@@ -3292,7 +3292,7 @@ job_types:
           client_id: notifications
           client_secret: (( .uaa.notifications_client_credentials.password ))
         database:
-          url: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
+          url: (( .properties.system_database.selected_option.parsed_manifest(notifications).url ))
           max_open_connections: 10
         default_template: |
           {
