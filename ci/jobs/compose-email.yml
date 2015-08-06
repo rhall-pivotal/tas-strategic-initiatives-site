@@ -6,11 +6,13 @@ image: docker:///pivotalcf/releng-ci
 inputs:
   - name: build-product
   - name: p-runtime
+  - name: version
 
 run:
   path: p-runtime/ci/scripts/compose-email
 
 params:
   file_to_hash: build-product/ert.pivotal
+  version_file: version/number
   output_subject_file: generated-subject
   output_body_file: generated-body

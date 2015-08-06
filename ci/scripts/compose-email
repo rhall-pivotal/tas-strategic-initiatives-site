@@ -1,6 +1,6 @@
 #!/bin/bash -exu
 
 SHA=$(shasum $file_to_hash | cut -d ' ' -f1)
-
-echo -e "New ERT Pivotal file" > $output_subject_file
-echo -e "The SHA1 hash of \"$file_to_hash\" is $SHA\n\nCheers!\n" > $output_body_file
+VERSION=$(cat $version_file)
+echo -e "New ERT Pivotal file for $VERSION" > $output_subject_file
+echo -e "The SHA1 hash of \"$file_to_hash\" version $VERSION is $SHA\n\nCheers!\n" > $output_body_file
