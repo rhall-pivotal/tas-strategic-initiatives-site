@@ -2530,8 +2530,8 @@ job_types:
         etcd:
           machines: ['etcd.service.cf.internal']
           cluster:
-            - name:  (( name ))-partition-(( availability-zone ))
-              instances: (( property.instances.value ))
+            - name:  (( name ))-partition-(( availability_zone ))
+              instances: (( instances ))
           require_ssl: false
           peer_require_ssl: false
         receptor:
