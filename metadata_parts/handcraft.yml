@@ -3291,9 +3291,7 @@ job_types:
           admin_client_secret: (( .uaa.notifications_template_client_credentials.password ))
           client_id: notifications
           client_secret: (( .uaa.notifications_client_credentials.password ))
-        database:
-          url: (( .properties.system_database.selected_option.parsed_manifest(notifications).url ))
-          max_open_connections: 10
+        database: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
         default_template: |
           {
             "name": "Default Template",
@@ -3862,6 +3860,7 @@ property_blueprints:
           - name: notifications
             manifest: |
               url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
+              max_open_connections: 10
           - name: autoscaling
             manifest: |
               url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
