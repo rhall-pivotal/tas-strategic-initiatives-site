@@ -3,10 +3,11 @@ require 'ert/internet_checker'
 
 describe Ert::InternetChecker do
   subject(:internet_checker) do
-    Ert::InternetChecker.new(environment_name: environment_name)
+    Ert::InternetChecker.new(environment_name: environment_name, logger: logger)
   end
 
   let(:environment_name) { 'env_name' }
+  let(:logger) { instance_double(Opsmgr::LoggerWithProgName) }
 
   let(:env_config) do
     <<YAML
@@ -26,6 +27,7 @@ YAML
 
   before do
     allow(Opsmgr::Environments).to receive(:for).and_return(opsmgr_environment)
+    allow(logger).to receive(:info)
   end
 
   describe '#internetless?' do
@@ -129,6 +131,11 @@ YAML
       it 'returns false' do
         expect(subject.connection_allowed?(host, port)).to eq(false)
       end
+
+      it 'logs the result' do
+        expect(logger).to receive(:info).with("connection attempt to #{host} #{port} failed")
+        subject.connection_allowed?(host, port)
+      end
     end
 
     context 'when the connection attempt succeeds' do
@@ -136,6 +143,11 @@ YAML
 
       it 'returns true' do
         expect(subject.connection_allowed?(host, port)).to eq(true)
+      end
+
+      it 'logs the result' do
+        expect(logger).to receive(:info).with("connection attempt to #{host} #{port} succeeded")
+        subject.connection_allowed?(host, port)
       end
     end
   end

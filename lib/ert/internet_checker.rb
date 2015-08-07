@@ -3,8 +3,9 @@ require 'opsmgr/environments'
 
 module Ert
   class InternetChecker
-    def initialize(environment_name:)
+    def initialize(environment_name:, logger:)
       @environment = Opsmgr::Environments.for(environment_name)
+      @logger = logger
     end
 
     OPS_MANAGER_USERNAME = 'ubuntu'
@@ -12,11 +13,18 @@ module Ert
 
     def connection_allowed?(hostname, port)
       uri = URI.parse(environment.settings.ops_manager.url)
-      result = nil
+      result_array = nil
       Net::SSH.start(uri.host, OPS_MANAGER_USERNAME, password: OPS_MANAGER_PASSWORD) do |ssh|
-        result = ssh_exec!(ssh, "echo QUIT | nc -w 5 #{hostname} #{port}")
+        result_array = ssh_exec!(ssh, "echo QUIT | nc -w 5 #{hostname} #{port}")
       end
-      result[2] == 0
+
+      result = (result_array[2] == 0)
+
+      log_message = "connection attempt to #{hostname} #{port} "
+      log_message += result ? 'succeeded' : 'failed'
+
+      logger.info(log_message)
+      result
     end
 
     def internetless?
@@ -29,7 +37,7 @@ module Ert
 
     private
 
-    attr_accessor :environment
+    attr_accessor :environment, :logger
 
     def ssh_exec!(ssh, command)
       stdout_data = stderr_data = ''

@@ -89,7 +89,7 @@ namespace :ert do
       env_name: args.environment_name,
       om_version: args.om_version
     )
-    iaas_gateway =  Ert::IaasGateway.new(
+    iaas_gateway = Ert::IaasGateway.new(
       bosh_command: bosh_command,
       environment_name: args.environment_name,
       om_version: args.om_version,
@@ -106,8 +106,14 @@ namespace :ert do
   desc 'is this environment "internetless"'
   task :internetless, [:environment_name] do |_, args|
     require 'ert/internet_checker'
+    require 'opsmgr/log'
 
-    unless Ert::InternetChecker.new(environment_name: args.environment_name).internetless?
+    logger = Opsmgr.logger_for('Rake')
+
+    unless Ert::InternetChecker.new(
+      environment_name: args.environment_name,
+      logger: logger
+    ).internetless?
       fail "#{args.environment_name} is not internetless"
     end
   end
