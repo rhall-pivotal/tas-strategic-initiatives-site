@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'ert/cats_runner'
+require 'ert/iaas_gateway'
 
 describe Ert::CatsRunner do
   let(:environment_name) { 'env_name' }
@@ -15,19 +16,24 @@ YAML
     RecursiveOpenStruct.new(YAML.load(env_config), recurse_over_arrays: true)
   end
 
+  let(:iaas_gateway) { instance_double(Ert::IaasGateway) }
   let(:opsmgr_environment) { instance_double(Opsmgr::Environments, settings: settings) }
   let(:bosh_command) { instance_double(Opsmgr::Cmd::BoshCommand) }
   let(:deployment_name) { 'cf-deadbeef12345678' }
   let(:logger) { instance_double(Opsmgr::LoggerWithProgName) }
 
-  subject(:cats_runner) { Ert::CatsRunner.new(environment_name: environment_name, om_version: '1.5', logger: logger) }
+  subject(:cats_runner) do
+    Ert::CatsRunner.new(
+      iaas_gateway: iaas_gateway,
+      bosh_command: bosh_command,
+      environment_name: environment_name,
+      logger: logger
+    )
+  end
 
   before do
+    allow(iaas_gateway).to receive(:gateway).and_yield
     allow(Opsmgr::Environments).to receive(:for).and_return(opsmgr_environment)
-    allow(Opsmgr::Cmd::BoshCommand).to(
-      receive(:new)
-        .and_return(bosh_command)
-    )
     allow(logger).to receive(:info)
   end
 
@@ -44,6 +50,11 @@ YAML
       allow(ENV).to receive(:[]=).and_call_original
       allow(Open3).to receive(:capture2).and_return(["#{deployment_name}\n", instance_double(Process::Status, success?: true)])
       allow(Bundler).to receive(:clean_system).and_return(true)
+    end
+
+    it 'yields to the block' do
+      expect(iaas_gateway).to receive(:gateway).and_yield
+      cats_runner.run_cats
     end
 
     context 'vsphere' do
@@ -185,19 +196,6 @@ YAML
         allow(bosh_command).to receive(:director_ip).and_return('1.2.3.4')
       end
 
-      it 'sets up the ssh gateway' do
-        expect(Net::SSH::Gateway).to receive(:new).with('foo.com', 'ubuntu', key_data: ['key']).and_return(gateway)
-        expect(gateway).to receive(:open).with('1.2.3.4', 25_555, 25_555).and_yield(25_555)
-        expect(bosh_command).to receive(:director_ip).and_return('1.2.3.4')
-
-        cats_runner.run_cats
-      end
-
-      it 'sets the DIRECTOR_IP_OVERRIDE environment var' do
-        expect(ENV).to receive(:[]=).with('DIRECTOR_IP_OVERRIDE', 'localhost')
-        cats_runner.run_cats
-      end
-
       it 'targets the microbosh' do
         expect(bosh_command).to receive(:target).and_return('the bosh target command')
         expect(Bundler).to receive(:clean_system).with('the bosh target command')
@@ -332,19 +330,6 @@ YAML
         allow(Net::SSH::Gateway).to receive(:new).and_return(gateway)
         allow(gateway).to receive(:open).and_yield(25_555)
         allow(bosh_command).to receive(:director_ip).and_return('1.2.3.4')
-      end
-
-      it 'sets up the ssh gateway' do
-        expect(Net::SSH::Gateway).to receive(:new).with('foo.com', 'ubuntu', password: 'tempest').and_return(gateway)
-        expect(gateway).to receive(:open).with('1.2.3.4', 25_555, 25_555).and_yield(25_555)
-        expect(bosh_command).to receive(:director_ip).and_return('1.2.3.4')
-
-        cats_runner.run_cats
-      end
-
-      it 'sets the DIRECTOR_IP_OVERRIDE environment var' do
-        expect(ENV).to receive(:[]=).with('DIRECTOR_IP_OVERRIDE', 'localhost')
-        cats_runner.run_cats
       end
 
       it 'targets the microbosh' do
@@ -483,19 +468,6 @@ YAML
         allow(Net::SSH::Gateway).to receive(:new).and_return(gateway)
         allow(gateway).to receive(:open).and_yield(25_555)
         allow(bosh_command).to receive(:director_ip).and_return('1.2.3.4')
-      end
-
-      it 'sets up the ssh gateway' do
-        expect(Net::SSH::Gateway).to receive(:new).with('foo.com', 'ubuntu', key_data: ['key']).and_return(gateway)
-        expect(gateway).to receive(:open).with('1.2.3.4', 25_555, 25_555).and_yield(25_555)
-        expect(bosh_command).to receive(:director_ip).and_return('1.2.3.4')
-
-        cats_runner.run_cats
-      end
-
-      it 'sets the DIRECTOR_IP_OVERRIDE environment var' do
-        expect(ENV).to receive(:[]=).with('DIRECTOR_IP_OVERRIDE', 'localhost')
-        cats_runner.run_cats
       end
 
       it 'targets the microbosh' do

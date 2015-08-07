@@ -1,18 +1,17 @@
 require 'opsmgr/environments'
-require 'opsmgr/cmd/bosh_command'
 require 'open3'
-require 'net/ssh/gateway'
 
 module Ert
   class CatsRunner
-    def initialize(environment_name:, om_version:, logger:)
+    def initialize(iaas_gateway:, bosh_command:, environment_name:, logger:)
+      @iaas_gateway = iaas_gateway
+      @bosh_command = bosh_command
       @environment = Opsmgr::Environments.for(environment_name)
       @logger = logger
-      @om_version = om_version
     end
 
     def run_cats
-      gateway do |_|
+      iaas_gateway.gateway do
         set_bosh_deployment
 
         system_or_fail(
@@ -23,46 +22,6 @@ module Ert
     end
 
     private
-
-    def gateway(&block)
-      case environment.settings.iaas_type
-      when 'vsphere'
-        block.call
-      when 'aws', 'openstack'
-        ssh_key_gateway(block)
-      when 'vcloud'
-        ssh_password_gateway(block)
-      end
-    end
-
-    def ssh_password_gateway(block)
-      ENV['DIRECTOR_IP_OVERRIDE'] = 'localhost'
-      uri = URI.parse(environment.settings.ops_manager.url)
-      director_ip = bosh_command.director_ip
-      logger.info("Setting up SSH gateway to OpsManager at #{uri.host}")
-      Net::SSH::Gateway.new(
-        uri.host,
-        'ubuntu',
-        password: 'tempest'
-      ).open(director_ip, 25_555, 25_555) do |_|
-        logger.info("Opened tunnel to MicroBOSH at #{director_ip}")
-        block.call
-      end
-    end
-
-    def ssh_key_gateway(block)
-      ENV['DIRECTOR_IP_OVERRIDE'] = 'localhost'
-      uri = URI.parse(environment.settings.ops_manager.url)
-      director_ip = bosh_command.director_ip
-      Net::SSH::Gateway.new(
-        uri.host,
-        'ubuntu',
-        key_data: [ssh_key]
-      ).open(director_ip, 25_555, 25_555) do |_|
-        logger.info("Opened tunnel to MicroBOSH at #{director_ip}")
-        block.call
-      end
-    end
 
     def set_bosh_deployment
       system_or_fail(bosh_command.target, 'bosh target failed')
@@ -96,13 +55,6 @@ module Ert
       end
     end
 
-    def bosh_command
-      @bosh_command ||= Opsmgr::Cmd::BoshCommand.new(
-        env_name: environment.settings.name,
-        om_version: om_version
-      )
-    end
-
     def bosh_command_prefix
       @bosh_command_prefix ||= bosh_command.command
     end
@@ -111,15 +63,6 @@ module Ert
       environment.settings.internetless ? 'acceptance-tests-internetless' : 'acceptance-tests'
     end
 
-    def ssh_key
-      case environment.settings.iaas_type
-      when 'aws'
-        environment.settings.ops_manager.aws.ssh_key
-      when 'openstack'
-        environment.settings.ops_manager.openstack.ssh_private_key
-      end
-    end
-
-    attr_reader :environment, :logger, :om_version
+    attr_reader :iaas_gateway, :bosh_command, :environment, :logger
   end
 end

@@ -1,0 +1,11 @@
+---
+platform: linux
+
+image: docker:///pivotalcf/releng-ci
+
+inputs:
+  - name: p-runtime
+  - name: environment
+
+run:
+  path: p-runtime/ci/scripts/verify-internetless
