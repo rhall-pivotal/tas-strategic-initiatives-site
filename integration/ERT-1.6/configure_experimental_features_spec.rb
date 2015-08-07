@@ -18,8 +18,9 @@ RSpec.describe 'Configure Elastic Runtime 1.6.X Experimental Features', order: :
       current_ops_manager.product(elastic_runtime_settings.name).product_form('experimental_features')
     experimental_features_form.open_form
 
-    experimental_features_form.property('.ha_proxy.disable_http').set(true)
-    experimental_features_form.property('.uaa.disable_http').set(true)
+    all('input[type=checkbox]').each do |checkbox|
+      checkbox.click unless checkbox.checked?
+    end
 
     experimental_features_form.save_form
   end
