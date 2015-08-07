@@ -1,6 +1,38 @@
 #!/bin/bash -ex
 
-RELEASE_DIR=$PWD/upstream-release
+function join {
+  local IFS="$1"
+  shift
+  echo "$*"
+}
+
+function append_release_to_metadata() {
+  release_metadata="$1"
+  tarball_filename="$2"
+  tarball_md5="$3"
+  release_name="$4"
+  release_version="$5"
+
+  cat > $release_metadata <<EOF
+file: $tarball_filename
+name: $release_name
+version: "$release_version"
+md5: $tarball_md5
+url: ""
+EOF
+}
+
+function download_release_tarball() {
+  local tarball_location="$1"
+  local github_api="$2"
+
+  asset_id=`curl -u $GITHUB_USER_NAME:$GITHUB_ACCESS_TOKEN $github_api/releases/latest | jq '.assets[0].id'`
+
+  curl -u $GITHUB_USER_NAME:$GITHUB_ACCESS_TOKEN \
+    -H "Accept:application/octet-stream" \
+    $github_api/releases/assets/$asset_id -L > $tarball_location
+}
+
 export VERSION=`cat version/number`
 
 if [ "$USE_ERT_DUMMY" == "true" ]; then
@@ -23,22 +55,30 @@ else
   fi
 
   if [ $DERIVE_METADATA ]; then
-    RELEASE_VERSION=`cat $RELEASE_DIR/version`
-    TARBALL_FILENAME=$RELEASE_NAME-$RELEASE_VERSION.tgz
-    github_api="https://api.github.com/repos/$GITHUB_RELEASE_ORG/$GITHUB_RELEASE_REPO"
-    asset_id=`curl -u $GITHUB_USER_NAME:$GITHUB_ACCESS_TOKEN $github_api/releases/latest | jq '.assets[0].id'`
+    RELEASE_NAME=( $RELEASE_NAMES )
+    GITHUB_RELEASE_ORG=( $GITHUB_RELEASE_ORGS )
+    GITHUB_RELEASE_REPO=( $GITHUB_RELEASE_REPOS )
+    declare -a RELEASE_METADATAS
 
-    curl -u $GITHUB_USER_NAME:$GITHUB_ACCESS_TOKEN -H "Accept:application/octet-stream" $github_api/releases/assets/$asset_id -L > p-runtime/releases/$TARBALL_FILENAME
+    for i in "${!RELEASE_NAME[@]}"; do
+      RELEASE_DIR=$PWD/upstream-release-${RELEASE_NAME[i]}
+      RELEASE_VERSION=`cat $RELEASE_DIR/version`
+      RELEASE_METADATA="$PWD/${RELEASE_NAME[i]}-release.yml"
+      TARBALL_FILENAME=${RELEASE_NAME[i]}-$RELEASE_VERSION.tgz
+      TARBALL_LOCATION=p-runtime/releases/$TARBALL_FILENAME
+      GITHUB_API="https://api.github.com/repos/${GITHUB_RELEASE_ORG[i]}/${GITHUB_RELEASE_REPO[i]}"
+      download_release_tarball $TARBALL_LOCATION $GITHUB_API
 
-    TARBALL_MD5=`md5sum p-runtime/releases/$TARBALL_FILENAME | awk '{ print $1 }'`
+      TARBALL_MD5=`md5sum $TARBALL_LOCATION | awk '{ print $1 }'`
 
-    cat > $external_release_metadata <<EOF
-file: $TARBALL_FILENAME
-name: $RELEASE_NAME
-version: "$RELEASE_VERSION"
-md5: $TARBALL_MD5
-url: ""
-EOF
+      append_release_to_metadata $RELEASE_METADATA $TARBALL_FILENAME $TARBALL_MD5 ${RELEASE_NAME[i]} $RELEASE_VERSION
+
+      cat $RELEASE_METADATA
+
+      RELEASE_METADATAS[$i]=$RELEASE_METADATA
+    done
+
+    external_release_metadata=`join , "${RELEASE_METADATAS[@]}"`
   fi
 
   pushd p-runtime
