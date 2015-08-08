@@ -3287,8 +3287,8 @@ job_types:
           auth_mechanism: (( .properties.smtp_auth_mechanism.value ))
           crammd5_secret: (( .properties.smtp_crammd5_secret.value ))
         uaa:
-          admin_client_id: (( .uaa.notifications_template_client_credentials.identity ))
-          admin_client_secret: (( .uaa.notifications_template_client_credentials.password ))
+          admin_client_id: (( .uaa.admin_client_credentials.identity ))
+          admin_client_secret: (( .uaa.admin_client_credentials.password ))
           client_id: notifications
           client_secret: (( .uaa.notifications_client_credentials.password ))
         database: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
