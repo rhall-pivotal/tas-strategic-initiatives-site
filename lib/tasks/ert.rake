@@ -92,14 +92,12 @@ namespace :ert do
     iaas_gateway = Ert::IaasGateway.new(
       bosh_command: bosh_command,
       environment_name: args.environment_name,
-      om_version: args.om_version,
       logger: logger
     )
     Ert::CatsRunner.new(
       iaas_gateway: iaas_gateway,
       bosh_command: bosh_command,
       environment_name: args.environment_name,
-      om_version: args.om_version,
       logger: logger).run_cats
   end
 
