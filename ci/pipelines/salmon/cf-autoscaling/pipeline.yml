@@ -99,7 +99,7 @@ resources:
       private: true
       versioned_file: ops_manager_images/aws/stable/ops_man_image
 
-  - name: upstream-release
+  - name: upstream-release-cf-autoscaling
     type: github-release
     source:
       access_token: 6e2749ee83cd2ffe595a42861ec0d6d0052b3ab7
@@ -110,7 +110,7 @@ jobs:
   - name: claim-environment
     plan:
       - get: p-runtime
-      - get: upstream-release
+      - get: upstream-release-cf-autoscaling
         trigger: true
       - put: environment
         params:
@@ -133,7 +133,7 @@ jobs:
         - get: environment
           trigger: true
           passed: [claim-environment]
-        - get: upstream-release
+        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [claim-environment]
       - task: destroy
@@ -149,7 +149,7 @@ jobs:
         - get: environment
           trigger: true
           passed: [destroy-environment]
-        - get: upstream-release
+        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [destroy-environment]
       - aggregate:
@@ -171,7 +171,7 @@ jobs:
         - get: environment
           trigger: true
           passed: [deploy-ops-manager]
-        - get: upstream-release
+        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [deploy-ops-manager]
       - task: configure
@@ -190,7 +190,7 @@ jobs:
         - get: environment
           trigger: true
           passed: [configure-microbosh]
-        - get: upstream-release
+        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [configure-microbosh]
       - task: deploy
@@ -219,7 +219,7 @@ jobs:
         - get: p-runtime
           trigger: true
           passed: [claim-environment]
-        - get: upstream-release
+        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [claim-environment]
       - task: build-product
@@ -246,7 +246,7 @@ jobs:
         - get: environment
           trigger: true
           passed: [deploy-microbosh]
-        - get: upstream-release
+        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [deploy-microbosh,build-runtime]
         - get: ert-product
