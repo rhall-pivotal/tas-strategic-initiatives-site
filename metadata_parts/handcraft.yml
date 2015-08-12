@@ -3290,7 +3290,7 @@ job_types:
         uaa:
           admin_client_id: (( .uaa.admin_client_credentials.identity ))
           admin_client_secret: (( .uaa.admin_client_credentials.password ))
-          client_id: (( .uaa.notifications_ui_client_credentials.identity ))
+          client_id: (( .uaa.notifications_client_credentials.identity ))
           client_secret: (( .uaa.notifications_client_credentials.password ))
         database: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
         default_template: |
