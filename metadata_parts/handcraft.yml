@@ -383,6 +383,10 @@ form_types:
     property_inputs:
       - reference: .cloud_controller.default_to_diego_backend
         label: Use Diego by default instead of DEAs
+      - reference: .diego_brain.receptor_cors_enabled
+        label: Enable CORs on Diego Receptor
+        description: Allows third-party services to access the Diego API
+
 
   - name: experimental_features
     label: Experimental Features
@@ -2516,6 +2520,11 @@ job_types:
         default:
           identity: vcap
 
+      - name: receptor_cors_enabled
+        type: boolean
+        configurable: true
+        default: false
+
     manifest: |
       diego:
         auctioneer:
@@ -2557,6 +2566,7 @@ job_types:
         receptor:
           bbs:
             api_url: http://bbs.service.cf.internal:8889
+          cors_enabled: (( receptor_cors_enabled ))
           register_with_router: true
           domain_names: ["(( .cloud_controller.system_domain.value ))","(( .cloud_controller.apps_domain.value ))"]
           nats:
