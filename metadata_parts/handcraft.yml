@@ -84,6 +84,7 @@ post_deploy_errands:
   - name: smoke-tests
   - name: push-app-usage-service
   - name: notifications
+  - name: notifications-ui
   - name: autoscaling
   - name: autoscaling-register-broker
 
@@ -3289,7 +3290,7 @@ job_types:
         uaa:
           admin_client_id: (( .uaa.admin_client_credentials.identity ))
           admin_client_secret: (( .uaa.admin_client_credentials.password ))
-          client_id: notifications
+          client_id: (( .uaa.notifications_ui_client_credentials.identity ))
           client_secret: (( .uaa.notifications_client_credentials.password ))
         database: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
         default_template: |
@@ -3300,6 +3301,85 @@ job_types:
             "text": "_____\n\n\nPivotal CF\n\n{{.Text}}\n\nManage your notification preferences:\nhttps://notifications-ui.{{.Domain}}/preferences\n\nUnsubscribe from Pivotal emails:\nhttps://notifications-ui.{{.Domain}}/unsubscribe/{{.UnsubscribeID}}\n\nPivotal CF, and the Pivotal CF logo are registered trademarks or trademarks of Pivotal Software, Inc. in the United States and other countries. All other trademarks used herein are the property of their respective owners.\n\n\u00A9 2014 Pivotal Software, Inc. All rights reserved. Published in the USA.\n\n______\n",
             "metadata": {}
           }
+
+  - name: notifications-ui
+    label: Notifications-UI
+    resource_label: Notifications-UI
+    description: Notifications UI Component for PCF
+    templates:
+      - name: deploy-notifications-ui
+        release: notifications-ui
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: false
+        default: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      domain: (( .cloud_controller.system_domain.value ))
+      ssl:
+        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+      notifications_ui:
+        organization: system
+        space: notifications-with-ui
+        app_domain: (( .cloud_controller.system_domain.value ))
+        network: notifications
+        syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
+        encryption_key: (( .notifications.encryption_credentials.password ))
+        instance_count: 1
+        cf:
+          admin_user: (( .uaa.admin_credentials.identity ))
+          admin_password: (( .uaa.admin_credentials.password ))
+        uaa:
+          admin_client_id: (( .uaa.admin_client_credentials.identity ))
+          admin_client_secret: (( .uaa.admin_client_credentials.password ))
+          client_id: (( .uaa.notifications_ui_client_credentials.identity ))
+          client_secret: (( .uaa.notifications_ui_client_credentials.password ))
 
   - name: autoscaling
     label: Deploy CF Autoscaling App
