@@ -322,7 +322,8 @@ jobs:
         passed:
         - promote-ert
       - get: version
-        resource: version
+        passed:
+        - build-runtime
         params:
           bump: patch
       - put: final-version
