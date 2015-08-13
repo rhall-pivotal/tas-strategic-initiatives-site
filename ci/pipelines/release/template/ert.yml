@@ -268,6 +268,17 @@ resources:
       private: true
       versioned_file: exported_installations/master/vcloud/installation.zip
 
+
+  - name: ert-product-final
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      regexp: releases/cf-(.*).pivotal
+
 jobs:
   - name: kickoff
     plan:
@@ -300,6 +311,36 @@ jobs:
       - put: ert-product-promoted
         params:
           from: ert-product/ert.pivotal
+
+
+  - name: publish
+    plan:
+      - get: p-runtime
+        passed:
+        - promote-ert
+      - get: ert-product-promoted
+        passed:
+        - promote-ert
+      - get: version
+        resource: semver
+        params:
+          bump: patch
+      - put: final-version
+        resource: semver
+        params:
+          file: version/number
+      - task: rename-pivotal
+        file: p-runtime/ci/jobs/rename-final-pivotal.yml
+      - put: ert-product-final
+        params:
+          from: ert-product-promoted/cf-(.*).pivotal
+          to: ert-releases/
+      - put: p-runtime
+        params:
+           repository: p-runtime
+           tag: version/number
+
+
 
 groups:
   - name: aws-clean
@@ -448,8 +489,10 @@ groups:
       - kickoff
       - build-runtime
       - promote-ert
+      - publish
     resources:
       - ops-manager-stable-aws
       - ops-manager-stable-vsphere
       - ops-manager-stable-vcloud
       - ops-manager-stable-openstack
+
