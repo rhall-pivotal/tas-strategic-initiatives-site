@@ -1,0 +1,13 @@
+---
+name: verify-internetless
+plan:
+- get: p-runtime
+  passed:
+  - deploy-ops-manager-internetless
+- get: environment-internetless
+  passed:
+  - deploy-ops-manager-internetless
+- task: verify-internetless
+  tags:
+  - vsphere
+  file: p-runtime/ci/jobs/verify-internetless.yml
