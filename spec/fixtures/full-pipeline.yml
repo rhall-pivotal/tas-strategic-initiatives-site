@@ -26,6 +26,15 @@ jobs:
 - name: deploy-ops-manager-aws-clean
   plan:
   - task: some-task
+- name: configure-microbosh-aws-clean
+  plan:
+  - get: p-runtime
+    passed:
+    - deploy-ops-manager-aws-clean
+  - get: environment
+    resource: environment-aws-clean
+    passed:
+    - deploy-ops-manager-aws-clean
 - name: configure-ert-aws-clean
   plan:
   - task: some-task
@@ -65,6 +74,15 @@ jobs:
 - name: deploy-ops-manager-openstack-clean
   plan:
   - task: some-task
+- name: configure-microbosh-openstack-clean
+  plan:
+  - get: p-runtime
+    passed:
+    - deploy-ops-manager-openstack-clean
+  - get: environment
+    resource: environment-openstack-clean
+    passed:
+    - deploy-ops-manager-openstack-clean
 - name: configure-ert-openstack-clean
   plan:
   - task: some-task
@@ -102,6 +120,15 @@ jobs:
 - name: deploy-ops-manager-vsphere-clean
   plan:
   - task: some-task
+- name: configure-microbosh-vsphere-clean
+  plan:
+  - get: p-runtime
+    passed:
+    - deploy-ops-manager-vsphere-clean
+  - get: environment
+    resource: environment-vsphere-clean
+    passed:
+    - deploy-ops-manager-vsphere-clean
 - name: configure-ert-vsphere-clean
   plan:
   - task: some-task
@@ -142,6 +169,15 @@ jobs:
 - name: verify-internetless
   plan:
   - task: verify
+- name: configure-microbosh-internetless
+  plan:
+  - get: p-runtime
+    passed:
+    - verify-internetless
+  - get: environment
+    resource: environment-internetless
+    passed:
+    - verify-internetless
 - name: configure-ert-internetless
   plan:
   - task: some-task
@@ -179,6 +215,15 @@ jobs:
 - name: deploy-ops-manager-aws-upgrade
   plan:
   - task: some-task
+- name: configure-microbosh-aws-upgrade
+  plan:
+  - get: p-runtime
+    passed:
+    - deploy-ops-manager-aws-upgrade
+  - get: environment
+    resource: environment-aws-upgrade
+    passed:
+    - deploy-ops-manager-aws-upgrade
 - name: configure-ert-aws-upgrade
   plan:
   - task: some-task
@@ -218,6 +263,15 @@ jobs:
 - name: deploy-ops-manager-openstack-upgrade
   plan:
   - task: some-task
+- name: configure-microbosh-openstack-upgrade
+  plan:
+  - get: p-runtime
+    passed:
+    - deploy-ops-manager-openstack-upgrade
+  - get: environment
+    resource: environment-openstack-upgrade
+    passed:
+    - deploy-ops-manager-openstack-upgrade
 - name: configure-ert-openstack-upgrade
   plan:
   - task: some-task
@@ -255,6 +309,15 @@ jobs:
 - name: deploy-ops-manager-vsphere-upgrade
   plan:
   - task: some-task
+- name: configure-microbosh-vsphere-upgrade
+  plan:
+  - get: p-runtime
+    passed:
+    - deploy-ops-manager-vsphere-upgrade
+  - get: environment
+    resource: environment-vsphere-upgrade
+    passed:
+    - deploy-ops-manager-vsphere-upgrade
 - name: configure-ert-vsphere-upgrade
   plan:
   - task: some-task
@@ -298,6 +361,15 @@ jobs:
 - name: deploy-ops-manager-vcloud-upgrade
   plan:
   - task: some-task
+- name: configure-microbosh-vcloud-upgrade
+  plan:
+  - get: p-runtime
+    passed:
+    - deploy-ops-manager-vcloud-upgrade
+  - get: environment
+    resource: environment-vcloud-upgrade
+    passed:
+    - deploy-ops-manager-vcloud-upgrade
 - name: configure-ert-vcloud-upgrade
   plan:
   - task: some-task

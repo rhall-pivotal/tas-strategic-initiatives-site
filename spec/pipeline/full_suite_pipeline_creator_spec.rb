@@ -42,6 +42,13 @@ jobs:
   - name: deploy-ops-manager-{{pipeline_name}}
     plan:
       - task: some-task
+  - name: configure-microbosh-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        passed: [deploy-ops-manager-{{pipeline_name}}]
+      - get: environment
+        resource: environment-{{pipeline_name}}
+        passed: [deploy-ops-manager-{{pipeline_name}}]
   - name: configure-ert-{{pipeline_name}}
     plan:
       - task: some-task
@@ -122,9 +129,9 @@ YAML
         iaas_type: 'vsphere'
       )['jobs']
 
-      expect(vsphere_clean_pipeline_jobs[2]['name']).to eq('configure-ert-vsphere-clean')
-      expect(vsphere_clean_pipeline_jobs[2]['plan'].first['tags']).to eq(['vsphere'])
-      expect(vsphere_clean_pipeline_jobs[2]['plan'].first['resource']).to eq('environment-vsphere')
+      expect(vsphere_clean_pipeline_jobs[3]['name']).to eq('configure-ert-vsphere-clean')
+      expect(vsphere_clean_pipeline_jobs[3]['plan'].first['tags']).to eq(['vsphere'])
+      expect(vsphere_clean_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-vsphere')
 
       expect(vsphere_clean_pipeline_jobs.find { |j| j['name'] =~ /verify_internetless/ }).to be_nil
     end
@@ -136,11 +143,11 @@ YAML
         iaas_type: 'aws'
       )['jobs']
 
-      expect(aws_clean_pipeline_jobs[2]['name']).to eq('configure-ert-aws-clean')
-      expect(aws_clean_pipeline_jobs[2]['plan'].first['tags']).to eq(['aws'])
-      expect(aws_clean_pipeline_jobs[2]['plan'].first['resource']).to eq('environment-aws')
+      expect(aws_clean_pipeline_jobs[3]['name']).to eq('configure-ert-aws-clean')
+      expect(aws_clean_pipeline_jobs[3]['plan'].first['tags']).to eq(['aws'])
+      expect(aws_clean_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-aws')
 
-      expect(aws_clean_pipeline_jobs[2]['plan'][1]).to eq('task' => 'some-aws-task', 'tags' => 'aws')
+      expect(aws_clean_pipeline_jobs[3]['plan'][1]).to eq('task' => 'some-aws-task', 'tags' => 'aws')
 
       expect(aws_clean_pipeline_jobs.find { |j| j['name'] =~ /verify_internetless/ }).to be_nil
     end
@@ -152,9 +159,9 @@ YAML
         iaas_type: 'vsphere'
       )['jobs']
 
-      expect(internetless_pipeline_jobs[3]['name']).to eq('configure-ert-internetless')
-      expect(internetless_pipeline_jobs[3]['plan'].first['tags']).to eq(['vsphere'])
-      expect(internetless_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-internetless')
+      expect(internetless_pipeline_jobs[4]['name']).to eq('configure-ert-internetless')
+      expect(internetless_pipeline_jobs[4]['plan'].first['tags']).to eq(['vsphere'])
+      expect(internetless_pipeline_jobs[4]['plan'].first['resource']).to eq('environment-internetless')
 
       expect(internetless_pipeline_jobs[2]['name']).to eq('verify-internetless')
       expect(internetless_pipeline_jobs[2]['plan'].first['task']).to eq('verify')
@@ -167,15 +174,15 @@ YAML
         iaas_type: 'vcloud'
       )['jobs']
 
-      expect(vcloud_clean_pipeline_jobs[2]['name']).to eq('configure-ert-vcloud')
-      expect(vcloud_clean_pipeline_jobs[2]['plan'].first['tags']).to eq(['vcloud'])
-      expect(vcloud_clean_pipeline_jobs[2]['plan'].first['resource']).to eq('environment-vcloud')
+      expect(vcloud_clean_pipeline_jobs[3]['name']).to eq('configure-ert-vcloud')
+      expect(vcloud_clean_pipeline_jobs[3]['plan'].first['tags']).to eq(['vcloud'])
+      expect(vcloud_clean_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-vcloud')
 
       expect(vcloud_clean_pipeline_jobs.first['plan'][1]).to eq('task' => 'some-vcloud-task', 'tags' => 'vcloud')
       expect(vcloud_clean_pipeline_jobs.first['plan'][2]).to eq('task' => 'another-vcloud-task', 'tags' => 'vcloud')
 
-      expect(vcloud_clean_pipeline_jobs[4]['plan'][1]).to eq('task' => 'some-vcloud-task', 'tags' => 'vcloud')
-      expect(vcloud_clean_pipeline_jobs[4]['plan'][2]).to eq('task' => 'another-vcloud-task', 'tags' => 'vcloud')
+      expect(vcloud_clean_pipeline_jobs[5]['plan'][1]).to eq('task' => 'some-vcloud-task', 'tags' => 'vcloud')
+      expect(vcloud_clean_pipeline_jobs[5]['plan'][2]).to eq('task' => 'another-vcloud-task', 'tags' => 'vcloud')
 
       expect(vcloud_clean_pipeline_jobs.find { |j| j['name'] =~ /verify_internetless/ }).to be_nil
     end
@@ -189,9 +196,9 @@ YAML
         iaas_type: 'vsphere'
       )['jobs']
 
-      expect(vsphere_upgrade_pipeline_jobs[2]['name']).to eq('configure-ert-vsphere-upgrade')
-      expect(vsphere_upgrade_pipeline_jobs[2]['plan'].first['tags']).to eq(['vsphere'])
-      expect(vsphere_upgrade_pipeline_jobs[2]['plan'].first['resource']).to eq('environment-vsphere')
+      expect(vsphere_upgrade_pipeline_jobs[3]['name']).to eq('configure-ert-vsphere-upgrade')
+      expect(vsphere_upgrade_pipeline_jobs[3]['plan'].first['tags']).to eq(['vsphere'])
+      expect(vsphere_upgrade_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-vsphere')
 
       expect(vsphere_upgrade_pipeline_jobs.find { |j| j['name'] =~ /verify_internetless/ }).to be_nil
     end
@@ -203,11 +210,11 @@ YAML
         iaas_type: 'aws'
       )['jobs']
 
-      expect(aws_upgrade_pipeline_jobs[2]['name']).to eq('configure-ert-aws-upgrade')
-      expect(aws_upgrade_pipeline_jobs[2]['plan'].first['tags']).to eq(['aws'])
-      expect(aws_upgrade_pipeline_jobs[2]['plan'].first['resource']).to eq('environment-aws-east')
+      expect(aws_upgrade_pipeline_jobs[3]['name']).to eq('configure-ert-aws-upgrade')
+      expect(aws_upgrade_pipeline_jobs[3]['plan'].first['tags']).to eq(['aws'])
+      expect(aws_upgrade_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-aws-east')
 
-      expect(aws_upgrade_pipeline_jobs[2]['plan'][1]).to eq('task' => 'some-aws-upgrade-task', 'tags' => 'aws')
+      expect(aws_upgrade_pipeline_jobs[3]['plan'][1]).to eq('task' => 'some-aws-upgrade-task', 'tags' => 'aws')
 
       expect(aws_upgrade_pipeline_jobs.find { |j| j['name'] =~ /verify_internetless/ }).to be_nil
     end
@@ -219,9 +226,9 @@ YAML
         iaas_type: 'vcloud'
       )['jobs']
 
-      expect(vcloud_upgrade_pipeline_jobs[2]['name']).to eq('configure-ert-vcloud')
-      expect(vcloud_upgrade_pipeline_jobs[2]['plan'].first['tags']).to eq(['vcloud'])
-      expect(vcloud_upgrade_pipeline_jobs[2]['plan'].first['resource']).to eq('environment-vcloud')
+      expect(vcloud_upgrade_pipeline_jobs[3]['name']).to eq('configure-ert-vcloud')
+      expect(vcloud_upgrade_pipeline_jobs[3]['plan'].first['tags']).to eq(['vcloud'])
+      expect(vcloud_upgrade_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-vcloud')
 
       expect(vcloud_upgrade_pipeline_jobs.first['plan'][1]).to eq('task' => 'some-vcloud-task', 'tags' => 'vcloud')
       expect(vcloud_upgrade_pipeline_jobs.first['plan'][2]).to eq('task' => 'another-vcloud-task', 'tags' => 'vcloud')

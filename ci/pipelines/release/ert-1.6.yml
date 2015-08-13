@@ -1150,12 +1150,12 @@ jobs:
   - get: p-runtime
     trigger: true
     passed:
-    - deploy-ops-manager-internetless
+    - verify-internetless
   - get: environment
     resource: environment-internetless
     trigger: true
     passed:
-    - deploy-ops-manager-internetless
+    - verify-internetless
   - task: configure
     tags:
     - vsphere
@@ -2810,6 +2810,7 @@ groups:
   - claim-environment-internetless
   - destroy-environment-internetless
   - deploy-ops-manager-internetless
+  - verify-internetless
   - configure-microbosh-internetless
   - deploy-microbosh-internetless
   - upload-pivotal-internetless

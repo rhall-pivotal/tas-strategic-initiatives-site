@@ -14,16 +14,20 @@ jobs:
   - name: destroy-environment
     plan:
       - get: p-runtime
-        trigger: true
         passed: [claim-environment]
       - get: environment
-        trigger: true
         passed: [claim-environment]
       - task: destroy
         tags: [some-iaas]
   - name: deploy-ops-manager
     plan:
       - task: some-task
+  - name: configure-microbosh
+    plan:
+      - get: p-runtime
+        passed: [deploy-ops-manager]
+      - get: environment
+        passed: [deploy-ops-manager]
   - name: configure-ert
     plan:
       - task: some-task
@@ -38,7 +42,6 @@ jobs:
     plan:
       - get: environment
         resource: environment
-        trigger: true
         passed: [claim-environment]
       - task: destroy
         tags: [some-iaas]
@@ -81,8 +84,8 @@ YAML
     it 'adds all tasks from extra template file to configure-ert job' do
       task_adder.add_aws_configure_tasks(pipeline_yaml, 'aws-extra-config')
 
-      expect(pipeline_yaml['jobs'][2]['plan'][1]['task']).to eq('some-aws-task')
-      expect(pipeline_yaml['jobs'][2]['plan'][2]['task']).to eq('another-aws-task')
+      expect(pipeline_yaml['jobs'][3]['plan'][1]['task']).to eq('some-aws-task')
+      expect(pipeline_yaml['jobs'][3]['plan'][2]['task']).to eq('another-aws-task')
     end
   end
 
@@ -98,8 +101,8 @@ YAML
       expect(pipeline_yaml['jobs'][0]['plan'][2]['task']).to eq('some-vcloud-task')
       expect(pipeline_yaml['jobs'][0]['plan'][3]['task']).to eq('another-vcloud-task')
 
-      expect(pipeline_yaml['jobs'][4]['plan'][1]['task']).to eq('some-vcloud-task')
-      expect(pipeline_yaml['jobs'][4]['plan'][2]['task']).to eq('another-vcloud-task')
+      expect(pipeline_yaml['jobs'][5]['plan'][1]['task']).to eq('some-vcloud-task')
+      expect(pipeline_yaml['jobs'][5]['plan'][2]['task']).to eq('another-vcloud-task')
     end
   end
 
@@ -114,6 +117,10 @@ YAML
 
       expect(pipeline_yaml['jobs'][2]['name']).to eq('verify-internetless')
       expect(pipeline_yaml['jobs'][2]['plan'][0]['task']).to eq('verify')
+
+      pipeline_yaml['jobs'][3]['plan'].each do |task|
+        expect(task['passed']).to eq(['verify-internetless']) if task['passed']
+      end
     end
   end
 end
