@@ -2566,7 +2566,7 @@ job_types:
         receptor:
           bbs:
             api_url: http://bbs.service.cf.internal:8889
-          cors_enabled: (( receptor_cors_enabled ))
+          cors_enabled: (( receptor_cors_enabled.value ))
           register_with_router: true
           domain_names: ["(( .cloud_controller.system_domain.value ))","(( .cloud_controller.apps_domain.value ))"]
           nats:
