@@ -23,6 +23,9 @@ jobs:
     tags:
     - aws
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: deploy-ops-manager-aws-clean
+  plan:
+  - task: some-task
 - name: configure-ert-aws-clean
   plan:
   - task: some-task
@@ -59,6 +62,9 @@ jobs:
     tags:
     - openstack
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: deploy-ops-manager-openstack-clean
+  plan:
+  - task: some-task
 - name: configure-ert-openstack-clean
   plan:
   - task: some-task
@@ -93,6 +99,9 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: deploy-ops-manager-vsphere-clean
+  plan:
+  - task: some-task
 - name: configure-ert-vsphere-clean
   plan:
   - task: some-task
@@ -127,6 +136,12 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: deploy-ops-manager-internetless
+  plan:
+  - task: some-task
+- name: verify-internetless
+  plan:
+  - task: verify
 - name: configure-ert-internetless
   plan:
   - task: some-task
@@ -161,6 +176,9 @@ jobs:
     tags:
     - aws
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: deploy-ops-manager-aws-upgrade
+  plan:
+  - task: some-task
 - name: configure-ert-aws-upgrade
   plan:
   - task: some-task
@@ -197,6 +215,9 @@ jobs:
     tags:
     - openstack
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: deploy-ops-manager-openstack-upgrade
+  plan:
+  - task: some-task
 - name: configure-ert-openstack-upgrade
   plan:
   - task: some-task
@@ -231,6 +252,9 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: deploy-ops-manager-vsphere-upgrade
+  plan:
+  - task: some-task
 - name: configure-ert-vsphere-upgrade
   plan:
   - task: some-task
@@ -271,6 +295,9 @@ jobs:
     tags:
     - vcloud
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: deploy-ops-manager-vcloud-upgrade
+  plan:
+  - task: some-task
 - name: configure-ert-vcloud-upgrade
   plan:
   - task: some-task

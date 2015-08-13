@@ -21,6 +21,9 @@ jobs:
         passed: [claim-environment]
       - task: destroy
         tags: [some-iaas]
+  - name: deploy-ops-manager
+    plan:
+      - task: some-task
   - name: configure-ert
     plan:
       - task: some-task
@@ -60,6 +63,15 @@ YAML
 YAML
   end
 
+  let(:verify_internetless_config) do
+    <<YAML
+---
+name: verify-internetless
+plan:
+- task: verify
+YAML
+  end
+
   describe '#add_aws_configure_tasks' do
     before do
       allow(File).to receive(:read).with('ci/pipelines/release/template/aws-extra-config')
@@ -69,25 +81,39 @@ YAML
     it 'adds all tasks from extra template file to configure-ert job' do
       task_adder.add_aws_configure_tasks(pipeline_yaml, 'aws-extra-config')
 
-      expect(pipeline_yaml['jobs'][1]['plan'][1]['task']).to eq('some-aws-task')
-      expect(pipeline_yaml['jobs'][1]['plan'][2]['task']).to eq('another-aws-task')
+      expect(pipeline_yaml['jobs'][2]['plan'][1]['task']).to eq('some-aws-task')
+      expect(pipeline_yaml['jobs'][2]['plan'][2]['task']).to eq('another-aws-task')
+    end
+  end
+
+  describe '#add_vcloud_delete_installation_tasks' do
+    before do
+      allow(File).to receive(:read).with('ci/pipelines/release/template/vcloud-delete-installation.yml')
+        .and_return(vcloud_extra_config)
     end
 
-    describe '#add_vcloud_delete_installation_tasks' do
-      before do
-        allow(File).to receive(:read).with('ci/pipelines/release/template/vcloud-delete-installation.yml')
-          .and_return(vcloud_extra_config)
-      end
+    it 'adds all tasks from extra template file to all destroy jobs' do
+      task_adder.add_vcloud_delete_installation_tasks(pipeline_yaml)
 
-      it 'adds all tasks from extra template file to all destroy jobs' do
-        task_adder.add_vcloud_delete_installation_tasks(pipeline_yaml)
+      expect(pipeline_yaml['jobs'][0]['plan'][2]['task']).to eq('some-vcloud-task')
+      expect(pipeline_yaml['jobs'][0]['plan'][3]['task']).to eq('another-vcloud-task')
 
-        expect(pipeline_yaml['jobs'][0]['plan'][2]['task']).to eq('some-vcloud-task')
-        expect(pipeline_yaml['jobs'][0]['plan'][3]['task']).to eq('another-vcloud-task')
+      expect(pipeline_yaml['jobs'][4]['plan'][1]['task']).to eq('some-vcloud-task')
+      expect(pipeline_yaml['jobs'][4]['plan'][2]['task']).to eq('another-vcloud-task')
+    end
+  end
 
-        expect(pipeline_yaml['jobs'][3]['plan'][1]['task']).to eq('some-vcloud-task')
-        expect(pipeline_yaml['jobs'][3]['plan'][2]['task']).to eq('another-vcloud-task')
-      end
+  describe '#add_verify_internetless_job' do
+    before do
+      allow(File).to receive(:read).with('ci/pipelines/release/template/internetless-verification.yml')
+        .and_return(verify_internetless_config)
+    end
+
+    it 'adds the verify_internetless job after deploy-ops-manager' do
+      task_adder.add_verify_internetless_job(pipeline_yaml)
+
+      expect(pipeline_yaml['jobs'][2]['name']).to eq('verify-internetless')
+      expect(pipeline_yaml['jobs'][2]['plan'][0]['task']).to eq('verify')
     end
   end
 end

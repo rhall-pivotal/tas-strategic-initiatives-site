@@ -1133,6 +1133,18 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/deploy-opsman.yml
+- name: verify-internetless
+  plan:
+  - get: p-runtime
+    passed:
+    - deploy-ops-manager-internetless
+  - get: environment
+    passed:
+    - deploy-ops-manager-internetless
+  - task: verify-internetless
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/verify-internetless.yml
 - name: configure-microbosh-internetless
   plan:
   - get: p-runtime

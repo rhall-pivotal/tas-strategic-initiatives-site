@@ -26,6 +26,14 @@ module Pipeline
       end
     end
 
+    def add_verify_internetless_job(pipeline_yaml)
+      extra_config = YAML.load(File.read(File.join(template_directory, 'internetless-verification.yml')))
+
+      deploy_ops_manager_index = pipeline_yaml['jobs'].find_index { |j| j['name'] =~ /deploy-ops-manager/ }
+
+      pipeline_yaml['jobs'].insert(deploy_ops_manager_index + 1, extra_config)
+    end
+
     def template_directory
       File.join('ci', 'pipelines', 'release', 'template')
     end
