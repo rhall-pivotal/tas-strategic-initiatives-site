@@ -322,11 +322,11 @@ jobs:
         passed:
         - promote-ert
       - get: version
-        resource: semver
+        resource: version
         params:
           bump: patch
       - put: final-version
-        resource: semver
+        resource: version
         params:
           file: version/number
       - task: rename-pivotal
