@@ -1,0 +1,124 @@
+---
+resources:
+  - name: p-runtime
+    type: git
+    source:
+      uri: git@github.com:pivotal-cf/p-runtime.git
+      branch: features/publish-final-pivotal-100461426
+      private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
+        seLKMSp4Q080DOuUXlMsmvlx5ZJYmWeyR1V24l2iw1N6Ww9WaCTBBb6K69CkWi6R
+        AoDNg1EkrsThGxNTUD6BFUzI64FydgCKv0GpX+I7LyMJSPGVZKi34lIDKfn2uGyE
+        xZLPt833LvctrRW9g154Dc1Ok/SWqxL4I8uZFBSiNJqdXCx4dtXvnpRJ9da/SejB
+        YmfWOBlVXjivOaJmz4m4jOkYJj8cOLoDGJBADgCBB1vdkbRuXShks2ft/PuxPVsm
+        ZXpfOQxT0Qr9v4B0zubXncrloJvRduMV9IoccwIDAQABAoIBAHCpYw5P7W3GheKh
+        WxzRl5h6rRPh2LQtF4qNWHRN4DNHRYspyWjEMWUa7lRiEJwzHJShgF9P0YLD3D5F
+        0H9lqypFriqXRcmc/tllc+P3dVHGY4enKrgxrC0emZWvuvNhrDC2k5DsAx1YMIFC
+        mY7l4Q/dPHGx7mb5SIFMeMrDxmUZ95EuCFBFpuyzgQvdS1Y2Kev7qfgu8oqxgGIN
+        jMYy0m02LVq9A/dRulx7oWhjoCmZ8vFRD7YiHJj4QhQ909OjtesMoCU5cXzUarPL
+        1tw+ki6h8l+HPToojVQsacSSdIQUvc2TYufyh0S5orSnc92fpZRyZmHjcnv4fkwx
+        gDDzLsECgYEAzsjVaZkXXjMk/c1nFpMFaXWRKK8UYUnOh9uGp3WXa+spMEcAzbTW
+        umHqJcQAGewkAk4PafM4BwqmcwL0zmoKxoDVGAGVLoezH/ln8KKZl94sfAsEbWlI
+        VIs7SPfCGmo0ROHm+eDFiWS4+GJgLS+FLvqeHSXnhg4dgVqRHDlf05kCgYEAw9XZ
+        AElXqouZ6i5jto2mO7DAkzRgR9IZ4xb9uLbOUAq1BgebWpwuT1L++WqTyiu8MNKr
+        o1iJSAUIjbyxxICSjMRenF2kpziWmysfjiCjDt/Lw90+8109hz7A3qahJcjqjvEG
+        FYIykaYTCWRM6kpUXogMS1kvrFwt6v4Rc84lN+sCgYA68jEz6vooVjgDSZxLaRmv
+        2F3K1S3gFeQUAlY+Ql0p3F1fb74g5Z4Yf3T50wecXB5fsdTfBQBBsZ2FR6B1fvEX
+        aP5V242lN/Wt9bDVfeR+0EyqB5H5hnuh7ha2VDo2wXOo9ySasqJc6iN4WsLD3rn+
+        jF6qPHXlVvy+NQ0MmKZicQKBgG5PozCaH5udj1FuWBSYra6p3ZANzL4oBxT3+mt1
+        7bkAjv+agVQE7cEZCy8LbbxP7m3B/ZTBZnL/AtZ0F96MXgCVDIYf6YOYSJ2XKOsy
+        TyctwOXPVopXVzU7kADa86MJDbb+5WJwOHP6jHaZ3QmMXQHyuJoo3sXEFslr3ADT
+        efuJAoGBAJcIUJRJdWBj3D7iLPOHRqJCwXdcxEaV9px9J+QUfnRZ4lGp5cdLlzcl
+        KDZ97Z8GkcNEWmVNqygX06AgJmHhNNDRXJCT5fwcJlF8ZcjXZ6NJa3zVQ3y1VMFE
+        hYI0vHHTGhvOQR1PYJlS5JuNvDCWo8PeeG/LV+zUEVW7LJMYzvWj
+        -----END RSA PRIVATE KEY-----
+
+ - name: repo
+    type: git
+    source:
+      uri: git@github.com:pivotal-cf-experimental/releng-semver-release-experiment.git
+      branch: master
+      private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpAIBAAKCAQEAwRELBQkdHLBftdkq7GuVjx6y2780HMw0HBUCAGN/1/+qOd5H
+        5+vIJCrPrg5sSCzc1wv2QqjYnClfbl8qfoOj5Pr2BreBImS694ICm0RT9XfWBeWG
+        WhktzHA/hSbu9CqNVdJMu0ux2MJh82oVHahNT8WHikmTiiNPdC+e4Cc8IW5OmRJ7
+        emHgAtio764g9nHPjzapYC4nv4HHLw8zggVD+ueW0Bw3JkmQH5tUEE0WnkpTbJxP
+        0vxwMD1wv5OgIXt7P2E8KKuC9q2hihObuLlZWgVGYU6NQsBZoK2Dz2rJlpqfIapd
+        Fs0MtM+djcMzosreFOW3G9Cw+6styQV+Jzm/jQIDAQABAoIBAA5IJHiK5AxrP6lE
+        F1jF3JppuvFmg4Rd1rz9ENjWg26HCyCcwNT3LCcAw7wsdPYh23RM/jqQIvXqWZTg
+        lVQmiMk3h1uX14WjzfDhPTAfLdbKtppZEEc59ZlZ9Fj1OFf3jdz7YZG5V76hIn3P
+        KyC2goGUKyKfrrpZQldl7mrGfDw8u70QSHxhE/KUZVe2UVgA3id1s4yuwgA33y9S
+        594uJJWDOGM7MuDKyjkiHP0BDFfc7Atz11xrPlin1Jo4C2guB+AfCntt6O5J64Ob
+        qWKt03atMFV7T14MoQmRLXT2HFEiol8SDgTz0z4OUtQMwANfWBpNE0vgGl0JEODl
+        zDuThEECgYEA7X/TEBhC7gyvDvj5XKMfI0viLrZEefA5UUfcabOhXcWE/tWF090z
+        Ndbgc1nCNksXwZKfMDbBLo3kmOIblNM0TTadLJXKJHerql7mMZQD3ZS+Ek3wpw8E
+        0m9xNJ1AHdU44zNwvqCw1RwdEcpkAE5DGsbuK+2Q/blwE0ChdpgS8jcCgYEA0Bsl
+        x6blect6SsAEjX8j4Q0NxbuIljT+JGoLizo30bz/2mJRoSx8AITpBe9A4LMGbeyV
+        DdqdihadbHThW47V9l6UL/irEPes9ZwDVEOWvkdbHEcigFJcGrhM1g2l9OCyqGh/
+        5egSfZ9fs1jwTlwrEIZNAP3pMUwwOvUHPmd0ilsCgYEAzZdFgj0+UwuvzupAEq0y
+        mz9pQL6PcG8/btkiOG5DVgVSJ7d27fwiBI1KJxCgSpeerPbbzsTXXhF+vcmdzqs2
+        L1EDpkDUh9UASa903Z4f6oSENRw7IqKhrfjCqqUlh624XRV+l8ZKzXBUyb3F623U
+        MS3bpzMzvC/2kPP10c+7NukCgYEAqUB7EI7fcZgY5PSYf1AZKS8JtXiZVLjSvWD1
+        9I0r2swhNkbiZvgb/fwa3PXCST2xC/PvIi5cFHPiItRIeMOJpu8zDHTtBEa7h6IU
+        XxL9ZdH4+t2r5LuXJzAfZbQB9lBNXYRoCN8fMsZM+jtqbgCuEal4tUbMwohZbYnd
+        E1bmxKMCgYBgqxewBKgAthApC0IDuH3XpJEgFIuNgBQwJokPLEJ97NdIqNzxW7EE
+        ZTtu1GtTN4ObGyHFq6EKPTLT022dCxlXPHCpDSULAoeWeDJAOvH7dC4HCaPNKu6x
+        98+PjltndzQCu6b9dFQFdMbuHBruwjUaZYbTY1e3OwaqX+G/MMh31A==
+        -----END RSA PRIVATE KEY-----
+
+
+  - name: semver
+    type: semver
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      key: test-folder/publishing-test/version
+
+  - name: ert-product-tested
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: test-folder/publishing-test/ert.pivotal
+
+  - name: ert-product-final
+    type: s3
+    source:
+      access_key_id: AKIAI43577ARGHXPWIMQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      regexp: test-folder/publishing-test/cf-(.*).pivotal
+
+jobs:
+  - name: publish
+    plan:
+      - get: p-runtime
+      - get: repo
+      - get: ert-product-tested
+      - get: version
+        resource: semver
+        params:
+          bump: patch
+      - put: final-version
+        resource: semver
+        params:
+          file: version/number
+      - task: rename-pivotal
+        file: p-runtime/ci/jobs/rename-final-pivotal.yml
+      - put: ert-product-final
+        params:
+          from: ert-product-tested/cf-(.*).pivotal
+          to: test-folder/publishing-test/
+      - put: repo
+        params:
+           repository: repo
+           tag: version/number
