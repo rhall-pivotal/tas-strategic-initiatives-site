@@ -99,21 +99,18 @@ resources:
       private: true
       versioned_file: ops_manager_images/aws/stable/ops_man_image
 
-  - name: upstream-release-metadata
-    type: s3
+  - name: upstream-release-cf-autoscaling
+    type: github-release
     source:
-      access_key_id: AKIAI43577ARGHXPWIMQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: upstream-release-metadata/cf-autoscaling/metadata.yml
+      access_token: 6e2749ee83cd2ffe595a42861ec0d6d0052b3ab7
+      user: pivotal-cf
+      repository: cf-autoscaling-release
 
 jobs:
   - name: claim-environment
     plan:
       - get: p-runtime
-      - get: upstream-release-metadata
+      - get: upstream-release-cf-autoscaling
         trigger: true
       - put: environment
         params:
@@ -136,7 +133,7 @@ jobs:
         - get: environment
           trigger: true
           passed: [claim-environment]
-        - get: upstream-release-metadata
+        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [claim-environment]
       - task: destroy
@@ -152,7 +149,7 @@ jobs:
         - get: environment
           trigger: true
           passed: [destroy-environment]
-        - get: upstream-release-metadata
+        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [destroy-environment]
       - aggregate:
@@ -174,7 +171,7 @@ jobs:
         - get: environment
           trigger: true
           passed: [deploy-ops-manager]
-        - get: upstream-release-metadata
+        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [deploy-ops-manager]
       - task: configure
@@ -193,7 +190,7 @@ jobs:
         - get: environment
           trigger: true
           passed: [configure-microbosh]
-        - get: upstream-release-metadata
+        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [configure-microbosh]
       - task: deploy
@@ -222,7 +219,7 @@ jobs:
         - get: p-runtime
           trigger: true
           passed: [claim-environment]
-        - get: upstream-release-metadata
+        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [claim-environment]
       - task: build-product
@@ -230,7 +227,12 @@ jobs:
         file: p-runtime/ci/jobs/build-pivotal-with-upstream-metadata.yml
         config:
           params:
-            EXTERNAL_RELEASE: upstream-release-metadata/metadata.yml
+            RELEASE_NAMES: "cf-autoscaling"
+            EXTERNAL_RELEASE: artisinal-binaries.yml
+            GITHUB_ACCESS_TOKEN: 6e2749ee83cd2ffe595a42861ec0d6d0052b3ab7
+            GITHUB_USER_NAME: cfla-botbot
+            GITHUB_RELEASE_ORGS: "pivotal-cf"
+            GITHUB_RELEASE_REPOS: "cf-autoscaling-release"
       - put: ert-product
         params:
           from: build-product/ert.pivotal
@@ -244,7 +246,7 @@ jobs:
         - get: environment
           trigger: true
           passed: [deploy-microbosh]
-        - get: upstream-release-metadata
+        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [deploy-microbosh,build-runtime]
         - get: ert-product
@@ -329,6 +331,9 @@ jobs:
       - task: run-cats
         tags: [aws]
         file: p-runtime/ci/jobs/run-cats.yml
+        config:
+          params:
+            OPSMAN_VERSION: 1.5
 
   - name: destroy-environment-final
     plan:
