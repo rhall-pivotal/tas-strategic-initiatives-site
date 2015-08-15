@@ -248,7 +248,7 @@ jobs:
           passed: [claim-environment]
       - task: build-product
         tags: [aws]
-        file: p-runtime/ci/jobs/build-pivotal-with-upstream-metadata.yml
+        file: p-runtime/ci/jobs/build-pivotal-with-upstream-notifications.yml
         config:
           params:
             RELEASE_NAMES: "notifications notifications-ui"
