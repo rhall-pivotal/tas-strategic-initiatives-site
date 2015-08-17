@@ -4076,6 +4076,7 @@ job_types:
           admin_password: (( .uaa.admin_credentials.password ))
         database: (( .properties.system_database.selected_option.parsed_manifest(autoscaling) ))
         encryption_key: (( encryption_key.password ))
+        enable_diego: true
         notifications_host: "https://notifications.(( .cloud_controller.system_domain.value ))"
         organization: system
         space: autoscaling
