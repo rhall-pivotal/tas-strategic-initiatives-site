@@ -261,7 +261,6 @@ jobs:
               OPSMAN_VERSION: 1.6
 
   - name: build-runtime
-    serial_groups: [ salmon-pipeline ]
     plan:
       - get: version
         params:
