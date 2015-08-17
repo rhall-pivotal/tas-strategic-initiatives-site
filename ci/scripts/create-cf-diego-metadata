@@ -19,7 +19,7 @@ export DIEGO_VERSION=`curl https://github.com/cloudfoundry/cf-release/releases/t
   | sed -n 's/.*\([0-9]\.[0-9]\{4\}\.[0-9]\).*/\1/p' \
   | tr -d '\r\n'`
 
-export DIEGO_URL=https://bosh.io/d/github.com/cloudfoundry-incubator/diego-release?v=$DIEGO_VERSION
+export DIEGO_URL=https://bosh.io/releases/github.com/cloudfoundry-incubator/diego-release?version=$DIEGO_VERSION
 
 wget $DIEGO_URL -O diego-$DIEGO_VERSION.tgz
 
@@ -27,6 +27,6 @@ export DIEGO_MD5=`md5sum diego-$DIEGO_VERSION.tgz | awk '{ print $1 }'`
 echo "---
 - file: diego-$CF_VERSION.tgz
   name: diego
-  version: '$DIEGO_VERSION_VERSION'
+  version: '$DIEGO_VERSION'
   md5: $DIEGO_MD5
   url: $DIEGO_URL" > diego-metadata.yml
