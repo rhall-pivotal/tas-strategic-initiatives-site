@@ -55,7 +55,6 @@ jobs:
       - aggregate:
         - get: p-runtime
         - get: bosh-io-cf
-          trigger: true
       - task: create-metadata
         file: p-runtime/ci/jobs/create-cf-diego-salmon-metadata.yml
       - put: upstream-release-metadata
