@@ -40,6 +40,7 @@ RSpec.describe 'Configure Elastic Runtime 1.6.X Experimental Features', order: :
     %w(
       push-app-usage-service
       notifications
+      notifications-ui
       autoscaling
       autoscaling-register-broker
     ).each do |errand|
