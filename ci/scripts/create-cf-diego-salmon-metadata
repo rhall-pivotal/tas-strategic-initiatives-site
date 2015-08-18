@@ -25,7 +25,7 @@ wget $DIEGO_URL -O diego-$DIEGO_VERSION.tgz
 
 export DIEGO_MD5=`md5sum diego-$DIEGO_VERSION.tgz | awk '{ print $1 }'`
 echo "---
-- file: diego-$CF_VERSION.tgz
+- file: diego-$DIEGO_VERSION.tgz
   name: diego
   version: '$DIEGO_VERSION'
   md5: $DIEGO_MD5
