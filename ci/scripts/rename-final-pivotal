@@ -2,9 +2,5 @@
 
 set -ex
 
-export FINAL_VERSION=`cat release-version/number`
-
-
-
-
-mv ert-product-promoted/ert.pivotal ert-product-promoted/cf-$FINAL_VERSION.pivotal
+export VERSION=`cat version/number`
+mv ert-product-promoted/ert.pivotal ert-product-promoted/cf-$VERSION.pivotal

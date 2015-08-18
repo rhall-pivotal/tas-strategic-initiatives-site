@@ -410,6 +410,7 @@ jobs:
   plan:
   - get: version
     params:
+      bump: patch
       pre: build
   - put: version
     params:
@@ -460,20 +461,14 @@ jobs:
     - get: ert-product-promoted
       passed:
       - promote-ert
-    - get: release-version
-      resource: version
+    - get: version
       params:
         bump: final
-    - get: next-version
-      resource: version
-      params:
-        bump: patch
   - task: rename-pivotal
     file: p-runtime/ci/jobs/rename-final-pivotal.yml
-  - put: next-version
-    resource: version
+  - put: version
     params:
-      file: next-version/number
+      file: version/number
   - put: ert-product-final
     params:
       from: ert-product-promoted/cf-(.*).pivotal
