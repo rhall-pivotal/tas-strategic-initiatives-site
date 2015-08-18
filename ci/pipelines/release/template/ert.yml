@@ -268,7 +268,6 @@ resources:
       private: true
       versioned_file: exported_installations/master/vcloud/installation.zip
 
-
   - name: ert-product-final
     type: s3
     source:
@@ -278,6 +277,19 @@ resources:
       region_name: us-west-1
       private: true
       regexp: releases/cf-(.*).pivotal
+
+  - name: ert-sha-email
+    type: email
+    source:
+      from: cf-release-engineering+ci@pivotal.io
+      smtp:
+        host: email-smtp.us-east-1.amazonaws.com
+        password: Aq8JmJzyX3AlCehJWO5AYgdPmZoC5lDmDU8lFe4/P0d5
+        port: "587"
+        username: AKIAJM6P2J75RAWUYNNQ
+      to:
+      - cf-release-engineering+ci@pivotal.io
+      - cf-security-eng+ert+ci@pivotal.io
 
 jobs:
   - name: kickoff
@@ -300,6 +312,17 @@ jobs:
       - put: ert-product
         params:
           from: build-product/ert.pivotal
+      - task: compose-email
+        file: p-runtime/ci/jobs/compose-email.yml
+        config:
+          params:
+            file_to_hash: build-product/ert.pivotal
+            output_body_file: generated-body
+            output_subject_file: generated-subject
+      - put: ert-sha-email
+        params:
+          body: compose-email/generated-body
+          subject: compose-email/generated-subject
 
   - name: promote-ert
     plan:
@@ -311,7 +334,6 @@ jobs:
       - put: ert-product-promoted
         params:
           from: ert-product/ert.pivotal
-
 
   - name: publish
     plan:
@@ -342,8 +364,6 @@ jobs:
         params:
            repository: p-runtime
            tag: release-version/number
-
-
 
 groups:
   - name: aws-clean
@@ -498,4 +518,3 @@ groups:
       - ops-manager-stable-vsphere
       - ops-manager-stable-vcloud
       - ops-manager-stable-openstack
-
