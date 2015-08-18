@@ -11,8 +11,7 @@ echo "---
   name: cf
   version: '$CF_VERSION'
   md5: $CF_MD5
-  url: $CF_URL" > cf-metadata.yml
-
+  url: $CF_URL" > cf-diego-metadata.yml
 
 export DIEGO_VERSION=`curl https://github.com/cloudfoundry/cf-release/releases/tag/v$CF_VERSION \
   | grep "Diego final release" \
@@ -29,4 +28,4 @@ echo "---
   name: diego
   version: '$DIEGO_VERSION'
   md5: $DIEGO_MD5
-  url: $DIEGO_URL" > diego-metadata.yml
+  url: $DIEGO_URL" >> cf-diego-metadata.yml

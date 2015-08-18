@@ -39,7 +39,7 @@ resources:
     source:
       repository: cloudfoundry/cf-release
 
-  - name: upstream-release-metadata-cf
+  - name: upstream-release-metadata
     type: s3
     source:
       access_key_id: AKIAI43577ARGHXPWIMQ
@@ -47,17 +47,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: upstream-release-metadata/cf/metadata.yml
-
-  - name: upstream-release-metadata-diego
-    type: s3
-    source:
-      access_key_id: AKIAI43577ARGHXPWIMQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: upstream-release-metadata/diego/metadata.yml
+      versioned_file: upstream-release-metadata/cf-diego/metadata.yml
 
 jobs:
   - name: create-metadata
@@ -68,13 +58,9 @@ jobs:
           trigger: true
       - task: create-metadata
         file: p-runtime/ci/jobs/create-cf-diego-salmon-metadata.yml
-      - aggregate:
-        - put: upstream-release-metadata-cf
-          params:
-            from: cf-metadata.yml
-        - put: upstream-release-metadata-diego
-          params:
-            from: diego-metadata.yml
+      - put: upstream-release-metadata
+        params:
+          from: cf-diego-metadata.yml
 
 groups:
   - name: create-cf-diego-salmon-metadata
