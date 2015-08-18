@@ -16,7 +16,7 @@ vm_shepherd:
         - mars-ops-manager
         - mars-products
       private_ip: 192.168.116.100
-      public_ip: 10.85.38.58
+      public_ip: 10.85.38.81
 
 ops_manager:
   url: https://pcf.mars.cf-app.com
@@ -63,14 +63,14 @@ ops_manager:
       -----END RSA PRIVATE KEY-----
   networks:
   - name: first-network
-    identifier: 3adc86e3-4d88-421a-8fd9-9771c942bad5
+    identifier: 481e972e-c3d2-4671-bb32-e780053b9bd3
     subnet: 192.168.116.0/24
     reserved_ips: 192.168.116.2-192.168.116.4
     dns: 10.87.8.10,10.87.8.11
     gateway: 192.168.116.1
   elastic_runtime:
     name: cf
-    ha_proxy_floating_ips: 10.85.38.59
+    ha_proxy_floating_ips: 10.85.38.80
     system_domain: sys.mars.cf-app.com
     apps_domain: apps.mars.cf-app.com
     smtp:
