@@ -23,8 +23,7 @@ export DIEGO_URL=https://bosh.io/releases/github.com/cloudfoundry-incubator/dieg
 wget $DIEGO_URL -O diego-$DIEGO_VERSION.tgz
 
 export DIEGO_MD5=`md5sum diego-$DIEGO_VERSION.tgz | awk '{ print $1 }'`
-echo "---
-- file: diego-$DIEGO_VERSION.tgz
+echo "- file: diego-$DIEGO_VERSION.tgz
   name: diego
   version: '$DIEGO_VERSION'
   md5: $DIEGO_MD5
