@@ -23,7 +23,7 @@ if [ -z "$DIEGO_VERSION" ]; then
   exit 1
 fi
 
-export DIEGO_URL=https://bosh.io/releases/github.com/cloudfoundry-incubator/diego-release?version=$DIEGO_VERSION
+export DIEGO_URL=https://bosh.io/d/github.com/cloudfoundry-incubator/diego-release?v=$DIEGO_VERSION
 
 wget $DIEGO_URL -O diego-$DIEGO_VERSION.tgz
 
