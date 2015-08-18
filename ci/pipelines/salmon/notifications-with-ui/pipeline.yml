@@ -163,6 +163,7 @@ resources:
 
 jobs:
   - name: claim-environment
+    serial_groups: [ salmon-pipeline ]
     plan:
       - get: p-runtime
       - get: upstream-release-notifications
@@ -182,6 +183,7 @@ jobs:
             KRAFA_PASSWORD: bet90onions
 
   - name: destroy-environment
+    serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
@@ -201,6 +203,7 @@ jobs:
         file: p-runtime/ci/jobs/destroy-environment.yml
 
   - name: deploy-ops-manager
+    serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
@@ -226,6 +229,7 @@ jobs:
         file: p-runtime/ci/jobs/deploy-opsman.yml
 
   - name: configure-microbosh
+    serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
@@ -248,6 +252,7 @@ jobs:
             OPSMAN_VERSION: 1.6
 
   - name: deploy-microbosh
+    serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
@@ -310,6 +315,7 @@ jobs:
           from: build-product/ert.pivotal
 
   - name: upload-pivotal
+    serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
@@ -336,6 +342,7 @@ jobs:
 
 
   - name: configure-ert
+    serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
@@ -360,6 +367,7 @@ jobs:
             OPSMAN_VERSION: 1.6
 
   - name: import-stemcell
+    serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
@@ -378,6 +386,7 @@ jobs:
             IAAS: aws
 
   - name: deploy-ert
+    serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
@@ -401,6 +410,7 @@ jobs:
               OPSMAN_VERSION: 1.6
 
   - name: run-cats
+    serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
@@ -417,6 +427,7 @@ jobs:
             OPSMAN_VERSION: 1.6
 
   - name: destroy-environment-final
+    serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
@@ -428,6 +439,7 @@ jobs:
         file: p-runtime/ci/jobs/destroy-environment.yml
 
   - name: release-environment
+    serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
