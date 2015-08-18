@@ -1,5 +1,5 @@
 iaas_type: openstack
-name: ryan-openstack
+name: ryan
 vm_shepherd:
   vm_configs:
   - creds:
@@ -16,7 +16,7 @@ vm_shepherd:
         - ryan-ops-manager
         - ryan-products
       private_ip: 192.168.114.100
-      public_ip: 10.85.38.50
+      public_ip: 10.85.38.78
 
 ops_manager:
   url: https://pcf.ryan-openstack.cf-app.com
@@ -63,14 +63,14 @@ ops_manager:
       -----END RSA PRIVATE KEY-----
   networks:
   - name: first-network
-    identifier: 21ae4283-1cea-4250-8c37-80e5aaef5435
+    identifier: 630a6966-cc0f-49ca-83f0-4393af2afad9
     subnet: 192.168.114.0/24
     reserved_ips: 192.168.114.2-192.168.114.4
     dns: 10.87.8.10,10.87.8.11
     gateway: 192.168.114.1
   elastic_runtime:
     name: cf
-    ha_proxy_floating_ips: 10.85.38.51
+    ha_proxy_floating_ips: 10.85.38.77
     system_domain: sys.ryan-openstack.cf-app.com
     apps_domain: apps.ryan-openstack.cf-app.com
     smtp:

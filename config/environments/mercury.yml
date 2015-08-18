@@ -16,7 +16,7 @@ vm_shepherd:
         - mercury-ops-manager
         - mercury-products
       private_ip: 192.168.117.100
-      public_ip: 10.85.38.62
+      public_ip: 10.85.38.70
 
 ops_manager:
   url: https://pcf.mercury.cf-app.com
@@ -63,14 +63,14 @@ ops_manager:
       -----END RSA PRIVATE KEY-----
   networks:
   - name: first-network
-    identifier: 7c753b0c-3aa7-42d4-ac3f-5b27fab5121a
+    identifier: c2702c69-84e0-49e8-a4c1-d680e797e15f
     subnet: 192.168.117.0/24
     reserved_ips: 192.168.117.2-192.168.117.4
     dns: 10.87.8.10,10.87.8.11
     gateway: 192.168.117.1
   elastic_runtime:
     name: cf
-    ha_proxy_floating_ips: 10.85.38.63
+    ha_proxy_floating_ips: 10.85.38.72
     system_domain: sys.mercury.cf-app.com
     apps_domain: apps.mercury.cf-app.com
     smtp:

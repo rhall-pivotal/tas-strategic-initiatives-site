@@ -16,7 +16,7 @@ vm_shepherd:
         - venus-ops-manager
         - venus-products
       private_ip: 192.168.115.100
-      public_ip: 10.85.38.56
+      public_ip: 10.85.38.75
 
 ops_manager:
   url: https://pcf.venus.cf-app.com
@@ -63,14 +63,14 @@ ops_manager:
       -----END RSA PRIVATE KEY-----
   networks:
   - name: first-network
-    identifier: 1de7aeb0-514e-42e6-9213-66835ae24ffc
+    identifier: bc7fb456-2107-49af-901f-39a7957c8a66
     subnet: 192.168.115.0/24
     reserved_ips: 192.168.115.2-192.168.115.4
     dns: 10.87.8.10,10.87.8.11
     gateway: 192.168.115.1
   elastic_runtime:
     name: cf
-    ha_proxy_floating_ips: 10.85.38.57
+    ha_proxy_floating_ips: 10.85.38.74
     system_domain: sys.venus.cf-app.com
     apps_domain: apps.venus.cf-app.com
     smtp:
