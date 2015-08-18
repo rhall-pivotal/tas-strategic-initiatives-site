@@ -60,14 +60,14 @@ resources:
       versioned_file: upstream-release-metadata/diego/metadata.yml
 
 jobs:
-  - name: create-cf-diego-metadata
+  - name: create-metadata
     plan:
       - aggregate:
         - get: p-runtime
         - get: bosh-io-cf
           trigger: true
       - task: create-metadata
-        file: p-runtime/ci/jobs/create-cf-diego-metadata.yml
+        file: p-runtime/ci/jobs/create-cf-diego-salmon-metadata.yml
       - aggregate:
         - put: upstream-release-metadata-cf
           params:
@@ -77,6 +77,6 @@ jobs:
             from: diego-metadata.yml
 
 groups:
-  - name: create-cf-diego-metadata
+  - name: create-cf-diego-salmon-metadata
     jobs:
-    - create-cf-diego-metadata
+    - create-metadata
