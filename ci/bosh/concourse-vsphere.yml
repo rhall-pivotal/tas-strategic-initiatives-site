@@ -104,7 +104,7 @@ jobs:
         listen_address: 0.0.0.0:7777
         allow_host_access: true
         default_container_grace_time: 30m
-        btrfs_store_size_mb: 50000
+        btrfs_store_size_mb: 144000
 
 resource_pools:
   - name: workers
@@ -115,7 +115,7 @@ resource_pools:
     cloud_properties:
       cpu: 2
       ram: 8_192
-      disk: 80_000
+      disk: 160_000
 
 compilation:
   workers: 3
