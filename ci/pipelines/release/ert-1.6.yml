@@ -309,6 +309,42 @@ resources:
     region_name: us-west-1
     private: true
     versioned_file: ert-releases/1.5.3.0/ert.pivotal
+- name: ops-manager-1.5.3.0-aws
+  type: s3
+  source:
+    access_key_id: AKIAI43577ARGHXPWIMQ
+    secret_access_key: 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
+    bucket: ert-concourse-products
+    region_name: us-west-1
+    private: true
+    versioned_file: ops_manager_images/aws/1.5.3.0/ops_man_image
+- name: ops-manager-1.5.3.0-openstack
+  type: s3
+  source:
+    access_key_id: AKIAI43577ARGHXPWIMQ
+    secret_access_key: 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
+    bucket: ert-concourse-products
+    region_name: us-west-1
+    private: true
+    versioned_file: ops_manager_images/openstack/1.5.3.0/ops_man_image
+- name: ops-manager-1.5.3.0-vsphere
+  type: s3
+  source:
+    access_key_id: AKIAI43577ARGHXPWIMQ
+    secret_access_key: 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
+    bucket: ert-concourse-products
+    region_name: us-west-1
+    private: true
+    versioned_file: ops_manager_images/vsphere/1.5.3.0/ops_man_image
+- name: ops-manager-1.5.3.0-vcloud
+  type: s3
+  source:
+    access_key_id: AKIAI43577ARGHXPWIMQ
+    secret_access_key: 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
+    bucket: ert-concourse-products
+    region_name: us-west-1
+    private: true
+    versioned_file: ops_manager_images/vcloud/1.5.3.0/ops_man_image
 - name: initial-ops-manager-aws
   type: s3
   source:
@@ -476,7 +512,7 @@ jobs:
   - put: p-runtime
     params:
       repository: p-runtime
-      tag: release-version/number
+      tag: version/number
 - name: claim-environment-aws-clean
   plan:
   - get: p-runtime
@@ -1407,7 +1443,7 @@ jobs:
     - destroy-environment-aws-upgrade
   - aggregate:
     - get: ops-manager
-      resource: initial-ops-manager-aws
+      resource: ops-manager-1.5.3.0-aws
     - task: prepare
       tags:
       - aws
@@ -1785,7 +1821,7 @@ jobs:
     - destroy-environment-openstack-upgrade
   - aggregate:
     - get: ops-manager
-      resource: initial-ops-manager-openstack
+      resource: ops-manager-1.5.3.0-openstack
     - task: prepare
       tags:
       - openstack
@@ -2143,7 +2179,7 @@ jobs:
     - destroy-environment-vsphere-upgrade
   - aggregate:
     - get: ops-manager
-      resource: initial-ops-manager-vsphere
+      resource: ops-manager-1.5.3.0-vsphere
     - task: prepare
       tags:
       - vsphere
@@ -2510,7 +2546,7 @@ jobs:
     - destroy-environment-vcloud-upgrade
   - aggregate:
     - get: ops-manager
-      resource: initial-ops-manager-vcloud
+      resource: ops-manager-1.5.3.0-vcloud
     - task: prepare
       tags:
       - vcloud
