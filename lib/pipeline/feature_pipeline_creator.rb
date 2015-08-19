@@ -10,7 +10,7 @@ module Pipeline
       @branch_name = branch_name
       @iaas_type = iaas_type
       @ert_version = product_version
-      @om_version = '1.5'
+      @om_version = '1.6'
     end
 
     def create_pipeline

@@ -182,7 +182,7 @@ jobs:
         file: p-runtime/ci/jobs/configure-microbosh.yml
         config:
           params:
-            OPSMAN_VERSION: 1.5
+            OPSMAN_VERSION: 1.6
 
   - name: deploy-microbosh
     plan:
@@ -201,14 +201,14 @@ jobs:
         file: p-runtime/ci/jobs/deploy-microbosh.yml
         config:
           params:
-            OPSMAN_VERSION: 1.5
+            OPSMAN_VERSION: 1.6
         ensure:
           task: get-install-log
           tags: [aws]
           file: p-runtime/ci/jobs/get-install-log.yml
           config:
             params:
-              OPSMAN_VERSION: 1.5
+              OPSMAN_VERSION: 1.6
 
   - name: build-runtime
     plan:
@@ -256,7 +256,7 @@ jobs:
         file: p-runtime/ci/jobs/upload-pivotal.yml
         config:
           params:
-            OPSMAN_VERSION: 1.5
+            OPSMAN_VERSION: 1.6
 
   - name: configure-ert
     plan:
@@ -273,14 +273,14 @@ jobs:
         config:
           params:
             ERT_VERSION: 1.6
-            OPSMAN_VERSION: 1.5
+            OPSMAN_VERSION: 1.6
       - task: configure-experimental-features
         tags: [aws]
         file: p-runtime/ci/jobs/configure-experimental-features.yml
         config:
           params:
             ERT_VERSION: 1.6
-            OPSMAN_VERSION: 1.5
+            OPSMAN_VERSION: 1.6
 
   - name: import-stemcell
     plan:
@@ -296,7 +296,7 @@ jobs:
         file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
         config:
           params:
-            OPSMAN_VERSION: 1.5
+            OPSMAN_VERSION: 1.6
             PRODUCT_NAME: cf
             IAAS: aws
 
@@ -314,14 +314,14 @@ jobs:
         file: p-runtime/ci/jobs/deploy-ert.yml
         config:
           params:
-            OPSMAN_VERSION: 1.5
+            OPSMAN_VERSION: 1.6
         ensure:
           task: get-install-log
           tags: [aws]
           file: p-runtime/ci/jobs/get-install-log.yml
           config:
             params:
-              OPSMAN_VERSION: 1.5
+              OPSMAN_VERSION: 1.6
 
   - name: run-cats
     plan:
@@ -337,7 +337,7 @@ jobs:
         file: p-runtime/ci/jobs/run-cats.yml
         config:
           params:
-            OPSMAN_VERSION: "1.5"
+            OPSMAN_VERSION: "1.6"
 
   - name: destroy-environment-final
     plan:

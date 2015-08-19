@@ -585,7 +585,7 @@ jobs:
     file: p-runtime/ci/jobs/configure-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-microbosh-aws-clean
   plan:
   - get: p-runtime
@@ -603,7 +603,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -611,7 +611,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: upload-pivotal-aws-clean
   plan:
   - aggregate:
@@ -635,7 +635,7 @@ jobs:
     file: p-runtime/ci/jobs/upload-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: configure-ert-aws-clean
   plan:
   - get: p-runtime
@@ -654,7 +654,7 @@ jobs:
     config:
       params:
         ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
   - task: create-external-dbs
     tags:
     - aws
@@ -666,7 +666,7 @@ jobs:
     config:
       params:
         ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
   - task: configure-external-file-storage
     tags:
     - aws
@@ -674,7 +674,7 @@ jobs:
     config:
       params:
         ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-ert-aws-clean
   plan:
   - get: p-runtime
@@ -692,7 +692,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -700,7 +700,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: run-cats-aws-clean
   plan:
   - get: p-runtime
@@ -718,7 +718,7 @@ jobs:
     file: p-runtime/ci/jobs/run-cats.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: destroy-environment-final-aws-clean
   plan:
   - get: p-runtime
@@ -818,7 +818,7 @@ jobs:
     file: p-runtime/ci/jobs/configure-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-microbosh-openstack-clean
   plan:
   - get: p-runtime
@@ -836,7 +836,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -844,7 +844,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: upload-pivotal-openstack-clean
   plan:
   - aggregate:
@@ -868,7 +868,7 @@ jobs:
     file: p-runtime/ci/jobs/upload-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: configure-ert-openstack-clean
   plan:
   - get: p-runtime
@@ -887,7 +887,7 @@ jobs:
     config:
       params:
         ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-ert-openstack-clean
   plan:
   - get: p-runtime
@@ -905,7 +905,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -913,7 +913,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: run-cats-openstack-clean
   plan:
   - get: p-runtime
@@ -931,7 +931,7 @@ jobs:
     file: p-runtime/ci/jobs/run-cats.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: destroy-environment-final-openstack-clean
   plan:
   - get: p-runtime
@@ -1031,7 +1031,7 @@ jobs:
     file: p-runtime/ci/jobs/configure-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-microbosh-vsphere-clean
   plan:
   - get: p-runtime
@@ -1049,7 +1049,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -1057,7 +1057,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: upload-pivotal-vsphere-clean
   plan:
   - aggregate:
@@ -1081,7 +1081,7 @@ jobs:
     file: p-runtime/ci/jobs/upload-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: configure-ert-vsphere-clean
   plan:
   - get: p-runtime
@@ -1100,7 +1100,7 @@ jobs:
     config:
       params:
         ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-ert-vsphere-clean
   plan:
   - get: p-runtime
@@ -1118,7 +1118,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -1126,7 +1126,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: run-cats-vsphere-clean
   plan:
   - get: p-runtime
@@ -1144,7 +1144,7 @@ jobs:
     file: p-runtime/ci/jobs/run-cats.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: destroy-environment-final-vsphere-clean
   plan:
   - get: p-runtime
@@ -1256,7 +1256,7 @@ jobs:
     file: p-runtime/ci/jobs/configure-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-microbosh-internetless
   plan:
   - get: p-runtime
@@ -1274,7 +1274,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -1282,7 +1282,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: upload-pivotal-internetless
   plan:
   - aggregate:
@@ -1306,7 +1306,7 @@ jobs:
     file: p-runtime/ci/jobs/upload-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: configure-ert-internetless
   plan:
   - get: p-runtime
@@ -1325,7 +1325,7 @@ jobs:
     config:
       params:
         ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-ert-internetless
   plan:
   - get: p-runtime
@@ -1343,7 +1343,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -1351,7 +1351,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: run-cats-internetless
   plan:
   - get: p-runtime
@@ -1369,7 +1369,7 @@ jobs:
     file: p-runtime/ci/jobs/run-cats.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: destroy-environment-final-internetless
   plan:
   - get: p-runtime
@@ -1660,7 +1660,7 @@ jobs:
     file: p-runtime/ci/jobs/import-installation.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: upgrade-pivotal-aws-upgrade
   plan:
   - aggregate:
@@ -1684,7 +1684,7 @@ jobs:
     file: p-runtime/ci/jobs/upgrade-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: configure-ert-aws-upgrade
   plan:
   - get: p-runtime
@@ -1703,7 +1703,7 @@ jobs:
     config:
       params:
         ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-ert-aws-upgrade
   plan:
   - get: p-runtime
@@ -1721,7 +1721,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -1729,7 +1729,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: run-cats-aws-upgrade
   plan:
   - get: p-runtime
@@ -1747,7 +1747,7 @@ jobs:
     file: p-runtime/ci/jobs/run-cats.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: destroy-environment-final-aws-upgrade
   plan:
   - get: p-runtime
@@ -2018,7 +2018,7 @@ jobs:
     file: p-runtime/ci/jobs/import-installation.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: upgrade-pivotal-openstack-upgrade
   plan:
   - aggregate:
@@ -2042,7 +2042,7 @@ jobs:
     file: p-runtime/ci/jobs/upgrade-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: configure-ert-openstack-upgrade
   plan:
   - get: p-runtime
@@ -2061,7 +2061,7 @@ jobs:
     config:
       params:
         ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-ert-openstack-upgrade
   plan:
   - get: p-runtime
@@ -2079,7 +2079,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -2087,7 +2087,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: run-cats-openstack-upgrade
   plan:
   - get: p-runtime
@@ -2105,7 +2105,7 @@ jobs:
     file: p-runtime/ci/jobs/run-cats.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: destroy-environment-final-openstack-upgrade
   plan:
   - get: p-runtime
@@ -2376,7 +2376,7 @@ jobs:
     file: p-runtime/ci/jobs/import-installation.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: upgrade-pivotal-vsphere-upgrade
   plan:
   - aggregate:
@@ -2400,7 +2400,7 @@ jobs:
     file: p-runtime/ci/jobs/upgrade-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: configure-ert-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -2419,7 +2419,7 @@ jobs:
     config:
       params:
         ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-ert-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -2437,7 +2437,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -2445,7 +2445,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: run-cats-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -2463,7 +2463,7 @@ jobs:
     file: p-runtime/ci/jobs/run-cats.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: destroy-environment-final-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -2528,7 +2528,7 @@ jobs:
       file: p-runtime/ci/jobs/delete-installation.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
   - task: destroy
     tags:
     - vcloud
@@ -2743,7 +2743,7 @@ jobs:
     file: p-runtime/ci/jobs/import-installation.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: upgrade-pivotal-vcloud-upgrade
   plan:
   - aggregate:
@@ -2767,7 +2767,7 @@ jobs:
     file: p-runtime/ci/jobs/upgrade-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: configure-ert-vcloud-upgrade
   plan:
   - get: p-runtime
@@ -2786,7 +2786,7 @@ jobs:
     config:
       params:
         ERT_VERSION: 1.6
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-ert-vcloud-upgrade
   plan:
   - get: p-runtime
@@ -2804,7 +2804,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -2812,7 +2812,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: run-cats-vcloud-upgrade
   plan:
   - get: p-runtime
@@ -2830,7 +2830,7 @@ jobs:
     file: p-runtime/ci/jobs/run-cats.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: destroy-environment-final-vcloud-upgrade
   plan:
   - get: p-runtime
