@@ -64,7 +64,7 @@ describe Ert::DnsUpdater do
         },
         wildcard_record,
         ssh_record
-      ]
+      ].compact
     }
   end
   let(:wildcard_record) do
@@ -72,7 +72,7 @@ describe Ert::DnsUpdater do
       resource_records: [
         { value: 'elb-pcf-specific-hostname' }
       ],
-      name: '\\\\052.some.cf-app.com.',
+      name: '\\052.some.cf-app.com.',
       type: 'CNAME', ttl: 300
     }
   end
@@ -120,7 +120,7 @@ describe Ert::DnsUpdater do
                 resource_records: [
                   { value: 'some-fake-elb-dns-name' }
                 ],
-                name: '\\\\052.some.cf-app.com.',
+                name: '\\052.some.cf-app.com.',
                 type: 'CNAME',
                 ttl: 5
               }
@@ -159,6 +159,24 @@ describe Ert::DnsUpdater do
 
     it 'updates the wildcard DNS record with the ELB information' do
       expect(dns_updater.update_record).to eq(data_response)
+    end
+
+    context 'when there is no existing ssh record' do
+      let(:ssh_record) { nil }
+      it 'uses the default record as a template' do
+        expect(client).to receive(:change_resource_record_sets).with(updated_record_set)
+          .and_return(data_response)
+        expect(dns_updater.update_record).to eq(data_response)
+      end
+    end
+
+    context 'when there is no existing wildcard record' do
+      let(:wildcard_record) { nil }
+      it 'uses the default record as a template' do
+        expect(client).to receive(:change_resource_record_sets).with(updated_record_set)
+          .and_return(data_response)
+        expect(dns_updater.update_record).to eq(data_response)
+      end
     end
   end
 end

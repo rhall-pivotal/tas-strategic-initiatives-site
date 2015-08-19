@@ -58,7 +58,7 @@ module Ert
     def wildcard_record
       resource_record_sets = route53.client.list_resource_record_sets(hosted_zone_id: hosted_zone_id)
       record_sets = resource_record_sets[:resource_record_sets]
-      record_sets.find do |set|
+      record_sets.find(default_wildcard_record) do |set|
         set[:name].include? '052'
       end
     end
@@ -66,8 +66,38 @@ module Ert
     def ssh_record
       resource_record_sets = route53.client.list_resource_record_sets(hosted_zone_id: hosted_zone_id)
       record_sets = resource_record_sets[:resource_record_sets]
-      record_sets.find do |set|
+      record_sets.find(default_ssh_record) do |set|
         set[:name].include? 'ssh.'
+      end
+    end
+
+    def default_ssh_record
+      proc do
+        {
+          resource_records: [
+            {
+              value: 'bogus'
+            }
+          ],
+          name: "ssh.#{name}.cf-app.com.",
+          type: 'CNAME',
+          ttl: 5
+        }
+      end
+    end
+
+    def default_wildcard_record
+      proc do
+        {
+          resource_records: [
+            {
+              value: 'bogus'
+            }
+          ],
+          name: "\\052.#{name}.cf-app.com.",
+          type: 'CNAME',
+          ttl: 5
+        }
       end
     end
   end
