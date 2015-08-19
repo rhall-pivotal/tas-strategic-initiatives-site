@@ -248,7 +248,6 @@ jobs:
           trigger: true
           passed: [claim-environment]
       - task: build-product
-        tags: [aws]
         file: p-runtime/ci/jobs/build-pivotal-with-upstream-notifications.yml
         config:
           params:

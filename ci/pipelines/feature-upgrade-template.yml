@@ -158,7 +158,6 @@ jobs:
         trigger: true
         passed: [claim-environment]
       - task: build-product
-        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/build-pivotal.yml
       - put: ert-product
         params:
