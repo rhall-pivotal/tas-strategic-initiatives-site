@@ -59,7 +59,7 @@ YAML
           .with('ci/pipelines/feature-pipeline-template.yml')
           .and_return('key: "{{branch_name}} {{iaas_type}} {{om_version}} {{ert_version}}"')
       )
-      expect(file).to receive(:write).with("---\nkey: features/branch some-iaas 1.5 1.5\n")
+      expect(file).to receive(:write).with("---\nkey: features/branch some-iaas 1.6 1.5\n")
 
       pipeline_creator.create_pipeline
     end
@@ -132,7 +132,7 @@ YAML
             ' {{om_initial_version}} {{ert_initial_version}}"'
           )
       )
-      expect(file).to receive(:write).with("---\nkey: features/branch some-iaas 1.5 1.5 1.4.2.0 1.4.2.0 1.4 1.4\n")
+      expect(file).to receive(:write).with("---\nkey: features/branch some-iaas 1.6 1.5 1.4.2.0 1.4.2.0 1.4 1.4\n")
 
       pipeline_creator.create_upgrade_pipeline(
         ert_initial_full_version: ert_initial_full_version,
