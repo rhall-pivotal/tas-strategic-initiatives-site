@@ -2,6 +2,7 @@
 name: verify-internetless
 plan:
 - get: p-runtime
+  trigger: true
   passed:
   - deploy-ops-manager-internetless
 - get: environment-internetless
