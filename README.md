@@ -52,7 +52,7 @@ bundle exec rake opsmgr:install[environment,ops_man_image]
 #### Configure and Deploy Microbosh
 You need to specify the major and minor version of Ops Manager in these commands.
 
-`<OM version>` is the Ops Manager version. Opsmgr supports Ops Manager `1.4` and `1.5`.
+`<OM version>` is the Ops Manager version. Opsmgr supports Ops Manager `1.4`, `1.5`, and `1.6`.
 
 `<wait time>` is number of minutes to wait for install, recommended wait time is `45`
 
@@ -65,13 +65,13 @@ bundle exec rake opsmgr:trigger_install[environment,<OM version>,<wait time>]
 #### Upload, Configure, and Deploy ERT
 Once the µBOSH is deployed, you can configure and deploy the Elastic Runtime product
 
-`<OM version>` is the Ops Manager version. Opsmgr supports Ops Manager `1.4` and `1.5`.
+`<OM version>` is the Ops Manager version. Opsmgr supports Ops Manager `1.4`, `1.5`, and `1.6`.
 
 `<p-runtime .pivotal file>` is the .pivotal file created above
 
 `cf` is the p-runtime product name
 
-`<ert version>` is the ERT version. The p-runtime rake task supports ERT versions `1.4` and `1.5`
+`<ert version>` is the ERT version. The p-runtime rake task supports ERT versions `1.5` and `1.6`
 
 `<wait time>` is number of minutes to wait for install, recommended wait time is `240`
 
@@ -93,13 +93,13 @@ bundle exec rake opsmgr:trigger_install[environment,<OM version>,<wait time>]
 ```
 
 #### Upgrade ERT to new version
-`<OM version>` is the Ops Manager version. Opsmgr supports Ops Manager `1.4` and `1.5`.
+`<OM version>` is the Ops Manager version. Opsmgr supports Ops Manager `1.4`, `1.5`, and `1.6`.
 
 `<new p-runtime .pivotal file>` is the newer version of the .pivotal file created above
 
 `cf` is the p-runtime product name
 
-`<ert version>` is the ERT version. The p-runtime rake task supports ERT versions `1.4` and `1.5`
+`<ert version>` is the ERT version. The p-runtime rake task supports ERT versions `1.5` and `1.6`
 
 `<wait time>` is number of minutes to wait for install, recommended wait time is `240`
 
@@ -110,7 +110,7 @@ bundle exec rake opsmgr:trigger_install[environment,<OM version>,<wait time>]
 ```
 
 #### Export the installation from Ops Manager
-`<OM version>` is the Ops Manager version. Opsmgr supports Ops Manager `1.4` and `1.5`.
+`<OM version>` is the Ops Manager version. Opsmgr supports Ops Manager `1.4`, `1.5`, and `1.6`.
 
 `<file name>` local file name to save the exported installation file
 
@@ -119,7 +119,7 @@ bundle exec rake opsmgr:export_installation[environment,<OM version>,<file name>
 ```
 
 #### Import an installation to Ops Manager
-`<OM version>` is the Ops Manager version. Opsmgr supports Ops Manager `1.4` and `1.5`.
+`<OM version>` is the Ops Manager version. Opsmgr supports Ops Manager `1.4`, `1.5`, and `1.6`.
 
 `<file name>` local file name of the installation file to import
 
