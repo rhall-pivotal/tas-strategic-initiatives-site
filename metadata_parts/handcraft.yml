@@ -4657,6 +4657,7 @@ property_blueprints:
           - name: notifications
             manifest: |
               url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/notifications
+              max_open_connections: 10
           - name: autoscaling
             manifest: |
               url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/autoscale
