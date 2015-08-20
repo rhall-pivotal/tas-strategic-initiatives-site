@@ -3,7 +3,7 @@ jobs:
     plan:
         - get: p-runtime
           trigger: true
-          passed: [kickoff]
+          passed: [kickoff-pre-heat]
         - put: environment
           resource: environment-{{environment_pool}}
           params:
@@ -219,8 +219,9 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
+          resource: p-runtime-prime
           trigger: true
-          passed: [build-runtime, import-installation-{{pipeline_name}}]
+          passed: [build-runtime]
         - get: environment
           resource: environment-{{environment_pool}}
           trigger: true
@@ -238,6 +239,7 @@ jobs:
   - name: configure-ert-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [upgrade-pivotal-{{pipeline_name}}]
       - get: environment
@@ -255,6 +257,7 @@ jobs:
   - name: deploy-ert-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [configure-ert-{{pipeline_name}}]
       - get: environment
@@ -278,6 +281,7 @@ jobs:
   - name: run-cats-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [deploy-ert-{{pipeline_name}}]
       - get: environment
@@ -294,6 +298,7 @@ jobs:
   - name: destroy-environment-final-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         passed: [run-cats-{{pipeline_name}}]
       - get: environment
         resource: environment-{{environment_pool}}
@@ -305,6 +310,7 @@ jobs:
   - name: release-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [destroy-environment-final-{{pipeline_name}}]
       - get: environment

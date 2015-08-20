@@ -4,7 +4,7 @@ resources:
     source:
       uri: git@github.com:pivotal-cf/p-runtime.git
       branch: master
-      private_key: |
+      private_key: &p-runtime_private_key |
         -----BEGIN RSA PRIVATE KEY-----
         MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
         seLKMSp4Q080DOuUXlMsmvlx5ZJYmWeyR1V24l2iw1N6Ww9WaCTBBb6K69CkWi6R
@@ -32,6 +32,13 @@ resources:
         KDZ97Z8GkcNEWmVNqygX06AgJmHhNNDRXJCT5fwcJlF8ZcjXZ6NJa3zVQ3y1VMFE
         hYI0vHHTGhvOQR1PYJlS5JuNvDCWo8PeeG/LV+zUEVW7LJMYzvWj
         -----END RSA PRIVATE KEY-----
+
+  - name: p-runtime-prime
+    type: git
+    source:
+      uri: git@github.com:pivotal-cf/p-runtime.git
+      branch: master
+      private_key: *p-runtime_private_key
 
   - name: version
     type: semver
@@ -335,6 +342,11 @@ jobs:
   - name: kickoff
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
+
+  - name: kickoff-pre-heat
+    plan:
+      - get: p-runtime
 
   - name: build-runtime
     plan:
@@ -346,6 +358,7 @@ jobs:
         params:
           file: version/number
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [kickoff]
       - task: build-product
@@ -368,6 +381,7 @@ jobs:
   - name: promote-ert
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [release-environment-aws-clean,release-environment-aws-upgrade,release-environment-vsphere-clean,release-environment-vsphere-upgrade,release-environment-internetless,release-environment-vcloud-upgrade]
       - get: ert-product
@@ -380,6 +394,7 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
+          resource: p-runtime-prime
           passed: [promote-ert]
         - get: ert-product-promoted
           passed: [promote-ert]
@@ -396,6 +411,7 @@ jobs:
           from: ert-product-promoted/cf-(.*).pivotal
           to: ert-releases/
       - put: p-runtime
+        resource: p-runtime-prime
         params:
            repository: p-runtime
            tag: version/number
@@ -545,6 +561,7 @@ groups:
   - name: common
     jobs:
       - kickoff
+      - kickoff-pre-heat
       - build-runtime
       - promote-ert
       - publish

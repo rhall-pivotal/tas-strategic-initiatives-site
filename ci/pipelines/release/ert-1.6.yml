@@ -33,6 +33,39 @@ resources:
       KDZ97Z8GkcNEWmVNqygX06AgJmHhNNDRXJCT5fwcJlF8ZcjXZ6NJa3zVQ3y1VMFE
       hYI0vHHTGhvOQR1PYJlS5JuNvDCWo8PeeG/LV+zUEVW7LJMYzvWj
       -----END RSA PRIVATE KEY-----
+- name: p-runtime-prime
+  type: git
+  source:
+    uri: git@github.com:pivotal-cf/p-runtime.git
+    branch: master
+    private_key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEowIBAAKCAQEAni+28XidxNTpNlZhnb3QXGrTssVLviDtl3fSjXM5Pml8E01b
+      seLKMSp4Q080DOuUXlMsmvlx5ZJYmWeyR1V24l2iw1N6Ww9WaCTBBb6K69CkWi6R
+      AoDNg1EkrsThGxNTUD6BFUzI64FydgCKv0GpX+I7LyMJSPGVZKi34lIDKfn2uGyE
+      xZLPt833LvctrRW9g154Dc1Ok/SWqxL4I8uZFBSiNJqdXCx4dtXvnpRJ9da/SejB
+      YmfWOBlVXjivOaJmz4m4jOkYJj8cOLoDGJBADgCBB1vdkbRuXShks2ft/PuxPVsm
+      ZXpfOQxT0Qr9v4B0zubXncrloJvRduMV9IoccwIDAQABAoIBAHCpYw5P7W3GheKh
+      WxzRl5h6rRPh2LQtF4qNWHRN4DNHRYspyWjEMWUa7lRiEJwzHJShgF9P0YLD3D5F
+      0H9lqypFriqXRcmc/tllc+P3dVHGY4enKrgxrC0emZWvuvNhrDC2k5DsAx1YMIFC
+      mY7l4Q/dPHGx7mb5SIFMeMrDxmUZ95EuCFBFpuyzgQvdS1Y2Kev7qfgu8oqxgGIN
+      jMYy0m02LVq9A/dRulx7oWhjoCmZ8vFRD7YiHJj4QhQ909OjtesMoCU5cXzUarPL
+      1tw+ki6h8l+HPToojVQsacSSdIQUvc2TYufyh0S5orSnc92fpZRyZmHjcnv4fkwx
+      gDDzLsECgYEAzsjVaZkXXjMk/c1nFpMFaXWRKK8UYUnOh9uGp3WXa+spMEcAzbTW
+      umHqJcQAGewkAk4PafM4BwqmcwL0zmoKxoDVGAGVLoezH/ln8KKZl94sfAsEbWlI
+      VIs7SPfCGmo0ROHm+eDFiWS4+GJgLS+FLvqeHSXnhg4dgVqRHDlf05kCgYEAw9XZ
+      AElXqouZ6i5jto2mO7DAkzRgR9IZ4xb9uLbOUAq1BgebWpwuT1L++WqTyiu8MNKr
+      o1iJSAUIjbyxxICSjMRenF2kpziWmysfjiCjDt/Lw90+8109hz7A3qahJcjqjvEG
+      FYIykaYTCWRM6kpUXogMS1kvrFwt6v4Rc84lN+sCgYA68jEz6vooVjgDSZxLaRmv
+      2F3K1S3gFeQUAlY+Ql0p3F1fb74g5Z4Yf3T50wecXB5fsdTfBQBBsZ2FR6B1fvEX
+      aP5V242lN/Wt9bDVfeR+0EyqB5H5hnuh7ha2VDo2wXOo9ySasqJc6iN4WsLD3rn+
+      jF6qPHXlVvy+NQ0MmKZicQKBgG5PozCaH5udj1FuWBSYra6p3ZANzL4oBxT3+mt1
+      7bkAjv+agVQE7cEZCy8LbbxP7m3B/ZTBZnL/AtZ0F96MXgCVDIYf6YOYSJ2XKOsy
+      TyctwOXPVopXVzU7kADa86MJDbb+5WJwOHP6jHaZ3QmMXQHyuJoo3sXEFslr3ADT
+      efuJAoGBAJcIUJRJdWBj3D7iLPOHRqJCwXdcxEaV9px9J+QUfnRZ4lGp5cdLlzcl
+      KDZ97Z8GkcNEWmVNqygX06AgJmHhNNDRXJCT5fwcJlF8ZcjXZ6NJa3zVQ3y1VMFE
+      hYI0vHHTGhvOQR1PYJlS5JuNvDCWo8PeeG/LV+zUEVW7LJMYzvWj
+      -----END RSA PRIVATE KEY-----
 - name: version
   type: semver
   source:
@@ -442,6 +475,10 @@ jobs:
 - name: kickoff
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
+- name: kickoff-pre-heat
+  plan:
+  - get: p-runtime
 - name: build-runtime
   plan:
   - get: version
@@ -452,6 +489,7 @@ jobs:
     params:
       file: version/number
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - kickoff
@@ -474,6 +512,7 @@ jobs:
 - name: promote-ert
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - release-environment-aws-clean
@@ -492,6 +531,7 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      resource: p-runtime-prime
       passed:
       - promote-ert
     - get: ert-product-promoted
@@ -510,12 +550,14 @@ jobs:
       from: ert-product-promoted/cf-(.*).pivotal
       to: ert-releases/
   - put: p-runtime
+    resource: p-runtime-prime
     params:
       repository: p-runtime
       tag: version/number
 - name: claim-environment-aws-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - kickoff
@@ -534,6 +576,7 @@ jobs:
 - name: destroy-environment-aws-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - claim-environment-aws-clean
@@ -549,6 +592,7 @@ jobs:
 - name: deploy-ops-manager-aws-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-aws-clean
@@ -571,6 +615,7 @@ jobs:
 - name: configure-microbosh-aws-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ops-manager-aws-clean
@@ -589,6 +634,7 @@ jobs:
 - name: deploy-microbosh-aws-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - configure-microbosh-aws-clean
@@ -616,6 +662,7 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      resource: p-runtime-prime
       trigger: true
       passed:
       - build-runtime
@@ -639,6 +686,7 @@ jobs:
 - name: configure-ert-aws-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - upload-pivotal-aws-clean
@@ -678,6 +726,7 @@ jobs:
 - name: deploy-ert-aws-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - configure-ert-aws-clean
@@ -704,6 +753,7 @@ jobs:
 - name: run-cats-aws-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-aws-clean
@@ -722,6 +772,7 @@ jobs:
 - name: destroy-environment-final-aws-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     passed:
     - run-cats-aws-clean
   - get: environment
@@ -735,6 +786,7 @@ jobs:
 - name: release-environment-aws-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-aws-clean
@@ -749,6 +801,7 @@ jobs:
 - name: claim-environment-openstack-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - kickoff
@@ -767,6 +820,7 @@ jobs:
 - name: destroy-environment-openstack-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - claim-environment-openstack-clean
@@ -782,6 +836,7 @@ jobs:
 - name: deploy-ops-manager-openstack-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-openstack-clean
@@ -804,6 +859,7 @@ jobs:
 - name: configure-microbosh-openstack-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ops-manager-openstack-clean
@@ -822,6 +878,7 @@ jobs:
 - name: deploy-microbosh-openstack-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - configure-microbosh-openstack-clean
@@ -849,6 +906,7 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      resource: p-runtime-prime
       trigger: true
       passed:
       - build-runtime
@@ -872,6 +930,7 @@ jobs:
 - name: configure-ert-openstack-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - upload-pivotal-openstack-clean
@@ -891,6 +950,7 @@ jobs:
 - name: deploy-ert-openstack-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - configure-ert-openstack-clean
@@ -917,6 +977,7 @@ jobs:
 - name: run-cats-openstack-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-openstack-clean
@@ -935,6 +996,7 @@ jobs:
 - name: destroy-environment-final-openstack-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     passed:
     - run-cats-openstack-clean
   - get: environment
@@ -948,6 +1010,7 @@ jobs:
 - name: release-environment-openstack-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-openstack-clean
@@ -962,6 +1025,7 @@ jobs:
 - name: claim-environment-vsphere-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - kickoff
@@ -980,6 +1044,7 @@ jobs:
 - name: destroy-environment-vsphere-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - claim-environment-vsphere-clean
@@ -995,6 +1060,7 @@ jobs:
 - name: deploy-ops-manager-vsphere-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-vsphere-clean
@@ -1017,6 +1083,7 @@ jobs:
 - name: configure-microbosh-vsphere-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ops-manager-vsphere-clean
@@ -1035,6 +1102,7 @@ jobs:
 - name: deploy-microbosh-vsphere-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - configure-microbosh-vsphere-clean
@@ -1062,6 +1130,7 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      resource: p-runtime-prime
       trigger: true
       passed:
       - build-runtime
@@ -1085,6 +1154,7 @@ jobs:
 - name: configure-ert-vsphere-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - upload-pivotal-vsphere-clean
@@ -1104,6 +1174,7 @@ jobs:
 - name: deploy-ert-vsphere-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - configure-ert-vsphere-clean
@@ -1130,6 +1201,7 @@ jobs:
 - name: run-cats-vsphere-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-vsphere-clean
@@ -1148,6 +1220,7 @@ jobs:
 - name: destroy-environment-final-vsphere-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     passed:
     - run-cats-vsphere-clean
   - get: environment
@@ -1161,6 +1234,7 @@ jobs:
 - name: release-environment-vsphere-clean
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-vsphere-clean
@@ -1175,6 +1249,7 @@ jobs:
 - name: claim-environment-internetless
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - kickoff
@@ -1193,6 +1268,7 @@ jobs:
 - name: destroy-environment-internetless
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - claim-environment-internetless
@@ -1208,6 +1284,7 @@ jobs:
 - name: deploy-ops-manager-internetless
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-internetless
@@ -1230,6 +1307,7 @@ jobs:
 - name: verify-internetless
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ops-manager-internetless
@@ -1244,6 +1322,7 @@ jobs:
 - name: configure-microbosh-internetless
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - verify-internetless
@@ -1262,6 +1341,7 @@ jobs:
 - name: deploy-microbosh-internetless
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - configure-microbosh-internetless
@@ -1289,6 +1369,7 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      resource: p-runtime-prime
       trigger: true
       passed:
       - build-runtime
@@ -1312,6 +1393,7 @@ jobs:
 - name: configure-ert-internetless
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - upload-pivotal-internetless
@@ -1331,6 +1413,7 @@ jobs:
 - name: deploy-ert-internetless
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - configure-ert-internetless
@@ -1357,6 +1440,7 @@ jobs:
 - name: run-cats-internetless
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-internetless
@@ -1375,6 +1459,7 @@ jobs:
 - name: destroy-environment-final-internetless
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     passed:
     - run-cats-internetless
   - get: environment
@@ -1388,6 +1473,7 @@ jobs:
 - name: release-environment-internetless
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-internetless
@@ -1404,7 +1490,7 @@ jobs:
   - get: p-runtime
     trigger: true
     passed:
-    - kickoff
+    - kickoff-pre-heat
   - put: environment
     resource: environment-aws-east
     params:
@@ -1667,10 +1753,10 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      resource: p-runtime-prime
       trigger: true
       passed:
       - build-runtime
-      - import-installation-aws-upgrade
     - get: environment
       resource: environment-aws-east
       trigger: true
@@ -1690,6 +1776,7 @@ jobs:
 - name: configure-ert-aws-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - upgrade-pivotal-aws-upgrade
@@ -1709,6 +1796,7 @@ jobs:
 - name: deploy-ert-aws-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - configure-ert-aws-upgrade
@@ -1735,6 +1823,7 @@ jobs:
 - name: run-cats-aws-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-aws-upgrade
@@ -1753,6 +1842,7 @@ jobs:
 - name: destroy-environment-final-aws-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     passed:
     - run-cats-aws-upgrade
   - get: environment
@@ -1766,6 +1856,7 @@ jobs:
 - name: release-environment-aws-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-aws-upgrade
@@ -1782,7 +1873,7 @@ jobs:
   - get: p-runtime
     trigger: true
     passed:
-    - kickoff
+    - kickoff-pre-heat
   - put: environment
     resource: environment-openstack
     params:
@@ -2025,10 +2116,10 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      resource: p-runtime-prime
       trigger: true
       passed:
       - build-runtime
-      - import-installation-openstack-upgrade
     - get: environment
       resource: environment-openstack
       trigger: true
@@ -2048,6 +2139,7 @@ jobs:
 - name: configure-ert-openstack-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - upgrade-pivotal-openstack-upgrade
@@ -2067,6 +2159,7 @@ jobs:
 - name: deploy-ert-openstack-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - configure-ert-openstack-upgrade
@@ -2093,6 +2186,7 @@ jobs:
 - name: run-cats-openstack-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-openstack-upgrade
@@ -2111,6 +2205,7 @@ jobs:
 - name: destroy-environment-final-openstack-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     passed:
     - run-cats-openstack-upgrade
   - get: environment
@@ -2124,6 +2219,7 @@ jobs:
 - name: release-environment-openstack-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-openstack-upgrade
@@ -2140,7 +2236,7 @@ jobs:
   - get: p-runtime
     trigger: true
     passed:
-    - kickoff
+    - kickoff-pre-heat
   - put: environment
     resource: environment-vsphere
     params:
@@ -2383,10 +2479,10 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      resource: p-runtime-prime
       trigger: true
       passed:
       - build-runtime
-      - import-installation-vsphere-upgrade
     - get: environment
       resource: environment-vsphere
       trigger: true
@@ -2406,6 +2502,7 @@ jobs:
 - name: configure-ert-vsphere-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - upgrade-pivotal-vsphere-upgrade
@@ -2425,6 +2522,7 @@ jobs:
 - name: deploy-ert-vsphere-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - configure-ert-vsphere-upgrade
@@ -2451,6 +2549,7 @@ jobs:
 - name: run-cats-vsphere-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-vsphere-upgrade
@@ -2469,6 +2568,7 @@ jobs:
 - name: destroy-environment-final-vsphere-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     passed:
     - run-cats-vsphere-upgrade
   - get: environment
@@ -2482,6 +2582,7 @@ jobs:
 - name: release-environment-vsphere-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-vsphere-upgrade
@@ -2498,7 +2599,7 @@ jobs:
   - get: p-runtime
     trigger: true
     passed:
-    - kickoff
+    - kickoff-pre-heat
   - put: environment
     resource: environment-vcloud
     params:
@@ -2750,10 +2851,10 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      resource: p-runtime-prime
       trigger: true
       passed:
       - build-runtime
-      - import-installation-vcloud-upgrade
     - get: environment
       resource: environment-vcloud
       trigger: true
@@ -2773,6 +2874,7 @@ jobs:
 - name: configure-ert-vcloud-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - upgrade-pivotal-vcloud-upgrade
@@ -2792,6 +2894,7 @@ jobs:
 - name: deploy-ert-vcloud-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - configure-ert-vcloud-upgrade
@@ -2818,6 +2921,7 @@ jobs:
 - name: run-cats-vcloud-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-vcloud-upgrade
@@ -2836,6 +2940,7 @@ jobs:
 - name: destroy-environment-final-vcloud-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     passed:
     - run-cats-vcloud-upgrade
   - get: environment
@@ -2850,6 +2955,7 @@ jobs:
 - name: release-environment-vcloud-upgrade
   plan:
   - get: p-runtime
+    resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-vcloud-upgrade
@@ -2998,6 +3104,7 @@ groups:
 - name: common
   jobs:
   - kickoff
+  - kickoff-pre-heat
   - build-runtime
   - promote-ert
   - publish

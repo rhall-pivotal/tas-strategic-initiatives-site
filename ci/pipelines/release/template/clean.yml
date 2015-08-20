@@ -2,6 +2,7 @@ jobs:
   - name: claim-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [kickoff]
       - put: environment
@@ -20,6 +21,7 @@ jobs:
   - name: destroy-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [claim-environment-{{pipeline_name}}]
       - get: environment
@@ -33,6 +35,7 @@ jobs:
   - name: deploy-ops-manager-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [destroy-environment-{{pipeline_name}}]
       - get: environment
@@ -52,6 +55,7 @@ jobs:
   - name: configure-microbosh-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [deploy-ops-manager-{{pipeline_name}}]
       - get: environment
@@ -68,6 +72,7 @@ jobs:
   - name: deploy-microbosh-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [configure-microbosh-{{pipeline_name}}]
       - get: environment
@@ -92,6 +97,7 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
+          resource: p-runtime-prime
           trigger: true
           passed: [build-runtime, deploy-microbosh-{{pipeline_name}}]
         - get: environment
@@ -111,6 +117,7 @@ jobs:
   - name: configure-ert-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [upload-pivotal-{{pipeline_name}}]
       - get: environment
@@ -128,6 +135,7 @@ jobs:
   - name: deploy-ert-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [configure-ert-{{pipeline_name}}]
       - get: environment
@@ -151,6 +159,7 @@ jobs:
   - name: run-cats-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [deploy-ert-{{pipeline_name}}]
       - get: environment
@@ -167,6 +176,7 @@ jobs:
   - name: destroy-environment-final-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         passed: [run-cats-{{pipeline_name}}]
       - get: environment
         resource: environment-{{environment_pool}}
@@ -178,6 +188,7 @@ jobs:
   - name: release-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
+        resource: p-runtime-prime
         trigger: true
         passed: [destroy-environment-final-{{pipeline_name}}]
       - get: environment
