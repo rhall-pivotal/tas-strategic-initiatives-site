@@ -772,6 +772,216 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
 
+  - name: router
+    label: Router
+    resource_label: Router
+    description: Routers route Internet traffic to applications and between Pivotal CF Elastic Runtime components.
+    templates:
+      - name: gorouter
+        release: cf
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
+
+      - name: status_credentials
+        type: simple_credentials
+        default:
+          identity: router_status
+
+      - name: static_ips
+        type: ip_ranges
+        configurable: true
+        optional: true
+
+      - name: ssl_ciphers
+        type: text
+        configurable: true
+        optional: true
+
+      - name: enable_ssl
+        type: boolean
+        configurable: true
+        default: true
+
+    manifest: |
+      request_timeout_in_seconds: 900
+      networks:
+        apps: default
+      router:
+        secure_cookies: (( .ha_proxy.disable_http.value ))
+        status:
+          user: router_status
+          password: (( status_credentials.password ))
+        cipher_suites: (( ssl_ciphers.value ))
+        enable_ssl: (( enable_ssl.value ))
+        ssl_cert: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
+        ssl_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem ))
+
+      metron_endpoint:
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
+        deployment: cf
+      etcd:
+        machines: (( .etcd_server.ips ))
+      uaa:
+        clients:
+          gorouter:
+            secret: (( .uaa.gorouter_client_credentials.password ))
+
+  - name: mysql_proxy
+    label: MySQL Proxy
+    resource_label: MySQL Proxy
+    description: MySQL Proxy
+    templates:
+      - name: proxy
+        release: cf-mysql
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 4_096
+        constraints:
+          min: 4_096
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 0
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
+
+      - name: static_ips
+        type: ip_ranges
+        configurable: true
+        optional: true
+
+      - name: service_hostname
+        type: network_address
+        configurable: true
+        optional: true
+
+      - name: dashboard_credentials
+        type: simple_credentials
+        default:
+          identity: admin
+
+    manifest: |
+      network_name: default
+      external_host: "p-mysql.internal.(( .cloud_controller.system_domain.value ))"
+      proxy:
+        api_password: (( dashboard_credentials.password ))
+        api_username: (( dashboard_credentials.identity ))
+      cluster_ips: (( .mysql.ips ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        machines: (( .nats.ips ))
+        port: 4222
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+
   - name: mysql
     label: MySQL Server
     resource_label: MySQL Server
@@ -1548,126 +1758,6 @@ job_types:
         agent:
           servers:
             lan: (( .consul_server.ips ))
-
-  - name: router
-    label: Router
-    resource_label: Router
-    description: Routers route Internet traffic to applications and between Pivotal CF Elastic Runtime components.
-    templates:
-      - name: gorouter
-        release: cf
-      - name: metron_agent
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 2_048
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-      - name: status_credentials
-        type: simple_credentials
-        default:
-          identity: router_status
-
-      - name: static_ips
-        type: ip_ranges
-        configurable: true
-        optional: true
-
-      - name: ssl_ciphers
-        type: text
-        configurable: true
-        optional: true
-
-      - name: enable_ssl
-        type: boolean
-        configurable: true
-        default: true
-
-    manifest: |
-      request_timeout_in_seconds: 900
-      networks:
-        apps: default
-      router:
-        secure_cookies: (( .ha_proxy.disable_http.value ))
-        status:
-          user: router_status
-          password: (( status_credentials.password ))
-        cipher_suites: (( ssl_ciphers.value ))
-        enable_ssl: (( enable_ssl.value ))
-        ssl_cert: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
-        ssl_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem ))
-
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines: (( .nats.ips ))
-      syslog_daemon_config:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-      metron_agent:
-        zone: (( availability_zone ))
-        deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
-      uaa:
-        clients:
-          gorouter:
-            secret: (( .uaa.gorouter_client_credentials.password ))
-
 
   - name: health_manager
     label: Health Manager
@@ -2974,97 +3064,6 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
-
-  - name: mysql_proxy
-    label: MySQL Proxy
-    resource_label: MySQL Proxy
-    description: MySQL Proxy
-    templates:
-      - name: proxy
-        release: cf-mysql
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 4_096
-        constraints:
-          min: 4_096
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 0
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-      - name: static_ips
-        type: ip_ranges
-        configurable: true
-        optional: true
-
-      - name: service_hostname
-        type: network_address
-        configurable: true
-        optional: true
-
-      - name: dashboard_credentials
-        type: simple_credentials
-        default:
-          identity: admin
-
-    manifest: |
-      network_name: default
-      external_host: "p-mysql.internal.(( .cloud_controller.system_domain.value ))"
-      proxy:
-        api_password: (( dashboard_credentials.password ))
-        api_username: (( dashboard_credentials.identity ))
-      cluster_ips: (( .mysql.ips ))
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        machines: (( .nats.ips ))
-        port: 4222
-      syslog_aggregator:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
 
   - name: dea
     label: DEA
