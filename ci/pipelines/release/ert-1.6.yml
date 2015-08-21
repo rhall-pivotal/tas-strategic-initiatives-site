@@ -458,7 +458,15 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    regexp: releases/cf-(.*).pivotal
+    regexp: ert-releases/cf-(.*).pivotal
+- name: ert-product-pivnet
+  type: s3
+  source:
+    access_key_id: AKIAJ6T4XYHGI6KFMVQA
+    secret_access_key: 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
+    bucket: pivotalnetwork
+    private: true
+    regexp: product_files/Pivotal-CF/cf-(.*).pivotal
 - name: ert-sha-email
   type: email
   source:
@@ -554,6 +562,15 @@ jobs:
     params:
       repository: p-runtime
       tag: version/number
+- name: upload-to-pivnet
+  plan:
+  - get: ert-product-final
+    passed:
+    - publish
+  - put: ert-product-pivnet
+    params:
+      from: ert-product-final/cf-(.*).pivotal
+      to: product_files/Pivotal-CF/
 - name: claim-environment-aws-clean
   plan:
   - get: p-runtime
@@ -3108,6 +3125,7 @@ groups:
   - build-runtime
   - promote-ert
   - publish
+  - upload-to-pivnet
   resources:
   - ops-manager-stable-aws
   - ops-manager-stable-vsphere
