@@ -138,14 +138,14 @@ form_types:
           database: .properties.uaa_database
     property_inputs:
     - reference: .properties.system_database
-      label: System Database Config
+      label: "Selection should only be made on the initial installation of Elastic Runtime (do NOT switch selections when upgrading). Once Elastic Runtime is installed, the selection can be changed only after a data migration. Consult Pivotal Cloud Foundry documentation for details."
       selector_property_inputs:
       - reference: .properties.system_database.internal
-        label: Internal Databases using MySQL and Postgres (required for Pivotal Elastic Runtime deployments upgraded from pre-1.6 versions that used internal databases)
+        label: Internal Databases - MySQL and Postgres (the Postgres DBs are not highly-available, but this selection is required if you want to keep your system data from a pre-1.6.0 Elastic Runtime that you upgraded)
       - reference: .properties.system_database.internal_mysql
-        label: Internal Databases using only MySQL (preferred over the above option if this is a new installation of Pivotal Elastic Runtime)
+        label: Internal Databases - MySQL (preferred for enabling complete high-availability)
       - reference: .properties.system_database.external
-        label: External Databases (optional for installations that can use an external RDS)
+        label: External Databases (e.g. AWS RDS or any other MySQL service)
         property_inputs:
           - reference: .properties.system_database.external.host
             label: Hostname DNS Name
