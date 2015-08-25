@@ -171,8 +171,8 @@ output "ha_proxy_floating_ip"
 
 provider "aws" {
   alias = "aws"
-  access_key = "AKIAI43577ARGHXPWIMQ"
-  secret_key = "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"
+  access_key = "AKIAJEAGY2FWB7DEGFXQ"
+  secret_key = "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"
   region = "us-west-1"
 }
 
