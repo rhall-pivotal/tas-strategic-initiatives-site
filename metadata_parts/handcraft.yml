@@ -1049,8 +1049,6 @@ job_types:
       type: simple_credentials
     - name: uaadb_credentials
       type: simple_credentials
-    - name: consoledb_credentials
-      type: simple_credentials
     manifest: |
       admin_password: (( mysql_admin_credentials.password ))
       cluster_ips: (( .mysql.ips ))
@@ -1073,9 +1071,6 @@ job_types:
         - name: autoscale
           username: (( autoscale_credentials.identity ))
           password: (( autoscale_credentials.password ))
-        - name: console
-          username: (( consoledb_credentials.identity ))
-          password: (( consoledb_credentials.password ))
       syslog_aggregator:
         address: (( ..cf.properties.syslog_host.value ))
         port: (( ..cf.properties.syslog_port.value ))
@@ -4685,11 +4680,10 @@ property_blueprints:
             password: (( .mysql.app_usage_credentials.password ))
         - name: console
           manifest: |
-            ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-            port: 3306
-            username: (( .mysql.consoledb_credentials.identity ))
-            password: (( .mysql.consoledb_credentials.password ))
-            adapter: mysql
+            ip: (( .consoledb.first_ip ))
+            username: (( .consoledb.credentials.identity ))
+            password: (( .consoledb.credentials.password ))
+            adapter: postgres
 
       - name: external
         named_manifests:
