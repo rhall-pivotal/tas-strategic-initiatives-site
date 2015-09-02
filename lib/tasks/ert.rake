@@ -122,6 +122,11 @@ namespace :ert do
       require 'pipeline/full_suite_pipeline_creator'
       Pipeline::FullSuitePipelineCreator.new.full_suite_pipeline
     end
+    desc 'create half pipeline'
+    task :create_half_pipeline do |_, _|
+      require 'pipeline/half_suite_pipeline_creator'
+      Pipeline::HalfSuitePipelineCreator.new.half_suite_pipeline
+    end
 
     desc 'create a feature pipeline'
     task :create_feature_pipeline, [:branch_name, :iaas_type] do |_, args|
