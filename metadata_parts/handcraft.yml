@@ -3890,6 +3890,7 @@ job_types:
         syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
         organization: system
         space: notifications-with-ui
+        error_on_misconfiguration: false
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
           admin_password: (( .uaa.admin_credentials.password ))
