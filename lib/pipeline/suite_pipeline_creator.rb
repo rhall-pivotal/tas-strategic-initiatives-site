@@ -6,6 +6,72 @@ module Pipeline
   class SuitePipelineCreator < Mustache
     include IaasSpecificTaskAdder
 
+    HALF_PIPELINES = [
+      { method: :clean_pipeline_jobs, params: { pipeline_name: 'aws-clean', iaas_type: 'aws' } },
+      { method: :clean_pipeline_jobs, params: { pipeline_name: 'internetless', iaas_type: 'vsphere' } },
+      { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'aws-upgrade', iaas_type: 'aws' } },
+      { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere' } },
+    ].freeze
+
+    FULL_PIPELINES = [
+      {
+        method: :clean_pipeline_jobs,
+        params: {
+          pipeline_name: 'aws-clean',
+          iaas_type: 'aws'
+        },
+      },
+      {
+        method: :clean_pipeline_jobs,
+        params: {
+          pipeline_name: 'openstack-clean',
+          iaas_type: 'openstack'
+        },
+      },
+      {
+        method: :clean_pipeline_jobs,
+        params: {
+          pipeline_name: 'vsphere-clean',
+          iaas_type: 'vsphere'
+        },
+      },
+      {
+        method: :clean_pipeline_jobs,
+        params: {
+          pipeline_name: 'internetless',
+          iaas_type: 'vsphere'
+        },
+      },
+      {
+        method: :upgrade_pipeline_jobs,
+        params: {
+          pipeline_name: 'aws-upgrade',
+          iaas_type: 'aws'
+        },
+      },
+      {
+        method: :upgrade_pipeline_jobs,
+        params: {
+          pipeline_name: 'openstack-upgrade',
+          iaas_type: 'openstack'
+        },
+      },
+      {
+        method: :upgrade_pipeline_jobs,
+        params: {
+          pipeline_name: 'vsphere-upgrade',
+          iaas_type: 'vsphere'
+        },
+      },
+      {
+        method: :upgrade_pipeline_jobs,
+        params: {
+          pipeline_name: 'vcloud-upgrade',
+          iaas_type: 'vcloud'
+        },
+      }
+    ].freeze
+
     def environment_pool
       case pipeline_name
       when 'internetless'
@@ -40,6 +106,32 @@ module Pipeline
       add_verify_internetless_job(pipeline_yaml) if pipeline_name == 'internetless'
 
       pipeline_yaml
+    end
+
+    def half_suite_pipeline
+      half_pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert-half.yml')))
+
+      HALF_PIPELINES.each do |config|
+        jobs = send(config[:method], config[:params])['jobs']
+        half_pipeline_yaml['jobs'].concat(jobs)
+      end
+
+      yaml = YAML.dump(half_pipeline_yaml)
+
+      File.write(File.join('ci', 'pipelines', 'release', 'ert-1.6-half.yml'), yaml)
+    end
+
+    def full_suite_pipeline
+      full_pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert.yml')))
+
+      FULL_PIPELINES.each do |config|
+        jobs = send(config[:method], config[:params])['jobs']
+        full_pipeline_yaml['jobs'].concat(jobs)
+      end
+
+      yaml = YAML.dump(full_pipeline_yaml)
+
+      File.write(File.join('ci', 'pipelines', 'release', 'ert-1.6.yml'), yaml)
     end
 
     attr_reader :pipeline_name, :iaas_type

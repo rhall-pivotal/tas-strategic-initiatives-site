@@ -1,6 +1,5 @@
 require 'spec_helper'
-require 'pipeline/full_suite_pipeline_creator'
-require 'pipeline/half_suite_pipeline_creator'
+require 'pipeline/suite_pipeline_creator'
 
 describe Pipeline::SuitePipelineCreator do
   subject(:pipeline_creator) do
@@ -270,10 +269,6 @@ YAML
   end
 
   context 'when generating a full suite' do
-    subject(:pipeline_creator) do
-      Pipeline::FullSuitePipelineCreator.new
-    end
-
     before do
       allow(File).to receive(:read).with('ci/pipelines/release/template/ert.yml').and_return(ert_general)
     end
@@ -294,10 +289,6 @@ YAML
   end
 
   context 'when generating a half suite' do
-    subject(:pipeline_creator) do
-      Pipeline::HalfSuitePipelineCreator.new
-    end
-
     before do
       allow(File).to(
         receive(:read)
