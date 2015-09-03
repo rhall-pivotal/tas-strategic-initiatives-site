@@ -717,9 +717,9 @@ jobs:
     trigger: true
     passed:
     - release-environment-aws-clean
+    - release-environment-internetless
     - release-environment-aws-upgrade
     - release-environment-vsphere-upgrade
-    - release-environment-internetless
   - get: ert-product
     passed:
     - build-runtime

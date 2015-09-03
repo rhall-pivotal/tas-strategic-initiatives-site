@@ -14,72 +14,24 @@ module Pipeline
     ].freeze
 
     FULL_PIPELINES = [
-      {
-        method: :clean_pipeline_jobs,
-        params: {
-          pipeline_name: 'aws-clean',
-          iaas_type: 'aws'
-        },
-      },
-      {
-        method: :clean_pipeline_jobs,
-        params: {
-          pipeline_name: 'openstack-clean',
-          iaas_type: 'openstack'
-        },
-      },
-      {
-        method: :clean_pipeline_jobs,
-        params: {
-          pipeline_name: 'vsphere-clean',
-          iaas_type: 'vsphere'
-        },
-      },
-      {
-        method: :clean_pipeline_jobs,
-        params: {
-          pipeline_name: 'internetless',
-          iaas_type: 'vsphere'
-        },
-      },
-      {
-        method: :upgrade_pipeline_jobs,
-        params: {
-          pipeline_name: 'aws-upgrade',
-          iaas_type: 'aws'
-        },
-      },
-      {
-        method: :upgrade_pipeline_jobs,
-        params: {
-          pipeline_name: 'openstack-upgrade',
-          iaas_type: 'openstack'
-        },
-      },
-      {
-        method: :upgrade_pipeline_jobs,
-        params: {
-          pipeline_name: 'vsphere-upgrade',
-          iaas_type: 'vsphere'
-        },
-      },
-      {
-        method: :upgrade_pipeline_jobs,
-        params: {
-          pipeline_name: 'vcloud-upgrade',
-          iaas_type: 'vcloud'
-        },
-      }
+      { method: :clean_pipeline_jobs, params: { pipeline_name: 'aws-clean', iaas_type: 'aws' } },
+      { method: :clean_pipeline_jobs, params: { pipeline_name: 'openstack-clean', iaas_type: 'openstack' } },
+      { method: :clean_pipeline_jobs, params: { pipeline_name: 'vsphere-clean', iaas_type: 'vsphere' } },
+      { method: :clean_pipeline_jobs, params: { pipeline_name: 'internetless', iaas_type: 'vsphere' } },
+      { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'aws-upgrade', iaas_type: 'aws' } },
+      { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'openstack-upgrade', iaas_type: 'openstack' } },
+      { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere' } },
+      { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'vcloud-upgrade', iaas_type: 'vcloud' } }
     ].freeze
 
     def environment_pool
       case pipeline_name
-      when 'internetless'
-        pipeline_name
-      when 'aws-upgrade'
-        'aws-east'
-      else
-        iaas_type
+        when 'internetless'
+          pipeline_name
+        when 'aws-upgrade'
+          'aws-east'
+        else
+          iaas_type
       end
     end
 
@@ -109,12 +61,17 @@ module Pipeline
     end
 
     def half_suite_pipeline
-      half_pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert-half.yml')))
+      half_pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert.yml')))
 
       HALF_PIPELINES.each do |config|
         jobs = send(config[:method], config[:params])['jobs']
         half_pipeline_yaml['jobs'].concat(jobs)
       end
+
+      step_needing_passed_criteria(half_pipeline_yaml)['passed'] = critical_jobs(half_pipeline_yaml)
+
+      groups = half_pipeline_yaml['groups'].select { |g| ['aws-clean','vsphere-internetless','aws-upgrade','vsphere-upgrade','common'].include?(g['name']) }
+      half_pipeline_yaml['groups'] = groups
 
       yaml = YAML.dump(half_pipeline_yaml)
 
@@ -129,6 +86,8 @@ module Pipeline
         full_pipeline_yaml['jobs'].concat(jobs)
       end
 
+      step_needing_passed_criteria(full_pipeline_yaml)['passed'] = critical_jobs(full_pipeline_yaml)
+
       yaml = YAML.dump(full_pipeline_yaml)
 
       File.write(File.join('ci', 'pipelines', 'release', 'ert-1.6.yml'), yaml)
@@ -137,6 +96,17 @@ module Pipeline
     attr_reader :pipeline_name, :iaas_type
 
     private
+
+    def critical_jobs(pipeline_yaml)
+      pipeline_yaml['jobs']
+        .select { |j| j['name'].start_with?('release-environment') }
+        .reject { |j| j['name'].include?('openstack') }
+        .map { |j| j['name'] }
+    end
+
+    def step_needing_passed_criteria(pipeline_yaml)
+      pipeline_yaml['jobs'].find { |j| j['name'] == 'promote-ert' }['plan'].find { |s| s['get'] == 'p-runtime' }
+    end
 
     def pipeline_jobs(pipeline_name:, iaas_type:, template_path:)
       @pipeline_name = pipeline_name

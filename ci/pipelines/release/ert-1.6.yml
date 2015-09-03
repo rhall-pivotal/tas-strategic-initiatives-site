@@ -717,10 +717,10 @@ jobs:
     trigger: true
     passed:
     - release-environment-aws-clean
-    - release-environment-aws-upgrade
     - release-environment-vsphere-clean
-    - release-environment-vsphere-upgrade
     - release-environment-internetless
+    - release-environment-aws-upgrade
+    - release-environment-vsphere-upgrade
     - release-environment-vcloud-upgrade
   - get: ert-product
     passed:

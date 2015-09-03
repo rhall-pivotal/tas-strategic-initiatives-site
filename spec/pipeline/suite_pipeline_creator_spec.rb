@@ -48,6 +48,15 @@ jobs:
       - task: destroy
         tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/destroy-environment.yml
+  - name: release-environment-{{pipeline_name}}
+    plan:
+      - get: environment
+        resource: environment-{{environment_pool}}
+        trigger: true
+        passed: [destroy-environment-{{pipeline_name}}]
+      - task: release
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/release-environment.yml
 YAML
   end
 
@@ -80,25 +89,6 @@ YAML
 name: verify-internetless
 plan:
 - task: verify
-YAML
-  end
-
-  let(:ert_general) do
-    <<YAML
----
-resources:
-  - name: some-resource
-    type: git
-  - name: another-resource
-    type: s3
-    source:
-      some_key: just-a-key
-jobs:
-  - name: a-generic-job
-    plan:
-      - get: a-get-task
-        resource: some-resource
-      - task: a-generic-task
 YAML
   end
 
@@ -269,6 +259,55 @@ YAML
   end
 
   context 'when generating a full suite' do
+    let(:ert_general) do
+      <<YAML
+---
+resources:
+  - name: some-resource
+    type: git
+  - name: another-resource
+    type: s3
+    source:
+      some_key: just-a-key
+jobs:
+  - name: a-generic-job
+    plan:
+      - get: a-get-task
+        resource: some-resource
+      - task: a-generic-task
+  - name: promote-ert
+    plan:
+    - get: p-runtime
+      resource: p-runtime-prime
+      trigger: true
+    - get: ert-product
+      passed:
+      - build-runtime
+    - put: ert-product-promoted
+      params:
+        from: ert-product/ert.pivotal
+groups:
+  - name: aws-clean
+    stuff: foo
+  - name: openstack-clean
+    stuff: foo
+  - name: vsphere-clean
+    stuff: foo
+  - name: vsphere-internetless
+    stuff: foo
+  - name: aws-upgrade
+    stuff: foo
+  - name: openstack-upgrade
+    stuff: foo
+  - name: vsphere-upgrade
+    stuff: foo
+  - name: vcloud-upgrade
+    stuff: foo
+  - name: common
+    stuff: foo
+YAML
+    end
+
     before do
       allow(File).to receive(:read).with('ci/pipelines/release/template/ert.yml').and_return(ert_general)
     end
@@ -289,10 +328,59 @@ YAML
   end
 
   context 'when generating a half suite' do
+    let(:ert_general) do
+      <<YAML
+---
+resources:
+  - name: some-resource
+    type: git
+  - name: another-resource
+    type: s3
+    source:
+      some_key: just-a-key
+jobs:
+  - name: a-generic-job
+    plan:
+      - get: a-get-task
+        resource: some-resource
+      - task: a-generic-task
+  - name: promote-ert
+    plan:
+    - get: p-runtime
+      resource: p-runtime-prime
+      trigger: true
+    - get: ert-product
+      passed:
+      - build-runtime
+    - put: ert-product-promoted
+      params:
+        from: ert-product/ert.pivotal
+groups:
+  - name: aws-clean
+    stuff: foo
+  - name: openstack-clean
+    stuff: foo
+  - name: vsphere-clean
+    stuff: foo
+  - name: vsphere-internetless
+    stuff: foo
+  - name: aws-upgrade
+    stuff: foo
+  - name: openstack-upgrade
+    stuff: foo
+  - name: vsphere-upgrade
+    stuff: foo
+  - name: vcloud-upgrade
+    stuff: foo
+  - name: common
+    stuff: foo
+YAML
+    end
+
     before do
       allow(File).to(
         receive(:read)
-          .with('ci/pipelines/release/template/ert-half.yml')
+          .with('ci/pipelines/release/template/ert.yml')
           .and_return(ert_general)
       )
     end

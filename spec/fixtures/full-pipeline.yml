@@ -12,6 +12,24 @@ jobs:
   - get: a-get-task
     resource: some-resource
   - task: a-generic-task
+- name: promote-ert
+  plan:
+  - get: p-runtime
+    resource: p-runtime-prime
+    trigger: true
+    passed:
+    - release-environment-aws-clean
+    - release-environment-vsphere-clean
+    - release-environment-internetless
+    - release-environment-aws-upgrade
+    - release-environment-vsphere-upgrade
+    - release-environment-vcloud-upgrade
+  - get: ert-product
+    passed:
+    - build-runtime
+  - put: ert-product-promoted
+    params:
+      from: ert-product/ert.pivotal
 - name: destroy-environment-aws-clean
   plan:
   - get: environment
@@ -60,6 +78,17 @@ jobs:
     tags:
     - aws
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-aws-clean
+  plan:
+  - get: environment
+    resource: environment-aws
+    trigger: true
+    passed:
+    - destroy-environment-aws-clean
+  - task: release
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/release-environment.yml
 - name: destroy-environment-openstack-clean
   plan:
   - get: environment
@@ -106,6 +135,17 @@ jobs:
     tags:
     - openstack
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-openstack-clean
+  plan:
+  - get: environment
+    resource: environment-openstack
+    trigger: true
+    passed:
+    - destroy-environment-openstack-clean
+  - task: release
+    tags:
+    - openstack
+    file: p-runtime/ci/jobs/release-environment.yml
 - name: destroy-environment-vsphere-clean
   plan:
   - get: environment
@@ -152,6 +192,17 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-vsphere-clean
+  plan:
+  - get: environment
+    resource: environment-vsphere
+    trigger: true
+    passed:
+    - destroy-environment-vsphere-clean
+  - task: release
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/release-environment.yml
 - name: destroy-environment-internetless
   plan:
   - get: environment
@@ -201,6 +252,17 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-internetless
+  plan:
+  - get: environment
+    resource: environment-internetless
+    trigger: true
+    passed:
+    - destroy-environment-internetless
+  - task: release
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/release-environment.yml
 - name: destroy-environment-aws-upgrade
   plan:
   - get: environment
@@ -249,6 +311,17 @@ jobs:
     tags:
     - aws
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-aws-upgrade
+  plan:
+  - get: environment
+    resource: environment-aws-east
+    trigger: true
+    passed:
+    - destroy-environment-aws-upgrade
+  - task: release
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/release-environment.yml
 - name: destroy-environment-openstack-upgrade
   plan:
   - get: environment
@@ -295,6 +368,17 @@ jobs:
     tags:
     - openstack
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-openstack-upgrade
+  plan:
+  - get: environment
+    resource: environment-openstack
+    trigger: true
+    passed:
+    - destroy-environment-openstack-upgrade
+  - task: release
+    tags:
+    - openstack
+    file: p-runtime/ci/jobs/release-environment.yml
 - name: destroy-environment-vsphere-upgrade
   plan:
   - get: environment
@@ -341,6 +425,17 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-vsphere-upgrade
+  plan:
+  - get: environment
+    resource: environment-vsphere
+    trigger: true
+    passed:
+    - destroy-environment-vsphere-upgrade
+  - task: release
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/release-environment.yml
 - name: destroy-environment-vcloud-upgrade
   plan:
   - get: environment
@@ -395,3 +490,33 @@ jobs:
     tags:
     - vcloud
     file: p-runtime/ci/jobs/destroy-environment.yml
+- name: release-environment-vcloud-upgrade
+  plan:
+  - get: environment
+    resource: environment-vcloud
+    trigger: true
+    passed:
+    - destroy-environment-vcloud-upgrade
+  - task: release
+    tags:
+    - vcloud
+    file: p-runtime/ci/jobs/release-environment.yml
+groups:
+- name: aws-clean
+  stuff: foo
+- name: openstack-clean
+  stuff: foo
+- name: vsphere-clean
+  stuff: foo
+- name: vsphere-internetless
+  stuff: foo
+- name: aws-upgrade
+  stuff: foo
+- name: openstack-upgrade
+  stuff: foo
+- name: vsphere-upgrade
+  stuff: foo
+- name: vcloud-upgrade
+  stuff: foo
+- name: common
+  stuff: foo
