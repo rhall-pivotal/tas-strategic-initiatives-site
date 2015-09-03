@@ -8,7 +8,11 @@ module Pipeline
 
     HALF_PIPELINES = [
       { method: :clean_pipeline_jobs, params: { pipeline_name: 'aws-clean', iaas_type: 'aws' } },
-      { method: :clean_pipeline_jobs, params: { pipeline_name: 'internetless', iaas_type: 'vsphere' }, group_name: 'vsphere-internetless' },
+      {
+        method: :clean_pipeline_jobs,
+        params: { pipeline_name: 'internetless', iaas_type: 'vsphere' },
+        group_name: 'vsphere-internetless'
+      },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'aws-upgrade', iaas_type: 'aws' } },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere' } },
     ].freeze
@@ -17,7 +21,10 @@ module Pipeline
       { method: :clean_pipeline_jobs, params: { pipeline_name: 'aws-clean', iaas_type: 'aws' } },
       { method: :clean_pipeline_jobs, params: { pipeline_name: 'openstack-clean', iaas_type: 'openstack' } },
       { method: :clean_pipeline_jobs, params: { pipeline_name: 'vsphere-clean', iaas_type: 'vsphere' } },
-      { method: :clean_pipeline_jobs, params: { pipeline_name: 'internetless', iaas_type: 'vsphere' }, group_name: 'vsphere-internetless' },
+      { method: :clean_pipeline_jobs,
+        params: { pipeline_name: 'internetless', iaas_type: 'vsphere' },
+        group_name: 'vsphere-internetless'
+      },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'aws-upgrade', iaas_type: 'aws' } },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'openstack-upgrade', iaas_type: 'openstack' } },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere' } },
@@ -26,12 +33,12 @@ module Pipeline
 
     def environment_pool
       case pipeline_name
-        when 'internetless'
-          pipeline_name
-        when 'aws-upgrade'
-          'aws-east'
-        else
-          iaas_type
+      when 'internetless'
+        pipeline_name
+      when 'aws-upgrade'
+        'aws-east'
+      else
+        iaas_type
       end
     end
 
@@ -66,37 +73,8 @@ module Pipeline
       File.write(File.join('ci', 'pipelines', 'release', 'ert-1.6-half.yml'), yaml)
     end
 
-    def create_pipeline_yaml(pipelines)
-      pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert.yml')))
-
-      pipelines.each do |config|
-        jobs = send(config[:method], config[:params])['jobs']
-        pipeline_yaml['jobs'].concat(jobs)
-      end
-
-      step_needing_passed_criteria(pipeline_yaml)['passed'] = critical_jobs(pipeline_yaml)
-
-      pipeline_groups = ['common'] + pipelines.map do |p|
-        p[:group_name] || p[:params][:pipeline_name]
-      end
-      groups = pipeline_yaml['groups'].select { |g| pipeline_groups.include?(g['name']) }
-
-      pipeline_yaml['groups'] = groups
-
-      yaml = YAML.dump(pipeline_yaml)
-    end
-
     def full_suite_pipeline
-      full_pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert.yml')))
-
-      FULL_PIPELINES.each do |config|
-        jobs = send(config[:method], config[:params])['jobs']
-        full_pipeline_yaml['jobs'].concat(jobs)
-      end
-
-      step_needing_passed_criteria(full_pipeline_yaml)['passed'] = critical_jobs(full_pipeline_yaml)
-
-      yaml = YAML.dump(full_pipeline_yaml)
+      yaml = create_pipeline_yaml(FULL_PIPELINES)
 
       File.write(File.join('ci', 'pipelines', 'release', 'ert-1.6.yml'), yaml)
     end
@@ -124,6 +102,31 @@ module Pipeline
 
       add_vcloud_delete_installation_tasks(pipeline_yaml) if iaas_type == 'vcloud'
       pipeline_yaml
+    end
+
+    def create_pipeline_yaml(pipelines)
+      pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert.yml')))
+
+      pipelines.each do |config|
+        jobs = send(config[:method], config[:params])['jobs']
+        pipeline_yaml['jobs'].concat(jobs)
+      end
+
+      step_needing_passed_criteria(pipeline_yaml)['passed'] = critical_jobs(pipeline_yaml)
+
+      groups = pipeline_groups(pipeline_yaml, pipelines)
+
+      pipeline_yaml['groups'] = groups
+
+      YAML.dump(pipeline_yaml)
+    end
+
+    def pipeline_groups(pipeline_yaml, pipelines)
+      groups = ['common'] + pipelines.map do |p|
+        p[:group_name] || p[:params][:pipeline_name]
+      end
+
+      pipeline_yaml['groups'].select { |g| groups.include?(g['name']) }
     end
   end
 end
