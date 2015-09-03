@@ -8,7 +8,7 @@ module Pipeline
 
     HALF_PIPELINES = [
       { method: :clean_pipeline_jobs, params: { pipeline_name: 'aws-clean', iaas_type: 'aws' } },
-      { method: :clean_pipeline_jobs, params: { pipeline_name: 'internetless', iaas_type: 'vsphere' } },
+      { method: :clean_pipeline_jobs, params: { pipeline_name: 'internetless', iaas_type: 'vsphere' }, group_name: 'vsphere-internetless' },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'aws-upgrade', iaas_type: 'aws' } },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere' } },
     ].freeze
@@ -17,7 +17,7 @@ module Pipeline
       { method: :clean_pipeline_jobs, params: { pipeline_name: 'aws-clean', iaas_type: 'aws' } },
       { method: :clean_pipeline_jobs, params: { pipeline_name: 'openstack-clean', iaas_type: 'openstack' } },
       { method: :clean_pipeline_jobs, params: { pipeline_name: 'vsphere-clean', iaas_type: 'vsphere' } },
-      { method: :clean_pipeline_jobs, params: { pipeline_name: 'internetless', iaas_type: 'vsphere' } },
+      { method: :clean_pipeline_jobs, params: { pipeline_name: 'internetless', iaas_type: 'vsphere' }, group_name: 'vsphere-internetless' },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'aws-upgrade', iaas_type: 'aws' } },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'openstack-upgrade', iaas_type: 'openstack' } },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere' } },
@@ -61,21 +61,29 @@ module Pipeline
     end
 
     def half_suite_pipeline
-      half_pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert.yml')))
-
-      HALF_PIPELINES.each do |config|
-        jobs = send(config[:method], config[:params])['jobs']
-        half_pipeline_yaml['jobs'].concat(jobs)
-      end
-
-      step_needing_passed_criteria(half_pipeline_yaml)['passed'] = critical_jobs(half_pipeline_yaml)
-
-      groups = half_pipeline_yaml['groups'].select { |g| ['aws-clean','vsphere-internetless','aws-upgrade','vsphere-upgrade','common'].include?(g['name']) }
-      half_pipeline_yaml['groups'] = groups
-
-      yaml = YAML.dump(half_pipeline_yaml)
+      yaml = create_pipeline_yaml(HALF_PIPELINES)
 
       File.write(File.join('ci', 'pipelines', 'release', 'ert-1.6-half.yml'), yaml)
+    end
+
+    def create_pipeline_yaml(pipelines)
+      pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert.yml')))
+
+      pipelines.each do |config|
+        jobs = send(config[:method], config[:params])['jobs']
+        pipeline_yaml['jobs'].concat(jobs)
+      end
+
+      step_needing_passed_criteria(pipeline_yaml)['passed'] = critical_jobs(pipeline_yaml)
+
+      pipeline_groups = ['common'] + pipelines.map do |p|
+        p[:group_name] || p[:params][:pipeline_name]
+      end
+      groups = pipeline_yaml['groups'].select { |g| pipeline_groups.include?(g['name']) }
+
+      pipeline_yaml['groups'] = groups
+
+      yaml = YAML.dump(pipeline_yaml)
     end
 
     def full_suite_pipeline
