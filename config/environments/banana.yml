@@ -78,6 +78,8 @@ ops_manager:
     apps_domain: banana.cf-app.com
     elb_name: banana-pcf-elb
     elb_dns_name: {{ ert_elb_dns_name }}
+    ssh_elb_name: banana-pcf-ssh-elb
+    ssh_elb_dns_name: {{ ert_ssh_elb_dns_name }}
     file_storage:
       endpoint: https://s3.amazonaws.com
       bucket: {{ ert_s3_bucket_name }}
