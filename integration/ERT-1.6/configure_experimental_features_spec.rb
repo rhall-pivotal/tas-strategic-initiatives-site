@@ -41,8 +41,6 @@ RSpec.describe 'Configure Elastic Runtime 1.6.X Experimental Features', order: :
       push-app-usage-service
       notifications
       notifications-ui
-      autoscaling
-      autoscaling-register-broker
     ).each do |errand|
       current_ops_manager.product(elastic_runtime_settings.name)
         .product_errands.disable_errand(errand)
