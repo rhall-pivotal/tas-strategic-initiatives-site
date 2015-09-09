@@ -278,17 +278,17 @@ form_types:
         description: Maximum allowed number of service instances in an org using the default quota. For initial install only. Use the CLI to manage quotas.
 
   - name: syslog_aggregator
-    label: External Endpoints
-    description: Forwards syslog messages to an external server. Leave these options blank unless you are providing a syslogd server.
+    label: System Logging
+    description: Configure system logging. Leave the External Syslog fields blank unless you wish to use an external syslogd server.
     property_inputs:
       - reference: .properties.syslog_host
-        label: IP Address of Syslog Aggregator Host
+        label: External Syslog Aggregator Host IP
         description: The host must be reachable from the Elastic Runtime network, accept TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd).
       - reference: .properties.syslog_port
-        label: Syslog Aggregator Port
+        label: External Syslog Aggregator Port
         description: The typical syslogd port is 514. Ensure syslogd is listening on external interfaces.
       - reference: .properties.syslog_protocol
-        label: Networking Protocol
+        label: External Syslog Network Protocol
         description: Transport to be used when forwarding logs
 
   - name: uaa_sso
