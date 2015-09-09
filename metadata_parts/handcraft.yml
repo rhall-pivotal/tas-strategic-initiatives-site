@@ -290,6 +290,9 @@ form_types:
       - reference: .properties.syslog_protocol
         label: External Syslog Network Protocol
         description: Transport to be used when forwarding logs
+      - reference: .doppler.message_brain_buffer_size
+        label: "Syslog Drain Buffer Size (# of messages)"
+        description: "Sets the buffer size on Doppler before dropping log messages. Note that a larger buffer size has the potential to overload the system."
 
   - name: uaa_sso
     label: SSO Config
@@ -3246,6 +3249,10 @@ job_types:
       - name: shared_secret_credentials
         type: simple_credentials
 
+      - name: message_brain_buffer_size
+        type: integer
+        default: 100
+
     manifest: |
       networks:
         apps: default
@@ -3255,6 +3262,7 @@ job_types:
           user: (( status_credentials.identity ))
           password: (( status_credentials.password ))
           port: 5768
+        message_brain_buffer_size: (( message_brain_buffer_size.value ))
 
       uaa:
         jwt:
