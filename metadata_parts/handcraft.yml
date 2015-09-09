@@ -240,7 +240,7 @@ form_types:
     property_inputs:
       - reference: .mysql_proxy.static_ips
         label: MySQL Proxy IPs
-        description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer. The external load balancer IP will need to have been defined in the Router tab."
+        description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer."
       - reference: .mysql_proxy.service_hostname
         label: MySQL Service Hostname
         description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
