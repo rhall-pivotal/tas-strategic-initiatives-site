@@ -2184,6 +2184,11 @@ job_types:
         default:
           identity: doppler
 
+      - name: opentsdb_nozzle_credentials
+        type: simple_credentials
+        default:
+          identity: opentsdb-firehose-nozzle
+
       - name: apps_manager_client_credentials
         type: simple_credentials
         default:
@@ -2354,6 +2359,13 @@ job_types:
         admin:
           client_secret: (( admin_client_credentials.password ))
         clients:
+          opentsdb-firehose-nozzle:
+            access-token-validity: 1209600
+            authorized-grant-types: authorization_code,client_credentials,refresh_token
+            override: true
+            secret: (( opentsdb_nozzle_credentials.password ))
+            scope: openid,oauth.approvals,doppler.firehose
+            authorities: oauth.login,doppler.firehose
           identity:
             id: (( identity_client_credentials.identity ))
             secret: (( identity_client_credentials.password ))
