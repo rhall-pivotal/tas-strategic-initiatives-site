@@ -500,8 +500,6 @@ job_types:
           identity: nats
 
     manifest: |
-      networks:
-        apps: default
       nats:
         user: (( credentials.identity ))
         password: (( credentials.password ))
@@ -580,8 +578,6 @@ job_types:
           identity: vcap
 
     manifest: |
-      networks:
-        apps: default
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -599,6 +595,7 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
       consul:
+        require_ssl: false
         agent:
           mode: server
           servers:
@@ -668,8 +665,6 @@ job_types:
           identity: vcap
 
     manifest: |
-      networks:
-        apps: default
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -1214,8 +1209,6 @@ job_types:
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         service_name: cloud-controller-ng
-        info:
-          support_address: https://support.pivotal.io
         external_protocol: https
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
         resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
@@ -1282,6 +1275,7 @@ job_types:
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
       consul:
+        require_ssl: false
         domain: consul
         agent:
           services:
@@ -1289,8 +1283,6 @@ job_types:
           servers:
             lan: (( .consul_server.ips ))
 
-      networks:
-        apps: default
       nfs_server:
         address: (( .nfs_server.first_ip ))
 
@@ -1422,8 +1414,6 @@ job_types:
         optional: true
 
     manifest: |
-      networks:
-        apps: default
       ha_proxy:
         disable_http: (( disable_http.value ))
         ssl_ciphers: (( ssl_ciphers.value ))
@@ -1451,6 +1441,7 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
       consul:
+        require_ssl: false
         domain: consul
         agent:
           servers:
@@ -1539,8 +1530,6 @@ job_types:
 
     manifest: |
       request_timeout_in_seconds: 900
-      networks:
-        apps: default
       router:
         secure_cookies: (( .ha_proxy.disable_http.value ))
         status:
@@ -1652,9 +1641,6 @@ job_types:
 
       dea_next:
         heartbeat_interval_in_seconds: 10
-
-      networks:
-        apps: default
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -1785,10 +1771,9 @@ job_types:
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
       consul:
+        require_ssl: false
         domain: consul
 
-      networks:
-        apps: default
       nfs_server:
         address: (( .nfs_server.first_ip ))
 
@@ -1938,13 +1923,12 @@ job_types:
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
       consul:
+        require_ssl: false
         domain: consul
         agent:
           servers:
             lan: (( .consul_server.ips ))
 
-      networks:
-        apps: default
       nfs_server:
         address: (( .nfs_server.first_ip ))
 
@@ -2047,8 +2031,6 @@ job_types:
           identity: vcap
 
     manifest: |
-      networks:
-        apps: default
       collector:
         use_tsdb: true
         opentsdb:
@@ -2080,6 +2062,8 @@ job_types:
       - name: uaa
         release: cf
       - name: metron_agent
+        release: cf
+      - name: route_registrar
         release: cf
 
     resource_definitions:
@@ -2464,8 +2448,6 @@ job_types:
       domain: (( .cloud_controller.system_domain.value ))
 
       uaadb: (( .properties.system_database.selected_option.parsed_manifest(uaadb) ))
-      networks:
-        apps: default
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -2483,6 +2465,15 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
+      route_registrar:
+        routes:
+        - name: uaa
+          port: 8080
+          uris:
+          -  "uaa.(( .cloud_controller.system_domain.value ))"
+          -  "*.uaa.(( .cloud_controller.system_domain.value ))"
+          -  "login.(( .cloud_controller.system_domain.value ))"
+          -  "*.login.(( .cloud_controller.system_domain.value ))"
 
   - name: diego_brain
     label: Diego Brain
@@ -2650,6 +2641,7 @@ job_types:
         ssl:
           skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
       consul:
+        require_ssl: false
         domain: consul
         agent:
           servers:
@@ -2684,6 +2676,8 @@ job_types:
       - name: tps
         release: diego
       - name: file_server
+        release: diego
+      - name: cc_uploader
         release: diego
       - name: consul_agent
         release: cf
@@ -2755,8 +2749,8 @@ job_types:
         nsync:
           cc:
             base_url: https://api.(( .cloud_controller.system_domain.value ))
-            basic_auth_username: bulk_api
-            basic_auth_password: (( .cloud_controller.bulk_api_credentials.password ))
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         tps:
@@ -2774,12 +2768,23 @@ job_types:
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+        cc_uploader:
+          cc:
+            job_polling_interval_in_seconds: 25
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            external_port: 9022
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+
       consul:
+        require_ssl: false
         domain: consul
         agent:
           servers:
             lan: (( .consul_server.ips ))
           services:
+            cc_uploader: {}
             file_server: {}
             nsync: {}
             stager: {}
@@ -2806,8 +2811,8 @@ job_types:
         release: diego
       - name: consul_agent
         release: cf
-      - name: garden-linux
-        release: diego
+      - name: garden
+        release: garden-linux
       - name: metron_agent
         release: cf
 
@@ -2864,8 +2869,6 @@ job_types:
 
     manifest: |
       diego:
-        garden-linux:
-          btrfs_store_size_mb: 8_000
         rep:
           bbs:
             api_url: http://bbs.service.cf.internal:8889
@@ -2877,6 +2880,7 @@ job_types:
             client_key: "baz"
           zone: (( availability_zone ))
       consul:
+        require_ssl: false
         domain: consul
         agent:
           servers:
@@ -3142,8 +3146,6 @@ job_types:
         default: false
 
     manifest: |
-      networks:
-        apps: default
       domain: (( .cloud_controller.system_domain.value ))
 
       dea_next:
@@ -3247,8 +3249,6 @@ job_types:
         type: simple_credentials
 
     manifest: |
-      networks:
-        apps: default
       doppler:
         zone: (( availability_zone ))
         status:
@@ -3354,8 +3354,6 @@ job_types:
         type: simple_credentials
 
     manifest: |
-      networks:
-        apps: default
       loggregator:
         doppler_port: 8081
 
@@ -3735,8 +3733,6 @@ job_types:
           identity: vcap
 
     manifest: |
-      networks:
-        apps: default
       smoke_tests:
         api: "https://api.(( .cloud_controller.system_domain.value ))"
         apps_domain: (( .cloud_controller.apps_domain.value ))
@@ -3808,8 +3804,6 @@ job_types:
           identity: vcap
 
     manifest: |
-      networks:
-        apps: default
       diego:
         ssl:
           skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
