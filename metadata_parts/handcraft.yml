@@ -387,9 +387,6 @@ form_types:
       - reference: .diego_brain.receptor_cors_enabled
         label: Enable CORs on Diego Receptor
         description: Allows third-party services to access the Diego API
-      - reference: .cloud_controller.allow_app_ssh_access
-        label: Allow SSH access to apps
-        description: Enables SSH into app containers running on Diego.
 
 
   - name: whitelabel_config
@@ -1203,12 +1200,6 @@ job_types:
         configurable: true
         default: false
 
-      - name: allow_app_ssh_access
-        type: boolean
-        configurable: true
-        optional: true
-        default: true
-
     manifest: |
       app_ssh:
         host_key_fingerprint: (( .diego_brain.ssh_host_key.public_key_fingerprint ))
@@ -1219,7 +1210,6 @@ job_types:
       support_address: https://support.pivotal.io
 
       cc:
-        allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
         default_to_diego_backend: (( default_to_diego_backend.value ))
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
@@ -1443,7 +1433,7 @@ job_types:
           z1: (( .router.ips ))
           z2: []
       cc:
-        allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
+        allow_app_ssh_access: true
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -1756,7 +1746,6 @@ job_types:
       app_domains: ["(( .cloud_controller.apps_domain.value ))"]
 
       cc:
-        allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
@@ -1910,7 +1899,6 @@ job_types:
       app_domains: ["(( .cloud_controller.apps_domain.value ))"]
 
       cc:
-        allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
