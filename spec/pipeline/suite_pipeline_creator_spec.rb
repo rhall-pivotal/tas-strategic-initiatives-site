@@ -67,6 +67,13 @@ YAML
 YAML
   end
 
+  let(:aws_experimental_config) do
+    <<YAML
+- task: some-experimental-aws-task
+  tags: aws
+YAML
+  end
+
   let(:aws_extra_config_upgrade) do
     <<YAML
 - task: some-aws-upgrade-task
@@ -100,6 +107,11 @@ YAML
       receive(:read)
         .with('ci/pipelines/release/template/aws-external-config.yml')
         .and_return(aws_extra_config)
+    )
+    allow(File).to(
+      receive(:read)
+        .with('ci/pipelines/release/template/aws-enable-experimental.yml')
+        .and_return(aws_experimental_config)
     )
     allow(File).to(
       receive(:read)
