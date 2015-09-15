@@ -92,7 +92,7 @@ post_deploy_errands:
 form_types:
   - name: system_database
     label: System Database Config
-    description: Select internal if you want to keep using the system-provided databases. Otherwise, select external if you want to use your own database service, such as the Amazon Relational Database Service (RDS), to host the system-required databases, in which case you will need to create the database schemas. Consult Pivotal Cloud Foundry documentation for schema requirements.
+    description: Select the database configuration that fits your installation
     verifiers:
       - name: Verifiers::MysqlDatabaseVerifier
         properties:
@@ -138,14 +138,14 @@ form_types:
           database: .properties.uaa_database
     property_inputs:
     - reference: .properties.system_database
-      label: System Database Config
+      label: "Selection should only be made on the initial installation of Elastic Runtime (do NOT switch selections when upgrading). Once Elastic Runtime is installed, the selection can be changed only after a data migration. Consult Pivotal Cloud Foundry documentation for details."
       selector_property_inputs:
       - reference: .properties.system_database.internal
-        label: Internal Databases
-        description:
+        label: Internal Databases - MySQL and Postgres (the Postgres DBs are not highly-available, but this selection is required if you want to keep your system data from a pre-1.6.0 Elastic Runtime that you upgraded)
+      - reference: .properties.system_database.internal_mysql
+        label: Internal Databases - MySQL (preferred for enabling complete high-availability)
       - reference: .properties.system_database.external
-        label: External Databases
-        description:
+        label: External Databases (e.g. AWS RDS or any other MySQL service)
         property_inputs:
           - reference: .properties.system_database.external.host
             label: Hostname DNS Name
@@ -775,6 +775,310 @@ job_types:
         machines: (( .nats.ips ))
       etcd:
         machines: (( .etcd_server.ips ))
+
+  - name: router
+    label: Router
+    resource_label: Router
+    description: Routers route Internet traffic to applications and between Pivotal CF Elastic Runtime components.
+    templates:
+      - name: gorouter
+        release: cf
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
+
+      - name: status_credentials
+        type: simple_credentials
+        default:
+          identity: router_status
+
+      - name: static_ips
+        type: ip_ranges
+        configurable: true
+        optional: true
+
+      - name: ssl_ciphers
+        type: text
+        configurable: true
+        optional: true
+
+      - name: enable_ssl
+        type: boolean
+        configurable: true
+        default: true
+
+    manifest: |
+      request_timeout_in_seconds: 900
+      networks:
+        apps: default
+      router:
+        secure_cookies: (( .ha_proxy.disable_http.value ))
+        status:
+          user: router_status
+          password: (( status_credentials.password ))
+        cipher_suites: (( ssl_ciphers.value ))
+        enable_ssl: (( enable_ssl.value ))
+        ssl_cert: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
+        ssl_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem ))
+
+      metron_endpoint:
+        shared_secret:  (( .doppler.shared_secret_credentials.password ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
+        deployment: cf
+      etcd:
+        machines: (( .etcd_server.ips ))
+      uaa:
+        clients:
+          gorouter:
+            secret: (( .uaa.gorouter_client_credentials.password ))
+
+  - name: mysql_proxy
+    label: MySQL Proxy
+    resource_label: MySQL Proxy
+    description: MySQL Proxy
+    templates:
+      - name: proxy
+        release: cf-mysql
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 4_096
+        constraints:
+          min: 4_096
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 0
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
+
+      - name: static_ips
+        type: ip_ranges
+        configurable: true
+        optional: true
+
+      - name: service_hostname
+        type: network_address
+        configurable: true
+        optional: true
+
+      - name: dashboard_credentials
+        type: simple_credentials
+        default:
+          identity: admin
+
+    manifest: |
+      network_name: default
+      external_host: "p-mysql.internal.(( .cloud_controller.system_domain.value ))"
+      proxy:
+        api_password: (( dashboard_credentials.password ))
+        api_username: (( dashboard_credentials.identity ))
+      cluster_ips: (( .mysql.ips ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        machines: (( .nats.ips ))
+        port: 4222
+      syslog_aggregator:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+
+  - name: mysql
+    label: MySQL Server
+    resource_label: MySQL Server
+    description: Multi-tenant MySQL server.
+    templates:
+      - name: mysql
+        release: cf-mysql
+    max_in_flight: 1
+    resource_definitions:
+    - name: ram
+      type: integer
+      label: RAM
+      configurable: true
+      default: 8192
+      constraints:
+        min: 4096
+    - name: ephemeral_disk
+      type: integer
+      label: Ephemeral Disk
+      configurable: true
+      default: 30000
+      constraints:
+        min: 10000
+    - name: persistent_disk
+      type: integer
+      label: Persistent Disk
+      configurable: true
+      default: 100000
+      constraints:
+        min: 10000
+    - name: cpu
+      type: integer
+      label: CPU
+      configurable: true
+      default: 2
+      constraints:
+        min: 1
+        power_of_two: true
+    static_ip: 1
+    dynamic_ip: 0
+    instance_definitions:
+    - name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+    property_blueprints:
+    - name: vm_credentials
+      type: salted_credentials
+      default:
+        identity: vcap
+    - name: mysql_admin_credentials
+      type: simple_credentials
+      default:
+        identity: root
+    - name: app_usage_credentials
+      type: simple_credentials
+      default:
+        identity: app_usage
+    - name: notifications_credentials
+      type: simple_credentials
+    - name: autoscale_credentials
+      type: simple_credentials
+    - name: ccdb_credentials
+      type: simple_credentials
+    - name: uaadb_credentials
+      type: simple_credentials
+    manifest: |
+      admin_password: (( mysql_admin_credentials.password ))
+      cluster_ips: (( .mysql.ips ))
+      innodb_buffer_pool_size: 2147483648
+      max_connections: 1500
+      network_name: default
+      seeded_databases:
+        - name: ccdb
+          username: (( ccdb_credentials.identity ))
+          password: (( ccdb_credentials.password ))
+        - name: uaa
+          username: (( uaadb_credentials.identity ))
+          password: (( uaadb_credentials.password ))
+        - name: app_usage_service
+          username: (( app_usage_credentials.identity ))
+          password: (( app_usage_credentials.password ))
+        - name: notifications
+          username: (( notifications_credentials.identity ))
+          password: (( notifications_credentials.password ))
+        - name: autoscale
+          username: (( autoscale_credentials.identity ))
+          password: (( autoscale_credentials.password ))
+      syslog_aggregator:
+        address: (( ..cf.properties.syslog_host.value ))
+        port: (( ..cf.properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
 
   - name: ccdb
     label: Cloud Controller Database
@@ -1455,126 +1759,6 @@ job_types:
         agent:
           servers:
             lan: (( .consul_server.ips ))
-
-  - name: router
-    label: Router
-    resource_label: Router
-    description: Routers route Internet traffic to applications and between Pivotal CF Elastic Runtime components.
-    templates:
-      - name: gorouter
-        release: cf
-      - name: metron_agent
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 2_048
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-      - name: status_credentials
-        type: simple_credentials
-        default:
-          identity: router_status
-
-      - name: static_ips
-        type: ip_ranges
-        configurable: true
-        optional: true
-
-      - name: ssl_ciphers
-        type: text
-        configurable: true
-        optional: true
-
-      - name: enable_ssl
-        type: boolean
-        configurable: true
-        default: true
-
-    manifest: |
-      request_timeout_in_seconds: 900
-      networks:
-        apps: default
-      router:
-        secure_cookies: (( .ha_proxy.disable_http.value ))
-        status:
-          user: router_status
-          password: (( status_credentials.password ))
-        cipher_suites: (( ssl_ciphers.value ))
-        enable_ssl: (( enable_ssl.value ))
-        ssl_cert: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
-        ssl_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem ))
-
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines: (( .nats.ips ))
-      syslog_daemon_config:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-      metron_agent:
-        zone: (( availability_zone ))
-        deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
-      uaa:
-        clients:
-          gorouter:
-            secret: (( .uaa.gorouter_client_credentials.password ))
-
 
   - name: health_manager
     label: Health Manager
@@ -2893,182 +3077,6 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
-
-  - name: mysql_proxy
-    label: MySQL Proxy
-    resource_label: MySQL Proxy
-    description: MySQL Proxy
-    templates:
-      - name: proxy
-        release: cf-mysql
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 4_096
-        constraints:
-          min: 4_096
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 0
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-      - name: static_ips
-        type: ip_ranges
-        configurable: true
-        optional: true
-
-      - name: service_hostname
-        type: network_address
-        configurable: true
-        optional: true
-
-      - name: dashboard_credentials
-        type: simple_credentials
-        default:
-          identity: admin
-
-    manifest: |
-      network_name: default
-      external_host: "p-mysql.internal.(( .cloud_controller.system_domain.value ))"
-      proxy:
-        api_password: (( dashboard_credentials.password ))
-        api_username: (( dashboard_credentials.identity ))
-      cluster_ips: (( .mysql.ips ))
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        machines: (( .nats.ips ))
-        port: 4222
-      syslog_aggregator:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-
-
-  - name: mysql
-    label: MySQL Server
-    resource_label: MySQL Server
-    description: Multi-tenant MySQL server.
-    templates:
-      - name: mysql
-        release: cf-mysql
-    max_in_flight: 1
-    resource_definitions:
-    - name: ram
-      type: integer
-      label: RAM
-      configurable: true
-      default: 8192
-      constraints:
-        min: 4096
-    - name: ephemeral_disk
-      type: integer
-      label: Ephemeral Disk
-      configurable: true
-      default: 30000
-      constraints:
-        min: 10000
-    - name: persistent_disk
-      type: integer
-      label: Persistent Disk
-      configurable: true
-      default: 100000
-      constraints:
-        min: 10000
-    - name: cpu
-      type: integer
-      label: CPU
-      configurable: true
-      default: 2
-      constraints:
-        min: 1
-        power_of_two: true
-    static_ip: 1
-    dynamic_ip: 0
-    instance_definitions:
-    - name: instances
-      type: integer
-      label: Instances
-      configurable: true
-      default: 1
-    property_blueprints:
-    - name: vm_credentials
-      type: salted_credentials
-      default:
-        identity: vcap
-    - name: mysql_admin_credentials
-      type: simple_credentials
-      default:
-        identity: root
-    - name: app_usage_credentials
-      type: simple_credentials
-      default:
-        identity: app_usage
-    - name: notifications_credentials
-      type: simple_credentials
-    - name: autoscale_credentials
-      type: simple_credentials
-    manifest: |
-        admin_password: (( mysql_admin_credentials.password ))
-        cluster_ips: (( .mysql.ips ))
-        innodb_buffer_pool_size: 2147483648
-        max_connections: 1500
-        network_name: default
-        seeded_databases:
-          - name: app_usage_service
-            username: (( app_usage_credentials.identity ))
-            password: (( app_usage_credentials.password ))
-          - name: notifications
-            username: (( notifications_credentials.identity ))
-            password: (( notifications_credentials.password ))
-          - name: autoscale
-            username: (( autoscale_credentials.identity ))
-            password: (( autoscale_credentials.password ))
-        syslog_aggregator:
-          address: (( .properties.syslog_host.value ))
-          port: (( .properties.syslog_port.value ))
-          transport: (( .properties.syslog_protocol.value ))
 
   - name: dea
     label: DEA
@@ -4595,7 +4603,7 @@ property_blueprints:
   - name: system_database
     type: selector
     configurable: true
-    default: internal
+    default: internal_mysql
     option_templates:
       - name: internal
         select_value: internal
@@ -4645,6 +4653,55 @@ property_blueprints:
               ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
               username: (( .mysql.app_usage_credentials.identity ))
               password: (( .mysql.app_usage_credentials.password ))
+
+      - name: internal_mysql
+        select_value: internal_mysql
+        named_manifests:
+        - name: ccdb
+          manifest: |
+            address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            port: 3306
+            db_scheme: mysql
+            roles:
+            - tag: admin
+              name: (( .mysql.ccdb_credentials.identity ))
+              password: (( .mysql.ccdb_credentials.password ))
+            databases:
+            - tag: cc
+              name: ccdb
+              citext: true
+        - name: uaadb
+          manifest: |
+            address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            port: 3306
+            db_scheme: mysql
+            roles:
+            - tag: admin
+              name: (( .mysql.uaadb_credentials.identity ))
+              password: (( .mysql.uaadb_credentials.password ))
+            databases:
+            - tag: uaa
+              name: uaa
+        - name: notifications
+          manifest: |
+            url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
+            max_open_connections: 10
+        - name: autoscaling
+          manifest: |
+            url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
+        - name: push-app-usage-service
+          manifest: |
+            name: app_usage_service
+            port: 3306
+            ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            username: (( .mysql.app_usage_credentials.identity ))
+            password: (( .mysql.app_usage_credentials.password ))
+        - name: console
+          manifest: |
+            ip: (( .consoledb.first_ip ))
+            username: (( .consoledb.credentials.identity ))
+            password: (( .consoledb.credentials.password ))
+            adapter: postgres
 
       - name: external
         named_manifests:
