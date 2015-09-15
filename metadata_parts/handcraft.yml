@@ -2965,8 +2965,8 @@ job_types:
         nsync:
           cc:
             base_url: https://api.(( .cloud_controller.system_domain.value ))
-            basic_auth_username: bulk_api
-            basic_auth_password: (( .cloud_controller.bulk_api_credentials.password ))
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         tps:
