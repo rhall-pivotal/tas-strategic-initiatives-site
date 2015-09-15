@@ -240,7 +240,7 @@ form_types:
     property_inputs:
       - reference: .mysql_proxy.static_ips
         label: MySQL Proxy IPs
-        description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer. The external load balancer IP will need to have been defined in the Router tab."
+        description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer."
       - reference: .mysql_proxy.service_hostname
         label: MySQL Service Hostname
         description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
@@ -278,17 +278,17 @@ form_types:
         description: Maximum allowed number of service instances in an org using the default quota. For initial install only. Use the CLI to manage quotas.
 
   - name: syslog_aggregator
-    label: External Endpoints
-    description: Forwards syslog messages to an external server. Leave these options blank unless you are providing a syslogd server.
+    label: System Logging
+    description: Configure system logging. Leave the External Syslog fields blank unless you wish to use an external syslogd server.
     property_inputs:
       - reference: .properties.syslog_host
-        label: IP Address of Syslog Aggregator Host
+        label: External Syslog Aggregator Host IP
         description: The host must be reachable from the Elastic Runtime network, accept TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd).
       - reference: .properties.syslog_port
-        label: Syslog Aggregator Port
+        label: External Syslog Aggregator Port
         description: The typical syslogd port is 514. Ensure syslogd is listening on external interfaces.
       - reference: .properties.syslog_protocol
-        label: Networking Protocol
+        label: External Syslog Network Protocol
         description: Transport to be used when forwarding logs
 
   - name: uaa_sso
@@ -329,7 +329,7 @@ form_types:
         description: 'Required for LDAP. Example ou=Users,dc=example,dc=com'
       - reference: .uaa.ldap_search_filter
         label: User Search Filter
-        description: ' Required for LDAP. Use {0} where username should inserted.'
+        description: "Required for LDAP. Replace {0} with username."
       - reference: .properties.group_search
         label: Admin Groups
         description:
@@ -344,7 +344,7 @@ form_types:
               description: 'Required if mapping LDAP groups to Admin role. Example ou=Groups,dc=example,dc=com'
             - reference: .properties.group_search.enable_admin_groups.ldap_group_search_filter
               label: Group Search Filter
-              description: 'Required if mapping LDAP groups to Admin role. Use {0} where group name should inserted.'
+              description: 'Required if mapping LDAP groups to Admin role. Replace {0} with user DN.'
       - reference: .uaa.ldap_server_ssl_cert
         label: Server SSL Cert
         description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate'
@@ -390,8 +390,8 @@ form_types:
 
 
   - name: whitelabel_config
-    label: White Label Config
-    description: "Customize colors, images, and text"
+    label: Customized Branding
+    description: "Customize colors, images, and text for Apps Manager"
     property_inputs:
       - reference: .push-apps-manager.company_name
         label: Company Name
