@@ -2063,8 +2063,6 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
-      - name: route_registrar
-        release: cf
 
     resource_definitions:
       - name: ram
@@ -2465,15 +2463,6 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
-      route_registrar:
-        routes:
-        - name: uaa
-          port: 8080
-          uris:
-          -  "uaa.(( .cloud_controller.system_domain.value ))"
-          -  "*.uaa.(( .cloud_controller.system_domain.value ))"
-          -  "login.(( .cloud_controller.system_domain.value ))"
-          -  "*.login.(( .cloud_controller.system_domain.value ))"
 
   - name: diego_brain
     label: Diego Brain
