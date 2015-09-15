@@ -2541,7 +2541,7 @@ job_types:
           identity:
             id: (( identity_client_credentials.identity ))
             secret: (( identity_client_credentials.password ))
-            scope: "cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,zones.*.admin,zones.read,zones.write"
+            scope: "cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,zones.*.*,zones.*.*.*,zones.read,zones.write"
             resource_ids: none
             override: true
             authorized-grant-types: "authorization_code,client_credentials,refresh_token"
