@@ -62,6 +62,7 @@ module Pipeline
       )
 
       add_aws_configure_tasks(pipeline_yaml, 'aws-external-config.yml') if iaas_type == 'aws'
+      add_aws_configure_tasks(pipeline_yaml, 'aws-enable-experimental.yml') if iaas_type == 'aws'
       add_verify_internetless_job(pipeline_yaml) if pipeline_name == 'internetless'
 
       pipeline_yaml
