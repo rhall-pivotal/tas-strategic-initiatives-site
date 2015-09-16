@@ -4358,6 +4358,7 @@ job_types:
         include_services: true
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         skip_regex: lucid64
+        skip_diego_unsupported_tests: true
 
   - name: acceptance-tests-internetless
     label: Run CF Acceptance Tests without internet
@@ -4429,6 +4430,7 @@ job_types:
         include_services: true
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         skip_regex: lucid64
+        skip_diego_unsupported_tests: true
 
   - name: compilation
     label: Compilation
