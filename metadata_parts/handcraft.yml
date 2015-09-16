@@ -1201,6 +1201,8 @@ job_types:
         default: false
 
     manifest: |
+      app_ssh:
+        host_key_fingerprint: (( .diego_brain.ssh_host_key.public_key_fingerprint ))
       domain: (( .cloud_controller.system_domain.value ))
       system_domain: (( .cloud_controller.system_domain.value ))
       system_domain_organization: system
@@ -2564,6 +2566,10 @@ job_types:
         configurable: true
         default: false
 
+      - name: ssh_host_key
+        type: rsa_pkey_credentials
+        configurable: false
+
     manifest: |
       diego:
         auctioneer:
@@ -2636,7 +2642,7 @@ job_types:
             client_cert: "bar"
             client_key: "baz"
         ssh_proxy:
-          host_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem))
+          host_key: (( ssh_host_key.private_key_pem ))
           enable_cf_auth: true
           enable_diego_auth: false
           cc:

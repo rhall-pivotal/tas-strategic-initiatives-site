@@ -159,6 +159,7 @@ resources:
 
 jobs:
   - name: claim-environment
+    serial: true
     plan:
       - get: p-runtime
       - get: upstream-release-metadata
