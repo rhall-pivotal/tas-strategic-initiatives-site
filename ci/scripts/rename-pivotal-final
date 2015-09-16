@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -ex
+
+export VERSION=`cat version/number`
+mv ert-pivotal/cf-*.pivotal ert-pivotal/cf-$VERSION.pivotal

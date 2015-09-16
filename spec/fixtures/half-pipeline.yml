@@ -59,6 +59,8 @@ jobs:
     resource: environment-aws
   - task: some-aws-task
     tags: aws
+  - task: some-experimental-aws-task
+    tags: aws
 - name: another-job-aws-clean
   plan:
   - task: another-task

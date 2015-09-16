@@ -1,0 +1,12 @@
+---
+platform: linux
+
+image: docker:///pivotalcf/releng-ci
+
+inputs:
+  - name: p-runtime
+  - name: version
+  - name: ert-pivotal
+
+run:
+  path: p-runtime/ci/scripts/rename-pivotal-final
