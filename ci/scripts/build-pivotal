@@ -14,11 +14,11 @@ function append_release_to_metadata() {
   release_version="$5"
 
   cat > $release_metadata <<EOF
-file: $tarball_filename
-name: $release_name
-version: "$release_version"
-md5: $tarball_md5
-url: ""
+- file: $tarball_filename
+  name: $release_name
+  version: "$release_version"
+  md5: $tarball_md5
+  url: ""
 EOF
 }
 
