@@ -16,7 +16,7 @@ vm_shepherd:
         - moon-ops-manager
         - moon-products
       private_ip: 192.168.118.100
-      public_ip: 10.85.38.69
+      public_ip: 10.85.38.91
 
 ops_manager:
   url: https://pcf.moon.cf-app.com
@@ -63,14 +63,14 @@ ops_manager:
       -----END RSA PRIVATE KEY-----
   networks:
   - name: first-network
-    identifier: 8913c87a-8798-4009-be73-7f83b0bf60eb
+    identifier: 6d78d06f-aada-4a37-8fc6-9bc79d2b17a4
     subnet: 192.168.118.0/24
     reserved_ips: 192.168.118.2-192.168.118.4
     dns: 10.87.8.10,10.87.8.11
     gateway: 192.168.118.1
   elastic_runtime:
     name: cf
-    ha_proxy_floating_ips: 10.85.38.68
+    ha_proxy_floating_ips: 10.85.38.92
     system_domain: sys.moon.cf-app.com
     apps_domain: apps.moon.cf-app.com
     smtp:
