@@ -101,6 +101,30 @@ namespace :ert do
       logger: logger).run_cats
   end
 
+  desc 'run the notifications tests errand'
+  task :run_notifications_tests, [:environment_name, :om_version] do |_, args|
+    require 'opsmgr/cmd/bosh_command'
+    require 'opsmgr/log'
+    require 'ert/iaas_gateway'
+    require 'ert/notifications_tests_runner'
+
+    logger = Opsmgr.logger_for('Rake')
+    bosh_command = Opsmgr::Cmd::BoshCommand.new(
+      env_name: args.environment_name,
+      om_version: args.om_version
+    )
+    iaas_gateway = Ert::IaasGateway.new(
+      bosh_command: bosh_command,
+      environment_name: args.environment_name,
+      logger: logger
+    )
+    Ert::NotificationsTestsRunner.new(
+      iaas_gateway: iaas_gateway,
+      bosh_command: bosh_command,
+      environment_name: args.environment_name,
+      logger: logger).run
+  end
+
   desc 'is this environment "internetless"'
   task :internetless, [:environment_name] do |_, args|
     require 'ert/internet_checker'
