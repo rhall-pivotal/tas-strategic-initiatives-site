@@ -208,7 +208,7 @@ form_types:
 
   - name: security_config
     label: Security Config
-    description: Security settings for HAProxy, Router, and DEAs
+    description: Configure security settings
     property_inputs:
       - reference: .ha_proxy.ssl_rsa_certificate
         label: SSL Termination Certificate
@@ -227,8 +227,8 @@ form_types:
       - reference: .uaa.disable_http
         label: Disable HTTP traffic to UAA
         description: "Allows only HTTPS traffic to UAA"
-      - reference: .dea.allow_host_access
-        label: Enable cross-container traffic within each DEA
+      - reference: .properties.allow_cross_container_traffic
+        label: Enable cross-container traffic
         description: Not recommended for untrusted workloads
       - reference: .router.enable_ssl
         label: Enable TLS on the Router
@@ -3073,6 +3073,8 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
+      garden:
+        allow_host_access: (( .properties.allow_cross_container_traffic.value ))
 
   - name: dea
     label: DEA
@@ -3140,16 +3142,11 @@ job_types:
       - name: loggregator_agent_status_credentials
         type: simple_credentials
 
-      - name: allow_host_access
-        type: boolean
-        configurable: true
-        default: false
-
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
 
       dea_next:
-        allow_host_access: (( allow_host_access.value ))
+        allow_host_access: (( .properties.allow_cross_container_traffic.value ))
         directory_server_protocol: https
         memory_mb: (( ram ))
         memory_overcommit_factor: 1
@@ -4572,6 +4569,11 @@ property_blueprints:
     type: port
     configurable: true
     optional: true
+
+  - name: allow_cross_container_traffic
+    type: boolean
+    configurable: true
+    default: false
 
   - name: app_usage_service_database
     type: string
