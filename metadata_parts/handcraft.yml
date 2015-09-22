@@ -387,9 +387,6 @@ form_types:
     property_inputs:
       - reference: .cloud_controller.default_to_diego_backend
         label: Use Diego by default instead of DEAs
-      - reference: .diego_brain.receptor_cors_enabled
-        label: Enable CORs on Diego Receptor
-        description: Allows third-party services to access the Diego API
       - reference: .cloud_controller.allow_app_ssh_access
         label: Allow SSH access to apps
         description: Enables SSH into app containers running on Diego.
@@ -2689,11 +2686,7 @@ job_types:
         release: diego
       - name: etcd
         release: diego
-      - name: receptor
-        release: diego
       - name: route_emitter
-        release: diego
-      - name: runtime_metrics_server
         release: diego
       - name: ssh_proxy
         release: diego
@@ -2753,11 +2746,6 @@ job_types:
         default:
           identity: vcap
 
-      - name: receptor_cors_enabled
-        type: boolean
-        configurable: true
-        default: false
-
       - name: ssh_host_key
         type: rsa_pkey_credentials
         configurable: false
@@ -2804,38 +2792,17 @@ job_types:
           peer_ca_cert: "foo"
           peer_cert: "bar"
           peer_key: "baz"
-        receptor:
+        route_emitter:
           bbs:
             api_url: http://bbs.service.cf.internal:8889
-          cors_enabled: (( receptor_cors_enabled.value ))
-          register_with_router: true
-          domain_names: ["(( .cloud_controller.system_domain.value ))","(( .cloud_controller.apps_domain.value ))"]
           nats:
             user: (( .nats.credentials.identity ))
             password: (( .nats.credentials.password ))
             port: 4222
             machines: (( .nats.ips ))
-          etcd:
-            machines: ['etcd.service.cf.internal']
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
-        route_emitter:
-          nats:
-            user: (( .nats.credentials.identity ))
-            password: (( .nats.credentials.password ))
-            port: 4222
-            machines: (( .nats.ips ))
-        runtime_metrics_server:
-          diego_api_url: (( first_ip ))
-          etcd:
-            machines: ['etcd.service.cf.internal']
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
         ssh_proxy:
+          bbs:
+            api_url: http://bbs.service.cf.internal:8889
           host_key: (( ssh_host_key.private_key_pem ))
           enable_cf_auth: true
           enable_diego_auth: false
@@ -2853,7 +2820,6 @@ job_types:
             auctioneer: {}
             bbs: {}
             etcd: {}
-            receptor: {}
             ssh_proxy: {}
       nats:
         user: (( .nats.credentials.identity ))
@@ -2951,6 +2917,8 @@ job_types:
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         nsync:
+          bbs:
+            api_url: http://bbs.service.cf.internal:8889
           cc:
             base_url: https://api.(( .cloud_controller.system_domain.value ))
             basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
@@ -2958,6 +2926,8 @@ job_types:
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         tps:
+          bbs:
+            api_url: http://bbs.service.cf.internal:8889
           cc:
             basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
             basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
