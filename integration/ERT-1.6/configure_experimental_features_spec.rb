@@ -38,6 +38,9 @@ RSpec.describe 'Configure Elastic Runtime 1.6.X Experimental Features', order: :
 
   it 'disables the errands that do not work with diego' do
     %w(
+      push-apps-manager
+      smoke-tests
+      diego-smoke-tests
       push-app-usage-service
       autoscaling
       autoscaling-register-broker
