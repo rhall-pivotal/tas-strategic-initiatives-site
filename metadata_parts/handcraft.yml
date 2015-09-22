@@ -1500,7 +1500,7 @@ job_types:
       - name: default_to_diego_backend
         type: boolean
         configurable: true
-        default: false
+        default: true
 
       - name: allow_app_ssh_access
         type: boolean
@@ -2738,7 +2738,7 @@ job_types:
         configurable: true
         default: 1
         constraints:
-          min: 0
+          min: 1
 
     property_blueprints:
       - name: vm_credentials
@@ -2897,7 +2897,7 @@ job_types:
         configurable: true
         default: 1
         constraints:
-          min: 0
+          min: 1
 
     property_blueprints:
       - name: vm_credentials
@@ -3036,7 +3036,7 @@ job_types:
         configurable: true
         default: 1
         constraints:
-          min: 0
+          min: 1
 
     property_blueprints:
       - name: vm_credentials
@@ -3130,9 +3130,9 @@ job_types:
         type: integer
         label: Instances
         configurable: true
-        default: 1
+        default: 0
         constraints:
-          min: 1
+          min: 0
 
     property_blueprints:
       - name: vm_credentials

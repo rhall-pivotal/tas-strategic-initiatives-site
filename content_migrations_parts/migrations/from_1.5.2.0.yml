@@ -11,3 +11,8 @@ rules:
     selector: properties.[identifier=allow_host_access].identifier
     from: allow_host_access
     to: allow_cross_container_traffic
+  - type: append
+    selector: "jobs.[identifier=cloud_controller].properties"
+    to:
+      identifier: default_to_diego_backend
+      value: false
