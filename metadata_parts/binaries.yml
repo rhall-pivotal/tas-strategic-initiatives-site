@@ -1,7 +1,7 @@
 ---
 stemcell_criteria:
   os: ubuntu-trusty
-  version: '3026'
+  version: '3062'
   requires_cpi: false
 releases:
 # MySQL release is first because its packages take the longest to compile.
@@ -10,34 +10,39 @@ releases:
   version: '20'
   md5: d7e9a5a39a1197c66fb95a6486ecda79
   url: http://releng-artifacts.cf-app.com/cf-mysql-20.tgz
-- file: cf-215.tgz
+- file: cf-217.tgz
   name: cf
-  version: '215'
-  md5: 0c7b27f50363519c7052ff5078351d3a
-  url: https://bosh.io/d/github.com/cloudfoundry/cf-release?v=215
-- file: diego-0.1412.0.tgz
+  version: '217'
+  md5: 13c2027cf88f4a00f8eda9910983692f
+  url: https://bosh.io/d/github.com/cloudfoundry/cf-release?v=217
+- file: diego-0.1428.0.tgz
   name: diego
-  version: '0.1412.0'
-  md5: 2f24cb5c592e451f94d7316001e7cd86
-  url: https://bosh.io/d/github.com/cloudfoundry-incubator/diego-release?v=0.1412.0
+  version: '0.1428.0'
+  md5: 3afb6098af48fe3742d4d39b0bac943f
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/diego-release?v=0.1428.0
+- file: garden-linux-0.303.0.tgz
+  name: garden-linux
+  version: '0.303.0'
+  md5: 00ab4617379aff2d8dc261940ab1f4b7
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release?v=0.303.0
 - file: push-apps-manager-release-274.tgz
   name: push-apps-manager-release
   version: '274'
   md5: b56fdff0a5f3294d1f4702e6a1fa0d0d
   url: http://apps-manager-releases.s3.amazonaws.com/push-apps-manager-release-274.tgz
-- file: notifications-8.tgz
+- file: notifications-13.tgz
   name: notifications
-  version: '8'
-  md5: 0fccd841ae688693cc08b3b0f0ef6429
-  url: https://s3-us-west-1.amazonaws.com/ert-concourse-products/upstream-releases/notifications/notifications-8.tgz
-- file: notifications-ui-4.tgz
+  version: '13'
+  md5: c43761d3bc84ef16b32cb57c54e30f2c
+  url: https://s3-us-west-1.amazonaws.com/ert-concourse-products/upstream-releases/notifications/notifications-13.tgz
+- file: notifications-ui-7.tgz
   name: 'notifications-ui'
-  version: '4'
-  md5: 9168806ea26c9a2b84eff57f5f8312da
-  url: https://s3-us-west-1.amazonaws.com/ert-concourse-products/upstream-releases/notifications-ui/notifications-ui-4.tgz
-- file: cf-autoscaling-15.tgz
+  version: '7'
+  md5: d3a1650de2a992c3f5d5cf0cb6756a40
+  url: https://s3-us-west-1.amazonaws.com/ert-concourse-products/upstream-releases/notifications-ui/notifications-ui-7.tgz
+- file: cf-autoscaling-21.tgz
   name: 'cf-autoscaling'
-  version: '15'
-  md5: b6fe0a1779ab73fbca3eec7071921f2e
-  url: https://s3-us-west-1.amazonaws.com/ert-concourse-products/upstream-releases/cf-autoscaling/cf-autoscaling-15.tgz
+  version: '21'
+  md5: 80c91b8766cbcedaf6543fb5c6f32843
+  url: https://s3-us-west-1.amazonaws.com/ert-concourse-products/upstream-releases/cf-autoscaling/cf-autoscaling-21.tgz
 name: cf
