@@ -177,7 +177,13 @@
           }
         ],
         "SourceDestCheck": "false",
-        "SubnetId": {"Ref": "PcfPublicSubnet"}
+        "SubnetId": {"Ref": "PcfPublicSubnet"},
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NAT Instance"
+          }
+        ]
       }
     },
     "PcfNatElasticIp": {
@@ -498,6 +504,9 @@
   "Outputs": {
     "PcfVpc": {
       "Value": {"Ref": "PcfVpc"}
+    },
+    "PcfIamUserName": {
+      "Value": {"Ref": "PcfIamUser"}
     },
     "PcfIamUserAccessKey": {
       "Value": {"Ref": "PcfIamUserAccessKey"}

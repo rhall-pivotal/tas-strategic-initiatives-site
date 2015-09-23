@@ -16,3 +16,38 @@ rules:
     to:
       identifier: default_to_diego_backend
       value: false
+  - type: append
+    selector: "properties.[identifier=system_blobstore].options.[identifier=external].properties"
+    new_hash:
+      identifier: buildpacks_bucket
+  - type: append
+    selector: "properties.[identifier=system_blobstore].options.[identifier=external].properties"
+    new_hash:
+      identifier: droplets_bucket
+  - type: append
+    selector: "properties.[identifier=system_blobstore].options.[identifier=external].properties"
+    new_hash:
+      identifier: packages_bucket
+  - type: append
+    selector: "properties.[identifier=system_blobstore].options.[identifier=external].properties"
+    new_hash:
+      identifier: resources_bucket
+  - type: copy
+    selector: ""
+    from: "properties.[identifier=system_blobstore].options.[identifier=external].properties.[identifier=bucket].value"
+    to: "properties.[identifier=system_blobstore].options.[identifier=external].properties.[identifier=buildpacks_bucket].value"
+  - type: copy
+    selector: ""
+    from: "properties.[identifier=system_blobstore].options.[identifier=external].properties.[identifier=bucket].value"
+    to: "properties.[identifier=system_blobstore].options.[identifier=external].properties.[identifier=droplets_bucket].value"
+  - type: copy
+    selector: ""
+    from: "properties.[identifier=system_blobstore].options.[identifier=external].properties.[identifier=bucket].value"
+    to: "properties.[identifier=system_blobstore].options.[identifier=external].properties.[identifier=packages_bucket].value"
+  - type: copy
+    selector: ""
+    from: "properties.[identifier=system_blobstore].options.[identifier=external].properties.[identifier=bucket].value"
+    to: "properties.[identifier=system_blobstore].options.[identifier=external].properties.[identifier=resources_bucket].value"
+  - type: delete
+    parent: "properties.[identifier=system_blobstore].options.[identifier=external].properties"
+    selector: "[identifier=bucket]"

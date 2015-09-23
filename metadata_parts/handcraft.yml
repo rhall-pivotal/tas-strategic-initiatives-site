@@ -77,7 +77,28 @@ install_time_verifiers:
       endpoint: .properties.system_blobstore.external.endpoint
       access_key_id: .properties.system_blobstore.external.access_key
       secret_access_key: .properties.system_blobstore.external.secret_key
-      bucket_name: .properties.system_blobstore.external.bucket
+      bucket_name: .properties.system_blobstore.external.buildpacks_bucket
+  - name: Verifiers::BlobstoreVerifier
+    ignorable: true
+    properties:
+      endpoint: .properties.system_blobstore.external.endpoint
+      access_key_id: .properties.system_blobstore.external.access_key
+      secret_access_key: .properties.system_blobstore.external.secret_key
+      bucket_name: .properties.system_blobstore.external.droplets_bucket
+  - name: Verifiers::BlobstoreVerifier
+    ignorable: true
+    properties:
+      endpoint: .properties.system_blobstore.external.endpoint
+      access_key_id: .properties.system_blobstore.external.access_key
+      secret_access_key: .properties.system_blobstore.external.secret_key
+      bucket_name: .properties.system_blobstore.external.packages_bucket
+  - name: Verifiers::BlobstoreVerifier
+    ignorable: true
+    properties:
+      endpoint: .properties.system_blobstore.external.endpoint
+      access_key_id: .properties.system_blobstore.external.access_key
+      secret_access_key: .properties.system_blobstore.external.secret_key
+      bucket_name: .properties.system_blobstore.external.resources_bucket
 
 post_deploy_errands:
   - name: push-apps-manager
@@ -158,17 +179,35 @@ form_types:
 
   - name: system_blobstore
     label: File Storage Config
-    description: "Select internal if you want to keep using the system-provided filestore. Otherwise select external if you want to use your own S3-compatible filestore. Consult Pivotal Cloud Foundry documentation to determine if a particular non-AWS filestore is compatible."
+    description: "Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, the configurations can be changed only after a data migration. Consult Pivotal Cloud Foundry documentation for details."
     verifiers:
       - name: Verifiers::BlobstoreVerifier
         properties:
           endpoint: .properties.system_blobstore.external.endpoint
           access_key_id: .properties.system_blobstore.external.access_key
           secret_access_key: .properties.system_blobstore.external.secret_key
-          bucket_name: .properties.system_blobstore.external.bucket
+          bucket_name: .properties.system_blobstore.external.buildpacks_bucket
+      - name: Verifiers::BlobstoreVerifier
+        properties:
+          endpoint: .properties.system_blobstore.external.endpoint
+          access_key_id: .properties.system_blobstore.external.access_key
+          secret_access_key: .properties.system_blobstore.external.secret_key
+          bucket_name: .properties.system_blobstore.external.droplets_bucket
+      - name: Verifiers::BlobstoreVerifier
+        properties:
+          endpoint: .properties.system_blobstore.external.endpoint
+          access_key_id: .properties.system_blobstore.external.access_key
+          secret_access_key: .properties.system_blobstore.external.secret_key
+          bucket_name: .properties.system_blobstore.external.packages_bucket
+      - name: Verifiers::BlobstoreVerifier
+        properties:
+          endpoint: .properties.system_blobstore.external.endpoint
+          access_key_id: .properties.system_blobstore.external.access_key
+          secret_access_key: .properties.system_blobstore.external.secret_key
+          bucket_name: .properties.system_blobstore.external.resources_bucket
     property_inputs:
     - reference: .properties.system_blobstore
-      label: File Storage Config
+      label: "Configure your Cloud Controller's filesystem"
       selector_property_inputs:
       - reference: .properties.system_blobstore.internal
         label: Internal
@@ -180,12 +219,22 @@ form_types:
           - reference: .properties.system_blobstore.external.endpoint
             label: URL Endpoint
             description: URL endpoint of your S3-compatible blobstore
-          - reference: .properties.system_blobstore.external.bucket
-            label: Bucket Name
           - reference: .properties.system_blobstore.external.access_key
             label: Access Key
           - reference: .properties.system_blobstore.external.secret_key
             label: Secret Key
+          - reference: .properties.system_blobstore.external.buildpacks_bucket
+            label: Buildpacks Bucket Name
+            description: Bucket where the app buildpacks will be located.
+          - reference: .properties.system_blobstore.external.droplets_bucket
+            label: Droplets Bucket Name
+            description: Bucket where the app droplets will be located. You can re-use the same bucket as above, however it is recommended to use different buckets if this is a new installation of Elastic Runtime.
+          - reference: .properties.system_blobstore.external.packages_bucket
+            label: Packages Bucket Name
+            description: Bucket where the app packages will be located. You can re-use the same bucket as above, however it is recommended to use different buckets if this is a new installation of Elastic Runtime.
+          - reference: .properties.system_blobstore.external.resources_bucket
+            label: Resources Bucket Name
+            description: Bucket where the app resources will be located. You can re-use the same bucket as above, however it is recommended to use different buckets if this is a new installation of Elastic Runtime.
 
   - name: ha_proxy
     label: IPs and Ports
@@ -4790,7 +4839,7 @@ property_blueprints:
         named_manifests:
           - name: ccbuildpack
             manifest: |
-              buildpack_directory_key: (( .properties.system_blobstore.external.bucket.value ))
+              buildpack_directory_key: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -4800,7 +4849,7 @@ property_blueprints:
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccdroplet
             manifest: |
-              droplet_directory_key: (( .properties.system_blobstore.external.bucket.value ))
+              droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -4810,7 +4859,7 @@ property_blueprints:
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccpackage
             manifest: |
-              app_package_directory_key: (( .properties.system_blobstore.external.bucket.value ))
+              app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -4820,7 +4869,7 @@ property_blueprints:
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccresource
             manifest: |
-              resource_directory_key: (( .properties.system_blobstore.external.bucket.value ))
+              resource_directory_key: (( .properties.system_blobstore.external.resources_bucket.value ))
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -4834,7 +4883,16 @@ property_blueprints:
             type: string
             configurable: true
             default: "https://s3.amazonaws.com"
-          - name: bucket
+          - name: buildpacks_bucket
+            type: string
+            configurable: true
+          - name: droplets_bucket
+            type: string
+            configurable: true
+          - name: packages_bucket
+            type: string
+            configurable: true
+          - name: resources_bucket
             type: string
             configurable: true
           - name: access_key
