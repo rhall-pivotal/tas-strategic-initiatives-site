@@ -4099,8 +4099,8 @@ job_types:
           admin_user: (( .uaa.admin_credentials.identity ))
           admin_password: (( .uaa.admin_credentials.password ))
         uaa:
-          admin_client_id: (( .uaa.admin_client_credentials.identity ))
-          admin_client_secret: (( .uaa.admin_client_credentials.password ))
+          admin_client: (( .uaa.admin_client_credentials.identity ))
+          admin_secret: (( .uaa.admin_client_credentials.password ))
           client_id: (( .uaa.notifications_ui_client_credentials.identity ))
           client_secret: (( .uaa.notifications_ui_client_credentials.password ))
 
