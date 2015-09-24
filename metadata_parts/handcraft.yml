@@ -3494,6 +3494,7 @@ job_types:
         default_from: (( .properties.smtp_from.value ))
         usage_service_host: app-usage.(( .cloud_controller.system_domain.value ))
         bundle_without: test development hosted_only
+        apps_manager_version: (( .properties.product_version ))
       databases:
         console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
       ssl:
