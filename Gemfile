@@ -8,6 +8,8 @@ gem 'recursive-open-struct', '0.5.0'
 gem 'mysql2'
 gem 'net-ssh-gateway'
 gem 'rspec'
+gem 'slack-post'
+gem 'typhoeus'
 
 group :development, :test do
   gem 'webmock'
