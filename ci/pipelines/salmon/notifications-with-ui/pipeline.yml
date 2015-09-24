@@ -409,33 +409,16 @@ jobs:
             params:
               OPSMAN_VERSION: 1.6
 
-  - name: run-notifications-tests
-    serial_groups: [ salmon-pipeline ]
-    plan:
-      - aggregate:
-        - get: p-runtime
-          trigger: true
-          passed: [deploy-ert]
-        - get: environment
-          trigger: true
-          passed: [deploy-ert]
-      - task: run-notifications-tests
-        tags: [aws]
-        file: p-runtime/ci/jobs/run-notifications-tests.yml
-        config:
-          params:
-            OPSMAN_VERSION: 1.6
-
   - name: run-cats
     serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
           trigger: true
-          passed: [run-notifications-tests]
+          passed: [deploy-ert]
         - get: environment
           trigger: true
-          passed: [run-notifications-tests]
+          passed: [deploy-ert]
       - task: run-cats
         tags: [aws]
         file: p-runtime/ci/jobs/run-cats.yml
