@@ -19,7 +19,10 @@ vm_shepherd:
       private_subnet_id: {{private_subnet_id}}
       s3_bucket_names:
         - {{ ops_manager_s3_bucket_name }}
-        - {{ ert_s3_bucket_name }}
+        - {{ ert_s3_buildpacks_bucket_name }}
+        - {{ ert_s3_droplets_bucket_name }}
+        - {{ ert_s3_packages_bucket_name }}
+        - {{ ert_s3_resources_bucket_name }}
   vm_configs:
     - vm_name: Guava OpsManager
       vm_ip_address: 54.153.74.245
