@@ -1394,6 +1394,8 @@ job_types:
         release: cf
       - name: consul_agent
         release: cf
+      - name: route_registrar
+        release: cf
       - name: nfs_mounter
         release: cf
 
@@ -1525,6 +1527,13 @@ job_types:
       system_domain_organization: system
       app_domains: ["(( .cloud_controller.apps_domain.value ))"]
       support_address: https://support.pivotal.io
+
+      route_registrar:
+        routes:
+        - name: api
+          port: 9022
+          uris:
+          - "api.(( .cloud_controller.system_domain.value ))"
 
       cc:
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
@@ -1779,6 +1788,8 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
+      - name: route_registrar
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1866,6 +1877,12 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
+      route_registrar:
+        routes:
+        - name: hm9000
+          port: 5155
+          uris:
+          - "hm9000.(( .cloud_controller.system_domain.value ))"
 
   - name: clock_global
     label: Clock Global
@@ -2269,6 +2286,8 @@ job_types:
       - name: uaa
         release: cf
       - name: metron_agent
+        release: cf
+      - name: route_registrar
         release: cf
 
     resource_definitions:
@@ -2682,6 +2701,15 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
+      route_registrar:
+        routes:
+        - name: uaa
+          port: 8080
+          uris:
+          - "uaa.(( .cloud_controller.system_domain.value ))"
+          - "*.uaa.(( .cloud_controller.system_domain.value ))"
+          - "login.(( .cloud_controller.system_domain.value ))"
+          - "*.login.(( .cloud_controller.system_domain.value ))"
 
   - name: diego_brain
     label: Diego Brain
@@ -3312,6 +3340,8 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
+      - name: route_registrar
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -3404,6 +3434,17 @@ job_types:
         clients:
           doppler:
             secret: (( .uaa.doppler_client_credentials.password ))
+
+      route_registrar:
+        routes:
+        - name: doppler
+          port: 8081
+          uris:
+          - "doppler.(( .cloud_controller.system_domain.value ))"
+        - name: loggregator
+          port: 8080
+          uris:
+          - "loggregator.(( .cloud_controller.system_domain.value ))"
 
   - name: push-apps-manager
     label: Push Apps Manager
