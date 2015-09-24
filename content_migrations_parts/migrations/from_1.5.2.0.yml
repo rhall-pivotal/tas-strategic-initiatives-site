@@ -18,19 +18,19 @@ rules:
       value: false
   - type: append
     selector: "properties.[identifier=system_blobstore].options.[identifier=external].properties"
-    new_hash:
+    to:
       identifier: buildpacks_bucket
   - type: append
     selector: "properties.[identifier=system_blobstore].options.[identifier=external].properties"
-    new_hash:
+    to:
       identifier: droplets_bucket
   - type: append
     selector: "properties.[identifier=system_blobstore].options.[identifier=external].properties"
-    new_hash:
+    to:
       identifier: packages_bucket
   - type: append
     selector: "properties.[identifier=system_blobstore].options.[identifier=external].properties"
-    new_hash:
+    to:
       identifier: resources_bucket
   - type: copy
     selector: ""
@@ -49,5 +49,5 @@ rules:
     from: "properties.[identifier=system_blobstore].options.[identifier=external].properties.[identifier=bucket].value"
     to: "properties.[identifier=system_blobstore].options.[identifier=external].properties.[identifier=resources_bucket].value"
   - type: delete
-    parent: "properties.[identifier=system_blobstore].options.[identifier=external].properties"
-    selector: "[identifier=bucket]"
+    selector: "properties.[identifier=system_blobstore].options.[identifier=external].properties"
+    object: "[identifier=bucket]"
