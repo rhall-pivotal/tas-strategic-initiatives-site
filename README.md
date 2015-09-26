@@ -34,16 +34,19 @@ bundle exec rake opsmgr:destroy[environment]
 ```
 
 #### Download an Ops Manager Image
-Obtain the Ops Manager Image you need from PivNet, and name that file `ops_man_image`
 
-~~Obtain the ACCESS_KEY_ID and SECRET_ACCESS_KEY from LastPass. The credentials are in `Shared - Release Engineering<->Ops Manager` as `AWS "+opsmanager" Account "RelengToolsReader" IAM User access key`. Contact ask+cf@pivotal.io for access to this credential in LastPass.~~
+##### For AWS:
+Obtain the PDF containing AMI IDs from PivNet. Create a file `ops_man_image` containing YAML like below, replacing the AMI ID with one obtained from the PivNet PDF:
+```
+---
+us-east-1: ami-d7701bb2
+us-west-1: ami-6994512d
+```
 
-~~Replace \<iaas> with `openstack`, `aws`, or `vsphere`~~
-
-~~`ACCESS_KEY_ID=<OpsMan Reader Access Key> SECRET_ACCESS_KEY=<OpsMan Reader Secret Key> bundle exec rake opsmgr:download[<iaas>,stable]`~~
+##### For vSphere and OpenStack:
+Obtain the Ops Manager Image you need from PivNet, and name that file `ops_man_image`.
 
 #### Deploy the Ops Manager
-The above task saves the Ops Manager Image to a file `ops_man_image`
 
 ```
 bundle exec rake opsmgr:install[environment,ops_man_image]
