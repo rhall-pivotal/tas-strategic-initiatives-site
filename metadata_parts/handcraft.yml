@@ -1608,7 +1608,6 @@ job_types:
 
       consul:
         require_ssl: false
-        domain: consul
         agent:
           services:
             cloud_controller_ng: {}
@@ -1774,7 +1773,6 @@ job_types:
         machines: (( .etcd_server.ips ))
       consul:
         require_ssl: false
-        domain: consul
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -1995,7 +1993,6 @@ job_types:
 
       consul:
         require_ssl: false
-        domain: consul
 
       nfs_server:
         address: (( .nfs_server.first_ip ))
@@ -2148,7 +2145,6 @@ job_types:
 
       consul:
         require_ssl: false
-        domain: consul
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -2286,6 +2282,8 @@ job_types:
       - name: uaa
         release: cf
       - name: metron_agent
+        release: cf
+      - name: consul_agent
         release: cf
       - name: route_registrar
         release: cf
@@ -2504,6 +2502,13 @@ job_types:
         default: false
 
     manifest: |
+      consul:
+        require_ssl: false
+        agent:
+          servers:
+            lan: (( .consul_server.ips ))
+          services:
+            uaa: {}
       login:
         asset_base_url: '/resources/pivotal'
         protocol: https
@@ -2710,6 +2715,10 @@ job_types:
           - "*.uaa.(( .cloud_controller.system_domain.value ))"
           - "login.(( .cloud_controller.system_domain.value ))"
           - "*.login.(( .cloud_controller.system_domain.value ))"
+      router:
+        servers:
+          z1: (( .router.ips ))
+          z2: []
 
   - name: diego_brain
     label: Diego Brain
@@ -2851,7 +2860,6 @@ job_types:
           skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
       consul:
         require_ssl: false
-        domain: consul
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -2993,7 +3001,6 @@ job_types:
 
       consul:
         require_ssl: false
-        domain: consul
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -3097,7 +3104,6 @@ job_types:
           zone: (( availability_zone ))
       consul:
         require_ssl: false
-        domain: consul
         agent:
           servers:
             lan: (( .consul_server.ips ))
