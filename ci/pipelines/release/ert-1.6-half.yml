@@ -736,15 +736,14 @@ jobs:
     resource: ert-product
     passed:
     - build-runtime
+  - put: ert-product-promoted-deprecated
+    params:
+      from: ert-pivotal/ert.pivotal
   - task: create-versioned-pivotal
     file: p-runtime/ci/jobs/create-versioned-pivotal.yml
-  - aggregate:
-    - put: ert-product-promoted-deprecated
-      params:
-        from: ert-pivotal/ert.pivotal
-    - put: ert-product-promoted
-      params:
-        from: ert-pivotal/cf-(.*).pivotal
+  - put: ert-product-promoted
+    params:
+      from: ert-pivotal/cf-(.*).pivotal
 - name: upload-to-pivnet
   plan:
   - get: ert-product-promoted
