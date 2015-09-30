@@ -431,7 +431,7 @@ form_types:
 
   - name: diego
     label: Diego
-    description: Diego is an in-place replacement for DEAs. If you do not wish to use Diego, you may scale down Diego Brain and Diego Cell instances to zero in Resource Config.
+    description: Diego is a new replacement for DEAs.
     property_inputs:
       - reference: .cloud_controller.default_to_diego_backend
         label: Use Diego by default instead of DEAs
@@ -698,6 +698,119 @@ job_types:
           username: (( .nats.credentials.identity ))
           password: (( .nats.credentials.password ))
           machines: (( .nats.ips ))
+
+  - name: diego_etcd
+    label: diego_etcd
+    resource_label: diego_etcd
+    description: An etcd cluster node for Diego
+    templates:
+      - name: etcd
+        release: diego
+      - name: bbs
+        release: diego
+      - name: consul_agent
+        release: cf
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          may_only_be_odd_or_zero: true
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
+
+    manifest: |
+      diego:
+        bbs:
+          auctioneer:
+            api_url: http://auctioneer.service.cf.internal:9016
+          etcd:
+            machines: ['etcd.service.cf.internal']
+            require_ssl: false
+            ca_cert: "foo"
+            client_cert: "bar"
+            client_key: "baz"
+        etcd:
+          machines: ['etcd.service.cf.internal']
+          cluster:
+            - name:  (( name ))-partition-(( availability_zone ))
+              instances: (( instances ))
+          require_ssl: false
+          ca_cert: "foo"
+          client_cert: "bar"
+          client_key: "baz"
+          peer_require_ssl: false
+          peer_ca_cert: "foo"
+          peer_cert: "bar"
+          peer_key: "baz"
+      consul:
+        require_ssl: false
+        agent:
+          servers:
+            lan: (( .consul_server.ips ))
+          services:
+            bbs: {}
+            etcd: {}
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+      metron_agent:
+        zone: (( availability_zone ))
+        deployment: cf
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: nfs_server
     label: NFS Server
@@ -2726,13 +2839,9 @@ job_types:
     templates:
       - name: auctioneer
         release: diego
-      - name: bbs
-        release: diego
       - name: cc_uploader
         release: diego
       - name: converger
-        release: diego
-      - name: etcd
         release: diego
       - name: file_server
         release: diego
@@ -2817,15 +2926,6 @@ job_types:
             ca_cert: "foo"
             client_cert: "bar"
             client_key: "baz"
-        bbs:
-          auctioneer:
-            api_url: http://auctioneer.service.cf.internal:9016
-          etcd:
-            machines: ['etcd.service.cf.internal']
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
         cc_uploader:
           cc:
             job_polling_interval_in_seconds: 25
@@ -2843,19 +2943,6 @@ job_types:
             ca_cert: "foo"
             client_cert: "bar"
             client_key: "baz"
-        etcd:
-          machines: ['etcd.service.cf.internal']
-          cluster:
-            - name:  (( name ))-partition-(( availability_zone ))
-              instances: (( instances ))
-          require_ssl: false
-          ca_cert: "foo"
-          client_cert: "bar"
-          client_key: "baz"
-          peer_require_ssl: false
-          peer_ca_cert: "foo"
-          peer_cert: "bar"
-          peer_key: "baz"
         file_server:
           cc:
             job_polling_interval_in_seconds: 25
@@ -2916,9 +3003,7 @@ job_types:
             lan: (( .consul_server.ips ))
           services:
             auctioneer: {}
-            bbs: {}
             cc_uploader: {}
-            etcd: {}
             file_server: {}
             nsync: {}
             ssh_proxy: {}
@@ -3920,6 +4005,7 @@ job_types:
         clients:
           autoscaling_service:
             secret: (( .uaa.autoscale_client_credentials.password ))
+
   - name: autoscaling-register-broker
     label: Register autoscaling service broker
     resource_label: Register autoscaling service broker
@@ -3993,6 +4079,7 @@ job_types:
       domain: (( .cloud_controller.system_domain.value ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+
   - name: autoscaling-destroy-broker
     label: Destroy autoscaling service broker
     resource_label: Destroy autoscaling service broker
