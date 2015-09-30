@@ -2728,13 +2728,23 @@ job_types:
         release: diego
       - name: bbs
         release: diego
+      - name: cc_uploader
+        release: diego
       - name: converger
         release: diego
       - name: etcd
         release: diego
+      - name: file_server
+        release: diego
+      - name: nsync
+        release: diego
       - name: route_emitter
         release: diego
       - name: ssh_proxy
+        release: diego
+      - name: stager
+        release: diego
+      - name: tps
         release: diego
       - name: consul_agent
         release: cf
@@ -2816,6 +2826,14 @@ job_types:
             ca_cert: "foo"
             client_cert: "bar"
             client_key: "baz"
+        cc_uploader:
+          cc:
+            job_polling_interval_in_seconds: 25
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            external_port: 9022
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         converger:
           bbs:
             api_url: http://bbs.service.cf.internal:8889
@@ -2838,6 +2856,23 @@ job_types:
           peer_ca_cert: "foo"
           peer_cert: "bar"
           peer_key: "baz"
+        file_server:
+          cc:
+            job_polling_interval_in_seconds: 25
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            external_port: 9022
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+        nsync:
+          bbs:
+            api_url: http://bbs.service.cf.internal:8889
+          cc:
+            base_url: https://api.(( .cloud_controller.system_domain.value ))
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         route_emitter:
           bbs:
             api_url: http://bbs.service.cf.internal:8889
@@ -2857,118 +2892,11 @@ job_types:
             external_port: 9022
         ssl:
           skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-      consul:
-        require_ssl: false
-        agent:
-          servers:
-            lan: (( .consul_server.ips ))
-          services:
-            auctioneer: {}
-            bbs: {}
-            etcd: {}
-            ssh_proxy: {}
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines: (( .nats.ips ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-      metron_agent:
-        zone: (( availability_zone ))
-        deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
-
-  - name: cc_bridge
-    label: Diego CC Bridge
-    resource_label: Diego CC Bridge
-    description: Diego CC Bridge
-    templates:
-      - name: stager
-        release: diego
-      - name: nsync
-        release: diego
-      - name: tps
-        release: diego
-      - name: file_server
-        release: diego
-      - name: cc_uploader
-        release: diego
-      - name: consul_agent
-        release: cf
-      - name: metron_agent
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 4_096
-        constraints:
-          min: 4_096
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-    manifest: |
-      diego:
-        ssl:
-          skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
         stager:
           cc:
             basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
             basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
             external_port: 9022
-            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
-            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
-        nsync:
-          bbs:
-            api_url: http://bbs.service.cf.internal:8889
-          cc:
-            base_url: https://api.(( .cloud_controller.system_domain.value ))
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         tps:
@@ -2981,32 +2909,19 @@ job_types:
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
-        file_server:
-          cc:
-            job_polling_interval_in_seconds: 25
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
-            external_port: 9022
-            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
-            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
-        cc_uploader:
-          cc:
-            job_polling_interval_in_seconds: 25
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
-            external_port: 9022
-            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
-            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
-
       consul:
         require_ssl: false
         agent:
           servers:
             lan: (( .consul_server.ips ))
           services:
+            auctioneer: {}
+            bbs: {}
             cc_uploader: {}
+            etcd: {}
             file_server: {}
             nsync: {}
+            ssh_proxy: {}
             stager: {}
             tps: {}
       nats:
