@@ -103,7 +103,6 @@ install_time_verifiers:
 post_deploy_errands:
   - name: push-apps-manager
   - name: smoke-tests
-  - name: diego-smoke-tests
   - name: push-app-usage-service
   - name: notifications
   - name: notifications-ui
@@ -432,7 +431,7 @@ form_types:
 
   - name: diego
     label: Diego
-    description: Diego is an in-place replacement for DEAs. If you do not wish to use Diego, you may scale down Diego Brain and Diego Cell instances to zero in Resource Config, and turn off "Diego Smoke Tests" in Errands.
+    description: Diego is an in-place replacement for DEAs. If you do not wish to use Diego, you may scale down Diego Brain and Diego Cell instances to zero in Resource Config.
     property_inputs:
       - reference: .cloud_controller.default_to_diego_backend
         label: Use Diego by default instead of DEAs
@@ -3736,76 +3735,6 @@ job_types:
         use_existing_org: false
         use_existing_space: false
         ginkgo_opts: "-skipPackage=logging"
-
-  - name: diego-smoke-tests
-    label: Run Diego Smoke Tests
-    resource_label: Run Diego Smoke Tests
-    description: Runs Diego Smoke Tests against your Elastic Runtime installation
-    templates:
-      - name: smoke-tests
-        release: diego
-    errand: true
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-    manifest: |
-      diego:
-        ssl:
-          skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-        smoke_tests:
-          api: "https://api.(( .cloud_controller.system_domain.value ))"
-          apps_domain: (( .cloud_controller.apps_domain.value ))
-          user: (( .uaa.run_smoke_tests_credentials.identity ))
-          password: (( .uaa.run_smoke_tests_credentials.password ))
-          org: system
-          space: DIEGO_CF_SMOKE_TEST_SPACE
 
   - name: notifications
     label: Notifications
