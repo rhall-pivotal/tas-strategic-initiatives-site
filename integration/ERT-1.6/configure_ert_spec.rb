@@ -43,7 +43,8 @@ RSpec.describe 'Configure Elastic Runtime 1.6.X', order: :defined do
       security_config_form.nested_property('.ha_proxy.ssl_rsa_certificate', 'private_key_pem')
         .set(elastic_runtime_settings.ssl_private_key)
     else
-      security_config_form.generate_self_signed_cert("*.#{elastic_runtime_settings.system_domain}")
+      domain = elastic_runtime_settings.system_domain
+      security_config_form.generate_self_signed_cert("*.#{domain},*.login.#{domain},*.uaa.#{domain}")
     end
 
     security_config_form.save_form
