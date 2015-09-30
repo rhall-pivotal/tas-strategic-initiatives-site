@@ -562,7 +562,6 @@ jobs:
   - name: promote-ops-manager-aws
     plan:
      - get: p-runtime
-       trigger: true
        passed: [run-cats-aws, claim-environment-aws]
      - get: latest-opsman-aws
        passed: [claim-environment-aws]
@@ -755,7 +754,6 @@ jobs:
   - name: promote-ops-manager-openstack
     plan:
      - get: p-runtime
-       trigger: true
        passed: [run-cats-openstack, claim-environment-openstack]
      - get: latest-opsman-openstack
        passed: [claim-environment-openstack]
@@ -948,7 +946,6 @@ jobs:
   - name: promote-ops-manager-vsphere
     plan:
       - get: p-runtime
-        trigger: true
         passed: [run-cats-vsphere, claim-environment-vsphere]
       - get: latest-opsman-vsphere
         passed: [claim-environment-vsphere]
@@ -1148,7 +1145,6 @@ jobs:
   - name: promote-ops-manager-vcloud
     plan:
       - get: p-runtime
-        trigger: true
         passed: [run-cats-vcloud, claim-environment-vcloud]
       - get: latest-opsman-vcloud
         passed: [claim-environment-vcloud]
