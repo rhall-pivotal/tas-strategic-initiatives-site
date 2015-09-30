@@ -165,6 +165,7 @@ jobs:
       - get: upstream-release-metadata
         trigger: true
       - put: environment
+        timeout: 1m
         params:
           acquire: true
       - task: update-krafa
