@@ -393,7 +393,9 @@ form_types:
       - reference: .cloud_controller.allow_app_ssh_access
         label: Allow SSH access to apps
         description: Enables SSH into app containers running on Diego.
-
+      - reference: .diego_cell.garden_network_pool
+        label: Application Containers Subnet Pool
+        description: Enter a CIDR subnet mask specifying the range of subnets available to be assigned to containers.
 
   - name: whitelabel_config
     label: Customized Branding
@@ -3073,6 +3075,12 @@ job_types:
         default:
           identity: vcap
 
+      - name: garden_network_pool
+        type: string
+        default: 10.254.0.0/22
+        configurable: true
+        optional: false
+
     manifest: |
       diego:
         rep:
@@ -3085,6 +3093,8 @@ job_types:
             client_cert: "bar"
             client_key: "baz"
           zone: (( availability_zone ))
+      garden:
+        network_pool: (( garden_network_pool.value ))
       consul:
         require_ssl: false
         domain: consul
