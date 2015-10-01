@@ -9,3 +9,5 @@ pushd p-runtime
 
   xvfb-run -a bundle exec rake ert:run_cats[$RELENG_ENV,$OPSMAN_VERSION]
 popd
+
+mv /home/ubuntu/acceptance-tests*.tgz ./cats-log.tgz
