@@ -409,31 +409,14 @@ jobs:
             params:
               OPSMAN_VERSION: 1.6
 
-  - name: run-cats
-    serial_groups: [ salmon-pipeline ]
-    plan:
-      - aggregate:
-        - get: p-runtime
-          trigger: true
-          passed: [deploy-ert]
-        - get: environment
-          trigger: true
-          passed: [deploy-ert]
-      - task: run-cats
-        tags: [aws]
-        file: p-runtime/ci/jobs/run-cats.yml
-        config:
-          params:
-            OPSMAN_VERSION: 1.6
-
   - name: destroy-environment-final
     serial_groups: [ salmon-pipeline ]
     plan:
       - aggregate:
         - get: p-runtime
-          passed: [run-cats]
+          passed: [deploy-ert]
         - get: environment
-          passed: [run-cats]
+          passed: [deploy-ert]
       - task: destroy
         tags: [aws]
         file: p-runtime/ci/jobs/destroy-environment.yml
@@ -464,6 +447,5 @@ groups:
     - configure-ert
     - import-stemcell
     - deploy-ert
-    - run-cats
     - destroy-environment-final
     - release-environment
