@@ -786,9 +786,7 @@ job_types:
             client_key: "baz"
         etcd:
           machines: ['etcd.service.cf.internal']
-          cluster:
-            - name:  (( name ))-partition-(( availability_zone ))
-              instances: (( instances ))
+          cluster: (( bosh_job_partition_stats ))
           require_ssl: false
           ca_cert: "foo"
           client_cert: "bar"
