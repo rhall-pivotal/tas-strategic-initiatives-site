@@ -159,8 +159,6 @@ jobs:
     serial_groups: [ salmon-pipeline ]
     plan:
       - get: p-runtime
-      - get: upstream-release-cf-autoscaling
-        trigger: true
       - put: environment
         params:
           acquire: true
@@ -181,9 +179,6 @@ jobs:
         - get: environment
           trigger: true
           passed: [claim-environment]
-        - get: upstream-release-cf-autoscaling
-          trigger: true
-          passed: [claim-environment]
       - task: destroy
         tags: [aws]
         file: p-runtime/ci/jobs/destroy-environment.yml
@@ -194,9 +189,6 @@ jobs:
       - aggregate:
         - get: p-runtime
         - get: environment
-          trigger: true
-          passed: [destroy-environment]
-        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [destroy-environment]
       - aggregate:
@@ -217,9 +209,6 @@ jobs:
         - get: environment
           trigger: true
           passed: [deploy-ops-manager]
-        - get: upstream-release-cf-autoscaling
-          trigger: true
-          passed: [deploy-ops-manager]
       - task: configure
         tags: [aws]
         file: p-runtime/ci/jobs/configure-microbosh.yml
@@ -233,9 +222,6 @@ jobs:
       - aggregate:
         - get: p-runtime
         - get: environment
-          trigger: true
-          passed: [configure-microbosh]
-        - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [configure-microbosh]
       - task: deploy
@@ -265,7 +251,6 @@ jobs:
         - get: p-runtime
         - get: upstream-release-cf-autoscaling
           trigger: true
-          passed: [claim-environment]
       - task: build-product
         file: p-runtime/ci/jobs/build-pivotal-with-upstream-autoscaling.yml
         config:
@@ -286,13 +271,8 @@ jobs:
       - aggregate:
         - get: p-runtime
         - get: environment
-          trigger: true
           passed: [deploy-microbosh]
-        - get: upstream-release-cf-autoscaling
-          trigger: true
-          passed: [deploy-microbosh,build-runtime]
         - get: ert-product
-          trigger: true
           passed: [build-runtime]
       - task: upload-pivotal
         tags: [aws]
