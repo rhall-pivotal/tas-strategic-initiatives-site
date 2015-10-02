@@ -780,6 +780,10 @@ job_types:
     manifest: |
       diego:
         bbs:
+          require_ssl: false
+          ca_cert: "foo"
+          server_cert: "bar"
+          server_key: "baz"
           active_key_label: key1
           encryption_keys:
             - label: key1
