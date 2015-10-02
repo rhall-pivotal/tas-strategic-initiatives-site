@@ -166,10 +166,6 @@ jobs:
     serial_groups: [ salmon-pipeline ]
     plan:
       - get: p-runtime
-      - get: upstream-release-notifications
-        trigger: true
-      - get: upstream-release-notifications-ui
-        trigger: true
       - put: environment
         params:
           acquire: true
@@ -187,15 +183,7 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [claim-environment]
         - get: environment
-          trigger: true
-          passed: [claim-environment]
-        - get: upstream-release-notifications
-          trigger: true
-          passed: [claim-environment]
-        - get: upstream-release-notifications-ui
           trigger: true
           passed: [claim-environment]
       - task: destroy
@@ -207,15 +195,7 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [destroy-environment]
         - get: environment
-          trigger: true
-          passed: [destroy-environment]
-        - get: upstream-release-notifications
-          trigger: true
-          passed: [destroy-environment]
-        - get: upstream-release-notifications-ui
           trigger: true
           passed: [destroy-environment]
       - aggregate:
@@ -233,15 +213,7 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [deploy-ops-manager]
         - get: environment
-          trigger: true
-          passed: [deploy-ops-manager]
-        - get: upstream-release-notifications
-          trigger: true
-          passed: [deploy-ops-manager]
-        - get: upstream-release-notifications-ui
           trigger: true
           passed: [deploy-ops-manager]
       - task: configure
@@ -256,15 +228,7 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [configure-microbosh]
         - get: environment
-          trigger: true
-          passed: [configure-microbosh]
-        - get: upstream-release-notifications
-          trigger: true
-          passed: [configure-microbosh]
-        - get: upstream-release-notifications-ui
           trigger: true
           passed: [configure-microbosh]
       - task: deploy
@@ -292,14 +256,10 @@ jobs:
           file: version/number
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [claim-environment]
         - get: upstream-release-notifications
           trigger: true
-          passed: [claim-environment]
         - get: upstream-release-notifications-ui
           trigger: true
-          passed: [claim-environment]
       - task: build-product
         file: p-runtime/ci/jobs/build-pivotal-with-upstream-notifications.yml
         config:
@@ -319,19 +279,9 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [build-runtime, deploy-microbosh]
         - get: environment
-          trigger: true
           passed: [deploy-microbosh]
-        - get: upstream-release-notifications
-          trigger: true
-          passed: [deploy-microbosh,build-runtime]
-        - get: upstream-release-notifications-ui
-          trigger: true
-          passed: [deploy-microbosh,build-runtime]
         - get: ert-product
-          trigger: true
           passed: [build-runtime]
       - task: upload-pivotal
         tags: [aws]
@@ -346,8 +296,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [upload-pivotal]
         - get: environment
           trigger: true
           passed: [upload-pivotal]
@@ -371,8 +319,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [configure-ert]
         - get: environment
           trigger: true
           passed: [configure-ert]
@@ -390,8 +336,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [import-stemcell]
         - get: environment
           trigger: true
           passed: [import-stemcell]
@@ -414,7 +358,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          passed: [deploy-ert]
         - get: environment
           passed: [deploy-ert]
       - task: destroy
@@ -426,7 +369,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          passed: [destroy-environment-final]
         - get: environment
           trigger: true
           passed: [destroy-environment-final]
