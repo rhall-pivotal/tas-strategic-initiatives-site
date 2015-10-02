@@ -178,8 +178,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [claim-environment]
         - get: environment
           trigger: true
           passed: [claim-environment]
@@ -195,8 +193,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [destroy-environment]
         - get: environment
           trigger: true
           passed: [destroy-environment]
@@ -218,8 +214,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [deploy-ops-manager]
         - get: environment
           trigger: true
           passed: [deploy-ops-manager]
@@ -238,8 +232,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [configure-microbosh]
         - get: environment
           trigger: true
           passed: [configure-microbosh]
@@ -271,8 +263,6 @@ jobs:
           file: version/number
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [claim-environment]
         - get: upstream-release-cf-autoscaling
           trigger: true
           passed: [claim-environment]
@@ -295,8 +285,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [build-runtime, deploy-microbosh]
         - get: environment
           trigger: true
           passed: [deploy-microbosh]
@@ -319,8 +307,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [upload-pivotal]
         - get: environment
           trigger: true
           passed: [upload-pivotal]
@@ -344,8 +330,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [configure-ert]
         - get: environment
           trigger: true
           passed: [configure-ert]
@@ -363,8 +347,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          trigger: true
-          passed: [import-stemcell]
         - get: environment
           trigger: true
           passed: [import-stemcell]
@@ -387,7 +369,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          passed: [deploy-ert]
         - get: environment
           passed: [deploy-ert]
       - task: destroy
@@ -399,7 +380,6 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          passed: [destroy-environment-final]
         - get: environment
           trigger: true
           passed: [destroy-environment-final]
