@@ -10,5 +10,3 @@ pushd p-runtime
   xvfb-run -a bundle exec rake ert:run_cats[$RELENG_ENV,$OPSMAN_VERSION]
   mv acceptance-tests*.tgz ../cats-log.tgz
 popd
-
-exit 1
