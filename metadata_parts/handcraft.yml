@@ -2949,7 +2949,7 @@ job_types:
       diego:
         auctioneer:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
+            api_location: bbs.service.cf.internal:8889
             require_ssl: false
             ca_cert: "foo"
             client_cert: "bar"
@@ -2964,7 +2964,7 @@ job_types:
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         converger:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
+            api_location: bbs.service.cf.internal:8889
             require_ssl: false
             ca_cert: "foo"
             client_cert: "bar"
@@ -2979,7 +2979,7 @@ job_types:
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         nsync:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
+            api_location: bbs.service.cf.internal:8889
             require_ssl: false
             ca_cert: "foo"
             client_cert: "bar"
@@ -2992,7 +2992,7 @@ job_types:
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         route_emitter:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
+            api_location: bbs.service.cf.internal:8889
             require_ssl: false
             ca_cert: "foo"
             client_cert: "bar"
@@ -3004,7 +3004,7 @@ job_types:
             machines: (( .nats.ips ))
         ssh_proxy:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
+            api_location: bbs.service.cf.internal:8889
             require_ssl: false
             ca_cert: "foo"
             client_cert: "bar"
@@ -3021,7 +3021,7 @@ job_types:
           skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
         stager:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
+            api_location: bbs.service.cf.internal:8889
             require_ssl: false
             ca_cert: "foo"
             client_cert: "bar"
@@ -3035,7 +3035,7 @@ job_types:
         tps:
           traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value || "443" ))
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
+            api_location: bbs.service.cf.internal:8889
             require_ssl: false
             ca_cert: "foo"
             client_cert: "bar"
@@ -3143,7 +3143,7 @@ job_types:
       diego:
         rep:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
+            api_location: bbs.service.cf.internal:8889
             require_ssl: false
             ca_cert: "foo"
             client_cert: "bar"
