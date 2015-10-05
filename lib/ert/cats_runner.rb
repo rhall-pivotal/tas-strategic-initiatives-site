@@ -15,7 +15,7 @@ module Ert
         set_bosh_deployment
 
         system_or_fail(
-          "#{bosh_command_prefix} run errand #{errand_name}",
+          "#{bosh_command_prefix} run errand #{errand_name} --download-logs --keep-alive",
           'CF Acceptance Tests failed'
         )
       end
