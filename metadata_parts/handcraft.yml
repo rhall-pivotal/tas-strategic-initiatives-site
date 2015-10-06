@@ -785,7 +785,6 @@ job_types:
     manifest: |
       diego:
         bbs:
-          require_ssl: false
           ca_cert: (( $ops_manager.ca_certificate ))
           server_cert: (( .properties.bbs_server_cert.cert_pem ))
           server_key: (( .properties.bbs_server_cert.private_key_pem ))
