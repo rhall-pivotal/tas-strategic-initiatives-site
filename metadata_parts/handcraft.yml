@@ -610,7 +610,13 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
       consul:
-        require_ssl: false
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.secret ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           mode: server
           servers:
@@ -773,42 +779,53 @@ job_types:
         default:
           identity: vcap
       - name: bbs_encryption_passphrase
-        type: simple_credentials
-        default:
-          identity: bbs
+        type: secret
+        configurable: false
 
     manifest: |
       diego:
         bbs:
           require_ssl: false
-          ca_cert: "foo"
-          server_cert: "bar"
-          server_key: "baz"
+          ca_cert: (( $ops_manager.ca_certificate ))
+          server_cert: (( .properties.bbs_server_cert.cert_pem ))
+          server_key: (( .properties.bbs_server_cert.private_key_pem ))
+          client_cert: (( .properties.bbs_client_cert.cert_pem ))
+          client_key: (( .properties.bbs_client_cert.private_key_pem ))
           active_key_label: key1
           encryption_keys:
             - label: key1
-              passphrase: (( bbs_encryption_passphrase.password ))
+              passphrase: (( bbs_encryption_passphrase.secret ))
           auctioneer:
             api_url: http://auctioneer.service.cf.internal:9016
           etcd:
             machines: ['etcd.service.cf.internal']
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.etcd_server_cert.cert_pem ))
+            server_key: (( .properties.etcd_server_cert.private_key_pem ))
+            client_cert: (( .properties.etcd_client_cert.cert_pem ))
+            client_key: (( .properties.etcd_client_cert.private_key_pem ))
+            peer_ca_cert: (( $ops_manager.ca_certificate ))
+            peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
+            peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
         etcd:
           machines: ['etcd.service.cf.internal']
           cluster: (( bosh_job_partition_stats ))
-          require_ssl: false
-          ca_cert: "foo"
-          client_cert: "bar"
-          client_key: "baz"
-          peer_require_ssl: false
-          peer_ca_cert: "foo"
-          peer_cert: "bar"
-          peer_key: "baz"
+          ca_cert: (( $ops_manager.ca_certificate ))
+          server_cert: (( .properties.etcd_server_cert.cert_pem ))
+          server_key: (( .properties.etcd_server_cert.private_key_pem ))
+          client_cert: (( .properties.etcd_client_cert.cert_pem ))
+          client_key: (( .properties.etcd_client_cert.private_key_pem ))
+          peer_ca_cert: (( $ops_manager.ca_certificate ))
+          peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
+          peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
       consul:
-        require_ssl: false
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.secret ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -1737,7 +1754,13 @@ job_types:
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
       consul:
-        require_ssl: false
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.secret ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           services:
             cloud_controller_ng: {}
@@ -1902,7 +1925,13 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
       consul:
-        require_ssl: false
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.secret ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -2122,7 +2151,13 @@ job_types:
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
       consul:
-        require_ssl: false
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.secret ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
 
       nfs_server:
         address: (( .nfs_server.first_ip ))
@@ -2274,7 +2309,13 @@ job_types:
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
       consul:
-        require_ssl: false
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.secret ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -2638,7 +2679,13 @@ job_types:
 
     manifest: |
       consul:
-        require_ssl: false
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.secret ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -2948,10 +2995,11 @@ job_types:
         auctioneer:
           bbs:
             api_location: bbs.service.cf.internal:8889
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
         cc_uploader:
           cc:
             job_polling_interval_in_seconds: 25
@@ -2963,10 +3011,11 @@ job_types:
         converger:
           bbs:
             api_location: bbs.service.cf.internal:8889
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
         file_server:
           cc:
             job_polling_interval_in_seconds: 25
@@ -2978,10 +3027,11 @@ job_types:
         nsync:
           bbs:
             api_location: bbs.service.cf.internal:8889
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
           cc:
             base_url: https://api.(( .cloud_controller.system_domain.value ))
             basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
@@ -2991,10 +3041,11 @@ job_types:
         route_emitter:
           bbs:
             api_location: bbs.service.cf.internal:8889
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
           nats:
             user: (( .nats.credentials.identity ))
             password: (( .nats.credentials.password ))
@@ -3003,10 +3054,11 @@ job_types:
         ssh_proxy:
           bbs:
             api_location: bbs.service.cf.internal:8889
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
           host_key: (( ssh_host_key.private_key_pem ))
           enable_cf_auth: true
           enable_diego_auth: false
@@ -3020,10 +3072,11 @@ job_types:
         stager:
           bbs:
             api_location: bbs.service.cf.internal:8889
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
           cc:
             basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
             basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
@@ -3034,10 +3087,11 @@ job_types:
           traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value || "443" ))
           bbs:
             api_location: bbs.service.cf.internal:8889
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
           cc:
             basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
             basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
@@ -3045,7 +3099,13 @@ job_types:
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
       consul:
-        require_ssl: false
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.secret ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -3142,13 +3202,20 @@ job_types:
         rep:
           bbs:
             api_location: bbs.service.cf.internal:8889
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
           zone: (( availability_zone ))
       consul:
-        require_ssl: false
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.secret ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -4568,6 +4635,50 @@ property_blueprints:
     type: string
     configurable: false
     default: uaa
+
+  - name: consul_encrypt_key
+    type: secret
+    configurable: false
+
+  - name: consul_agent_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: consul_server_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - server.dc1.cf.internal
+
+  - name: etcd_peer_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: etcd_client_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: etcd_server_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - etcd.service.cf.internal
+      - "*.etcd.service.cf.internal"
+
+  - name: bbs_client_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: bbs_server_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - bbs.service.cf.internal
+      - "*.bbs.service.cf.internal"
+
 
   - name: system_database
     type: selector
