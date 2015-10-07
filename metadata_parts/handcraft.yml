@@ -1,5 +1,5 @@
 ---
-metadata_version: '1.5'
+metadata_version: '1.6'
 provides_product_versions:
 - name: cf
   version: 1.6.0.0
@@ -772,10 +772,22 @@ job_types:
         type: salted_credentials
         default:
           identity: vcap
+      - name: bbs_encryption_passphrase
+        type: simple_credentials
+        default:
+          identity: bbs
 
     manifest: |
       diego:
         bbs:
+          require_ssl: false
+          ca_cert: "foo"
+          server_cert: "bar"
+          server_key: "baz"
+          active_key_label: key1
+          encryption_keys:
+            - label: key1
+              passphrase: (( bbs_encryption_passphrase.password ))
           auctioneer:
             api_url: http://auctioneer.service.cf.internal:9016
           etcd:
@@ -786,9 +798,7 @@ job_types:
             client_key: "baz"
         etcd:
           machines: ['etcd.service.cf.internal']
-          cluster:
-            - name:  (( name ))-partition-(( availability_zone ))
-              instances: (( instances ))
+          cluster: (( bosh_job_partition_stats ))
           require_ssl: false
           ca_cert: "foo"
           client_cert: "bar"
@@ -1210,7 +1220,7 @@ job_types:
 
   - name: ccdb
     label: Cloud Controller Database
-    resource_label: Cloud Controller Database
+    resource_label: Cloud Controller Database (Postgres)
     description: Stores Cloud Controller information
     templates:
       - name: postgres
@@ -1307,7 +1317,7 @@ job_types:
 
   - name: uaadb
     label: UAA Database
-    resource_label: UAA Database
+    resource_label: UAA Database (Postgres)
     description: Stores user information for the UAA
     templates:
       - name: postgres
@@ -1406,7 +1416,7 @@ job_types:
 
   - name: consoledb
     label: Apps Manager Database
-    resource_label: Apps Manager Database
+    resource_label: Apps Manager Database (Postgres)
     description: Apps Manager Database
     templates:
       - name: postgres
@@ -2553,6 +2563,11 @@ job_types:
         default:
           identity: notifications_template
 
+      - name: ssh_proxy_client_credentials
+        type: simple_credentials
+        default:
+          identity: ssh_proxy
+
       - name: notifications_ui_client_credentials
         type: simple_credentials
         default:
@@ -2765,7 +2780,7 @@ job_types:
           gorouter:
             id: (( gorouter_client_credentials.identity ))
             secret: (( gorouter_client_credentials.password ))
-            authorities: clients.read,clients.write,clients.admin,route.admin,route.advertise
+            authorities: clients.read,clients.write,clients.admin,routing.routes.write,routing.routes.read
             authorized-grant-types: client_credentials,refresh_token
             scope: openid,cloud_controller_service_permissions.read
           notifications:
@@ -2793,6 +2808,13 @@ job_types:
             secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
             authorized-grant-types: client_credentials
             authorities: scim.userids
+          ssh-proxy:
+            authorized-grant-types: authorization_code
+            autoapprove: true
+            override: true
+            redirect-uri: /login
+            scope: openid,cloud_controller.read,cloud_controller.write
+            secret: (( .uaa.ssh_proxy_client_credentials.password ))
         scim:
           user:
             override: true
@@ -2836,9 +2858,7 @@ job_types:
           - "login.(( .cloud_controller.system_domain.value ))"
           - "*.login.(( .cloud_controller.system_domain.value ))"
       router:
-        servers:
-          z1: (( .router.ips ))
-          z2: []
+        servers: (( .router.ips ))
 
   - name: diego_brain
     label: Diego Brain
@@ -2927,9 +2947,7 @@ job_types:
       diego:
         auctioneer:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
-          etcd:
-            machines: ['etcd.service.cf.internal']
+            api_location: bbs.service.cf.internal:8889
             require_ssl: false
             ca_cert: "foo"
             client_cert: "bar"
@@ -2944,9 +2962,7 @@ job_types:
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         converger:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
-          etcd:
-            machines: ['etcd.service.cf.internal']
+            api_location: bbs.service.cf.internal:8889
             require_ssl: false
             ca_cert: "foo"
             client_cert: "bar"
@@ -2961,7 +2977,11 @@ job_types:
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         nsync:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
+            api_location: bbs.service.cf.internal:8889
+            require_ssl: false
+            ca_cert: "foo"
+            client_cert: "bar"
+            client_key: "baz"
           cc:
             base_url: https://api.(( .cloud_controller.system_domain.value ))
             basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
@@ -2970,7 +2990,11 @@ job_types:
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         route_emitter:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
+            api_location: bbs.service.cf.internal:8889
+            require_ssl: false
+            ca_cert: "foo"
+            client_cert: "bar"
+            client_key: "baz"
           nats:
             user: (( .nats.credentials.identity ))
             password: (( .nats.credentials.password ))
@@ -2978,16 +3002,28 @@ job_types:
             machines: (( .nats.ips ))
         ssh_proxy:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
+            api_location: bbs.service.cf.internal:8889
+            require_ssl: false
+            ca_cert: "foo"
+            client_cert: "bar"
+            client_key: "baz"
           host_key: (( ssh_host_key.private_key_pem ))
           enable_cf_auth: true
           enable_diego_auth: false
           diego_credentials: ""
           cc:
             external_port: 9022
+          uaa_token_url: "https://uaa.(( .cloud_controller.system_domain.value ))/oauth/token"
+          uaa_secret: (( .uaa.ssh_proxy_client_credentials.password ))
         ssl:
           skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
         stager:
+          bbs:
+            api_location: bbs.service.cf.internal:8889
+            require_ssl: false
+            ca_cert: "foo"
+            client_cert: "bar"
+            client_key: "baz"
           cc:
             basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
             basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
@@ -2997,7 +3033,11 @@ job_types:
         tps:
           traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value || "443" ))
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
+            api_location: bbs.service.cf.internal:8889
+            require_ssl: false
+            ca_cert: "foo"
+            client_cert: "bar"
+            client_key: "baz"
           cc:
             basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
             basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
@@ -3101,9 +3141,7 @@ job_types:
       diego:
         rep:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
-          etcd:
-            machines: ['etcd.service.cf.internal']
+            api_location: bbs.service.cf.internal:8889
             require_ssl: false
             ca_cert: "foo"
             client_cert: "bar"
@@ -3128,6 +3166,9 @@ job_types:
         machines: (( .etcd_server.ips ))
       garden:
         allow_host_access: (( .properties.allow_cross_container_traffic.value ))
+        persistent_image_list:
+          - "/var/vcap/packages/rootfs_cflinuxfs2/rootfs"
+        enable_graph_cleanup: true
 
   - name: dea
     label: DEA
