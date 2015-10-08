@@ -3156,8 +3156,6 @@ job_types:
             client_cert: "bar"
             client_key: "baz"
           zone: (( availability_zone ))
-      garden:
-        network_pool: (( garden_network_pool.value ))
       consul:
         require_ssl: false
         agent:
@@ -3180,6 +3178,7 @@ job_types:
         persistent_image_list:
           - "/var/vcap/packages/rootfs_cflinuxfs2/rootfs"
         enable_graph_cleanup: true
+        network_pool: (( garden_network_pool.value ))
 
   - name: dea
     label: DEA
