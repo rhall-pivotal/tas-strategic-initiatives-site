@@ -995,7 +995,7 @@ jobs:
     on_failure:
       put: cats-logs
       params:
-        from: p-runtime/acceptance-tests*.tgz
+        from: p-runtime/acceptance-tests(.*).tgz
 - name: destroy-environment-final-aws-clean
   plan:
   - get: p-runtime
@@ -1238,7 +1238,7 @@ jobs:
     on_failure:
       put: cats-logs
       params:
-        from: p-runtime/acceptance-tests*.tgz
+        from: p-runtime/acceptance-tests(.*).tgz
 - name: destroy-environment-final-internetless
   plan:
   - get: p-runtime
@@ -1625,7 +1625,7 @@ jobs:
     on_failure:
       put: cats-logs
       params:
-        from: p-runtime/acceptance-tests*.tgz
+        from: p-runtime/acceptance-tests(.*).tgz
 - name: destroy-environment-final-aws-upgrade
   plan:
   - get: p-runtime
@@ -1992,7 +1992,7 @@ jobs:
     on_failure:
       put: cats-logs
       params:
-        from: p-runtime/acceptance-tests*.tgz
+        from: p-runtime/acceptance-tests(.*).tgz
 - name: destroy-environment-final-vsphere-upgrade
   plan:
   - get: p-runtime
