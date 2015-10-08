@@ -334,7 +334,7 @@ jobs:
         on_failure:
           put: cats-logs
           params:
-            from: p-runtime/acceptance-tests*.tgz
+            from: p-runtime/acceptance-tests(.*).tgz
 
   - name: destroy-environment-final
     plan:
