@@ -552,42 +552,6 @@ resources:
     region_name: us-west-1
     private: true
     versioned_file: ops_manager_images/vcloud/1.5.5.0/ops_man_image
-- name: initial-ops-manager-aws
-  type: s3
-  source:
-    access_key_id: AKIAJEAGY2FWB7DEGFXQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: ops_manager_images/aws/1.5.2.0/ops_man_image
-- name: initial-ops-manager-openstack
-  type: s3
-  source:
-    access_key_id: AKIAJEAGY2FWB7DEGFXQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: ops_manager_images/openstack/1.5.2.0/ops_man_image
-- name: initial-ops-manager-vsphere
-  type: s3
-  source:
-    access_key_id: AKIAJEAGY2FWB7DEGFXQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: ops_manager_images/vsphere/1.5.2.0/ops_man_image
-- name: initial-ops-manager-vcloud
-  type: s3
-  source:
-    access_key_id: AKIAJEAGY2FWB7DEGFXQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: ops_manager_images/vcloud/1.5.2.0/ops_man_image
 - name: exported-installation-aws
   type: s3
   source:
@@ -681,6 +645,15 @@ resources:
     to:
     - cf-release-engineering+ci@pivotal.io
     - cf-security-eng+ert+ci@pivotal.io
+- name: cats-logs
+  type: s3
+  source:
+    access_key_id: AKIAJEAGY2FWB7DEGFXQ
+    secret_access_key: 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
+    bucket: ert-concourse-products
+    region_name: us-west-1
+    private: true
+    versioned_file: cf-acceptance-tests-logs/cats-log.tgz
 jobs:
 - name: kickoff
   plan:
@@ -1019,6 +992,10 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.6
+    on_failure:
+      put: cats-logs
+      params:
+        from: cats-log.tgz
 - name: destroy-environment-final-aws-clean
   plan:
   - get: p-runtime
@@ -1258,6 +1235,10 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.6
+    on_failure:
+      put: cats-logs
+      params:
+        from: cats-log.tgz
 - name: destroy-environment-final-internetless
   plan:
   - get: p-runtime
@@ -1641,6 +1622,10 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.6
+    on_failure:
+      put: cats-logs
+      params:
+        from: cats-log.tgz
 - name: destroy-environment-final-aws-upgrade
   plan:
   - get: p-runtime
@@ -2004,6 +1989,10 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.6
+    on_failure:
+      put: cats-logs
+      params:
+        from: cats-log.tgz
 - name: destroy-environment-final-vsphere-upgrade
   plan:
   - get: p-runtime

@@ -382,6 +382,16 @@ resources:
         J+R2R0z5fNX5AD8RfiVPLhmLTpbY5rwuujFiaHDs/nJvtgeSgQ9y9y9DyB99ZtPP
         OVKNK3IjWsq4oU3qLRZ8w9ZdA06jePzJ6x3ppx6H60u+sock2D8+eeMxjtmJ
         -----END RSA PRIVATE KEY-----
+  - name: cats-logs
+    type: s3
+    source:
+      access_key_id: AKIAJEAGY2FWB7DEGFXQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: cf-acceptance-tests-logs/cats-log.tgz
+
 jobs:
   - name: claim-environment-aws
     plan:
@@ -558,6 +568,10 @@ jobs:
         config:
           params:
             OPSMAN_VERSION: *om_version
+        on_failure:
+          put: cats-logs
+          params:
+            from: cats-log.tgz
 
   - name: promote-ops-manager-aws
     plan:
@@ -750,6 +764,10 @@ jobs:
         config:
           params:
             OPSMAN_VERSION: *om_version
+        on_failure:
+          put: cats-logs
+          params:
+            from: cats-log.tgz
 
   - name: promote-ops-manager-openstack
     plan:
@@ -942,6 +960,10 @@ jobs:
         config:
           params:
             OPSMAN_VERSION: *om_version
+        on_failure:
+          put: cats-logs
+          params:
+            from: cats-log.tgz
 
   - name: promote-ops-manager-vsphere
     plan:
@@ -1141,6 +1163,10 @@ jobs:
         config:
           params:
             OPSMAN_VERSION: *om_version
+        on_failure:
+          put: cats-logs
+          params:
+            from: cats-log.tgz
 
   - name: promote-ops-manager-vcloud
     plan:

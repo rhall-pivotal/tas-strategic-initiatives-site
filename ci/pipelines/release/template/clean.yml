@@ -172,6 +172,10 @@ jobs:
         config:
           params:
             OPSMAN_VERSION: *om_version
+        on_failure:
+          put: cats-logs
+          params:
+            from: cats-log.tgz
 
   - name: destroy-environment-final-{{pipeline_name}}
     plan:
