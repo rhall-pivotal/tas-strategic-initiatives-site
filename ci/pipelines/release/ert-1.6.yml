@@ -997,7 +997,7 @@ jobs:
     on_failure:
       put: cats-logs
       params:
-        from: cats-log.tgz
+        from: p-runtime/acceptance-tests*.tgz
 - name: destroy-environment-final-aws-clean
   plan:
   - get: p-runtime
@@ -1225,7 +1225,7 @@ jobs:
     on_failure:
       put: cats-logs
       params:
-        from: cats-log.tgz
+        from: p-runtime/acceptance-tests*.tgz
 - name: destroy-environment-final-openstack-clean
   plan:
   - get: p-runtime
@@ -1453,7 +1453,7 @@ jobs:
     on_failure:
       put: cats-logs
       params:
-        from: cats-log.tgz
+        from: p-runtime/acceptance-tests*.tgz
 - name: destroy-environment-final-vsphere-clean
   plan:
   - get: p-runtime
@@ -1696,7 +1696,7 @@ jobs:
     on_failure:
       put: cats-logs
       params:
-        from: cats-log.tgz
+        from: p-runtime/acceptance-tests*.tgz
 - name: destroy-environment-final-internetless
   plan:
   - get: p-runtime
@@ -2083,7 +2083,7 @@ jobs:
     on_failure:
       put: cats-logs
       params:
-        from: cats-log.tgz
+        from: p-runtime/acceptance-tests*.tgz
 - name: destroy-environment-final-aws-upgrade
   plan:
   - get: p-runtime
@@ -2450,7 +2450,7 @@ jobs:
     on_failure:
       put: cats-logs
       params:
-        from: cats-log.tgz
+        from: p-runtime/acceptance-tests*.tgz
 - name: destroy-environment-final-openstack-upgrade
   plan:
   - get: p-runtime
@@ -2817,7 +2817,7 @@ jobs:
     on_failure:
       put: cats-logs
       params:
-        from: cats-log.tgz
+        from: p-runtime/acceptance-tests*.tgz
 - name: destroy-environment-final-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -3193,7 +3193,7 @@ jobs:
     on_failure:
       put: cats-logs
       params:
-        from: cats-log.tgz
+        from: p-runtime/acceptance-tests*.tgz
 - name: destroy-environment-final-vcloud-upgrade
   plan:
   - get: p-runtime

@@ -571,7 +571,7 @@ jobs:
         on_failure:
           put: cats-logs
           params:
-            from: cats-log.tgz
+            from: p-runtime/acceptance-tests*.tgz
 
   - name: promote-ops-manager-aws
     plan:
@@ -767,7 +767,7 @@ jobs:
         on_failure:
           put: cats-logs
           params:
-            from: cats-log.tgz
+            from: p-runtime/acceptance-tests*.tgz
 
   - name: promote-ops-manager-openstack
     plan:
@@ -963,7 +963,7 @@ jobs:
         on_failure:
           put: cats-logs
           params:
-            from: cats-log.tgz
+            from: p-runtime/acceptance-tests*.tgz
 
   - name: promote-ops-manager-vsphere
     plan:
@@ -1166,7 +1166,7 @@ jobs:
         on_failure:
           put: cats-logs
           params:
-            from: cats-log.tgz
+            from: p-runtime/acceptance-tests*.tgz
 
   - name: promote-ops-manager-vcloud
     plan:

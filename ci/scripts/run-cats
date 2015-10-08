@@ -8,5 +8,4 @@ pushd p-runtime
   ./ci/scripts/helpers/bundle-gems.sh
 
   xvfb-run -a bundle exec rake ert:run_cats[$RELENG_ENV,$OPSMAN_VERSION]
-  mv acceptance-tests*.tgz ../cats-log.tgz
 popd
