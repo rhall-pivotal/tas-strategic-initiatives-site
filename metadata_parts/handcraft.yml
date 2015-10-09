@@ -1759,6 +1759,8 @@ job_types:
             secret: (( .uaa.cc_service_dashboards_credentials.password ))
           cloud_controller_username_lookup:
             secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
+          cc_routing:
+            secret: (( .uaa.cc_routing_credentials.password ))
       login:
         url: "https://login.(( .cloud_controller.system_domain.value ))"
 
