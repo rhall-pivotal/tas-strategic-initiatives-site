@@ -13,7 +13,7 @@ RSpec.describe 'Disable HTTP Traffic in Elastic Runtime 1.5.X', order: :defined 
     )
   end
 
-  it 'enables all of the experimental features' do
+  it 'disables HTTP traffic to the HAProxy and UAA' do
     experimental_features_form =
       current_ops_manager.product(elastic_runtime_settings.name).product_form('experimental_features')
     experimental_features_form.open_form

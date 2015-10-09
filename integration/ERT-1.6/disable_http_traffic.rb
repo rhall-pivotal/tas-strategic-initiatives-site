@@ -13,7 +13,7 @@ RSpec.describe 'Disable HTTP Traffic in Elastic Runtime 1.6.X', order: :defined 
     )
   end
 
-  it 'enables all of the security configuration' do
+  it 'disables HTTP traffic to the HAProxy and UAA' do
     security_config_form =
         current_ops_manager.product(elastic_runtime_settings.name).product_form('security_config')
     security_config_form.open_form
