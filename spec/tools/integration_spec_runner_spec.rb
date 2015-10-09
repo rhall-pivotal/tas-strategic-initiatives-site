@@ -107,6 +107,19 @@ RSpec.describe 'IntegrationSpecRunner' do
           integration_spec_runner.configure_experimental_features
         end
       end
+
+      describe "#disable_http_traffic #{version}" do
+        it 'runs the correct version of configure security features' do
+          expect(RSpecExiter).to receive(:exit_rspec).with(0)
+          expect(RSpec::Core::Runner).to(
+            receive(:run).with(
+              ["integration/ERT-#{ert_version}/disable_http_traffic.rb"]
+            ).and_return(0)
+          )
+
+          integration_spec_runner.disable_http_traffic
+        end
+      end
     end
   end
 end

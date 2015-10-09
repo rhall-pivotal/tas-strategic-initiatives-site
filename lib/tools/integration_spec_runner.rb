@@ -28,6 +28,10 @@ class IntegrationSpecRunner
     run_spec(["integration/ERT-#{ert_version}/configure_experimental_features_spec.rb"])
   end
 
+  def disable_http_traffic
+    run_spec(["integration/ERT-#{ert_version}/disable_http_traffic.rb"])
+  end
+
   def configure_external_dbs
     run_spec(["integration/ERT-#{ert_version}/configure_external_dbs_spec.rb"])
   end
