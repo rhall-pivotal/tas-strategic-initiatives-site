@@ -1662,6 +1662,8 @@ job_types:
         routes:
         - name: api
           port: 9022
+          tags:
+            component: CloudController
           uris:
           - "api.(( .cloud_controller.system_domain.value ))"
 
@@ -2009,6 +2011,8 @@ job_types:
         routes:
         - name: hm9000
           port: 5155
+          tags:
+            component: HM9K
           uris:
           - "hm9000.(( .cloud_controller.system_domain.value ))"
 
@@ -2417,6 +2421,8 @@ job_types:
         release: cf
       - name: route_registrar
         release: cf
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -2577,6 +2583,11 @@ job_types:
         type: simple_credentials
         default:
           identity: cloud_controller_username_lookup
+
+      - name: cc_routing_credentials
+        type: simple_credentials
+        default:
+          identity: cc_routing
 
       - name: ldap_url
         type: ldap_url
@@ -2808,6 +2819,10 @@ job_types:
             secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
             authorized-grant-types: client_credentials
             authorities: scim.userids
+          (( cc_routing_credentials.identity )):
+            authorities: routing.router_groups.read
+            authorized-grant-types: client_credentials
+            secret: (( cc_routing_credentials.password ))
           ssh-proxy:
             authorized-grant-types: authorization_code
             autoapprove: true
