@@ -78,6 +78,16 @@ resources:
       private: true
       versioned_file: salmon/push-apps-manager-release/ert.pivotal
 
+  - name: cats-logs
+    type: s3
+    source:
+      access_key_id: AKIAJEAGY2FWB7DEGFXQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: cf-acceptance-tests-logs/cats-log.tgz
+
   - name: environment
     type: pool
     source:
@@ -391,16 +401,6 @@ jobs:
           put: cats-logs
           params:
             from: cats-log.tgz
-
-  - name: cats-logs
-    type: s3
-    source:
-      access_key_id: AKIAJEAGY2FWB7DEGFXQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: cf-acceptance-tests-logs/cats-log.tgz
 
   - name: destroy-environment-final
     plan:
