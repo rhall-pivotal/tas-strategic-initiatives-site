@@ -2793,7 +2793,7 @@ job_types:
             autoapprove: true
             authorities: "uaa.none"
             authorized-grant-types: "implicit,password,refresh_token"
-            scope: "cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose"
+            scope: "cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user"
             access-token-validity: 7200
             refresh-token-validity: 1209600
           (( autoscale_client_credentials.identity )):
@@ -3186,7 +3186,7 @@ job_types:
         type: integer
         label: Instances
         configurable: true
-        default: 1
+        default: 3
         constraints:
           min: 1
 
@@ -4333,7 +4333,8 @@ job_types:
         admin_password: (( .uaa.admin_credentials.password ))
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         run_security_groups_tests: false
-        run_ssh_tests: false
+        run_ssh_tests: true
+        skip_docker_tests: true
         nodes: 1
 
   - name: acceptance-tests

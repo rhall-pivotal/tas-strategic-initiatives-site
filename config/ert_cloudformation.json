@@ -51,6 +51,20 @@
       "Type": "String",
       "Default": "https://s3.amazonaws.com/pcf-cloudformation/1.5.0.0/pcf.json",
       "Description": "S3 Location for OpsManager CloudFormation Template"
+    },
+    "09ElbPrefix": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Prefix for the name of the ELBs generated. NOTE: Leave empty to use default prefix of AWS::StackName"
+    }
+  },
+  "Conditions": {
+    "ElbPrefixProvided": {
+      "Fn::Not": [
+        {
+          "Fn::Equals" : [{"Ref" : "09ElbPrefix" }, ""]
+        }
+      ]
     }
   },
   "Resources": {
@@ -113,7 +127,16 @@
         "ConnectionSettings": {
           "IdleTimeout": 3600
         },
-        "LoadBalancerName": { "Fn::Join" : ["", [ { "Ref" : "AWS::StackName" }, "-pcf-elb" ] ] },
+        "LoadBalancerName": { "Fn::Join" : [
+          "",
+          [ { "Fn::If" : [
+              "ElbPrefixProvided",
+              { "Ref" : "09ElbPrefix" },
+              { "Ref" : "AWS::StackName" }
+            ]},
+           "-pcf-elb"
+          ]
+        ] },
         "Listeners": [ 
           {
             "InstancePort": "80",
@@ -178,7 +201,16 @@
         "ConnectionSettings": {
           "IdleTimeout": 3600
         },
-        "LoadBalancerName": { "Fn::Join" : ["", [ { "Ref" : "AWS::StackName" }, "-pcf-ssh-elb" ] ] },
+        "LoadBalancerName": { "Fn::Join" : [
+          "",
+          [ { "Fn::If" : [
+              "ElbPrefixProvided",
+              { "Ref" : "09ElbPrefix" },
+              { "Ref" : "AWS::StackName" }
+            ]},
+            "-pcf-ssh-elb"
+          ]
+        ] },
         "Listeners": [
           {
             "InstancePort": "2222",
