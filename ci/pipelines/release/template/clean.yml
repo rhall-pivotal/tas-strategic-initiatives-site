@@ -18,6 +18,32 @@ jobs:
             KRAFA_USERNAME: releng
             KRAFA_PASSWORD: bet90onions
 
+  - name: early-destroy-environment-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        resource: p-runtime-prime
+        passed: [claim-environment-{{pipeline_name}}]
+      - get: environment
+        resource: environment-{{environment_pool}}
+        passed: [claim-environment-{{pipeline_name}}]
+      - task: destroy
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/destroy-environment.yml
+
+  - name: early-release-environment-{{pipeline_name}}
+    plan:
+      - get: p-runtime
+        resource: p-runtime-prime
+        trigger: true
+        passed: [early-destroy-environment-{{pipeline_name}}]
+      - get: environment
+        trigger: true
+        resource: environment-{{environment_pool}}
+        passed: [early-destroy-environment-{{pipeline_name}}]
+      - put: environment-{{environment_pool}}
+        params:
+          release: environment
+
   - name: destroy-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
@@ -181,10 +207,10 @@ jobs:
     plan:
       - get: p-runtime
         resource: p-runtime-prime
-        passed: [claim-environment-{{pipeline_name}}]
+        passed: [run-cats-{{pipeline_name}}]
       - get: environment
         resource: environment-{{environment_pool}}
-        passed: [claim-environment-{{pipeline_name}}]
+        passed: [run-cats-{{pipeline_name}}]
       - task: destroy
         tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/destroy-environment.yml
