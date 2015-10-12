@@ -78,6 +78,16 @@ resources:
       private: true
       versioned_file: salmon/cf/ert.pivotal
 
+  - name: cats-logs
+    type: s3
+    source:
+      access_key_id: AKIAJEAGY2FWB7DEGFXQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: cf-acceptance-tests-logs/cats-log.tgz
+
   - name: environment
     type: pool
     source:
@@ -320,6 +330,23 @@ jobs:
           params:
             ERT_VERSION: 1.6
             OPSMAN_VERSION: 1.6
+      - task: create-external-dbs
+        tags: [aws]
+        file: p-runtime/ci/jobs/create-aws-dbs.yml
+      - task: configure-external-dbs
+        tags: [aws]
+        file: p-runtime/ci/jobs/configure-external-dbs.yml
+        config:
+          params:
+            ERT_VERSION: 1.6
+            OPSMAN_VERSION: 1.6
+      - task: configure-external-file-storage
+        tags: [aws]
+        file: p-runtime/ci/jobs/configure-external-file-storage.yml
+        config:
+          params:
+            ERT_VERSION: 1.6
+            OPSMAN_VERSION: 1.6
       - task: configure-experimental-features
         tags: [aws]
         file: p-runtime/ci/jobs/configure-experimental-features.yml
@@ -384,14 +411,18 @@ jobs:
         config:
           params:
             OPSMAN_VERSION: "1.6"
+        on_failure:
+          put: cats-logs
+          params:
+            from: p-runtime/acceptance-tests(.*).tgz
 
   - name: destroy-environment-final
     plan:
       - aggregate:
         - get: p-runtime
-          passed: [run-cats]
+          passed: [claim-environment]
         - get: environment
-          passed: [run-cats]
+          passed: [claim-environment]
       - task: destroy
         tags: [aws]
         file: p-runtime/ci/jobs/destroy-environment.yml

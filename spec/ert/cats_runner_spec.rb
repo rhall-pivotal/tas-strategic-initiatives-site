@@ -89,14 +89,18 @@ YAML
       context 'when running the cats errand' do
         context 'in an environment with full internet connectivity' do
           it 'runs the acceptance-tests errand' do
-            expect(Bundler).to receive(:clean_system).with('bosh_command run errand acceptance-tests')
+            expect(Bundler).to receive(:clean_system).with(
+              'bosh_command run errand acceptance-tests --download-logs --keep-alive'
+            )
 
             cats_runner.run_cats
           end
 
           context 'when the acceptance-tests errand fails' do
             it 'raises a RuntimeError' do
-              expect(Bundler).to receive(:clean_system).with('bosh_command run errand acceptance-tests').and_return(false)
+              expect(Bundler).to receive(:clean_system).with(
+                'bosh_command run errand acceptance-tests --download-logs --keep-alive'
+              ).and_return(false)
 
               expect { cats_runner.run_cats }.to raise_error(RuntimeError, 'CF Acceptance Tests failed')
             end
@@ -113,8 +117,10 @@ internetless: true
 YAML
           end
 
-          it 'runs the acceptance-tests errand' do
-            expect(Bundler).to receive(:clean_system).with('bosh_command run errand acceptance-tests-internetless')
+          it 'runs the acceptance-tests errand with download-logs and keep-alive flags' do
+            expect(Bundler).to receive(:clean_system).with(
+              'bosh_command run errand acceptance-tests-internetless --download-logs --keep-alive'
+            )
 
             cats_runner.run_cats
           end
@@ -122,7 +128,9 @@ YAML
           context 'when the acceptance-tests-internetless errand fails' do
             it 'raises a RuntimeError' do
               expect(Bundler).to(
-                receive(:clean_system).with('bosh_command run errand acceptance-tests-internetless')
+                receive(:clean_system).with(
+                  'bosh_command run errand acceptance-tests-internetless --download-logs --keep-alive'
+                )
                   .and_return(false)
               )
               expect { cats_runner.run_cats }.to raise_error(RuntimeError, 'CF Acceptance Tests failed')
@@ -227,14 +235,18 @@ YAML
       context 'when running the cats errand' do
         context 'in an environment with full internet connectivity' do
           it 'runs the acceptance-tests errand' do
-            expect(Bundler).to receive(:clean_system).with('bosh_command run errand acceptance-tests')
+            expect(Bundler).to receive(:clean_system).with(
+              'bosh_command run errand acceptance-tests --download-logs --keep-alive'
+            )
 
             cats_runner.run_cats
           end
 
           context 'when the acceptance-tests errand fails' do
             it 'raises a RuntimeError' do
-              expect(Bundler).to receive(:clean_system).with('bosh_command run errand acceptance-tests').and_return(false)
+              expect(Bundler).to receive(:clean_system).with(
+                'bosh_command run errand acceptance-tests --download-logs --keep-alive'
+              ).and_return(false)
 
               expect { cats_runner.run_cats }.to raise_error(RuntimeError, 'CF Acceptance Tests failed')
             end
@@ -252,7 +264,9 @@ YAML
           end
 
           it 'runs the acceptance-tests errand' do
-            expect(Bundler).to receive(:clean_system).with('bosh_command run errand acceptance-tests-internetless')
+            expect(Bundler).to receive(:clean_system).with(
+              'bosh_command run errand acceptance-tests-internetless --download-logs --keep-alive'
+            )
 
             cats_runner.run_cats
           end
@@ -260,7 +274,9 @@ YAML
           context 'when the acceptance-tests-internetless errand fails' do
             it 'raises a RuntimeError' do
               expect(Bundler).to(
-                receive(:clean_system).with('bosh_command run errand acceptance-tests-internetless')
+                receive(:clean_system).with(
+                  'bosh_command run errand acceptance-tests-internetless --download-logs --keep-alive'
+                )
                   .and_return(false)
               )
               expect { cats_runner.run_cats }.to raise_error(RuntimeError, 'CF Acceptance Tests failed')
@@ -363,14 +379,18 @@ YAML
       context 'when running the cats errand' do
         context 'in an environment with full internet connectivity' do
           it 'runs the acceptance-tests errand' do
-            expect(Bundler).to receive(:clean_system).with('bosh_command run errand acceptance-tests')
+            expect(Bundler).to receive(:clean_system).with(
+              'bosh_command run errand acceptance-tests --download-logs --keep-alive'
+            )
 
             cats_runner.run_cats
           end
 
           context 'when the acceptance-tests errand fails' do
             it 'raises a RuntimeError' do
-              expect(Bundler).to receive(:clean_system).with('bosh_command run errand acceptance-tests').and_return(false)
+              expect(Bundler).to receive(:clean_system).with(
+                'bosh_command run errand acceptance-tests --download-logs --keep-alive'
+              ).and_return(false)
 
               expect { cats_runner.run_cats }.to raise_error(RuntimeError, 'CF Acceptance Tests failed')
             end
@@ -388,7 +408,9 @@ YAML
           end
 
           it 'runs the acceptance-tests errand' do
-            expect(Bundler).to receive(:clean_system).with('bosh_command run errand acceptance-tests-internetless')
+            expect(Bundler).to receive(:clean_system).with(
+              'bosh_command run errand acceptance-tests-internetless --download-logs --keep-alive'
+            )
 
             cats_runner.run_cats
           end
@@ -396,7 +418,9 @@ YAML
           context 'when the acceptance-tests-internetless errand fails' do
             it 'raises a RuntimeError' do
               expect(Bundler).to(
-                receive(:clean_system).with('bosh_command run errand acceptance-tests-internetless')
+                receive(:clean_system).with(
+                  'bosh_command run errand acceptance-tests-internetless --download-logs --keep-alive'
+                )
                   .and_return(false)
               )
               expect { cats_runner.run_cats }.to raise_error(RuntimeError, 'CF Acceptance Tests failed')
@@ -501,14 +525,18 @@ YAML
       context 'when running the cats errand' do
         context 'in an environment with full internet connectivity' do
           it 'runs the acceptance-tests errand' do
-            expect(Bundler).to receive(:clean_system).with('bosh_command run errand acceptance-tests')
+            expect(Bundler).to receive(:clean_system).with(
+              'bosh_command run errand acceptance-tests --download-logs --keep-alive'
+            )
 
             cats_runner.run_cats
           end
 
           context 'when the acceptance-tests errand fails' do
             it 'raises a RuntimeError' do
-              expect(Bundler).to receive(:clean_system).with('bosh_command run errand acceptance-tests').and_return(false)
+              expect(Bundler).to receive(:clean_system).with(
+                'bosh_command run errand acceptance-tests --download-logs --keep-alive'
+              ).and_return(false)
 
               expect { cats_runner.run_cats }.to raise_error(RuntimeError, 'CF Acceptance Tests failed')
             end
@@ -526,7 +554,9 @@ YAML
           end
 
           it 'runs the acceptance-tests errand' do
-            expect(Bundler).to receive(:clean_system).with('bosh_command run errand acceptance-tests-internetless')
+            expect(Bundler).to receive(:clean_system).with(
+              'bosh_command run errand acceptance-tests-internetless --download-logs --keep-alive'
+            )
 
             cats_runner.run_cats
           end
@@ -534,7 +564,9 @@ YAML
           context 'when the acceptance-tests-internetless errand fails' do
             it 'raises a RuntimeError' do
               expect(Bundler).to(
-                receive(:clean_system).with('bosh_command run errand acceptance-tests-internetless')
+                receive(:clean_system).with(
+                  'bosh_command run errand acceptance-tests-internetless --download-logs --keep-alive'
+                )
                   .and_return(false)
               )
               expect { cats_runner.run_cats }.to raise_error(RuntimeError, 'CF Acceptance Tests failed')

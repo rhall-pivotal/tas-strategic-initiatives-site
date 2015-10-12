@@ -51,6 +51,20 @@
       "Type": "String",
       "Default": "https://s3.amazonaws.com/pcf-cloudformation/1.5.0.0/pcf.json",
       "Description": "S3 Location for OpsManager CloudFormation Template"
+    },
+    "09ElbPrefix": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Prefix for the name of the ELBs generated. NOTE: Leave empty to use default prefix of AWS::StackName"
+    }
+  },
+  "Conditions": {
+    "ElbPrefixProvided": {
+      "Fn::Not": [
+        {
+          "Fn::Equals" : [{"Ref" : "09ElbPrefix" }, ""]
+        }
+      ]
     }
   },
   "Resources": {
@@ -113,7 +127,16 @@
         "ConnectionSettings": {
           "IdleTimeout": 3600
         },
-        "LoadBalancerName": { "Fn::Join" : ["", [ { "Ref" : "AWS::StackName" }, "-pcf-elb" ] ] },
+        "LoadBalancerName": { "Fn::Join" : [
+          "",
+          [ { "Fn::If" : [
+              "ElbPrefixProvided",
+              { "Ref" : "09ElbPrefix" },
+              { "Ref" : "AWS::StackName" }
+            ]},
+           "-pcf-elb"
+          ]
+        ] },
         "Listeners": [ 
           {
             "InstancePort": "80",
@@ -178,7 +201,16 @@
         "ConnectionSettings": {
           "IdleTimeout": 3600
         },
-        "LoadBalancerName": { "Fn::Join" : ["", [ { "Ref" : "AWS::StackName" }, "-pcf-ssh-elb" ] ] },
+        "LoadBalancerName": { "Fn::Join" : [
+          "",
+          [ { "Fn::If" : [
+              "ElbPrefixProvided",
+              { "Ref" : "09ElbPrefix" },
+              { "Ref" : "AWS::StackName" }
+            ]},
+            "-pcf-ssh-elb"
+          ]
+        ] },
         "Listeners": [
           {
             "InstancePort": "2222",
@@ -217,7 +249,7 @@
                     "",
                     [
                       "arn:aws:s3:::",
-                      {"Ref": "PcfElasticRuntimeS3Bucket"}
+                      {"Ref": "PcfElasticRuntimeS3BuildpacksBucket"}
                     ]
                   ]
                 },
@@ -226,7 +258,64 @@
                     "",
                     [
                       "arn:aws:s3:::",
-                      {"Ref": "PcfElasticRuntimeS3Bucket"},
+                      {"Ref": "PcfElasticRuntimeS3BuildpacksBucket"},
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3DropletsBucket"}
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3DropletsBucket"},
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3PackagesBucket"}
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3PackagesBucket"},
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3ResourcesBucket"}
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3ResourcesBucket"},
                       "/*"
                     ]
                   ]
@@ -238,13 +327,46 @@
         "Users" : [ {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUserName" ]} ]
       }
     },
-    "PcfElasticRuntimeS3Bucket": {
+    "PcfElasticRuntimeS3BuildpacksBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PCF Elastic Runtime S3 Bucket"
+            "Value": "PCF Elastic Runtime S3 Buildpacks Bucket"
+          }
+        ]
+      }
+    },
+    "PcfElasticRuntimeS3DropletsBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "PCF Elastic Runtime S3 Droplets Bucket"
+          }
+        ]
+      }
+    },
+    "PcfElasticRuntimeS3PackagesBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "PCF Elastic Runtime S3 Packages Bucket"
+          }
+        ]
+      }
+    },
+    "PcfElasticRuntimeS3ResourcesBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "PCF Elastic Runtime S3 Resources Bucket"
           }
         ]
       }
@@ -272,8 +394,17 @@
     "PcfOpsManagerS3Bucket": {
       "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfOpsManagerS3Bucket" ]}
     },
-    "PcfElasticRuntimeS3Bucket": {
-      "Value": {"Ref": "PcfElasticRuntimeS3Bucket"}
+    "PcfElasticRuntimeS3BuildpacksBucket": {
+      "Value": {"Ref": "PcfElasticRuntimeS3BuildpacksBucket"}
+    },
+    "PcfElasticRuntimeS3DropletsBucket": {
+      "Value": {"Ref": "PcfElasticRuntimeS3DropletsBucket"}
+    },
+    "PcfElasticRuntimeS3PackagesBucket": {
+      "Value": {"Ref": "PcfElasticRuntimeS3PackagesBucket"}
+    },
+    "PcfElasticRuntimeS3ResourcesBucket": {
+      "Value": {"Ref": "PcfElasticRuntimeS3ResourcesBucket"}
     },
     "PcfVmsSecurityGroupId": {
       "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfVmsSecurityGroupId" ]}

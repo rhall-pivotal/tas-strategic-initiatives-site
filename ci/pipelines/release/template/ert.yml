@@ -314,46 +314,6 @@ resources:
       private: true
       versioned_file: ops_manager_images/vcloud/1.5.5.0/ops_man_image
 
-  - name: initial-ops-manager-aws
-    type: s3
-    source:
-      access_key_id: AKIAJEAGY2FWB7DEGFXQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: ops_manager_images/aws/1.5.2.0/ops_man_image
-
-  - name: initial-ops-manager-openstack
-    type: s3
-    source:
-      access_key_id: AKIAJEAGY2FWB7DEGFXQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: ops_manager_images/openstack/1.5.2.0/ops_man_image
-
-  - name: initial-ops-manager-vsphere
-    type: s3
-    source:
-      access_key_id: AKIAJEAGY2FWB7DEGFXQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: ops_manager_images/vsphere/1.5.2.0/ops_man_image
-
-  - name: initial-ops-manager-vcloud
-    type: s3
-    source:
-      access_key_id: AKIAJEAGY2FWB7DEGFXQ
-      secret_access_key: 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
-      bucket: ert-concourse-products
-      region_name: us-west-1
-      private: true
-      versioned_file: ops_manager_images/vcloud/1.5.2.0/ops_man_image
-
   - name: exported-installation-aws
     type: s3
     source:
@@ -456,6 +416,16 @@ resources:
       to:
       - cf-release-engineering+ci@pivotal.io
       - cf-security-eng+ert+ci@pivotal.io
+
+  - name: cats-logs
+    type: s3
+    source:
+      access_key_id: AKIAJEAGY2FWB7DEGFXQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: cf-acceptance-tests-logs/cats-log.tgz
 
 jobs:
   - name: kickoff
@@ -564,10 +534,24 @@ jobs:
           from: ert-pivotal/cf-(.*).pivotal
           to: product_files/Pivotal-CF/
 
+  - name: bump-to-next-patch-version
+    plan:
+      - get: version
+        passed: [publish-final]
+        trigger: true
+        params:
+          bump: patch
+          pre: build
+      - put: version
+        params:
+          file: version/number
+
 groups:
   - name: aws-clean
     jobs:
     - claim-environment-aws-clean
+    - early-destroy-environment-aws-clean
+    - early-release-environment-aws-clean
     - destroy-environment-aws-clean
     - deploy-ops-manager-aws-clean
     - configure-microbosh-aws-clean
@@ -582,6 +566,8 @@ groups:
   - name: openstack-clean
     jobs:
     - claim-environment-openstack-clean
+    - early-destroy-environment-openstack-clean
+    - early-release-environment-openstack-clean
     - destroy-environment-openstack-clean
     - deploy-ops-manager-openstack-clean
     - configure-microbosh-openstack-clean
@@ -596,6 +582,8 @@ groups:
   - name: vsphere-clean
     jobs:
     - claim-environment-vsphere-clean
+    - early-destroy-environment-vsphere-clean
+    - early-release-environment-vsphere-clean
     - destroy-environment-vsphere-clean
     - deploy-ops-manager-vsphere-clean
     - configure-microbosh-vsphere-clean
@@ -610,6 +598,8 @@ groups:
   - name: vsphere-internetless
     jobs:
     - claim-environment-internetless
+    - early-destroy-environment-internetless
+    - early-release-environment-internetless
     - destroy-environment-internetless
     - deploy-ops-manager-internetless
     - verify-internetless
@@ -625,6 +615,8 @@ groups:
   - name: aws-upgrade
     jobs:
     - claim-environment-aws-upgrade
+    - early-destroy-environment-aws-upgrade
+    - early-release-environment-aws-upgrade
     - destroy-environment-aws-upgrade
     - deploy-ops-manager-initial-aws-upgrade
     - configure-microbosh-initial-aws-upgrade
@@ -646,6 +638,8 @@ groups:
   - name: openstack-upgrade
     jobs:
     - claim-environment-openstack-upgrade
+    - early-destroy-environment-openstack-upgrade
+    - early-release-environment-openstack-upgrade
     - destroy-environment-openstack-upgrade
     - deploy-ops-manager-initial-openstack-upgrade
     - configure-microbosh-initial-openstack-upgrade
@@ -667,6 +661,8 @@ groups:
   - name: vsphere-upgrade
     jobs:
     - claim-environment-vsphere-upgrade
+    - early-destroy-environment-vsphere-upgrade
+    - early-release-environment-vsphere-upgrade
     - destroy-environment-vsphere-upgrade
     - deploy-ops-manager-initial-vsphere-upgrade
     - configure-microbosh-initial-vsphere-upgrade
@@ -688,6 +684,8 @@ groups:
   - name: vcloud-upgrade
     jobs:
     - claim-environment-vcloud-upgrade
+    - early-destroy-environment-vcloud-upgrade
+    - early-release-environment-vcloud-upgrade
     - destroy-environment-vcloud-upgrade
     - deploy-ops-manager-initial-vcloud-upgrade
     - configure-microbosh-initial-vcloud-upgrade
