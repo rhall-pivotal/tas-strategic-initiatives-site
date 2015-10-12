@@ -534,6 +534,18 @@ jobs:
           from: ert-pivotal/cf-(.*).pivotal
           to: product_files/Pivotal-CF/
 
+  - name: bump-to-next-patch-version
+    plan:
+      - get: version
+        passed: [publish-final]
+        trigger: true
+        params:
+          bump: patch
+          pre: build
+      - put: version
+        params:
+          file: version/number
+
 groups:
   - name: aws-clean
     jobs:
