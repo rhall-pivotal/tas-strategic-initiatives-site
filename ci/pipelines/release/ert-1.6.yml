@@ -1014,11 +1014,11 @@ jobs:
   - get: p-runtime
     resource: p-runtime-prime
     passed:
-    - run-cats-aws-clean
+    - claim-environment-aws-clean
   - get: environment
     resource: environment-aws
     passed:
-    - run-cats-aws-clean
+    - claim-environment-aws-clean
   - task: destroy
     tags:
     - aws
@@ -1242,11 +1242,11 @@ jobs:
   - get: p-runtime
     resource: p-runtime-prime
     passed:
-    - run-cats-openstack-clean
+    - claim-environment-openstack-clean
   - get: environment
     resource: environment-openstack
     passed:
-    - run-cats-openstack-clean
+    - claim-environment-openstack-clean
   - task: destroy
     tags:
     - openstack
@@ -1470,11 +1470,11 @@ jobs:
   - get: p-runtime
     resource: p-runtime-prime
     passed:
-    - run-cats-vsphere-clean
+    - claim-environment-vsphere-clean
   - get: environment
     resource: environment-vsphere
     passed:
-    - run-cats-vsphere-clean
+    - claim-environment-vsphere-clean
   - task: destroy
     tags:
     - vsphere
@@ -1713,11 +1713,11 @@ jobs:
   - get: p-runtime
     resource: p-runtime-prime
     passed:
-    - run-cats-internetless
+    - claim-environment-internetless
   - get: environment
     resource: environment-internetless
     passed:
-    - run-cats-internetless
+    - claim-environment-internetless
   - task: destroy
     tags:
     - vsphere
@@ -2100,11 +2100,11 @@ jobs:
   - get: p-runtime
     resource: p-runtime-prime
     passed:
-    - run-cats-aws-upgrade
+    - claim-environment-aws-upgrade
   - get: environment
     resource: environment-aws-east
     passed:
-    - run-cats-aws-upgrade
+    - claim-environment-aws-upgrade
   - task: destroy
     tags:
     - aws
@@ -2467,11 +2467,11 @@ jobs:
   - get: p-runtime
     resource: p-runtime-prime
     passed:
-    - run-cats-openstack-upgrade
+    - claim-environment-openstack-upgrade
   - get: environment
     resource: environment-openstack
     passed:
-    - run-cats-openstack-upgrade
+    - claim-environment-openstack-upgrade
   - task: destroy
     tags:
     - openstack
@@ -2834,11 +2834,11 @@ jobs:
   - get: p-runtime
     resource: p-runtime-prime
     passed:
-    - run-cats-vsphere-upgrade
+    - claim-environment-vsphere-upgrade
   - get: environment
     resource: environment-vsphere
     passed:
-    - run-cats-vsphere-upgrade
+    - claim-environment-vsphere-upgrade
   - task: destroy
     tags:
     - vsphere
@@ -3210,11 +3210,11 @@ jobs:
   - get: p-runtime
     resource: p-runtime-prime
     passed:
-    - run-cats-vcloud-upgrade
+    - claim-environment-vcloud-upgrade
   - get: environment
     resource: environment-vcloud
     passed:
-    - run-cats-vcloud-upgrade
+    - claim-environment-vcloud-upgrade
   - *1
   - task: destroy
     tags:

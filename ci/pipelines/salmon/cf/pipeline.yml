@@ -420,9 +420,9 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
-          passed: [run-cats]
+          passed: [claim-environment]
         - get: environment
-          passed: [run-cats]
+          passed: [claim-environment]
       - task: destroy
         tags: [aws]
         file: p-runtime/ci/jobs/destroy-environment.yml

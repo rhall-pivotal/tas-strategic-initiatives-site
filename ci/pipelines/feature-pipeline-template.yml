@@ -338,9 +338,9 @@ jobs:
   - name: destroy-environment-final
     plan:
      - get: p-runtime
-       passed: [run-cats]
+       passed: [claim-environment]
      - get: environment
-       passed: [run-cats]
+       passed: [claim-environment]
      - task: destroy
        tags: [{{iaas_type}}]
        file: p-runtime/ci/jobs/destroy-environment.yml

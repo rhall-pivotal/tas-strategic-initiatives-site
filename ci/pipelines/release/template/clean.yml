@@ -181,10 +181,10 @@ jobs:
     plan:
       - get: p-runtime
         resource: p-runtime-prime
-        passed: [run-cats-{{pipeline_name}}]
+        passed: [claim-environment-{{pipeline_name}}]
       - get: environment
         resource: environment-{{environment_pool}}
-        passed: [run-cats-{{pipeline_name}}]
+        passed: [claim-environment-{{pipeline_name}}]
       - task: destroy
         tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/destroy-environment.yml
