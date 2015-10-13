@@ -112,7 +112,7 @@ post_deploy_errands:
 form_types:
   - name: system_database
     label: System Database Config
-    description: Select the database configuration that fits your installation
+    description: Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details.
     verifiers:
       - name: Verifiers::MysqlDatabaseVerifier
         properties:
@@ -158,14 +158,14 @@ form_types:
           database: .properties.uaa_database
     property_inputs:
     - reference: .properties.system_database
-      label: "Selection should only be made on the initial installation of Elastic Runtime (do NOT switch selections when upgrading). Once Elastic Runtime is installed, the selection can be changed only after a data migration. Consult Pivotal Cloud Foundry documentation for details."
+      label: "Configure your system's databases"
       selector_property_inputs:
       - reference: .properties.system_database.internal
         label: Internal Databases - MySQL and Postgres (the Postgres DBs are not highly-available, but this selection is required if you want to keep your system data from a pre-1.6.0 Elastic Runtime that you upgraded)
       - reference: .properties.system_database.internal_mysql
         label: Internal Databases - MySQL (preferred for enabling complete high-availability)
       - reference: .properties.system_database.external
-        label: External Databases (e.g. AWS RDS or any other MySQL service)
+        label: External Databases (preferred if, for example, you can use AWS RDS)
         property_inputs:
           - reference: .properties.system_database.external.host
             label: Hostname DNS Name
@@ -178,7 +178,7 @@ form_types:
 
   - name: system_blobstore
     label: File Storage Config
-    description: "Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, the configurations can be changed only after a data migration. Consult Pivotal Cloud Foundry documentation for details."
+    description: "Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details."
     verifiers:
       - name: Verifiers::BlobstoreVerifier
         properties:
@@ -438,6 +438,9 @@ form_types:
       - reference: .cloud_controller.allow_app_ssh_access
         label: Allow SSH access to apps
         description: Enables SSH into app containers running on Diego.
+      - reference: .diego_cell.garden_network_pool
+        label: Application Containers Subnet Pool
+        description: Enter a CIDR subnet mask specifying the range of subnets available to be assigned to containers.
 
   - name: experimental_features
     label: Experimental Features
@@ -1191,6 +1194,8 @@ job_types:
       type: simple_credentials
     - name: uaadb_credentials
       type: simple_credentials
+    - name: consoledb_credentials
+      type: simple_credentials
     manifest: |
       admin_password: (( mysql_admin_credentials.password ))
       cluster_ips: (( .mysql.ips ))
@@ -1213,6 +1218,9 @@ job_types:
         - name: autoscale
           username: (( autoscale_credentials.identity ))
           password: (( autoscale_credentials.password ))
+        - name: console
+          username: (( consoledb_credentials.identity ))
+          password: (( consoledb_credentials.password ))
       syslog_aggregator:
         address: (( ..cf.properties.syslog_host.value ))
         port: (( ..cf.properties.syslog_port.value ))
@@ -1662,6 +1670,8 @@ job_types:
         routes:
         - name: api
           port: 9022
+          tags:
+            component: CloudController
           uris:
           - "api.(( .cloud_controller.system_domain.value ))"
 
@@ -1757,6 +1767,8 @@ job_types:
             secret: (( .uaa.cc_service_dashboards_credentials.password ))
           cloud_controller_username_lookup:
             secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
+          cc_routing:
+            secret: (( .uaa.cc_routing_credentials.password ))
       login:
         url: "https://login.(( .cloud_controller.system_domain.value ))"
 
@@ -2009,6 +2021,8 @@ job_types:
         routes:
         - name: hm9000
           port: 5155
+          tags:
+            component: HM9K
           uris:
           - "hm9000.(( .cloud_controller.system_domain.value ))"
 
@@ -2417,6 +2431,8 @@ job_types:
         release: cf
       - name: route_registrar
         release: cf
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -2578,6 +2594,11 @@ job_types:
         default:
           identity: cloud_controller_username_lookup
 
+      - name: cc_routing_credentials
+        type: simple_credentials
+        default:
+          identity: cc_routing
+
       - name: ldap_url
         type: ldap_url
         configurable: true
@@ -2723,6 +2744,7 @@ job_types:
             authorized-grant-types: "authorization_code,client_credentials,refresh_token"
             autoapprove: true
             authorities: "scim.zones,zones.read,uaa.resource,zones.write,cloud_controller.admin"
+            redirect-uri: "https://p-identity.(( .cloud_controller.system_domain.value ))/dashboard/,https://p-identity.(( .cloud_controller.system_domain.value ))/dashboard/*"
           login:
             id: (( login_client_credentials.identity ))
             secret: (( login_client_credentials.password ))
@@ -2808,6 +2830,10 @@ job_types:
             secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
             authorized-grant-types: client_credentials
             authorities: scim.userids
+          (( cc_routing_credentials.identity )):
+            authorities: routing.router_groups.read
+            authorized-grant-types: client_credentials
+            secret: (( cc_routing_credentials.password ))
           ssh-proxy:
             authorized-grant-types: authorization_code
             autoapprove: true
@@ -3137,6 +3163,12 @@ job_types:
         default:
           identity: vcap
 
+      - name: garden_network_pool
+        type: string
+        default: 10.254.0.0/22
+        configurable: true
+        optional: false
+
     manifest: |
       diego:
         rep:
@@ -3169,6 +3201,7 @@ job_types:
         persistent_image_list:
           - "/var/vcap/packages/rootfs_cflinuxfs2/rootfs"
         enable_graph_cleanup: true
+        network_pool: (( garden_network_pool.value ))
 
   - name: dea
     label: DEA
@@ -4668,10 +4701,11 @@ property_blueprints:
             password: (( .mysql.app_usage_credentials.password ))
         - name: console
           manifest: |
-            ip: (( .consoledb.first_ip ))
-            username: (( .consoledb.credentials.identity ))
-            password: (( .consoledb.credentials.password ))
-            adapter: postgres
+            ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            port: 3306
+            username: (( .mysql.consoledb_credentials.identity ))
+            password: (( .mysql.consoledb_credentials.password ))
+            adapter: mysql
 
       - name: external
         named_manifests:
