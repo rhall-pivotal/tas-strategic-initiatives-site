@@ -1130,6 +1130,7 @@ job_types:
       proxy:
         api_password: (( dashboard_credentials.password ))
         api_username: (( dashboard_credentials.identity ))
+        proxy_ips: (( .mysql_proxy.ips ))
       cluster_ips: (( .mysql.ips ))
       nats:
         user: (( .nats.credentials.identity ))
@@ -1215,6 +1216,9 @@ job_types:
     manifest: |
       admin_password: (( mysql_admin_credentials.password ))
       cluster_ips: (( .mysql.ips ))
+      # allow up to 20 minutes for large SST's to succeed,
+      # this is temporary until BOSH pre-start is implemented
+      database_startup_timeout: 1200
       innodb_buffer_pool_size: 2147483648
       max_connections: 1500
       network_name: default
