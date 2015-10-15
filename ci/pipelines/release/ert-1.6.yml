@@ -552,42 +552,6 @@ resources:
     region_name: us-west-1
     private: true
     versioned_file: ops_manager_images/vcloud/1.5.5.0/ops_man_image
-- name: initial-ops-manager-aws
-  type: s3
-  source:
-    access_key_id: AKIAJEAGY2FWB7DEGFXQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: ops_manager_images/aws/1.5.2.0/ops_man_image
-- name: initial-ops-manager-openstack
-  type: s3
-  source:
-    access_key_id: AKIAJEAGY2FWB7DEGFXQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: ops_manager_images/openstack/1.5.2.0/ops_man_image
-- name: initial-ops-manager-vsphere
-  type: s3
-  source:
-    access_key_id: AKIAJEAGY2FWB7DEGFXQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: ops_manager_images/vsphere/1.5.2.0/ops_man_image
-- name: initial-ops-manager-vcloud
-  type: s3
-  source:
-    access_key_id: AKIAJEAGY2FWB7DEGFXQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: ops_manager_images/vcloud/1.5.2.0/ops_man_image
 - name: exported-installation-aws
   type: s3
   source:
@@ -681,6 +645,15 @@ resources:
     to:
     - cf-release-engineering+ci@pivotal.io
     - cf-security-eng+ert+ci@pivotal.io
+- name: cats-logs
+  type: s3
+  source:
+    access_key_id: AKIAJEAGY2FWB7DEGFXQ
+    secret_access_key: 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
+    bucket: ert-concourse-products
+    region_name: us-west-1
+    private: true
+    versioned_file: cf-acceptance-tests-logs/cats-log.tgz
 jobs:
 - name: kickoff
   plan:
@@ -737,15 +710,14 @@ jobs:
     resource: ert-product
     passed:
     - build-runtime
+  - put: ert-product-promoted-deprecated
+    params:
+      from: ert-pivotal/ert.pivotal
   - task: create-versioned-pivotal
     file: p-runtime/ci/jobs/create-versioned-pivotal.yml
-  - aggregate:
-    - put: ert-product-promoted-deprecated
-      params:
-        from: ert-pivotal/ert.pivotal
-    - put: ert-product-promoted
-      params:
-        from: ert-pivotal/cf-(.*).pivotal
+  - put: ert-product-promoted
+    params:
+      from: ert-pivotal/cf-(.*).pivotal
 - name: upload-to-pivnet
   plan:
   - get: ert-product-promoted
@@ -798,6 +770,17 @@ jobs:
     params:
       from: ert-pivotal/cf-(.*).pivotal
       to: product_files/Pivotal-CF/
+- name: bump-to-next-patch-version
+  plan:
+  - get: version
+    passed:
+    - publish-final
+    trigger: true
+    params:
+      bump: patch
+  - put: version
+    params:
+      file: version/number
 - name: claim-environment-aws-clean
   plan:
   - get: p-runtime
@@ -817,6 +800,35 @@ jobs:
         KRAFA_BASE_URL: http://krafa.cfapps.io
         KRAFA_USERNAME: releng
         KRAFA_PASSWORD: bet90onions
+- name: early-destroy-environment-aws-clean
+  plan:
+  - get: p-runtime
+    resource: p-runtime-prime
+    passed:
+    - claim-environment-aws-clean
+  - get: environment
+    resource: environment-aws
+    passed:
+    - claim-environment-aws-clean
+  - task: destroy
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: early-release-environment-aws-clean
+  plan:
+  - get: p-runtime
+    resource: p-runtime-prime
+    trigger: true
+    passed:
+    - early-destroy-environment-aws-clean
+  - get: environment
+    trigger: true
+    resource: environment-aws
+    passed:
+    - early-destroy-environment-aws-clean
+  - put: environment-aws
+    params:
+      release: environment
 - name: destroy-environment-aws-clean
   plan:
   - get: p-runtime
@@ -1021,6 +1033,10 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.6
+    on_failure:
+      put: cats-logs
+      params:
+        from: p-runtime/acceptance-tests(.*).tgz
 - name: destroy-environment-final-aws-clean
   plan:
   - get: p-runtime
@@ -1069,6 +1085,35 @@ jobs:
         KRAFA_BASE_URL: http://krafa.cfapps.io
         KRAFA_USERNAME: releng
         KRAFA_PASSWORD: bet90onions
+- name: early-destroy-environment-openstack-clean
+  plan:
+  - get: p-runtime
+    resource: p-runtime-prime
+    passed:
+    - claim-environment-openstack-clean
+  - get: environment
+    resource: environment-openstack
+    passed:
+    - claim-environment-openstack-clean
+  - task: destroy
+    tags:
+    - openstack
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: early-release-environment-openstack-clean
+  plan:
+  - get: p-runtime
+    resource: p-runtime-prime
+    trigger: true
+    passed:
+    - early-destroy-environment-openstack-clean
+  - get: environment
+    trigger: true
+    resource: environment-openstack
+    passed:
+    - early-destroy-environment-openstack-clean
+  - put: environment-openstack
+    params:
+      release: environment
 - name: destroy-environment-openstack-clean
   plan:
   - get: p-runtime
@@ -1245,6 +1290,10 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.6
+    on_failure:
+      put: cats-logs
+      params:
+        from: p-runtime/acceptance-tests(.*).tgz
 - name: destroy-environment-final-openstack-clean
   plan:
   - get: p-runtime
@@ -1293,6 +1342,35 @@ jobs:
         KRAFA_BASE_URL: http://krafa.cfapps.io
         KRAFA_USERNAME: releng
         KRAFA_PASSWORD: bet90onions
+- name: early-destroy-environment-vsphere-clean
+  plan:
+  - get: p-runtime
+    resource: p-runtime-prime
+    passed:
+    - claim-environment-vsphere-clean
+  - get: environment
+    resource: environment-vsphere
+    passed:
+    - claim-environment-vsphere-clean
+  - task: destroy
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: early-release-environment-vsphere-clean
+  plan:
+  - get: p-runtime
+    resource: p-runtime-prime
+    trigger: true
+    passed:
+    - early-destroy-environment-vsphere-clean
+  - get: environment
+    trigger: true
+    resource: environment-vsphere
+    passed:
+    - early-destroy-environment-vsphere-clean
+  - put: environment-vsphere
+    params:
+      release: environment
 - name: destroy-environment-vsphere-clean
   plan:
   - get: p-runtime
@@ -1469,6 +1547,10 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.6
+    on_failure:
+      put: cats-logs
+      params:
+        from: p-runtime/acceptance-tests(.*).tgz
 - name: destroy-environment-final-vsphere-clean
   plan:
   - get: p-runtime
@@ -1517,6 +1599,35 @@ jobs:
         KRAFA_BASE_URL: http://krafa.cfapps.io
         KRAFA_USERNAME: releng
         KRAFA_PASSWORD: bet90onions
+- name: early-destroy-environment-internetless
+  plan:
+  - get: p-runtime
+    resource: p-runtime-prime
+    passed:
+    - claim-environment-internetless
+  - get: environment
+    resource: environment-internetless
+    passed:
+    - claim-environment-internetless
+  - task: destroy
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: early-release-environment-internetless
+  plan:
+  - get: p-runtime
+    resource: p-runtime-prime
+    trigger: true
+    passed:
+    - early-destroy-environment-internetless
+  - get: environment
+    trigger: true
+    resource: environment-internetless
+    passed:
+    - early-destroy-environment-internetless
+  - put: environment-internetless
+    params:
+      release: environment
 - name: destroy-environment-internetless
   plan:
   - get: p-runtime
@@ -1708,6 +1819,10 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.6
+    on_failure:
+      put: cats-logs
+      params:
+        from: p-runtime/acceptance-tests(.*).tgz
 - name: destroy-environment-final-internetless
   plan:
   - get: p-runtime
@@ -1755,6 +1870,33 @@ jobs:
         KRAFA_BASE_URL: http://krafa.cfapps.io
         KRAFA_USERNAME: releng
         KRAFA_PASSWORD: bet90onions
+- name: early-destroy-environment-aws-upgrade
+  plan:
+  - get: p-runtime
+    passed:
+    - claim-environment-aws-upgrade
+  - get: environment
+    resource: environment-aws-east
+    passed:
+    - claim-environment-aws-upgrade
+  - task: destroy
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: early-release-environment-aws-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - early-destroy-environment-aws-upgrade
+  - get: environment
+    trigger: true
+    resource: environment-aws-east
+    passed:
+    - early-destroy-environment-aws-upgrade
+  - put: environment-aws-east
+    params:
+      release: environment
 - name: destroy-environment-aws-upgrade
   plan:
   - get: p-runtime
@@ -2091,6 +2233,10 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.6
+    on_failure:
+      put: cats-logs
+      params:
+        from: p-runtime/acceptance-tests(.*).tgz
 - name: destroy-environment-final-aws-upgrade
   plan:
   - get: p-runtime
@@ -2138,6 +2284,33 @@ jobs:
         KRAFA_BASE_URL: http://krafa.cfapps.io
         KRAFA_USERNAME: releng
         KRAFA_PASSWORD: bet90onions
+- name: early-destroy-environment-openstack-upgrade
+  plan:
+  - get: p-runtime
+    passed:
+    - claim-environment-openstack-upgrade
+  - get: environment
+    resource: environment-openstack
+    passed:
+    - claim-environment-openstack-upgrade
+  - task: destroy
+    tags:
+    - openstack
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: early-release-environment-openstack-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - early-destroy-environment-openstack-upgrade
+  - get: environment
+    trigger: true
+    resource: environment-openstack
+    passed:
+    - early-destroy-environment-openstack-upgrade
+  - put: environment-openstack
+    params:
+      release: environment
 - name: destroy-environment-openstack-upgrade
   plan:
   - get: p-runtime
@@ -2454,6 +2627,10 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.6
+    on_failure:
+      put: cats-logs
+      params:
+        from: p-runtime/acceptance-tests(.*).tgz
 - name: destroy-environment-final-openstack-upgrade
   plan:
   - get: p-runtime
@@ -2501,6 +2678,33 @@ jobs:
         KRAFA_BASE_URL: http://krafa.cfapps.io
         KRAFA_USERNAME: releng
         KRAFA_PASSWORD: bet90onions
+- name: early-destroy-environment-vsphere-upgrade
+  plan:
+  - get: p-runtime
+    passed:
+    - claim-environment-vsphere-upgrade
+  - get: environment
+    resource: environment-vsphere
+    passed:
+    - claim-environment-vsphere-upgrade
+  - task: destroy
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: early-release-environment-vsphere-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - early-destroy-environment-vsphere-upgrade
+  - get: environment
+    trigger: true
+    resource: environment-vsphere
+    passed:
+    - early-destroy-environment-vsphere-upgrade
+  - put: environment-vsphere
+    params:
+      release: environment
 - name: destroy-environment-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -2817,6 +3021,10 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.6
+    on_failure:
+      put: cats-logs
+      params:
+        from: p-runtime/acceptance-tests(.*).tgz
 - name: destroy-environment-final-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -2864,15 +3072,13 @@ jobs:
         KRAFA_BASE_URL: http://krafa.cfapps.io
         KRAFA_USERNAME: releng
         KRAFA_PASSWORD: bet90onions
-- name: destroy-environment-vcloud-upgrade
+- name: early-destroy-environment-vcloud-upgrade
   plan:
   - get: p-runtime
-    trigger: true
     passed:
     - claim-environment-vcloud-upgrade
   - get: environment
     resource: environment-vcloud
-    trigger: true
     passed:
     - claim-environment-vcloud-upgrade
   - &1
@@ -2884,6 +3090,36 @@ jobs:
       config:
         params:
           OPSMAN_VERSION: 1.6
+  - task: destroy
+    tags:
+    - vcloud
+    file: p-runtime/ci/jobs/destroy-environment.yml
+- name: early-release-environment-vcloud-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - early-destroy-environment-vcloud-upgrade
+  - get: environment
+    trigger: true
+    resource: environment-vcloud
+    passed:
+    - early-destroy-environment-vcloud-upgrade
+  - put: environment-vcloud
+    params:
+      release: environment
+- name: destroy-environment-vcloud-upgrade
+  plan:
+  - get: p-runtime
+    trigger: true
+    passed:
+    - claim-environment-vcloud-upgrade
+  - get: environment
+    resource: environment-vcloud
+    trigger: true
+    passed:
+    - claim-environment-vcloud-upgrade
+  - *1
   - task: destroy
     tags:
     - vcloud
@@ -3189,6 +3425,10 @@ jobs:
     config:
       params:
         OPSMAN_VERSION: 1.6
+    on_failure:
+      put: cats-logs
+      params:
+        from: p-runtime/acceptance-tests(.*).tgz
 - name: destroy-environment-final-vcloud-upgrade
   plan:
   - get: p-runtime
@@ -3223,6 +3463,8 @@ groups:
 - name: aws-clean
   jobs:
   - claim-environment-aws-clean
+  - early-destroy-environment-aws-clean
+  - early-release-environment-aws-clean
   - destroy-environment-aws-clean
   - deploy-ops-manager-aws-clean
   - configure-microbosh-aws-clean
@@ -3236,6 +3478,8 @@ groups:
 - name: openstack-clean
   jobs:
   - claim-environment-openstack-clean
+  - early-destroy-environment-openstack-clean
+  - early-release-environment-openstack-clean
   - destroy-environment-openstack-clean
   - deploy-ops-manager-openstack-clean
   - configure-microbosh-openstack-clean
@@ -3249,6 +3493,8 @@ groups:
 - name: vsphere-clean
   jobs:
   - claim-environment-vsphere-clean
+  - early-destroy-environment-vsphere-clean
+  - early-release-environment-vsphere-clean
   - destroy-environment-vsphere-clean
   - deploy-ops-manager-vsphere-clean
   - configure-microbosh-vsphere-clean
@@ -3262,6 +3508,8 @@ groups:
 - name: vsphere-internetless
   jobs:
   - claim-environment-internetless
+  - early-destroy-environment-internetless
+  - early-release-environment-internetless
   - destroy-environment-internetless
   - deploy-ops-manager-internetless
   - verify-internetless
@@ -3276,6 +3524,8 @@ groups:
 - name: aws-upgrade
   jobs:
   - claim-environment-aws-upgrade
+  - early-destroy-environment-aws-upgrade
+  - early-release-environment-aws-upgrade
   - destroy-environment-aws-upgrade
   - deploy-ops-manager-initial-aws-upgrade
   - configure-microbosh-initial-aws-upgrade
@@ -3296,6 +3546,8 @@ groups:
 - name: openstack-upgrade
   jobs:
   - claim-environment-openstack-upgrade
+  - early-destroy-environment-openstack-upgrade
+  - early-release-environment-openstack-upgrade
   - destroy-environment-openstack-upgrade
   - deploy-ops-manager-initial-openstack-upgrade
   - configure-microbosh-initial-openstack-upgrade
@@ -3316,6 +3568,8 @@ groups:
 - name: vsphere-upgrade
   jobs:
   - claim-environment-vsphere-upgrade
+  - early-destroy-environment-vsphere-upgrade
+  - early-release-environment-vsphere-upgrade
   - destroy-environment-vsphere-upgrade
   - deploy-ops-manager-initial-vsphere-upgrade
   - configure-microbosh-initial-vsphere-upgrade
@@ -3336,6 +3590,8 @@ groups:
 - name: vcloud-upgrade
   jobs:
   - claim-environment-vcloud-upgrade
+  - early-destroy-environment-vcloud-upgrade
+  - early-release-environment-vcloud-upgrade
   - destroy-environment-vcloud-upgrade
   - deploy-ops-manager-initial-vcloud-upgrade
   - configure-microbosh-initial-vcloud-upgrade

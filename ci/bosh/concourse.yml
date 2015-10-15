@@ -187,6 +187,7 @@ jobs:
       - {release: concourse, name: consul-agent}
       - {release: concourse, name: blackbox}
       - {release: concourse, name: groundcrew}
+      - {release: concourse, name: baggageclaim}
       - {release: garden-linux, name: garden}
     networks: [{name: concourse}]
     properties:
@@ -194,7 +195,6 @@ jobs:
       garden:
         listen_network: tcp
         listen_address: 0.0.0.0:7777
-        default_container_grace_time: 30m
         btrfs_store_size_mb: 150000
 
       consul:
@@ -214,6 +214,7 @@ jobs:
       - {release: concourse, name: consul-agent}
       - {release: concourse, name: blackbox}
       - {release: concourse, name: groundcrew}
+      - {release: concourse, name: baggageclaim}
       - {release: garden-linux, name: garden}
     networks: [{name: concourse}]
     properties:
@@ -221,7 +222,6 @@ jobs:
       garden:
         listen_network: tcp
         listen_address: 0.0.0.0:7777
-        default_container_grace_time: 30m
         btrfs_store_size_mb: 150000
 
       consul:

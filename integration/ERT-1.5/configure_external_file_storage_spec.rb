@@ -26,7 +26,7 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X External File Storage', order: :
           attribute_value: elastic_runtime_settings.file_storage.endpoint,
         },
         '.properties.system_blobstore.external.bucket' => {
-          attribute_value: elastic_runtime_settings.file_storage.bucket,
+          attribute_value: elastic_runtime_settings.file_storage.buildpacks_bucket,
         },
         '.properties.system_blobstore.external.access_key' => {
           attribute_value: elastic_runtime_settings.file_storage.access_key,
