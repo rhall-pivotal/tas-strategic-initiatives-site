@@ -1,5 +1,5 @@
 ---
-metadata_version: '1.5'
+metadata_version: '1.6'
 provides_product_versions:
 - name: cf
   version: 1.6.0.0
@@ -77,12 +77,32 @@ install_time_verifiers:
       endpoint: .properties.system_blobstore.external.endpoint
       access_key_id: .properties.system_blobstore.external.access_key
       secret_access_key: .properties.system_blobstore.external.secret_key
-      bucket_name: .properties.system_blobstore.external.bucket
+      bucket_name: .properties.system_blobstore.external.buildpacks_bucket
+  - name: Verifiers::BlobstoreVerifier
+    ignorable: true
+    properties:
+      endpoint: .properties.system_blobstore.external.endpoint
+      access_key_id: .properties.system_blobstore.external.access_key
+      secret_access_key: .properties.system_blobstore.external.secret_key
+      bucket_name: .properties.system_blobstore.external.droplets_bucket
+  - name: Verifiers::BlobstoreVerifier
+    ignorable: true
+    properties:
+      endpoint: .properties.system_blobstore.external.endpoint
+      access_key_id: .properties.system_blobstore.external.access_key
+      secret_access_key: .properties.system_blobstore.external.secret_key
+      bucket_name: .properties.system_blobstore.external.packages_bucket
+  - name: Verifiers::BlobstoreVerifier
+    ignorable: true
+    properties:
+      endpoint: .properties.system_blobstore.external.endpoint
+      access_key_id: .properties.system_blobstore.external.access_key
+      secret_access_key: .properties.system_blobstore.external.secret_key
+      bucket_name: .properties.system_blobstore.external.resources_bucket
 
 post_deploy_errands:
   - name: push-apps-manager
   - name: smoke-tests
-  - name: diego-smoke-tests
   - name: push-app-usage-service
   - name: notifications
   - name: notifications-ui
@@ -92,7 +112,7 @@ post_deploy_errands:
 form_types:
   - name: system_database
     label: System Database Config
-    description: Select the database configuration that fits your installation
+    description: Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details.
     verifiers:
       - name: Verifiers::MysqlDatabaseVerifier
         properties:
@@ -138,14 +158,14 @@ form_types:
           database: .properties.uaa_database
     property_inputs:
     - reference: .properties.system_database
-      label: "Selection should only be made on the initial installation of Elastic Runtime (do NOT switch selections when upgrading). Once Elastic Runtime is installed, the selection can be changed only after a data migration. Consult Pivotal Cloud Foundry documentation for details."
+      label: "Configure your system's databases"
       selector_property_inputs:
       - reference: .properties.system_database.internal
         label: Internal Databases - MySQL and Postgres (the Postgres DBs are not highly-available, but this selection is required if you want to keep your system data from a pre-1.6.0 Elastic Runtime that you upgraded)
       - reference: .properties.system_database.internal_mysql
         label: Internal Databases - MySQL (preferred for enabling complete high-availability)
       - reference: .properties.system_database.external
-        label: External Databases (e.g. AWS RDS or any other MySQL service)
+        label: External Databases (preferred if, for example, you can use AWS RDS)
         property_inputs:
           - reference: .properties.system_database.external.host
             label: Hostname DNS Name
@@ -158,17 +178,35 @@ form_types:
 
   - name: system_blobstore
     label: File Storage Config
-    description: "Select internal if you want to keep using the system-provided filestore. Otherwise select external if you want to use your own S3-compatible filestore. Consult Pivotal Cloud Foundry documentation to determine if a particular non-AWS filestore is compatible."
+    description: "Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details."
     verifiers:
       - name: Verifiers::BlobstoreVerifier
         properties:
           endpoint: .properties.system_blobstore.external.endpoint
           access_key_id: .properties.system_blobstore.external.access_key
           secret_access_key: .properties.system_blobstore.external.secret_key
-          bucket_name: .properties.system_blobstore.external.bucket
+          bucket_name: .properties.system_blobstore.external.buildpacks_bucket
+      - name: Verifiers::BlobstoreVerifier
+        properties:
+          endpoint: .properties.system_blobstore.external.endpoint
+          access_key_id: .properties.system_blobstore.external.access_key
+          secret_access_key: .properties.system_blobstore.external.secret_key
+          bucket_name: .properties.system_blobstore.external.droplets_bucket
+      - name: Verifiers::BlobstoreVerifier
+        properties:
+          endpoint: .properties.system_blobstore.external.endpoint
+          access_key_id: .properties.system_blobstore.external.access_key
+          secret_access_key: .properties.system_blobstore.external.secret_key
+          bucket_name: .properties.system_blobstore.external.packages_bucket
+      - name: Verifiers::BlobstoreVerifier
+        properties:
+          endpoint: .properties.system_blobstore.external.endpoint
+          access_key_id: .properties.system_blobstore.external.access_key
+          secret_access_key: .properties.system_blobstore.external.secret_key
+          bucket_name: .properties.system_blobstore.external.resources_bucket
     property_inputs:
     - reference: .properties.system_blobstore
-      label: File Storage Config
+      label: "Configure your Cloud Controller's filesystem"
       selector_property_inputs:
       - reference: .properties.system_blobstore.internal
         label: Internal
@@ -180,12 +218,22 @@ form_types:
           - reference: .properties.system_blobstore.external.endpoint
             label: URL Endpoint
             description: URL endpoint of your S3-compatible blobstore
-          - reference: .properties.system_blobstore.external.bucket
-            label: Bucket Name
           - reference: .properties.system_blobstore.external.access_key
             label: Access Key
           - reference: .properties.system_blobstore.external.secret_key
             label: Secret Key
+          - reference: .properties.system_blobstore.external.buildpacks_bucket
+            label: Buildpacks Bucket Name
+            description: Bucket where the app buildpacks will be located.
+          - reference: .properties.system_blobstore.external.droplets_bucket
+            label: Droplets Bucket Name
+            description: Bucket where the app droplets will be located. You can re-use the same bucket as above, however it is recommended to use different buckets if this is a new installation of Elastic Runtime.
+          - reference: .properties.system_blobstore.external.packages_bucket
+            label: Packages Bucket Name
+            description: Bucket where the app packages will be located. You can re-use the same bucket as above, however it is recommended to use different buckets if this is a new installation of Elastic Runtime.
+          - reference: .properties.system_blobstore.external.resources_bucket
+            label: Resources Bucket Name
+            description: Bucket where the app resources will be located. You can re-use the same bucket as above, however it is recommended to use different buckets if this is a new installation of Elastic Runtime.
 
   - name: ha_proxy
     label: IPs and Ports
@@ -208,13 +256,13 @@ form_types:
 
   - name: security_config
     label: Security Config
-    description: Security settings for HAProxy, Router, and DEAs
+    description: Configure security settings
     property_inputs:
       - reference: .ha_proxy.ssl_rsa_certificate
         label: SSL Termination Certificate
-        description: "This certificate is used by HAProxy and Router for SSL termination. You can generate a self-signed certificate with your system wildcard domain if you do not have a certificate available. If you use your own external load balancer to terminate SSL instead of HAProxy or the Router, you can enter any certificate and key pair here and scale down the instances of HAProxy to zero in the Resource Config section."
+        description: "This certificate is used by HAProxy and Router for SSL termination. You can generate a self-signed certificate with your system wildcard domain if you do not have a certificate available. If you use your own external load balancer to terminate SSL instead of HAProxy or the Router, you can enter any certificate and key pair here and scale down the instances of HAProxy to zero in the Resource Config section. You can also chain together multiple certificates."
       - reference: .ha_proxy.skip_cert_verify
-        label: Trust Self-Signed Certificates
+        label: Ignore SSL certificate verification
       - reference: .ha_proxy.ssl_ciphers
         label: HAProxy SSL Ciphers
         description: "HAProxy ciphers should use dashes in their names, e.g. ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384"
@@ -224,11 +272,8 @@ form_types:
       - reference: .ha_proxy.disable_http
         label: Disable HTTP traffic to HAProxy
         description: "Allows only HTTPS traffic to HAProxy and turns on secure flag for cookies generated by Router."
-      - reference: .uaa.disable_http
-        label: Disable HTTP traffic to UAA
-        description: "Allows only HTTPS traffic to UAA"
-      - reference: .dea.allow_host_access
-        label: Enable cross-container traffic within each DEA
+      - reference: .properties.allow_cross_container_traffic
+        label: Enable cross-container traffic
         description: Not recommended for untrusted workloads
       - reference: .router.enable_ssl
         label: Enable TLS on the Router
@@ -383,55 +428,16 @@ form_types:
 
   - name: diego
     label: Diego
-    description: Diego is an in-place replacement for DEAs. If you do not wish to use Diego, you may scale down Diego Brain and Diego Cell instances to zero in Resource Config, and turn off "Diego Smoke Tests" in Errands.
+    description: Diego is a new replacement for DEAs.
     property_inputs:
       - reference: .cloud_controller.default_to_diego_backend
         label: Use Diego by default instead of DEAs
-      - reference: .diego_brain.receptor_cors_enabled
-        label: Enable CORs on Diego Receptor
-        description: Allows third-party services to access the Diego API
       - reference: .cloud_controller.allow_app_ssh_access
         label: Allow SSH access to apps
         description: Enables SSH into app containers running on Diego.
-
-
-  - name: whitelabel_config
-    label: Customized Branding
-    description: "Customize colors, images, and text for Apps Manager"
-    property_inputs:
-      - reference: .push-apps-manager.company_name
-        label: Company Name
-      - reference: .push-apps-manager.product_name
-        label: Product Name
-      - reference: .push-apps-manager.nav_bg
-        label: Background Color
-      - reference: .push-apps-manager.h1_color
-        label: H1 Header Color
-      - reference: .push-apps-manager.nav_highlight_left_border_color
-        label: Navigation Left Border Color
-        description: "Highlights the currently selected navigation link"
-      - reference: .push-apps-manager.primary_logo
-        label: Primary Logo
-        description: "Base 64 image"
-      - reference: .push-apps-manager.favicon_data_url
-        label: Favicon
-        description: "Base 64 image"
-      - reference: .push-apps-manager.legal_text
-        label: Legal Text
-      - reference: .push-apps-manager.docs_url
-        label: Docs Url
-        description: "Defaults to http://docs.pivotal.io/pivotalcf/getstarted/pcf-docs.html"
-      - reference: .push-apps-manager.support_url
-        label: Support Url
-        description: "Defaults to https://support.pivotal.io/hc/en-us/categories/200072648-Pivotal-CF-Knowledge-Base"
-      - reference: .push-apps-manager.nav_links
-        label: Custom Nagivation Links
-        description: "Add up to 7 links. These will appear below the support url in the navigation sidebar"
-        property_inputs:
-          - reference: name
-            label: "Link text"
-          - reference: href
-            label: "Url"
+      - reference: .diego_cell.garden_network_pool
+        label: Application Containers Subnet Pool
+        description: Enter a CIDR subnet mask specifying the range of subnets available to be assigned to containers.
 
   - name: experimental_features
     label: Experimental Features
@@ -525,8 +531,8 @@ job_types:
         machines: (( .etcd_server.ips ))
 
   - name: consul_server
-    label: consul
-    resource_label: consul
+    label: Consul
+    resource_label: Consul
     description:
     templates:
       - name: consul_agent
@@ -576,6 +582,9 @@ job_types:
         label: Instances
         configurable: true
         default: 1
+        constraints:
+          min: 1
+          may_only_be_odd_or_zero: true
 
     property_blueprints:
       - name: vm_credentials
@@ -601,7 +610,13 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
       consul:
-        require_ssl: false
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.value ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           mode: server
           servers:
@@ -661,8 +676,11 @@ job_types:
       - name: instances
         type: integer
         label: Instances
-        configurable: false
+        configurable: true
         default: 1
+        constraints:
+          min: 1
+          may_only_be_odd_or_zero: true
 
     property_blueprints:
       - name: vm_credentials
@@ -692,6 +710,139 @@ job_types:
           username: (( .nats.credentials.identity ))
           password: (( .nats.credentials.password ))
           machines: (( .nats.ips ))
+
+  - name: diego_database
+    label: Diego BBS
+    resource_label: Diego BBS
+    description: An etcd cluster node for Diego
+    templates:
+      - name: etcd
+        release: diego
+      - name: bbs
+        release: diego
+      - name: consul_agent
+        release: cf
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+
+    instance_definitions:
+      - name: instances
+        type: integer
+        label: Instances
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          may_only_be_odd_or_zero: true
+
+    property_blueprints:
+      - name: vm_credentials
+        type: salted_credentials
+        default:
+          identity: vcap
+      - name: bbs_encryption_passphrase
+        type: secret
+        configurable: false
+
+    manifest: |
+      diego:
+        bbs:
+          ca_cert: (( $ops_manager.ca_certificate ))
+          server_cert: (( .properties.bbs_server_cert.cert_pem ))
+          server_key: (( .properties.bbs_server_cert.private_key_pem ))
+          client_cert: (( .properties.bbs_client_cert.cert_pem ))
+          client_key: (( .properties.bbs_client_cert.private_key_pem ))
+          active_key_label: key1
+          encryption_keys:
+            - label: key1
+              passphrase: (( bbs_encryption_passphrase.value ))
+          auctioneer:
+            api_url: http://auctioneer.service.cf.internal:9016
+          etcd:
+            machines: ['etcd.service.cf.internal']
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.etcd_server_cert.cert_pem ))
+            server_key: (( .properties.etcd_server_cert.private_key_pem ))
+            client_cert: (( .properties.etcd_client_cert.cert_pem ))
+            client_key: (( .properties.etcd_client_cert.private_key_pem ))
+            peer_ca_cert: (( $ops_manager.ca_certificate ))
+            peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
+            peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
+        etcd:
+          machines: ['etcd.service.cf.internal']
+          cluster: (( bosh_job_partition_stats ))
+          ca_cert: (( $ops_manager.ca_certificate ))
+          server_cert: (( .properties.etcd_server_cert.cert_pem ))
+          server_key: (( .properties.etcd_server_cert.private_key_pem ))
+          client_cert: (( .properties.etcd_client_cert.cert_pem ))
+          client_key: (( .properties.etcd_client_cert.private_key_pem ))
+          peer_ca_cert: (( $ops_manager.ca_certificate ))
+          peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
+          peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
+      consul:
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.value ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
+        agent:
+          servers:
+            lan: (( .consul_server.ips ))
+          services:
+            bbs: {}
+            etcd: {}
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+      loggregator_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+      metron_agent:
+        zone: (( availability_zone ))
+        deployment: cf
+      etcd:
+        machines: (( .etcd_server.ips ))
 
   - name: nfs_server
     label: NFS Server
@@ -976,6 +1127,7 @@ job_types:
       proxy:
         api_password: (( dashboard_credentials.password ))
         api_username: (( dashboard_credentials.identity ))
+        proxy_ips: (( .mysql_proxy.ips ))
       cluster_ips: (( .mysql.ips ))
       nats:
         user: (( .nats.credentials.identity ))
@@ -1033,6 +1185,8 @@ job_types:
       label: Instances
       configurable: true
       default: 1
+      constraints:
+        may_only_be_odd_or_zero: true
     property_blueprints:
     - name: vm_credentials
       type: salted_credentials
@@ -1054,9 +1208,14 @@ job_types:
       type: simple_credentials
     - name: uaadb_credentials
       type: simple_credentials
+    - name: consoledb_credentials
+      type: simple_credentials
     manifest: |
       admin_password: (( mysql_admin_credentials.password ))
       cluster_ips: (( .mysql.ips ))
+      # allow up to 20 minutes for large SST's to succeed,
+      # this is temporary until BOSH pre-start is implemented
+      database_startup_timeout: 1200
       innodb_buffer_pool_size: 2147483648
       max_connections: 1500
       network_name: default
@@ -1076,6 +1235,9 @@ job_types:
         - name: autoscale
           username: (( autoscale_credentials.identity ))
           password: (( autoscale_credentials.password ))
+        - name: console
+          username: (( consoledb_credentials.identity ))
+          password: (( consoledb_credentials.password ))
       syslog_aggregator:
         address: (( ..cf.properties.syslog_host.value ))
         port: (( ..cf.properties.syslog_port.value ))
@@ -1083,7 +1245,7 @@ job_types:
 
   - name: ccdb
     label: Cloud Controller Database
-    resource_label: Cloud Controller Database
+    resource_label: Cloud Controller Database (Postgres)
     description: Stores Cloud Controller information
     templates:
       - name: postgres
@@ -1180,7 +1342,7 @@ job_types:
 
   - name: uaadb
     label: UAA Database
-    resource_label: UAA Database
+    resource_label: UAA Database (Postgres)
     description: Stores user information for the UAA
     templates:
       - name: postgres
@@ -1279,7 +1441,7 @@ job_types:
 
   - name: consoledb
     label: Apps Manager Database
-    resource_label: Apps Manager Database
+    resource_label: Apps Manager Database (Postgres)
     description: Apps Manager Database
     templates:
       - name: postgres
@@ -1386,6 +1548,8 @@ job_types:
       - name: metron_agent
         release: cf
       - name: consul_agent
+        release: cf
+      - name: route_registrar
         release: cf
       - name: nfs_mounter
         release: cf
@@ -1503,7 +1667,7 @@ job_types:
       - name: default_to_diego_backend
         type: boolean
         configurable: true
-        default: false
+        default: true
 
       - name: allow_app_ssh_access
         type: boolean
@@ -1518,6 +1682,15 @@ job_types:
       system_domain_organization: system
       app_domains: ["(( .cloud_controller.apps_domain.value ))"]
       support_address: https://support.pivotal.io
+
+      route_registrar:
+        routes:
+        - name: api
+          port: 9022
+          tags:
+            component: CloudController
+          uris:
+          - "api.(( .cloud_controller.system_domain.value ))"
 
       cc:
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
@@ -1591,8 +1764,13 @@ job_types:
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
       consul:
-        require_ssl: false
-        domain: consul
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.value ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           services:
             cloud_controller_ng: {}
@@ -1612,6 +1790,8 @@ job_types:
             secret: (( .uaa.cc_service_dashboards_credentials.password ))
           cloud_controller_username_lookup:
             secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
+          cc_routing:
+            secret: (( .uaa.cc_routing_credentials.password ))
       login:
         url: "https://login.(( .cloud_controller.system_domain.value ))"
 
@@ -1757,8 +1937,13 @@ job_types:
       etcd:
         machines: (( .etcd_server.ips ))
       consul:
-        require_ssl: false
-        domain: consul
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.value ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -1771,6 +1956,8 @@ job_types:
       - name: hm9000
         release: cf
       - name: metron_agent
+        release: cf
+      - name: route_registrar
         release: cf
 
     resource_definitions:
@@ -1859,6 +2046,14 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
+      route_registrar:
+        routes:
+        - name: hm9000
+          port: 5155
+          tags:
+            component: HM9K
+          uris:
+          - "hm9000.(( .cloud_controller.system_domain.value ))"
 
   - name: clock_global
     label: Clock Global
@@ -1970,8 +2165,13 @@ job_types:
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
       consul:
-        require_ssl: false
-        domain: consul
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.value ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
 
       nfs_server:
         address: (( .nfs_server.first_ip ))
@@ -2123,8 +2323,13 @@ job_types:
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
       consul:
-        require_ssl: false
-        domain: consul
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.value ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -2262,6 +2467,12 @@ job_types:
       - name: uaa
         release: cf
       - name: metron_agent
+        release: cf
+      - name: consul_agent
+        release: cf
+      - name: route_registrar
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -2409,6 +2620,11 @@ job_types:
         default:
           identity: notifications_template
 
+      - name: ssh_proxy_client_credentials
+        type: simple_credentials
+        default:
+          identity: ssh_proxy
+
       - name: notifications_ui_client_credentials
         type: simple_credentials
         default:
@@ -2418,6 +2634,11 @@ job_types:
         type: simple_credentials
         default:
           identity: cloud_controller_username_lookup
+
+      - name: cc_routing_credentials
+        type: simple_credentials
+        default:
+          identity: cc_routing
 
       - name: ldap_url
         type: ldap_url
@@ -2472,12 +2693,20 @@ job_types:
         configurable: true
         optional: true
 
-      - name: disable_http
-        type: boolean
-        configurable: true
-        default: false
-
     manifest: |
+      consul:
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.value ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
+        agent:
+          servers:
+            lan: (( .consul_server.ips ))
+          services:
+            uaa: {}
       login:
         asset_base_url: '/resources/pivotal'
         protocol: https
@@ -2516,7 +2745,7 @@ job_types:
               - https://apps.(( .cloud_controller.system_domain.value ))/
             url: "/login"
       uaa:
-        require_https: (( disable_http.value ))
+        require_https: true
         ldap:
           profile_type: search-and-bind
           url: (( ldap_url.value ))
@@ -2557,6 +2786,7 @@ job_types:
             authorized-grant-types: "authorization_code,client_credentials,refresh_token"
             autoapprove: true
             authorities: "scim.zones,zones.read,uaa.resource,zones.write,cloud_controller.admin"
+            redirect-uri: "https://p-identity.(( .cloud_controller.system_domain.value ))/dashboard/,https://p-identity.(( .cloud_controller.system_domain.value ))/dashboard/*"
           login:
             id: (( login_client_credentials.identity ))
             secret: (( login_client_credentials.password ))
@@ -2581,7 +2811,7 @@ job_types:
             autoapprove: true
             authorities: "uaa.none"
             authorized-grant-types: "implicit,password,refresh_token"
-            scope: "cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose"
+            scope: "cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user"
             access-token-validity: 7200
             refresh-token-validity: 1209600
           (( autoscale_client_credentials.identity )):
@@ -2614,7 +2844,7 @@ job_types:
           gorouter:
             id: (( gorouter_client_credentials.identity ))
             secret: (( gorouter_client_credentials.password ))
-            authorities: clients.read,clients.write,clients.admin,route.admin,route.advertise
+            authorities: clients.read,clients.write,clients.admin,routing.routes.write,routing.routes.read
             authorized-grant-types: client_credentials,refresh_token
             scope: openid,cloud_controller_service_permissions.read
           notifications:
@@ -2642,6 +2872,17 @@ job_types:
             secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
             authorized-grant-types: client_credentials
             authorities: scim.userids
+          (( cc_routing_credentials.identity )):
+            authorities: routing.router_groups.read
+            authorized-grant-types: client_credentials
+            secret: (( cc_routing_credentials.password ))
+          ssh-proxy:
+            authorized-grant-types: authorization_code
+            autoapprove: true
+            override: true
+            redirect-uri: /login
+            scope: openid,cloud_controller.read,cloud_controller.write
+            secret: (( .uaa.ssh_proxy_client_credentials.password ))
         scim:
           user:
             override: true
@@ -2675,6 +2916,17 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
+      route_registrar:
+        routes:
+        - name: uaa
+          port: 8080
+          uris:
+          - "uaa.(( .cloud_controller.system_domain.value ))"
+          - "*.uaa.(( .cloud_controller.system_domain.value ))"
+          - "login.(( .cloud_controller.system_domain.value ))"
+          - "*.login.(( .cloud_controller.system_domain.value ))"
+      router:
+        servers: (( .router.ips ))
 
   - name: diego_brain
     label: Diego Brain
@@ -2683,19 +2935,21 @@ job_types:
     templates:
       - name: auctioneer
         release: diego
-      - name: bbs
+      - name: cc_uploader
         release: diego
       - name: converger
         release: diego
-      - name: etcd
+      - name: file_server
         release: diego
-      - name: receptor
+      - name: nsync
         release: diego
       - name: route_emitter
         release: diego
-      - name: runtime_metrics_server
-        release: diego
       - name: ssh_proxy
+        release: diego
+      - name: stager
+        release: diego
+      - name: tps
         release: diego
       - name: consul_agent
         release: cf
@@ -2745,18 +2999,13 @@ job_types:
         configurable: true
         default: 1
         constraints:
-          min: 0
+          min: 1
 
     property_blueprints:
       - name: vm_credentials
         type: salted_credentials
         default:
           identity: vcap
-
-      - name: receptor_cors_enabled
-        type: boolean
-        configurable: true
-        default: false
 
       - name: ssh_host_key
         type: rsa_pkey_credentials
@@ -2766,212 +3015,12 @@ job_types:
       diego:
         auctioneer:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
-          etcd:
-            machines: ['etcd.service.cf.internal']
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
-        bbs:
-          auctioneer:
-            api_url: http://auctioneer.service.cf.internal:9016
-          etcd:
-            machines: ['etcd.service.cf.internal']
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
-        converger:
-          bbs:
-            api_url: http://bbs.service.cf.internal:8889
-          etcd:
-            machines: ['etcd.service.cf.internal']
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
-        etcd:
-          machines: ['etcd.service.cf.internal']
-          cluster:
-            - name:  (( name ))-partition-(( availability_zone ))
-              instances: (( instances ))
-          require_ssl: false
-          ca_cert: "foo"
-          client_cert: "bar"
-          client_key: "baz"
-          peer_require_ssl: false
-          peer_ca_cert: "foo"
-          peer_cert: "bar"
-          peer_key: "baz"
-        receptor:
-          bbs:
-            api_url: http://bbs.service.cf.internal:8889
-          cors_enabled: (( receptor_cors_enabled.value ))
-          register_with_router: true
-          domain_names: ["(( .cloud_controller.system_domain.value ))","(( .cloud_controller.apps_domain.value ))"]
-          nats:
-            user: (( .nats.credentials.identity ))
-            password: (( .nats.credentials.password ))
-            port: 4222
-            machines: (( .nats.ips ))
-          etcd:
-            machines: ['etcd.service.cf.internal']
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
-        route_emitter:
-          nats:
-            user: (( .nats.credentials.identity ))
-            password: (( .nats.credentials.password ))
-            port: 4222
-            machines: (( .nats.ips ))
-        runtime_metrics_server:
-          diego_api_url: (( first_ip ))
-          etcd:
-            machines: ['etcd.service.cf.internal']
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
-        ssh_proxy:
-          host_key: (( ssh_host_key.private_key_pem ))
-          enable_cf_auth: true
-          enable_diego_auth: false
-          cc:
-            external_port: 9022
-        ssl:
-          skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-      consul:
-        require_ssl: false
-        domain: consul
-        agent:
-          servers:
-            lan: (( .consul_server.ips ))
-          services:
-            auctioneer: {}
-            bbs: {}
-            etcd: {}
-            receptor: {}
-            ssh_proxy: {}
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines: (( .nats.ips ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-      metron_agent:
-        zone: (( availability_zone ))
-        deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
-
-  - name: cc_bridge
-    label: Diego CC Bridge
-    resource_label: Diego CC Bridge
-    description: Diego CC Bridge
-    templates:
-      - name: stager
-        release: diego
-      - name: nsync
-        release: diego
-      - name: tps
-        release: diego
-      - name: file_server
-        release: diego
-      - name: cc_uploader
-        release: diego
-      - name: consul_agent
-        release: cf
-      - name: metron_agent
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 4_096
-        constraints:
-          min: 4_096
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 0
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-    manifest: |
-      diego:
-        ssl:
-          skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-        stager:
-          cc:
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
-            external_port: 9022
-            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
-            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
-        nsync:
-          cc:
-            base_url: https://api.(( .cloud_controller.system_domain.value ))
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
-            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
-            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
-        tps:
-          cc:
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
-            external_port: 9022
-            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
-            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
-        file_server:
-          cc:
-            job_polling_interval_in_seconds: 25
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
-            external_port: 9022
-            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
-            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+            api_location: bbs.service.cf.internal:8889
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
         cc_uploader:
           cc:
             job_polling_interval_in_seconds: 25
@@ -2980,17 +3029,113 @@ job_types:
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
-
+        converger:
+          bbs:
+            api_location: bbs.service.cf.internal:8889
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
+        file_server:
+          cc:
+            job_polling_interval_in_seconds: 25
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            external_port: 9022
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+        nsync:
+          bbs:
+            api_location: bbs.service.cf.internal:8889
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
+          cc:
+            base_url: https://api.(( .cloud_controller.system_domain.value ))
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+        route_emitter:
+          bbs:
+            api_location: bbs.service.cf.internal:8889
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
+          nats:
+            user: (( .nats.credentials.identity ))
+            password: (( .nats.credentials.password ))
+            port: 4222
+            machines: (( .nats.ips ))
+        ssh_proxy:
+          bbs:
+            api_location: bbs.service.cf.internal:8889
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
+          host_key: (( ssh_host_key.private_key_pem ))
+          enable_cf_auth: true
+          enable_diego_auth: false
+          diego_credentials: ""
+          cc:
+            external_port: 9022
+          uaa_token_url: "https://uaa.(( .cloud_controller.system_domain.value ))/oauth/token"
+          uaa_secret: (( .uaa.ssh_proxy_client_credentials.password ))
+        ssl:
+          skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+        stager:
+          bbs:
+            api_location: bbs.service.cf.internal:8889
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
+          cc:
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            external_port: 9022
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+        tps:
+          traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value || "443" ))
+          bbs:
+            api_location: bbs.service.cf.internal:8889
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
+          cc:
+            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            external_port: 9022
+            staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+            staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
       consul:
-        require_ssl: false
-        domain: consul
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.value ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           servers:
             lan: (( .consul_server.ips ))
           services:
+            auctioneer: {}
             cc_uploader: {}
             file_server: {}
             nsync: {}
+            ssh_proxy: {}
             stager: {}
             tps: {}
       nats:
@@ -3035,9 +3180,9 @@ job_types:
         type: integer
         label: Ephemeral Disk
         configurable: true
-        default: 32_768
+        default: 65_536
         constraints:
-          min: 32_768
+          min: 65_536
 
       - name: persistent_disk
         type: integer
@@ -3049,7 +3194,7 @@ job_types:
         type: integer
         label: CPU
         configurable: true
-        default: 1
+        default: 2
         constraints:
           min: 1
           power_of_two: true
@@ -3063,9 +3208,9 @@ job_types:
         type: integer
         label: Instances
         configurable: true
-        default: 1
+        default: 3
         constraints:
-          min: 0
+          min: 1
 
     property_blueprints:
       - name: vm_credentials
@@ -3073,21 +3218,31 @@ job_types:
         default:
           identity: vcap
 
+      - name: garden_network_pool
+        type: string
+        default: 10.254.0.0/22
+        configurable: true
+        optional: false
+
     manifest: |
       diego:
         rep:
           bbs:
-            api_url: http://bbs.service.cf.internal:8889
-          etcd:
-            machines: ['etcd.service.cf.internal']
-            require_ssl: false
-            ca_cert: "foo"
-            client_cert: "bar"
-            client_key: "baz"
+            api_location: bbs.service.cf.internal:8889
+            ca_cert: (( $ops_manager.ca_certificate ))
+            server_cert: (( .properties.bbs_server_cert.cert_pem ))
+            server_key: (( .properties.bbs_server_cert.private_key_pem ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
           zone: (( availability_zone ))
       consul:
-        require_ssl: false
-        domain: consul
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.value ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
           servers:
             lan: (( .consul_server.ips ))
@@ -3103,6 +3258,12 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
+      garden:
+        allow_host_access: (( .properties.allow_cross_container_traffic.value ))
+        persistent_image_list:
+          - "/var/vcap/packages/rootfs_cflinuxfs2/rootfs"
+        enable_graph_cleanup: true
+        network_pool: (( garden_network_pool.value ))
 
   - name: dea
     label: DEA
@@ -3157,9 +3318,9 @@ job_types:
         type: integer
         label: Instances
         configurable: true
-        default: 1
+        default: 0
         constraints:
-          min: 1
+          min: 0
 
     property_blueprints:
       - name: vm_credentials
@@ -3170,16 +3331,11 @@ job_types:
       - name: loggregator_agent_status_credentials
         type: simple_credentials
 
-      - name: allow_host_access
-        type: boolean
-        configurable: true
-        default: false
-
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
 
       dea_next:
-        allow_host_access: (( allow_host_access.value ))
+        allow_host_access: (( .properties.allow_cross_container_traffic.value ))
         directory_server_protocol: https
         memory_mb: (( ram ))
         memory_overcommit_factor: 1
@@ -3334,6 +3490,8 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
+      - name: route_registrar
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -3427,6 +3585,17 @@ job_types:
           doppler:
             secret: (( .uaa.doppler_client_credentials.password ))
 
+      route_registrar:
+        routes:
+        - name: doppler
+          port: 8081
+          uris:
+          - "doppler.(( .cloud_controller.system_domain.value ))"
+        - name: loggregator
+          port: 8080
+          uris:
+          - "loggregator.(( .cloud_controller.system_domain.value ))"
+
   - name: push-apps-manager
     label: Push Apps Manager
     resource_label: Push Apps Manager
@@ -3489,65 +3658,6 @@ job_types:
         type: secret
         configurable: false
 
-      - name: company_name
-        type: string
-        configurable: true
-        optional: true
-
-      - name: product_name
-        type: string
-        configurable: true
-        optional: true
-
-      - name: nav_bg
-        type: string
-        configurable: true
-        optional: true
-
-      - name: h1_color
-        type: string
-        configurable: true
-        optional: true
-
-      - name: nav_highlight_left_border_color
-        type: string
-        configurable: true
-        optional: true
-
-      - name: primary_logo
-        type: string
-        configurable: true
-        optional: true
-
-      - name: favicon_data_url
-        type: string
-        configurable: true
-        optional: true
-
-      - name: legal_text
-        type: string
-        configurable: true
-        optional: true
-
-      - name: docs_url
-        type: string
-        configurable: true
-        optional: true
-
-      - name: support_url
-        type: string
-        configurable: true
-        optional: true
-
-      - name: nav_links
-        type: collection
-        configurable: true
-        optional: true
-        property_blueprints:
-          - name: name
-            type: string
-          - name: href
-            type: string
     manifest: |
       cf:
         api_url: "https://api.(( .cloud_controller.system_domain.value ))"
@@ -3575,18 +3685,7 @@ job_types:
         default_from: (( .properties.smtp_from.value ))
         usage_service_host: app-usage.(( .cloud_controller.system_domain.value ))
         bundle_without: test development hosted_only
-        white_label_config_json:
-          company_name: (( company_name.value ))
-          product_name: (( product_name.value ))
-          nav_bg: (( nav_bg.value ))
-          h1_color: (( h1_color.value ))
-          nav_highlight_left_border_color: (( nav_highlight_left_border_color.value ))
-          primary_logo: (( primary_logo.value ))
-          favicon_data_url: (( favicon_data_url.value ))
-          legal_text: (( legal_text.value ))
-          docs_url: (( docs_url.value ))
-          support_url: (( support_url.value ))
-          nav_links: (( nav_links.value ))
+        apps_manager_version: (( .properties.product_version.value ))
       databases:
         console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
       ssl:
@@ -3780,76 +3879,6 @@ job_types:
         use_existing_org: false
         use_existing_space: false
         ginkgo_opts: "-skipPackage=logging"
-
-  - name: diego-smoke-tests
-    label: Run Diego Smoke Tests
-    resource_label: Run Diego Smoke Tests
-    description: Runs Diego Smoke Tests against your Elastic Runtime installation
-    templates:
-      - name: smoke-tests
-        release: diego
-    errand: true
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-    manifest: |
-      diego:
-        ssl:
-          skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-        smoke_tests:
-          api: "https://api.(( .cloud_controller.system_domain.value ))"
-          apps_domain: (( .cloud_controller.apps_domain.value ))
-          user: (( .uaa.run_smoke_tests_credentials.identity ))
-          password: (( .uaa.run_smoke_tests_credentials.password ))
-          org: system
-          space: DIEGO_CF_SMOKE_TEST_SPACE
 
   - name: notifications
     label: Notifications
@@ -4262,6 +4291,7 @@ job_types:
         clients:
           autoscaling_service:
             secret: (( .uaa.autoscale_client_credentials.password ))
+
   - name: autoscaling-register-broker
     label: Register autoscaling service broker
     resource_label: Register autoscaling service broker
@@ -4335,6 +4365,7 @@ job_types:
       domain: (( .cloud_controller.system_domain.value ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+
   - name: autoscaling-destroy-broker
     label: Destroy autoscaling service broker
     resource_label: Destroy autoscaling service broker
@@ -4473,7 +4504,8 @@ job_types:
         admin_password: (( .uaa.admin_credentials.password ))
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         run_security_groups_tests: false
-        run_ssh_tests: false
+        run_ssh_tests: true
+        skip_docker_tests: true
         nodes: 1
 
   - name: acceptance-tests
@@ -4745,6 +4777,11 @@ property_blueprints:
     configurable: true
     optional: true
 
+  - name: allow_cross_container_traffic
+    type: boolean
+    configurable: true
+    default: false
+
   - name: app_usage_service_database
     type: string
     configurable: false
@@ -4769,6 +4806,54 @@ property_blueprints:
     type: string
     configurable: false
     default: uaa
+
+  - name: consul_encrypt_key
+    type: secret
+    configurable: false
+
+  - name: consul_agent_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: consul_server_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - server.dc1.cf.internal
+
+  - name: etcd_peer_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - etcd.service.cf.internal
+      - "*.etcd.service.cf.internal"
+
+  - name: etcd_client_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: etcd_server_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - etcd.service.cf.internal
+      - "*.etcd.service.cf.internal"
+
+  - name: bbs_client_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: bbs_server_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - bbs.service.cf.internal
+      - "*.bbs.service.cf.internal"
+
 
   - name: system_database
     type: selector
@@ -4868,10 +4953,11 @@ property_blueprints:
             password: (( .mysql.app_usage_credentials.password ))
         - name: console
           manifest: |
-            ip: (( .consoledb.first_ip ))
-            username: (( .consoledb.credentials.identity ))
-            password: (( .consoledb.credentials.password ))
-            adapter: postgres
+            ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            port: 3306
+            username: (( .mysql.consoledb_credentials.identity ))
+            password: (( .mysql.consoledb_credentials.password ))
+            adapter: mysql
 
       - name: external
         named_manifests:
@@ -4959,7 +5045,7 @@ property_blueprints:
         named_manifests:
           - name: ccbuildpack
             manifest: |
-              buildpack_directory_key: (( .properties.system_blobstore.external.bucket.value ))
+              buildpack_directory_key: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -4969,7 +5055,7 @@ property_blueprints:
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccdroplet
             manifest: |
-              droplet_directory_key: (( .properties.system_blobstore.external.bucket.value ))
+              droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -4979,7 +5065,7 @@ property_blueprints:
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccpackage
             manifest: |
-              app_package_directory_key: (( .properties.system_blobstore.external.bucket.value ))
+              app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -4989,7 +5075,7 @@ property_blueprints:
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccresource
             manifest: |
-              resource_directory_key: (( .properties.system_blobstore.external.bucket.value ))
+              resource_directory_key: (( .properties.system_blobstore.external.resources_bucket.value ))
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -5003,7 +5089,16 @@ property_blueprints:
             type: string
             configurable: true
             default: "https://s3.amazonaws.com"
-          - name: bucket
+          - name: buildpacks_bucket
+            type: string
+            configurable: true
+          - name: droplets_bucket
+            type: string
+            configurable: true
+          - name: packages_bucket
+            type: string
+            configurable: true
+          - name: resources_bucket
             type: string
             configurable: true
           - name: access_key

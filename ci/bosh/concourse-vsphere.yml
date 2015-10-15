@@ -71,6 +71,7 @@ jobs:
     templates:
       - {release: concourse, name: blackbox}
       - {release: concourse, name: groundcrew}
+      - {release: concourse, name: baggageclaim}
       - {release: garden-linux, name: garden}
     networks: [{name: private}]
     properties:
@@ -79,6 +80,8 @@ jobs:
         tags: ["vsphere","openstack"]
         garden:
           forward_address: 127.0.0.1:7777
+        baggageclaim:
+          forward_address: 127.0.0.1:7788
         resource_types: *resource_types
         tsa:
           host_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDOJ2NAgif/I2ePWgqcNuDRyqsKo9CqglVDSRcpUEaDcLz/qUyEOZzfiP21nD01eKv22T6kO0lPeV3N3DMpJc0hxej9CV6C00a2Psk+B36AResIC2OFODkbty5+FcEky4ytjwpDtn+7DG0+FElSY72hEHOx0ymLy7BXswlyXEE+SlqsM4KVzP4x3K6LQ1LW2hq4wmwDXL+J16ejZWZT+P2UiQGIMk7MhnL36pCf3J1sgTwSb7b5LWFy1YH4FxkLMQ8kNRkxmmAj/8v2rv7Y8a/b5vaeZqT+kerPslbK09ZAWnKSCi3ZCcDsfSHi1OADO2igww+hZNmkB6R8LqVvaPlhi18u8ONTjtLV3YRefxbj5FZBdF+lGZ4Jjca0QdiPE2i8d1BhBb6Wd8Dv3zL2DkSHz2eqAyA6AteGNvBBTY3wVqh+ir2+tQc+defBA2sJSRKx8fJF4Qc1ig+SVx5t3nQVJu5Wg4RgT/rdo5/FX7snnfaSIXODHkX7Bv3pIkKHYtlji1l1wv0AkVGzDWnIB4Zi0KOfg4AqVe76gGVyzAWX5c2jVCrnI0GrTkxco/+6pHm3EihpDm3yCoFYABzYLBH8ksgin1KwAkqujqsoirW7CaWsubodQkHNmsxfkOegfLkJj4i9oL4suBHqxA007X8QFPy2Ad89VaY6OHIh8C2H2Q=="
@@ -139,7 +142,6 @@ jobs:
         listen_network: tcp
         listen_address: 0.0.0.0:7777
         allow_host_access: true
-        default_container_grace_time: 30m
         btrfs_store_size_mb: 144000
 
 resource_pools:

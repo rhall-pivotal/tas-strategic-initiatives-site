@@ -9,9 +9,9 @@ GIT
 
 GIT
   remote: git@github.com:pivotal-cf/opsmgr
-  revision: 147007e1ae1011124fbcc9c62b0505705999d0fb
+  revision: bea205783f8c52b987fda3ffc565aba51656c756
   specs:
-    opsmgr (0.14.0)
+    opsmgr (0.20.0)
       activesupport (~> 4.1.6)
       aws-sdk (~> 2.0)
       filesize (~> 0.0.3)
@@ -20,14 +20,14 @@ GIT
       mustache
       netaddr
       open4
-      ops_manager_ui_drivers (~> 1.3.0)
+      ops_manager_ui_drivers (~> 1.7.0)
       rake
       rbvmomi (~> 1.8.0)
       recursive-open-struct (~> 0.5.0)
       rspec
       rubyzip
       sinatra
-      vm_shepherd (= 1.10.1)
+      vm_shepherd
 
 GIT
   remote: git@github.com:pivotal-cf/vara.git
@@ -40,7 +40,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    CFPropertyList (2.3.1)
+    CFPropertyList (2.3.2)
     activesupport (4.1.13)
       i18n (~> 0.6, >= 0.6.9)
       json (~> 1.7, >= 1.7.7)
@@ -51,26 +51,26 @@ GEM
     ast (2.1.0)
     astrolabe (1.3.1)
       parser (~> 2.2)
-    aws-sdk (2.1.14)
-      aws-sdk-resources (= 2.1.14)
-    aws-sdk-core (2.1.14)
+    aws-sdk (2.1.29)
+      aws-sdk-resources (= 2.1.29)
+    aws-sdk-core (2.1.29)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.1.14)
-      aws-sdk-core (= 2.1.14)
-    aws-sdk-v1 (1.64.0)
+    aws-sdk-resources (2.1.29)
+      aws-sdk-core (= 2.1.29)
+    aws-sdk-v1 (1.66.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
     builder (3.2.2)
     byebug (5.0.0)
       columnize (= 0.9.0)
-    capybara (2.4.4)
+    capybara (2.5.0)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    capybara-webkit (1.6.0)
-      capybara (>= 2.3.0, < 2.5.0)
+    capybara-webkit (1.7.1)
+      capybara (>= 2.3.0, < 2.6.0)
       json
     childprocess (0.5.6)
       ffi (~> 1.0, >= 1.0.11)
@@ -78,20 +78,20 @@ GEM
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
     diff-lcs (1.2.5)
-    domain_name (0.5.24)
+    domain_name (0.5.25)
       unf (>= 0.0.5, < 1.0.0)
     excon (0.45.4)
     ffi (1.9.10)
     filesize (0.0.4)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
-    fog (1.33.0)
+    fog (1.34.0)
       fog-atmos
       fog-aws (>= 0.6.0)
       fog-brightbox (~> 0.4)
       fog-core (~> 1.32)
-      fog-dynect
-      fog-ecloud (= 0.1.1)
+      fog-dynect (~> 0.0.2)
+      fog-ecloud (~> 0.1)
       fog-google (>= 0.0.2)
       fog-json
       fog-local
@@ -112,7 +112,7 @@ GEM
     fog-atmos (0.1.0)
       fog-core
       fog-xml
-    fog-aws (0.7.4)
+    fog-aws (0.7.6)
       fog-core (~> 1.27)
       fog-json (~> 1.0)
       fog-xml (~> 0.1)
@@ -128,14 +128,14 @@ GEM
       mime-types
       net-scp (~> 1.1)
       net-ssh (>= 2.1.3)
-    fog-dynect (0.0.1)
+    fog-dynect (0.0.2)
       fog-core
       fog-json
       fog-xml
-    fog-ecloud (0.1.1)
+    fog-ecloud (0.3.0)
       fog-core
       fog-xml
-    fog-google (0.0.7)
+    fog-google (0.1.1)
       fog-core
       fog-json
       fog-xml
@@ -160,7 +160,7 @@ GEM
       fog-core
       fog-json
       fog-xml
-    fog-sakuracloud (1.0.1)
+    fog-sakuracloud (1.3.3)
       fog-core
       fog-json
     fog-serverlove (0.1.2)
@@ -191,19 +191,18 @@ GEM
     i18n (0.7.0)
     inflecto (0.0.2)
     ipaddress (0.8.0)
-    jmespath (1.0.2)
-      multi_json (~> 1.0)
+    jmespath (1.1.3)
     json (1.8.3)
     mime-types (2.6.2)
     mini_portile (0.6.2)
-    minitest (5.8.0)
+    minitest (5.8.1)
     multi_json (1.11.2)
     multipart-post (2.0.0)
     mustache (1.0.2)
     mysql2 (0.3.19)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
-    net-ssh (2.9.2)
+    net-ssh (3.0.1)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
     netaddr (1.5.0)
@@ -211,7 +210,7 @@ GEM
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     open4 (1.3.4)
-    ops_manager_ui_drivers (1.3.1)
+    ops_manager_ui_drivers (1.7.3)
       capybara
       capybara-webkit
       selenium-webdriver
@@ -262,7 +261,7 @@ GEM
       rest-client (>= 1.6.7)
     rubyzip (1.1.7)
     safe_yaml (1.0.4)
-    selenium-webdriver (2.47.1)
+    selenium-webdriver (2.48.1)
       childprocess (~> 0.5)
       multi_json (~> 1.0)
       rubyzip (~> 1.0)
@@ -280,7 +279,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
-    vm_shepherd (1.10.1)
+    vm_shepherd (1.11.6)
       aws-sdk-v1
       fog
       rbvmomi

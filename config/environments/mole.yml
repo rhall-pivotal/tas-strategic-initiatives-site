@@ -13,7 +13,7 @@ vm_shepherd:
       resource_pool: mole
       datacenter: private
       cluster: private
-      datastore: private
+      persistent_datastore: private
       network: mole
       folder: mole
     cleanup:
@@ -46,9 +46,9 @@ ops_manager:
       password: look74Beer
     datacenter: private
     datastore: private
-    microbosh_vm_folder: mole_vms
-    microbosh_template_folder: mole_templates
-    microbosh_disk_path: mole_disk
+    bosh_vm_folder: mole_vms
+    bosh_template_folder: mole_templates
+    bosh_disk_path: mole_disk
   availability_zones:
   - name: first-az
     cluster: private

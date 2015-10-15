@@ -13,7 +13,7 @@ vm_shepherd:
       resource_pool: moose
       datacenter: private
       cluster: private
-      datastore: private
+      persistent_datastore: private
       network: moose
       folder: moose
     cleanup:
@@ -46,9 +46,9 @@ ops_manager:
       password: look74Beer
     datacenter: private
     datastore: private
-    microbosh_vm_folder: moose_vms
-    microbosh_template_folder: moose_templates
-    microbosh_disk_path: moose_disk
+    bosh_vm_folder: moose_vms
+    bosh_template_folder: moose_templates
+    bosh_disk_path: moose_disk
   availability_zones:
   - name: first-az
     cluster: private

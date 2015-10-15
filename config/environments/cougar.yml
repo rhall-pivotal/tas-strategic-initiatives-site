@@ -12,7 +12,7 @@ vm_shepherd:
       resource_pool: cougar
       datacenter: private
       cluster: private
-      datastore: private
+      persistent_datastore: private
       network: cougar
       folder: cougar
     cleanup:
@@ -45,9 +45,9 @@ ops_manager:
       password: look74Beer
     datacenter: private
     datastore: private
-    microbosh_vm_folder: cougar_vms
-    microbosh_template_folder: cougar_templates
-    microbosh_disk_path: cougar_disk
+    bosh_vm_folder: cougar_vms
+    bosh_template_folder: cougar_templates
+    bosh_disk_path: cougar_disk
   availability_zones:
   - name: first-az
     cluster: private

@@ -59,6 +59,15 @@ namespace :ert do
     ).configure_external_dbs
   end
 
+  desc 'Disable HTTP Traffic in Elastic Runtime'
+  task :disable_http_traffic, [:environment_name, :ert_version, :om_version] do |_, args|
+    IntegrationSpecRunner.new(
+      environment: args.environment_name,
+      ert_version: args.ert_version,
+      om_version: args.om_version
+    ).disable_http_traffic
+  end
+
   desc 'Configure Elastic Runtime External File Storage'
   task :configure_external_file_storage, [:environment_name, :ert_version, :om_version] do |_, args|
     IntegrationSpecRunner.new(
