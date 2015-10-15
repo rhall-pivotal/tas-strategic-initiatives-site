@@ -19,7 +19,6 @@ RSpec.describe 'Disable HTTP Traffic in Elastic Runtime 1.6.X', order: :defined 
     security_config_form.open_form
 
     check 'security_config[.ha_proxy.disable_http]'
-    check 'security_config[.uaa.disable_http]'
 
     security_config_form.save_form
   end
