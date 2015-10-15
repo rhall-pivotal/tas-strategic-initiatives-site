@@ -530,8 +530,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: consul_server
     label: consul
@@ -610,8 +611,9 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       consul:
         require_ssl: false
         agent:
@@ -702,6 +704,11 @@ job_types:
         machines: (( .nats.ips ))
       etcd:
         machines: (( ips ))
+        peer_require_ssl: false
+        require_ssl: false
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       etcd_metrics_server:
         nats:
           username: (( .nats.credentials.identity ))
@@ -714,7 +721,7 @@ job_types:
     description: An etcd cluster node for Diego
     templates:
       - name: etcd
-        release: diego
+        release: etcd
       - name: bbs
         release: diego
       - name: consul_agent
@@ -781,6 +788,17 @@ job_types:
           identity: bbs
 
     manifest: |
+      etcd:
+        machines: ['etcd.service.cf.internal']
+        cluster: (( bosh_job_partition_stats ))
+        require_ssl: false
+        ca_cert: "foo"
+        client_cert: "bar"
+        client_key: "baz"
+        peer_require_ssl: false
+        peer_ca_cert: "foo"
+        peer_cert: "bar"
+        peer_key: "baz"
       diego:
         bbs:
           require_ssl: false
@@ -799,17 +817,6 @@ job_types:
             ca_cert: "foo"
             client_cert: "bar"
             client_key: "baz"
-        etcd:
-          machines: ['etcd.service.cf.internal']
-          cluster: (( bosh_job_partition_stats ))
-          require_ssl: false
-          ca_cert: "foo"
-          client_cert: "bar"
-          client_key: "baz"
-          peer_require_ssl: false
-          peer_ca_cert: "foo"
-          peer_cert: "bar"
-          peer_key: "baz"
       consul:
         require_ssl: false
         agent:
@@ -828,8 +835,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: nfs_server
     label: NFS Server
@@ -912,8 +920,9 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: router
     label: Router
@@ -1010,8 +1019,6 @@ job_types:
         ssl_cert: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
         ssl_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem ))
 
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
@@ -1027,8 +1034,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       uaa:
         clients:
           gorouter:
@@ -1320,8 +1328,9 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: uaadb
     label: UAA Database
@@ -1419,8 +1428,9 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: consoledb
     label: Apps Manager Database
@@ -1518,8 +1528,9 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: cloud_controller
     label: Cloud Controller
@@ -1779,8 +1790,6 @@ job_types:
         port: (( .properties.logger_endpoint_port.value || "443" ))
       doppler:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
@@ -1796,8 +1805,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: ha_proxy
     label: HAProxy
@@ -1911,8 +1921,9 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       consul:
         require_ssl: false
         agent:
@@ -2017,6 +2028,9 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       route_registrar:
         routes:
         - name: hm9000
@@ -2153,8 +2167,6 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
@@ -2173,8 +2185,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: cloud_controller_worker
     label: Cloud Controller Worker
@@ -2308,8 +2321,6 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
@@ -2328,8 +2339,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: collector
     label: Collector
@@ -2415,8 +2427,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: uaa
     label: UAA
@@ -2841,6 +2854,8 @@ job_types:
             redirect-uri: /login
             scope: openid,cloud_controller.read,cloud_controller.write
             secret: (( .uaa.ssh_proxy_client_credentials.password ))
+          proxy:
+            servers: (( .router.ips ))
         scim:
           user:
             override: true
@@ -2872,8 +2887,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       route_registrar:
         routes:
         - name: uaa
@@ -2883,8 +2899,6 @@ job_types:
           - "*.uaa.(( .cloud_controller.system_domain.value ))"
           - "login.(( .cloud_controller.system_domain.value ))"
           - "*.login.(( .cloud_controller.system_domain.value ))"
-      router:
-        servers: (( .router.ips ))
 
   - name: diego_brain
     label: Diego Brain
@@ -3093,8 +3107,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: diego_cell
     label: Diego Cell
@@ -3194,8 +3209,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       garden:
         allow_host_access: (( .properties.allow_cross_container_traffic.value ))
         persistent_image_list:
@@ -3283,8 +3299,6 @@ job_types:
         evacuation_bail_out_time_in_seconds: 600
         zone: (( availability_zone ))
 
-      metron_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
@@ -3300,8 +3314,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: doppler
     label: Doppler Server
@@ -3408,8 +3423,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -3514,8 +3530,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       doppler:
         uaa_client_id: (( .uaa.doppler_client_credentials.identity ))
       uaa:
