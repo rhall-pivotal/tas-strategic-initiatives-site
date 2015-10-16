@@ -40,7 +40,6 @@ RSpec.describe 'Configure Elastic Runtime 1.6.X Experimental Features', order: :
     %w(
       autoscaling
       autoscaling-register-broker
-      diego-smoke-tests
       push-app-usage-service
       push-apps-manager
       smoke-tests
