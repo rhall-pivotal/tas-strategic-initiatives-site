@@ -12,7 +12,7 @@ vm_shepherd:
       resource_pool: croc
       datacenter: private
       cluster: private
-      persistent_datastore: private
+      datastore: private
       network: croc
       folder: croc
     cleanup:
@@ -44,7 +44,7 @@ ops_manager:
       username: root
       password: look74Beer
     datacenter: private
-    datastore: private
+    persistent_datastore: private
     bosh_vm_folder: croc_vms
     bosh_template_folder: croc_templates
     bosh_disk_path: croc_disk

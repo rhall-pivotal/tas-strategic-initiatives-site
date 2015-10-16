@@ -12,7 +12,7 @@ vm_shepherd:
       resource_pool: cougar
       datacenter: private
       cluster: private
-      persistent_datastore: private
+      datastore: private
       network: cougar
       folder: cougar
     cleanup:
@@ -44,7 +44,7 @@ ops_manager:
       username: root
       password: look74Beer
     datacenter: private
-    datastore: private
+    persistent_datastore: private
     bosh_vm_folder: cougar_vms
     bosh_template_folder: cougar_templates
     bosh_disk_path: cougar_disk

@@ -12,7 +12,7 @@ vm_shepherd:
       resource_pool: crane
       datacenter: private
       cluster: private
-      persistent_datastore: private
+      datastore: private
       network: crane
       folder: crane
     cleanup:
@@ -44,7 +44,7 @@ ops_manager:
       username: root
       password: look74Beer
     datacenter: private
-    datastore: private
+    persistent_datastore: private
     bosh_vm_folder: crane_vms
     bosh_template_folder: crane_templates
     bosh_disk_path: crane_disk

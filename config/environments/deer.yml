@@ -12,7 +12,7 @@ vm_shepherd:
       resource_pool: deer
       datacenter: private
       cluster: private
-      persistent_datastore: private
+      datastore: private
       network: deer
       folder: deer
     cleanup:
@@ -44,7 +44,7 @@ ops_manager:
       username: root
       password: look74Beer
     datacenter: private
-    datastore: private
+    persistent_datastore: private
     bosh_vm_folder: deer_vms
     bosh_template_folder: deer_templates
     bosh_disk_path: deer_disk
