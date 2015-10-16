@@ -12,7 +12,7 @@ vm_shepherd:
       resource_pool: collie
       datacenter: private
       cluster: private
-      persistent_datastore: private
+      datastore: private
       network: collie
       folder: collie
     cleanup:
@@ -44,7 +44,7 @@ ops_manager:
       username: root
       password: look74Beer
     datacenter: private
-    datastore: private
+    persistent_datastore: private
     bosh_vm_folder: collie_vms
     bosh_template_folder: collie_templates
     bosh_disk_path: collie_disk

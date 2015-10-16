@@ -13,7 +13,7 @@ vm_shepherd:
       resource_pool: moose
       datacenter: private
       cluster: private
-      persistent_datastore: private
+      datastore: private
       network: moose
       folder: moose
     cleanup:
@@ -45,7 +45,7 @@ ops_manager:
       username: root
       password: look74Beer
     datacenter: private
-    datastore: private
+    persistent_datastore: private
     bosh_vm_folder: moose_vms
     bosh_template_folder: moose_templates
     bosh_disk_path: moose_disk
