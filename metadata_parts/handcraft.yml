@@ -3350,8 +3350,8 @@ job_types:
     manifest: |
       cc:
         srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
-        internal_api_user: (( internal_api_user_credentials.identity ))
-        internal_api_password: (( internal_api_user_credentials.password ))
+        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
+        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
 
       domain: (( .cloud_controller.system_domain.value ))
 
