@@ -77,10 +77,7 @@ RSpec.describe 'Configure Elastic Runtime 1.6.X', order: :defined do
   end
 
   it 'disables the errands that do not work with diego' do
-    %w(
-      notifications
-      notifications-ui
-    ).each do |errand|
+    %w().each do |errand|
       current_ops_manager.product(elastic_runtime_settings.name)
         .product_errands.disable_errand(errand)
     end
