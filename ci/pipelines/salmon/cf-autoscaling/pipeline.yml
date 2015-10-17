@@ -349,6 +349,7 @@ jobs:
       - aggregate:
         - get: p-runtime
         - get: environment
+          trigger: true
           passed: [deploy-ert]
       - task: destroy
         tags: [aws]
