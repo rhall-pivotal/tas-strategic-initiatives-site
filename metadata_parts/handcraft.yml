@@ -3366,6 +3366,8 @@ job_types:
         evacuation_bail_out_time_in_seconds: 600
         zone: (( availability_zone ))
 
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
