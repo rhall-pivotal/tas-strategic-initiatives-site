@@ -35,17 +35,4 @@ RSpec.describe 'Configure Elastic Runtime 1.6.X Experimental Features', order: :
 
     diego_form.save_form
   end
-
-  it 'disables the errands that do not work with diego' do
-    %w(
-      autoscaling
-      autoscaling-register-broker
-      push-app-usage-service
-      push-apps-manager
-      smoke-tests
-    ).each do |errand|
-      current_ops_manager.product(elastic_runtime_settings.name)
-        .product_errands.disable_errand(errand)
-    end
-  end
 end
