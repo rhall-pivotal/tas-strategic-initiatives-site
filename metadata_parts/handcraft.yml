@@ -437,7 +437,7 @@ form_types:
         description: Enables SSH into app containers running on Diego.
       - reference: .diego_cell.garden_network_pool
         label: Application Containers Subnet Pool
-        description: Enter a CIDR subnet mask specifying the range of subnets available to be assigned to containers.
+        description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to containers running on Diego.
 
   - name: experimental_features
     label: Experimental Features
@@ -527,8 +527,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: consul_server
     label: Consul
@@ -607,8 +608,9 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       consul:
         encrypt_keys:
         - (( .properties.consul_encrypt_key.value ))
@@ -705,6 +707,11 @@ job_types:
         machines: (( .nats.ips ))
       etcd:
         machines: (( ips ))
+        peer_require_ssl: false
+        require_ssl: false
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       etcd_metrics_server:
         nats:
           username: (( .nats.credentials.identity ))
@@ -717,7 +724,7 @@ job_types:
     description: An etcd cluster node for Diego
     templates:
       - name: etcd
-        release: diego
+        release: etcd
       - name: bbs
         release: diego
       - name: consul_agent
@@ -783,6 +790,17 @@ job_types:
         configurable: false
 
     manifest: |
+      etcd:
+        machines: ['etcd.service.cf.internal']
+        cluster: (( bosh_job_partition_stats ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        server_cert: (( .properties.etcd_server_cert.cert_pem ))
+        server_key: (( .properties.etcd_server_cert.private_key_pem ))
+        client_cert: (( .properties.etcd_client_cert.cert_pem ))
+        client_key: (( .properties.etcd_client_cert.private_key_pem ))
+        peer_ca_cert: (( $ops_manager.ca_certificate ))
+        peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
+        peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
       diego:
         bbs:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -806,17 +824,6 @@ job_types:
             peer_ca_cert: (( $ops_manager.ca_certificate ))
             peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
             peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
-        etcd:
-          machines: ['etcd.service.cf.internal']
-          cluster: (( bosh_job_partition_stats ))
-          ca_cert: (( $ops_manager.ca_certificate ))
-          server_cert: (( .properties.etcd_server_cert.cert_pem ))
-          server_key: (( .properties.etcd_server_cert.private_key_pem ))
-          client_cert: (( .properties.etcd_client_cert.cert_pem ))
-          client_key: (( .properties.etcd_client_cert.private_key_pem ))
-          peer_ca_cert: (( $ops_manager.ca_certificate ))
-          peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
-          peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
       consul:
         encrypt_keys:
         - (( .properties.consul_encrypt_key.value ))
@@ -841,8 +848,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: nfs_server
     label: NFS Server
@@ -925,8 +933,9 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: router
     label: Router
@@ -1023,8 +1032,6 @@ job_types:
         ssl_cert: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
         ssl_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem ))
 
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
@@ -1040,8 +1047,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       uaa:
         clients:
           gorouter:
@@ -1337,8 +1345,9 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: uaadb
     label: UAA Database
@@ -1436,8 +1445,9 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: consoledb
     label: Apps Manager Database
@@ -1535,8 +1545,9 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: cloud_controller
     label: Cloud Controller
@@ -1802,8 +1813,6 @@ job_types:
         port: (( .properties.logger_endpoint_port.value || "443" ))
       doppler:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
@@ -1819,8 +1828,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: ha_proxy
     label: HAProxy
@@ -1934,8 +1944,9 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       consul:
         encrypt_keys:
         - (( .properties.consul_encrypt_key.value ))
@@ -2046,6 +2057,9 @@ job_types:
         deployment: cf
       etcd:
         machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       route_registrar:
         routes:
         - name: hm9000
@@ -2188,8 +2202,6 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
@@ -2208,8 +2220,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: cloud_controller_worker
     label: Cloud Controller Worker
@@ -2349,8 +2362,6 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      metron_endpoint:
-        shared_secret:  (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
@@ -2369,8 +2380,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: collector
     label: Collector
@@ -2456,8 +2468,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: uaa
     label: UAA
@@ -2883,6 +2896,8 @@ job_types:
             redirect-uri: /login
             scope: openid,cloud_controller.read,cloud_controller.write
             secret: (( .uaa.ssh_proxy_client_credentials.password ))
+          proxy:
+            servers: (( .router.ips ))
         scim:
           user:
             override: true
@@ -2914,8 +2929,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       route_registrar:
         routes:
         - name: uaa
@@ -2925,8 +2941,6 @@ job_types:
           - "*.uaa.(( .cloud_controller.system_domain.value ))"
           - "login.(( .cloud_controller.system_domain.value ))"
           - "*.login.(( .cloud_controller.system_domain.value ))"
-      router:
-        servers: (( .router.ips ))
 
   - name: diego_brain
     label: Diego Brain
@@ -3148,8 +3162,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: diego_cell
     label: Diego Cell
@@ -3256,8 +3271,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       garden:
         allow_host_access: (( .properties.allow_cross_container_traffic.value ))
         persistent_image_list:
@@ -3332,6 +3348,11 @@ job_types:
         type: simple_credentials
 
     manifest: |
+      cc:
+        srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
+        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
+        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
+
       domain: (( .cloud_controller.system_domain.value ))
 
       dea_next:
@@ -3362,8 +3383,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: doppler
     label: Doppler Server
@@ -3470,8 +3492,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -3576,8 +3599,9 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      etcd:
-        machines: (( .etcd_server.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
       doppler:
         uaa_client_id: (( .uaa.doppler_client_credentials.identity ))
       uaa:
@@ -4648,6 +4672,7 @@ job_types:
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         skip_regex: lucid64
         skip_diego_unsupported_tests: true
+        java_buildpack_name: java_buildpack_offline
 
   - name: acceptance-tests-internetless
     label: Run CF Acceptance Tests without internet
@@ -4720,6 +4745,7 @@ job_types:
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         skip_regex: lucid64
         skip_diego_unsupported_tests: true
+        java_buildpack_name: java_buildpack_offline
 
   - name: compilation
     label: Compilation
