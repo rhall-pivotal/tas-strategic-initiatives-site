@@ -634,29 +634,6 @@ groups:
     - destroy-environment-final-aws-upgrade
     - release-environment-aws-upgrade
 
-  - name: openstack-upgrade
-    jobs:
-    - claim-environment-openstack-upgrade
-    - early-destroy-environment-openstack-upgrade
-    - early-release-environment-openstack-upgrade
-    - destroy-environment-openstack-upgrade
-    - deploy-ops-manager-initial-openstack-upgrade
-    - configure-microbosh-initial-openstack-upgrade
-    - deploy-microbosh-initial-openstack-upgrade
-    - upload-pivotal-initial-openstack-upgrade
-    - configure-ert-initial-openstack-upgrade
-    - deploy-ert-initial-openstack-upgrade
-    - export-installation-openstack-upgrade
-    - destroy-opsman-openstack-upgrade
-    - deploy-opsman-openstack-upgrade
-    - import-installation-openstack-upgrade
-    - upgrade-pivotal-openstack-upgrade
-    - configure-ert-openstack-upgrade
-    - deploy-ert-openstack-upgrade
-    - run-cats-openstack-upgrade
-    - destroy-environment-final-openstack-upgrade
-    - release-environment-openstack-upgrade
-
   - name: vsphere-upgrade
     jobs:
     - claim-environment-vsphere-upgrade

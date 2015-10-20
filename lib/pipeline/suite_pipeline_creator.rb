@@ -26,7 +26,6 @@ module Pipeline
         group_name: 'vsphere-internetless'
       },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'aws-upgrade', iaas_type: 'aws' } },
-      { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'openstack-upgrade', iaas_type: 'openstack' } },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere' } },
       { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'vcloud-upgrade', iaas_type: 'vcloud' } }
     ].freeze
