@@ -2721,6 +2721,7 @@ job_types:
           services:
             uaa: {}
       login:
+        self_service_links_enabled: true
         asset_base_url: '/resources/pivotal'
         protocol: https
         tiles:
@@ -2782,6 +2783,8 @@ job_types:
           client_secret: (( cc_client_credentials.password ))
         admin:
           client_secret: (( admin_client_credentials.password ))
+        proxy:
+          servers: (( .router.ips ))
         clients:
           opentsdb-firehose-nozzle:
             access-token-validity: 1209600
@@ -2896,8 +2899,6 @@ job_types:
             redirect-uri: /login
             scope: openid,cloud_controller.read,cloud_controller.write
             secret: (( .uaa.ssh_proxy_client_credentials.password ))
-          proxy:
-            servers: (( .router.ips ))
         scim:
           user:
             override: true
