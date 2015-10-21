@@ -260,7 +260,7 @@ form_types:
     property_inputs:
       - reference: .ha_proxy.ssl_rsa_certificate
         label: SSL Termination Certificate
-        description: "This certificate is used by HAProxy and Router for SSL termination. You can generate a self-signed certificate with your system wildcard domain if you do not have a certificate available. If you use your own external load balancer to terminate SSL instead of HAProxy or the Router, you can enter any certificate and key pair here and scale down the instances of HAProxy to zero in the Resource Config section. You can also chain together multiple certificates."
+        description: "This certificate is used by HAProxy and Router for SSL termination. You can generate a self-signed certificate with your system wildcard domain if you do not have a certificate available. If you use your own external load balancer to terminate SSL instead of HAProxy or the Router, you can enter any certificate and key pair here and scale down the instances of HAProxy to zero in the Resource Config section. You can also configure a certificate that has multiple domains attributed to it, i.e. if you have separate system and application domains."
       - reference: .ha_proxy.skip_cert_verify
         label: Ignore SSL certificate verification
       - reference: .ha_proxy.ssl_ciphers
@@ -4317,9 +4317,9 @@ job_types:
             secret: (( .uaa.autoscale_client_credentials.password ))
 
   - name: autoscaling-register-broker
-    label: Register autoscaling service broker
-    resource_label: Register autoscaling service broker
-    description: Register autoscaling service broker
+    label: Register Autoscaling Service Broker
+    resource_label: Register Autoscaling Service Broker
+    description: Register Autoscaling Service Broker
     templates:
       - name: register-broker
         release: cf-autoscaling
