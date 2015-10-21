@@ -78,6 +78,16 @@ resources:
       private: true
       versioned_file: salmon/cf-mysql/ert.pivotal
 
+  - name: cats-logs
+    type: s3
+    source:
+      access_key_id: AKIAJEAGY2FWB7DEGFXQ
+      secret_access_key: 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
+      bucket: ert-concourse-products
+      region_name: us-west-1
+      private: true
+      versioned_file: cf-acceptance-tests-logs/cats-log.tgz
+
   - name: environment
     type: pool
     source:
@@ -387,6 +397,13 @@ jobs:
       - task: run-cats
         tags: [aws]
         file: p-runtime/ci/jobs/run-cats.yml
+        config:
+          params:
+            OPSMAN_VERSION: "1.6"
+        on_failure:
+          put: cats-logs
+          params:
+            from: p-runtime/acceptance-tests(.*).tgz
 
   - name: destroy-environment-final
     plan:
