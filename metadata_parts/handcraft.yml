@@ -845,6 +845,10 @@ job_types:
         machines: (( .nats.ips ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
@@ -3160,6 +3164,10 @@ job_types:
         machines: (( .nats.ips ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
@@ -3269,6 +3277,10 @@ job_types:
         machines: (( .nats.ips ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
