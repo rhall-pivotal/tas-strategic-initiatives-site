@@ -1027,6 +1027,7 @@ job_types:
       networks:
         apps: default
       router:
+        enable_routing_api: false
         secure_cookies: (( .ha_proxy.disable_http.value ))
         status:
           user: router_status
