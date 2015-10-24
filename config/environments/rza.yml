@@ -1,6 +1,6 @@
 vcloud_creds: &vcloud_creds
   url: https://p3v13-vcd.vchs.vmware.com
-  organization: VDC-M127900816-4614-293
+  organization: RELEASE-ENGINEERING
   user: cf-release-engineering@pivotal.io
   password: NmJSSDasP$2$
 
@@ -11,18 +11,18 @@ vm_shepherd:
   - creds:
       <<: *vcloud_creds
     vdc:
-      name: VDC-M127900816-4614-293
+      name: RELEASE-ENGINEERING
       catalog: rza-releng-ops-manager-catalog
-      network: VDC-M127900816-4614-293-default-routed
+      network: RZA-NETWORK
     vapp:
       ops_manager_name: rza-releng-ops-manager
       product_catalog: rza-releng-cf
       product_names:
         - rza-releng-cf_cf
         - rza-releng-cf_p-bosh
-      ip: 192.168.109.16
-      public_ip: 23.92.224.83
-      gateway: 192.168.109.1
+      ip: 192.168.119.2
+      public_ip: 107.189.121.225
+      gateway: 192.168.119.1
       dns: 8.8.8.8
       ntp: us.pool.ntp.org
       netmask: 255.255.255.0
@@ -43,14 +43,14 @@ ops_manager:
   networks:
     - name: first-network
       identifier: VDC-M127900816-4614-293-default-routed
-      subnet: 192.168.109.0/24
-      reserved_ips: 192.168.109.0 - 192.168.109.49, 192.168.109.136 - 192.168.109.255
+      subnet: 192.168.119.0/24
+      reserved_ips: 192.168.109.0 - 192.168.109.99
       dns: 8.8.8.8
-      gateway: 192.168.109.1
+      gateway: 192.168.119.1
 
   elastic_runtime:
     name: cf
-    ha_proxy_static_ips: 192.168.109.119
+    ha_proxy_static_ips: 192.168.119.3
     system_domain: sys.rza.cf-app.com
     apps_domain: apps.rza.cf-app.com
     smtp:
