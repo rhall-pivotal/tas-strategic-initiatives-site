@@ -682,6 +682,7 @@ jobs:
       params:
         from: build-product/ert.pivotal
     - put: p-runtime
+      resource: p-runtime-prime
       params:
         repository: p-runtime
         tag: version/number
@@ -748,6 +749,7 @@ jobs:
     params:
       repository: p-runtime
       tag: version/number
+      tag_prefix: v
 - name: publish-final
   plan:
   - get: p-runtime

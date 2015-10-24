@@ -327,8 +327,8 @@ form_types:
     description: Configure system logging. Leave the External Syslog fields blank unless you wish to use an external syslogd server.
     property_inputs:
       - reference: .properties.syslog_host
-        label: External Syslog Aggregator Host IP
-        description: The host must be reachable from the Elastic Runtime network, accept TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd).
+        label: External Syslog Aggregator Hostname
+        description: The aggregator must be reachable from the Elastic Runtime network, accept TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd). This can also be configured with an IP address.
       - reference: .properties.syslog_port
         label: External Syslog Aggregator Port
         description: The typical syslogd port is 514. Ensure syslogd is listening on external interfaces.
@@ -845,6 +845,10 @@ job_types:
         machines: (( .nats.ips ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
@@ -1023,6 +1027,7 @@ job_types:
       networks:
         apps: default
       router:
+        enable_routing_api: false
         secure_cookies: (( .ha_proxy.disable_http.value ))
         status:
           user: router_status
@@ -3160,6 +3165,10 @@ job_types:
         machines: (( .nats.ips ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
@@ -3269,6 +3278,10 @@ job_types:
         machines: (( .nats.ips ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
