@@ -4,7 +4,7 @@ vcloud_creds: &vcloud_creds
   user: cf-release-engineering@pivotal.io
   password: NmJSSDasP$2$
 
-name: rza
+name: e40
 iaas_type: vcloud
 vm_shepherd:
   vm_configs:
@@ -12,24 +12,24 @@ vm_shepherd:
       <<: *vcloud_creds
     vdc:
       name: RELEASE-ENGINEERING
-      catalog: rza-releng-ops-manager-catalog
-      network: RZA-NETWORK
+      catalog: e40-releng-ops-manager-catalog
+      network: E40-NETWORK
     vapp:
-      ops_manager_name: rza-releng-ops-manager
-      product_catalog: rza-releng-cf
+      ops_manager_name: e40-releng-ops-manager
+      product_catalog: e40-releng-cf
       product_names:
-        - rza-releng-cf_cf
-        - rza-releng-cf_p-bosh
-      ip: 192.168.119.2
-      public_ip: 107.189.121.225
-      gateway: 192.168.119.1
+        - e40-releng-cf_cf
+        - e40-releng-cf_p-bosh
+      ip: 192.168.129.2
+      public_ip: 107.189.121.227
+      gateway: 192.168.129.1
       dns: 8.8.8.8
       ntp: us.pool.ntp.org
       netmask: 255.255.255.0
 
 ops_manager:
-  url: https://pcf.rza.cf-app.com
-  ip_address: 23.92.224.83
+  url: https://pcf.e40.cf-app.com
+  ip_address: 107.189.121.227
   username: pivotalcf
   password: wilderror16
   ntp_servers: us.pool.ntp.org
@@ -39,20 +39,20 @@ ops_manager:
     vdc:
       name: RELEASE-ENGINEERING
       storage_profile: SSD-Accelerated
-      catalog_name: rza-releng-cf
+      catalog_name: e40-releng-cf
   networks:
     - name: first-network
-      identifier: RZA-NETWORK
-      subnet: 192.168.119.0/24
-      reserved_ips: 192.168.119.0 - 192.168.119.99
+      identifier: E40-NETWORK
+      subnet: 192.168.129.0/24
+      reserved_ips: 192.168.129.0 - 192.168.129.2
       dns: 8.8.8.8
-      gateway: 192.168.119.1
+      gateway: 192.168.129.1
 
   elastic_runtime:
     name: cf
-    ha_proxy_static_ips: 192.168.119.3
-    system_domain: sys.rza.cf-app.com
-    apps_domain: apps.rza.cf-app.com
+    ha_proxy_static_ips: 192.168.129.4
+    system_domain: sys.e40.cf-app.com
+    apps_domain: apps.e40.cf-app.com
     smtp:
       from: identitystaging@mailinator.com
       address: smtp.sendgrid.net
