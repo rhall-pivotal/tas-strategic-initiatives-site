@@ -29,7 +29,7 @@ vm_shepherd:
 
 ops_manager:
   url: https://pcf.rza.cf-app.com
-  ip_address: 23.92.224.83
+  ip_address: 107.189.121.225
   username: pivotalcf
   password: wilderror16
   ntp_servers: us.pool.ntp.org
@@ -44,13 +44,13 @@ ops_manager:
     - name: first-network
       identifier: RZA-NETWORK
       subnet: 192.168.119.0/24
-      reserved_ips: 192.168.119.0 - 192.168.119.99
+      reserved_ips: 192.168.119.0 - 192.168.119.2
       dns: 8.8.8.8
       gateway: 192.168.119.1
 
   elastic_runtime:
     name: cf
-    ha_proxy_static_ips: 192.168.119.3
+    ha_proxy_static_ips: 192.168.119.4
     system_domain: sys.rza.cf-app.com
     apps_domain: apps.rza.cf-app.com
     smtp:
