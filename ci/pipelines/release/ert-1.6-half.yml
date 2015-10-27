@@ -471,7 +471,7 @@ resources:
       J+R2R0z5fNX5AD8RfiVPLhmLTpbY5rwuujFiaHDs/nJvtgeSgQ9y9y9DyB99ZtPP
       OVKNK3IjWsq4oU3qLRZ8w9ZdA06jePzJ6x3ppx6H60u+sock2D8+eeMxjtmJ
       -----END RSA PRIVATE KEY-----
-- name: ops-manager-stable-aws
+- name: ops-manager-1.6.0-aws
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -479,8 +479,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/aws/stable/ops_man_image
-- name: ops-manager-stable-openstack
+    versioned_file: ops_manager_images/aws/1.6.0/ops_man_image
+- name: ops-manager-1.6.0-openstack
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -488,8 +488,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/openstack/stable/ops_man_image
-- name: ops-manager-stable-vsphere
+    versioned_file: ops_manager_images/openstack/1.6.0/ops_man_image
+- name: ops-manager-1.6.0-vsphere
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -497,8 +497,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/vsphere/stable/ops_man_image
-- name: ops-manager-stable-vcloud
+    versioned_file: ops_manager_images/vsphere/1.6.0/ops_man_image
+- name: ops-manager-1.6.0-vcloud
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -506,7 +506,7 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/vcloud/stable/ops_man_image
+    versioned_file: ops_manager_images/vcloud/1.6.0/ops_man_image
 - name: initial-ert-product
   type: s3
   source:
@@ -865,7 +865,7 @@ jobs:
     - destroy-environment-aws-clean
   - aggregate:
     - get: ops-manager
-      resource: ops-manager-stable-aws
+      resource: ops-manager-1.6.0-aws
     - task: prepare
       tags:
       - aws
@@ -1150,7 +1150,7 @@ jobs:
     - destroy-environment-internetless
   - aggregate:
     - get: ops-manager
-      resource: ops-manager-stable-vsphere
+      resource: ops-manager-1.6.0-vsphere
     - task: prepare
       tags:
       - vsphere
@@ -1605,7 +1605,7 @@ jobs:
       passed:
       - destroy-opsman-aws-upgrade
     - get: ops-manager
-      resource: ops-manager-stable-aws
+      resource: ops-manager-1.6.0-aws
   - task: deploy
     tags:
     - aws
@@ -1999,7 +1999,7 @@ jobs:
       passed:
       - destroy-opsman-vsphere-upgrade
     - get: ops-manager
-      resource: ops-manager-stable-vsphere
+      resource: ops-manager-1.6.0-vsphere
   - task: deploy
     tags:
     - vsphere
@@ -2238,7 +2238,7 @@ groups:
   - mark-as-final
   - publish-final
   resources:
-  - ops-manager-stable-aws
-  - ops-manager-stable-vsphere
-  - ops-manager-stable-vcloud
-  - ops-manager-stable-openstack
+  - ops-manager-1.6.0-aws
+  - ops-manager-1.6.0-vsphere
+  - ops-manager-1.6.0-vcloud
+  - ops-manager-1.6.0-openstack

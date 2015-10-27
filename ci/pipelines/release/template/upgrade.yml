@@ -214,7 +214,7 @@ jobs:
           trigger: true
           passed: [destroy-opsman-{{pipeline_name}}]
         - get: ops-manager
-          resource: ops-manager-stable-{{iaas_type}}
+          resource: ops-manager-1.6.0-{{iaas_type}}
       - task: deploy
         tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/deploy-opsman.yml

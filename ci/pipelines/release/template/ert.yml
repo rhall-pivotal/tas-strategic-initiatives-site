@@ -224,7 +224,7 @@ resources:
       pool: vcloud
       private_key: *env_private_key
 
-  - name: ops-manager-stable-aws
+  - name: ops-manager-1.6.0-aws
     type: s3
     source:
       access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -232,9 +232,9 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/aws/stable/ops_man_image
+      versioned_file: ops_manager_images/aws/1.6.0/ops_man_image
 
-  - name: ops-manager-stable-openstack
+  - name: ops-manager-1.6.0-openstack
     type: s3
     source:
       access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -242,9 +242,9 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/openstack/stable/ops_man_image
+      versioned_file: ops_manager_images/openstack/1.6.0/ops_man_image
 
-  - name: ops-manager-stable-vsphere
+  - name: ops-manager-1.6.0-vsphere
     type: s3
     source:
       access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -252,9 +252,9 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/vsphere/stable/ops_man_image
+      versioned_file: ops_manager_images/vsphere/1.6.0/ops_man_image
 
-  - name: ops-manager-stable-vcloud
+  - name: ops-manager-1.6.0-vcloud
     type: s3
     source:
       access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -262,7 +262,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/vcloud/stable/ops_man_image
+      versioned_file: ops_manager_images/vcloud/1.6.0/ops_man_image
 
   - name: initial-ert-product
     type: s3
@@ -698,7 +698,7 @@ groups:
       - mark-as-final
       - publish-final
     resources:
-      - ops-manager-stable-aws
-      - ops-manager-stable-vsphere
-      - ops-manager-stable-vcloud
-      - ops-manager-stable-openstack
+      - ops-manager-1.6.0-aws
+      - ops-manager-1.6.0-vsphere
+      - ops-manager-1.6.0-vcloud
+      - ops-manager-1.6.0-openstack
