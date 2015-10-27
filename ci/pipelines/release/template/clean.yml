@@ -158,6 +158,23 @@ jobs:
             ERT_VERSION: 1.6
             OPSMAN_VERSION: *om_version
 
+  - name: import-stemcell-{{pipeline_name}}
+    plan:
+      - aggregate:
+        - get: p-runtime
+          resource: p-runtime-prime
+        - get: environment
+          resource: environment-{{environment_pool}}
+          passed: [configure-ert-{{pipeline_name}}]
+      - task: import-stemcell
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
+        config:
+          params:
+            OPSMAN_VERSION: *om_version
+            PRODUCT_NAME: cf
+            IAAS: {{iaas_type}}
+
   - name: deploy-ert-{{pipeline_name}}
     plan:
       - get: p-runtime

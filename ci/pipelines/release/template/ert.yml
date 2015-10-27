@@ -563,6 +563,7 @@ groups:
     - run-cats-aws-clean
     - destroy-environment-final-aws-clean
     - release-environment-aws-clean
+    - import-stemcell-aws-clean
 
   - name: openstack-clean
     jobs:
@@ -579,6 +580,7 @@ groups:
     - run-cats-openstack-clean
     - destroy-environment-final-openstack-clean
     - release-environment-openstack-clean
+    - import-stemcell-openstack-clean
 
   - name: vsphere-clean
     jobs:
@@ -595,6 +597,7 @@ groups:
     - run-cats-vsphere-clean
     - destroy-environment-final-vsphere-clean
     - release-environment-vsphere-clean
+    - import-stemcell-vsphere-clean
 
   - name: vsphere-internetless
     jobs:
@@ -612,6 +615,7 @@ groups:
     - run-cats-internetless
     - destroy-environment-final-internetless
     - release-environment-internetless
+    - import-stemcell-internetless
 
   - name: aws-upgrade
     jobs:
@@ -635,6 +639,7 @@ groups:
     - run-cats-aws-upgrade
     - destroy-environment-final-aws-upgrade
     - release-environment-aws-upgrade
+    - import-stemcell-aws-upgrade
 
   - name: vsphere-upgrade
     jobs:
@@ -658,6 +663,7 @@ groups:
     - run-cats-vsphere-upgrade
     - destroy-environment-final-vsphere-upgrade
     - release-environment-vsphere-upgrade
+    - import-stemcell-vsphere-upgrade
 
   - name: vcloud-upgrade
     jobs:
@@ -681,6 +687,7 @@ groups:
     - run-cats-vcloud-upgrade
     - destroy-environment-final-vcloud-upgrade
     - release-environment-vcloud-upgrade
+    - import-stemcell-vcloud-upgrade
 
   - name: common
     jobs:

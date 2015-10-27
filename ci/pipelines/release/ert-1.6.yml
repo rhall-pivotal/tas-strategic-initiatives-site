@@ -939,6 +939,24 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.6
+- name: import-stemcell-aws-clean
+  plan:
+  - aggregate:
+    - get: p-runtime
+      resource: p-runtime-prime
+    - get: environment
+      resource: environment-aws
+      passed:
+      - configure-ert-aws-clean
+  - task: import-stemcell
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.6
+        PRODUCT_NAME: cf
+        IAAS: aws
 - name: deploy-ert-aws-clean
   plan:
   - get: p-runtime
@@ -1196,6 +1214,24 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.6
+- name: import-stemcell-openstack-clean
+  plan:
+  - aggregate:
+    - get: p-runtime
+      resource: p-runtime-prime
+    - get: environment
+      resource: environment-openstack
+      passed:
+      - configure-ert-openstack-clean
+  - task: import-stemcell
+    tags:
+    - openstack
+    file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.6
+        PRODUCT_NAME: cf
+        IAAS: openstack
 - name: deploy-ert-openstack-clean
   plan:
   - get: p-runtime
@@ -1453,6 +1489,24 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.6
+- name: import-stemcell-vsphere-clean
+  plan:
+  - aggregate:
+    - get: p-runtime
+      resource: p-runtime-prime
+    - get: environment
+      resource: environment-vsphere
+      passed:
+      - configure-ert-vsphere-clean
+  - task: import-stemcell
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.6
+        PRODUCT_NAME: cf
+        IAAS: vsphere
 - name: deploy-ert-vsphere-clean
   plan:
   - get: p-runtime
@@ -1725,6 +1779,24 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.6
+- name: import-stemcell-internetless
+  plan:
+  - aggregate:
+    - get: p-runtime
+      resource: p-runtime-prime
+    - get: environment
+      resource: environment-internetless
+      passed:
+      - configure-ert-internetless
+  - task: import-stemcell
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.6
+        PRODUCT_NAME: cf
+        IAAS: vsphere
 - name: deploy-ert-internetless
   plan:
   - get: p-runtime
@@ -2139,6 +2211,24 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.6
+- name: import-stemcell-aws-upgrade
+  plan:
+  - aggregate:
+    - get: p-runtime
+      resource: p-runtime-prime
+    - get: environment
+      resource: environment-aws
+      passed:
+      - configure-ert-aws-upgrade
+  - task: import-stemcell
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.6
+        PRODUCT_NAME: cf
+        IAAS: aws
 - name: deploy-ert-aws-upgrade
   plan:
   - get: p-runtime
@@ -2533,6 +2623,24 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.6
+- name: import-stemcell-vsphere-upgrade
+  plan:
+  - aggregate:
+    - get: p-runtime
+      resource: p-runtime-prime
+    - get: environment
+      resource: environment-vsphere
+      passed:
+      - configure-ert-vsphere-upgrade
+  - task: import-stemcell
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.6
+        PRODUCT_NAME: cf
+        IAAS: vsphere
 - name: deploy-ert-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -2937,6 +3045,24 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.6
+- name: import-stemcell-vcloud-upgrade
+  plan:
+  - aggregate:
+    - get: p-runtime
+      resource: p-runtime-prime
+    - get: environment
+      resource: environment-vcloud
+      passed:
+      - configure-ert-vcloud-upgrade
+  - task: import-stemcell
+    tags:
+    - vcloud
+    file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
+    config:
+      params:
+        OPSMAN_VERSION: 1.6
+        PRODUCT_NAME: cf
+        IAAS: vcloud
 - name: deploy-ert-vcloud-upgrade
   plan:
   - get: p-runtime
@@ -3033,6 +3159,7 @@ groups:
   - run-cats-aws-clean
   - destroy-environment-final-aws-clean
   - release-environment-aws-clean
+  - import-stemcell-aws-clean
 - name: openstack-clean
   jobs:
   - claim-environment-openstack-clean
@@ -3048,6 +3175,7 @@ groups:
   - run-cats-openstack-clean
   - destroy-environment-final-openstack-clean
   - release-environment-openstack-clean
+  - import-stemcell-openstack-clean
 - name: vsphere-clean
   jobs:
   - claim-environment-vsphere-clean
@@ -3063,6 +3191,7 @@ groups:
   - run-cats-vsphere-clean
   - destroy-environment-final-vsphere-clean
   - release-environment-vsphere-clean
+  - import-stemcell-vsphere-clean
 - name: vsphere-internetless
   jobs:
   - claim-environment-internetless
@@ -3079,6 +3208,7 @@ groups:
   - run-cats-internetless
   - destroy-environment-final-internetless
   - release-environment-internetless
+  - import-stemcell-internetless
 - name: aws-upgrade
   jobs:
   - claim-environment-aws-upgrade
@@ -3101,6 +3231,7 @@ groups:
   - run-cats-aws-upgrade
   - destroy-environment-final-aws-upgrade
   - release-environment-aws-upgrade
+  - import-stemcell-aws-upgrade
 - name: vsphere-upgrade
   jobs:
   - claim-environment-vsphere-upgrade
@@ -3123,6 +3254,7 @@ groups:
   - run-cats-vsphere-upgrade
   - destroy-environment-final-vsphere-upgrade
   - release-environment-vsphere-upgrade
+  - import-stemcell-vsphere-upgrade
 - name: vcloud-upgrade
   jobs:
   - claim-environment-vcloud-upgrade
@@ -3145,6 +3277,7 @@ groups:
   - run-cats-vcloud-upgrade
   - destroy-environment-final-vcloud-upgrade
   - release-environment-vcloud-upgrade
+  - import-stemcell-vcloud-upgrade
 - name: common
   jobs:
   - kickoff
