@@ -483,6 +483,7 @@ jobs:
       - put: ert-product-promoted
         params:
           from: ert-pivotal/cf-(.*).pivotal
+          to: ert-1.6/tested/
 
   - name: upload-to-pivnet
     plan:
@@ -510,6 +511,7 @@ jobs:
           repository: p-runtime
           tag: version/number
           tag_prefix: v
+          rebase: true
 
   - name: publish-final
     plan:
@@ -689,6 +691,7 @@ groups:
       - upload-to-pivnet
       - mark-as-final
       - publish-final
+      - bump-to-next-patch-version
     resources:
       - ops-manager-1.6.0-aws
       - ops-manager-1.6.0-vsphere
