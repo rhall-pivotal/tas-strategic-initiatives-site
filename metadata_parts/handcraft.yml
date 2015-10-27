@@ -437,7 +437,7 @@ form_types:
         description: Enables SSH into app containers running on Diego.
       - reference: .diego_cell.garden_network_pool
         label: Application Containers Subnet Pool
-        description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to containers running on Diego.
+        description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to containers running on Diego. This is an arbitrary assignment and should be different from the network used by the system VMs.
 
   - name: experimental_features
     label: Experimental Features
