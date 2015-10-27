@@ -268,7 +268,7 @@ jobs:
 - name: destroy-environment-aws-upgrade
   plan:
   - get: environment
-    resource: environment-aws-east
+    resource: environment-aws
     trigger: true
     passed:
     - claim-environment-aws-upgrade
@@ -293,7 +293,7 @@ jobs:
   - task: some-task
     tags:
     - aws
-    resource: environment-aws-east
+    resource: environment-aws
   - task: some-aws-upgrade-task
     tags: aws
 - name: another-job-aws-upgrade
@@ -301,11 +301,11 @@ jobs:
   - task: another-task
     tags:
     - aws
-    resource: environment-aws-east
+    resource: environment-aws
 - name: destroy-environment-final-aws-upgrade
   plan:
   - get: environment
-    resource: environment-aws-east
+    resource: environment-aws
     trigger: true
     passed:
     - claim-environment-aws-upgrade
@@ -316,7 +316,7 @@ jobs:
 - name: release-environment-aws-upgrade
   plan:
   - get: environment
-    resource: environment-aws-east
+    resource: environment-aws
     trigger: true
     passed:
     - destroy-environment-aws-upgrade

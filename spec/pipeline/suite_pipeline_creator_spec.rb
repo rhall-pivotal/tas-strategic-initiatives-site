@@ -225,7 +225,7 @@ YAML
 
       expect(aws_upgrade_pipeline_jobs[3]['name']).to eq('configure-ert-aws-upgrade')
       expect(aws_upgrade_pipeline_jobs[3]['plan'].first['tags']).to eq(['aws'])
-      expect(aws_upgrade_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-aws-east')
+      expect(aws_upgrade_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-aws')
 
       expect(aws_upgrade_pipeline_jobs[3]['plan'][1]).to eq('task' => 'some-aws-upgrade-task', 'tags' => 'aws')
 
@@ -261,12 +261,6 @@ YAML
       pipeline_creator.clean_pipeline_jobs(pipeline_name: 'blah', iaas_type: 'some-iaas-type')
 
       expect(pipeline_creator.environment_pool).to eq('some-iaas-type')
-    end
-
-    it 'returns aws-east when the pipeline is an aws-upgrade' do
-      pipeline_creator.clean_pipeline_jobs(pipeline_name: 'aws-upgrade', iaas_type: 'some-iaas-type')
-
-      expect(pipeline_creator.environment_pool).to eq('aws-east')
     end
   end
 

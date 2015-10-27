@@ -34,8 +34,6 @@ module Pipeline
       case pipeline_name
       when 'internetless'
         pipeline_name
-      when 'aws-upgrade'
-        'aws-east'
       else
         iaas_type
       end
