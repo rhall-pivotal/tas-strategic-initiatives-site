@@ -457,8 +457,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ert-releases/1.5.4.0/ert.pivotal
-- name: ops-manager-1.5.5.0-aws
+    versioned_file: ert-releases/1.5.6.0/ert.pivotal
+- name: ops-manager-1.5.7.0-aws
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -466,8 +466,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/aws/1.5.5.0/ops_man_image
-- name: ops-manager-1.5.5.0-openstack
+    versioned_file: ops_manager_images/aws/1.5.7.0/ops_man_image
+- name: ops-manager-1.5.7.0-openstack
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -475,8 +475,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/openstack/1.5.5.0/ops_man_image
-- name: ops-manager-1.5.5.0-vsphere
+    versioned_file: ops_manager_images/openstack/1.5.7.0/ops_man_image
+- name: ops-manager-1.5.7.0-vsphere
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -484,8 +484,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/vsphere/1.5.5.0/ops_man_image
-- name: ops-manager-1.5.5.0-vcloud
+    versioned_file: ops_manager_images/vsphere/1.5.7.0/ops_man_image
+- name: ops-manager-1.5.7.0-vcloud
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -493,7 +493,7 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/vcloud/1.5.5.0/ops_man_image
+    versioned_file: ops_manager_images/vcloud/1.5.7.0/ops_man_image
 - name: exported-installation-aws
   type: s3
   source:
@@ -667,6 +667,7 @@ jobs:
   - put: ert-product-promoted
     params:
       from: ert-pivotal/cf-(.*).pivotal
+      to: ert-1.6/tested/
 - name: upload-to-pivnet
   plan:
   - get: ert-product-promoted
@@ -694,6 +695,7 @@ jobs:
       repository: p-runtime
       tag: version/number
       tag_prefix: v
+      rebase: true
 - name: publish-final
   plan:
   - get: p-runtime
@@ -1875,7 +1877,7 @@ jobs:
     - destroy-environment-aws-upgrade
   - aggregate:
     - get: ops-manager
-      resource: ops-manager-1.5.5.0-aws
+      resource: ops-manager-1.5.7.0-aws
     - task: prepare
       tags:
       - aws
@@ -2289,7 +2291,7 @@ jobs:
     - destroy-environment-vsphere-upgrade
   - aggregate:
     - get: ops-manager
-      resource: ops-manager-1.5.5.0-vsphere
+      resource: ops-manager-1.5.7.0-vsphere
     - task: prepare
       tags:
       - vsphere
@@ -2693,7 +2695,7 @@ jobs:
     - destroy-environment-vcloud-upgrade
   - aggregate:
     - get: ops-manager
-      resource: ops-manager-1.5.5.0-vcloud
+      resource: ops-manager-1.5.7.0-vcloud
     - task: prepare
       tags:
       - vcloud
@@ -3152,6 +3154,7 @@ groups:
   - upload-to-pivnet
   - mark-as-final
   - publish-final
+  - bump-to-next-patch-version
   resources:
   - ops-manager-1.6.0-aws
   - ops-manager-1.6.0-vsphere
