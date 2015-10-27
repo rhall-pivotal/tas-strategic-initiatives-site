@@ -65,7 +65,7 @@ jobs:
         passed: [destroy-environment-{{pipeline_name}}]
       - aggregate:
         - get: ops-manager
-          resource: ops-manager-1.5.5.0-{{iaas_type}}
+          resource: ops-manager-1.5.7.0-{{iaas_type}}
         - task: prepare
           tags: [{{iaas_type}}]
           file: p-runtime/ci/jobs/prepare-environment.yml
