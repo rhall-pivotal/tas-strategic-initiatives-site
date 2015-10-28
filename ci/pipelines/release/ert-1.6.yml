@@ -1007,6 +1007,14 @@ jobs:
       put: cats-logs
       params:
         from: p-runtime/acceptance-tests(.*).tgz
+  - task: post-success-message-to-slack
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/post-success-message-to-slack.yml
+    config:
+      params:
+        PIPELINE_NAME: aws-clean
+        JOB_NAME: run-cats-aws-clean
 - name: destroy-environment-final-aws-clean
   plan:
   - get: p-runtime
@@ -1282,6 +1290,14 @@ jobs:
       put: cats-logs
       params:
         from: p-runtime/acceptance-tests(.*).tgz
+  - task: post-success-message-to-slack
+    tags:
+    - openstack
+    file: p-runtime/ci/jobs/post-success-message-to-slack.yml
+    config:
+      params:
+        PIPELINE_NAME: openstack-clean
+        JOB_NAME: run-cats-openstack-clean
 - name: destroy-environment-final-openstack-clean
   plan:
   - get: p-runtime
@@ -1557,6 +1573,14 @@ jobs:
       put: cats-logs
       params:
         from: p-runtime/acceptance-tests(.*).tgz
+  - task: post-success-message-to-slack
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/post-success-message-to-slack.yml
+    config:
+      params:
+        PIPELINE_NAME: vsphere-clean
+        JOB_NAME: run-cats-vsphere-clean
 - name: destroy-environment-final-vsphere-clean
   plan:
   - get: p-runtime
@@ -1847,6 +1871,14 @@ jobs:
       put: cats-logs
       params:
         from: p-runtime/acceptance-tests(.*).tgz
+  - task: post-success-message-to-slack
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/post-success-message-to-slack.yml
+    config:
+      params:
+        PIPELINE_NAME: internetless
+        JOB_NAME: run-cats-internetless
 - name: destroy-environment-final-internetless
   plan:
   - get: p-runtime
@@ -2279,6 +2311,14 @@ jobs:
       put: cats-logs
       params:
         from: p-runtime/acceptance-tests(.*).tgz
+  - task: post-success-message-to-slack
+    tags:
+    - aws
+    file: p-runtime/ci/jobs/post-success-message-to-slack.yml
+    config:
+      params:
+        PIPELINE_NAME: aws-upgrade
+        JOB_NAME: run-cats-aws-upgrade
 - name: destroy-environment-final-aws-upgrade
   plan:
   - get: p-runtime
@@ -2691,6 +2731,14 @@ jobs:
       put: cats-logs
       params:
         from: p-runtime/acceptance-tests(.*).tgz
+  - task: post-success-message-to-slack
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/post-success-message-to-slack.yml
+    config:
+      params:
+        PIPELINE_NAME: vsphere-upgrade
+        JOB_NAME: run-cats-vsphere-upgrade
 - name: destroy-environment-final-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -3113,6 +3161,14 @@ jobs:
       put: cats-logs
       params:
         from: p-runtime/acceptance-tests(.*).tgz
+  - task: post-success-message-to-slack
+    tags:
+    - vcloud
+    file: p-runtime/ci/jobs/post-success-message-to-slack.yml
+    config:
+      params:
+        PIPELINE_NAME: vcloud-upgrade
+        JOB_NAME: run-cats-vcloud-upgrade
 - name: destroy-environment-final-vcloud-upgrade
   plan:
   - get: p-runtime

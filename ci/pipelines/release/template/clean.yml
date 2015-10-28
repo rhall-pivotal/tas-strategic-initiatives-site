@@ -219,6 +219,13 @@ jobs:
           put: cats-logs
           params:
             from: p-runtime/acceptance-tests(.*).tgz
+      - task: post-success-message-to-slack
+        tags: [{{iaas_type}}]
+        file: p-runtime/ci/jobs/post-success-message-to-slack.yml
+        config:
+          params:
+            PIPELINE_NAME: {{pipeline_name}}
+            JOB_NAME: run-cats-{{pipeline_name}}
 
   - name: destroy-environment-final-{{pipeline_name}}
     plan:
