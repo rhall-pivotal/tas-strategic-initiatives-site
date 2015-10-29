@@ -420,6 +420,13 @@ jobs:
           put: cats-logs
           params:
             from: p-runtime/acceptance-tests(.*).tgz
+      - task: post-success-message-to-slack
+        tags: [aws]
+        file: p-runtime/ci/jobs/post-success-message-to-slack.yml
+        config:
+          params:
+            PIPELINE_NAME: salmon::cf
+            JOB_NAME: run-cats
 
   - name: destroy-environment-final
     plan:
