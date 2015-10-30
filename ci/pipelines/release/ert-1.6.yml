@@ -744,14 +744,6 @@ jobs:
     resource: environment-aws
     params:
       acquire: true
-  - task: update-krafa
-    file: p-runtime/ci/jobs/update-krafa.yml
-    config:
-      params:
-        CLAIM_REASON: ert-1.6-aws-clean
-        KRAFA_BASE_URL: http://krafa.cfapps.io
-        KRAFA_USERNAME: releng
-        KRAFA_PASSWORD: bet90onions
 - name: early-destroy-environment-aws-clean
   plan:
   - get: p-runtime
@@ -1055,14 +1047,6 @@ jobs:
     resource: environment-openstack
     params:
       acquire: true
-  - task: update-krafa
-    file: p-runtime/ci/jobs/update-krafa.yml
-    config:
-      params:
-        CLAIM_REASON: ert-1.6-openstack-clean
-        KRAFA_BASE_URL: http://krafa.cfapps.io
-        KRAFA_USERNAME: releng
-        KRAFA_PASSWORD: bet90onions
 - name: early-destroy-environment-openstack-clean
   plan:
   - get: p-runtime
@@ -1338,14 +1322,6 @@ jobs:
     resource: environment-vsphere
     params:
       acquire: true
-  - task: update-krafa
-    file: p-runtime/ci/jobs/update-krafa.yml
-    config:
-      params:
-        CLAIM_REASON: ert-1.6-vsphere-clean
-        KRAFA_BASE_URL: http://krafa.cfapps.io
-        KRAFA_USERNAME: releng
-        KRAFA_PASSWORD: bet90onions
 - name: early-destroy-environment-vsphere-clean
   plan:
   - get: p-runtime
@@ -1621,14 +1597,6 @@ jobs:
     resource: environment-internetless
     params:
       acquire: true
-  - task: update-krafa
-    file: p-runtime/ci/jobs/update-krafa.yml
-    config:
-      params:
-        CLAIM_REASON: ert-1.6-internetless
-        KRAFA_BASE_URL: http://krafa.cfapps.io
-        KRAFA_USERNAME: releng
-        KRAFA_PASSWORD: bet90onions
 - name: early-destroy-environment-internetless
   plan:
   - get: p-runtime
@@ -1918,14 +1886,6 @@ jobs:
     resource: environment-aws
     params:
       acquire: true
-  - task: update-krafa
-    file: p-runtime/ci/jobs/update-krafa.yml
-    config:
-      params:
-        CLAIM_REASON: ert-1.6-aws-upgrade
-        KRAFA_BASE_URL: http://krafa.cfapps.io
-        KRAFA_USERNAME: releng
-        KRAFA_PASSWORD: bet90onions
 - name: early-destroy-environment-aws-upgrade
   plan:
   - get: p-runtime
@@ -2358,14 +2318,6 @@ jobs:
     resource: environment-vsphere
     params:
       acquire: true
-  - task: update-krafa
-    file: p-runtime/ci/jobs/update-krafa.yml
-    config:
-      params:
-        CLAIM_REASON: ert-1.6-vsphere-upgrade
-        KRAFA_BASE_URL: http://krafa.cfapps.io
-        KRAFA_USERNAME: releng
-        KRAFA_PASSWORD: bet90onions
 - name: early-destroy-environment-vsphere-upgrade
   plan:
   - get: p-runtime
@@ -2778,14 +2730,6 @@ jobs:
     resource: environment-vcloud
     params:
       acquire: true
-  - task: update-krafa
-    file: p-runtime/ci/jobs/update-krafa.yml
-    config:
-      params:
-        CLAIM_REASON: ert-1.6-vcloud-upgrade
-        KRAFA_BASE_URL: http://krafa.cfapps.io
-        KRAFA_USERNAME: releng
-        KRAFA_PASSWORD: bet90onions
 - name: early-destroy-environment-vcloud-upgrade
   plan:
   - get: p-runtime

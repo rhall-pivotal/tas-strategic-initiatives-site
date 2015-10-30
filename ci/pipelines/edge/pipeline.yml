@@ -403,14 +403,6 @@ jobs:
         resource: environment-aws
         params:
           acquire: true
-      - task: update-krafa
-        file: p-runtime/ci/jobs/update-krafa.yml
-        config:
-          params:
-            CLAIM_REASON: aws-edge
-            KRAFA_BASE_URL: http://krafa.cfapps.io
-            KRAFA_USERNAME: releng
-            KRAFA_PASSWORD: bet90onions
 
   - name: destroy-environment-aws
     plan:
@@ -634,14 +626,6 @@ jobs:
         resource: environment-openstack
         params:
           acquire: true
-      - task: update-krafa
-        file: p-runtime/ci/jobs/update-krafa.yml
-        config:
-          params:
-            CLAIM_REASON: openstack-edge
-            KRAFA_BASE_URL: http://krafa.cfapps.io
-            KRAFA_USERNAME: releng
-            KRAFA_PASSWORD: bet90onions
 
   - name: destroy-environment-openstack
     plan:
@@ -848,14 +832,6 @@ jobs:
         resource: environment-vsphere
         params:
           acquire: true
-      - task: update-krafa
-        file: p-runtime/ci/jobs/update-krafa.yml
-        config:
-          params:
-            CLAIM_REASON: vsphere-edge
-            KRAFA_BASE_URL: http://krafa.cfapps.io
-            KRAFA_USERNAME: releng
-            KRAFA_PASSWORD: bet90onions
 
   - name: destroy-environment-vsphere
     plan:
@@ -1062,14 +1038,6 @@ jobs:
         resource: environment-vcloud
         params:
           acquire: true
-      - task: update-krafa
-        file: p-runtime/ci/jobs/update-krafa.yml
-        config:
-          params:
-            CLAIM_REASON: vcloud-edge
-            KRAFA_BASE_URL: http://krafa.cfapps.io
-            KRAFA_USERNAME: releng
-            KRAFA_PASSWORD: bet90onions
 
   - name: destroy-environment-vcloud
     plan:
