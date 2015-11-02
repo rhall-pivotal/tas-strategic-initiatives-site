@@ -318,16 +318,42 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.6
+  - task: configure-experimental-features
+    tags: [aws]
+    file: p-runtime/ci/jobs/configure-experimental-features.yml
+    config:
+      params:
+        ERT_VERSION: 1.6
+        OPSMAN_VERSION: 1.6
+
+- name: import-stemcell
+  plan:
+    - aggregate:
+      - get: p-runtime
+        trigger: true
+        passed: [configure-ert]
+      - get: environment
+        trigger: true
+        passed: [configure-ert]
+    - task: import-stemcell
+      tags: [aws]
+      file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
+      config:
+        params:
+          OPSMAN_VERSION: 1.6
+          PRODUCT_NAME: cf
+          IAAS: aws
+
 - name: deploy-ert
   plan:
   - get: p-runtime
     trigger: true
     passed:
-    - configure-ert
+    - import-stemcell
   - get: environment
     trigger: true
     passed:
-    - configure-ert
+    - import-stemcell
   - task: deploy-ert
     tags:
     - aws
@@ -370,7 +396,7 @@ jobs:
     file: p-runtime/ci/jobs/post-success-message-to-slack.yml
     config:
       params:
-        PIPELINE_NAME: salmon/ops-manager
+        PIPELINE_NAME: salmon::ops-manager
         JOB_NAME: run-cats
 - name: destroy-environment-final
   plan:
@@ -407,6 +433,7 @@ groups:
   - deploy-microbosh
   - build-runtime
   - upload-pivotal
+  - import-stemcell
   - configure-ert
   - deploy-ert
   - run-cats
