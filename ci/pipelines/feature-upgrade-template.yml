@@ -460,6 +460,24 @@ jobs:
             params:
               OPSMAN_VERSION: {{om_version}}
 
+  - name: import-stemcell
+    plan:
+    - aggregate:
+      - get: p-runtime
+        passed:
+        - configure-ert
+      - get: environment
+        passed:
+        - configure-ert
+    - task: import-stemcell
+      tags: [{{iaas_type}}]
+      file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
+      config:
+        params:
+          OPSMAN_VERSION: {{om_version}}
+          PRODUCT_NAME: cf
+          IAAS: {{iaas_type}}
+
   - name: run-cats
     plan:
       - get: p-runtime
@@ -527,6 +545,7 @@ groups:
     - upgrade-pivotal
     - configure-ert
     - deploy-ert
+    - import-stemcell
     - run-cats
     - destroy-environment-final
     - release-environment
