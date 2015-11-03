@@ -392,13 +392,44 @@ resources:
       private: true
       versioned_file: cf-acceptance-tests-logs/cats-log.tgz
 
+  - name: kickoff-time
+    type: time
+    source:
+      interval: 1s
+
 jobs:
+  - name: kickoff
+    plan:
+    - get: kickoff-time
+    - get: latest-opsman-aws
+    - get: latest-opsman-vsphere
+    - get: latest-opsman-vcloud
+    - get: latest-opsman-openstack
+    - get: p-runtime
+
+  - name: wait-for-all-iaas
+    plan:
+    - get: kickoff-time
+      trigger: true
+      passed:
+      - run-cats-aws
+      - run-cats-vsphere
+      - run-cats-vcloud
+      - run-cats-openstack
+    - get: p-runtime
+      passed:
+      - run-cats-aws
+      - run-cats-vsphere
+      - run-cats-vcloud
+      - run-cats-openstack
+
   - name: claim-environment-aws
     plan:
-      - get: p-runtime
-      - get: ops-manager
-        resource: latest-opsman-aws
+      - get: kickoff-time
+        passed: [kickoff]
         trigger: true
+      - get: p-runtime
+        passed: [kickoff]
       - put: environment
         resource: environment-aws
         params:
@@ -406,6 +437,8 @@ jobs:
 
   - name: destroy-environment-aws
     plan:
+      - get: kickoff-time
+        passed: [claim-environment-aws]
       - get: p-runtime
         passed: [claim-environment-aws]
       - get: environment
@@ -418,8 +451,10 @@ jobs:
 
   - name: deploy-ops-manager-aws
     plan:
+      - get: kickoff-time
+        passed: [destroy-environment-aws]
       - get: p-runtime
-        passed: [destroy-environment-aws, claim-environment-aws]
+        passed: [destroy-environment-aws, kickoff]
       - get: environment
         resource: environment-aws
         trigger: true
@@ -427,7 +462,7 @@ jobs:
       - aggregate:
         - get: ops-manager
           resource: latest-opsman-aws
-          passed: [claim-environment-aws]
+          passed: [kickoff]
         - task: prepare
           tags: [aws]
           file: p-runtime/ci/jobs/prepare-environment.yml
@@ -437,6 +472,8 @@ jobs:
 
   - name: configure-microbosh-aws
     plan:
+      - get: kickoff-time
+        passed: [deploy-ops-manager-aws]
       - get: p-runtime
         passed: [deploy-ops-manager-aws]
       - get: environment
@@ -452,6 +489,8 @@ jobs:
 
   - name: deploy-microbosh-aws
     plan:
+      - get: kickoff-time
+        passed: [configure-microbosh-aws]
       - get: p-runtime
         passed: [configure-microbosh-aws]
       - get: environment
@@ -475,6 +514,8 @@ jobs:
   - name: upload-pivotal-aws
     plan:
       - aggregate:
+        - get: kickoff-time
+          passed: [deploy-microbosh-aws]
         - get: p-runtime
           passed: [deploy-microbosh-aws]
         - get: environment
@@ -492,6 +533,8 @@ jobs:
 
   - name: configure-ert-aws
     plan:
+      - get: kickoff-time
+        passed: [upload-pivotal-aws]
       - get: p-runtime
         passed: [upload-pivotal-aws]
       - get: environment
@@ -526,6 +569,8 @@ jobs:
   - name: import-stemcell-aws
     plan:
       - aggregate:
+        - get: kickoff-time
+          passed: [configure-ert-aws]
         - get: p-runtime
           trigger: true
           passed: [configure-ert-aws]
@@ -544,6 +589,8 @@ jobs:
 
   - name: deploy-ert-aws
     plan:
+      - get: kickoff-time
+        passed: [import-stemcell-aws]
       - get: p-runtime
         passed: [import-stemcell-aws]
       - get: environment
@@ -566,6 +613,8 @@ jobs:
 
   - name: run-cats-aws
     plan:
+      - get: kickoff-time
+        passed: [deploy-ert-aws]
       - get: p-runtime
         passed: [deploy-ert-aws]
       - get: environment
@@ -585,16 +634,25 @@ jobs:
 
   - name: promote-ops-manager-aws
     plan:
-     - get: p-runtime
-       passed: [run-cats-aws, claim-environment-aws]
-     - get: latest-opsman-aws
-       passed: [claim-environment-aws]
-     - put: stable-opsman-aws
-       params:
-         from: latest-opsman-aws/ops_man_image
+    - get: p-runtime
+      passed:
+      - wait-for-all-iaas
+    - get: kickoff-time
+      trigger: true
+      passed:
+      - wait-for-all-iaas
+      - kickoff
+    - get: latest-opsman-aws
+      passed:
+      - kickoff
+    - put: stable-opsman-aws
+      params:
+        from: latest-opsman-aws/ops_man_image
 
   - name: destroy-environment-final-aws
     plan:
+     - get: kickoff-time
+       passed: [claim-environment-aws]
      - get: p-runtime
        passed: [claim-environment-aws]
      - get: environment
@@ -606,6 +664,8 @@ jobs:
 
   - name: release-environment-aws
     plan:
+      - get: kickoff-time
+        passed: [destroy-environment-final-aws]
       - get: p-runtime
         passed: [destroy-environment-final-aws]
       - get: environment
@@ -618,10 +678,11 @@ jobs:
 
   - name: claim-environment-openstack
     plan:
-      - get: p-runtime
-      - get: ops-manager
-        resource: latest-opsman-openstack
+      - get: kickoff-time
+        passed: [kickoff]
         trigger: true
+      - get: p-runtime
+        passed: [kickoff]
       - put: environment
         resource: environment-openstack
         params:
@@ -629,6 +690,8 @@ jobs:
 
   - name: destroy-environment-openstack
     plan:
+      - get: kickoff-time
+        passed: [claim-environment-openstack]
       - get: p-runtime
         passed: [claim-environment-openstack]
       - get: environment
@@ -641,8 +704,10 @@ jobs:
 
   - name: deploy-ops-manager-openstack
     plan:
+      - get: kickoff-time
+        passed: [destroy-environment-openstack]
       - get: p-runtime
-        passed: [destroy-environment-openstack, claim-environment-openstack]
+        passed: [destroy-environment-openstack, kickoff]
       - get: environment
         resource: environment-openstack
         trigger: true
@@ -650,7 +715,7 @@ jobs:
       - aggregate:
         - get: ops-manager
           resource: latest-opsman-openstack
-          passed: [claim-environment-openstack]
+          passed: [kickoff]
         - task: prepare
           tags: [openstack]
           file: p-runtime/ci/jobs/prepare-environment.yml
@@ -660,6 +725,8 @@ jobs:
 
   - name: configure-microbosh-openstack
     plan:
+      - get: kickoff-time
+        passed: [deploy-ops-manager-openstack]
       - get: p-runtime
         passed: [deploy-ops-manager-openstack]
       - get: environment
@@ -675,6 +742,8 @@ jobs:
 
   - name: deploy-microbosh-openstack
     plan:
+      - get: kickoff-time
+        passed: [configure-microbosh-openstack]
       - get: p-runtime
         passed: [configure-microbosh-openstack]
       - get: environment
@@ -698,6 +767,8 @@ jobs:
   - name: upload-pivotal-openstack
     plan:
       - aggregate:
+        - get: kickoff-time
+          passed: [deploy-microbosh-openstack]
         - get: p-runtime
           passed: [deploy-microbosh-openstack]
         - get: environment
@@ -715,6 +786,8 @@ jobs:
 
   - name: configure-ert-openstack
     plan:
+      - get: kickoff-time
+        passed: [upload-pivotal-openstack]
       - get: p-runtime
         passed: [upload-pivotal-openstack]
       - get: environment
@@ -732,6 +805,8 @@ jobs:
   - name: import-stemcell-openstack
     plan:
       - aggregate:
+        - get: kickoff-time
+          passed: [configure-ert-openstack]
         - get: p-runtime
           trigger: true
           passed: [configure-ert-openstack]
@@ -750,6 +825,8 @@ jobs:
 
   - name: deploy-ert-openstack
     plan:
+      - get: kickoff-time
+        passed: [import-stemcell-openstack]
       - get: p-runtime
         passed: [import-stemcell-openstack]
       - get: environment
@@ -772,6 +849,8 @@ jobs:
 
   - name: run-cats-openstack
     plan:
+      - get: kickoff-time
+        passed: [deploy-ert-openstack]
       - get: p-runtime
         passed: [deploy-ert-openstack]
       - get: environment
@@ -791,16 +870,25 @@ jobs:
 
   - name: promote-ops-manager-openstack
     plan:
-     - get: p-runtime
-       passed: [run-cats-openstack, claim-environment-openstack]
-     - get: latest-opsman-openstack
-       passed: [claim-environment-openstack]
-     - put: stable-opsman-openstack
-       params:
-         from: latest-opsman-openstack/ops_man_image
+    - get: p-runtime
+      passed:
+      - wait-for-all-iaas
+    - get: kickoff-time
+      trigger: true
+      passed:
+      - wait-for-all-iaas
+      - kickoff
+    - get: latest-opsman-openstack
+      passed:
+      - kickoff
+    - put: stable-opsman-openstack
+      params:
+        from: latest-opsman-openstack/ops_man_image
 
   - name: destroy-environment-final-openstack
     plan:
+     - get: kickoff-time
+       passed: [claim-environment-openstack]
      - get: p-runtime
        passed: [claim-environment-openstack]
      - get: environment
@@ -812,6 +900,8 @@ jobs:
 
   - name: release-environment-openstack
     plan:
+      - get: kickoff-time
+        passed: [destroy-environment-final-openstack]
       - get: p-runtime
         passed: [destroy-environment-final-openstack]
       - get: environment
@@ -824,10 +914,11 @@ jobs:
 
   - name: claim-environment-vsphere
     plan:
-      - get: p-runtime
-      - get: ops-manager
-        resource: latest-opsman-vsphere
+      - get: kickoff-time
+        passed: [kickoff]
         trigger: true
+      - get: p-runtime
+        passed: [kickoff]
       - put: environment
         resource: environment-vsphere
         params:
@@ -835,6 +926,8 @@ jobs:
 
   - name: destroy-environment-vsphere
     plan:
+      - get: kickoff-time
+        passed: [claim-environment-vsphere]
       - get: p-runtime
         passed: [claim-environment-vsphere]
       - get: environment
@@ -847,8 +940,10 @@ jobs:
 
   - name: deploy-ops-manager-vsphere
     plan:
+      - get: kickoff-time
+        passed: [destroy-environment-vsphere]
       - get: p-runtime
-        passed: [destroy-environment-vsphere, claim-environment-vsphere]
+        passed: [destroy-environment-vsphere, kickoff]
       - get: environment
         resource: environment-vsphere
         trigger: true
@@ -856,7 +951,7 @@ jobs:
       - aggregate:
         - get: ops-manager
           resource: latest-opsman-vsphere
-          passed: [claim-environment-vsphere]
+          passed: [kickoff]
         - task: prepare
           tags: [vsphere]
           file: p-runtime/ci/jobs/prepare-environment.yml
@@ -866,6 +961,8 @@ jobs:
 
   - name: configure-microbosh-vsphere
     plan:
+      - get: kickoff-time
+        passed: [deploy-ops-manager-vsphere]
       - get: p-runtime
         passed: [deploy-ops-manager-vsphere]
       - get: environment
@@ -881,6 +978,8 @@ jobs:
 
   - name: deploy-microbosh-vsphere
     plan:
+      - get: kickoff-time
+        passed: [configure-microbosh-vsphere]
       - get: p-runtime
         passed: [configure-microbosh-vsphere]
       - get: environment
@@ -904,6 +1003,8 @@ jobs:
   - name: upload-pivotal-vsphere
     plan:
       - aggregate:
+        - get: kickoff-time
+          passed: [deploy-microbosh-vsphere]
         - get: p-runtime
           passed: [deploy-microbosh-vsphere]
         - get: environment
@@ -921,6 +1022,8 @@ jobs:
 
   - name: configure-ert-vsphere
     plan:
+      - get: kickoff-time
+        passed: [upload-pivotal-vsphere]
       - get: p-runtime
         passed: [upload-pivotal-vsphere]
       - get: environment
@@ -938,6 +1041,8 @@ jobs:
   - name: import-stemcell-vsphere
     plan:
       - aggregate:
+        - get: kickoff-time
+          passed: [configure-ert-vsphere]
         - get: p-runtime
           trigger: true
           passed: [configure-ert-vsphere]
@@ -956,6 +1061,8 @@ jobs:
 
   - name: deploy-ert-vsphere
     plan:
+      - get: kickoff-time
+        passed: [import-stemcell-vsphere]
       - get: p-runtime
         passed: [import-stemcell-vsphere]
       - get: environment
@@ -978,6 +1085,8 @@ jobs:
 
   - name: run-cats-vsphere
     plan:
+      - get: kickoff-time
+        passed: [deploy-ert-vsphere]
       - get: p-runtime
         passed: [deploy-ert-vsphere]
       - get: environment
@@ -997,16 +1106,25 @@ jobs:
 
   - name: promote-ops-manager-vsphere
     plan:
-      - get: p-runtime
-        passed: [run-cats-vsphere, claim-environment-vsphere]
-      - get: latest-opsman-vsphere
-        passed: [claim-environment-vsphere]
-      - put: stable-opsman-vsphere
-        params:
-          from: latest-opsman-vsphere/ops_man_image
+    - get: p-runtime
+      passed:
+      - wait-for-all-iaas
+    - get: kickoff-time
+      trigger: true
+      passed:
+      - wait-for-all-iaas
+      - kickoff
+    - get: latest-opsman-vsphere
+      passed:
+      - kickoff
+    - put: stable-opsman-vsphere
+      params:
+        from: latest-opsman-vsphere/ops_man_image
 
   - name: destroy-environment-final-vsphere
     plan:
+      - get: kickoff-time
+        passed: [claim-environment-vsphere]
       - get: p-runtime
         passed: [claim-environment-vsphere]
       - get: environment
@@ -1018,6 +1136,8 @@ jobs:
 
   - name: release-environment-vsphere
     plan:
+      - get: kickoff-time
+        passed: [destroy-environment-final-vsphere]
       - get: p-runtime
         passed: [destroy-environment-final-vsphere]
       - get: environment
@@ -1030,10 +1150,11 @@ jobs:
 
   - name: claim-environment-vcloud
     plan:
-      - get: p-runtime
-      - get: ops-manager
-        resource: latest-opsman-vcloud
+      - get: kickoff-time
+        passed: [kickoff]
         trigger: true
+      - get: p-runtime
+        passed: [kickoff]
       - put: environment
         resource: environment-vcloud
         params:
@@ -1041,6 +1162,8 @@ jobs:
 
   - name: destroy-environment-vcloud
     plan:
+      - get: kickoff-time
+        passed: [claim-environment-vcloud]
       - get: p-runtime
         passed: [claim-environment-vcloud]
       - get: environment
@@ -1060,8 +1183,10 @@ jobs:
 
   - name: deploy-ops-manager-vcloud
     plan:
+      - get: kickoff-time
+        passed: [destroy-environment-vcloud]
       - get: p-runtime
-        passed: [destroy-environment-vcloud, claim-environment-vcloud]
+        passed: [destroy-environment-vcloud, kickoff]
       - get: environment
         resource: environment-vcloud
         trigger: true
@@ -1069,7 +1194,7 @@ jobs:
       - aggregate:
         - get: ops-manager
           resource: latest-opsman-vcloud
-          passed: [claim-environment-vcloud]
+          passed: [kickoff]
         - task: prepare
           tags: [vcloud]
           file: p-runtime/ci/jobs/prepare-environment.yml
@@ -1079,6 +1204,8 @@ jobs:
 
   - name: configure-microbosh-vcloud
     plan:
+      - get: kickoff-time
+        passed: [deploy-ops-manager-vcloud]
       - get: p-runtime
         passed: [deploy-ops-manager-vcloud]
       - get: environment
@@ -1094,6 +1221,8 @@ jobs:
 
   - name: deploy-microbosh-vcloud
     plan:
+      - get: kickoff-time
+        passed: [configure-microbosh-vcloud]
       - get: p-runtime
         passed: [configure-microbosh-vcloud]
       - get: environment
@@ -1117,6 +1246,8 @@ jobs:
   - name: upload-pivotal-vcloud
     plan:
       - aggregate:
+        - get: kickoff-time
+          passed: [deploy-microbosh-vcloud]
         - get: p-runtime
           passed: [deploy-microbosh-vcloud]
         - get: environment
@@ -1134,6 +1265,8 @@ jobs:
 
   - name: configure-ert-vcloud
     plan:
+      - get: kickoff-time
+        passed: [upload-pivotal-vcloud]
       - get: p-runtime
         passed: [upload-pivotal-vcloud]
       - get: environment
@@ -1151,6 +1284,8 @@ jobs:
   - name: import-stemcell-vcloud
     plan:
       - aggregate:
+        - get: kickoff-time
+          passed: [configure-ert-vcloud]
         - get: p-runtime
           trigger: true
           passed: [configure-ert-vcloud]
@@ -1169,6 +1304,8 @@ jobs:
 
   - name: deploy-ert-vcloud
     plan:
+      - get: kickoff-time
+        passed: [import-stemcell-vcloud]
       - get: p-runtime
         passed: [import-stemcell-vcloud]
       - get: environment
@@ -1191,6 +1328,8 @@ jobs:
 
   - name: run-cats-vcloud
     plan:
+      - get: kickoff-time
+        passed: [deploy-ert-vcloud]
       - get: p-runtime
         passed: [deploy-ert-vcloud]
       - get: environment
@@ -1210,16 +1349,25 @@ jobs:
 
   - name: promote-ops-manager-vcloud
     plan:
-      - get: p-runtime
-        passed: [run-cats-vcloud, claim-environment-vcloud]
-      - get: latest-opsman-vcloud
-        passed: [claim-environment-vcloud]
-      - put: stable-opsman-vcloud
-        params:
-          from: latest-opsman-vcloud/ops_man_image
+    - get: p-runtime
+      passed:
+      - wait-for-all-iaas
+    - get: kickoff-time
+      trigger: true
+      passed:
+      - wait-for-all-iaas
+      - kickoff
+    - get: latest-opsman-vcloud
+      passed:
+      - kickoff
+    - put: stable-opsman-vcloud
+      params:
+        from: latest-opsman-vcloud/ops_man_image
 
   - name: destroy-environment-final-vcloud
     plan:
+      - get: kickoff-time
+        passed: [claim-environment-vcloud]
       - get: p-runtime
         passed: [claim-environment-vcloud]
       - get: environment
@@ -1238,6 +1386,8 @@ jobs:
 
   - name: release-environment-vcloud
     plan:
+      - get: kickoff-time
+        passed: [destroy-environment-final-vcloud]
       - get: p-runtime
         passed: [destroy-environment-final-vcloud]
       - get: environment
@@ -1249,6 +1399,11 @@ jobs:
           release: environment
 
 groups:
+  - name: common
+    jobs:
+    - kickoff
+    - wait-for-all-iaas
+
   - name: vsphere-edge
     jobs:
     - claim-environment-vsphere
