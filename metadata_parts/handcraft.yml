@@ -3747,7 +3747,7 @@ job_types:
         cf_console_url: "https://apps.(( .cloud_controller.system_domain.value ))"
         cf_notifications_service_url: "https://notifications.(( .cloud_controller.system_domain.value ))"
         default_from: (( .properties.smtp_from.value ))
-        usage_service_host: app-usage.(( .cloud_controller.system_domain.value ))
+        usage_service_host: "https://app-usage.(( .cloud_controller.system_domain.value ))"
         bundle_without: test development hosted_only
         apps_manager_version: (( .properties.product_version.value ))
       databases:
