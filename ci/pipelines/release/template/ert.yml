@@ -531,10 +531,6 @@ jobs:
         params:
           from: ert-pivotal/cf-(.*).pivotal
           to: ert-releases/
-      - put: ert-product-pivnet
-        params:
-          from: ert-pivotal/cf-(.*).pivotal
-          to: product_files/Pivotal-CF/
 
   - name: bump-to-next-patch-version
     plan:
