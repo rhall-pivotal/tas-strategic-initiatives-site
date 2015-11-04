@@ -3294,6 +3294,7 @@ job_types:
           - "/var/vcap/packages/rootfs_cflinuxfs2/rootfs"
         enable_graph_cleanup: true
         network_pool: (( garden_network_pool.value ))
+        deny_networks: 0.0.0.0/0
 
   - name: dea
     label: DEA
