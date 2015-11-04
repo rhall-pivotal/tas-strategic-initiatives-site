@@ -70,16 +70,32 @@ jobs:
         tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/deploy-opsman.yml
 
+  {{#verify_internetless_plan}}
+  {{task}}
+  {{/verify_internetless_plan}}
+
   - name: configure-microbosh-{{pipeline_name}}
     plan:
       - get: p-runtime
         resource: p-runtime-prime
         trigger: true
-        passed: [deploy-ops-manager-{{pipeline_name}}]
+        passed:
+          {{#verify_internetless_plan}}
+          - verify-internetless
+          {{/verify_internetless_plan}}
+          {{^verify_internetless_plan}}
+          - deploy-ops-manager-{{pipeline_name}}
+          {{/verify_internetless_plan}}
       - get: environment
         resource: environment-{{environment_pool}}
         trigger: true
-        passed: [deploy-ops-manager-{{pipeline_name}}]
+        passed:
+          {{#verify_internetless_plan}}
+          - verify-internetless
+          {{/verify_internetless_plan}}
+          {{^verify_internetless_plan}}
+          - deploy-ops-manager-{{pipeline_name}}
+          {{/verify_internetless_plan}}
       - task: configure
         tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/configure-microbosh.yml
@@ -149,7 +165,9 @@ jobs:
           params:
             ERT_VERSION: 1.6
             OPSMAN_VERSION: *om_version
-
+      {{#aws_configure_tasks}}
+      {{task}}
+      {{/aws_configure_tasks}}
   - name: import-stemcell-{{pipeline_name}}
     plan:
       - aggregate:

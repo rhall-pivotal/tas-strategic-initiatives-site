@@ -289,6 +289,9 @@ jobs:
           params:
             ERT_VERSION: {{ert_version}}
             OPSMAN_VERSION: {{om_version}}
+      {{#aws_configure_tasks}}
+      {{task}}
+      {{/aws_configure_tasks}}
 
   - name: deploy-ert
     plan:

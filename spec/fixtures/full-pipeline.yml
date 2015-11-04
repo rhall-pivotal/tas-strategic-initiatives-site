@@ -388,12 +388,6 @@ jobs:
     trigger: true
     passed:
     - claim-environment-vcloud-upgrade
-  - &1
-    task: some-vcloud-task
-    tags: vcloud
-  - &2
-    task: another-vcloud-task
-    tags: vcloud
   - task: destroy
     tags:
     - vcloud
@@ -429,8 +423,6 @@ jobs:
     trigger: true
     passed:
     - claim-environment-vcloud-upgrade
-  - *1
-  - *2
   - task: destroy
     tags:
     - vcloud

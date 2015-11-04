@@ -49,10 +49,6 @@ YAML
   end
 
   context 'clean install pipeline' do
-    before do
-      allow(pipeline_creator).to receive(:add_vcloud_delete_installation_tasks)
-    end
-
     it 'puts the rendered content from the template into the configuration file' do
       expect(File).to(
         receive(:read)
@@ -76,40 +72,38 @@ YAML
       pipeline_creator.create_pipeline
     end
 
-    it 'will not add aws specific tasks' do
-      allow(File).to receive(:read).with('ci/pipelines/feature-pipeline-template.yml')
-        .and_return("---\n key: value")
-      expect(pipeline_creator).to_not receive(:add_aws_configure_tasks)
-      pipeline_creator.create_pipeline
-    end
+    context 'when pipeline type is not aws' do
+      before do
+        allow(File).to(
+          receive(:read).with('ci/pipelines/feature-pipeline-template.yml')
+            .and_return("---\n key: value")
+        )
+      end
 
-    it 'will not add vcloud specific tasks' do
-      allow(File).to receive(:read).with('ci/pipelines/feature-pipeline-template.yml')
-        .and_return("---\n key: value")
-      expect(pipeline_creator).to_not receive(:add_vcloud_delete_installation_tasks)
-      pipeline_creator.create_pipeline
+      it 'does not call #fetch_configure_tasks' do
+        expect(pipeline_creator).to_not receive(:fetch_configure_tasks)
+        pipeline_creator.create_pipeline
+      end
+
+      it 'calls render with an empty hash of additional jobs' do
+        expect(pipeline_creator).to receive(:render).with("---\n key: value", {}).and_call_original
+        pipeline_creator.create_pipeline
+      end
     end
 
     context 'aws iaas pipeline' do
       it 'adds aws specific tasks' do
-        allow(File).to receive(:read).with('ci/pipelines/feature-pipeline-template.yml')
-          .and_return("---\n key: value")
-        expect(aws_pipeline_creator).to receive(:add_aws_configure_tasks).with(
-          { 'key' => 'value' },
-          'aws-external-config.yml'
+        allow(File).to(
+          receive(:read).with('ci/pipelines/feature-pipeline-template.yml')
+            .and_return("---\n key: value")
+        )
+        expect(aws_pipeline_creator).to(
+          receive(:fetch_configure_tasks).with(
+            :aws_configure_tasks,
+            'aws-external-config.yml'
+          )
         )
         aws_pipeline_creator.create_pipeline
-      end
-    end
-
-    context 'vcloud iaas pipeline' do
-      it 'adds vcloud specific tasks' do
-        allow(File).to receive(:read).with('ci/pipelines/feature-pipeline-template.yml')
-          .and_return("---\n key: value")
-        expect(vcloud_pipeline_creator).to receive(:add_vcloud_delete_installation_tasks).with(
-          'key' => 'value',
-        )
-        vcloud_pipeline_creator.create_pipeline
       end
     end
   end
@@ -117,10 +111,6 @@ YAML
   context 'upgrade pipeline' do
     let(:ert_initial_full_version) { '1.4.2.0' }
     let(:om_initial_full_version) { '1.4.2.0' }
-    before do
-      allow(pipeline_creator).to receive(:add_aws_configure_tasks)
-      allow(pipeline_creator).to receive(:add_vcloud_delete_installation_tasks)
-    end
 
     it 'puts the rendered content from the upgrade template into the configuration file' do
       expect(File).to(
@@ -158,49 +148,45 @@ YAML
       )
     end
 
-    it 'will not add aws specific tasks' do
-      allow(File).to receive(:read).with('ci/pipelines/feature-upgrade-template.yml')
-        .and_return("---\n key: value")
-      expect(pipeline_creator).to_not receive(:add_aws_configure_tasks)
-      pipeline_creator.create_upgrade_pipeline(
-        ert_initial_full_version: ert_initial_full_version,
-        om_initial_full_version: om_initial_full_version
-      )
-    end
-
-    it 'will not add vcloud specific tasks' do
-      allow(File).to receive(:read).with('ci/pipelines/feature-upgrade-template.yml')
-        .and_return("---\n key: value")
-      expect(pipeline_creator).to_not receive(:add_vcloud_delete_installation_tasks)
-      pipeline_creator.create_upgrade_pipeline(
-        ert_initial_full_version: ert_initial_full_version,
-        om_initial_full_version: om_initial_full_version
-      )
-    end
-
-    context 'aws iaas pipeline' do
-      it 'adds aws specific tasks' do
-        allow(File).to receive(:read).with('ci/pipelines/feature-upgrade-template.yml')
-          .and_return("---\n key: value")
-        expect(aws_pipeline_creator).to receive(:add_aws_configure_tasks).with(
-          { 'key' => 'value' },
-          'aws-external-config-upgrade.yml'
+    context 'when pipeline type is not aws' do
+      before do
+        allow(File).to(
+          receive(:read).with('ci/pipelines/feature-upgrade-template.yml')
+            .and_return("---\n key: value")
         )
-        aws_pipeline_creator.create_upgrade_pipeline(
+      end
+
+      it 'does not call #fetch_configure_tasks' do
+        expect(pipeline_creator).to_not receive(:fetch_configure_tasks)
+        pipeline_creator.create_upgrade_pipeline(
+          ert_initial_full_version: ert_initial_full_version,
+          om_initial_full_version: om_initial_full_version
+        )
+      end
+
+      it 'calls render with an empty hash of additional jobs' do
+        expect(pipeline_creator).to receive(:render).with("---\n key: value", {}).and_call_original
+        pipeline_creator.create_upgrade_pipeline(
           ert_initial_full_version: ert_initial_full_version,
           om_initial_full_version: om_initial_full_version
         )
       end
     end
 
-    context 'vcloud iaas pipeline' do
-      it 'adds vcloud specific tasks' do
-        allow(File).to receive(:read).with('ci/pipelines/feature-upgrade-template.yml')
-          .and_return("---\n key: value")
-        expect(vcloud_pipeline_creator).to receive(:add_vcloud_delete_installation_tasks).with(
-          'key' => 'value',
+    context 'aws iaas pipeline' do
+      it 'adds aws specific tasks' do
+        allow(File).to(
+          receive(:read).with('ci/pipelines/feature-upgrade-template.yml')
+            .and_return("---\n key: value")
         )
-        vcloud_pipeline_creator.create_upgrade_pipeline(
+
+        expect(aws_pipeline_creator).to(
+          receive(:fetch_configure_tasks).with(
+            :aws_configure_tasks,
+            'aws-external-config-upgrade.yml'
+          )
+        )
+        aws_pipeline_creator.create_upgrade_pipeline(
           ert_initial_full_version: ert_initial_full_version,
           om_initial_full_version: om_initial_full_version
         )
