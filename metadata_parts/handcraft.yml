@@ -4612,7 +4612,7 @@ job_types:
         admin_user: (( .uaa.admin_credentials.identity ))
         admin_password: (( .uaa.admin_credentials.password ))
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
-        run_security_groups_tests: true
+        run_security_groups_tests: false
         run_ssh_tests: true
         skip_docker_tests: true
         nodes: 1
@@ -4685,7 +4685,7 @@ job_types:
         include_internet_dependent: true
         include_operator: true
         include_services: true
-        include_security_groups: true
+        include_security_groups: false
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         skip_regex: lucid64
         skip_diego_unsupported_tests: true
@@ -4759,7 +4759,7 @@ job_types:
         include_internet_dependent: false
         include_operator: true
         include_services: true
-        include_security_groups: true
+        include_security_groups: false
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         skip_regex: lucid64
         skip_diego_unsupported_tests: true
