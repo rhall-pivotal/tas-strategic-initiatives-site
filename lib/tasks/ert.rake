@@ -131,10 +131,17 @@ namespace :ert do
       require 'pipeline/suite_pipeline_creator'
       Pipeline::SuitePipelineCreator.new.full_suite_pipeline
     end
+
     desc 'create half pipeline'
     task :create_half_pipeline do |_, _|
       require 'pipeline/suite_pipeline_creator'
       Pipeline::SuitePipelineCreator.new.half_suite_pipeline
+    end
+
+    desc 'create multi-az pipeline'
+    task :create_multi_az_pipeline do |_, _|
+      require 'pipeline/suite_pipeline_creator'
+      Pipeline::SuitePipelineCreator.new.multi_az_pipeline
     end
 
     desc 'create a feature pipeline'

@@ -45,4 +45,20 @@ describe Pipeline::SuitePipelineCreator do
       end
     end
   end
+
+  context 'when generating a multi-az pipeline' do
+    describe '#multi_az_pipeline' do
+      it 'makes the multi-az pipeline' do
+        multi_az_pipeline_fixture = File.join(acceptance_fixture, 'multi-az-pipeline.yml')
+        allow(File).to receive(:read).with(multi_az_pipeline_fixture).and_call_original
+
+        expect(File).to receive(:write) do |filename, contents|
+          expect(filename).to eq('ci/pipelines/release/ert-1.6-multi-az.yml')
+          expect(contents).to eq(File.read(multi_az_pipeline_fixture))
+        end
+
+        pipeline_creator.multi_az_pipeline
+      end
+    end
+  end
 end

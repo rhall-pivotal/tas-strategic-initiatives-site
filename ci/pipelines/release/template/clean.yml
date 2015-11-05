@@ -168,6 +168,9 @@ jobs:
       {{#aws_configure_tasks}}
       {{task}}
       {{/aws_configure_tasks}}
+      {{#multi_az}}
+      {{task}}
+      {{/multi_az}}
   - name: import-stemcell-{{pipeline_name}}
     plan:
       - aggregate:

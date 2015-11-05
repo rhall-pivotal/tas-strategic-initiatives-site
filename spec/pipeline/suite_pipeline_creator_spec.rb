@@ -107,6 +107,14 @@ YAML
 YAML
   end
 
+  let(:multi_az) do
+    <<YAML
+- name: multi-az-specific-job
+    plan:
+    - task: do-multi-az-stuff
+YAML
+  end
+
   before do
     allow(File).to(
       receive(:read)
@@ -138,6 +146,11 @@ YAML
         .with('ci/pipelines/release/template/internetless-verification.yml')
         .and_return(verify_internetless_config)
     )
+    allow(File).to(
+      receive(:read)
+        .with('ci/pipelines/release/template/multi-az.yml')
+        .and_return(multi_az)
+    )
   end
 
   it 'has a constructor that takes no arguments' do
@@ -149,9 +162,7 @@ YAML
       context 'when the pipeline_name is something other than internetless' do
         it 'returns empty hash' do
           additional_jobs = pipeline_creator.iaas_specific_pipeline_job(
-            pipeline_type: :upgrade,
-            pipeline_name: 'vsphere-clean',
-            iaas_type: 'vsphere'
+            pipeline_type: :upgrade, params: { pipeline_name: 'vsphere-clean', iaas_type: 'vsphere' }
           )
 
           expect(additional_jobs).to be_nil
@@ -161,11 +172,22 @@ YAML
       context 'when the pipeline_name is internetless' do
         it 'returns the internetless job' do
           additional_jobs = pipeline_creator.iaas_specific_pipeline_job(
-            pipeline_type: :clean,
-            pipeline_name: 'internetless',
-            iaas_type: 'vsphere')
+            pipeline_type: :clean, params: { pipeline_name: 'internetless', iaas_type: 'vsphere' })
           expect(additional_jobs[:verify_internetless_plan][0][:task])
             .to eq(verify_internetless_config)
+        end
+      end
+
+      context 'when the environment_pool is multi-az' do
+        it 'returns the multi-az job' do
+          additional_jobs = pipeline_creator.iaas_specific_pipeline_job(
+            pipeline_type: :clean, params: {
+              pipeline_name: 'vsphere-upgrade',
+              iaas_type: 'vsphere',
+              environment_pool: 'multi-az'
+            })
+          expect(additional_jobs[:multi_az][0][:task])
+            .to eq(multi_az)
         end
       end
     end
@@ -174,9 +196,7 @@ YAML
       context 'when the method is clean' do
         it 'returns only the aws-external-config and aws-enable-experimental jobs' do
           additional_jobs = pipeline_creator.iaas_specific_pipeline_job(
-            pipeline_type: :clean,
-            pipeline_name: 'aws-clean',
-            iaas_type: 'aws')
+            pipeline_type: :clean, params: { pipeline_name: 'aws-clean', iaas_type: 'aws' })
 
           expect(additional_jobs[:aws_configure_tasks][0][:task])
             .to eq(aws_extra_config)
@@ -189,155 +209,12 @@ YAML
       context 'when the method is upgrade' do
         it 'returns only the aws-external-config-upgrade' do
           additional_jobs = pipeline_creator.iaas_specific_pipeline_job(
-            pipeline_type: :upgrade,
-            pipeline_name: 'aws-clean',
-            iaas_type: 'aws')
+            pipeline_type: :upgrade, params: { pipeline_name: 'aws-clean', iaas_type: 'aws' }
+          )
 
           expect(additional_jobs[:aws_configure_tasks][0][:task])
             .to eq(aws_extra_config_upgrade)
         end
-      end
-    end
-  end
-
-  context 'when generating a full suite' do
-    let(:ert_general) do
-      <<YAML
----
-resources:
-  - name: some-resource
-    type: git
-  - name: another-resource
-    type: s3
-    source:
-      some_key: just-a-key
-jobs:
-  - name: a-generic-job
-    plan:
-      - get: a-get-task
-        resource: some-resource
-      - task: a-generic-task
-  - name: promote-ert
-    plan:
-    - get: p-runtime
-      resource: p-runtime-prime
-      trigger: true
-    - get: ert-product
-      passed:
-      - build-runtime
-    - put: ert-product-promoted
-      params:
-        from: ert-product/ert.pivotal
-groups:
-  - name: aws-clean
-    stuff: foo
-  - name: openstack-clean
-    stuff: foo
-  - name: vsphere-clean
-    stuff: foo
-  - name: vsphere-internetless
-    stuff: foo
-  - name: aws-upgrade
-    stuff: foo
-  - name: openstack-upgrade
-    stuff: foo
-  - name: vsphere-upgrade
-    stuff: foo
-  - name: vcloud-upgrade
-    stuff: foo
-  - name: common
-    stuff: foo
-YAML
-    end
-
-    before do
-      allow(File).to receive(:read).with('ci/pipelines/release/template/ert.yml').and_return(ert_general)
-    end
-
-    describe '#full_suite_pipeline' do
-      it 'makes the full suite' do
-        full_pipeline_fixture = File.join(fixture_path, 'full-pipeline.yml')
-        allow(File).to receive(:read).with(full_pipeline_fixture).and_call_original
-
-        expect(File).to receive(:write) do |filename, contents|
-          expect(filename).to eq('ci/pipelines/release/ert-1.6.yml')
-          expect(contents).to eq(File.read(full_pipeline_fixture))
-        end
-
-        pipeline_creator.full_suite_pipeline
-      end
-    end
-  end
-
-  context 'when generating a half suite' do
-    let(:ert_general) do
-      <<YAML
----
-resources:
-  - name: some-resource
-    type: git
-  - name: another-resource
-    type: s3
-    source:
-      some_key: just-a-key
-jobs:
-  - name: a-generic-job
-    plan:
-      - get: a-get-task
-        resource: some-resource
-      - task: a-generic-task
-  - name: promote-ert
-    plan:
-    - get: p-runtime
-      resource: p-runtime-prime
-      trigger: true
-    - get: ert-product
-      passed:
-      - build-runtime
-    - put: ert-product-promoted
-      params:
-        from: ert-product/ert.pivotal
-groups:
-  - name: aws-clean
-    stuff: foo
-  - name: openstack-clean
-    stuff: foo
-  - name: vsphere-clean
-    stuff: foo
-  - name: vsphere-internetless
-    stuff: foo
-  - name: aws-upgrade
-    stuff: foo
-  - name: openstack-upgrade
-    stuff: foo
-  - name: vsphere-upgrade
-    stuff: foo
-  - name: vcloud-upgrade
-    stuff: foo
-  - name: common
-    stuff: foo
-YAML
-    end
-
-    before do
-      allow(File).to(
-        receive(:read)
-          .with('ci/pipelines/release/template/ert.yml')
-          .and_return(ert_general)
-      )
-    end
-
-    describe '#half_suite_pipeline' do
-      it 'makes the half suite' do
-        half_pipeline_fixture = File.join(fixture_path, 'half-pipeline.yml')
-        allow(File).to receive(:read).with(half_pipeline_fixture).and_call_original
-
-        expect(File).to receive(:write) do |filename, contents|
-          expect(filename).to eq('ci/pipelines/release/ert-1.6-half.yml')
-          expect(contents).to eq(File.read(half_pipeline_fixture))
-        end
-
-        pipeline_creator.half_suite_pipeline
       end
     end
   end

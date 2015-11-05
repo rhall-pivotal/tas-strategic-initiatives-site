@@ -23,6 +23,15 @@ module Pipeline
       },
     ].freeze
 
+    MULTI_AZ_PIPELINES = [
+      { pipeline_type: :clean,
+        params: { pipeline_name: 'vsphere-clean', iaas_type: 'vsphere', environment_pool: 'multi-az' }
+      },
+      { pipeline_type: :upgrade,
+        params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere', environment_pool: 'multi-az' }
+      },
+    ].freeze
+
     FULL_PIPELINES = [
       {
         pipeline_type: :clean,
@@ -50,34 +59,56 @@ module Pipeline
       }
     ].freeze
 
-    def iaas_specific_pipeline_job(pipeline_type:, pipeline_name:, iaas_type:)
-      if iaas_type == 'aws'
-        case pipeline_type
-        when :upgrade
-          fetch_configure_tasks(:aws_configure_tasks, 'aws-external-config-upgrade.yml')
-        when :clean
-          fetch_configure_tasks(:aws_configure_tasks, 'aws-external-config.yml', 'aws-enable-experimental.yml')
-        end
-      elsif pipeline_name == 'internetless'
-        return fetch_verify_internetless_job
+    def iaas_specific_pipeline_job(pipeline_type:, params:, group_name: nil)
+      _group_name = group_name
+      if params[:iaas_type] == 'aws'
+        aws_stuff(pipeline_type)
+      elsif params[:pipeline_name] == 'internetless'
+        fetch_verify_internetless_job
+      elsif params[:iaas_type] == 'vsphere' && params[:environment_pool] == 'multi-az'
+        multi_az_stuff(pipeline_type)
       end
     end
 
     def half_suite_pipeline
-      yaml = create_pipeline_yaml(HALF_PIPELINES)
+      yaml = create_pipeline_yaml(HALF_PIPELINES, 'ert.yml')
 
       File.write(File.join('ci', 'pipelines', 'release', 'ert-1.6-half.yml'), yaml)
     end
 
     def full_suite_pipeline
-      yaml = create_pipeline_yaml(FULL_PIPELINES)
+      yaml = create_pipeline_yaml(FULL_PIPELINES, 'ert.yml')
 
       File.write(File.join('ci', 'pipelines', 'release', 'ert-1.6.yml'), yaml)
+    end
+
+    def multi_az_pipeline
+      yaml = create_pipeline_yaml(MULTI_AZ_PIPELINES, 'ert-multi-az.yml')
+
+      File.write(File.join('ci', 'pipelines', 'release', 'ert-1.6-multi-az.yml'), yaml)
     end
 
     attr_reader :pipeline_name, :iaas_type, :environment_pool
 
     private
+
+    def multi_az_stuff(pipeline_type)
+      case pipeline_type
+      when :upgrade
+        fetch_configure_tasks(:multi_az, 'multi-az-upgrade.yml')
+      when :clean
+        fetch_configure_tasks(:multi_az, 'multi-az.yml')
+      end
+    end
+
+    def aws_stuff(pipeline_type)
+      case pipeline_type
+      when :upgrade
+        fetch_configure_tasks(:aws_configure_tasks, 'aws-external-config-upgrade.yml')
+      when :clean
+        fetch_configure_tasks(:aws_configure_tasks, 'aws-external-config.yml', 'aws-enable-experimental.yml')
+      end
+    end
 
     def critical_jobs(pipeline_yaml)
       pipeline_yaml['jobs']
@@ -106,23 +137,21 @@ module Pipeline
       YAML.load(render(template, additional_jobs))
     end
 
-    def create_pipeline_yaml(pipelines)
-      pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert.yml')))
+    def create_pipeline_yaml(pipelines, main_template_file)
+      pipeline_yaml = YAML.load(File.read(File.join(template_directory, main_template_file)))
 
       pipelines.each do |config|
         params = config[:params]
 
-        iaas_specific_jobs = iaas_specific_pipeline_job(
-          pipeline_type: config[:pipeline_type],
-          pipeline_name: params[:pipeline_name],
-          iaas_type: params[:iaas_type]
-        )
+        iaas_specific_jobs = iaas_specific_pipeline_job(config)
         iaas_specific_yaml = pipeline_jobs(config[:pipeline_type], iaas_specific_jobs, params)
 
         pipeline_yaml['jobs'].concat(iaas_specific_yaml['jobs'])
       end
 
-      step_needing_passed_criteria(pipeline_yaml)['passed'] = critical_jobs(pipeline_yaml)
+      if main_template_file == 'ert.yml'
+        step_needing_passed_criteria(pipeline_yaml)['passed'] = critical_jobs(pipeline_yaml)
+      end
 
       groups = pipeline_groups(pipeline_yaml, pipelines)
 
