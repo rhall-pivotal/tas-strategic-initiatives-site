@@ -86,6 +86,15 @@ namespace :ert do
     ).configure_experimental_features
   end
 
+  desc 'Configure instance counts for multi-az deployment'
+  task :configure_multi_az_instance_counts, [:environment_name, :ert_version, :om_version] do |_, args|
+    IntegrationSpecRunner.new(
+      environment: args.environment_name,
+      ert_version: args.ert_version,
+      om_version: args.om_version
+    ).configure_multi_az_instance_counts
+  end
+
   desc 'run the cats errand'
   task :run_cats, [:environment_name, :om_version] do |_, args|
     require 'opsmgr/cmd/bosh_command'
