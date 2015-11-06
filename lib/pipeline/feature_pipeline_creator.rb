@@ -16,10 +16,10 @@ module Pipeline
     def create_pipeline
       dir_name = make_pipeline_directory
 
-      template_yaml = YAML.load(render(File.read(File.join('ci', 'pipelines', 'feature-pipeline-template.yml'))))
+      template = File.read(File.join('ci', 'pipelines', 'feature-pipeline-template.yml'))
+      additional_jobs = iaas_type == 'aws' ? fetch_configure_tasks(:aws_configure_tasks, 'aws-external-config.yml') : {}
 
-      add_aws_configure_tasks(template_yaml, 'aws-external-config.yml') if iaas_type == 'aws'
-      add_vcloud_delete_installation_tasks(template_yaml) if iaas_type == 'vcloud'
+      template_yaml = YAML.load(render(template, additional_jobs))
 
       template_content = YAML.dump(template_yaml)
       write_pipeline_config(dir_name, template_content)
@@ -31,10 +31,10 @@ module Pipeline
 
       dir_name = make_pipeline_directory
 
-      template_yaml = YAML.load(render(File.read(File.join('ci', 'pipelines', 'feature-upgrade-template.yml'))))
+      template = File.read(File.join('ci', 'pipelines', 'feature-upgrade-template.yml'))
+      additional_jobs = iaas_type == 'aws' ? fetch_configure_tasks(:aws_configure_tasks, 'aws-external-config-upgrade.yml') : {}
 
-      add_aws_configure_tasks(template_yaml, 'aws-external-config-upgrade.yml') if iaas_type == 'aws'
-      add_vcloud_delete_installation_tasks(template_yaml) if iaas_type == 'vcloud'
+      template_yaml = YAML.load(render(template, additional_jobs))
 
       template_content = YAML.dump(template_yaml)
       write_pipeline_config(dir_name, template_content)

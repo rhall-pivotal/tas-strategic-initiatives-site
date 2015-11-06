@@ -77,6 +77,7 @@ YAML
       end
     end
   end
+
   context 'clean-install feature pipeline' do
     context 'on aws' do
       it 'does not configure experimental features' do

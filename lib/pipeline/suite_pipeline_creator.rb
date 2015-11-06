@@ -7,79 +7,108 @@ module Pipeline
     include IaasSpecificTaskAdder
 
     HALF_PIPELINES = [
-      { method: :clean_pipeline_jobs, params: { pipeline_name: 'aws-clean', iaas_type: 'aws' } },
+      { pipeline_type: :clean,
+        params: { pipeline_name: 'aws-clean', iaas_type: 'aws', environment_pool: 'aws' }
+      },
       {
-        method: :clean_pipeline_jobs,
-        params: { pipeline_name: 'internetless', iaas_type: 'vsphere' },
+        pipeline_type: :clean,
+        params: { pipeline_name: 'internetless', iaas_type: 'vsphere', environment_pool: 'internetless' },
         group_name: 'vsphere-internetless'
       },
-      { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'aws-upgrade', iaas_type: 'aws' } },
-      { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere' } },
+      { pipeline_type: :upgrade,
+        params: { pipeline_name: 'aws-upgrade', iaas_type: 'aws', environment_pool: 'aws' }
+      },
+      { pipeline_type: :upgrade,
+        params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere', environment_pool: 'vsphere' }
+      },
+    ].freeze
+
+    MULTI_AZ_PIPELINES = [
+      { pipeline_type: :clean,
+        params: { pipeline_name: 'vsphere-clean', iaas_type: 'vsphere', environment_pool: 'multi-az' }
+      },
+      { pipeline_type: :upgrade,
+        params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere', environment_pool: 'multi-az' }
+      },
     ].freeze
 
     FULL_PIPELINES = [
-      { method: :clean_pipeline_jobs, params: { pipeline_name: 'aws-clean', iaas_type: 'aws' } },
-      { method: :clean_pipeline_jobs, params: { pipeline_name: 'openstack-clean', iaas_type: 'openstack' } },
-      { method: :clean_pipeline_jobs, params: { pipeline_name: 'vsphere-clean', iaas_type: 'vsphere' } },
-      { method: :clean_pipeline_jobs,
-        params: { pipeline_name: 'internetless', iaas_type: 'vsphere' },
+      {
+        pipeline_type: :clean,
+        params: { pipeline_name: 'aws-clean', iaas_type: 'aws', environment_pool: 'aws' }
+      },
+      {
+        pipeline_type: :clean,
+        params: { pipeline_name: 'openstack-clean', iaas_type: 'openstack', environment_pool: 'openstack' }
+      },
+      { pipeline_type: :clean,
+        params: { pipeline_name: 'vsphere-clean', iaas_type: 'vsphere', environment_pool: 'vsphere' }
+      },
+      { pipeline_type: :clean,
+        params: { pipeline_name: 'internetless', iaas_type: 'vsphere', environment_pool: 'internetless' },
         group_name: 'vsphere-internetless'
       },
-      { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'aws-upgrade', iaas_type: 'aws' } },
-      { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere' } },
-      { method: :upgrade_pipeline_jobs, params: { pipeline_name: 'vcloud-upgrade', iaas_type: 'vcloud' } }
+      { pipeline_type: :upgrade,
+        params: { pipeline_name: 'aws-upgrade', iaas_type: 'aws', environment_pool: 'aws' }
+      },
+      { pipeline_type: :upgrade,
+        params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere', environment_pool: 'vsphere' }
+      },
+      { pipeline_type: :upgrade,
+        params: { pipeline_name: 'vcloud-upgrade', iaas_type: 'vcloud', environment_pool: 'vcloud' }
+      }
     ].freeze
 
-    def environment_pool
-      case pipeline_name
-      when 'internetless'
-        pipeline_name
-      else
-        iaas_type
+    def iaas_specific_pipeline_job(pipeline_type:, params:, group_name: nil)
+      _group_name = group_name
+      if params[:iaas_type] == 'aws'
+        aws_stuff(pipeline_type)
+      elsif params[:pipeline_name] == 'internetless'
+        fetch_verify_internetless_job
+      elsif params[:iaas_type] == 'vsphere' && params[:environment_pool] == 'multi-az'
+        multi_az_stuff(pipeline_type)
       end
     end
 
-    def upgrade_pipeline_jobs(pipeline_name:, iaas_type:)
-      pipeline_yaml = pipeline_jobs(
-        pipeline_name: pipeline_name,
-        iaas_type: iaas_type,
-        template_path: File.join(template_directory, 'upgrade.yml')
-      )
-
-      add_aws_configure_tasks(pipeline_yaml, 'aws-external-config-upgrade.yml') if iaas_type == 'aws'
-
-      pipeline_yaml
-    end
-
-    def clean_pipeline_jobs(pipeline_name:, iaas_type:)
-      pipeline_yaml = pipeline_jobs(
-        pipeline_name: pipeline_name,
-        iaas_type: iaas_type,
-        template_path: File.join(template_directory, 'clean.yml')
-      )
-
-      add_aws_configure_tasks(pipeline_yaml, 'aws-external-config.yml') if iaas_type == 'aws'
-      add_aws_configure_tasks(pipeline_yaml, 'aws-enable-experimental.yml') if iaas_type == 'aws'
-      add_verify_internetless_job(pipeline_yaml) if pipeline_name == 'internetless'
-
-      pipeline_yaml
-    end
-
     def half_suite_pipeline
-      yaml = create_pipeline_yaml(HALF_PIPELINES)
+      yaml = create_pipeline_yaml(HALF_PIPELINES, 'ert.yml')
 
       File.write(File.join('ci', 'pipelines', 'release', 'ert-1.6-half.yml'), yaml)
     end
 
     def full_suite_pipeline
-      yaml = create_pipeline_yaml(FULL_PIPELINES)
+      yaml = create_pipeline_yaml(FULL_PIPELINES, 'ert.yml')
 
       File.write(File.join('ci', 'pipelines', 'release', 'ert-1.6.yml'), yaml)
     end
 
-    attr_reader :pipeline_name, :iaas_type
+    def multi_az_pipeline
+      yaml = create_pipeline_yaml(MULTI_AZ_PIPELINES, 'ert-multi-az.yml')
+
+      File.write(File.join('ci', 'pipelines', 'release', 'ert-1.6-multi-az.yml'), yaml)
+    end
+
+    attr_reader :pipeline_name, :iaas_type, :environment_pool
 
     private
+
+    def multi_az_stuff(pipeline_type)
+      case pipeline_type
+      when :upgrade
+        fetch_configure_tasks(:multi_az, 'multi-az-upgrade.yml')
+      when :clean
+        fetch_configure_tasks(:multi_az, 'multi-az.yml')
+      end
+    end
+
+    def aws_stuff(pipeline_type)
+      case pipeline_type
+      when :upgrade
+        fetch_configure_tasks(:aws_configure_tasks, 'aws-external-config-upgrade.yml')
+      when :clean
+        fetch_configure_tasks(:aws_configure_tasks, 'aws-external-config.yml', 'aws-enable-experimental.yml')
+      end
+    end
 
     def critical_jobs(pipeline_yaml)
       pipeline_yaml['jobs']
@@ -92,25 +121,37 @@ module Pipeline
       pipeline_yaml['jobs'].find { |j| j['name'] == 'promote-ert' }['plan'].find { |s| s['get'] == 'p-runtime' }
     end
 
-    def pipeline_jobs(pipeline_name:, iaas_type:, template_path:)
-      @pipeline_name = pipeline_name
-      @iaas_type = iaas_type
+    def construct_template_path(method)
+      file = method == :upgrade ? 'upgrade.yml' : 'clean.yml'
 
-      pipeline_yaml = YAML.load(render(File.read(template_path)))
-
-      add_vcloud_delete_installation_tasks(pipeline_yaml) if iaas_type == 'vcloud'
-      pipeline_yaml
+      File.join(template_directory, file)
     end
 
-    def create_pipeline_yaml(pipelines)
-      pipeline_yaml = YAML.load(File.read(File.join(template_directory, 'ert.yml')))
+    def pipeline_jobs(pipeline_type, additional_jobs, pipeline_name:, iaas_type:, environment_pool:)
+      @pipeline_name = pipeline_name
+      @iaas_type = iaas_type
+      @environment_pool = environment_pool
+
+      template = File.read(construct_template_path(pipeline_type))
+
+      YAML.load(render(template, additional_jobs))
+    end
+
+    def create_pipeline_yaml(pipelines, main_template_file)
+      pipeline_yaml = YAML.load(File.read(File.join(template_directory, main_template_file)))
 
       pipelines.each do |config|
-        jobs = send(config[:method], config[:params])['jobs']
-        pipeline_yaml['jobs'].concat(jobs)
+        params = config[:params]
+
+        iaas_specific_jobs = iaas_specific_pipeline_job(config)
+        iaas_specific_yaml = pipeline_jobs(config[:pipeline_type], iaas_specific_jobs, params)
+
+        pipeline_yaml['jobs'].concat(iaas_specific_yaml['jobs'])
       end
 
-      step_needing_passed_criteria(pipeline_yaml)['passed'] = critical_jobs(pipeline_yaml)
+      if main_template_file == 'ert.yml'
+        step_needing_passed_criteria(pipeline_yaml)['passed'] = critical_jobs(pipeline_yaml)
+      end
 
       groups = pipeline_groups(pipeline_yaml, pipelines)
 

@@ -95,6 +95,17 @@ RSpec.describe 'IntegrationSpecRunner' do
         end
       end
 
+      describe "#configure_multi_az_instance_counts #{version}" do
+        it 'runs the correct version of configure_multi_az_instance_counts' do
+          expect(RSpecExiter).to receive(:exit_rspec).with(0)
+          expect(RSpec::Core::Runner).to receive(:run).with(
+            ["integration/ERT-#{ert_version}/configure_multi_az_instance_counts_spec.rb"]
+          ).and_return(0)
+
+          integration_spec_runner.configure_multi_az_instance_counts
+        end
+      end
+
       describe "#configure_experimental_features #{version}" do
         it 'runs the correct version of configure experimental features' do
           expect(RSpecExiter).to receive(:exit_rspec).with(0)

@@ -139,6 +139,12 @@ jobs:
           params:
             ERT_VERSION: 1.5
             OPSMAN_VERSION: *om_initial_version
+      {{#aws_configure_tasks}}
+      {{task}}
+      {{/aws_configure_tasks}}
+      {{#multi_az}}
+      {{task}}
+      {{/multi_az}}
 
   - name: deploy-ert-initial-{{pipeline_name}}
     plan:

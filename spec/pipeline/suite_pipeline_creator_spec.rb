@@ -22,18 +22,36 @@ jobs:
   - name: deploy-ops-manager-{{pipeline_name}}
     plan:
       - task: some-task
+  {{#verify_internetless_plan}}
+  {{task}}
+  {{/verify_internetless_plan}}
   - name: configure-microbosh-{{pipeline_name}}
     plan:
       - get: p-runtime
-        passed: [deploy-ops-manager-{{pipeline_name}}]
+        passed:
+        {{#verify_internetless_plan}}
+        - verify-internetless
+        {{/verify_internetless_plan}}
+        {{^verify_internetless_plan}}
+        - deploy-ops-manager-{{pipeline_name}}
+        {{/verify_internetless_plan}}
       - get: environment
         resource: environment-{{pipeline_name}}
-        passed: [deploy-ops-manager-{{pipeline_name}}]
+        passed:
+        {{#verify_internetless_plan}}
+        - verify-internetless
+        {{/verify_internetless_plan}}
+        {{^verify_internetless_plan}}
+        - deploy-ops-manager-{{pipeline_name}}
+        {{/verify_internetless_plan}}
   - name: configure-ert-{{pipeline_name}}
     plan:
       - task: some-task
         tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
+      {{#aws_configure_tasks}}
+      {{task}}
+      {{/aws_configure_tasks}}
   - name: another-job-{{pipeline_name}}
     plan:
       - task: another-task
@@ -63,45 +81,50 @@ YAML
   let(:aws_extra_config) do
     <<YAML
 - task: some-aws-task
-  tags: aws
+        tags: aws
 YAML
   end
 
   let(:aws_experimental_config) do
     <<YAML
 - task: some-experimental-aws-task
-  tags: aws
+        tags: aws
 YAML
   end
 
   let(:aws_extra_config_upgrade) do
     <<YAML
 - task: some-aws-upgrade-task
-  tags: aws
-YAML
-  end
-
-  let(:vcloud_extra_config) do
-    <<YAML
-- task: some-vcloud-task
-  tags: vcloud
-- task: another-vcloud-task
-  tags: vcloud
+        tags: aws
 YAML
   end
 
   let(:verify_internetless_config) do
     <<YAML
----
-name: verify-internetless
-plan:
-- task: verify
+- name: verify-internetless
+    plan:
+    - task: verify
+YAML
+  end
+
+  let(:multi_az) do
+    <<YAML
+- name: multi-az-specific-job
+    plan:
+    - task: do-multi-az-stuff
 YAML
   end
 
   before do
     allow(File).to(
-      receive(:read).and_return(template)
+      receive(:read)
+        .with('ci/pipelines/release/template/clean.yml')
+        .and_return(template)
+    )
+    allow(File).to(
+      receive(:read)
+        .with('ci/pipelines/release/template/upgrade.yml')
+        .and_return(template)
     )
     allow(File).to(
       receive(:read)
@@ -120,13 +143,13 @@ YAML
     )
     allow(File).to(
       receive(:read)
-        .with('ci/pipelines/release/template/vcloud-delete-installation.yml')
-        .and_return(vcloud_extra_config)
+        .with('ci/pipelines/release/template/internetless-verification.yml')
+        .and_return(verify_internetless_config)
     )
     allow(File).to(
       receive(:read)
-        .with('ci/pipelines/release/template/internetless-verification.yml')
-        .and_return(verify_internetless_config)
+        .with('ci/pipelines/release/template/multi-az.yml')
+        .and_return(multi_az)
     )
   end
 
@@ -134,274 +157,64 @@ YAML
     expect(pipeline_creator).to be_a(Pipeline::SuitePipelineCreator)
   end
 
-  describe '#clean_pipeline_jobs' do
-    it 'returns vsphere clean pipeline jobs using template/clean.yml' do
-      expect(File).to receive(:read).with('ci/pipelines/release/template/clean.yml')
-      vsphere_clean_pipeline_jobs = pipeline_creator.clean_pipeline_jobs(
-        pipeline_name: 'vsphere-clean',
-        iaas_type: 'vsphere'
-      )['jobs']
+  describe '#iaas_specific_pipeline_jobs' do
+    context 'when the iaas is vsphere' do
+      context 'when the pipeline_name is something other than internetless' do
+        it 'returns empty hash' do
+          additional_jobs = pipeline_creator.iaas_specific_pipeline_job(
+            pipeline_type: :upgrade, params: { pipeline_name: 'vsphere-clean', iaas_type: 'vsphere' }
+          )
 
-      expect(vsphere_clean_pipeline_jobs[3]['name']).to eq('configure-ert-vsphere-clean')
-      expect(vsphere_clean_pipeline_jobs[3]['plan'].first['tags']).to eq(['vsphere'])
-      expect(vsphere_clean_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-vsphere')
-
-      expect(vsphere_clean_pipeline_jobs.find { |j| j['name'] =~ /verify_internetless/ }).to be_nil
-    end
-
-    it 'returns aws clean pipeline jobs using template/clean.yml' do
-      expect(File).to receive(:read).with('ci/pipelines/release/template/clean.yml')
-      aws_clean_pipeline_jobs = pipeline_creator.clean_pipeline_jobs(
-        pipeline_name: 'aws-clean',
-        iaas_type: 'aws'
-      )['jobs']
-
-      expect(aws_clean_pipeline_jobs[3]['name']).to eq('configure-ert-aws-clean')
-      expect(aws_clean_pipeline_jobs[3]['plan'].first['tags']).to eq(['aws'])
-      expect(aws_clean_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-aws')
-
-      expect(aws_clean_pipeline_jobs[3]['plan'][1]).to eq('task' => 'some-aws-task', 'tags' => 'aws')
-
-      expect(aws_clean_pipeline_jobs.find { |j| j['name'] =~ /verify_internetless/ }).to be_nil
-    end
-
-    it 'returns internetless clean pipeline jobs using template/clean.yml' do
-      expect(File).to receive(:read).with('ci/pipelines/release/template/clean.yml')
-      internetless_pipeline_jobs = pipeline_creator.clean_pipeline_jobs(
-        pipeline_name: 'internetless',
-        iaas_type: 'vsphere'
-      )['jobs']
-
-      expect(internetless_pipeline_jobs[4]['name']).to eq('configure-ert-internetless')
-      expect(internetless_pipeline_jobs[4]['plan'].first['tags']).to eq(['vsphere'])
-      expect(internetless_pipeline_jobs[4]['plan'].first['resource']).to eq('environment-internetless')
-
-      expect(internetless_pipeline_jobs[2]['name']).to eq('verify-internetless')
-      expect(internetless_pipeline_jobs[2]['plan'].first['task']).to eq('verify')
-    end
-
-    it 'returns vcloud clean pipeline jobs using template/clean.yml' do
-      expect(File).to receive(:read).with('ci/pipelines/release/template/clean.yml')
-      vcloud_clean_pipeline_jobs = pipeline_creator.clean_pipeline_jobs(
-        pipeline_name: 'vcloud',
-        iaas_type: 'vcloud'
-      )['jobs']
-
-      expect(vcloud_clean_pipeline_jobs[3]['name']).to eq('configure-ert-vcloud')
-      expect(vcloud_clean_pipeline_jobs[3]['plan'].first['tags']).to eq(['vcloud'])
-      expect(vcloud_clean_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-vcloud')
-
-      expect(vcloud_clean_pipeline_jobs.first['plan'][1]).to eq('task' => 'some-vcloud-task', 'tags' => 'vcloud')
-      expect(vcloud_clean_pipeline_jobs.first['plan'][2]).to eq('task' => 'another-vcloud-task', 'tags' => 'vcloud')
-
-      expect(vcloud_clean_pipeline_jobs[5]['plan'][1]).to eq('task' => 'some-vcloud-task', 'tags' => 'vcloud')
-      expect(vcloud_clean_pipeline_jobs[5]['plan'][2]).to eq('task' => 'another-vcloud-task', 'tags' => 'vcloud')
-
-      expect(vcloud_clean_pipeline_jobs.find { |j| j['name'] =~ /verify_internetless/ }).to be_nil
-    end
-  end
-
-  describe '#upgrade_pipeline_jobs' do
-    it 'returns vsphere upgrade pipeline jobs using template/upgrade.yml' do
-      expect(File).to receive(:read).with('ci/pipelines/release/template/upgrade.yml')
-      vsphere_upgrade_pipeline_jobs = pipeline_creator.upgrade_pipeline_jobs(
-        pipeline_name: 'vsphere-upgrade',
-        iaas_type: 'vsphere'
-      )['jobs']
-
-      expect(vsphere_upgrade_pipeline_jobs[3]['name']).to eq('configure-ert-vsphere-upgrade')
-      expect(vsphere_upgrade_pipeline_jobs[3]['plan'].first['tags']).to eq(['vsphere'])
-      expect(vsphere_upgrade_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-vsphere')
-
-      expect(vsphere_upgrade_pipeline_jobs.find { |j| j['name'] =~ /verify_internetless/ }).to be_nil
-    end
-
-    it 'returns aws upgrade pipeline jobs using template/upgrade.yml' do
-      expect(File).to receive(:read).with('ci/pipelines/release/template/upgrade.yml')
-      aws_upgrade_pipeline_jobs = pipeline_creator.upgrade_pipeline_jobs(
-        pipeline_name: 'aws-upgrade',
-        iaas_type: 'aws'
-      )['jobs']
-
-      expect(aws_upgrade_pipeline_jobs[3]['name']).to eq('configure-ert-aws-upgrade')
-      expect(aws_upgrade_pipeline_jobs[3]['plan'].first['tags']).to eq(['aws'])
-      expect(aws_upgrade_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-aws')
-
-      expect(aws_upgrade_pipeline_jobs[3]['plan'][1]).to eq('task' => 'some-aws-upgrade-task', 'tags' => 'aws')
-
-      expect(aws_upgrade_pipeline_jobs.find { |j| j['name'] =~ /verify_internetless/ }).to be_nil
-    end
-
-    it 'returns vcloud upgrade pipeline jobs using template/upgrade.yml' do
-      expect(File).to receive(:read).with('ci/pipelines/release/template/upgrade.yml')
-      vcloud_upgrade_pipeline_jobs = pipeline_creator.upgrade_pipeline_jobs(
-        pipeline_name: 'vcloud',
-        iaas_type: 'vcloud'
-      )['jobs']
-
-      expect(vcloud_upgrade_pipeline_jobs[3]['name']).to eq('configure-ert-vcloud')
-      expect(vcloud_upgrade_pipeline_jobs[3]['plan'].first['tags']).to eq(['vcloud'])
-      expect(vcloud_upgrade_pipeline_jobs[3]['plan'].first['resource']).to eq('environment-vcloud')
-
-      expect(vcloud_upgrade_pipeline_jobs.first['plan'][1]).to eq('task' => 'some-vcloud-task', 'tags' => 'vcloud')
-      expect(vcloud_upgrade_pipeline_jobs.first['plan'][2]).to eq('task' => 'another-vcloud-task', 'tags' => 'vcloud')
-
-      expect(vcloud_upgrade_pipeline_jobs.find { |j| j['name'] =~ /verify_internetless/ }).to be_nil
-    end
-  end
-
-  describe '#environment_pool' do
-    it 'returns the pipeline name when internetless' do
-      pipeline_creator.clean_pipeline_jobs(pipeline_name: 'internetless', iaas_type: 'some-iaas-type')
-
-      expect(pipeline_creator.environment_pool).to eq('internetless')
-    end
-
-    it 'returns the iaas_type by default' do
-      pipeline_creator.clean_pipeline_jobs(pipeline_name: 'blah', iaas_type: 'some-iaas-type')
-
-      expect(pipeline_creator.environment_pool).to eq('some-iaas-type')
-    end
-  end
-
-  context 'when generating a full suite' do
-    let(:ert_general) do
-      <<YAML
----
-resources:
-  - name: some-resource
-    type: git
-  - name: another-resource
-    type: s3
-    source:
-      some_key: just-a-key
-jobs:
-  - name: a-generic-job
-    plan:
-      - get: a-get-task
-        resource: some-resource
-      - task: a-generic-task
-  - name: promote-ert
-    plan:
-    - get: p-runtime
-      resource: p-runtime-prime
-      trigger: true
-    - get: ert-product
-      passed:
-      - build-runtime
-    - put: ert-product-promoted
-      params:
-        from: ert-product/ert.pivotal
-groups:
-  - name: aws-clean
-    stuff: foo
-  - name: openstack-clean
-    stuff: foo
-  - name: vsphere-clean
-    stuff: foo
-  - name: vsphere-internetless
-    stuff: foo
-  - name: aws-upgrade
-    stuff: foo
-  - name: openstack-upgrade
-    stuff: foo
-  - name: vsphere-upgrade
-    stuff: foo
-  - name: vcloud-upgrade
-    stuff: foo
-  - name: common
-    stuff: foo
-YAML
-    end
-
-    before do
-      allow(File).to receive(:read).with('ci/pipelines/release/template/ert.yml').and_return(ert_general)
-    end
-
-    describe '#full_suite_pipeline' do
-      it 'makes the full suite' do
-        full_pipeline_fixture = File.join(fixture_path, 'full-pipeline.yml')
-        allow(File).to receive(:read).with(full_pipeline_fixture).and_call_original
-
-        expect(File).to receive(:write) do |filename, contents|
-          expect(filename).to eq('ci/pipelines/release/ert-1.6.yml')
-          expect(contents).to eq(File.read(full_pipeline_fixture))
+          expect(additional_jobs).to be_nil
         end
+      end
 
-        pipeline_creator.full_suite_pipeline
+      context 'when the pipeline_name is internetless' do
+        it 'returns the internetless job' do
+          additional_jobs = pipeline_creator.iaas_specific_pipeline_job(
+            pipeline_type: :clean, params: { pipeline_name: 'internetless', iaas_type: 'vsphere' })
+          expect(additional_jobs[:verify_internetless_plan][0][:task])
+            .to eq(verify_internetless_config)
+        end
+      end
+
+      context 'when the environment_pool is multi-az' do
+        it 'returns the multi-az job' do
+          additional_jobs = pipeline_creator.iaas_specific_pipeline_job(
+            pipeline_type: :clean, params: {
+              pipeline_name: 'vsphere-upgrade',
+              iaas_type: 'vsphere',
+              environment_pool: 'multi-az'
+            })
+          expect(additional_jobs[:multi_az][0][:task])
+            .to eq(multi_az)
+        end
       end
     end
-  end
 
-  context 'when generating a half suite' do
-    let(:ert_general) do
-      <<YAML
----
-resources:
-  - name: some-resource
-    type: git
-  - name: another-resource
-    type: s3
-    source:
-      some_key: just-a-key
-jobs:
-  - name: a-generic-job
-    plan:
-      - get: a-get-task
-        resource: some-resource
-      - task: a-generic-task
-  - name: promote-ert
-    plan:
-    - get: p-runtime
-      resource: p-runtime-prime
-      trigger: true
-    - get: ert-product
-      passed:
-      - build-runtime
-    - put: ert-product-promoted
-      params:
-        from: ert-product/ert.pivotal
-groups:
-  - name: aws-clean
-    stuff: foo
-  - name: openstack-clean
-    stuff: foo
-  - name: vsphere-clean
-    stuff: foo
-  - name: vsphere-internetless
-    stuff: foo
-  - name: aws-upgrade
-    stuff: foo
-  - name: openstack-upgrade
-    stuff: foo
-  - name: vsphere-upgrade
-    stuff: foo
-  - name: vcloud-upgrade
-    stuff: foo
-  - name: common
-    stuff: foo
-YAML
-    end
+    context 'when the iaas is aws' do
+      context 'when the method is clean' do
+        it 'returns only the aws-external-config and aws-enable-experimental jobs' do
+          additional_jobs = pipeline_creator.iaas_specific_pipeline_job(
+            pipeline_type: :clean, params: { pipeline_name: 'aws-clean', iaas_type: 'aws' })
 
-    before do
-      allow(File).to(
-        receive(:read)
-          .with('ci/pipelines/release/template/ert.yml')
-          .and_return(ert_general)
-      )
-    end
+          expect(additional_jobs[:aws_configure_tasks][0][:task])
+            .to eq(aws_extra_config)
 
-    describe '#half_suite_pipeline' do
-      it 'makes the half suite' do
-        half_pipeline_fixture = File.join(fixture_path, 'half-pipeline.yml')
-        allow(File).to receive(:read).with(half_pipeline_fixture).and_call_original
-
-        expect(File).to receive(:write) do |filename, contents|
-          expect(filename).to eq('ci/pipelines/release/ert-1.6-half.yml')
-          expect(contents).to eq(File.read(half_pipeline_fixture))
+          expect(additional_jobs[:aws_configure_tasks][1][:task])
+            .to eq(aws_experimental_config)
         end
+      end
 
-        pipeline_creator.half_suite_pipeline
+      context 'when the method is upgrade' do
+        it 'returns only the aws-external-config-upgrade' do
+          additional_jobs = pipeline_creator.iaas_specific_pipeline_job(
+            pipeline_type: :upgrade, params: { pipeline_name: 'aws-clean', iaas_type: 'aws' }
+          )
+
+          expect(additional_jobs[:aws_configure_tasks][0][:task])
+            .to eq(aws_extra_config_upgrade)
+        end
       end
     end
   end
