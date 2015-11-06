@@ -27,9 +27,6 @@ module Pipeline
       { pipeline_type: :clean,
         params: { pipeline_name: 'vsphere-clean', iaas_type: 'vsphere', environment_pool: 'multi-az' }
       },
-      { pipeline_type: :upgrade,
-        params: { pipeline_name: 'vsphere-upgrade', iaas_type: 'vsphere', environment_pool: 'multi-az' }
-      },
     ].freeze
 
     FULL_PIPELINES = [
@@ -95,7 +92,7 @@ module Pipeline
     def multi_az_stuff(pipeline_type)
       case pipeline_type
       when :upgrade
-        fetch_configure_tasks(:multi_az, 'multi-az-upgrade.yml')
+        fail 'multi-az not supported in 1.5 - fix me for 1.6->1.7 upgrade'
       when :clean
         fetch_configure_tasks(:multi_az, 'multi-az.yml')
       end
