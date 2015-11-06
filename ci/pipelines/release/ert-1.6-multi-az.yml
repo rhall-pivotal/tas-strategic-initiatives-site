@@ -4,7 +4,7 @@ resources:
   type: git
   source:
     uri: git@github.com:pivotal-cf/p-runtime.git
-    branch: master
+    branch: features/multi-az-pipelines-104235312
     private_key: |
       -----BEGIN RSA PRIVATE KEY-----
       MIIJKAIBAAKCAgEA1b1PjU8Z9eyVxVquclBsaZW7irH12wSqGp6KuXqtXKyE6P70
@@ -61,7 +61,7 @@ resources:
   type: git
   source:
     uri: git@github.com:pivotal-cf/p-runtime.git
-    branch: master
+    branch: features/multi-az-pipelines-104235312
     private_key: |
       -----BEGIN RSA PRIVATE KEY-----
       MIIJKAIBAAKCAgEAw7+kiK2XOykuncn0AWuoxJZYv6T5yfvemEezhNIueKDVLa94
@@ -438,6 +438,14 @@ jobs:
       params:
         ERT_VERSION: 1.6
         OPSMAN_VERSION: 1.6
+  - task: configure-multi-az-instance-counts
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/configure-multi-az-instance-counts.yml
+    config:
+      params:
+        ERT_VERSION: 1.6
+        OPSMAN_VERSION: 1.6
 - name: import-stemcell-vsphere-clean
   plan:
   - aggregate:
@@ -697,6 +705,14 @@ jobs:
     tags:
     - vsphere
     file: p-runtime/ci/jobs/configure-ert.yml
+    config:
+      params:
+        ERT_VERSION: 1.5
+        OPSMAN_VERSION: 1.5
+  - task: configure-multi-az-instance-counts
+    tags:
+    - vsphere
+    file: p-runtime/ci/jobs/configure-multi-az-instance-counts.yml
     config:
       params:
         ERT_VERSION: 1.5
