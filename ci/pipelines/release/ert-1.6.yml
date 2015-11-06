@@ -2683,15 +2683,6 @@ jobs:
     resource: environment-vcloud
     passed:
     - claim-environment-vcloud-upgrade
-  - &1
-    try:
-      task: delete-installation
-      tags:
-      - vcloud
-      file: p-runtime/ci/jobs/delete-installation.yml
-      config:
-        params:
-          OPSMAN_VERSION: 1.6
   - task: destroy
     tags:
     - vcloud
@@ -2721,7 +2712,6 @@ jobs:
     trigger: true
     passed:
     - claim-environment-vcloud-upgrade
-  - *1
   - task: destroy
     tags:
     - vcloud
@@ -3067,7 +3057,6 @@ jobs:
     resource: environment-vcloud
     passed:
     - run-cats-vcloud-upgrade
-  - *1
   - task: destroy
     tags:
     - vcloud

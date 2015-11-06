@@ -22,7 +22,7 @@ describe Pipeline::SuitePipelineCreator do
 
         expect(File).to receive(:write) do |filename, contents|
           expect(filename).to eq('ci/pipelines/release/ert-1.6.yml')
-          expect(YAML.load(contents)).to eq(YAML.load(File.read(full_pipeline_fixture)))
+          expect(contents).to eq(File.read(full_pipeline_fixture))
         end
 
         pipeline_creator.full_suite_pipeline
@@ -38,7 +38,7 @@ describe Pipeline::SuitePipelineCreator do
 
         expect(File).to receive(:write) do |filename, contents|
           expect(filename).to eq('ci/pipelines/release/ert-1.6-half.yml')
-          expect(YAML.load(contents)).to eq(YAML.load(File.read(half_pipeline_fixture)))
+          expect(contents).to eq(File.read(half_pipeline_fixture))
         end
 
         pipeline_creator.half_suite_pipeline
