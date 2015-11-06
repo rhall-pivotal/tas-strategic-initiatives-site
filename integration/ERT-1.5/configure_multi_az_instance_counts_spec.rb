@@ -14,7 +14,19 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X Multi-AZ Instance Counts', order
   end
 
   it 'sets the instance counts' do
-    _resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings.name)
-    # resource_config.set_instances_for_job('ha_proxy', 0)
+    resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings.name)
+    resource_config.set_instances_for_job('nats', 2)
+    resource_config.set_instances_for_job('etcd_server', 1)
+    resource_config.set_instances_for_job('router', 2)
+    resource_config.set_instances_for_job('mysql_proxy', 2)
+    resource_config.set_instances_for_job('mysql', 3)
+    resource_config.set_instances_for_job('cloud_controller', 2)
+    resource_config.set_instances_for_job('ha_proxy', 2) unless env_settings.iaas_type == 'aws'
+    resource_config.set_instances_for_job('health_manager', 2)
+    resource_config.set_instances_for_job('cloud_controller_worker', 2)
+    resource_config.set_instances_for_job('uaa', 2)
+    resource_config.set_instances_for_job('dea', 4)
+    resource_config.set_instances_for_job('doppler', 2)
+    resource_config.set_instances_for_job('loggregator_trafficcontroller', 2)
   end
 end
