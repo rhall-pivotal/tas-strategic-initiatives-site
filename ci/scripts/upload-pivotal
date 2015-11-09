@@ -3,7 +3,8 @@
 set -ex
 
 export RELENG_ENV=`cat environment/name`
-export PIVOTAL_PATH=`echo $PWD/ert-product/cf-*.pivotal`
+export VERSION=`cat version/number`
+export PIVOTAL_PATH=$PWD/ert-product/cf-${VERSION}.pivotal
 
 pushd p-runtime
   ./ci/scripts/helpers/bundle-gems.sh
