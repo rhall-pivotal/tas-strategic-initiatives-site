@@ -14,7 +14,7 @@ module Pipeline
       end
 
       colon_branch_name = branch_name.sub('/', '::')
-      system("fly -t ci configure #{colon_branch_name} -c ci/pipelines/#{branch_name}/pipeline.yml")
+      system("fly -t ci sp -p #{colon_branch_name} -c ci/pipelines/#{branch_name}/pipeline.yml")
     end
 
     attr_reader :branch_name

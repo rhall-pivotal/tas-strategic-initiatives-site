@@ -14,11 +14,6 @@ atc_db_address: &atc-db-address concoursedb.chskomywcsf9.us-west-1.rds.amazonaws
 # replace with an AZ from your account
 availability_zone: &az us-west-1b
 
-blackbox_config: &blackbox_config
-  expvar:
-    datadog:
-      api_key: bc6ef2a698fdb4fb1400d4542aec0c39
-
 resource_types: &resource_types
   - image: docker:///pcfseceng/email-resource#latest
     type: email
@@ -88,12 +83,10 @@ jobs:
     persistent_disk: 1024
     templates:
       - {release: concourse, name: consul-agent}
-      - {release: concourse, name: blackbox}
     networks:
       - name: concourse
         static_ips: [*discovery_static_ip]
     properties:
-      blackbox: *blackbox_config
       consul:
         agent:
           mode: server
@@ -103,12 +96,10 @@ jobs:
     resource_pool: web
     templates:
       - {release: concourse, name: consul-agent}
-      - {release: concourse, name: blackbox}
       - {release: concourse, name: tsa}
       - {release: concourse, name: atc}
     networks: [{name: concourse}]
     properties:
-      blackbox: *blackbox_config
       atc:
         basic_auth_username: releng
         basic_auth_password: eyed1+kipsey
@@ -172,26 +163,22 @@ jobs:
           -----END RSA PRIVATE KEY-----
         authorized_keys:
         - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCyNXZh6rhwKyyIg/xXjOE3cZrq7yTqaIghkmly2WPXH/lyxWz4ZarwbuNCJqjunSZ6Orv4TyhcveN4mu2YUuInJYzhICF4SnpbiS+3uXhDTqCIc2F/M64xJOZqXgOAGUyFQu4xqqkJT38qRi/uS1O+J8H0UcwWk48YAuRmUOt/tgwaVtsRdQ14wy3AdhvquFedgBZe2J5lab+csDtbeqKeJjfLBfVjRcOjk1H9N0xttP/cxkY5tUmbkmEmbSiYz+/pl4iEOr4666Y1QYOqc4rszHGtxOKP4UfnpH3MyHqVZcaK4lbCRY8B/+IBXXU0dTCnKb/kxjOweZIQUjF9ggbwAaPD1co+yWN+Z6iU2rEPGhs9jZx3oW7nx5LB1ZD+YkTdVTERTx5yD92lbd9kJngm7JepOKJVlcnNsn8xpu09+cx5oh/RHbETIyCrYczE24s7+ZDHeampZ1niXglIvnoHO7SdNxMVJZxda1VcGygattrRPlo8pCX7R1MzE6DqptuQxcfaNlRsDD9tMYrVcbbjbJwRfmOKyMRmLMrkaok3dQd5W9O3K0y6KZYd00i2iYa4CtolubuO8xnzIgtdLm/bfYYbXqooorkMNprFYgtSJCMLDNIzWqTl68dhmZ4s+HgWA6ozHyRICXw6KlsZU2PEUfuHAXD8gOWgBwIwRwjNSw=="
-        atc:
-          username: releng
-          password: eyed1+kipsey
+
 
       consul:
         agent:
           servers: {lan: [*discovery_static_ip]}
 
   - name: worker
-    instances: 1
+    instances: 3
     resource_pool: workers
     templates:
       - {release: concourse, name: consul-agent}
-      - {release: concourse, name: blackbox}
       - {release: concourse, name: groundcrew}
       - {release: concourse, name: baggageclaim}
       - {release: garden-linux, name: garden}
     networks: [{name: concourse}]
     properties:
-      blackbox: *blackbox_config
       garden:
         listen_network: tcp
         listen_address: 0.0.0.0:7777
@@ -212,13 +199,11 @@ jobs:
     resource_pool: default_workers
     templates:
       - {release: concourse, name: consul-agent}
-      - {release: concourse, name: blackbox}
       - {release: concourse, name: groundcrew}
       - {release: concourse, name: baggageclaim}
       - {release: garden-linux, name: garden}
     networks: [{name: concourse}]
     properties:
-      blackbox: *blackbox_config
       garden:
         listen_network: tcp
         listen_address: 0.0.0.0:7777

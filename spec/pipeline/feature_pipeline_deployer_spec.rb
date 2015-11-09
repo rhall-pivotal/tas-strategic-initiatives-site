@@ -48,14 +48,14 @@ describe Pipeline::FeaturePipelineDeployer do
   context 'shelling out to fly' do
     it 'converts slashes in the branch name to double colons' do
       expect(pipeline_deployer).to receive(:system)
-        .with(/fly -t ci configure #{colon_delimited_branch_name}/)
+        .with(/fly -t ci sp -p #{colon_delimited_branch_name}/)
 
       pipeline_deployer.deploy_pipeline
     end
 
     it 'uses the configuration file with the same branch name' do
       expect(pipeline_deployer).to receive(:system)
-        .with("fly -t ci configure #{colon_delimited_branch_name} -c ci/pipelines/#{branch_name}/pipeline.yml")
+        .with("fly -t ci sp -p #{colon_delimited_branch_name} -c ci/pipelines/#{branch_name}/pipeline.yml")
 
       pipeline_deployer.deploy_pipeline
     end

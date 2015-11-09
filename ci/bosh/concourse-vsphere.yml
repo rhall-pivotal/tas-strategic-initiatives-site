@@ -1,10 +1,4 @@
 ---
-
-blackbox_config: &blackbox_config
-  expvar:
-    datadog:
-      api_key: bc6ef2a698fdb4fb1400d4542aec0c39
-
 resource_types: &resource_types
   - image: docker:///pcfseceng/email-resource#latest
     type: email
@@ -66,16 +60,14 @@ releases:
 
 jobs:
   - name: vsphere-worker
-    instances: 1
+    instances: 2
     resource_pool: workers
     templates:
-      - {release: concourse, name: blackbox}
       - {release: concourse, name: groundcrew}
       - {release: concourse, name: baggageclaim}
       - {release: garden-linux, name: garden}
     networks: [{name: private}]
     properties:
-      blackbox: *blackbox_config
       groundcrew:
         tags: ["vsphere","openstack"]
         garden:
