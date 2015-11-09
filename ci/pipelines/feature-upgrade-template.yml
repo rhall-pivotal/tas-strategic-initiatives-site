@@ -76,7 +76,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: {{branch_name}}/ert.pivotal
+      regexp: {{branch_name}}/cf-(.*).pivotal
 
   - name: initial-ert-product
     type: s3
@@ -210,7 +210,7 @@ jobs:
         file: p-runtime/ci/jobs/build-pivotal.yml
       - put: ert-product
         params:
-          from: build-product/ert.pivotal
+          from: build-product/cf-(.*).pivotal
       - put: p-runtime
         params:
           repository: p-runtime
