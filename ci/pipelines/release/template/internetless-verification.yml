@@ -1,11 +1,15 @@
 - name: verify-internetless
     plan:
     - get: p-runtime
+      tags:
+      - vsphere
       resource: p-runtime-prime
       trigger: true
       passed:
       - deploy-ops-manager-internetless
     - get: environment
+      tags:
+      - vsphere
       resource: environment-internetless
       passed:
       - deploy-ops-manager-internetless
