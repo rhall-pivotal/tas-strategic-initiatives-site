@@ -76,7 +76,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: salmon/push-apps-manager-release/ert.pivotal
+      regexp: salmon/push-apps-manager-release/cf-(.*).pivotal
 
   - name: cats-logs
     type: s3
@@ -284,7 +284,7 @@ jobs:
             EXTERNAL_RELEASE: upstream-release-metadata/metadata.yml
       - put: ert-product
         params:
-          from: build-product/ert.pivotal
+          from: build-product/cf-(.*).pivotal
       - put: p-runtime
         params:
           repository: p-runtime
