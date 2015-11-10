@@ -538,16 +538,7 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ert-1.6/untested/ert.pivotal
-- name: ert-product-promoted-deprecated
-  type: s3
-  source:
-    access_key_id: AKIAJEAGY2FWB7DEGFXQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: ert-1.6/tested/ert.pivotal
+    regexp: ert-1.6/untested/cf-(.*).pivotal
 - name: ert-product-promoted
   type: s3
   source:
@@ -622,7 +613,7 @@ jobs:
   - aggregate:
     - put: ert-product
       params:
-        from: build-product/ert.pivotal
+        from: build-product/cf-(.*).pivotal
     - put: p-runtime
       resource: p-runtime-prime
       params:
@@ -633,7 +624,7 @@ jobs:
       file: p-runtime/ci/jobs/compose-email.yml
       config:
         params:
-          file_to_hash: build-product/ert.pivotal
+          file_to_hash: build-product/cf-*.pivotal
           output_body_file: generated-body
           output_subject_file: generated-subject
   - put: ert-sha-email
@@ -659,11 +650,6 @@ jobs:
     resource: ert-product
     passed:
     - build-runtime
-  - put: ert-product-promoted-deprecated
-    params:
-      from: ert-pivotal/ert.pivotal
-  - task: create-versioned-pivotal
-    file: p-runtime/ci/jobs/create-versioned-pivotal.yml
   - put: ert-product-promoted
     params:
       from: ert-pivotal/cf-(.*).pivotal
