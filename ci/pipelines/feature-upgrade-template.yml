@@ -191,27 +191,35 @@ jobs:
   - name: claim-environment
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
       - put: environment
+        tags: [{{iaas_type}}]
         params:
           acquire: true
 
   - name: build-runtime
     plan:
       - get: version
+        tags: [{{iaas_type}}]
         params:
           pre: build
       - put: version
+        tags: [{{iaas_type}}]
         params:
           file: version/number
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [claim-environment]
       - task: build-product
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/build-pivotal.yml
       - put: ert-product
+        tags: [{{iaas_type}}]
         params:
           from: build-product/cf-(.*).pivotal
       - put: p-runtime
+        tags: [{{iaas_type}}]
         params:
           repository: p-runtime
           tag: version/number
@@ -220,9 +228,11 @@ jobs:
   - name: destroy-environment
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [claim-environment]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [claim-environment]
       - task: destroy
@@ -232,13 +242,16 @@ jobs:
   - name: deploy-ops-manager-initial
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [destroy-environment]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [destroy-environment]
       - aggregate:
         - get: ops-manager
+          tags: [{{iaas_type}}]
           resource: initial-ops-manager
         - task: prepare
           tags: [{{iaas_type}}]
@@ -250,9 +263,11 @@ jobs:
   - name: configure-microbosh-initial
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [deploy-ops-manager-initial]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [deploy-ops-manager-initial]
       - task: configure
@@ -265,9 +280,11 @@ jobs:
   - name: deploy-microbosh-initial
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [configure-microbosh-initial]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [configure-microbosh-initial]
       - task: deploy
@@ -287,12 +304,15 @@ jobs:
   - name: upload-pivotal-initial
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [deploy-microbosh-initial]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [deploy-microbosh-initial]
       - get: ert-product
+        tags: [{{iaas_type}}]
         resource: initial-ert-product
         trigger: true
       - task: upload
@@ -305,9 +325,11 @@ jobs:
   - name: configure-ert-initial
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [upload-pivotal-initial]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [upload-pivotal-initial]
       - task: configure-ert
@@ -321,9 +343,11 @@ jobs:
   - name: deploy-ert-initial
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [configure-ert-initial]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [configure-ert-initial]
       - task: deploy-ert
@@ -343,9 +367,11 @@ jobs:
   - name: export-installation
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [deploy-ert-initial]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [deploy-ert-initial]
       - task: export-installation
@@ -355,15 +381,18 @@ jobs:
           params:
             OPSMAN_VERSION: {{om_initial_version}}
       - put: exported-installation
+        tags: [{{iaas_type}}]
         params:
           from: p-runtime/installation.zip
 
   - name: destroy-opsman
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [export-installation]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [export-installation]
       - task: destroy-opsman
@@ -374,12 +403,15 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
+          tags: [{{iaas_type}}]
           trigger: true
           passed: [destroy-opsman]
         - get: environment
+          tags: [{{iaas_type}}]
           trigger: true
           passed: [destroy-opsman]
         - get: ops-manager
+          tags: [{{iaas_type}}]
           resource: ops-manager-stable
       - task: deploy
         tags: [{{iaas_type}}]
@@ -388,12 +420,15 @@ jobs:
   - name: import-installation
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [export-installation,deploy-opsman]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [export-installation,deploy-opsman]
       - get: exported-installation
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [export-installation]
       - task: import-installation
@@ -407,12 +442,15 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
+          tags: [{{iaas_type}}]
           trigger: true
           passed: [import-installation,build-runtime]
         - get: environment
+          tags: [{{iaas_type}}]
           trigger: true
           passed: [import-installation]
         - get: ert-product
+          tags: [{{iaas_type}}]
           trigger: true
           passed: [build-runtime]
       - task: upgrade-pivotal
@@ -425,9 +463,11 @@ jobs:
   - name: configure-ert
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [upgrade-pivotal]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [upgrade-pivotal]
       - task: configure-ert
@@ -444,9 +484,11 @@ jobs:
   - name: deploy-ert
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [configure-ert]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [configure-ert]
       - task: deploy-ert
@@ -467,11 +509,11 @@ jobs:
     plan:
     - aggregate:
       - get: p-runtime
-        passed:
-        - configure-ert
+        tags: [{{iaas_type}}]
+        passed: [configure-ert]
       - get: environment
-        passed:
-        - configure-ert
+        tags: [{{iaas_type}}]
+        passed: [configure-ert]
     - task: import-stemcell
       tags: [{{iaas_type}}]
       file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
@@ -484,9 +526,11 @@ jobs:
   - name: run-cats
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [deploy-ert]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [deploy-ert]
       - task: run-cats
@@ -510,8 +554,10 @@ jobs:
   - name: destroy-environment-final
     plan:
      - get: p-runtime
+       tags: [{{iaas_type}}]
        passed: [claim-environment]
      - get: environment
+       tags: [{{iaas_type}}]
        passed: [claim-environment]
      - task: destroy
        tags: [{{iaas_type}}]
@@ -520,12 +566,15 @@ jobs:
   - name: release-environment
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [destroy-environment-final]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [destroy-environment-final]
       - put: environment
+        tags: [{{iaas_type}}]
         params:
           release: environment
 

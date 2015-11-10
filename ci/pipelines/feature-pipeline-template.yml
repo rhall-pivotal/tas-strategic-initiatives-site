@@ -161,16 +161,20 @@ jobs:
   - name: claim-environment
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
       - put: environment
+        tags: [{{iaas_type}}]
         params:
           acquire: true
 
   - name: destroy-environment
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [claim-environment]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [claim-environment]
       - task: destroy
@@ -180,13 +184,16 @@ jobs:
   - name: deploy-ops-manager
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [destroy-environment]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [destroy-environment]
       - aggregate:
         - get: ops-manager
+          tags: [{{iaas_type}}]
           resource: ops-manager-stable
         - task: prepare
           tags: [{{iaas_type}}]
@@ -198,9 +205,11 @@ jobs:
   - name: configure-microbosh
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [deploy-ops-manager]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [deploy-ops-manager]
       - task: configure
@@ -213,9 +222,11 @@ jobs:
   - name: deploy-microbosh
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [configure-microbosh]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [configure-microbosh]
       - task: deploy
@@ -235,20 +246,26 @@ jobs:
   - name: build-runtime
     plan:
       - get: version
+        tags: [{{iaas_type}}]
         params:
           pre: build
       - put: version
+        tags: [{{iaas_type}}]
         params:
           file: version/number
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [claim-environment]
       - task: build-product
+        tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/build-pivotal.yml
       - put: ert-product
+        tags: [{{iaas_type}}]
         params:
           from: build-product/cf-(.*).pivotal
       - put: p-runtime
+        tags: [{{iaas_type}}]
         params:
           repository: p-runtime
           tag: version/number
@@ -258,12 +275,15 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
+          tags: [{{iaas_type}}]
           trigger: true
           passed: [build-runtime, deploy-microbosh]
         - get: environment
+          tags: [{{iaas_type}}]
           trigger: true
           passed: [deploy-microbosh]
         - get: ert-product
+          tags: [{{iaas_type}}]
           trigger: true
           passed: [build-runtime]
       - task: upload-pivotal
@@ -277,9 +297,11 @@ jobs:
   - name: configure-ert
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [upload-pivotal]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [upload-pivotal]
       - task: configure-ert
@@ -296,9 +318,11 @@ jobs:
   - name: deploy-ert
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [configure-ert]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [configure-ert]
       - task: deploy-ert
@@ -319,9 +343,11 @@ jobs:
     plan:
     - aggregate:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         passed:
         - configure-ert
       - get: environment
+        tags: [{{iaas_type}}]
         passed:
         - configure-ert
     - task: import-stemcell
@@ -336,9 +362,11 @@ jobs:
   - name: run-cats
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [deploy-ert]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [deploy-ert]
       - task: run-cats
@@ -362,8 +390,10 @@ jobs:
   - name: destroy-environment-final
     plan:
      - get: p-runtime
+       tags: [{{iaas_type}}]
        passed: [claim-environment]
      - get: environment
+       tags: [{{iaas_type}}]
        passed: [claim-environment]
      - task: destroy
        tags: [{{iaas_type}}]
@@ -372,12 +402,15 @@ jobs:
   - name: release-environment
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [destroy-environment-final]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         passed: [destroy-environment-final]
       - put: environment
+        tags: [{{iaas_type}}]
         params:
           release: environment
 
