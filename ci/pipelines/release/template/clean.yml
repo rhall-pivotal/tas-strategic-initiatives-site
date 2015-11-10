@@ -2,10 +2,12 @@ jobs:
   - name: claim-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         resource: p-runtime-prime
         trigger: true
         passed: [kickoff]
       - put: environment
+        tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
         params:
           acquire: true
@@ -13,9 +15,11 @@ jobs:
   - name: early-destroy-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         resource: p-runtime-prime
         passed: [claim-environment-{{pipeline_name}}]
       - get: environment
+        tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
         passed: [claim-environment-{{pipeline_name}}]
       - task: destroy
@@ -25,24 +29,29 @@ jobs:
   - name: early-release-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         resource: p-runtime-prime
         trigger: true
         passed: [early-destroy-environment-{{pipeline_name}}]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         resource: environment-{{environment_pool}}
         passed: [early-destroy-environment-{{pipeline_name}}]
       - put: environment-{{environment_pool}}
+        tags: [{{iaas_type}}]
         params:
           release: environment
 
   - name: destroy-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         resource: p-runtime-prime
         trigger: true
         passed: [claim-environment-{{pipeline_name}}]
       - get: environment
+        tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
         trigger: true
         passed: [claim-environment-{{pipeline_name}}]
@@ -53,15 +62,18 @@ jobs:
   - name: deploy-ops-manager-{{pipeline_name}}
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         resource: p-runtime-prime
         trigger: true
         passed: [destroy-environment-{{pipeline_name}}]
       - get: environment
+        tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
         trigger: true
         passed: [destroy-environment-{{pipeline_name}}]
       - aggregate:
         - get: ops-manager
+          tags: [{{iaas_type}}]
           resource: ops-manager-1.6.0-{{iaas_type}}
         - task: prepare
           tags: [{{iaas_type}}]
@@ -77,6 +89,7 @@ jobs:
   - name: configure-microbosh-{{pipeline_name}}
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         resource: p-runtime-prime
         trigger: true
         passed:
@@ -87,6 +100,7 @@ jobs:
           - deploy-ops-manager-{{pipeline_name}}
           {{/verify_internetless_plan}}
       - get: environment
+        tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
         trigger: true
         passed:
@@ -106,10 +120,12 @@ jobs:
   - name: deploy-microbosh-{{pipeline_name}}
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         resource: p-runtime-prime
         trigger: true
         passed: [configure-microbosh-{{pipeline_name}}]
       - get: environment
+        tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
         trigger: true
         passed: [configure-microbosh-{{pipeline_name}}]
@@ -131,14 +147,17 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
+          tags: [{{iaas_type}}]
           resource: p-runtime-prime
           trigger: true
           passed: [build-runtime, deploy-microbosh-{{pipeline_name}}]
         - get: environment
+          tags: [{{iaas_type}}]
           resource: environment-{{environment_pool}}
           trigger: true
           passed: [deploy-microbosh-{{pipeline_name}}]
         - get: ert-product
+          tags: [{{iaas_type}}]
           trigger: true
           passed: [build-runtime]
       - task: upload-pivotal
@@ -151,10 +170,12 @@ jobs:
   - name: configure-ert-{{pipeline_name}}
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         resource: p-runtime-prime
         trigger: true
         passed: [upload-pivotal-{{pipeline_name}}]
       - get: environment
+        tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
         trigger: true
         passed: [upload-pivotal-{{pipeline_name}}]
@@ -175,8 +196,10 @@ jobs:
     plan:
       - aggregate:
         - get: p-runtime
+          tags: [{{iaas_type}}]
           resource: p-runtime-prime
         - get: environment
+          tags: [{{iaas_type}}]
           resource: environment-{{environment_pool}}
           passed: [configure-ert-{{pipeline_name}}]
       - task: import-stemcell
@@ -191,10 +214,12 @@ jobs:
   - name: deploy-ert-{{pipeline_name}}
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         resource: p-runtime-prime
         trigger: true
         passed: [configure-ert-{{pipeline_name}}]
       - get: environment
+        tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
         trigger: true
         passed: [configure-ert-{{pipeline_name}}]
@@ -215,10 +240,12 @@ jobs:
   - name: run-cats-{{pipeline_name}}
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         resource: p-runtime-prime
         trigger: true
         passed: [deploy-ert-{{pipeline_name}}]
       - get: environment
+        tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
         trigger: true
         passed: [deploy-ert-{{pipeline_name}}]
@@ -243,9 +270,11 @@ jobs:
   - name: destroy-environment-final-{{pipeline_name}}
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         resource: p-runtime-prime
         passed: [run-cats-{{pipeline_name}}]
       - get: environment
+        tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
         passed: [run-cats-{{pipeline_name}}]
       - task: destroy
@@ -255,13 +284,16 @@ jobs:
   - name: release-environment-{{pipeline_name}}
     plan:
       - get: p-runtime
+        tags: [{{iaas_type}}]
         resource: p-runtime-prime
         trigger: true
         passed: [destroy-environment-final-{{pipeline_name}}]
       - get: environment
+        tags: [{{iaas_type}}]
         trigger: true
         resource: environment-{{environment_pool}}
         passed: [destroy-environment-final-{{pipeline_name}}]
       - put: environment-{{environment_pool}}
+        tags: [{{iaas_type}}]
         params:
           release: environment

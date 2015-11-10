@@ -184,21 +184,29 @@ jobs:
 - name: claim-environment-vsphere-clean
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - kickoff
   - put: environment
+    tags:
+    - vsphere
     resource: environment-multi-az
     params:
       acquire: true
 - name: early-destroy-environment-vsphere-clean
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     passed:
     - claim-environment-vsphere-clean
   - get: environment
+    tags:
+    - vsphere
     resource: environment-multi-az
     passed:
     - claim-environment-vsphere-clean
@@ -209,26 +217,36 @@ jobs:
 - name: early-release-environment-vsphere-clean
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - early-destroy-environment-vsphere-clean
   - get: environment
+    tags:
+    - vsphere
     trigger: true
     resource: environment-multi-az
     passed:
     - early-destroy-environment-vsphere-clean
   - put: environment-multi-az
+    tags:
+    - vsphere
     params:
       release: environment
 - name: destroy-environment-vsphere-clean
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - claim-environment-vsphere-clean
   - get: environment
+    tags:
+    - vsphere
     resource: environment-multi-az
     trigger: true
     passed:
@@ -240,17 +258,23 @@ jobs:
 - name: deploy-ops-manager-vsphere-clean
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-vsphere-clean
   - get: environment
+    tags:
+    - vsphere
     resource: environment-multi-az
     trigger: true
     passed:
     - destroy-environment-vsphere-clean
   - aggregate:
     - get: ops-manager
+      tags:
+      - vsphere
       resource: ops-manager-1.6.0-vsphere
     - task: prepare
       tags:
@@ -263,11 +287,15 @@ jobs:
 - name: configure-microbosh-vsphere-clean
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ops-manager-vsphere-clean
   - get: environment
+    tags:
+    - vsphere
     resource: environment-multi-az
     trigger: true
     passed:
@@ -282,11 +310,15 @@ jobs:
 - name: deploy-microbosh-vsphere-clean
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - configure-microbosh-vsphere-clean
   - get: environment
+    tags:
+    - vsphere
     resource: environment-multi-az
     trigger: true
     passed:
@@ -310,17 +342,23 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      tags:
+      - vsphere
       resource: p-runtime-prime
       trigger: true
       passed:
       - build-runtime
       - deploy-microbosh-vsphere-clean
     - get: environment
+      tags:
+      - vsphere
       resource: environment-multi-az
       trigger: true
       passed:
       - deploy-microbosh-vsphere-clean
     - get: ert-product
+      tags:
+      - vsphere
       trigger: true
       passed:
       - build-runtime
@@ -334,11 +372,15 @@ jobs:
 - name: configure-ert-vsphere-clean
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - upload-pivotal-vsphere-clean
   - get: environment
+    tags:
+    - vsphere
     resource: environment-multi-az
     trigger: true
     passed:
@@ -363,8 +405,12 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      tags:
+      - vsphere
       resource: p-runtime-prime
     - get: environment
+      tags:
+      - vsphere
       resource: environment-multi-az
       passed:
       - configure-ert-vsphere-clean
@@ -380,11 +426,15 @@ jobs:
 - name: deploy-ert-vsphere-clean
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - configure-ert-vsphere-clean
   - get: environment
+    tags:
+    - vsphere
     resource: environment-multi-az
     trigger: true
     passed:
@@ -407,11 +457,15 @@ jobs:
 - name: run-cats-vsphere-clean
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-vsphere-clean
   - get: environment
+    tags:
+    - vsphere
     resource: environment-multi-az
     trigger: true
     passed:
@@ -438,10 +492,14 @@ jobs:
 - name: destroy-environment-final-vsphere-clean
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     passed:
     - run-cats-vsphere-clean
   - get: environment
+    tags:
+    - vsphere
     resource: environment-multi-az
     passed:
     - run-cats-vsphere-clean
@@ -452,16 +510,22 @@ jobs:
 - name: release-environment-vsphere-clean
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-vsphere-clean
   - get: environment
+    tags:
+    - vsphere
     trigger: true
     resource: environment-multi-az
     passed:
     - destroy-environment-final-vsphere-clean
   - put: environment-multi-az
+    tags:
+    - vsphere
     params:
       release: environment
 groups:
