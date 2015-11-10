@@ -66,7 +66,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ert-1.6/tested/ert.pivotal
+      regexp: ert-1.6/tested/cf-(.*).pivotal
 
   - name: latest-opsman-aws
     type: s3
