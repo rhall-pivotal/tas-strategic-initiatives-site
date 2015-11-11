@@ -1744,9 +1744,6 @@ jobs:
       tags:
       - aws
       resource: p-runtime-prime
-      trigger: true
-      passed:
-      - build-runtime
     - get: environment
       tags:
       - aws
@@ -2256,9 +2253,6 @@ jobs:
       tags:
       - vsphere
       resource: p-runtime-prime
-      trigger: true
-      passed:
-      - build-runtime
     - get: environment
       tags:
       - vsphere

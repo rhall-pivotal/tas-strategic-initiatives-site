@@ -277,8 +277,6 @@ jobs:
         - get: p-runtime
           tags: [{{iaas_type}}]
           resource: p-runtime-prime
-          trigger: true
-          passed: [build-runtime]
         - get: environment
           tags: [{{iaas_type}}]
           resource: environment-{{environment_pool}}
