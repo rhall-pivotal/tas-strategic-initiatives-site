@@ -264,7 +264,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ert-releases/1.5.6.0/ert.pivotal
+      regexp: ert-releases/1.5.6.0/cf-(.*).pivotal
 
   - name: ops-manager-1.5.7.0-aws
     type: s3
