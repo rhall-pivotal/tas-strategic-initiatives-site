@@ -323,6 +323,7 @@ jobs:
           tags: [{{iaas_type}}]
           resource: environment-{{environment_pool}}
           passed: [configure-ert-{{pipeline_name}}]
+          trigger: true
       - task: import-stemcell
         tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
@@ -338,12 +339,12 @@ jobs:
         tags: [{{iaas_type}}]
         resource: p-runtime-prime
         trigger: true
-        passed: [configure-ert-{{pipeline_name}}]
+        passed: [import-stemcell-{{pipeline_name}}]
       - get: environment
         tags: [{{iaas_type}}]
         resource: environment-{{environment_pool}}
         trigger: true
-        passed: [configure-ert-{{pipeline_name}}]
+        passed: [import-stemcell-{{pipeline_name}}]
       - task: deploy-ert
         tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/deploy-ert.yml

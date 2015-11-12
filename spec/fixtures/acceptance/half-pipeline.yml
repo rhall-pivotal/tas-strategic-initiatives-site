@@ -914,6 +914,7 @@ jobs:
       resource: environment-aws
       passed:
       - configure-ert-aws-clean
+      trigger: true
   - task: import-stemcell
     tags:
     - aws
@@ -931,14 +932,14 @@ jobs:
     resource: p-runtime-prime
     trigger: true
     passed:
-    - configure-ert-aws-clean
+    - import-stemcell-aws-clean
   - get: environment
     tags:
     - aws
     resource: environment-aws
     trigger: true
     passed:
-    - configure-ert-aws-clean
+    - import-stemcell-aws-clean
   - task: deploy-ert
     tags:
     - aws
@@ -1272,6 +1273,7 @@ jobs:
       resource: environment-internetless
       passed:
       - configure-ert-internetless
+      trigger: true
   - task: import-stemcell
     tags:
     - vsphere
@@ -1289,14 +1291,14 @@ jobs:
     resource: p-runtime-prime
     trigger: true
     passed:
-    - configure-ert-internetless
+    - import-stemcell-internetless
   - get: environment
     tags:
     - vsphere
     resource: environment-internetless
     trigger: true
     passed:
-    - configure-ert-internetless
+    - import-stemcell-internetless
   - task: deploy-ert
     tags:
     - vsphere
@@ -1801,6 +1803,7 @@ jobs:
       resource: environment-aws
       passed:
       - configure-ert-aws-upgrade
+      trigger: true
   - task: import-stemcell
     tags:
     - aws
@@ -1818,14 +1821,14 @@ jobs:
     resource: p-runtime-prime
     trigger: true
     passed:
-    - configure-ert-aws-upgrade
+    - import-stemcell-aws-upgrade
   - get: environment
     tags:
     - aws
     resource: environment-aws
     trigger: true
     passed:
-    - configure-ert-aws-upgrade
+    - import-stemcell-aws-upgrade
   - task: deploy-ert
     tags:
     - aws
@@ -2310,6 +2313,7 @@ jobs:
       resource: environment-vsphere
       passed:
       - configure-ert-vsphere-upgrade
+      trigger: true
   - task: import-stemcell
     tags:
     - vsphere
@@ -2327,14 +2331,14 @@ jobs:
     resource: p-runtime-prime
     trigger: true
     passed:
-    - configure-ert-vsphere-upgrade
+    - import-stemcell-vsphere-upgrade
   - get: environment
     tags:
     - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
-    - configure-ert-vsphere-upgrade
+    - import-stemcell-vsphere-upgrade
   - task: deploy-ert
     tags:
     - vsphere

@@ -457,7 +457,7 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ert-releases/1.5.6.0/ert.pivotal
+    regexp: ert-releases/1.5.6.0/cf-(.*).pivotal
 - name: ops-manager-1.5.7.0-aws
   type: s3
   source:
@@ -538,16 +538,7 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ert-1.6/untested/ert.pivotal
-- name: ert-product-promoted-deprecated
-  type: s3
-  source:
-    access_key_id: AKIAJEAGY2FWB7DEGFXQ
-    secret_access_key: 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
-    bucket: ert-concourse-products
-    region_name: us-west-1
-    private: true
-    versioned_file: ert-1.6/tested/ert.pivotal
+    regexp: ert-1.6/untested/cf-(.*).pivotal
 - name: ert-product-promoted
   type: s3
   source:
@@ -622,7 +613,7 @@ jobs:
   - aggregate:
     - put: ert-product
       params:
-        from: build-product/ert.pivotal
+        from: build-product/cf-(.*).pivotal
     - put: p-runtime
       resource: p-runtime-prime
       params:
@@ -633,7 +624,7 @@ jobs:
       file: p-runtime/ci/jobs/compose-email.yml
       config:
         params:
-          file_to_hash: build-product/ert.pivotal
+          file_to_hash: build-product/cf-*.pivotal
           output_body_file: generated-body
           output_subject_file: generated-subject
   - put: ert-sha-email
@@ -657,11 +648,6 @@ jobs:
     resource: ert-product
     passed:
     - build-runtime
-  - put: ert-product-promoted-deprecated
-    params:
-      from: ert-pivotal/ert.pivotal
-  - task: create-versioned-pivotal
-    file: p-runtime/ci/jobs/create-versioned-pivotal.yml
   - put: ert-product-promoted
     params:
       from: ert-pivotal/cf-(.*).pivotal
@@ -678,21 +664,29 @@ jobs:
 - name: claim-environment-aws-clean
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
     - kickoff
   - put: environment
+    tags:
+    - aws
     resource: environment-aws
     params:
       acquire: true
 - name: early-destroy-environment-aws-clean
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     passed:
     - claim-environment-aws-clean
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     passed:
     - claim-environment-aws-clean
@@ -703,26 +697,36 @@ jobs:
 - name: early-release-environment-aws-clean
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
     - early-destroy-environment-aws-clean
   - get: environment
+    tags:
+    - aws
     trigger: true
     resource: environment-aws
     passed:
     - early-destroy-environment-aws-clean
   - put: environment-aws
+    tags:
+    - aws
     params:
       release: environment
 - name: destroy-environment-aws-clean
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
     - claim-environment-aws-clean
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -734,17 +738,23 @@ jobs:
 - name: deploy-ops-manager-aws-clean
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-aws-clean
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
     - destroy-environment-aws-clean
   - aggregate:
     - get: ops-manager
+      tags:
+      - aws
       resource: ops-manager-1.6.0-aws
     - task: prepare
       tags:
@@ -757,11 +767,15 @@ jobs:
 - name: configure-microbosh-aws-clean
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ops-manager-aws-clean
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -776,11 +790,15 @@ jobs:
 - name: deploy-microbosh-aws-clean
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
     - configure-microbosh-aws-clean
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -804,17 +822,23 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      tags:
+      - aws
       resource: p-runtime-prime
       trigger: true
       passed:
       - build-runtime
       - deploy-microbosh-aws-clean
     - get: environment
+      tags:
+      - aws
       resource: environment-aws
       trigger: true
       passed:
       - deploy-microbosh-aws-clean
     - get: ert-product
+      tags:
+      - aws
       trigger: true
       passed:
       - build-runtime
@@ -828,11 +852,15 @@ jobs:
 - name: configure-ert-aws-clean
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
     - upload-pivotal-aws-clean
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -877,11 +905,16 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      tags:
+      - aws
       resource: p-runtime-prime
     - get: environment
+      tags:
+      - aws
       resource: environment-aws
       passed:
       - configure-ert-aws-clean
+      trigger: true
   - task: import-stemcell
     tags:
     - aws
@@ -894,15 +927,19 @@ jobs:
 - name: deploy-ert-aws-clean
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
-    - configure-ert-aws-clean
+    - import-stemcell-aws-clean
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
-    - configure-ert-aws-clean
+    - import-stemcell-aws-clean
   - task: deploy-ert
     tags:
     - aws
@@ -921,11 +958,15 @@ jobs:
 - name: run-cats-aws-clean
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-aws-clean
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -952,10 +993,14 @@ jobs:
 - name: destroy-environment-final-aws-clean
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     passed:
     - run-cats-aws-clean
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     passed:
     - run-cats-aws-clean
@@ -966,36 +1011,50 @@ jobs:
 - name: release-environment-aws-clean
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-aws-clean
   - get: environment
+    tags:
+    - aws
     trigger: true
     resource: environment-aws
     passed:
     - destroy-environment-final-aws-clean
   - put: environment-aws
+    tags:
+    - aws
     params:
       release: environment
 - name: claim-environment-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - kickoff
   - put: environment
+    tags:
+    - vsphere
     resource: environment-internetless
     params:
       acquire: true
 - name: early-destroy-environment-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     passed:
     - claim-environment-internetless
   - get: environment
+    tags:
+    - vsphere
     resource: environment-internetless
     passed:
     - claim-environment-internetless
@@ -1006,26 +1065,36 @@ jobs:
 - name: early-release-environment-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - early-destroy-environment-internetless
   - get: environment
+    tags:
+    - vsphere
     trigger: true
     resource: environment-internetless
     passed:
     - early-destroy-environment-internetless
   - put: environment-internetless
+    tags:
+    - vsphere
     params:
       release: environment
 - name: destroy-environment-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - claim-environment-internetless
   - get: environment
+    tags:
+    - vsphere
     resource: environment-internetless
     trigger: true
     passed:
@@ -1037,17 +1106,23 @@ jobs:
 - name: deploy-ops-manager-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-internetless
   - get: environment
+    tags:
+    - vsphere
     resource: environment-internetless
     trigger: true
     passed:
     - destroy-environment-internetless
   - aggregate:
     - get: ops-manager
+      tags:
+      - vsphere
       resource: ops-manager-1.6.0-vsphere
     - task: prepare
       tags:
@@ -1060,11 +1135,15 @@ jobs:
 - name: verify-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ops-manager-internetless
   - get: environment
+    tags:
+    - vsphere
     resource: environment-internetless
     passed:
     - deploy-ops-manager-internetless
@@ -1075,11 +1154,15 @@ jobs:
 - name: configure-microbosh-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - verify-internetless
   - get: environment
+    tags:
+    - vsphere
     resource: environment-internetless
     trigger: true
     passed:
@@ -1094,11 +1177,15 @@ jobs:
 - name: deploy-microbosh-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - configure-microbosh-internetless
   - get: environment
+    tags:
+    - vsphere
     resource: environment-internetless
     trigger: true
     passed:
@@ -1122,17 +1209,23 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      tags:
+      - vsphere
       resource: p-runtime-prime
       trigger: true
       passed:
       - build-runtime
       - deploy-microbosh-internetless
     - get: environment
+      tags:
+      - vsphere
       resource: environment-internetless
       trigger: true
       passed:
       - deploy-microbosh-internetless
     - get: ert-product
+      tags:
+      - vsphere
       trigger: true
       passed:
       - build-runtime
@@ -1146,11 +1239,15 @@ jobs:
 - name: configure-ert-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - upload-pivotal-internetless
   - get: environment
+    tags:
+    - vsphere
     resource: environment-internetless
     trigger: true
     passed:
@@ -1167,11 +1264,16 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      tags:
+      - vsphere
       resource: p-runtime-prime
     - get: environment
+      tags:
+      - vsphere
       resource: environment-internetless
       passed:
       - configure-ert-internetless
+      trigger: true
   - task: import-stemcell
     tags:
     - vsphere
@@ -1184,15 +1286,19 @@ jobs:
 - name: deploy-ert-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
-    - configure-ert-internetless
+    - import-stemcell-internetless
   - get: environment
+    tags:
+    - vsphere
     resource: environment-internetless
     trigger: true
     passed:
-    - configure-ert-internetless
+    - import-stemcell-internetless
   - task: deploy-ert
     tags:
     - vsphere
@@ -1211,11 +1317,15 @@ jobs:
 - name: run-cats-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-internetless
   - get: environment
+    tags:
+    - vsphere
     resource: environment-internetless
     trigger: true
     passed:
@@ -1242,10 +1352,14 @@ jobs:
 - name: destroy-environment-final-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     passed:
     - run-cats-internetless
   - get: environment
+    tags:
+    - vsphere
     resource: environment-internetless
     passed:
     - run-cats-internetless
@@ -1256,34 +1370,48 @@ jobs:
 - name: release-environment-internetless
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-internetless
   - get: environment
+    tags:
+    - vsphere
     trigger: true
     resource: environment-internetless
     passed:
     - destroy-environment-final-internetless
   - put: environment-internetless
+    tags:
+    - vsphere
     params:
       release: environment
 - name: claim-environment-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     trigger: true
     passed:
     - kickoff-pre-heat
   - put: environment
+    tags:
+    - aws
     resource: environment-aws
     params:
       acquire: true
 - name: early-destroy-environment-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     passed:
     - claim-environment-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     passed:
     - claim-environment-aws-upgrade
@@ -1294,24 +1422,34 @@ jobs:
 - name: early-release-environment-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     trigger: true
     passed:
     - early-destroy-environment-aws-upgrade
   - get: environment
+    tags:
+    - aws
     trigger: true
     resource: environment-aws
     passed:
     - early-destroy-environment-aws-upgrade
   - put: environment-aws
+    tags:
+    - aws
     params:
       release: environment
 - name: destroy-environment-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     trigger: true
     passed:
     - claim-environment-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -1323,16 +1461,22 @@ jobs:
 - name: deploy-ops-manager-initial-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     trigger: true
     passed:
     - destroy-environment-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
     - destroy-environment-aws-upgrade
   - aggregate:
     - get: ops-manager
+      tags:
+      - aws
       resource: ops-manager-1.5.7.0-aws
     - task: prepare
       tags:
@@ -1345,10 +1489,14 @@ jobs:
 - name: configure-microbosh-initial-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     trigger: true
     passed:
     - deploy-ops-manager-initial-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -1363,10 +1511,14 @@ jobs:
 - name: deploy-microbosh-initial-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     trigger: true
     passed:
     - configure-microbosh-initial-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -1389,15 +1541,21 @@ jobs:
 - name: upload-pivotal-initial-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     trigger: true
     passed:
     - deploy-microbosh-initial-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
     - deploy-microbosh-initial-aws-upgrade
   - get: ert-product
+    tags:
+    - aws
     resource: initial-ert-product
     trigger: true
   - task: upload
@@ -1410,10 +1568,14 @@ jobs:
 - name: configure-ert-initial-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     trigger: true
     passed:
     - upload-pivotal-initial-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -1449,10 +1611,14 @@ jobs:
 - name: deploy-ert-initial-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     trigger: true
     passed:
     - configure-ert-initial-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -1475,10 +1641,14 @@ jobs:
 - name: export-installation-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     trigger: true
     passed:
     - deploy-ert-initial-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -1491,15 +1661,21 @@ jobs:
       params:
         OPSMAN_VERSION: 1.5
   - put: exported-installation-aws
+    tags:
+    - aws
     params:
       from: p-runtime/installation.zip
 - name: destroy-opsman-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     trigger: true
     passed:
     - export-installation-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -1512,15 +1688,21 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      tags:
+      - aws
       trigger: true
       passed:
       - destroy-opsman-aws-upgrade
     - get: environment
+      tags:
+      - aws
       resource: environment-aws
       trigger: true
       passed:
       - destroy-opsman-aws-upgrade
     - get: ops-manager
+      tags:
+      - aws
       resource: ops-manager-1.6.0-aws
   - task: deploy
     tags:
@@ -1529,17 +1711,23 @@ jobs:
 - name: import-installation-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     trigger: true
     passed:
     - export-installation-aws-upgrade
     - deploy-opsman-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
     - export-installation-aws-upgrade
     - deploy-opsman-aws-upgrade
   - get: exported-installation
+    tags:
+    - aws
     resource: exported-installation-aws
     trigger: true
     passed:
@@ -1555,16 +1743,19 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      tags:
+      - aws
       resource: p-runtime-prime
-      trigger: true
-      passed:
-      - build-runtime
     - get: environment
+      tags:
+      - aws
       resource: environment-aws
       trigger: true
       passed:
       - import-installation-aws-upgrade
     - get: ert-product
+      tags:
+      - aws
       trigger: true
       passed:
       - build-runtime
@@ -1578,11 +1769,15 @@ jobs:
 - name: configure-ert-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
     - upgrade-pivotal-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -1599,11 +1794,16 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      tags:
+      - aws
       resource: p-runtime-prime
     - get: environment
+      tags:
+      - aws
       resource: environment-aws
       passed:
       - configure-ert-aws-upgrade
+      trigger: true
   - task: import-stemcell
     tags:
     - aws
@@ -1616,15 +1816,19 @@ jobs:
 - name: deploy-ert-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
-    - configure-ert-aws-upgrade
+    - import-stemcell-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
-    - configure-ert-aws-upgrade
+    - import-stemcell-aws-upgrade
   - task: deploy-ert
     tags:
     - aws
@@ -1643,11 +1847,15 @@ jobs:
 - name: run-cats-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     trigger: true
     passed:
@@ -1674,10 +1882,14 @@ jobs:
 - name: destroy-environment-final-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     passed:
     - run-cats-aws-upgrade
   - get: environment
+    tags:
+    - aws
     resource: environment-aws
     passed:
     - run-cats-aws-upgrade
@@ -1688,34 +1900,48 @@ jobs:
 - name: release-environment-aws-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - aws
     resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-aws-upgrade
   - get: environment
+    tags:
+    - aws
     trigger: true
     resource: environment-aws
     passed:
     - destroy-environment-final-aws-upgrade
   - put: environment-aws
+    tags:
+    - aws
     params:
       release: environment
 - name: claim-environment-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     trigger: true
     passed:
     - kickoff-pre-heat
   - put: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     params:
       acquire: true
 - name: early-destroy-environment-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     passed:
     - claim-environment-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     passed:
     - claim-environment-vsphere-upgrade
@@ -1726,24 +1952,34 @@ jobs:
 - name: early-release-environment-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     trigger: true
     passed:
     - early-destroy-environment-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     trigger: true
     resource: environment-vsphere
     passed:
     - early-destroy-environment-vsphere-upgrade
   - put: environment-vsphere
+    tags:
+    - vsphere
     params:
       release: environment
 - name: destroy-environment-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     trigger: true
     passed:
     - claim-environment-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
@@ -1755,16 +1991,22 @@ jobs:
 - name: deploy-ops-manager-initial-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     trigger: true
     passed:
     - destroy-environment-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
     - destroy-environment-vsphere-upgrade
   - aggregate:
     - get: ops-manager
+      tags:
+      - vsphere
       resource: ops-manager-1.5.7.0-vsphere
     - task: prepare
       tags:
@@ -1777,10 +2019,14 @@ jobs:
 - name: configure-microbosh-initial-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     trigger: true
     passed:
     - deploy-ops-manager-initial-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
@@ -1795,10 +2041,14 @@ jobs:
 - name: deploy-microbosh-initial-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     trigger: true
     passed:
     - configure-microbosh-initial-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
@@ -1821,15 +2071,21 @@ jobs:
 - name: upload-pivotal-initial-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     trigger: true
     passed:
     - deploy-microbosh-initial-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
     - deploy-microbosh-initial-vsphere-upgrade
   - get: ert-product
+    tags:
+    - vsphere
     resource: initial-ert-product
     trigger: true
   - task: upload
@@ -1842,10 +2098,14 @@ jobs:
 - name: configure-ert-initial-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     trigger: true
     passed:
     - upload-pivotal-initial-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
@@ -1861,10 +2121,14 @@ jobs:
 - name: deploy-ert-initial-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     trigger: true
     passed:
     - configure-ert-initial-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
@@ -1887,10 +2151,14 @@ jobs:
 - name: export-installation-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     trigger: true
     passed:
     - deploy-ert-initial-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
@@ -1903,15 +2171,21 @@ jobs:
       params:
         OPSMAN_VERSION: 1.5
   - put: exported-installation-vsphere
+    tags:
+    - vsphere
     params:
       from: p-runtime/installation.zip
 - name: destroy-opsman-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     trigger: true
     passed:
     - export-installation-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
@@ -1924,15 +2198,21 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      tags:
+      - vsphere
       trigger: true
       passed:
       - destroy-opsman-vsphere-upgrade
     - get: environment
+      tags:
+      - vsphere
       resource: environment-vsphere
       trigger: true
       passed:
       - destroy-opsman-vsphere-upgrade
     - get: ops-manager
+      tags:
+      - vsphere
       resource: ops-manager-1.6.0-vsphere
   - task: deploy
     tags:
@@ -1941,17 +2221,23 @@ jobs:
 - name: import-installation-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     trigger: true
     passed:
     - export-installation-vsphere-upgrade
     - deploy-opsman-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
     - export-installation-vsphere-upgrade
     - deploy-opsman-vsphere-upgrade
   - get: exported-installation
+    tags:
+    - vsphere
     resource: exported-installation-vsphere
     trigger: true
     passed:
@@ -1967,16 +2253,19 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      tags:
+      - vsphere
       resource: p-runtime-prime
-      trigger: true
-      passed:
-      - build-runtime
     - get: environment
+      tags:
+      - vsphere
       resource: environment-vsphere
       trigger: true
       passed:
       - import-installation-vsphere-upgrade
     - get: ert-product
+      tags:
+      - vsphere
       trigger: true
       passed:
       - build-runtime
@@ -1990,11 +2279,15 @@ jobs:
 - name: configure-ert-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - upgrade-pivotal-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
@@ -2011,11 +2304,16 @@ jobs:
   plan:
   - aggregate:
     - get: p-runtime
+      tags:
+      - vsphere
       resource: p-runtime-prime
     - get: environment
+      tags:
+      - vsphere
       resource: environment-vsphere
       passed:
       - configure-ert-vsphere-upgrade
+      trigger: true
   - task: import-stemcell
     tags:
     - vsphere
@@ -2028,15 +2326,19 @@ jobs:
 - name: deploy-ert-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
-    - configure-ert-vsphere-upgrade
+    - import-stemcell-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
-    - configure-ert-vsphere-upgrade
+    - import-stemcell-vsphere-upgrade
   - task: deploy-ert
     tags:
     - vsphere
@@ -2055,11 +2357,15 @@ jobs:
 - name: run-cats-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - deploy-ert-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     trigger: true
     passed:
@@ -2086,10 +2392,14 @@ jobs:
 - name: destroy-environment-final-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     passed:
     - run-cats-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     resource: environment-vsphere
     passed:
     - run-cats-vsphere-upgrade
@@ -2100,16 +2410,22 @@ jobs:
 - name: release-environment-vsphere-upgrade
   plan:
   - get: p-runtime
+    tags:
+    - vsphere
     resource: p-runtime-prime
     trigger: true
     passed:
     - destroy-environment-final-vsphere-upgrade
   - get: environment
+    tags:
+    - vsphere
     trigger: true
     resource: environment-vsphere
     passed:
     - destroy-environment-final-vsphere-upgrade
   - put: environment-vsphere
+    tags:
+    - vsphere
     params:
       release: environment
 groups:

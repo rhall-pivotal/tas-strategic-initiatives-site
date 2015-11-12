@@ -414,6 +414,7 @@ jobs:
       resource: environment-multi-az
       passed:
       - configure-ert-vsphere-clean
+      trigger: true
   - task: import-stemcell
     tags:
     - vsphere
@@ -431,14 +432,14 @@ jobs:
     resource: p-runtime-prime
     trigger: true
     passed:
-    - configure-ert-vsphere-clean
+    - import-stemcell-vsphere-clean
   - get: environment
     tags:
     - vsphere
     resource: environment-multi-az
     trigger: true
     passed:
-    - configure-ert-vsphere-clean
+    - import-stemcell-vsphere-clean
   - task: deploy-ert
     tags:
     - vsphere
