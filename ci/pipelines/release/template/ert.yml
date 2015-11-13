@@ -437,6 +437,7 @@ jobs:
         - put: ert-product
           params:
             from: build-product/cf-(.*).pivotal
+            to: ert-1.6/untested/
         - put: p-runtime
           resource: p-runtime-prime
           params:

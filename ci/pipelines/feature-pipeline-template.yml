@@ -264,6 +264,7 @@ jobs:
         tags: [{{iaas_type}}]
         params:
           from: build-product/cf-(.*).pivotal
+          to: {{branch_name}}/
       - put: p-runtime
         tags: [{{iaas_type}}]
         params:
