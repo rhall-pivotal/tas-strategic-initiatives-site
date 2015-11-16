@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'krafa-client', '0.0.11', git: 'git@github.com:pivotal-cf-experimental/krafa.git'
 gem 'vara',     '0.17.1',   require: false, git: 'git@github.com:pivotal-cf/vara.git'
 
 gem 'opsmgr', '0.22.0', git: 'git@github.com:pivotal-cf/opsmgr'

@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'bundler/setup'
 
-require 'krafa/client/tasks'
 require 'opsmgr/tasks'
 
 base_dir = File.expand_path(File.dirname(__FILE__))
