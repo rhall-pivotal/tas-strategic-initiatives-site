@@ -2,8 +2,8 @@
 metadata_version: '1.6'
 provides_product_versions:
 - name: cf
-  version: 1.6.3.0
-product_version: &product_version "1.6.3.0$PRERELEASE_VERSION$"
+  version: 1.6.4.0
+product_version: &product_version "1.6.4.0$PRERELEASE_VERSION$"
 label: Pivotal Elastic Runtime
 description:
   Gives developers the ability to push apps on a dynamically-configured software stack
@@ -1707,6 +1707,11 @@ job_types:
             component: CloudController
           uris:
           - "api.(( .cloud_controller.system_domain.value ))"
+        nats:
+          user: (( .nats.credentials.identity ))
+          password: (( .nats.credentials.password ))
+          port: 4222
+          machines: (( .nats.ips ))
 
       cc:
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
@@ -3381,8 +3386,6 @@ job_types:
         evacuation_bail_out_time_in_seconds: 600
         zone: (( availability_zone ))
 
-      metron_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
