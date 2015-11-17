@@ -482,16 +482,32 @@ jobs:
       {{task}}
       {{/aws_configure_tasks}}
 
+  - name: import-stemcell
+    plan:
+    - aggregate:
+      - get: p-runtime
+        tags: [{{iaas_type}}]
+      - get: environment
+        tags: [{{iaas_type}}]
+        passed: [configure-ert]
+        trigger: true
+    - task: import-stemcell
+      tags: [{{iaas_type}}]
+      file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
+      config:
+        params:
+          OPSMAN_VERSION: {{om_version}}
+          PRODUCT_NAME: cf
+          IAAS: {{iaas_type}}
+
   - name: deploy-ert
     plan:
       - get: p-runtime
         tags: [{{iaas_type}}]
-        trigger: true
-        passed: [configure-ert]
       - get: environment
         tags: [{{iaas_type}}]
         trigger: true
-        passed: [configure-ert]
+        passed: [import-stemcell]
       - task: deploy-ert
         tags: [{{iaas_type}}]
         file: p-runtime/ci/jobs/deploy-ert.yml
@@ -505,24 +521,6 @@ jobs:
           config:
             params:
               OPSMAN_VERSION: {{om_version}}
-
-  - name: import-stemcell
-    plan:
-    - aggregate:
-      - get: p-runtime
-        tags: [{{iaas_type}}]
-        passed: [configure-ert]
-      - get: environment
-        tags: [{{iaas_type}}]
-        passed: [configure-ert]
-    - task: import-stemcell
-      tags: [{{iaas_type}}]
-      file: p-runtime/ci/jobs/auto-download-import-stemcell.yml
-      config:
-        params:
-          OPSMAN_VERSION: {{om_version}}
-          PRODUCT_NAME: cf
-          IAAS: {{iaas_type}}
 
   - name: run-cats
     plan:
