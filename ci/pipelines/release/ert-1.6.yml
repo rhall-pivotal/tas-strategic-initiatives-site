@@ -449,7 +449,7 @@ resources:
     region_name: us-west-1
     private: true
     versioned_file: ops_manager_images/vcloud/1.6.0/ops_man_image
-- name: initial-ert-product
+- name: initial-ert-product-1.5.6
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -458,6 +458,15 @@ resources:
     region_name: us-west-1
     private: true
     regexp: ert-releases/1.5.6.0/cf-(.*).pivotal
+- name: initial-ert-product-1.6.3
+  type: s3
+  source:
+    access_key_id: AKIAJEAGY2FWB7DEGFXQ
+    secret_access_key: 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
+    bucket: ert-concourse-products
+    region_name: us-west-1
+    private: true
+    regexp: ert-releases/1.6.3/cf-(.*).pivotal
 - name: ops-manager-1.5.7.0-aws
   type: s3
   source:
@@ -2155,7 +2164,7 @@ jobs:
     - get: ops-manager
       tags:
       - aws
-      resource: ops-manager-1.5.7.0-aws
+      resource: ops-manager-1.6.0-aws
     - task: prepare
       tags:
       - aws
@@ -2185,7 +2194,7 @@ jobs:
     file: p-runtime/ci/jobs/configure-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: deploy-microbosh-initial-aws-upgrade
   plan:
   - get: p-runtime
@@ -2207,7 +2216,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-microbosh.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -2215,7 +2224,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: upload-pivotal-initial-aws-upgrade
   plan:
   - get: p-runtime
@@ -2234,7 +2243,7 @@ jobs:
   - get: ert-product
     tags:
     - aws
-    resource: initial-ert-product
+    resource: initial-ert-product-1.6.3
     trigger: true
   - task: upload
     tags:
@@ -2242,7 +2251,7 @@ jobs:
     file: p-runtime/ci/jobs/upload-pivotal.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
 - name: configure-ert-initial-aws-upgrade
   plan:
   - get: p-runtime
@@ -2264,8 +2273,8 @@ jobs:
     file: p-runtime/ci/jobs/configure-ert.yml
     config:
       params:
-        ERT_VERSION: 1.5
-        OPSMAN_VERSION: 1.5
+        ERT_VERSION: 1.6
+        OPSMAN_VERSION: 1.6
   - task: create-external-dbs
     tags:
     - aws
@@ -2276,16 +2285,16 @@ jobs:
     file: p-runtime/ci/jobs/configure-external-dbs.yml
     config:
       params:
-        ERT_VERSION: 1.5
-        OPSMAN_VERSION: 1.5
+        ERT_VERSION: 1.6
+        OPSMAN_VERSION: 1.6
   - task: configure-external-file-storage
     tags:
     - aws
     file: p-runtime/ci/jobs/configure-external-file-storage.yml
     config:
       params:
-        ERT_VERSION: 1.5
-        OPSMAN_VERSION: 1.5
+        ERT_VERSION: 1.6
+        OPSMAN_VERSION: 1.6
 - name: deploy-ert-initial-aws-upgrade
   plan:
   - get: p-runtime
@@ -2307,7 +2316,7 @@ jobs:
     file: p-runtime/ci/jobs/deploy-ert.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
     ensure:
       task: get-install-log
       tags:
@@ -2315,7 +2324,7 @@ jobs:
       file: p-runtime/ci/jobs/get-install-log.yml
       config:
         params:
-          OPSMAN_VERSION: 1.5
+          OPSMAN_VERSION: 1.6
 - name: export-installation-aws-upgrade
   plan:
   - get: p-runtime
@@ -2337,7 +2346,7 @@ jobs:
     file: p-runtime/ci/jobs/export-installation.yml
     config:
       params:
-        OPSMAN_VERSION: 1.5
+        OPSMAN_VERSION: 1.6
   - put: exported-installation-aws
     tags:
     - aws
@@ -2763,7 +2772,7 @@ jobs:
   - get: ert-product
     tags:
     - vsphere
-    resource: initial-ert-product
+    resource: initial-ert-product-1.5.6
     trigger: true
   - task: upload
     tags:
@@ -3272,7 +3281,7 @@ jobs:
   - get: ert-product
     tags:
     - vcloud
-    resource: initial-ert-product
+    resource: initial-ert-product-1.5.6
     trigger: true
   - task: upload
     tags:
