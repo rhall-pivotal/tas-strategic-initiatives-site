@@ -458,7 +458,7 @@ resources:
     region_name: us-west-1
     private: true
     regexp: ert-releases/1.5.6.0/cf-(.*).pivotal
-- name: ops-manager-1.5.7.0-aws
+- name: ops-manager-1.5.8.0-aws
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -466,8 +466,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/aws/1.5.7.0/ops_man_image
-- name: ops-manager-1.5.7.0-openstack
+    versioned_file: ops_manager_images/aws/1.5.8.0/ops_man_image
+- name: ops-manager-1.5.8.0-openstack
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -475,8 +475,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/openstack/1.5.7.0/ops_man_image
-- name: ops-manager-1.5.7.0-vsphere
+    versioned_file: ops_manager_images/openstack/1.5.8.0/ops_man_image
+- name: ops-manager-1.5.8.0-vsphere
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -484,8 +484,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/vsphere/1.5.7.0/ops_man_image
-- name: ops-manager-1.5.7.0-vcloud
+    versioned_file: ops_manager_images/vsphere/1.5.8.0/ops_man_image
+- name: ops-manager-1.5.8.0-vcloud
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -493,7 +493,7 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/vcloud/1.5.7.0/ops_man_image
+    versioned_file: ops_manager_images/vcloud/1.5.8.0/ops_man_image
 - name: exported-installation-aws
   type: s3
   source:
@@ -2160,7 +2160,7 @@ jobs:
     - get: ops-manager
       tags:
       - aws
-      resource: ops-manager-1.5.7.0-aws
+      resource: ops-manager-1.5.8.0-aws
     - task: prepare
       tags:
       - aws
@@ -2690,7 +2690,7 @@ jobs:
     - get: ops-manager
       tags:
       - vsphere
-      resource: ops-manager-1.5.7.0-vsphere
+      resource: ops-manager-1.5.8.0-vsphere
     - task: prepare
       tags:
       - vsphere
@@ -3200,7 +3200,7 @@ jobs:
     - get: ops-manager
       tags:
       - vcloud
-      resource: ops-manager-1.5.7.0-vcloud
+      resource: ops-manager-1.5.8.0-vcloud
     - task: prepare
       tags:
       - vcloud

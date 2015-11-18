@@ -69,7 +69,7 @@ jobs:
       - aggregate:
         - get: ops-manager
           tags: [{{iaas_type}}]
-          resource: ops-manager-1.5.7.0-{{iaas_type}}
+          resource: ops-manager-1.5.8.0-{{iaas_type}}
         - task: prepare
           tags: [{{iaas_type}}]
           file: p-runtime/ci/jobs/prepare-environment.yml
