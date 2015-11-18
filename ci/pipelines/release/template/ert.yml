@@ -216,7 +216,7 @@ resources:
       pool: vcloud
       private_key: *env_private_key
 
-  - name: ops-manager-1.6.0-aws
+  - name: ops-manager-1.6.1-aws
     type: s3
     source:
       access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -224,9 +224,9 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/aws/1.6.0/ops_man_image
+      versioned_file: ops_manager_images/aws/1.6.1/ops_man_image
 
-  - name: ops-manager-1.6.0-openstack
+  - name: ops-manager-1.6.1-openstack
     type: s3
     source:
       access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -234,9 +234,9 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/openstack/1.6.0/ops_man_image
+      versioned_file: ops_manager_images/openstack/1.6.1/ops_man_image
 
-  - name: ops-manager-1.6.0-vsphere
+  - name: ops-manager-1.6.1-vsphere
     type: s3
     source:
       access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -244,9 +244,9 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/vsphere/1.6.0/ops_man_image
+      versioned_file: ops_manager_images/vsphere/1.6.1/ops_man_image
 
-  - name: ops-manager-1.6.0-vcloud
+  - name: ops-manager-1.6.1-vcloud
     type: s3
     source:
       access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -254,7 +254,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/vcloud/1.6.0/ops_man_image
+      versioned_file: ops_manager_images/vcloud/1.6.1/ops_man_image
 
   - name: initial-ert-product
     type: s3
@@ -630,7 +630,7 @@ groups:
       - promote-ert
       - upload-to-pivnet
     resources:
-      - ops-manager-1.6.0-aws
-      - ops-manager-1.6.0-vsphere
-      - ops-manager-1.6.0-vcloud
-      - ops-manager-1.6.0-openstack
+      - ops-manager-1.6.1-aws
+      - ops-manager-1.6.1-vsphere
+      - ops-manager-1.6.1-vcloud
+      - ops-manager-1.6.1-openstack

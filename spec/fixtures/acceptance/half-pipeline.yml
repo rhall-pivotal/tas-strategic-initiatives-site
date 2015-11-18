@@ -413,7 +413,7 @@ resources:
       J+R2R0z5fNX5AD8RfiVPLhmLTpbY5rwuujFiaHDs/nJvtgeSgQ9y9y9DyB99ZtPP
       OVKNK3IjWsq4oU3qLRZ8w9ZdA06jePzJ6x3ppx6H60u+sock2D8+eeMxjtmJ
       -----END RSA PRIVATE KEY-----
-- name: ops-manager-1.6.0-aws
+- name: ops-manager-1.6.1-aws
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -421,8 +421,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/aws/1.6.0/ops_man_image
-- name: ops-manager-1.6.0-openstack
+    versioned_file: ops_manager_images/aws/1.6.1/ops_man_image
+- name: ops-manager-1.6.1-openstack
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -430,8 +430,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/openstack/1.6.0/ops_man_image
-- name: ops-manager-1.6.0-vsphere
+    versioned_file: ops_manager_images/openstack/1.6.1/ops_man_image
+- name: ops-manager-1.6.1-vsphere
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -439,8 +439,8 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/vsphere/1.6.0/ops_man_image
-- name: ops-manager-1.6.0-vcloud
+    versioned_file: ops_manager_images/vsphere/1.6.1/ops_man_image
+- name: ops-manager-1.6.1-vcloud
   type: s3
   source:
     access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -448,7 +448,7 @@ resources:
     bucket: ert-concourse-products
     region_name: us-west-1
     private: true
-    versioned_file: ops_manager_images/vcloud/1.6.0/ops_man_image
+    versioned_file: ops_manager_images/vcloud/1.6.1/ops_man_image
 - name: initial-ert-product
   type: s3
   source:
@@ -756,7 +756,7 @@ jobs:
     - get: ops-manager
       tags:
       - aws
-      resource: ops-manager-1.6.0-aws
+      resource: ops-manager-1.6.1-aws
     - task: prepare
       tags:
       - aws
@@ -1124,7 +1124,7 @@ jobs:
     - get: ops-manager
       tags:
       - vsphere
-      resource: ops-manager-1.6.0-vsphere
+      resource: ops-manager-1.6.1-vsphere
     - task: prepare
       tags:
       - vsphere
@@ -1704,7 +1704,7 @@ jobs:
     - get: ops-manager
       tags:
       - aws
-      resource: ops-manager-1.6.0-aws
+      resource: ops-manager-1.6.1-aws
   - task: deploy
     tags:
     - aws
@@ -2214,7 +2214,7 @@ jobs:
     - get: ops-manager
       tags:
       - vsphere
-      resource: ops-manager-1.6.0-vsphere
+      resource: ops-manager-1.6.1-vsphere
   - task: deploy
     tags:
     - vsphere
@@ -2517,7 +2517,7 @@ groups:
   - promote-ert
   - upload-to-pivnet
   resources:
-  - ops-manager-1.6.0-aws
-  - ops-manager-1.6.0-vsphere
-  - ops-manager-1.6.0-vcloud
-  - ops-manager-1.6.0-openstack
+  - ops-manager-1.6.1-aws
+  - ops-manager-1.6.1-vsphere
+  - ops-manager-1.6.1-vcloud
+  - ops-manager-1.6.1-openstack

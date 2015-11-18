@@ -126,7 +126,7 @@ resources:
         OVKNK3IjWsq4oU3qLRZ8w9ZdA06jePzJ6x3ppx6H60u+sock2D8+eeMxjtmJ
         -----END RSA PRIVATE KEY-----
 
-  - name: ops-manager-1.6.0-vsphere
+  - name: ops-manager-1.6.1-vsphere
     type: s3
     source:
       access_key_id: AKIAJEAGY2FWB7DEGFXQ
@@ -134,7 +134,7 @@ resources:
       bucket: ert-concourse-products
       region_name: us-west-1
       private: true
-      versioned_file: ops_manager_images/vsphere/1.6.0/ops_man_image
+      versioned_file: ops_manager_images/vsphere/1.6.1/ops_man_image
 
   - name: ert-product
     type: s3
@@ -235,4 +235,4 @@ groups:
       - kickoff
       - build-runtime
     resources:
-      - ops-manager-1.6.0-vsphere
+      - ops-manager-1.6.1-vsphere
