@@ -3389,6 +3389,9 @@ job_types:
       loggregator_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
 
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
