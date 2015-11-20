@@ -16,9 +16,9 @@ bundle exec vara build-pivotal ~/workspace/p-runtime/ # Creates cf-1.N.0.0.alpha
 
 #### Environments
 
-A named environment is specified in `config/environments/<name>.yml` (or `${ENV_DIRECTORY)/<name>.yml` if that environment variable is set.
+A named environment is specified in a concourse pool resource file (or `${ENV_DIRECTORY)/<name>.yml` if that environment variable is set.)
 
-See [the p-runtime environment files](https://github.com/pivotal-cf/p-runtime/blob/master/config/environments) for examples of defining your environments.
+See [sample environment files](https://github.com/pivotal-cf/p-runtime/blob/master/sample_env_files) for examples of defining your environments.
 
 ### Deploying Ops Manager and Elastic Runtime
 
