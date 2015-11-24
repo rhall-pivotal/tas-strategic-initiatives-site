@@ -16,11 +16,9 @@ bundle exec vara build-pivotal ~/workspace/p-runtime/ # Creates cf-1.N.0.0.alpha
 ### Configuring p-runtime / opsmgr tasks
 
 #### Environments
-A named environment is specified in `${ENV_DIRECTORY}/<name>.yml` if that environment variable is set. If ENV_DIRECTORY is not set, the tooling attempts to use the contents of `../environment/metadata`, which is where we expect this yaml to be when the tool is run in a concourse pipeline using an environment drawn from a pool resource.
+A named environment is specified in a concourse pool resource file (specifically `../environment/metadata`), or `${ENV_DIRECTORY)/<name>.yml` if the ENV_DIRECTORY environment variable is set.
 
-An arbitrary file containing the appropriate YAML can be specified with the `ENVIRONMENT_METADATA` env var.
-
-See [the releng environment pool repo](https://github.com/pivotal-cf-experimental/releng-env-resource-pool) for an example of an environment pool, complete with appropriate YAML in the environment files.
+See [sample environment files](https://github.com/pivotal-cf/p-runtime/blob/master/sample_env_files) for examples of defining your environments.
 
 ### Basic Deployment of Ops Manager and Elastic Runtime with Rake Tasks
 
