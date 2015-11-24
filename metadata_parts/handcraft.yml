@@ -439,6 +439,44 @@ form_types:
         label: Application Containers Subnet Pool
         description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to containers running on Diego. This is an arbitrary assignment and should be different from the network used by the system VMs.
 
+  - name: whitelabel_config
+    label: White Label Config
+    description: "Customize colors, images, and text"
+    property_inputs:
+      - reference: .push-apps-manager.company_name
+        label: Company Name
+      - reference: .push-apps-manager.product_name
+        label: Product Name
+      - reference: .push-apps-manager.nav_bg
+        label: Background Color
+      - reference: .push-apps-manager.h1_color
+        label: H1 Header Color
+      - reference: .push-apps-manager.nav_highlight_left_border_color
+        label: Navigation Left Border Color
+        description: "Highlights the currently selected navigation link"
+      - reference: .push-apps-manager.primary_logo
+        label: Primary Logo
+        description: "Base 64 image"
+      - reference: .push-apps-manager.favicon_data_url
+        label: Favicon
+        description: "Base 64 image"
+      - reference: .push-apps-manager.legal_text
+        label: Legal Text
+      - reference: .push-apps-manager.docs_url
+        label: Docs Url
+        description: "Defaults to http://docs.pivotal.io/pivotalcf/getstarted/pcf-docs.html"
+      - reference: .push-apps-manager.support_url
+        label: Support Url
+        description: "Defaults to https://support.pivotal.io/hc/en-us/categories/200072648-Pivotal-CF-Knowledge-Base"
+      - reference: .push-apps-manager.nav_links
+        label: Custom Nagivation Links
+        description: "Add up to 7 links. These will appear below the support url in the navigation sidebar"
+        property_inputs:
+          - reference: name
+            label: "Link text"
+          - reference: href
+            label: "Url"
+
   - name: experimental_features
     label: Experimental Features
     description: There are no features currently in experimental state. Check back in future releases for new experimental features.
@@ -510,6 +548,66 @@ job_types:
         type: simple_credentials
         default:
           identity: nats
+
+      - name: company_name
+        type: string
+        configurable: true
+        optional: true
+
+      - name: product_name
+        type: string
+        configurable: true
+        optional: true
+
+      - name: nav_bg
+        type: string
+        configurable: true
+        optional: true
+
+      - name: h1_color
+        type: string
+        configurable: true
+        optional: true
+
+      - name: nav_highlight_left_border_color
+        type: string
+        configurable: true
+        optional: true
+
+      - name: primary_logo
+        type: string
+        configurable: true
+        optional: true
+
+      - name: favicon_data_url
+        type: string
+        configurable: true
+        optional: true
+
+      - name: legal_text
+        type: string
+        configurable: true
+        optional: true
+
+      - name: docs_url
+        type: string
+        configurable: true
+        optional: true
+
+      - name: support_url
+        type: string
+        configurable: true
+        optional: true
+
+      - name: nav_links
+        type: collection
+        configurable: true
+        optional: true
+        property_blueprints:
+          - name: name
+            type: string
+          - name: href
+            type: string
 
     manifest: |
       nats:
@@ -3731,6 +3829,18 @@ job_types:
         usage_service_host: "https://app-usage.(( .cloud_controller.system_domain.value ))"
         bundle_without: test development hosted_only
         apps_manager_version: (( .properties.product_version.value ))
+        white_label_config_json:
+          company_name: (( company_name.value ))
+          product_name: (( product_name.value ))
+          nav_bg: (( nav_bg.value ))
+          h1_color: (( h1_color.value ))
+          nav_highlight_left_border_color: (( nav_highlight_left_border_color.value ))
+          primary_logo: (( primary_logo.value ))
+          favicon_data_url: (( favicon_data_url.value ))
+          legal_text: (( legal_text.value ))
+          docs_url: (( docs_url.value ))
+          support_url: (( support_url.value ))
+          nav_links: (( nav_links.value ))
       databases:
         console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
       ssl:
