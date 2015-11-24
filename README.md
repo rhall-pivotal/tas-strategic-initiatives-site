@@ -36,7 +36,7 @@ bundle exec rake opsmgr:destroy[environment]
 ```
 
 #### Download an Ops Manager Image
-Obtain the Ops Manager Image you need from [Pivotal Network](https://network.pivotal.com). If you need a newer version than is available there, consult the Ops Manager team.
+Obtain the Ops Manager Image you need from [Pivotal Network](https://network.pivotal.io). If you need a newer version than is available there, consult the Ops Manager team.
 
 #### Prepare The Environment (AWS-only)
 This will spin up a cloudformation stack; because it provisions an RDS instance, it can take around half an hour.
