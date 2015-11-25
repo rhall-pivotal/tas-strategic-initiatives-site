@@ -1715,7 +1715,7 @@ job_types:
 
       cc:
         allowed_cors_domains:
-        - https://apm.((cloud_controller.system_domain.value))
+        - https://apm.(( .cloud_controller.system_domain.value ))
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
         default_to_diego_backend: (( default_to_diego_backend.value ))
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
@@ -2152,7 +2152,7 @@ job_types:
 
       cc:
         allowed_cors_domains:
-        - https://apm.((cloud_controller.system_domain.value))
+        - https://apm.(( .cloud_controller.system_domain.value ))
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
@@ -2311,7 +2311,7 @@ job_types:
 
       cc:
         allowed_cors_domains:
-        - https://apm.((cloud_controller.system_domain.value))
+        - https://apm.(( .cloud_controller.system_domain.value ))
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
