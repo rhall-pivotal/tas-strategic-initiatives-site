@@ -2663,6 +2663,11 @@ job_types:
         default:
           identity: cc_routing
 
+      - name: apps_metrics_credentials
+        type: simple_credentials
+        default:
+          identity: apps_metrics
+
       - name: ldap_url
         type: ldap_url
         configurable: true
@@ -2909,6 +2914,14 @@ job_types:
             redirect-uri: /login
             scope: openid,cloud_controller.read,cloud_controller.write
             secret: (( .uaa.ssh_proxy_client_credentials.password ))
+          apps_metrics:
+            id: (( apps_metrics_credentials.identity ))
+            secret: (( apps_metrics_credentials.password ))
+            override: true
+            authorized-grant-types: implicit,authorization_code,refresh_token
+            scope: cloud_controller.read
+            access-token-validity: 604800
+            refresh-token-validity: 2629740
         scim:
           user:
             override: true
