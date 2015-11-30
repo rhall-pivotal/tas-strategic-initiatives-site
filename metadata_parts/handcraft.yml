@@ -454,8 +454,8 @@ form_types:
       - reference: .push-apps-manager.nav_highlight_left_border_color
         label: Navigation Left Border Color
         description: "Highlights the currently selected navigation link"
-      - reference: .push-apps-manager.primary_logo
-        label: Primary Logo
+      - reference: .push-apps-manager.logo
+        label: Logo
         description: "Base 64 image"
       - reference: .push-apps-manager.favicon_data_url
         label: Favicon
@@ -468,6 +468,12 @@ form_types:
       - reference: .push-apps-manager.support_url
         label: Support Url
         description: "Defaults to https://support.pivotal.io/hc/en-us/categories/200072648-Pivotal-CF-Knowledge-Base"
+      - reference: .push-apps-manager.marketplace_name
+        label: Marketplace Name
+        description: "Defaults to 'Marketplace'"
+      - reference: .push-apps-manager.marketplace_url
+        label: Marketplace Url
+        description: "Defaults to /marketplace"
       - reference: .push-apps-manager.nav_links
         label: Custom Nagivation Links
         description: "Add up to 7 links. These will appear below the support url in the navigation sidebar"
@@ -3766,7 +3772,7 @@ job_types:
         configurable: true
         optional: true
 
-      - name: primary_logo
+      - name: logo
         type: string
         configurable: true
         optional: true
@@ -3787,6 +3793,16 @@ job_types:
         optional: true
 
       - name: support_url
+        type: string
+        configurable: true
+        optional: true
+
+      - name: marketplace_name
+        type: string
+        configurable: true
+        optional: true
+
+      - name: marketplace_url
         type: string
         configurable: true
         optional: true
@@ -3835,11 +3851,13 @@ job_types:
           nav_bg: (( nav_bg.value ))
           h1_color: (( h1_color.value ))
           nav_highlight_left_border_color: (( nav_highlight_left_border_color.value ))
-          primary_logo: (( primary_logo.value ))
+          logo: (( logo.value ))
           favicon_data_url: (( favicon_data_url.value ))
           legal_text: (( legal_text.value ))
           docs_url: (( docs_url.value ))
           support_url: (( support_url.value ))
+          marketplace_name: (( marketplace_name.value ))
+          marketplace_url: (( marketplace_url.value ))
           nav_links: (( nav_links.value ))
       databases:
         console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
