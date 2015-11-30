@@ -549,66 +549,6 @@ job_types:
         default:
           identity: nats
 
-      - name: company_name
-        type: string
-        configurable: true
-        optional: true
-
-      - name: product_name
-        type: string
-        configurable: true
-        optional: true
-
-      - name: nav_bg
-        type: string
-        configurable: true
-        optional: true
-
-      - name: h1_color
-        type: string
-        configurable: true
-        optional: true
-
-      - name: nav_highlight_left_border_color
-        type: string
-        configurable: true
-        optional: true
-
-      - name: primary_logo
-        type: string
-        configurable: true
-        optional: true
-
-      - name: favicon_data_url
-        type: string
-        configurable: true
-        optional: true
-
-      - name: legal_text
-        type: string
-        configurable: true
-        optional: true
-
-      - name: docs_url
-        type: string
-        configurable: true
-        optional: true
-
-      - name: support_url
-        type: string
-        configurable: true
-        optional: true
-
-      - name: nav_links
-        type: collection
-        configurable: true
-        optional: true
-        property_blueprints:
-          - name: name
-            type: string
-          - name: href
-            type: string
-
     manifest: |
       nats:
         user: (( credentials.identity ))
@@ -3800,6 +3740,66 @@ job_types:
       - name: secret_token
         type: secret
         configurable: false
+
+      - name: company_name
+        type: string
+        configurable: true
+        optional: true
+
+      - name: product_name
+        type: string
+        configurable: true
+        optional: true
+
+      - name: nav_bg
+        type: string
+        configurable: true
+        optional: true
+
+      - name: h1_color
+        type: string
+        configurable: true
+        optional: true
+
+      - name: nav_highlight_left_border_color
+        type: string
+        configurable: true
+        optional: true
+
+      - name: primary_logo
+        type: string
+        configurable: true
+        optional: true
+
+      - name: favicon_data_url
+        type: string
+        configurable: true
+        optional: true
+
+      - name: legal_text
+        type: string
+        configurable: true
+        optional: true
+
+      - name: docs_url
+        type: string
+        configurable: true
+        optional: true
+
+      - name: support_url
+        type: string
+        configurable: true
+        optional: true
+
+      - name: nav_links
+        type: collection
+        configurable: true
+        optional: true
+        property_blueprints:
+          - name: name
+            type: string
+          - name: href
+            type: string
 
     manifest: |
       cf:
