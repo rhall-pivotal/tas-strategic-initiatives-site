@@ -1,7 +1,7 @@
 ---
 stemcell_criteria:
   os: ubuntu-trusty
-  version: '3144'
+  version: '3146'
   requires_cpi: false
 releases:
 # MySQL release is first because its packages take the longest to compile.
@@ -10,11 +10,11 @@ releases:
   version: '23'
   md5: 4e81e61c628d6c4726f90806a31dcf39
   url: https://s3.amazonaws.com/cf-mysql-releases/final/cf-mysql-23.tgz
-- file: cf-225.1.tgz
+- file: cf-225.2.tgz
   name: cf
-  version: '225.1'
-  md5: b0504c1853110010811788c2ecfc3386
-  url: http://releng-artifacts.cf-app.com/cf/cf-225.1.tgz
+  version: '225.2'
+  md5: 3e9c9ad9905f2a858f1867fbc99d1e72
+  url: http://releng-artifacts.cf-app.com/cf/cf-225.2.tgz
 - file: diego-0.1441.0.tgz
   name: diego
   version: '0.1441.0'
