@@ -1,8 +1,8 @@
 GIT
   remote: git@github.com:pivotal-cf/opsmgr
-  revision: 92b5cced099bda7c8ab39ac83869522219eaa347
+  revision: 06beaa72025b7dd00cea16e97ebc0591854565ce
   specs:
-    opsmgr (0.23.0)
+    opsmgr (0.24.0)
       activesupport (~> 4.1.6)
       aws-sdk (~> 2.0)
       filesize (~> 0.0.3)
@@ -44,12 +44,12 @@ GEM
     ast (2.1.0)
     astrolabe (1.3.1)
       parser (~> 2.2)
-    aws-sdk (2.1.30)
-      aws-sdk-resources (= 2.1.30)
-    aws-sdk-core (2.1.30)
+    aws-sdk (2.2.3)
+      aws-sdk-resources (= 2.2.3)
+    aws-sdk-core (2.2.3)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.1.30)
-      aws-sdk-core (= 2.1.30)
+    aws-sdk-resources (2.2.3)
+      aws-sdk-core (= 2.2.3)
     aws-sdk-v1 (1.66.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
@@ -102,6 +102,11 @@ GEM
       fog-xml (~> 0.1.1)
       ipaddress (~> 0.5)
       nokogiri (~> 1.5, >= 1.5.11)
+    fog-aliyun (0.1.0)
+      fog-core (~> 1.27)
+      fog-json (~> 1.0)
+      ipaddress (~> 0.8)
+      xml-simple (~> 1.1)
     fog-atmos (0.1.0)
       fog-core
       fog-xml
@@ -110,15 +115,14 @@ GEM
       fog-json (~> 1.0)
       fog-xml (~> 0.1)
       ipaddress (~> 0.8)
-    fog-brightbox (0.9.0)
+    fog-brightbox (0.10.1)
       fog-core (~> 1.22)
       fog-json
       inflecto (~> 0.0.2)
-    fog-core (1.34.0)
+    fog-core (1.35.0)
       builder
       excon (~> 0.45)
       formatador (~> 0.2)
-      mime-types
     fog-dynect (0.0.2)
       fog-core
       fog-json
@@ -172,6 +176,9 @@ GEM
     fog-voxel (0.1.0)
       fog-core
       fog-xml
+    fog-xenserver (0.2.2)
+      fog-core
+      fog-xml
     fog-xml (0.1.2)
       fog-core
       nokogiri (~> 1.5, >= 1.5.11)
@@ -185,7 +192,8 @@ GEM
     jmespath (1.1.3)
     json (1.8.3)
     mime-types (2.99)
-    mini_portile (0.6.2)
+    mime-types-data (3.2015.1120)
+    mini_portile2 (2.0.0)
     minitest (5.8.3)
     multi_json (1.11.2)
     multipart-post (2.0.0)
@@ -196,8 +204,8 @@ GEM
       net-ssh (>= 2.6.5)
     netaddr (1.5.0)
     netrc (0.11.0)
-    nokogiri (1.6.6.4)
-      mini_portile (~> 0.6.0)
+    nokogiri (1.6.7)
+      mini_portile2 (~> 2.0.0.rc2)
     open4 (1.3.4)
     ops_manager_ui_drivers (1.7.3)
       capybara
@@ -222,19 +230,19 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
-    rspec (3.3.0)
-      rspec-core (~> 3.3.0)
-      rspec-expectations (~> 3.3.0)
-      rspec-mocks (~> 3.3.0)
-    rspec-core (3.3.2)
-      rspec-support (~> 3.3.0)
-    rspec-expectations (3.3.1)
+    rspec (3.4.0)
+      rspec-core (~> 3.4.0)
+      rspec-expectations (~> 3.4.0)
+      rspec-mocks (~> 3.4.0)
+    rspec-core (3.4.1)
+      rspec-support (~> 3.4.0)
+    rspec-expectations (3.4.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.3.0)
-    rspec-mocks (3.3.2)
+      rspec-support (~> 3.4.0)
+    rspec-mocks (3.4.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.3.0)
-    rspec-support (3.3.0)
+      rspec-support (~> 3.4.0)
+    rspec-support (3.4.1)
     rubocop (0.32.1)
       astrolabe (~> 1.3)
       parser (>= 2.2.2.5, < 3.0)
@@ -278,6 +286,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
     websocket (1.2.2)
+    xml-simple (1.1.5)
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
@@ -288,7 +297,7 @@ DEPENDENCIES
   byebug
   mysql2
   net-ssh-gateway
-  opsmgr (= 0.23.0)!
+  opsmgr (= 0.24.0)!
   recursive-open-struct (= 0.5.0)
   rspec
   rubocop
