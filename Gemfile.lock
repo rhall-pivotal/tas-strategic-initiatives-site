@@ -1,23 +1,17 @@
 GIT
   remote: git@github.com:pivotal-cf/opsmgr
-  revision: 4a981573c274cf4369e7627abd55608f5c133111
+  revision: c8d099e1ff9f2eea7d2432b190098dc490c26ecc
   specs:
-    opsmgr (0.24.0)
-      activesupport (~> 4.1.6)
+    opsmgr (0.25.0)
       aws-sdk (~> 2.0)
-      filesize (~> 0.0.3)
-      fog
       multipart-post
       mustache
       net-ssh-gateway
-      netaddr
       open4
-      ops_manager_ui_drivers (~> 1.7.0)
+      ops_manager_ui_drivers (~> 1.24.1)
       rake
-      rbvmomi (~> 1.8.0)
       recursive-open-struct (~> 0.5.0)
       rspec
-      rubyzip
       sinatra
       vm_shepherd
 
@@ -34,22 +28,22 @@ GEM
   remote: https://rubygems.org/
   specs:
     CFPropertyList (2.3.2)
-    activesupport (4.1.14)
-      i18n (~> 0.6, >= 0.6.9)
+    activesupport (4.2.5)
+      i18n (~> 0.7)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
-      thread_safe (~> 0.1)
+      thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.3.8)
     ast (2.1.0)
     astrolabe (1.3.1)
       parser (~> 2.2)
-    aws-sdk (2.2.3)
-      aws-sdk-resources (= 2.2.3)
-    aws-sdk-core (2.2.3)
+    aws-sdk (2.2.4)
+      aws-sdk-resources (= 2.2.4)
+    aws-sdk-core (2.2.4)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.2.3)
-      aws-sdk-core (= 2.2.3)
+    aws-sdk-resources (2.2.4)
+      aws-sdk-core (= 2.2.4)
     aws-sdk-v1 (1.66.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
@@ -75,7 +69,6 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     excon (0.45.4)
     ffi (1.9.10)
-    filesize (0.0.4)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
     fog (1.34.0)
@@ -102,11 +95,6 @@ GEM
       fog-xml (~> 0.1.1)
       ipaddress (~> 0.5)
       nokogiri (~> 1.5, >= 1.5.11)
-    fog-aliyun (0.1.0)
-      fog-core (~> 1.27)
-      fog-json (~> 1.0)
-      ipaddress (~> 0.8)
-      xml-simple (~> 1.1)
     fog-atmos (0.1.0)
       fog-core
       fog-xml
@@ -130,7 +118,7 @@ GEM
     fog-ecloud (0.3.0)
       fog-core
       fog-xml
-    fog-google (0.1.0)
+    fog-google (0.1.1)
       fog-core
       fog-json
       fog-xml
@@ -176,9 +164,6 @@ GEM
     fog-voxel (0.1.0)
       fog-core
       fog-xml
-    fog-xenserver (0.2.2)
-      fog-core
-      fog-xml
     fog-xml (0.1.2)
       fog-core
       nokogiri (~> 1.5, >= 1.5.11)
@@ -192,7 +177,6 @@ GEM
     jmespath (1.1.3)
     json (1.8.3)
     mime-types (2.99)
-    mime-types-data (3.2015.1120)
     mini_portile2 (2.0.0)
     minitest (5.8.3)
     multi_json (1.11.2)
@@ -207,7 +191,8 @@ GEM
     nokogiri (1.6.7)
       mini_portile2 (~> 2.0.0.rc2)
     open4 (1.3.4)
-    ops_manager_ui_drivers (1.7.3)
+    ops_manager_ui_drivers (1.24.4)
+      activesupport
       capybara
       capybara-webkit
       selenium-webdriver
@@ -286,7 +271,6 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
     websocket (1.2.2)
-    xml-simple (1.1.5)
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
@@ -297,7 +281,7 @@ DEPENDENCIES
   byebug
   mysql2
   net-ssh-gateway
-  opsmgr (= 0.24.0)!
+  opsmgr (= 0.25.0)!
   recursive-open-struct (= 0.5.0)
   rspec
   rubocop
