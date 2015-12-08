@@ -449,25 +449,28 @@ form_types:
         label: Product Name
       - reference: .push-apps-manager.nav_bg
         label: Background Color
+        description: Enter a hexadecimal color code like '#243640'
       - reference: .push-apps-manager.h1_color
         label: H1 Header Color
+        description: Enter a hexadecimal color code like '#243640'
       - reference: .push-apps-manager.nav_highlight_left_border_color
         label: Navigation Left Border Color
-        description: "Highlights the currently selected navigation link"
+        description: Enter a hexadecimal color code like '#71ffda'
       - reference: .push-apps-manager.logo
         label: Logo
-        description: "Base 64 image"
+        description: "Enter a Base64-encoded image string like 'data:image/png;base64,iVBORw0...'"
       - reference: .push-apps-manager.favicon_data_url
         label: Favicon
-        description: "Base 64 image"
+        description: "Enter a Base64-encoded image string like 'data:image/png;base64,iVBORw0...'"
       - reference: .push-apps-manager.legal_text
         label: Legal Text
       - reference: .push-apps-manager.docs_url
+        description: "Defaults to 'Pivotal Software Inc. All rights reserved.'"
         label: Docs Url
         description: "Defaults to http://docs.pivotal.io/pivotalcf/getstarted/pcf-docs.html"
       - reference: .push-apps-manager.support_url
         label: Support Url
-        description: "Defaults to https://support.pivotal.io/hc/en-us/categories/200072648-Pivotal-CF-Knowledge-Base"
+        description: Defaults to https://support.pivotal.io/hc/en-us/categories/200072648-Pivotal-CF-Knowledge-Base
       - reference: .push-apps-manager.marketplace_name
         label: Marketplace Name
         description: "Defaults to 'Marketplace'"
@@ -475,8 +478,8 @@ form_types:
         label: Marketplace Url
         description: "Defaults to /marketplace"
       - reference: .push-apps-manager.nav_links
-        label: Custom Nagivation Links
-        description: "Add up to 7 links. These will appear below the support url in the navigation sidebar"
+        label: Custom Navigation Links
+        description: "Add up to 7 links. These will appear below the 'Tools' url in the navigation sidebar"
         property_inputs:
           - reference: name
             label: "Link text"
