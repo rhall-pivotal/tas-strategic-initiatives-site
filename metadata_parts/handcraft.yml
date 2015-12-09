@@ -101,8 +101,8 @@ install_time_verifiers:
       bucket_name: .properties.system_blobstore.external.resources_bucket
 
 post_deploy_errands:
-  - name: push-apps-manager
   - name: smoke-tests
+  - name: push-apps-manager
   - name: push-app-usage-service
   - name: notifications
   - name: notifications-ui
