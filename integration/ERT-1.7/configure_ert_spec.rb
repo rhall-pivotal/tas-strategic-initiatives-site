@@ -16,7 +16,11 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
   it 'configures the availability zone' do
     availability_zones_for_product = availability_zones_for_product(product: 'cf')
     unless availability_zones_for_product.length > 0
-      current_ops_manager.assign_availability_zones_for_product(product: 'cf', zones: env_settings.ops_manager.availability_zones)
+      current_ops_manager.assign_azs_and_network_for_product(
+        product_name: 'cf',
+        zones: env_settings.ops_manager.availability_zones,
+        network: env_settings.ops_manager.networks.first.name
+      )
     end
   end
 

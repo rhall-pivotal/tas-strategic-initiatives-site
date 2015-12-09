@@ -1,14 +1,14 @@
 GIT
   remote: git@github.com:pivotal-cf/opsmgr
-  revision: c8d099e1ff9f2eea7d2432b190098dc490c26ecc
+  revision: 6a9ea4fc88b3ed78353cec98b5ea1098655e2c55
   specs:
-    opsmgr (0.25.0)
+    opsmgr (0.26.0)
       aws-sdk (~> 2.0)
       multipart-post
       mustache
       net-ssh-gateway
       open4
-      ops_manager_ui_drivers (~> 1.24.1)
+      ops_manager_ui_drivers (~> 1.25.0)
       rake
       recursive-open-struct (~> 0.5.0)
       rspec
@@ -38,12 +38,12 @@ GEM
     ast (2.1.0)
     astrolabe (1.3.1)
       parser (~> 2.2)
-    aws-sdk (2.2.4)
-      aws-sdk-resources (= 2.2.4)
-    aws-sdk-core (2.2.4)
+    aws-sdk (2.2.5)
+      aws-sdk-resources (= 2.2.5)
+    aws-sdk-core (2.2.5)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.2.4)
-      aws-sdk-core (= 2.2.4)
+    aws-sdk-resources (2.2.5)
+      aws-sdk-core (= 2.2.5)
     aws-sdk-v1 (1.66.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
@@ -143,7 +143,7 @@ GEM
       fog-core
       fog-json
       fog-xml
-    fog-sakuracloud (1.4.0)
+    fog-sakuracloud (1.5.0)
       fog-core
       fog-json
     fog-serverlove (0.1.2)
@@ -191,7 +191,7 @@ GEM
     nokogiri (1.6.7)
       mini_portile2 (~> 2.0.0.rc2)
     open4 (1.3.4)
-    ops_manager_ui_drivers (1.24.4)
+    ops_manager_ui_drivers (1.25.1)
       activesupport
       capybara
       capybara-webkit
@@ -261,9 +261,10 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
-    vm_shepherd (1.12.2)
+    vm_shepherd (1.12.5)
       aws-sdk-v1
       fog (= 1.34.0)
+      net-ssh
       rbvmomi
       recursive-open-struct (~> 0.5.0)
       ruby_vcloud_sdk (= 0.7.2)
@@ -281,7 +282,7 @@ DEPENDENCIES
   byebug
   mysql2
   net-ssh-gateway
-  opsmgr (= 0.25.0)!
+  opsmgr (= 0.26.0)!
   recursive-open-struct (= 0.5.0)
   rspec
   rubocop
