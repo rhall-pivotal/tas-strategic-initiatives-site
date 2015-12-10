@@ -2924,10 +2924,11 @@ job_types:
             id: (( apps_metrics_credentials.identity ))
             secret: (( apps_metrics_credentials.password ))
             override: true
-            authorized-grant-types: implicit,authorization_code,refresh_token
+            authorized-grant-types: authorization_code,refresh_token
+            redirect-uri: "https://apm.(( .cloud_controller.system_domain.value )),https://apm.(( .cloud_controller.system_domain.value ))/,https://apm.(( .cloud_controller.system_domain.value ))/*"
             scope: cloud_controller.read
-            access-token-validity: 604800
-            refresh-token-validity: 2629740
+            access-token-validity: 3600
+            refresh-token-validity: 2592000
         scim:
           user:
             override: true
