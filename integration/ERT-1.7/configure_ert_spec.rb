@@ -14,8 +14,7 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
   end
 
   it 'configures the availability zone' do
-    availability_zones_for_product = availability_zones_for_product(product: 'cf')
-    unless availability_zones_for_product.length > 0
+    unless any_availability_zones_have_been_selected_for_balancing?('cf')
       current_ops_manager.assign_azs_and_network_for_product(
         product_name: 'cf',
         zones: env_settings.ops_manager.availability_zones,
@@ -113,12 +112,16 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
     visit '/'
     click_on "show-#{product}-configure-action"
 
-    az_selector = "show-#{product}-availability-zone-assignment-action"
+    az_selector = "show-#{product}-azs-and-network-assignment-action"
     return [] unless has_link? az_selector
 
     click_on az_selector
     all("#{AVAILABILITY_ZONE_INPUT_SELECTOR}[checked='checked']").map do |checkbox|
       find("label[for='#{checkbox[:id]}']").text
     end
+  end
+
+  def any_availability_zones_have_been_selected_for_balancing?(product)
+    availability_zones_for_product(product: product).length > 0
   end
 end
