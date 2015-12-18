@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'vara',     '0.17.1',   require: false, git: 'git@github.com:pivotal-cf/vara.git'
+gem 'vara',     '0.17.1',   require: false
 
-gem 'opsmgr', '0.26.1', git: 'git@github.com:pivotal-cf/opsmgr'
+gem 'opsmgr', '0.26.1'
 gem 'recursive-open-struct', '0.5.0'
 gem 'mysql2'
 gem 'net-ssh-gateway'
