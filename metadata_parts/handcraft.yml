@@ -101,8 +101,8 @@ install_time_verifiers:
       bucket_name: .properties.system_blobstore.external.resources_bucket
 
 post_deploy_errands:
-  - name: push-apps-manager
   - name: smoke-tests
+  - name: push-apps-manager
   - name: push-app-usage-service
   - name: notifications
   - name: notifications-ui
@@ -3320,6 +3320,7 @@ job_types:
         enable_graph_cleanup: true
         network_pool: (( garden_network_pool.value ))
         deny_networks: ["0.0.0.0/0"]
+        network_mtu: 1454
 
   - name: dea
     label: DEA
