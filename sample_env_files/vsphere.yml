@@ -32,10 +32,10 @@ vm_shepherd:
       netmask: 255.255.255.0
       dns: 10.87.8.10,10.87.8.11
       ntp_servers: time1.sf.cf-app.com
-      vm_password: pivotalcf
+      vm_password: _PASS_
 ops_manager:
   url: https://pcf.deer.wild.cf-app.com
-  username: pivotalcf
+  username: _OM_USER_
   password: _OM_PASS_
   ntp_servers: time1.sf.cf-app.com
   vcenter:
@@ -70,7 +70,7 @@ ops_manager:
       address: smtp.sendgrid.net
       port: 587
       credentials:
-        identity: PCFRelEng
+        identity: _USER_
         password: _PASS_
       enable_starttls_auto: true
       smtp_auth_mechanism: plain
