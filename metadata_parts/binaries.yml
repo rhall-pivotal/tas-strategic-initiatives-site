@@ -5,12 +5,33 @@ stemcell_criteria:
   requires_cpi: false
 releases:
 # MySQL release is first because its packages take the longest to compile.
-- file: cf-mysql-23.tgz
+- file: cf-mysql-25.tgz
   name: cf-mysql
-  version: '23'
-  md5: 4e81e61c628d6c4726f90806a31dcf39
-  url: https://s3.amazonaws.com/cf-mysql-releases/final/cf-mysql-23.tgz
-- file: cf-225.3.tgz
+  version: '25'
+  md5: 6d68b5aa53827eeae34d628dcfbf915f
+  url: https://s3.amazonaws.com/cf-mysql-releases/final/cf-mysql-25.tgz
+- file: mysql-backup-1.tgz
+  name: mysql-backup
+  version: '1'
+  md5: 39b548e15fdaa60b39d98fa885b2350e
+  url: http://s3.amazonaws.com/pivotal-cf-core-services-artifacts/mysql-backup/final/mysql-backup-1.tgz
+  aws:
+    access_key_id: AKIAICLIEL7A4BA2RTQA
+    secret_access_key: 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
+    region: us-east-1
+    bucket_name: pivotal-cf-core-services-artifacts
+    filename: mysql-backup/final/mysql-backup-1.tgz
+- file: service-backup-1.tgz
+  name: service-backup
+  version: '1'
+  md5: 863b03b0fe6f2df8711da42d8e8de8ac
+  aws:
+    access_key_id: AKIAIJMBQDX5OOG5DW2Q
+    secret_access_key: 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
+    region: eu-west-1
+    bucket_name: cf-services-external-builds
+    filename: service-backup/final/service-backup-1.tgz
+- file: cf-222.tgz
   name: cf
   version: '225.3'
   md5: 21f46d0e9fd6ce7f61632dee9bc84441
