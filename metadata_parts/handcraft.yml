@@ -2706,6 +2706,8 @@ job_types:
             url: "/login"
       uaa:
         require_https: true
+        ssl:
+          port: -1
         ldap:
           profile_type: search-and-bind
           url: (( ldap_url.value ))
