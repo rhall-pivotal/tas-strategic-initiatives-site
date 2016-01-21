@@ -1,9 +1,10 @@
 ---
-metadata_version: '1.6'
+metadata_version: '1.7'
 provides_product_versions:
 - name: cf
-  version: 1.6.13.0
-product_version: &product_version "1.6.13.0$PRERELEASE_VERSION$"
+  version: 1.7.0.0
+product_version: &product_version "1.7.0.0$PRERELEASE_VERSION$"
+minimum_version_for_upgrade: 1.6.0-build.0
 label: Pivotal Elastic Runtime
 description:
   Gives developers the ability to push apps on a dynamically-configured software stack
@@ -101,8 +102,8 @@ install_time_verifiers:
       bucket_name: .properties.system_blobstore.external.resources_bucket
 
 post_deploy_errands:
-  - name: push-apps-manager
   - name: smoke-tests
+  - name: push-apps-manager
   - name: push-app-usage-service
   - name: notifications
   - name: notifications-ui
@@ -476,6 +477,8 @@ job_types:
         label: Persistent Disk
         configurable: true
         default: 1024
+        constraints:
+          min: 1024
 
       - name: cpu
         type: integer
@@ -502,10 +505,6 @@ job_types:
           may_only_be_odd_or_zero: true
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       syslog_daemon_config:
@@ -595,11 +594,6 @@ job_types:
           min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: credentials
         type: simple_credentials
         default:
@@ -686,10 +680,6 @@ job_types:
           may_only_be_odd_or_zero: true
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       syslog_daemon_config:
@@ -782,10 +772,6 @@ job_types:
           may_only_be_odd_or_zero: true
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
       - name: bbs_encryption_passphrase
         type: secret
         configurable: false
@@ -915,15 +901,13 @@ job_types:
           max: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       nfs_server:
         allow_from_entries:
-        - (( .cloud_controller.first_network_deprecated ))
+        - (( .cloud_controller.ips ))
+        - (( .cloud_controller_worker.ips ))
+        - (( .clock_global.ips ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -998,11 +982,6 @@ job_types:
           min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: status_credentials
         type: simple_credentials
         default:
@@ -1115,11 +1094,6 @@ job_types:
           min: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: static_ips
         type: ip_ranges
         configurable: true
@@ -1202,10 +1176,6 @@ job_types:
       constraints:
         may_only_be_odd_or_zero: true
     property_blueprints:
-    - name: vm_credentials
-      type: salted_credentials
-      default:
-        identity: vcap
     - name: mysql_admin_credentials
       type: simple_credentials
       default:
@@ -1314,11 +1284,6 @@ job_types:
         constraints:
           max: 1
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: credentials
         type: simple_credentials
         default:
@@ -1413,11 +1378,6 @@ job_types:
         default: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: credentials
         type: simple_credentials
         default:
@@ -1513,11 +1473,6 @@ job_types:
         default: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: credentials
         type: simple_credentials
         default:
@@ -1603,8 +1558,8 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 0
-    dynamic_ip: 1
+    static_ip: 1
+    dynamic_ip: 0
     max_in_flight: 1
     serial: true
 
@@ -1618,11 +1573,6 @@ job_types:
           min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: staging_upload_credentials
         type: simple_credentials
         default:
@@ -1903,11 +1853,6 @@ job_types:
           min: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: static_ips
         type: ip_ranges
         configurable: true
@@ -2030,11 +1975,6 @@ job_types:
           min: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: internal_api_user_credentials
         type: simple_credentials
 
@@ -2126,8 +2066,8 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 0
-    dynamic_ip: 1
+    static_ip: 1
+    dynamic_ip: 0
     max_in_flight: 1
 
     instance_definitions:
@@ -2140,10 +2080,6 @@ job_types:
           min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -2285,8 +2221,8 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 0
-    dynamic_ip: 1
+    static_ip: 1
+    dynamic_ip: 0
     max_in_flight: 1
 
     instance_definitions:
@@ -2299,10 +2235,6 @@ job_types:
           min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -2459,10 +2391,6 @@ job_types:
         default: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       collector:
@@ -2551,11 +2479,6 @@ job_types:
           min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: admin_credentials
         type: simple_credentials
         default:
@@ -3037,6 +2960,8 @@ job_types:
         label: Persistent Disk
         configurable: true
         default: 1_024
+        constraints:
+          min: 1_024
 
       - name: cpu
         type: integer
@@ -3061,11 +2986,6 @@ job_types:
           min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: ssh_host_key
         type: rsa_pkey_credentials
         configurable: false
@@ -3277,11 +3197,6 @@ job_types:
           min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: garden_network_pool
         type: string
         default: 10.254.0.0/22
@@ -3397,11 +3312,6 @@ job_types:
           min: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: loggregator_agent_status_credentials
         type: simple_credentials
 
@@ -3505,11 +3415,6 @@ job_types:
           min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: status_credentials
         type: simple_credentials
 
@@ -3622,11 +3527,6 @@ job_types:
           min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: status_credentials
         type: simple_credentials
 
@@ -3733,11 +3633,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: secret_token
         type: secret
         configurable: false
@@ -3829,11 +3724,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: secret_token
         type: secret
         configurable: false
@@ -3946,10 +3836,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       smoke_tests:
@@ -4016,11 +3902,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: encryption_credentials
         type: simple_credentials
 
@@ -4118,10 +3999,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -4189,10 +4066,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -4269,10 +4142,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -4340,11 +4209,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: broker_credentials
         type: salted_credentials
 
@@ -4429,10 +4293,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       app_domains:
@@ -4503,10 +4363,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       autoscale:
@@ -4575,11 +4431,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: broker_credentials
         type: salted_credentials
 
@@ -4645,10 +4496,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       acceptance_tests:
@@ -4715,10 +4562,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       acceptance_tests:
@@ -4789,10 +4632,6 @@ job_types:
         default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       acceptance_tests:
