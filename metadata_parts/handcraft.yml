@@ -445,8 +445,6 @@ form_types:
     property_inputs:
       - reference: .push-apps-manager.company_name
         label: Company Name
-      - reference: .push-apps-manager.product_name
-        label: Product Name
       - reference: .push-apps-manager.nav_highlight_left_border_color
         label: Navigation Left Border Color
         description: Enter a hexadecimal color code like '#71ffda'
@@ -467,6 +465,13 @@ form_types:
             label: "Link text"
           - reference: href
             label: "Url"
+
+  - name: apps_manager_white_label_config
+    label: Apps Manager White Labeling
+    description: "Customize colors, images, and text"
+    property_inputs:
+      - reference: .push-apps-manager.product_name
+        label: Product Name
 
   - name: experimental_features
     label: Experimental Features
@@ -3807,6 +3812,8 @@ job_types:
           favicon_data_url: (( favicon_data_url.value ))
           legal_text: (( legal_text.value ))
           nav_links: (( nav_links.value ))
+        apps_manager_white_label_config_json:
+          product_name: (( product_name.value ))
       databases:
         console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
       ssl:
