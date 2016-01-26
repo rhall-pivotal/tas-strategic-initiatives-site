@@ -439,8 +439,8 @@ form_types:
         label: Application Containers Subnet Pool
         description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to containers running on Diego. This is an arbitrary assignment and should be different from the network used by the system VMs.
 
-  - name: whitelabel_config
-    label: White Label Config
+  - name: generic_white_label_config
+    label: Generic White Labeling
     description: "Customize colors, images, and text"
     property_inputs:
       - reference: .push-apps-manager.company_name
@@ -3848,7 +3848,7 @@ job_types:
         usage_service_host: "https://app-usage.(( .cloud_controller.system_domain.value ))"
         bundle_without: test development hosted_only
         apps_manager_version: (( .properties.product_version.value ))
-        white_label_config_json:
+        generic_white_label_config_json:
           company_name: (( company_name.value ))
           product_name: (( product_name.value ))
           nav_bg: (( nav_bg.value ))
