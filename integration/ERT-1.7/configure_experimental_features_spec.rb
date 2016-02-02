@@ -4,18 +4,18 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X Experimental Features', order: :
   let(:current_ops_manager) { ops_manager_driver }
   let(:env_settings) { fetch_environment_settings }
 
-  let(:elastic_runtime_settings) { env_settings.ops_manager.elastic_runtime }
+  let(:elastic_runtime_settings) { env_settings['ops_manager']['elastic_runtime'] }
 
   it 'logs in' do
     current_ops_manager.setup_page.setup_or_login(
-      user: env_settings.ops_manager.username,
-      password: env_settings.ops_manager.password,
+      user: env_settings['ops_manager']['username'],
+      password: env_settings['ops_manager']['password'],
     )
   end
 
   it 'enables all of the experimental features' do
     experimental_features_form =
-      current_ops_manager.product(elastic_runtime_settings.name).product_form('experimental_features')
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('experimental_features')
     experimental_features_form.open_form
 
     all('input[type=checkbox]').each do |checkbox|
@@ -27,7 +27,7 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X Experimental Features', order: :
 
   it 'enables the diego features' do
     diego_form =
-      current_ops_manager.product(elastic_runtime_settings.name).product_form('diego')
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('diego')
 
     diego_form.open_form
 
