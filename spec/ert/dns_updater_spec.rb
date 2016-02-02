@@ -5,7 +5,7 @@ require 'aws/route_53'
 
 describe Ert::DnsUpdater do
   let(:settings) do
-    RecursiveOpenStruct.new(
+    {
       'name' => 'some',
       'vm_shepherd' => {
         'env_config' => {
@@ -19,7 +19,7 @@ describe Ert::DnsUpdater do
           'ssh_elb_dns_name' => 'some-fake-ssh-elb-dns-name'
         }
       }
-    )
+    }
   end
   let(:hosted_zone_id) { 'some-hosted-zone' }
   let(:hosted_zones) do

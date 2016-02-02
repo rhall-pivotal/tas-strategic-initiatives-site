@@ -1,5 +1,7 @@
 require 'mysql2'
 require 'net/ssh/gateway'
+require 'backport_refinements'
+using OpsManagerUiDrivers::BackportRefinements
 
 module Ert
   class AwsDatabaseCreator
@@ -8,7 +10,7 @@ module Ert
     end
 
     def create_dbs
-      rds_settings = settings.dig('ops_manager','elastic_runtime','rds')
+      rds_settings = settings.dig('ops_manager', 'elastic_runtime', 'rds')
       gateway.open(rds_settings.dig('host'), rds_settings.dig('port')) do |port|
         mysql_client = Mysql2::Client.new(
           host: '127.0.0.1',
@@ -32,7 +34,7 @@ module Ert
       Net::SSH::Gateway.new(
         uri.host,
         'ubuntu',
-        key_data: [settings.dig('ops_manager', 'aws.ssh_key')]
+        key_data: [settings.dig('ops_manager', 'aws', 'ssh_key')]
       )
     end
   end

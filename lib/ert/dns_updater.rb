@@ -1,4 +1,6 @@
 require 'aws/route_53'
+require 'backport_refinements'
+using OpsManagerUiDrivers::BackportRefinements
 
 module Ert
   class DnsUpdater

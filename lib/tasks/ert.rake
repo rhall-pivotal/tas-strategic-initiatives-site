@@ -1,3 +1,6 @@
+require 'backport_refinements'
+using OpsManagerUiDrivers::BackportRefinements
+
 namespace :ert do
   require 'tools/integration_spec_runner'
 
