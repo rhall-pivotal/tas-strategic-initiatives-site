@@ -10,7 +10,7 @@ namespace :ert do
     logger = Opsmgr.logger_for('Rake')
     environment = Opsmgr::Environments.for(args.environment_name)
 
-    iaas = environment.settings.iaas_type
+    iaas = environment.settings.dig('iaas_type')
     if (iaas == 'aws')
       logger.info "Creating AWS DBs for #{args[:environment_name]}"
 
@@ -30,7 +30,7 @@ namespace :ert do
     logger = Opsmgr.logger_for('Rake')
 
     environment = Opsmgr::Environments.for(args.environment_name)
-    iaas = environment.settings.iaas_type
+    iaas = environment.settings.dig('iaas_type')
     if (iaas == 'aws')
       logger.info "Updating DNS record for #{args[:environment_name]}"
 
