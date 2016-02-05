@@ -494,15 +494,15 @@ job_types:
     max_in_flight: 1
     serial: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          may_only_be_odd_or_zero: true
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        may_only_be_odd_or_zero: true
 
     property_blueprints:
 
@@ -584,14 +584,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
       - name: credentials
@@ -669,15 +669,15 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          may_only_be_odd_or_zero: true
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        may_only_be_odd_or_zero: true
 
     property_blueprints:
 
@@ -761,15 +761,15 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          may_only_be_odd_or_zero: true
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        may_only_be_odd_or_zero: true
 
     property_blueprints:
       - name: bbs_encryption_passphrase
@@ -891,14 +891,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          max: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        max: 1
 
     property_blueprints:
 
@@ -972,14 +972,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
       - name: status_credentials
@@ -1084,14 +1084,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
       - name: static_ips
@@ -1167,8 +1167,8 @@ job_types:
         power_of_two: true
     static_ip: 1
     dynamic_ip: 0
-    instance_definitions:
-    - name: instances
+    instance_definition:
+      name: instances
       type: integer
       label: Instances
       configurable: true
@@ -1275,14 +1275,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        default: 0
-        configurable: true
-        constraints:
-          max: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      default: 0
+      configurable: true
+      constraints:
+        max: 1
     property_blueprints:
       - name: credentials
         type: simple_credentials
@@ -1368,14 +1368,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        constraints:
-          max: 1
-        default: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      constraints:
+        max: 1
+      default: 0
 
     property_blueprints:
       - name: credentials
@@ -1463,14 +1463,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        constraints:
-          max: 1
-        default: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      constraints:
+        max: 1
+      default: 0
 
     property_blueprints:
       - name: credentials
@@ -1563,14 +1563,14 @@ job_types:
     max_in_flight: 1
     serial: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
       - name: staging_upload_credentials
@@ -1843,14 +1843,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
       - name: static_ips
@@ -1965,14 +1965,14 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 0
-        constraints:
-          min: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 0
+      constraints:
+        min: 0
 
     property_blueprints:
       - name: internal_api_user_credentials
@@ -2070,14 +2070,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
 
@@ -2225,14 +2225,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
 
@@ -2383,12 +2383,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 0
 
     property_blueprints:
 
@@ -2469,14 +2469,14 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        default: 1
-        configurable: true
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      default: 1
+      configurable: true
+      constraints:
+        min: 1
 
     property_blueprints:
       - name: admin_credentials
@@ -2976,14 +2976,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
       - name: ssh_host_key
@@ -3187,14 +3187,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 3
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 3
+      constraints:
+        min: 1
 
     property_blueprints:
       - name: garden_network_pool
@@ -3302,14 +3302,14 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 0
-        constraints:
-          min: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 0
+      constraints:
+        min: 0
 
     property_blueprints:
       - name: loggregator_agent_status_credentials
@@ -3405,14 +3405,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
       - name: status_credentials
@@ -3517,14 +3517,14 @@ job_types:
     dynamic_ip: 0
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        default: 1
-        configurable: true
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      default: 1
+      configurable: true
+      constraints:
+        min: 1
 
     property_blueprints:
       - name: status_credentials
@@ -3625,12 +3625,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
       - name: secret_token
@@ -3716,12 +3716,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
       - name: secret_token
@@ -3828,12 +3828,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
 
@@ -3894,12 +3894,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
       - name: encryption_credentials
@@ -3991,12 +3991,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
 
@@ -4058,12 +4058,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
 
@@ -4134,12 +4134,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
 
@@ -4201,12 +4201,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
       - name: broker_credentials
@@ -4285,12 +4285,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
 
@@ -4355,12 +4355,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
 
@@ -4423,12 +4423,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
       - name: broker_credentials
@@ -4488,12 +4488,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
 
@@ -4554,12 +4554,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
 
@@ -4624,12 +4624,12 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
 
@@ -4690,14 +4690,14 @@ job_types:
     dynamic_ip: 1
     max_in_flight: 1
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        default: 4
-        configurable: true
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      default: 4
+      configurable: true
+      constraints:
+        min: 1
 
 property_blueprints:
   - name: product_version
