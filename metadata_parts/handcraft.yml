@@ -466,8 +466,8 @@ form_types:
           - reference: href
             label: "Url"
 
-  - name: apps_manager_white_label_config
-    label: Apps Manager White Labeling
+  - name: apps_manager_config
+    label: Apps Manager Config
     description: "Customize colors, images, and text"
     property_inputs:
       - reference: .push-apps-manager.product_name
@@ -3812,7 +3812,7 @@ job_types:
           favicon_data_url: (( favicon_data_url.value ))
           legal_text: (( legal_text.value ))
           nav_links: (( nav_links.value ))
-        apps_manager_white_label_config_json:
+        apps_manager_config_json:
           product_name: (( product_name.value ))
       databases:
         console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
