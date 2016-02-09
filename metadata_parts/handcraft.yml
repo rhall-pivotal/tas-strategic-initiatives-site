@@ -472,6 +472,12 @@ form_types:
     property_inputs:
       - reference: .push-apps-manager.product_name
         label: Product Name
+      - reference: .push-apps-manager.enable_internal_user_store
+        label: Enable Internal User Store
+      - reference: .push-apps-manager.enable_non_admin_org_creation
+        label: Enable Non Admin Org Creation
+      - reference: .push-apps-manager.enable_non_admin_role_management
+        label: Enable Non Admin Role Management
 
   - name: experimental_features
     label: Experimental Features
@@ -3742,11 +3748,6 @@ job_types:
         configurable: true
         optional: true
 
-      - name: product_name
-        type: string
-        configurable: true
-        optional: true
-
       - name: accent_color
         type: string
         configurable: true
@@ -3777,6 +3778,26 @@ job_types:
           - name: href
             type: string
 
+      - name: product_name
+        type: string
+        configurable: true
+        optional: true
+
+      - name: enable_internal_user_store
+        type: boolean
+        configurable: true
+        default: false
+
+      - name: enable_non_admin_org_creation
+        type: boolean
+        configurable: true
+        default: false
+
+      - name: enable_non_admin_role_management
+        type: boolean
+        configurable: true
+        default: false
+
     manifest: |
       cf:
         api_url: "https://api.(( .cloud_controller.system_domain.value ))"
@@ -3805,6 +3826,9 @@ job_types:
         usage_service_host: "https://app-usage.(( .cloud_controller.system_domain.value ))"
         bundle_without: test development hosted_only
         apps_manager_version: (( .properties.product_version.value ))
+        enable_internal_user_store: (( enable_internal_user_store.value ))
+        enable_non_admin_org_creation: (( enable_non_admin_org_creation.value ))
+        enable_non_admin_role_management: (( enable_non_admin_role_management.value ))
         generic_white_label_config_json:
           company_name: (( company_name.value ))
           accent_color: (( accent_color.value ))
