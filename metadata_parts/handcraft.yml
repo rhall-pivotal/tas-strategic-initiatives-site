@@ -470,7 +470,7 @@ form_types:
         label: Enable Non Admin Org Creation
       - reference: .push-apps-manager.enable_non_admin_role_management
         label: Enable Non Admin Role Management
-      - reference: .push-apps-manager.use_custom_nav
+      - reference: .properties.use_custom_nav
         label: Use Custom Navigation Links
         selector_property_inputs:
         - reference: .properties.use_custom_nav.default
@@ -4958,7 +4958,7 @@ property_blueprints:
       named_manifests:
         - name: links
           manifest: |
-            nav_links: (( .nav_links.value ))
+            nav_links: (( push-apps-manager.nav_links.value ))
   - name: product_version
     type: string
     configurable: false
