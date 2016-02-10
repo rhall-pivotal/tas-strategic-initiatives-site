@@ -1325,7 +1325,7 @@ job_types:
           identity: admin
 
     manifest: |
-      (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
+      mysql: (( .properties.system_database.selected_option.parsed_manifest(mysql_target_cc) ))
       databases:
         address: (( first_ip ))
         port: 2544
@@ -1425,7 +1425,7 @@ job_types:
           identity: root
 
     manifest: |
-      (( .properties.system_database.selected_option.parsed_manifest(uaadb) ))
+      mysql: (( .properties.system_database.selected_option.parsed_manifest(mysql_target_uaa) ))
       databases:
         address: (( first_ip ))
         port: 2544
@@ -5074,13 +5074,6 @@ property_blueprints:
         named_manifests:
         - name: ccdb
           manifest: |
-            mysql: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-            port: 3306
-            user:
-            database:
-              username: (( .mysql.ccdb_credentials.identity ))
-              password: (( .mysql.ccdb_credentials.password ))
-            db: ccdb
             address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
             port: 3306
             db_scheme: mysql
@@ -5094,13 +5087,6 @@ property_blueprints:
               citext: true
         - name: uaadb
           manifest: |
-            mysql: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-            port: 3306
-            user:
-            database:
-              username: (( .mysql.uaadb_credentials.identity ))
-              password: (( .mysql.uaadb_credentials.password ))
-            db: uaa
             address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
             port: 3306
             db_scheme: mysql
@@ -5111,6 +5097,24 @@ property_blueprints:
             databases:
             - tag: uaa
               name: uaa
+        - name: mysql_target_cc
+          manifest: |
+            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            user: (( .mysql.mysql_admin_credentials.identity.value ))
+            password: (( .mysql.mysql_admin_credentials.password.value ))
+            database:
+              username:  (( .mysql.ccdb_credentials.identity ))
+              password: (( .mysql.ccdb_credentials.password ))
+            db: ccdb
+        - name: mysql_target_uaa
+          manifest: |
+            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            user: (( .mysql.mysql_admin_credentials.identity.value ))
+            password: (( .mysql.mysql_admin_credentials.password.value ))
+            database:
+              username:  (( .mysql.uaadb_credentials.identity ))
+              password: (( .mysql.uaadb_credentials.password ))
+            db: uaa
         - name: notifications
           manifest: |
             url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
@@ -5137,13 +5141,6 @@ property_blueprints:
         named_manifests:
           - name: ccdb
             manifest: |
-              mysql: (( .properties.system_database.external.host.value ))
-              user: (( .properties.system_database.external.password.value ))
-              password: (( .properties.system_database.external.password.value ))
-              database:
-                username:  (( .properties.system_database.external.username.value ))
-                password: (( .properties.system_database.external.password.value ))
-              db: ccdb
               address: (( .properties.system_database.external.host.value ))
               port: (( .properties.system_database.external.port.value ))
               db_scheme: "mysql"
@@ -5156,13 +5153,6 @@ property_blueprints:
                 name: ccdb
           - name: uaadb
             manifest: |
-              mysql: (( .properties.system_database.external.host.value ))
-              user: (( .properties.system_database.external.password.value ))
-              password: (( .properties.system_database.external.password.value ))
-              database:
-                username:  (( .properties.system_database.external.username.value ))
-                password: (( .properties.system_database.external.password.value ))
-              db: uaa
               address: (( .properties.system_database.external.host.value ))
               port: (( .properties.system_database.external.port.value ))
               db_scheme: "mysql"
@@ -5173,6 +5163,24 @@ property_blueprints:
               databases:
               - tag: uaa
                 name: uaa
+          - name: mysql_target_cc
+            manifest: |
+              host: (( .properties.system_database.external.host.value ))
+              user: (( .properties.system_database.external.password.value ))
+              password: (( .properties.system_database.external.password.value ))
+              database:
+                username:  (( .properties.system_database.external.username.value ))
+                password: (( .properties.system_database.external.password.value ))
+              db: ccdb
+          - name: mysql_target_uaa
+            manifest: |
+              host: (( .properties.system_database.external.host.value ))
+              user: (( .properties.system_database.external.password.value ))
+              password: (( .properties.system_database.external.password.value ))
+              database:
+                username:  (( .properties.system_database.external.username.value ))
+                password: (( .properties.system_database.external.password.value ))
+              db: uaa
           - name: notifications
             manifest: |
               url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/notifications
