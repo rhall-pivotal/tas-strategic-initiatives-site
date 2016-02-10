@@ -10,11 +10,16 @@ releases:
   version: '23'
   md5: 4e81e61c628d6c4726f90806a31dcf39
   url: https://s3.amazonaws.com/cf-mysql-releases/final/cf-mysql-23.tgz
-- file: cf-225.7.tgz
+- file: cf-225.7+dev.37.tgz
   name: cf
-  version: '225.7'
-  md5: 4aeee831c15918befa799d62b7a84ec2
-  url: http://releng-artifacts.cf-app.com/cf/cf-225.7.tgz
+  version: '225.7+dev.37'
+  md5: 779baf13aad94acb0240484ca9ab4c62
+  aws:
+    access_key_id: AKIAJLF5LPKEABQZI3KA
+    secret_access_key: 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
+    region: us-east-1
+    bucket_name: core-services-misc
+    filename: pcf-release/cf-225.7+dev.37.tgz
 - file: diego-0.1441.2.tgz
   name: diego
   version: '0.1441.2'

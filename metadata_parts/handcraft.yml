@@ -5072,6 +5072,13 @@ property_blueprints:
         named_manifests:
         - name: ccdb
           manifest: |
+            mysql: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            port: 3306
+            user:
+            database:
+              username: (( .mysql.ccdb_credentials.identity ))
+              password: (( .mysql.ccdb_credentials.password ))
+            db: ccdb
             address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
             port: 3306
             db_scheme: mysql
@@ -5085,6 +5092,13 @@ property_blueprints:
               citext: true
         - name: uaadb
           manifest: |
+            mysql: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            port: 3306
+            user:
+            database:
+              username: (( .mysql.uaadb_credentials.identity ))
+              password: (( .mysql.uaadb_credentials.password ))
+            db: uaa
             address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
             port: 3306
             db_scheme: mysql
@@ -5121,6 +5135,13 @@ property_blueprints:
         named_manifests:
           - name: ccdb
             manifest: |
+              mysql: (( .properties.system_database.external.host.value ))
+              user: (( .properties.system_database.external.password.value ))
+              password: (( .properties.system_database.external.password.value ))
+              database:
+                username:  (( .properties.system_database.external.username.value ))
+                password: (( .properties.system_database.external.password.value ))
+              db: ccdb
               address: (( .properties.system_database.external.host.value ))
               port: (( .properties.system_database.external.port.value ))
               db_scheme: "mysql"
@@ -5133,6 +5154,13 @@ property_blueprints:
                 name: ccdb
           - name: uaadb
             manifest: |
+              mysql: (( .properties.system_database.external.host.value ))
+              user: (( .properties.system_database.external.password.value ))
+              password: (( .properties.system_database.external.password.value ))
+              database:
+                username:  (( .properties.system_database.external.username.value ))
+                password: (( .properties.system_database.external.password.value ))
+              db: uaa
               address: (( .properties.system_database.external.host.value ))
               port: (( .properties.system_database.external.port.value ))
               db_scheme: "mysql"
