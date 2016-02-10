@@ -457,14 +457,6 @@ form_types:
       - reference: .push-apps-manager.legal_text
         label: Legal Text
         description: "Defaults to 'Pivotal Software Inc. All rights reserved.'"
-      - reference: .push-apps-manager.nav_links
-        label: Custom Navigation Links
-        description: "Add up to 7 links. These will appear below the 'Tools' url in the navigation sidebar"
-        property_inputs:
-          - reference: name
-            label: "Link text"
-          - reference: href
-            label: "Url"
 
   - name: apps_manager_config
     label: Apps Manager Config
@@ -478,6 +470,23 @@ form_types:
         label: Enable Non Admin Org Creation
       - reference: .push-apps-manager.enable_non_admin_role_management
         label: Enable Non Admin Role Management
+      - reference: .push-apps-manager.use_custom_nav
+        label: Use Custom Navigation Links
+        selector_property_inputs:
+        - reference: .push-apps-manager.use_custom_nav.default
+          label: Use default sidebar links
+          description:
+        - reference: .push-apps-manager.use_custom_nav.custom
+          label: Use custom sidebar links
+          description:
+      - reference: .push-apps-manager.nav_links
+        label: Custom Navigation Links
+        description: "Add custom sidebar links"
+        property_inputs:
+          - reference: name
+            label: "Link text"
+          - reference: href
+            label: "Url"
 
   - name: experimental_features
     label: Experimental Features
@@ -3768,6 +3777,30 @@ job_types:
         configurable: true
         optional: true
 
+      - name: use_custom_nav
+        type: selector
+        configurable: true
+        default: Use default sidebar links
+        option_templates:
+          - name: default
+            select_value: Use default sidebar links
+            named_manifests:
+              - name: links
+                manifest: |
+                  nav_links:
+                  - name: Marketplace
+                    href: /marketplace
+                  - name: Docs
+                    href: http://docs.pivotal.io/
+                  - name: Tools
+                    href: /tools
+          - name: custom
+            select_value: Use custom sidebar links
+            named_manifests:
+              - name: links
+                manifest: |
+                  nav_links: (( .nav_links.value ))
+
       - name: nav_links
         type: collection
         configurable: true
@@ -3835,7 +3868,7 @@ job_types:
           logo: (( logo.value ))
           favicon_data_url: (( favicon_data_url.value ))
           legal_text: (( legal_text.value ))
-          nav_links: (( nav_links.value ))
+          nav_links: (( use_custom_nav.selected_option.parsed_manifest(links) ))
         apps_manager_config_json:
           product_name: (( product_name.value ))
       databases:
