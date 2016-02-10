@@ -1325,6 +1325,7 @@ job_types:
           identity: admin
 
     manifest: |
+      (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
       databases:
         address: (( first_ip ))
         port: 2544
@@ -1424,6 +1425,7 @@ job_types:
           identity: root
 
     manifest: |
+      (( .properties.system_database.selected_option.parsed_manifest(uaadb) ))
       databases:
         address: (( first_ip ))
         port: 2544
