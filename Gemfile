@@ -6,6 +6,7 @@ gem 'opsmgr', '~> 0.34.0', git: 'git@github.com:pivotal-cf/opsmgr', branch: 'fea
 gem 'recursive-open-struct', '0.5.0'
 gem 'mysql2'
 gem 'net-ssh-gateway'
+gem 'net-scp'
 gem 'rspec'
 
 group :development, :test do
