@@ -470,13 +470,6 @@ form_types:
         label: Enable Non Admin Org Creation
       - reference: .push-apps-manager.enable_non_admin_role_management
         label: Enable Non Admin Role Management
-      - reference: .properties.use_custom_nav
-        label: Use Custom Navigation Links
-        selector_property_inputs:
-        - reference: .properties.use_custom_nav.default
-          label: Use default sidebar links
-        - reference: .properties.use_custom_nav.custom
-          label: Use custom sidebar links
       - reference: .push-apps-manager.nav_links
         label: Custom Navigation Links
         description: "Add custom sidebar links"
@@ -3848,7 +3841,7 @@ job_types:
           logo: (( logo.value ))
           favicon_data_url: (( favicon_data_url.value ))
           legal_text: (( legal_text.value ))
-          nav_links: (( .properties.use_custom_nav.selected_option.parsed_manifest(links) ))
+          nav_links: (( nav_links.value ))
         apps_manager_config_json:
           product_name: (( product_name.value ))
       databases:
@@ -4942,29 +4935,6 @@ job_types:
           min: 1
 
 property_blueprints:
-  - name: use_custom_nav
-    type: selector
-    configurable: true
-    default: Use default sidebar links
-    option_templates:
-    - name: default
-      select_value: Use default sidebar links
-      named_manifests:
-        - name: links
-          manifest: |
-            nav_links:
-            - name: Marketplace
-              href: /marketplace
-            - name: Docs
-              href: http://docs.pivotal.io/
-            - name: Tools
-              href: /tools
-    - name: custom
-      select_value: Use custom sidebar links
-      named_manifests:
-        - name: links
-          manifest: |
-            nav_links: (( push-apps-manager.nav_links.value ))
   - name: product_version
     type: string
     configurable: false
