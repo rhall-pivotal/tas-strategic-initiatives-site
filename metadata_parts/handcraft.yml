@@ -5105,8 +5105,8 @@ property_blueprints:
         - name: mysql_target_cc
           manifest: |
             host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-            user: (( .mysql.mysql_admin_credentials.identity.value ))
-            password: (( .mysql.mysql_admin_credentials.password.value ))
+            user: (( .mysql.mysql_admin_credentials.identity ))
+            password: (( .mysql.mysql_admin_credentials.password ))
             database:
               username:  (( .mysql.ccdb_credentials.identity ))
               password: (( .mysql.ccdb_credentials.password ))
@@ -5114,8 +5114,8 @@ property_blueprints:
         - name: mysql_target_uaa
           manifest: |
             host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-            user: (( .mysql.mysql_admin_credentials.identity.value ))
-            password: (( .mysql.mysql_admin_credentials.password.value ))
+            user: (( .mysql.mysql_admin_credentials.identity ))
+            password: (( .mysql.mysql_admin_credentials.password ))
             database:
               username:  (( .mysql.uaadb_credentials.identity ))
               password: (( .mysql.uaadb_credentials.password ))
