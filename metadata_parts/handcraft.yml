@@ -445,14 +445,15 @@ form_types:
     property_inputs:
       - reference: .push-apps-manager.company_name
         label: Company Name
+        description: Defaults to 'Pivotal'
       - reference: .push-apps-manager.accent_color
         label: Accent Color
         description: Enter a hexadecimal color code like '#71ffda'
       - reference: .push-apps-manager.logo
-        label: Logo
+        label: Main Logo
         description: "Enter a Base64-encoded image string like 'data:image/png;base64,iVBORw0...'"
-      - reference: .push-apps-manager.favicon_data_url
-        label: Favicon
+      - reference: .push-apps-manager.square_logo
+        label: Square Logo/Favicon
         description: "Enter a Base64-encoded image string like 'data:image/png;base64,iVBORw0...'"
       - reference: .push-apps-manager.legal_text
         label: Legal Text
@@ -3759,7 +3760,7 @@ job_types:
         configurable: true
         optional: true
 
-      - name: favicon_data_url
+      - name: square_logo
         type: string
         configurable: true
         optional: true
@@ -3840,7 +3841,7 @@ job_types:
           company_name: (( company_name.value ))
           accent_color: (( accent_color.value ))
           logo: (( logo.value ))
-          favicon_data_url: (( favicon_data_url.value ))
+          square_logo: (( square_logo.value ))
           legal_text: (( legal_text.value ))
           nav_links: (( nav_links.value ))
         apps_manager_config_json:
