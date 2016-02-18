@@ -455,8 +455,8 @@ form_types:
       - reference: .push-apps-manager.square_logo
         label: Square Logo/Favicon
         description: "Enter a Base64-encoded image string like 'data:image/png;base64,iVBORw0...'"
-      - reference: .push-apps-manager.legal_text
-        label: Legal Text
+      - reference: .push-apps-manager.footer_text
+        label: Footer Text
         description: "Defaults to 'Pivotal Software Inc. All rights reserved.'"
 
   - name: apps_manager_config
@@ -3765,7 +3765,7 @@ job_types:
         configurable: true
         optional: true
 
-      - name: legal_text
+      - name: footer_text
         type: string
         configurable: true
         optional: true
@@ -3842,7 +3842,7 @@ job_types:
           accent_color: (( accent_color.value ))
           logo: (( logo.value ))
           square_logo: (( square_logo.value ))
-          legal_text: (( legal_text.value ))
+          footer_text: (( footer_text.value ))
         apps_manager_config_json:
           product_name: (( product_name.value ))
           nav_links: (( nav_links.value ))
