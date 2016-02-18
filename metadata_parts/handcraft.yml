@@ -458,6 +458,14 @@ form_types:
       - reference: .push-apps-manager.footer_text
         label: Footer Text
         description: "Defaults to 'Pivotal Software Inc. All rights reserved.'"
+      - reference: .push-apps-manager.footer_links
+        label: Footer Links
+        description: "You may configure up to 3 links in the Apps Manager footer"
+        property_inputs:
+          - reference: name
+            label: "Link text"
+          - reference: href
+            label: "Url"
 
   - name: apps_manager_config
     label: Apps Manager Config
@@ -3770,6 +3778,15 @@ job_types:
         configurable: true
         optional: true
 
+      - name: footer_links
+        type: collection
+        configurable: true
+        property_blueprints:
+          - name: name
+            type: string
+          - name: href
+            type: string
+
       - name: nav_links
         type: collection
         configurable: true
@@ -3843,6 +3860,7 @@ job_types:
           logo: (( logo.value ))
           square_logo: (( square_logo.value ))
           footer_text: (( footer_text.value ))
+          footer_links: (( footer_links.value ))
         apps_manager_config_json:
           product_name: (( product_name.value ))
           nav_links: (( nav_links.value ))
