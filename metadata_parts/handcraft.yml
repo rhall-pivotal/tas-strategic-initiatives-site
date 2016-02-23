@@ -480,6 +480,9 @@ form_types:
       - reference: .push-apps-manager.product_name
         label: Product Name
         description: Replace "Apps Manager" in the header with a custom product name (defaults to "Apps Manager" if blank)
+      - reference: .push-apps-manager.marketplace_name
+        label: Marketplace Name
+        description: Replaces "Marketplace" on the Apps Manager Marketplace Pages.
       - reference: .push-apps-manager.nav_links
         label: Customize Sidebar Links
         description: "You may configure up to 10 links in the Apps Manager sidebar"
@@ -3809,6 +3812,11 @@ job_types:
         configurable: true
         optional: true
 
+      - name: marketplace_name
+        type: string
+        configurable: true
+        optional: true
+
       - name: enable_internal_user_store
         type: boolean
         configurable: true
@@ -3864,6 +3872,7 @@ job_types:
           footer_links: (( footer_links.value ))
         apps_manager_config_json:
           product_name: (( product_name.value ))
+          marketplace_name: (( marketplace_name.value ))
           nav_links: (( nav_links.value ))
       databases:
         console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
