@@ -19,7 +19,7 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
         current_ops_manager.assign_azs_and_network_for_product(
           product_name: 'cf',
           zones: env_settings['ops_manager']['availability_zones'],
-          network: env_settings['ops_manager']['networks']['first']['name']
+          network: env_settings['ops_manager']['networks'].first['name']
         )
       end
     end
