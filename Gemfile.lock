@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:pivotal-cf/opsmgr
-  revision: d01127ca52b96ac101de5c3bf8cf18d40a8c78c2
+  revision: 9c98bd29b082391c53cd2a6c9ee37cc0eea4f59b
   branch: features/1.7
   specs:
     opsmgr (0.34.0)
@@ -9,9 +9,10 @@ GIT
       capybara-webkit
       multipart-post
       mustache
+      net-scp
       net-ssh-gateway
       open4
-      ops_manager_ui_drivers (~> 2.2)
+      ops_manager_ui_drivers (= 2.4.2)
       rake
       recursive-open-struct (~> 0.5.0)
       rspec
@@ -32,12 +33,12 @@ GEM
     ast (2.1.0)
     astrolabe (1.3.1)
       parser (~> 2.2)
-    aws-sdk (2.2.14)
-      aws-sdk-resources (= 2.2.14)
-    aws-sdk-core (2.2.14)
+    aws-sdk (2.2.19)
+      aws-sdk-resources (= 2.2.19)
+    aws-sdk-core (2.2.19)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.2.14)
-      aws-sdk-core (= 2.2.14)
+    aws-sdk-resources (2.2.19)
+      aws-sdk-core (= 2.2.19)
     aws-sdk-v1 (1.66.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
@@ -62,7 +63,7 @@ GEM
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
     diff-lcs (1.2.5)
-    domain_name (0.5.20160128)
+    domain_name (0.5.20160216)
       unf (>= 0.0.5, < 1.0.0)
     excon (0.45.4)
     ffi (1.9.10)
@@ -104,7 +105,7 @@ GEM
       fog-core (~> 1.22)
       fog-json
       inflecto (~> 0.0.2)
-    fog-core (1.35.0)
+    fog-core (1.36.0)
       builder
       excon (~> 0.45)
       formatador (~> 0.2)
@@ -146,7 +147,7 @@ GEM
     fog-serverlove (0.1.2)
       fog-core
       fog-json
-    fog-softlayer (1.0.3)
+    fog-softlayer (1.1.0)
       fog-core
       fog-json
     fog-storm_on_demand (0.1.1)
@@ -170,10 +171,10 @@ GEM
     httpclient (2.7.1)
     i18n (0.7.0)
     inflecto (0.0.2)
-    ipaddress (0.8.2)
+    ipaddress (0.8.3)
     jmespath (1.1.3)
     json (1.8.3)
-    mime-types (2.99)
+    mime-types (2.99.1)
     mini_portile2 (2.0.0)
     minitest (5.8.4)
     multi_json (1.11.2)
@@ -190,7 +191,7 @@ GEM
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     open4 (1.3.4)
-    ops_manager_ui_drivers (2.3.2)
+    ops_manager_ui_drivers (2.4.2)
       activesupport
       capybara
       capybara-webkit
@@ -219,7 +220,7 @@ GEM
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
       rspec-mocks (~> 3.4.0)
-    rspec-core (3.4.2)
+    rspec-core (3.4.3)
       rspec-support (~> 3.4.0)
     rspec-expectations (3.4.0)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -235,15 +236,15 @@ GEM
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.4)
     ruby-progressbar (1.7.5)
-    ruby_vcloud_sdk (0.7.2)
+    ruby_vcloud_sdk (0.7.4)
       builder (>= 3.1)
       httpclient (>= 2.4.0)
       netaddr
       nokogiri (>= 1.5.6)
       rest-client (>= 1.6.7)
-    rubyzip (1.1.7)
+    rubyzip (1.2.0)
     safe_yaml (1.0.4)
-    selenium-webdriver (2.50.0)
+    selenium-webdriver (2.52.0)
       childprocess (~> 0.5)
       multi_json (~> 1.0)
       rubyzip (~> 1.0)
@@ -265,12 +266,12 @@ GEM
       aws-sdk
       open4
       thor
-    vm_shepherd (3.0.1)
+    vm_shepherd (3.0.4)
       aws-sdk-v1
       fog (= 1.34.0)
       net-ssh
       rbvmomi
-      ruby_vcloud_sdk (= 0.7.2)
+      ruby_vcloud_sdk (= 0.7.4)
     webmock (1.21.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
