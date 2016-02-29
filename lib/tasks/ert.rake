@@ -97,28 +97,4 @@ namespace :ert do
       om_version: args.om_version
     ).configure_multi_az_instance_counts
   end
-
-  desc 'run the cats errand'
-  task :run_cats, [:environment_name, :om_version] do |_, args|
-    require 'opsmgr/cmd/bosh_command'
-    require 'opsmgr/log'
-    require 'ert/iaas_gateway'
-    require 'ert/cats_runner'
-
-    logger = Opsmgr.logger_for('Rake')
-    bosh_command = Opsmgr::Cmd::BoshCommand.new(
-      env_name: args.environment_name,
-      om_version: args.om_version
-    )
-    iaas_gateway = Ert::IaasGateway.new(
-      bosh_command: bosh_command,
-      environment_name: args.environment_name,
-      logger: logger
-    )
-    Ert::CatsRunner.new(
-      iaas_gateway: iaas_gateway,
-      bosh_command: bosh_command,
-      environment_name: args.environment_name,
-      logger: logger).run_cats
-  end
 end
