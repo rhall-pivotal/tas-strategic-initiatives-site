@@ -111,6 +111,23 @@ post_deploy_errands:
   - name: autoscaling-register-broker
 
 form_types:
+  - name: domains
+    label: Domains
+    description: Elastic Runtime gives each deployed application its own hostname in the app domain, and each system component its own hostname on the system domain. Ensure that you have a wildcard DNS record configured for both domains. You can also use the same domain as your apps and system domains.
+    verifiers:
+      - name: Verifiers::WildcardDomainVerifier
+        properties:
+          domain: .cloud_controller.system_domain
+      - name: Verifiers::WildcardDomainVerifier
+        properties:
+          domain: .cloud_controller.apps_domain
+    property_inputs:
+      - reference: .cloud_controller.system_domain
+        label: System Domain
+        description: "This domain is for system-level PCF components, such as Apps Manager, service brokers, etc. You must set up a wildcard DNS record for this domain that points to your entry point load balancer or HAProxy."
+      - reference: .cloud_controller.apps_domain
+        label: Apps Domain
+        description: This is the default apps domain that pushed apps will use for their hostnames. Use the Cloud Foundry command line interface to add or delete domains. This also requires a wildcard DNS record.
   - name: system_database
     label: System Database Config
     description: Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details.
@@ -292,22 +309,9 @@ form_types:
         description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
 
   - name: cloud_controller
-    verifiers:
-      - name: Verifiers::WildcardDomainVerifier
-        properties:
-          domain: .cloud_controller.system_domain
-      - name: Verifiers::WildcardDomainVerifier
-        properties:
-          domain: .cloud_controller.apps_domain
     label: Cloud Controller
     description: Coordinates Pivotal CF Elastic Runtime application lifecycles
     property_inputs:
-      - reference: .cloud_controller.system_domain
-        label: System Domain
-        description: "This domain is used to target and push apps to Pivotal CF Elastic Runtime (ex: api.my-cf.com). You must set up a wildcard DNS record for this domain that points to the router static IP(s) or a load balancer."
-      - reference: .cloud_controller.apps_domain
-        label: Apps Domain
-        description: This field specifies a default apps domain for Pivotal CF Elastic Runtime. Use the command line interface to delete domains.
       - reference: .cloud_controller.encrypt_key
         label: Cloud Controller DB Encryption Key
         description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
