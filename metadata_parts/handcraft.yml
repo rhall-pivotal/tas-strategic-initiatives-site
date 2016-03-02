@@ -2884,6 +2884,15 @@ job_types:
             scope: "openid,cloud_controller.read,cloud_controller.write,password.write,console.admin,console.support,cloud_controller.admin"
             access-token-validity: 1209600
             refresh-token-validity: 1209600
+          apps_manager_js:
+            override: true
+            autoapprove:
+              - cloud_controller.read
+              - cloud_controller.write
+              - cloud_controller.admin
+            scope: cloud_controller.read,cloud_controller.write,cloud_controller.admin
+            authorized-grant-types: implicit
+            access-token-validity: 28800
           cf:
             id: cf
             override: true
