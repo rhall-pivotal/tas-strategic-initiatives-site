@@ -1,10 +1,11 @@
 require 'spec_helper'
 require 'ert/aws_database_creator'
-require 'recursive-open-struct'
+require 'backport_refinements'
+using OpsManagerUiDrivers::BackportRefinements
 
 describe Ert::AwsDatabaseCreator do
   let(:settings) do
-    RecursiveOpenStruct.new(
+    {
       'ops_manager' => {
         'url' => 'https://some.host.name/',
         'elastic_runtime' => {
@@ -20,7 +21,7 @@ describe Ert::AwsDatabaseCreator do
           'ssh_key' => 'ops-manager-pem-data'
         }
       }
-    )
+    }
   end
   subject(:aws_database_creator) { Ert::AwsDatabaseCreator.new(settings: settings) }
 
@@ -43,8 +44,8 @@ describe Ert::AwsDatabaseCreator do
       ).and_return(gateway)
 
       expect(gateway).to receive(:open).with(
-        settings.ops_manager.elastic_runtime.rds.host,
-        settings.ops_manager.elastic_runtime.rds.port,
+        settings.dig('ops_manager', 'elastic_runtime', 'rds', 'host'),
+        settings.dig('ops_manager', 'elastic_runtime', 'rds', 'port'),
       ).and_yield(444)
 
       aws_database_creator.create_dbs
@@ -54,10 +55,9 @@ describe Ert::AwsDatabaseCreator do
       expect(Mysql2::Client).to receive(:new).with(
         host: '127.0.0.1',
         port: 444,
-        username: settings.ops_manager.elastic_runtime.rds.username,
-        password: settings.ops_manager.elastic_runtime.rds.password,
+        username: settings.dig('ops_manager', 'elastic_runtime', 'rds', 'username'),
+        password: settings.dig('ops_manager', 'elastic_runtime', 'rds', 'password'),
       ).and_return(mysql2_client)
-
       aws_database_creator.create_dbs
     end
 

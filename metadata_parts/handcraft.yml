@@ -1,9 +1,10 @@
 ---
-metadata_version: '1.6'
+metadata_version: '1.7'
 provides_product_versions:
 - name: cf
-  version: 1.6.13.0
-product_version: &product_version "1.6.13.0$PRERELEASE_VERSION$"
+  version: 1.7.0.0
+product_version: &product_version "1.7.0.0$PRERELEASE_VERSION$"
+minimum_version_for_upgrade: 1.6.0-build.0
 label: Pivotal Elastic Runtime
 description:
   Gives developers the ability to push apps on a dynamically-configured software stack
@@ -101,8 +102,8 @@ install_time_verifiers:
       bucket_name: .properties.system_blobstore.external.resources_bucket
 
 post_deploy_errands:
-  - name: push-apps-manager
   - name: smoke-tests
+  - name: push-apps-manager
   - name: push-app-usage-service
   - name: notifications
   - name: notifications-ui
@@ -476,6 +477,8 @@ job_types:
         label: Persistent Disk
         configurable: true
         default: 1024
+        constraints:
+          min: 1024
 
       - name: cpu
         type: integer
@@ -489,34 +492,31 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
     serial: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          may_only_be_odd_or_zero: true
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        may_only_be_odd_or_zero: true
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -584,22 +584,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: credentials
         type: simple_credentials
         default:
@@ -616,11 +612,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -674,33 +670,30 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          may_only_be_odd_or_zero: true
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        may_only_be_odd_or_zero: true
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -770,22 +763,19 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          may_only_be_odd_or_zero: true
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        may_only_be_odd_or_zero: true
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
       - name: bbs_encryption_passphrase
         type: secret
         configurable: false
@@ -844,8 +834,6 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -853,6 +841,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -904,35 +894,34 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          max: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        max: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       nfs_server:
         allow_from_entries:
-        - (( .cloud_controller.first_network_deprecated ))
+        - (( .cloud_controller.ips ))
+        - (( .cloud_controller_worker.ips ))
+        - (( .clock_global.ips ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -987,22 +976,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: status_credentials
         type: simple_credentials
         default:
@@ -1038,9 +1023,6 @@ job_types:
         ssl_cert: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
         ssl_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem ))
 
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1053,6 +1035,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -1104,22 +1088,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: static_ips
         type: ip_ranges
         configurable: true
@@ -1161,6 +1141,7 @@ job_types:
       - name: mysql
         release: cf-mysql
     max_in_flight: 1
+    single_az_only: false
     resource_definitions:
     - name: ram
       type: integer
@@ -1193,8 +1174,8 @@ job_types:
         power_of_two: true
     static_ip: 1
     dynamic_ip: 0
-    instance_definitions:
-    - name: instances
+    instance_definition:
+      name: instances
       type: integer
       label: Instances
       configurable: true
@@ -1202,10 +1183,6 @@ job_types:
       constraints:
         may_only_be_odd_or_zero: true
     property_blueprints:
-    - name: vm_credentials
-      type: salted_credentials
-      default:
-        identity: vcap
     - name: mysql_admin_credentials
       type: simple_credentials
       default:
@@ -1304,21 +1281,17 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        default: 0
-        configurable: true
-        constraints:
-          max: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      default: 0
+      configurable: true
+      constraints:
+        max: 1
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: credentials
         type: simple_credentials
         default:
@@ -1341,11 +1314,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1402,22 +1375,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        constraints:
-          max: 1
-        default: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      constraints:
+        max: 1
+      default: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: credentials
         type: simple_credentials
         default:
@@ -1441,11 +1410,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1502,22 +1471,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        constraints:
-          max: 1
-        default: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      constraints:
+        max: 1
+      default: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: credentials
         type: simple_credentials
         default:
@@ -1541,11 +1506,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1603,26 +1568,22 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 0
-    dynamic_ip: 1
+    static_ip: 1
+    dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
     serial: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: staging_upload_credentials
         type: simple_credentials
         default:
@@ -1826,9 +1787,6 @@ job_types:
         port: (( .properties.logger_endpoint_port.value || "443" ))
       doppler:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1841,6 +1799,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -1892,22 +1852,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: static_ips
         type: ip_ranges
         configurable: true
@@ -1947,11 +1903,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -2019,22 +1975,18 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 0
-        constraints:
-          min: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 0
+      constraints:
+        min: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: internal_api_user_credentials
         type: simple_credentials
 
@@ -2051,6 +2003,9 @@ job_types:
       dea_next:
         heartbeat_interval_in_seconds: 10
 
+      hm9000:
+        port: 5155
+
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -2063,11 +2018,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       etcd:
         machines: (( .etcd_server.ips ))
       loggregator:
@@ -2126,24 +2081,21 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 0
-    dynamic_ip: 1
+    static_ip: 1
+    dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -2217,9 +2169,6 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -2235,6 +2184,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -2285,24 +2236,21 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 0
-    dynamic_ip: 1
+    static_ip: 1
+    dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -2379,9 +2327,6 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -2397,6 +2342,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -2450,19 +2397,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       collector:
@@ -2480,11 +2424,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -2540,22 +2484,18 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        default: 1
-        configurable: true
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      default: 1
+      configurable: true
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: admin_credentials
         type: simple_credentials
         default:
@@ -2787,6 +2727,8 @@ job_types:
             url: "/login"
       uaa:
         require_https: true
+        ssl:
+          port: -1
         ldap:
           profile_type: search-and-bind
           url: (( ldap_url.value ))
@@ -2969,11 +2911,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -3037,6 +2979,8 @@ job_types:
         label: Persistent Disk
         configurable: true
         default: 1_024
+        constraints:
+          min: 1_024
 
       - name: cpu
         type: integer
@@ -3050,22 +2994,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: ssh_host_key
         type: rsa_pkey_credentials
         configurable: false
@@ -3202,8 +3142,6 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -3211,6 +3149,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -3266,22 +3206,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 3
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 3
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: garden_network_pool
         type: string
         default: 10.254.0.0/22
@@ -3318,8 +3254,6 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -3327,6 +3261,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -3386,22 +3322,18 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 0
-        constraints:
-          min: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 0
+      constraints:
+        min: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: loggregator_agent_status_credentials
         type: simple_credentials
 
@@ -3424,9 +3356,6 @@ job_types:
         evacuation_bail_out_time_in_seconds: 600
         zone: (( availability_zone ))
         post_setup_hook: 'rm -f app/.java-buildpack.log app/**/.java-buildpack.log >/dev/null 2>&1'
-
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
 
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -3494,25 +3423,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-      - name: status_credentials
-        type: simple_credentials
-
       - name: shared_secret_credentials
         type: simple_credentials
 
@@ -3524,10 +3446,6 @@ job_types:
     manifest: |
       doppler:
         zone: (( availability_zone ))
-        status:
-          user: (( status_credentials.identity ))
-          password: (( status_credentials.password ))
-          port: 5768
         message_drain_buffer_size: (( message_drain_buffer_size.value ))
 
       uaa:
@@ -3552,12 +3470,11 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
-
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
 
       system_domain: (( .cloud_controller.system_domain.value ))
       cc:
@@ -3611,22 +3528,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        default: 1
-        configurable: true
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      default: 1
+      configurable: true
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: status_credentials
         type: simple_credentials
 
@@ -3639,8 +3552,6 @@ job_types:
 
       system_domain: (( .cloud_controller.system_domain.value ))
 
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       traffic_controller:
         zone: (( availability_zone ))
 
@@ -3659,6 +3570,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -3724,20 +3637,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: secret_token
         type: secret
         configurable: false
@@ -3820,20 +3729,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: secret_token
         type: secret
         configurable: false
@@ -3937,19 +3842,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       smoke_tests:
@@ -4007,20 +3909,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: encryption_credentials
         type: simple_credentials
 
@@ -4109,19 +4007,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -4180,19 +4075,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -4260,19 +4152,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -4331,20 +4220,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: broker_credentials
         type: salted_credentials
 
@@ -4420,19 +4305,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       app_domains:
@@ -4494,19 +4376,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       autoscale:
@@ -4566,20 +4445,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: broker_credentials
         type: salted_credentials
 
@@ -4636,19 +4511,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       acceptance_tests:
@@ -4706,19 +4578,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       acceptance_tests:
@@ -4780,19 +4649,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       acceptance_tests:
@@ -4850,15 +4716,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        default: 4
-        configurable: true
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      default: 4
+      configurable: true
+      constraints:
+        min: 1
 
 property_blueprints:
   - name: product_version
