@@ -39,6 +39,15 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
     end
   end
 
+  it 'configures the domains' do
+    domains_form =
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('domains')
+    domains_form.open_form
+    domains_form.property('.cloud_controller.system_domain').set(elastic_runtime_settings['system_domain'])
+    domains_form.property('.cloud_controller.apps_domain').set(elastic_runtime_settings['apps_domain'])
+    domains_form.save_form
+  end
+
   it 'configures ha proxy or an ELB' do
     case env_settings['iaas_type']
     when 'aws'
@@ -67,15 +76,6 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
     end
 
     security_config_form.save_form
-  end
-
-  it 'configures cloud controller' do
-    cloud_controller_form =
-      current_ops_manager.product(elastic_runtime_settings['name']).product_form('cloud_controller')
-    cloud_controller_form.open_form
-    cloud_controller_form.property('.cloud_controller.system_domain').set(elastic_runtime_settings['system_domain'])
-    cloud_controller_form.property('.cloud_controller.apps_domain').set(elastic_runtime_settings['apps_domain'])
-    cloud_controller_form.save_form
   end
 
   it 'configures smtp' do
