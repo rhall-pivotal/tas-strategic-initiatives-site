@@ -831,7 +831,6 @@ job_types:
           servers:
             lan: (( .consul_server.ips ))
           services:
-            bbs: {}
             etcd: {}
       nats:
         user: (( .nats.credentials.identity ))
@@ -3154,14 +3153,6 @@ job_types:
         agent:
           servers:
             lan: (( .consul_server.ips ))
-          services:
-            auctioneer: {}
-            cc_uploader: {}
-            file_server: {}
-            nsync: {}
-            ssh_proxy: {}
-            stager: {}
-            tps: {}
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
