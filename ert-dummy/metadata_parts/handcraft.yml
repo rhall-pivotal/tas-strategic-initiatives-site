@@ -82,7 +82,6 @@ install_time_verifiers:
 post_deploy_errands:
   - name: push-apps-manager
   - name: smoke-tests
-  - name: push-app-usage-service
   - name: notifications
   - name: autoscaling
   - name: autoscaling-register-broker
@@ -2940,123 +2939,6 @@ job_types:
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
         https_only_mode: true
-  - name: push-app-usage-service
-    label: Push App Usage Service
-    resource_label: Push App Usage Service
-    description: Monitors usage of an application pushed to your Elastic Runtime installation
-    templates:
-      - name: echo
-        release: dummy-errands-release
-    errand: true
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-      - name: secret_token
-        type: secret
-        configurable: false
-
-      - name: reply_to
-        type: email
-        configurable: true
-        optional: true
-
-      - name: from
-        type: email
-        configurable: true
-        optional: true
-
-      - name: smtp_address
-        type: network_address
-        configurable: true
-        optional: true
-
-      - name: smtp_port
-        type: port
-        configurable: true
-        optional: true
-
-      - name: smtp_credentials
-        type: simple_credentials
-        configurable: true
-        optional: true
-
-      - name: smtp_enable_starttls_auto
-        type: boolean
-        configurable: true
-        default: false
-
-    manifest: |
-      thing_to_echo: i am an errand
-      cf:
-        api_url: "https://api.(( .cloud_controller.system_domain.value ))"
-        admin_username: (( .uaa.push_apps_manager_credentials.identity ))
-        admin_password: (( .uaa.push_apps_manager_credentials.password ))
-        system_domain: (( .cloud_controller.system_domain.value ))
-      services:
-        authentication:
-          CF_CLIENT_ID: (( .uaa.apps_manager_client_credentials.identity ))
-          CF_CLIENT_SECRET: (( .uaa.apps_manager_client_credentials.password ))
-          CF_LOGIN_SERVER_URL: "https://login.(( .cloud_controller.system_domain.value ))"
-          CF_UAA_SERVER_URL: "https://uaa.(( .cloud_controller.system_domain.value ))"
-      env:
-        secret_token: (( secret_token.value ))
-        cf_cc_api_url: "https://api.(( .cloud_controller.system_domain.value ))"
-        cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
-        cf_console_url: "https://apps.(( .cloud_controller.system_domain.value ))"
-        default_reply_to: (( reply_to.value ))
-        default_from: (( .properties.smtp_from.value ))
-        bundle_without: test development hosted_only
-      databases:
-        app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
-      ssl:
-        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
   - name: smoke-tests
     label: Run Smoke Tests
@@ -3800,13 +3682,6 @@ property_blueprints:
               username: (( .consoledb.credentials.identity ))
               password: (( .consoledb.credentials.password ))
               adapter: postgres
-          - name: push-app-usage-service
-            manifest: |
-              name: app_usage_service
-              port: 3306
-              ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
-              username: (( .mysql.app_usage_credentials.identity ))
-              password: (( .mysql.app_usage_credentials.password ))
 
       - name: external
         named_manifests:
@@ -3847,13 +3722,7 @@ property_blueprints:
               username: (( .properties.system_database.external.username.value ))
               password: (( .properties.system_database.external.password.value ))
               adapter: mysql
-          - name: push-app-usage-service
-            manifest: |
-              name: app_usage_service
-              port: (( .properties.system_database.external.port.value ))
-              ip: (( .properties.system_database.external.host.value ))
-              username: (( .properties.system_database.external.username.value ))
-              password: (( .properties.system_database.external.password.value ))
+
         select_value: external
         property_blueprints:
           - name: port

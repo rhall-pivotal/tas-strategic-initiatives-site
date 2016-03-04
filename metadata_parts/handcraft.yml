@@ -103,7 +103,6 @@ install_time_verifiers:
 post_deploy_errands:
   - name: push-apps-manager
   - name: smoke-tests
-  - name: push-app-usage-service
   - name: notifications
   - name: notifications-ui
   - name: autoscaling
@@ -5056,13 +5055,6 @@ property_blueprints:
               username: (( .consoledb.credentials.identity ))
               password: (( .consoledb.credentials.password ))
               adapter: postgres
-          - name: push-app-usage-service
-            manifest: |
-              name: app_usage_service
-              port: 3306
-              ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
-              username: (( .mysql.app_usage_credentials.identity ))
-              password: (( .mysql.app_usage_credentials.password ))
 
       - name: internal_mysql
         select_value: internal_mysql
@@ -5099,13 +5091,6 @@ property_blueprints:
         - name: autoscaling
           manifest: |
             url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
-        - name: push-app-usage-service
-          manifest: |
-            name: app_usage_service
-            port: 3306
-            ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-            username: (( .mysql.app_usage_credentials.identity ))
-            password: (( .mysql.app_usage_credentials.password ))
         - name: console
           manifest: |
             ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
@@ -5154,13 +5139,6 @@ property_blueprints:
               username: (( .properties.system_database.external.username.value ))
               password: (( .properties.system_database.external.password.value ))
               adapter: mysql
-          - name: push-app-usage-service
-            manifest: |
-              name: app_usage_service
-              port: (( .properties.system_database.external.port.value ))
-              ip: (( .properties.system_database.external.host.value ))
-              username: (( .properties.system_database.external.username.value ))
-              password: (( .properties.system_database.external.password.value ))
         select_value: external
         property_blueprints:
           - name: port
