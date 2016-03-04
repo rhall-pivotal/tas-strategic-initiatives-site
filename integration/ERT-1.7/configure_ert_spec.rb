@@ -63,7 +63,7 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
         .set(elastic_runtime_settings['ssl_private_key'])
     else
       domain = elastic_runtime_settings['system_domain']
-      security_config_form.generate_self_signed_cert("*.#{domain},*.login.#{domain},*.uaa.#{domain}")
+      security_config_form.generate_self_signed_cert("*.#{domain},*.login.#{domain},*.uaa.#{domain}", '.ha_proxy.ssl_rsa_certificate')
     end
 
     security_config_form.save_form
