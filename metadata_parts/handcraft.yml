@@ -111,6 +111,118 @@ post_deploy_errands:
   - name: autoscaling-register-broker
 
 form_types:
+  - name: uaa
+    label: Authentication and Enterprise SSO
+    description: Configure your user store access, which can be an interal user store (managed by Cloud Foundry's UAA) or an external user store (LDAP or SAML). You can also adjust the lifetimes of authentication tokens.
+    verifiers:
+      - name: Verifiers::LDAPBindVerifier
+        properties:
+          url: .properties.uaa.ldap.url
+          credentials: .properties.uaa.ldap.credentials
+    property_inputs:
+      - reference: .properties.uaa
+        label: Configure your UAA user account store with either internal or external authentication mechanisms
+        selector_property_inputs:
+          - reference: .properties.uaa.internal
+            label: Internal UAA
+            description:
+            property_inputs:
+              - reference: .properties.uaa.internal.password_min_length
+                label: Minimum Password Length
+                description: Minimum number of characters for a valid password
+              - reference: .properties.uaa.internal.password_max_length
+                label: Maximum Password Length
+                description: Maximum number of characters for a valid password
+              - reference: .properties.uaa.internal.password_min_uppercase
+                label: Minimum Uppercase Characters Required for Password
+                description: Minimum number of uppercase characters required for a valid password
+              - reference: .properties.uaa.internal.password_min_lowercase
+                label: Minimum Lowercase Characters Required for Password
+                description: Minimum Lowercase Characters Required for Password
+              - reference: .properties.uaa.internal.password_min_numeric
+                label: Minimum Numerical Digits Required for Password
+                description: Minimum number of digits required for a valid password
+              - reference: .properties.uaa.internal.password_min_special
+                label: Minimum Special Characters Required for Password
+                description: Minimum number of special characters required for a valid password
+              - reference: .properties.uaa.internal.password_expires_after_months
+                label: Number of Months Before Password Expires
+                description: Password will expire after this many months, input 0 if you want passwords to never expire
+              - reference: .properties.uaa.internal.password_max_retry
+                label: Maximum Password Entry Attempts Allowed
+                description: Maximum number of failures allowed to enter a password before the account is locked
+
+          - reference: .properties.uaa.ldap
+            label: LDAP Server
+            description:
+            property_inputs:
+              - reference: .properties.uaa.ldap.url # MIGRATION FROM .uaa.ldap_url
+                label: Server URL
+                description: 'Required for LDAP. Must start with ldap:// or ldaps://'
+              - reference: .properties.uaa.ldap.credentials # MIGRATION FROM .uaa.ldap_credentials
+                label: LDAP Credentials
+                description:  Required for LDAP. This is the unique username and password for binding to the server
+              - reference: .properties.uaa.ldap.search_base # MIGRATION FROM .uaa.ldap_search_base
+                label: User Search Base
+                description: 'Required for LDAP. Example ou=Users,dc=example,dc=com'
+              - reference: .properties.uaa.ldap.search_filter # MIGRATION FROM .uaa.ldap_search_filter
+                label: User Search Filter
+                description: "Required for LDAP. Replace {0} with username."
+              - reference: .properties.uaa.ldap.group_search_base # MIGRATION FROM .properties.group_search.enable_admin_groups.ldap_group_search_base
+                label: Group Search Base
+                description: 'Required if mapping LDAP groups to Admin role. Example ou=Groups,dc=example,dc=com'
+              - reference: .properties.uaa.ldap.group_search_filter # MIGRATION FROM .properties.group_search.enable_admin_groups.ldap_group_search_filter
+                label: Group Search Filter
+                description: 'Required if mapping LDAP groups to Admin role. Replace {0} with user DN.'
+              - reference: .properties.uaa.ldap.server_ssl_cert # MIGRATION FROM .uaa.ldap_server_ssl_cert
+                label: Server SSL Cert
+                description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate'
+              - reference: .properties.uaa.ldap.server_ssl_cert_alias # MIGRATION FROM .uaa.ldap_server_ssl_cert_alias
+                label: Server SSL Cert AltName
+                description: "Required only for ldaps:// + using a Self Signed Certificate"
+              - reference: .properties.uaa.ldap.mail_attribute_name # MIGRATION FROM .uaa.ldap_mail_attribute_name
+                label: Email Attribute
+                description: "The name of the attribute that contains the user's email address"
+              - reference: .properties.uaa.ldap.mail_domains
+                label: Email Domain(s)
+                description: "Any invited users whose email domain matches these domain(s) will be authenticated against LDAP. If you want to add multiple domains, the list should be comma-delimited."
+          - reference: .properties.uaa.saml
+            label: SAML Identity Provider
+            description:
+            property_inputs:
+              - reference: .properties.uaa.saml.sso_name # MIGRATION FROM .uaa.sso_name
+                label: Provider Name
+                description: "Name of Identity Provider. Allowed characters are alphanumeric, _, and -. Do NOT change this name once deployed."
+              - reference: .properties.uaa.saml.display_name
+                label: Display Name
+                description: "Shows as a link on the login page"
+              - reference: .uaa.sso_xml
+                label: Provider Metadata
+                description: "Metadata XML content for the Identity Provider. If you would rather provide an SSO endpoint URL, skip to the next field."
+              - reference: .uaa.sso_url
+                label: "(OR) Provider Metadata URL"
+                description: "If you did not provide metadata above, enter an SSO endpoint that returns the metadata."
+              - reference: .properties.uaa.saml.mail_domains
+                label: Email Domain(s)
+                description: "Any invited users whose email account matches these domains will be authenticated."
+              - reference: .propertoes.uaa.saml.sign_auth_requests
+                label: Sign Authentication Requests
+                description: "If enabled, signed authentication requests will be sent to the SAML identity provider"
+              - reference: .propertoes.uaa.saml.require_signed_assertions
+                label: Require Signed Assertions
+                description: "If enabled, the SAML identity provider should always send signed assertions."
+      - reference: .properties.apps_manager_access_token_lifetime
+        label: Apps Manager Access Token Lifetime (in seconds)
+        description: Set the lifetime of the access token for the Apps Manager login portal
+      - reference: .properties.apps_manager_refresh_token_lifetime
+        label: Apps Manager Refresh Token Lifetime (in seconds)
+        description: Set the lifetime of the refresh token for Apps Manager
+      - reference: .properties.cf_cli_access_token_lifetime
+        label: Cloud Foundry CLI Access Token Lifetime (in seconds)
+        description: Set the lifetime of the access token for the Cloud Foundry CLI
+      - reference: .properties.cf_cli_refresh_token_lifetime
+        label: Cloud Foundry CLI Refresh Token Lifetime (in seconds)
+        description: Set the lifetime of the refresh token for the Cloud Foundry CLI
   - name: system_database
     label: System Database Config
     description: Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details.
@@ -339,70 +451,6 @@ form_types:
       - reference: .doppler.message_drain_buffer_size
         label: "Syslog Drain Buffer Size (# of messages)"
         description: "Sets the buffer size on Doppler before dropping log messages. Note that a larger buffer size has the potential to overload the system."
-
-  - name: uaa_sso
-    label: SSO Config
-    description: Configure Identity Provider
-    verifiers:
-      - name: Verifiers::SsoUrlVerifier
-        properties:
-          url: .uaa.sso_url
-    property_inputs:
-      - reference: .uaa.sso_name
-        label: Provider Name
-        description: "Name of Identity Provider. Allowed characters are alphanumeric, _, and -."
-      - reference: .uaa.sso_xml
-        label: Provider Metadata
-        description: "Metadata XML content for the Identity Provider"
-      - reference: .uaa.sso_url
-        label: "(OR) Provider Metadata URL"
-        description: "Enter an SSO endpoint. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata."
-
-  - name: login_ldap
-    label: LDAP Config
-    description: Configure an LDAP endpoint for the UAA
-    verifiers:
-      - name: Verifiers::LDAPBindVerifier
-        properties:
-          url: .uaa.ldap_url
-          credentials: .uaa.credentials
-    property_inputs:
-      - reference: .uaa.ldap_url
-        label: Server URL
-        description: 'Required for LDAP. Must start with ldap:// or ldaps://'
-      - reference: .uaa.credentials
-        label: LDAP Credentials
-        description:  Required for LDAP. This is the unique username and password for binding to the server
-      - reference: .uaa.ldap_search_base
-        label: User Search Base
-        description: 'Required for LDAP. Example ou=Users,dc=example,dc=com'
-      - reference: .uaa.ldap_search_filter
-        label: User Search Filter
-        description: "Required for LDAP. Replace {0} with username."
-      - reference: .properties.group_search
-        label: Admin Groups
-        description:
-        selector_property_inputs:
-        - reference: .properties.group_search.no_groups
-          label: No Groups
-        - reference: .properties.group_search.enable_admin_groups
-          label: Enable Admin Groups
-          property_inputs:
-            - reference: .properties.group_search.enable_admin_groups.ldap_group_search_base
-              label: Group Search Base
-              description: 'Required if mapping LDAP groups to Admin role. Example ou=Groups,dc=example,dc=com'
-            - reference: .properties.group_search.enable_admin_groups.ldap_group_search_filter
-              label: Group Search Filter
-              description: 'Required if mapping LDAP groups to Admin role. Replace {0} with user DN.'
-      - reference: .uaa.ldap_server_ssl_cert
-        label: Server SSL Cert
-        description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate'
-      - reference: .uaa.ldap_server_ssl_cert_alias
-        label: Server SSL Cert AltName
-        description: "Required only for ldaps:// + using a Self Signed Certificate"
-      - reference: .uaa.ldap_mail_attribute_name
-        label: Email Attribute
-        description: "The name of the attribute that contains the user's email address"
 
   - name: smtp_config
     label: SMTP Config
@@ -4807,6 +4855,28 @@ property_blueprints:
     configurable: true
     default: false
 
+# MOVE TO uaa JOB PROPERTIES?
+  - name: apps_manager_access_token_lifetime
+    type: integer
+    configurable: true
+    default: 1209600
+
+  - name: apps_manager_refresh_token_lifetime
+    type: integer
+    configurable: true
+    default: 1209600
+
+  - name: cf_cli_access_token_lifetime
+    type: integer
+    configurable: true
+    default: 7200
+
+  - name: cf_cli_refresh_token_lifetime
+    type: integer
+    configurable: true
+    default: 1209600
+# END MOVE TO uaa JOB PROPERTIES?
+
   - name: app_usage_service_database
     type: string
     configurable: false
@@ -4879,6 +4949,117 @@ property_blueprints:
       - bbs.service.cf.internal
       - "*.bbs.service.cf.internal"
 
+  - name: uaa
+    type: selector
+    configurable: true
+    default: internal
+    option_templates:
+      - name: internal
+        select_value: internal
+        property_blueprints:
+          - name: password_min_length
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_max_length
+            type: integer
+            configurable: true
+            default: 255
+          - name: password_min_uppercase
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_min_lowercase
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_min_numeric
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_min_special
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_expires_after_months
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_max_retry
+            type: integer
+            configurable: true
+            default: 5
+      - name: ldap
+        select_value: ldap
+        property_blueprints:
+          - name: url
+            type: ldap_url
+            configurable: true
+            optional: true
+          - name: credentials
+            type: simple_credentials
+            configurable: true
+            optional: true
+          - name: search_base
+            type: string
+            configurable: true
+            optional: true
+          - name: search_filter
+            type: string
+            configurable: true
+            default: "cn={0}"
+          - name: group_search_base
+            type: string
+            configurable: true
+            optional: true
+          - name: group_search_filter
+            type: string
+            configurable: true
+            default: "member={0}"
+          - name: server_ssl_cert
+            type: text
+            configurable: true
+            optional: true
+          - name: server_ssl_cert_alias
+            type: string
+            configurable: true
+            optional: true
+          - name: mail_attribute_name
+            type: string
+            configurable: true
+            default: 'mail'
+          - name: mail_domains
+            type: string
+            configurable: true
+      - name: saml
+        select_value: saml
+        property_blueprints:
+          - name: sso_name
+            type: string
+            configurable: true
+            optional: true
+          - name: display_name
+            type: string
+            configurable: true
+            optional: true
+          - name: sso_url
+            type: http_url
+            configurable: true
+            optional: true
+          - name: sso_xml
+            type: text
+            configurable: true
+            optional: true
+          - name: mail_domains
+            type: string
+            configurable: true
+            optional: true
+          - name: sign_auth_requests
+            type: boolean
+            configurable: true
+          - name: require_signed_assertions
+            type: boolean
+            configurable: true
 
   - name: system_database
     type: selector
