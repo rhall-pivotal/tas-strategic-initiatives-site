@@ -1,16 +1,16 @@
 ---
 stemcell_criteria:
   os: ubuntu-trusty
-  version: '3146.5'
+  version: '3191'
   requires_cpi: false
 releases:
 # MySQL release is first because its packages take the longest to compile.
-- file: cf-mysql-23.tgz
+- file: cf-mysql-23.2.tgz
   name: cf-mysql
-  version: '23'
-  md5: 4e81e61c628d6c4726f90806a31dcf39
-  url: https://s3.amazonaws.com/cf-mysql-releases/final/cf-mysql-23.tgz
-- file: cf-225.7+dev.46.tgz
+  version: '23.2'
+  md5: c245e86700c28f67685f2c5db18faab1
+  url: http://releng-artifacts.cf-app.com/cf-mysql-23.2.tgz
+- file: cf-231.tgz
   name: cf
   version: '225.7+dev.46'
   md5: f50de17ec3625e727c3eb9ad75f09045
@@ -22,19 +22,19 @@ releases:
     filename: pcf-release/cf-225.7+dev.46.tgz
 - file: diego-0.1441.2.tgz
   name: diego
-  version: '0.1441.2'
-  md5: ad19c0ef3ddfbe2d63bcc8ad89cd38d2
-  url: http://releng-artifacts.cf-app.com/diego/diego-0.1441.2.tgz
-- file: garden-linux-0.330.0.tgz
+  version: '0.1454.0'
+  sha1: 4e2ae4b13aac073eda3f114afcbd8dc72ddb39e8
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/diego-release?v=0.1454.0
+- file: garden-linux-0.333.0.tgz
   name: garden-linux
-  version: '0.330.0'
-  sha1: f37d6153a85eb16b2ece97047634edc2638baac8
-  url: https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release?v=0.330.0
-- file: etcd-release-18.tgz
+  version: '0.333.0'
+  sha1: 9ddccb3f0550a3f7f5ba119221c1a77c1081e6a0
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release?v=0.333.0
+- file: etcd-release-36.tgz
   name: etcd
-  version: '18'
-  sha1: 222e26f1f38a23f4355ec2517683fdc7c70704aa
-  url: http://bosh.io/d/github.com/cloudfoundry-incubator/etcd-release?v=18
+  version: '36'
+  sha1: a0f2516e392838450e6e5af4aef972bc55494d32
+  url: http://bosh.io/d/github.com/cloudfoundry-incubator/etcd-release?v=36
 - name: push-apps-manager-release
   file: push-apps-manager-release-397.tgz
   version: '397'

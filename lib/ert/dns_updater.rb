@@ -1,16 +1,18 @@
 require 'aws/route_53'
+require 'backport_refinements'
+using OpsManagerUiDrivers::BackportRefinements
 
 module Ert
   class DnsUpdater
     def initialize(settings:)
-      self.name = settings.name
-      self.elb_dns_name = settings.ops_manager.elastic_runtime.elb_dns_name
-      self.ssh_elb_dns_name = settings.ops_manager.elastic_runtime.ssh_elb_dns_name
+      self.name = settings.dig('name')
+      self.elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'elb_dns_name')
+      self.ssh_elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'ssh_elb_dns_name')
 
-      env_config = settings.vm_shepherd.env_config
+      env_config = settings.dig('vm_shepherd', 'env_config')
       self.route53 = AWS::Route53.new(
-        access_key_id: env_config.aws_access_key,
-        secret_access_key: env_config.aws_secret_key
+        access_key_id: env_config.dig('aws_access_key'),
+        secret_access_key: env_config.dig('aws_secret_key')
       )
     end
 
