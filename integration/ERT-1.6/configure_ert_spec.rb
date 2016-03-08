@@ -81,13 +81,13 @@ RSpec.describe 'Configure Elastic Runtime 1.6.X', order: :defined do
   end
 
   it 'configures postgresql' do
-    resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings.name)
+    resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
     resource_config.set_instances_for_job('ccdb', 1)
     resource_config.set_instances_for_job('uaadb', 1)
     resource_config.set_instances_for_job('consoledb', 1)
 
     database_form =
-      current_ops_manager.product(elastic_runtime_settings.name).product_form('system_database')
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('system_database')
     database_form.open_form
     database_form.fill_in_selector_property(
       selector_input_reference: '.properties.system_database',
