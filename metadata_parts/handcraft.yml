@@ -124,105 +124,99 @@ form_types:
         label: Configure your UAA user account store with either internal or external authentication mechanisms
         selector_property_inputs:
           - reference: .properties.uaa.internal
-            label: Internal UAA
+            label: "Internal UAA (provided by Elastic Runtime; configure your password policy below)"
             description:
             property_inputs:
               - reference: .properties.uaa.internal.password_min_length
                 label: Minimum Password Length
-                description: Minimum number of characters for a valid password
-              - reference: .properties.uaa.internal.password_max_length
-                label: Maximum Password Length
-                description: Maximum number of characters for a valid password
+                description: Minimum number of characters for a valid password.
               - reference: .properties.uaa.internal.password_min_uppercase
                 label: Minimum Uppercase Characters Required for Password
-                description: Minimum number of uppercase characters required for a valid password
+                description: Minimum number of uppercase characters required for a valid password.
               - reference: .properties.uaa.internal.password_min_lowercase
                 label: Minimum Lowercase Characters Required for Password
-                description: Minimum Lowercase Characters Required for Password
+                description: Minimum Lowercase Characters Required for Password.
               - reference: .properties.uaa.internal.password_min_numeric
                 label: Minimum Numerical Digits Required for Password
-                description: Minimum number of digits required for a valid password
+                description: Minimum number of digits required for a valid password.
               - reference: .properties.uaa.internal.password_min_special
                 label: Minimum Special Characters Required for Password
-                description: Minimum number of special characters required for a valid password
+                description: Minimum number of special characters required for a valid password.
               - reference: .properties.uaa.internal.password_expires_after_months
                 label: Number of Months Before Password Expires
-                description: Password will expire after this many months, input 0 if you want passwords to never expire
+                description: Password will expire after this many months, input 0 if you want passwords to never expire.
               - reference: .properties.uaa.internal.password_max_retry
                 label: Maximum Password Entry Attempts Allowed
-                description: Maximum number of failures allowed to enter a password before the account is locked
+                description: Maximum number of failures allowed to enter a password (within a 5 minute timespan) before the account is locked.
 
           - reference: .properties.uaa.ldap
             label: LDAP Server
             description:
             property_inputs:
-              - reference: .properties.uaa.ldap.url # MIGRATION FROM .uaa.ldap_url
+              - reference: .properties.uaa.ldap.url
                 label: Server URL
-                description: 'Required for LDAP. Must start with ldap:// or ldaps://'
-              - reference: .properties.uaa.ldap.credentials # MIGRATION FROM .uaa.credentials
+                description: 'Required for LDAP. Must start with `ldap://` or `ldaps://`'.
+              - reference: .properties.uaa.ldap.credentials
                 label: LDAP Credentials
-                description:  Required for LDAP. This is the unique username and password for binding to the server
-              - reference: .properties.uaa.ldap.search_base # MIGRATION FROM .uaa.ldap_search_base
+                description:  Required for LDAP. This is the unique username and password for binding to the server.
+              - reference: .properties.uaa.ldap.search_base
                 label: User Search Base
-                description: 'Required for LDAP. Example ou=Users,dc=example,dc=com'
-              - reference: .properties.uaa.ldap.search_filter # MIGRATION FROM .uaa.ldap_search_filter
+                description: 'Required for LDAP. Example: `ou=Users,dc=example,dc=com`.'
+              - reference: .properties.uaa.ldap.search_filter
                 label: User Search Filter
-                description: "Required for LDAP. Replace {0} with username."
-              - reference: .properties.uaa.ldap.group_search_base # MIGRATION FROM .properties.group_search.enable_admin_groups.ldap_group_search_base
+                description: "Required for LDAP. Replace `{0}` with username."
+              - reference: .properties.uaa.ldap.group_search_base
                 label: Group Search Base
-                description: 'Required if mapping LDAP groups to Admin role. Example ou=Groups,dc=example,dc=com'
-              - reference: .properties.uaa.ldap.group_search_filter # MIGRATION FROM .properties.group_search.enable_admin_groups.ldap_group_search_filter
+                description: 'Required if mapping LDAP groups to Admin role. Example: `ou=Groups,dc=example,dc=com`.'
+              - reference: .properties.uaa.ldap.group_search_filter
                 label: Group Search Filter
-                description: 'Required if mapping LDAP groups to Admin role. Replace {0} with user DN.'
-              - reference: .properties.uaa.ldap.server_ssl_cert # MIGRATION FROM .uaa.ldap_server_ssl_cert
+                description: 'Required if mapping LDAP groups to Admin role. Replace `{0}` with user DN.'
+              - reference: .properties.uaa.ldap.server_ssl_cert
                 label: Server SSL Cert
-                description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate'
-              - reference: .properties.uaa.ldap.server_ssl_cert_alias # MIGRATION FROM .uaa.ldap_server_ssl_cert_alias
+                description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate.'
+              - reference: .properties.uaa.ldap.server_ssl_cert_alias
                 label: Server SSL Cert AltName
-                description: "Required only for ldaps:// + using a Self Signed Certificate"
-              - reference: .properties.uaa.ldap.mail_attribute_name # MIGRATION FROM .uaa.ldap_mail_attribute_name
+                description: "Required only for ldaps:// + using a Self Signed Certificate."
+              - reference: .properties.uaa.ldap.mail_attribute_name
                 label: Email Attribute
-                description: "The name of the attribute that contains the user's email address"
-              - reference: .properties.uaa.ldap.mail_domains
-                label: Email Domain(s)
-                description: "Any invited users whose email domain matches these domain(s) will be authenticated against LDAP. If you want to add multiple domains, the list should be comma-delimited."
+                description: "The name of the attribute that contains the user's email address."
           - reference: .properties.uaa.saml
             label: SAML Identity Provider
             description:
             property_inputs:
-              - reference: .properties.uaa.saml.sso_name # MIGRATION FROM .uaa.sso_name
+              - reference: .properties.uaa.saml.sso_name
                 label: Provider Name
-                description: "Name of Identity Provider. Allowed characters are alphanumeric, _, and -. Do NOT change this name once deployed."
+                description: "Name of Identity Provider. Allowed characters are alphanumeric, plus `_`, and `-`. Do NOT change this name once deployed."
               - reference: .properties.uaa.saml.display_name
                 label: Display Name
-                description: "Shows as a link on the login page"
-              - reference: .properties.uaa.saml.sso_xml # MIGRATION FROM .uaa.sso_xml
-                label: Provider Metadata
-                description: "Metadata XML content for the Identity Provider. If you would rather provide an SSO endpoint URL, skip to the next field."
-              - reference: .properties.uaa.saml.sso_url # MIGRATION FROM .uaa.sso_url
+                description: "Shows as a link on the login page."
+              - reference: .properties.uaa.saml.sso_xml
+                label: "Provider Metadata (if you would rather provide an SSO endpoint URL, skip to the next field)"
+                description: "Metadata XML content for the Identity Provider."
+              - reference: .properties.uaa.saml.sso_url
                 label: "(OR) Provider Metadata URL"
                 description: "If you did not provide metadata above, enter an SSO endpoint that returns the metadata."
-              - reference: .properties.uaa.saml.mail_domains
-                label: Email Domain(s)
-                description: "Any invited users whose email account matches these domains will be authenticated."
               - reference: .properties.uaa.saml.sign_auth_requests
                 label: Sign Authentication Requests
-                description: "If enabled, signed authentication requests will be sent to the SAML identity provider"
+                description: "If enabled, signed authentication requests will be sent to the SAML identity provider."
               - reference: .properties.uaa.saml.require_signed_assertions
                 label: Require Signed Assertions
                 description: "If enabled, the SAML identity provider should always send signed assertions."
+              - reference: .properties.uaa.saml.ssl_certificate
+                label: Provider Certificate and Provider Key
+                description: "This certificate and key pair is used as a digital signature for the identity provider."
       - reference: .uaa.apps_manager_access_token_lifetime
         label: Apps Manager Access Token Lifetime (in seconds)
-        description: Set the lifetime of the access token for the Apps Manager login portal
+        description: Set the lifetime of the access token for the Apps Manager login portal.
       - reference: .uaa.apps_manager_refresh_token_lifetime
         label: Apps Manager Refresh Token Lifetime (in seconds)
-        description: Set the lifetime of the refresh token for Apps Manager
+        description: Set the lifetime of the refresh token for Apps Manager.
       - reference: .uaa.cf_cli_access_token_lifetime
         label: Cloud Foundry CLI Access Token Lifetime (in seconds)
-        description: Set the lifetime of the access token for the Cloud Foundry CLI
+        description: Set the lifetime of the access token for the Cloud Foundry CLI.
       - reference: .uaa.cf_cli_refresh_token_lifetime
         label: Cloud Foundry CLI Refresh Token Lifetime (in seconds)
-        description: Set the lifetime of the refresh token for the Cloud Foundry CLI
+        description: Set the lifetime of the refresh token for the Cloud Foundry CLI.
   - name: system_database
     label: System Database Config
     description: Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details.
@@ -2725,8 +2719,8 @@ job_types:
           url: "https://notifications.(( .cloud_controller.system_domain.value ))"
         saml:
           entityid: "http://login.(( .cloud_controller.system_domain.value ))"
-          serviceProviderKey: (( service_provider_key_credentials.private_key_pem ))
-          serviceProviderCertificate: (( service_provider_key_credentials.cert_pem ))
+          serviceProviderKey: (( .properties.uaa.saml.ssl_certificate.private_key_pem ))
+          serviceProviderCertificate: (( .properties.uaa.saml.ssl_certificate.cert_pem ))
           providers: (( .properties.uaa.selected_option.parsed_manifest(saml_provider) ))
           signRequest: (( .properties.uaa.saml.sign_auth_requests.value ))
           wantAssertionSigned: (( .properties.uaa.saml.require_signed_assertions.value ))
@@ -2745,7 +2739,6 @@ job_types:
         password:
           policy:
             minLength: (( .properties.uaa.internal.password_min_length.value ))
-            maxLength: (( .properties.uaa.internal.password_max_length.value ))
             requireUpperCaseCharacter: (( .properties.uaa.internal.password_min_uppercase.value ))
             requireLowerCaseCharacter: (( .properties.uaa.internal.password_min_lowercase.value ))
             requireDigit: (( .properties.uaa.internal.password_min_numeric.value ))
@@ -2764,7 +2757,6 @@ job_types:
           sslCertificate: (( .properties.uaa.ldap.server_ssl_cert.value ))
           sslCertificateAlias: (( .properties.uaa.ldap.server_ssl_cert_alias.value ))
           mailAttributeName: (( .properties.uaa.ldap.mail_attribute_name.value ))
-          emailDomain: (( .properties.uaa.ldap.mail_domains.value ))
           enabled: (( .properties.uaa.ldap.url.value_present? ))
           groups:
             profile_type: "(( .properties.uaa.ldap.group_search_base.value_present? ? 'groups-map-to-scopes' : 'no-groups' ))"
@@ -4924,10 +4916,6 @@ property_blueprints:
             type: integer
             configurable: true
             default: 0
-          - name: password_max_length
-            type: integer
-            configurable: true
-            default: 255
           - name: password_min_uppercase
             type: integer
             configurable: true
@@ -4968,7 +4956,6 @@ property_blueprints:
           - name: search_base
             type: string
             configurable: true
-            optional: true
           - name: search_filter
             type: string
             configurable: true
@@ -4993,9 +4980,6 @@ property_blueprints:
             type: string
             configurable: true
             default: 'mail'
-          - name: mail_domains
-            type: string
-            configurable: true
       - name: saml
         select_value: saml
         named_manifests:
@@ -5014,7 +4998,6 @@ property_blueprints:
           - name: display_name
             type: string
             configurable: true
-            optional: true
           - name: sso_url
             type: http_url
             configurable: true
@@ -5023,15 +5006,15 @@ property_blueprints:
             type: text
             configurable: true
             optional: true
-          - name: mail_domains
-            type: string
-            configurable: true
-            optional: true
           - name: sign_auth_requests
             type: boolean
             configurable: true
+            default: true
           - name: require_signed_assertions
             type: boolean
+            configurable: true
+          - name: ssl_certificate
+            type: rsa_cert_credentials
             configurable: true
 
   - name: system_database
