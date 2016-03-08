@@ -116,7 +116,7 @@ form_types:
     description: "You can enable microservice frameworks, private Docker registries, and other services that support your applications at a container-level."
     property_inputs:
     - reference: .properties.allow_cross_container_traffic
-      label: Microservices: Enable cross-container traffic
+      label: "Microservices: Enable cross-container traffic"
       description: Not recommended for untrusted workloads, however this is useful for microservice frameworks that require cross-container communication.
     - reference: .cloud_controller.enable_custom_buildpacks
       label: Enable Custom Buildpacks
@@ -1700,7 +1700,7 @@ job_types:
           - all_open
         default_staging_security_groups:
           - all_open
-        disable_custom_buildpacks: (( enable_custom_buildpacks.value ? false : true ))
+        disable_custom_buildpacks: "(( enable_custom_buildpacks.value ? false : true ))"
         external_host: api
         install_buildpacks:
           - name: staticfile_buildpack
