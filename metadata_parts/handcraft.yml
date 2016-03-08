@@ -15,7 +15,7 @@ serial: false
 install_time_verifiers:
   - name: Verifiers::SsoUrlVerifier
     properties:
-      url: .uaa.sso_url
+      url: .properties.uaa.saml.sso_url
   - name: Verifiers::WildcardDomainVerifier
     ignorable: true
     properties:
@@ -159,7 +159,7 @@ form_types:
               - reference: .properties.uaa.ldap.url # MIGRATION FROM .uaa.ldap_url
                 label: Server URL
                 description: 'Required for LDAP. Must start with ldap:// or ldaps://'
-              - reference: .properties.uaa.ldap.credentials # MIGRATION FROM .uaa.ldap_credentials
+              - reference: .properties.uaa.ldap.credentials # MIGRATION FROM .uaa.credentials
                 label: LDAP Credentials
                 description:  Required for LDAP. This is the unique username and password for binding to the server
               - reference: .properties.uaa.ldap.search_base # MIGRATION FROM .uaa.ldap_search_base
@@ -196,10 +196,10 @@ form_types:
               - reference: .properties.uaa.saml.display_name
                 label: Display Name
                 description: "Shows as a link on the login page"
-              - reference: .uaa.sso_xml
+              - reference: .properties.uaa.saml.sso_xml # MIGRATION FROM .uaa.sso_xml
                 label: Provider Metadata
                 description: "Metadata XML content for the Identity Provider. If you would rather provide an SSO endpoint URL, skip to the next field."
-              - reference: .uaa.sso_url
+              - reference: .properties.uaa.saml.sso_url # MIGRATION FROM .uaa.sso_url
                 label: "(OR) Provider Metadata URL"
                 description: "If you did not provide metadata above, enter an SSO endpoint that returns the metadata."
               - reference: .properties.uaa.saml.mail_domains
@@ -211,16 +211,16 @@ form_types:
               - reference: .propertoes.uaa.saml.require_signed_assertions
                 label: Require Signed Assertions
                 description: "If enabled, the SAML identity provider should always send signed assertions."
-      - reference: .properties.apps_manager_access_token_lifetime
+      - reference: .uaa.apps_manager_access_token_lifetime
         label: Apps Manager Access Token Lifetime (in seconds)
         description: Set the lifetime of the access token for the Apps Manager login portal
-      - reference: .properties.apps_manager_refresh_token_lifetime
+      - reference: .uaa.apps_manager_refresh_token_lifetime
         label: Apps Manager Refresh Token Lifetime (in seconds)
         description: Set the lifetime of the refresh token for Apps Manager
-      - reference: .properties.cf_cli_access_token_lifetime
+      - reference: .uaa.cf_cli_access_token_lifetime
         label: Cloud Foundry CLI Access Token Lifetime (in seconds)
         description: Set the lifetime of the access token for the Cloud Foundry CLI
-      - reference: .properties.cf_cli_refresh_token_lifetime
+      - reference: .uaa.cf_cli_refresh_token_lifetime
         label: Cloud Foundry CLI Refresh Token Lifetime (in seconds)
         description: Set the lifetime of the refresh token for the Cloud Foundry CLI
   - name: system_database
@@ -2668,58 +2668,28 @@ job_types:
         default:
           identity: apps_metrics_processing
 
-      - name: ldap_url
-        type: ldap_url
-        configurable: true
-        optional: true
-
-      - name: credentials
-        type: simple_credentials
-        configurable: true
-        optional: true
-
-      - name: ldap_search_base
-        type: string
-        configurable: true
-        optional: true
-
-      - name: ldap_search_filter
-        type: string
-        configurable: true
-        default: "cn={0}"
-
-      - name: ldap_server_ssl_cert
-        type: text
-        configurable: true
-        optional: true
-
-      - name: ldap_server_ssl_cert_alias
-        type: string
-        configurable: true
-        optional: true
-
-      - name: ldap_mail_attribute_name
-        type: string
-        configurable: true
-        default: 'mail'
-
       - name: service_provider_key_credentials
         type: rsa_cert_credentials
 
-      - name: sso_url
-        type: http_url
+      - name: apps_manager_access_token_lifetime
+        type: integer
         configurable: true
-        optional: true
+        default: 1209600
 
-      - name: sso_xml
-        type: text
+      - name: apps_manager_refresh_token_lifetime
+        type: integer
         configurable: true
-        optional: true
+        default: 1209600
 
-      - name: sso_name
-        type: string
+      - name: cf_cli_access_token_lifetime
+        type: integer
         configurable: true
-        optional: true
+        default: 7200
+
+      - name: cf_cli_refresh_token_lifetime
+        type: integer
+        configurable: true
+        default: 1209600
 
     manifest: |
       consul:
@@ -2757,14 +2727,9 @@ job_types:
           entityid: "http://login.(( .cloud_controller.system_domain.value ))"
           serviceProviderKey: (( service_provider_key_credentials.private_key_pem ))
           serviceProviderCertificate: (( service_provider_key_credentials.cert_pem ))
-          providers:
-            (( sso_name.value )):
-              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-              idpMetadataXML: (( sso_xml.value ))
-              idpMetadataURL: (( sso_url.value ))
-              showSamlLoginLink: true
-              linkText: (( sso_name.value ))
-              metadataTrustCheck: false
+          providers: (( .properties.uaa.selected_option.parsed_manifest(saml_provider) ))
+          signRequest: (( .properties.uaa.saml.sign_auth_requests.value ))
+          wantAssertionSigned: (( .properties.uaa.saml.require_signed_assertions.value ))
         logout:
           redirect:
             parameter:
@@ -2774,21 +2739,37 @@ job_types:
               - https://apps.(( .cloud_controller.system_domain.value ))/
             url: "/login"
       uaa:
+        authentication:
+          policy:
+            lockoutAfterFailures: (( .properties.uaa.internal.password_max_retry.value ))
+        password:
+          policy:
+            minLength: (( .properties.uaa.internal.password_min_length.value ))
+            maxLength: (( .properties.uaa.internal.password_max_length.value ))
+            requireUpperCaseCharacter: (( .properties.uaa.internal.password_min_uppercase.value ))
+            requireLowerCaseCharacter: (( .properties.uaa.internal.password_min_lowercase.value ))
+            requireDigit: (( .properties.uaa.internal.password_min_numeric.value ))
+            requireSpecialCharacter: (( .properties.uaa.internal.password_min_special.value ))
+            expirePasswordInMonths: (( .properties.uaa.internal.password_expires_after_months.value ))
         require_https: true
         ssl:
           port: -1
         ldap:
           profile_type: search-and-bind
-          url: (( ldap_url.value ))
-          userDN: (( credentials.identity ))
-          userPassword: (( credentials.password ))
-          searchBase: (( ldap_search_base.value ))
-          searchFilter: (( ldap_search_filter.value ))
-          sslCertificate: (( ldap_server_ssl_cert.value ))
-          sslCertificateAlias: (( ldap_server_ssl_cert_alias.value ))
-          mailAttributeName: (( ldap_mail_attribute_name.value ))
-          enabled: (( ldap_url.value_present? ))
-          groups: (( .properties.group_search.selected_option.parsed_manifest(ldap_group_profile) ))
+          url: (( .properties.uaa.ldap.url.value ))
+          userDN: (( .properties.uaa.ldap.credentials.identity ))
+          userPassword: (( .properties.uaa.ldap.credentials.password ))
+          searchBase: (( .properties.uaa.ldap.search_base.value ))
+          searchFilter: (( .properties.uaa.ldap.search_filter.value ))
+          sslCertificate: (( .properties.uaa.ldap.server_ssl_cert.value ))
+          sslCertificateAlias: (( .properties.uaa.ldap.server_ssl_cert_alias.value ))
+          mailAttributeName: (( .properties.uaa.ldap.mail_attribute_name.value ))
+          emailDomain: (( .properties.uaa.ldap.mail_domains.value ))
+          enabled: (( .properties.uaa.ldap.url.value_present? ))
+          groups:
+            profile_type: "(( .properties.uaa.ldap.group_search_base.value_present? ? 'groups-map-to-scopes' : 'no-groups' ))"
+            searchBase: (( .properties.uaa.ldap.group_search_base.value ))
+            groupSearchFilter: (( .properties.uaa.ldap.group_search_filter.value ))
         login:
           addnew: false
         catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
@@ -2836,8 +2817,8 @@ job_types:
             authorities: "scim.write,scim.read,cloud_controller.read,cloud_controller.write,password.write,uaa.admin,uaa.resource,cloud_controller.admin,emails.write,notifications.write"
             authorized-grant-types: "authorization_code,client_credentials,password,implicit"
             scope: "openid,cloud_controller.read,cloud_controller.write,password.write,console.admin,console.support,cloud_controller.admin"
-            access-token-validity: 1209600
-            refresh-token-validity: 1209600
+            access-token-validity: (( apps_manager_access_token_lifetime.value ))
+            refresh-token-validity: (( apps_manager_refresh_token_lifetime.value ))
           cf:
             id: cf
             override: true
@@ -2845,8 +2826,8 @@ job_types:
             authorities: "uaa.none"
             authorized-grant-types: "implicit,password,refresh_token"
             scope: "cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user"
-            access-token-validity: 7200
-            refresh-token-validity: 1209600
+            access-token-validity: (( cf_cli_access_token_lifetime.value ))
+            refresh-token-validity: (( cf_cli_refresh_token_lifetime.value ))
           (( autoscale_client_credentials.identity )):
             id: (( autoscale_client_credentials.identity ))
             secret: (( autoscale_client_credentials.password ))
@@ -4855,28 +4836,6 @@ property_blueprints:
     configurable: true
     default: false
 
-# MOVE TO uaa JOB PROPERTIES?
-  - name: apps_manager_access_token_lifetime
-    type: integer
-    configurable: true
-    default: 1209600
-
-  - name: apps_manager_refresh_token_lifetime
-    type: integer
-    configurable: true
-    default: 1209600
-
-  - name: cf_cli_access_token_lifetime
-    type: integer
-    configurable: true
-    default: 7200
-
-  - name: cf_cli_refresh_token_lifetime
-    type: integer
-    configurable: true
-    default: 1209600
-# END MOVE TO uaa JOB PROPERTIES?
-
   - name: app_usage_service_database
     type: string
     configurable: false
@@ -4956,6 +4915,10 @@ property_blueprints:
     option_templates:
       - name: internal
         select_value: internal
+        named_manifests:
+        - name: saml_provider
+          manifest: |
+
         property_blueprints:
           - name: password_min_length
             type: integer
@@ -4991,15 +4954,17 @@ property_blueprints:
             default: 5
       - name: ldap
         select_value: ldap
+        named_manifests:
+        - name: saml_provider
+          manifest: |
+
         property_blueprints:
           - name: url
             type: ldap_url
             configurable: true
-            optional: true
           - name: credentials
             type: simple_credentials
             configurable: true
-            optional: true
           - name: search_base
             type: string
             configurable: true
@@ -5033,11 +4998,19 @@ property_blueprints:
             configurable: true
       - name: saml
         select_value: saml
+        named_manifests:
+        - name: saml_provider
+          manifest: |
+            (( .properties.uaa.saml.sso_name.value )):
+              metadataTrustCheck: false
+              idpMetadata: "(( .properties.uaa.saml.sso_url.value_present? ? .properties.uaa.saml.sso_url.value : .properties.uaa.saml.sso_xml.value ))"
+              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+              showSamlLoginLink: true
+              linkText: (( .properties.uaa.saml.display_name.value ))
         property_blueprints:
           - name: sso_name
             type: string
             configurable: true
-            optional: true
           - name: display_name
             type: string
             configurable: true
