@@ -16,12 +16,12 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
   # This is needed until ops manager fixes automatic sizing bug: https://www.pivotaltracker.com/story/show/115004337
   it 'configures diego cell instance type' do
     instance_type = case env_settings['iaas_type']
-                      when 'aws'
-                        'm3.2xlarge'
-                      when 'openstack'
-                        'm1.xlarge'
-                      when 'vsphere', 'vcloud'
-                        '2xlarge.cpu'
+                    when 'aws'
+                      'm3.2xlarge'
+                    when 'openstack'
+                      'm1.xlarge'
+                    when 'vsphere', 'vcloud'
+                      '2xlarge.cpu'
                     end
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
     resource_config.set_vm_type_for_job('diego_cell', instance_type)
@@ -72,7 +72,9 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
         .set(elastic_runtime_settings['ssl_private_key'])
     else
       domain = elastic_runtime_settings['system_domain']
-      security_config_form.generate_self_signed_cert("*.#{domain},*.login.#{domain},*.uaa.#{domain}", '.ha_proxy.ssl_rsa_certificate')
+      security_config_form.generate_self_signed_cert(
+        "*.#{domain},*.login.#{domain},*.uaa.#{domain}", '.ha_proxy.ssl_rsa_certificate'
+      )
     end
 
     security_config_form.save_form
