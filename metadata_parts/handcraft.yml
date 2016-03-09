@@ -117,12 +117,12 @@ form_types:
     property_inputs:
     - reference: .properties.allow_cross_container_traffic
       label: "Microservices: Enable cross-container traffic"
-      description: Not recommended for untrusted workloads, however this is useful for microservice frameworks that require cross-container communication.
+      description: Not recommended for untrusted application workloads. However, this is useful for microservice frameworks that require cross-container communication.
     - reference: .cloud_controller.enable_custom_buildpacks
       label: Enable Custom Buildpacks
-      description: Enables custom-built application runtime buildpacks.
+      description: Enables the use of custom-built application runtime buildpacks.
     - reference: .cloud_controller.allow_app_ssh_access
-      label: Allow SSH access to apps
+      label: Allow SSH access to app containers
       description: "If you are using a load balancer instead of HAProxy, ensure that your load balancer has port 2222 open to enable SSH traffic. To have SSH access to a given app, a Cloud Foundry user must also be granted the SpaceDeveloper privilege for that app's space, which can be granted to the user in Apps Manager or via the Cloud Foundry CLI."
 
   - name: system_database
