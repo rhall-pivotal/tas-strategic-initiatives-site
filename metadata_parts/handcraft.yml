@@ -1704,7 +1704,7 @@ job_types:
           - all_open
         default_staging_security_groups:
           - all_open
-        disable_custom_buildpacks: "(( enable_custom_buildpacks.value ? false : true ))"
+        disable_custom_buildpacks: "(( enable_custom_buildpacks.value ? 'false' : 'true' ))"
         external_host: api
         install_buildpacks:
           - name: staticfile_buildpack
