@@ -240,6 +240,10 @@ form_types:
             label: Access Key
           - reference: .properties.system_blobstore.external.secret_key
             label: Secret Key
+          - reference: .properties.system_blobstore.external.signature_version
+            label: S3 Signature Version
+          - reference: .properties.system_blobstore.external.region
+            label: Region
           - reference: .properties.system_blobstore.external.buildpacks_bucket
             label: Buildpacks Bucket Name
             description: Bucket where the app buildpacks will be located.
@@ -5105,7 +5109,8 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: 2
+                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+                region:  (( .properties.system_blobstore.external.region.value ))
                 path_style: true
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccdroplet
@@ -5115,7 +5120,8 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: 2
+                aws_signature_version: (( .properties.system_blobstore.external.version.value ))
+                region:  (( .properties.system_blobstore.external.region.value ))
                 path_style: true
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccpackage
@@ -5125,7 +5131,8 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: 2
+                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+                region:  (( .properties.system_blobstore.external.region.value ))
                 path_style: true
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccresource
@@ -5135,7 +5142,8 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: 2
+                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+                region:  (( .properties.system_blobstore.external.region.value ))
                 path_style: true
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
         select_value: external
@@ -5162,6 +5170,26 @@ property_blueprints:
           - name: secret_key
             type: secret
             configurable: true
+          - name: signature_version
+            type: dropdown_select
+            configurable: true
+            default: 2
+            options:
+            - name: 2
+              label: V2 Signature
+            - name: 4
+              label: V4 Signature
+          - name: region
+            type: dropdown_select
+            configurable: true
+            default: ""
+            options:
+            - name: ""
+              label: "V2 Signature - N/A"
+            - name: "eu-central-1"
+              label: "V4 Signature - EU Region (Frankfurt)"
+            - name: "cn-north-1"
+              label: "V4 Signature - China Region (Beijing)"
 
   - name: group_search
     type: selector
