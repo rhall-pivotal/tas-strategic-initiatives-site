@@ -79,6 +79,8 @@ install_time_verifiers:
       access_key_id: .properties.system_blobstore.external.access_key
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.buildpacks_bucket
+      region: .properties.system_blobstore.external.region
+      aws_signature_version: .properties.system_blobstore.external.signature_version
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
@@ -86,6 +88,8 @@ install_time_verifiers:
       access_key_id: .properties.system_blobstore.external.access_key
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.droplets_bucket
+      region: .properties.system_blobstore.external.region
+      aws_signature_version: .properties.system_blobstore.external.signature_version
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
@@ -93,6 +97,8 @@ install_time_verifiers:
       access_key_id: .properties.system_blobstore.external.access_key
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.packages_bucket
+      region: .properties.system_blobstore.external.region
+      aws_signature_version: .properties.system_blobstore.external.signature_version
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
@@ -100,6 +106,8 @@ install_time_verifiers:
       access_key_id: .properties.system_blobstore.external.access_key
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.resources_bucket
+      region: .properties.system_blobstore.external.region
+      aws_signature_version: .properties.system_blobstore.external.signature_version
 
 post_deploy_errands:
   - name: smoke-tests
@@ -204,24 +212,32 @@ form_types:
           access_key_id: .properties.system_blobstore.external.access_key
           secret_access_key: .properties.system_blobstore.external.secret_key
           bucket_name: .properties.system_blobstore.external.buildpacks_bucket
+          region: .properties.system_blobstore.external.region
+          aws_signature_version: .properties.system_blobstore.external.signature_version
       - name: Verifiers::BlobstoreVerifier
         properties:
           endpoint: .properties.system_blobstore.external.endpoint
           access_key_id: .properties.system_blobstore.external.access_key
           secret_access_key: .properties.system_blobstore.external.secret_key
           bucket_name: .properties.system_blobstore.external.droplets_bucket
+          region: .properties.system_blobstore.external.region
+          aws_signature_version: .properties.system_blobstore.external.signature_version
       - name: Verifiers::BlobstoreVerifier
         properties:
           endpoint: .properties.system_blobstore.external.endpoint
           access_key_id: .properties.system_blobstore.external.access_key
           secret_access_key: .properties.system_blobstore.external.secret_key
           bucket_name: .properties.system_blobstore.external.packages_bucket
+          region: .properties.system_blobstore.external.region
+          aws_signature_version: .properties.system_blobstore.external.signature_version
       - name: Verifiers::BlobstoreVerifier
         properties:
           endpoint: .properties.system_blobstore.external.endpoint
           access_key_id: .properties.system_blobstore.external.access_key
           secret_access_key: .properties.system_blobstore.external.secret_key
           bucket_name: .properties.system_blobstore.external.resources_bucket
+          region: .properties.system_blobstore.external.region
+          aws_signature_version: .properties.system_blobstore.external.signature_version
     property_inputs:
     - reference: .properties.system_blobstore
       label: "Configure your Cloud Controller's filesystem"
@@ -5120,7 +5136,7 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: (( .properties.system_blobstore.external.version.value ))
+                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
                 region:  (( .properties.system_blobstore.external.region.value ))
                 path_style: true
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
@@ -5173,6 +5189,7 @@ property_blueprints:
           - name: signature_version
             type: dropdown_select
             configurable: true
+            optional: false
             default: 2
             options:
             - name: 2
@@ -5182,9 +5199,10 @@ property_blueprints:
           - name: region
             type: dropdown_select
             configurable: true
-            default: ""
+            optional: false
+            default: "''"
             options:
-            - name: ""
+            - name: "''"
               label: "V2 Signature - N/A"
             - name: "eu-central-1"
               label: "V4 Signature - EU Region (Frankfurt)"
