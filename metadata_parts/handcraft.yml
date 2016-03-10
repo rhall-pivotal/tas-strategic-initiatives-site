@@ -187,7 +187,7 @@ form_types:
         description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
       - reference: .diego_cell.garden_network_mtu
         label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
-        description: 1500 bytes is fine for most cases, but sometimes less is required, such as for networks that use GRE tunnels.
+        description: 1454 bytes is fine for most cases, but sometimes less is required, such as for networks that use GRE tunnels.
 
   - name: system_database
     label: System Database Config
@@ -3265,7 +3265,7 @@ job_types:
         type: integer
         configurable: true
         optional: false
-        default: 1500
+        default: 1454
 
     manifest: |
       diego:
