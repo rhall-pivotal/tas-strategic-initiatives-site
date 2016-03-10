@@ -139,8 +139,8 @@ form_types:
         label: Default App Memory (MB)
         description: This is the default memory allocated to a newly pushed app when no value is specified at cf-push.
       - reference: .cloud_controller.default_quota_memory_limit_mb
-        label: Default App Memory Quota per Org (only applies the first time you install Elastic Runtime for this environment)
-        description: Memory limit for all apps in an org using the default quota. It should be placed right before the Default Quota Service Instances field
+        label: Default App Memory Quota per Org (only applies the first time you install Elastic Runtime for this environment) (min: 10240, max: 102400)
+        description:  "Memory limit for all apps in an org using the default quota. (Only applies for the first install of Elastic Runtime. After initial installation, use the CLI to manage quotas.)"
       - reference: .cloud_controller.max_disk_quota_app
         label: Maximum Disk Quota per App (MB)
         description: This is the maximum disk allocated per app. In the event of a system upgrade or outage that causes a rolling deploy, larger apps may not succeed to re-deploy if there is insufficient disk capacity.
