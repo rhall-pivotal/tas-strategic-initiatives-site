@@ -1036,11 +1036,6 @@ job_types:
         configurable: true
         optional: true
 
-      - name: enable_ssl
-        type: boolean
-        configurable: true
-        default: true
-
       - name: disable_insecure_cookies
         type: boolean
         configurable: true
@@ -1057,7 +1052,7 @@ job_types:
           user: router_status
           password: (( status_credentials.password ))
         cipher_suites: (( .properties.networking_point_of_entry.external_ssl.ssl_ciphers.value ))
-        enable_ssl: (( enable_ssl.value ))
+        enable_ssl: "(( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.value_present? ? 'true' : 'false' ))"
         ssl_cert: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
         ssl_key: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
         ssl_skip_validation: (( .properties.route_services.enable.ignore_ssl_cert_verification.value ))
