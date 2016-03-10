@@ -128,6 +128,71 @@ form_types:
       - reference: .cloud_controller.apps_domain
         label: Apps Domain
         description: This is the default apps domain that pushed apps will use for their hostnames. Use the Cloud Foundry command line interface to add or delete domains. This also requires a wildcard DNS record.
+
+  - name: networking
+    label: Networking
+    description: This section allows you to employ various security and routing services for your platform.
+    property_inputs:
+      - reference: .properties.networking_point_of_entry
+        label: Configure the point-of-entry to this environment
+        selector_property_inputs:
+          - reference: .properties.networking_point_of_entry.external_ssl
+            label: "Select this option if you have an external load balancer, and it can forward encrypted traffic (SSL, HTTPS, etc.) to the Elastic Runtime Router(s). You may also select this option for a non-production environment where load balancing is not required, by configuring a single Router with TLS enabled as your point-of-entry to the Elastic Runtime platform."
+            property_inputs:
+              - reference: .properties.networking_point_of_entry.external_ssl.static_ips # MIGRATION from .router.static_ips
+                label: Router IPs
+                description: "Enter static IP address(es) for the Router(s), which must be in the subnet that you defined in the Ops Manager network configuration. If you have a load balancer, you should then configure your load balancer to point to these IPs. If deploying this to AWS with an ELB, then instead of defining any IP addresses here, you can add the name of your AWS ELB in the Resource Config section in the ELB Name column for Router."
+              - reference: .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate # MIGRATION from .ha_proxy.ssl_rsa_certificate
+                label: Router SSL Termination Certificate and Private Key
+                description: "Required for SSL encryption between the load balancer and Router(s)."
+              - reference: .properties.networking_point_of_entry.external_ssl.ssl_ciphers # MIGRATION from .router.ssl_ciphers
+                label: Router SSL Ciphers
+                description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
+          - reference: .properties.networking_point_of_entry.external_non_ssl
+            label: "Select this option if you have an external load balancer, but it will NOT forward any encrypted traffic to the Elastic Runtime Router(s). You may also select this option for a non-production environment where load balancing is not required, by configuring a single Router with TLS disabled as your point-of-entry to the Elastic Runtime platform."
+            property_inputs:
+              - reference: .properties.networking_point_of_entry.external_non_ssl.static_ips # MIGRATION from .router.static_ips
+                label: Router IPs
+                description: "Enter static IP address(es) for the Router(s), which must be in the subnet that you defined in the Ops Manager network configuration. If you have a load balancer, you should then configure your load balancer to point to these IPs. If deploying this to AWS with an ELB, then instead of defining any IP addresses here, you can add the name of your AWS ELB in the Resource Config section in the ELB Name column for Router."
+          - reference: .properties.networking_point_of_entry.haproxy
+            label: "Select this option if you want to use HAProxy as your first point-of-entry instead of your own load balancer. Note that HAProxy does not provide IP failover, so it is not a robust load balancer."
+            property_inputs:
+              - reference: .properties.networking_point_of_entry.haproxy.static_ips # MIGRATION from .ha_proxy.static_ips
+                label: HAProxy IPs
+                description: "Enter the IP address(es) for HAProxy. You must point your DNS to this IP unless you are using your own load balancer. HAProxy's IP must be in your subnet."
+              - reference: .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate # MIGRATION from .ha_proxy.ssl_rsa_certificate
+                label: SSL Certificate and Private Key
+                description: "This certificate and key are used to terminate SSL traffic at HAProxy. You can use a certificate that has multiple domains attributed to it, i.e. if you have separate system and application domains. You can also generate a self-signed certificate here with your wildcard system domain."
+              - reference: .properties.networking_point_of_entry.haproxy.disable_http # MIGRATION from .ha_proxy.disable_http
+                label: Disable HTTP traffic to HAProxy
+                description: "If checked, HAProxy will only allow HTTPS traffic."
+              - reference: .properties.networking_point_of_entry.haproxy.ssl_ciphers # MIGRATION from .ha_proxy.ssl_ciphers
+                label: HAProxy SSL Ciphers
+                description: "These ciphers should use dashes in their names, e.g. `ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384`"
+      - reference: .ha_proxy.skip_cert_verify
+        label: Disable SSL certificate verification for this environment
+        description: You can disable SSL verification if you are using your own self-signed certificates that are not from a trusted CA.
+      - reference: .router.disable_insecure_cookies
+        label: Disable insecure cookies on the Router
+        description: If checked, this turns on the secure flag for cookies generated by Router.
+      - reference: .properties.route_services
+        label: Choose whether to enable route services. Route services enable you to proxy requests to your app over TLS to arbitrary URLs before hitting your app.
+        selector_property_inputs:
+          - reference: .properties.route_services.enable
+            label: Enable route services
+            property_inputs:
+              - reference: .properties.route_services.enable.ignore_ssl_cert_verification
+                label: Ignore SSL certificate verification on route services
+                description: "When disabled, the routing tier will reject requests for routes bound to route services if the SSL certificate provided by the route service is not signed by a trusted CA."
+          - reference: .properties.route_services.disable
+            label: Disable route services
+      - reference: .diego_cell.garden_network_pool
+        label: Applications Subnet (you should not need to change this unless you need to avoid address collision with a third-party service on the same subnet)
+        description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
+      - reference: .diego_cell.garden_network_mtu
+        label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
+        description: 1500 bytes is fine for most cases, but sometimes less is required, such as for networks that use GRE tunnels.
+
   - name: system_database
     label: System Database Config
     description: Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details.
@@ -262,12 +327,6 @@ form_types:
     verifiers:
       - name: Verifiers::StaticIpsVerifier
     property_inputs:
-      - reference: .router.static_ips
-        label: Router IPs
-        description: "Enter the IP address(es) for the Pivotal CF Elastic Runtime Router. This IP must be in your subnet."
-      - reference: .ha_proxy.static_ips
-        label: HAProxy IPs
-        description: "Enter the IP address(es) for HAProxy. You must point your DNS to this IP unless you are using your own load balancer. HAProxy's IP must be in your subnet."
       - reference: .properties.logger_endpoint_port
         label: Loggregator Port
         description: "Default is 443. Enter a new value to override the default"
@@ -276,26 +335,9 @@ form_types:
     label: Security Config
     description: Configure security settings
     property_inputs:
-      - reference: .ha_proxy.ssl_rsa_certificate
-        label: SSL Termination Certificate
-        description: "This certificate is used by HAProxy and Router for SSL termination. You can generate a self-signed certificate with your system wildcard domain if you do not have a certificate available. If you use your own external load balancer to terminate SSL instead of HAProxy or the Router, you can enter any certificate and key pair here and scale down the instances of HAProxy to zero in the Resource Config section. You can also configure a certificate that has multiple domains attributed to it, i.e. if you have separate system and application domains."
-      - reference: .ha_proxy.skip_cert_verify
-        label: Ignore SSL certificate verification
-      - reference: .ha_proxy.ssl_ciphers
-        label: HAProxy SSL Ciphers
-        description: "HAProxy ciphers should use dashes in their names, e.g. ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384"
-      - reference: .router.ssl_ciphers
-        label: Router SSL Ciphers
-        description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
-      - reference: .ha_proxy.disable_http
-        label: Disable HTTP traffic to HAProxy
-        description: "Allows only HTTPS traffic to HAProxy and turns on secure flag for cookies generated by Router."
       - reference: .properties.allow_cross_container_traffic
         label: Enable cross-container traffic
         description: Not recommended for untrusted workloads
-      - reference: .router.enable_ssl
-        label: Enable TLS on the Router
-        description: Disable only if your load-balancer does not send HTTPS traffic to the Router
 
   - name: mysql_proxy
     label: MySQL Proxy Config
@@ -440,9 +482,6 @@ form_types:
       - reference: .cloud_controller.allow_app_ssh_access
         label: Allow SSH access to apps
         description: Enables SSH into app containers running on Diego.
-      - reference: .diego_cell.garden_network_pool
-        label: Application Containers Subnet Pool
-        description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to containers running on Diego. This is an arbitrary assignment and should be different from the network used by the system VMs.
 
   - name: experimental_features
     label: Experimental Features
@@ -1010,6 +1049,11 @@ job_types:
         type: boolean
         configurable: true
         default: true
+
+      - name: disable_insecure_cookies
+        type: boolean
+        configurable: true
+        default: false
 
     manifest: |
       request_timeout_in_seconds: 900
@@ -3240,6 +3284,12 @@ job_types:
         configurable: true
         optional: false
 
+      - name: garden_network_mtu
+        type: integer
+        configurable: true
+        optional: false
+        default: 1500
+
     manifest: |
       diego:
         executor:
@@ -3289,7 +3339,7 @@ job_types:
         enable_graph_cleanup: true
         network_pool: (( garden_network_pool.value ))
         deny_networks: ["0.0.0.0/0"]
-        network_mtu: 1454
+        network_mtu: (( garden_network_mtu.value ))
 
   - name: dea
     label: DEA
@@ -4897,6 +4947,65 @@ property_blueprints:
       - bbs.service.cf.internal
       - "*.bbs.service.cf.internal"
 
+  - name: networking_point_of_entry
+    type: selector
+    configurable: true
+    default: haproxy
+    option_templates:
+      - name: external_ssl
+        select_value: external_ssl
+        property_blueprints:
+          - name: static_ips
+            type: ip_ranges
+            configurable: true
+            optional: true
+          - name: ssl_rsa_certificate
+            type: rsa_cert_credentials
+            configurable: true
+          - name: ssl_ciphers
+            type: text
+            configurable: true
+            optional: true
+      - name: external_non_ssl
+        select_value: external_non_ssl
+        property_blueprints:
+          - name: static_ips
+            type: ip_ranges
+            configurable: true
+            optional: true
+      - name: haproxy
+        select_value: haproxy
+        property_blueprints:
+          - name: static_ips
+            type: ip_ranges
+            configurable: true
+            optional: true
+          - name: ssl_rsa_certificate
+            type: rsa_cert_credentials
+            configurable: true
+          - name: disable_http
+            type: boolean
+            configurable: true
+            default: false
+          - name: ssl_ciphers
+            type: text
+            configurable: true
+            optional: true
+
+  - name: route_services
+    type: selector
+    configurable: true
+    default: disable
+    option_templates:
+      - name: enable
+        select_value: enable
+        property_blueprints:
+          - name: ignore_ssl_cert_verification
+            type: boolean
+            configurable: true
+            default: false
+      - name: disable
+        select_value: disable
 
   - name: system_database
     type: selector
