@@ -49,7 +49,7 @@
     },
     "08OpsManagerTemplate": {
       "Type": "String",
-      "Default": "https://s3.amazonaws.com/pcf-cloudformation/1.5.0.0/pcf.json",
+      "Default": "https://s3.amazonaws.com/ops-man-references/pcf-cloudformation/1.7.0/pcf.json",
       "Description": "S3 Location for OpsManager CloudFormation Template"
     },
     "09ElbPrefix": {
@@ -137,28 +137,28 @@
            "-pcf-elb"
           ]
         ] },
-        "Listeners": [ 
+        "Listeners": [
           {
             "InstancePort": "80",
             "LoadBalancerPort": "80",
             "Protocol": "http",
             "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
-          }, 
+          },
           {
             "InstancePort": "80",
             "LoadBalancerPort": "443",
             "Protocol": "https",
             "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
-          }, 
+          },
           {
             "InstancePort": "80",
             "LoadBalancerPort": "4443",
             "Protocol": "ssl",
             "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
-          } 
+          }
         ],
         "Scheme": "internet-facing",
-        "SecurityGroups": [ 
+        "SecurityGroups": [
           {
             "Ref": "PcfElbSecurityGroup"
           }
