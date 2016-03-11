@@ -146,6 +146,29 @@ form_types:
       label: Allow SSH access to app containers
       description: "If you are using a load balancer instead of HAProxy, ensure that your load balancer has port 2222 open to enable SSH traffic. To have SSH access to a given app, a Cloud Foundry user must also be granted the SpaceDeveloper privilege for that app's space, which can be granted to the user in Apps Manager or via the Cloud Foundry CLI."
 
+  - name: application_dev_controls
+    label: Application Developer Controls
+    description: Configure restrictions and default settings for applications pushed to Cloud Foundry.
+    property_inputs:
+      - reference: .cloud_controller.max_file_size
+        label: Maximum File Upload Size (MB)
+        description: Maximum size of an application upload
+      - reference: .cloud_controller.default_app_memory
+        label: Default App Memory (MB)
+        description: This is the default memory allocated to a newly pushed app when no value is specified at cf-push.
+      - reference: .cloud_controller.default_quota_memory_limit_mb
+        label: Default App Memory Quota per Org (only applies the first time you install Elastic Runtime for this environment)
+        description:  "Memory limit for all apps in an org using the default quota. (Only applies for the first install of Elastic Runtime. After initial installation, use the CLI to manage quotas.)"
+      - reference: .cloud_controller.max_disk_quota_app
+        label: Maximum Disk Quota per App (MB)
+        description: This is the maximum disk allocated per app. In the event of a system upgrade or outage that causes a rolling deploy, larger apps may not succeed to re-deploy if there is insufficient disk capacity.
+      - reference: .cloud_controller.default_disk_quota_app
+        label: Default Disk Quota per App (MB)
+        description: This is the default disk allocated per app. In the event of a system upgrade or outage that causes a rolling deploy, larger apps may not succeed to re-deploy if there is insufficient disk capacity.
+      - reference: .cloud_controller.default_quota_max_number_services
+        label: Default Service Instances Quota per Org (only applies the first time you install Elastic Runtime for this environment)
+        description: Maximum allowed number of service instances in an org using the default quota (this only applies for the first install of Elastic Runtime, otherwise use the CLI to manage quotas)
+
   - name: uaa
     label: Authentication and Enterprise SSO
     description: Configure your user store access, which can be an interal user store (managed by Cloud Foundry's UAA) or an external user store (LDAP or SAML). You can also adjust the lifetimes of authentication tokens.
@@ -437,15 +460,6 @@ form_types:
       - reference: .cloud_controller.encrypt_key
         label: Cloud Controller DB Encryption Key
         description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
-      - reference: .cloud_controller.max_file_size
-        label: Maximum File Upload Size (MB)
-        description: This value limits the size of an application upload.
-      - reference: .cloud_controller.default_quota_memory_limit_mb
-        label: Default Quota App Memory (MB)
-        description: Memory limit for all apps in an org using the default quota. For initial install only. Use the CLI to manage quotas.
-      - reference: .cloud_controller.default_quota_max_number_services
-        label: Default Quota Service Instances
-        description: Maximum allowed number of service instances in an org using the default quota. For initial install only. Use the CLI to manage quotas.
 
   - name: syslog_aggregator
     label: System Logging
@@ -1683,6 +1697,33 @@ job_types:
           min: 1024
           max: 2048
 
+      - name: default_app_memory
+        type: integer
+        configurable: true
+        optional: false
+        default: 1024
+        constraints:
+          min: 64
+          max: 2048
+
+      - name: max_disk_quota_app
+        type: integer
+        configurable: true
+        optional: false
+        default: 2048
+        constraints:
+          min: 512
+          max: 10240
+
+      - name: default_disk_quota_app
+        type: integer
+        configurable: true
+        optional: false
+        default: 1024
+        constraints:
+          min: 512
+          max: 10240
+
       - name: enable_custom_buildpacks
         type: boolean
         configurable: true
@@ -1761,6 +1802,9 @@ job_types:
         bootstrap_admin_email: admin
         bulk_api_password: (( bulk_api_credentials.password ))
         client_max_body_size: (( max_file_size.value ))M
+        maximum_app_disk_in_mb: (( max_disk_quota_app.value ))
+        default_app_disk_in_mb: (( default_disk_quota_app.value ))
+        default_app_memory: (( default_app_memory.value ))
         db_encryption_key: (( encrypt_key.value || db_encryption_credentials.password ))
         default_running_security_groups:
           - all_open
