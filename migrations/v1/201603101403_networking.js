@@ -22,16 +22,13 @@ exports.migrate = function(input) {
         };
     }
 
-    if (properties['.ha_proxy.disable_http']['value']) {
-        properties['.properties.route_services'] = {
-            value: 'enable'
-        };
+    // Always enable route services by default.
+    properties['.properties.route_services'] = {
+        value: 'enable'
+    };
 
+    if (properties['.ha_proxy.disable_http']['value']) {
         properties['.properties.route_services.enable.ignore_ssl_cert_verification'] = properties['.ha_proxy.disable_http'];
-    } else {
-        properties['.properties.route_services'] = {
-            value: 'disable'
-        };
     }
 
     return input;

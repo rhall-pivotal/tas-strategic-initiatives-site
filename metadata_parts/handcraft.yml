@@ -1041,6 +1041,9 @@ job_types:
         configurable: true
         default: false
 
+      - name: route_services_secret
+        type: secret
+
     manifest: |
       request_timeout_in_seconds: 900
       networks:
@@ -1052,6 +1055,7 @@ job_types:
           user: router_status
           password: (( status_credentials.password ))
         cipher_suites: (( .properties.networking_point_of_entry.external_ssl.ssl_ciphers.value ))
+        route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
         enable_ssl: "(( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.value_present? ? 'true' : 'false' ))"
         ssl_cert: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
         ssl_key: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
@@ -4958,6 +4962,10 @@ property_blueprints:
     option_templates:
       - name: enable
         select_value: enable
+        named_manifest:
+          - name: secret
+            manifest: |
+              (( .router.route_services_secret.value ))
         property_blueprints:
           - name: ignore_ssl_cert_verification
             type: boolean
@@ -4965,6 +4973,9 @@ property_blueprints:
             default: false
       - name: disable
         select_value: disable
+        named_manifest:
+          - name: secret
+            manifest: |
 
   - name: system_database
     type: selector
