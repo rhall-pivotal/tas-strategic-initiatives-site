@@ -63,8 +63,7 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
     networking_form =
       current_ops_manager.product(elastic_runtime_settings['name']).product_form('networking')
     networking_form.open_form
-    networking_form.property('.ha_proxy.skip_cert_verify').set
-    (elastic_runtime_settings['trust_self_signed_certificates'])
+    networking_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings['trust_self_signed_certificates'])
 
     if elastic_runtime_settings['ssl_certificate']
       networking_form.nested_property('.ha_proxy.ssl_rsa_certificate', 'cert_pem')
