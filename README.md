@@ -12,15 +12,15 @@ cd p-runtime
 bundle install # Installs vara
 bundle exec vara build-pivotal ~/workspace/p-runtime/ # Creates cf-1.N.0.0.alpha.XYZ.sOmEsHa.pivotal
 ```
+
 ### Configuring p-runtime / opsmgr tasks
 
 #### Environments
+A named environment is specified in a concourse pool resource file (specifically `../environment/metadata`), or `${ENV_DIRECTORY)/<name>.yml` if the ENV_DIRECTORY environment variable is set.
 
-A named environment is specified in `config/environments/<name>.yml` (or `${ENV_DIRECTORY)/<name>.yml` if that environment variable is set.
+See [sample environment files](https://github.com/pivotal-cf/p-runtime/blob/master/sample_env_files) for examples of defining your environments.
 
-See [the p-runtime environment files](https://github.com/pivotal-cf/p-runtime/blob/master/config/environments) for examples of defining your environments.
-
-### Deploying Ops Manager and Elastic Runtime
+### Basic Deployment of Ops Manager and Elastic Runtime with Rake Tasks
 
 #### Clean existing environment
 If you want to start fresh, you can clear out your environment completely:
@@ -34,19 +34,20 @@ bundle exec rake opsmgr:destroy[environment]
 ```
 
 #### Download an Ops Manager Image
-Obtain the Ops Manager Image you need from PivNet, and name that file `ops_man_image`
+Obtain the Ops Manager Image you need from [Pivotal Network](https://network.pivotal.io). If you need a newer version than is available there, consult the Ops Manager team.
 
-~~Obtain the ACCESS_KEY_ID and SECRET_ACCESS_KEY from LastPass. The credentials are in `Shared - Release Engineering<->Ops Manager` as `AWS "+opsmanager" Account "RelengToolsReader" IAM User access key`. Contact ask+cf@pivotal.io for access to this credential in LastPass.~~
-
-~~Replace \<iaas> with `openstack`, `aws`, or `vsphere`~~
-
-~~`ACCESS_KEY_ID=<OpsMan Reader Access Key> SECRET_ACCESS_KEY=<OpsMan Reader Secret Key> bundle exec rake opsmgr:download[<iaas>,stable]`~~
-
-#### Deploy the Ops Manager
-The above task saves the Ops Manager Image to a file `ops_man_image`
+#### Prepare The Environment (AWS-only)
+This will spin up a cloudformation stack; because it provisions an RDS instance, it can take around half an hour.
 
 ```
-bundle exec rake opsmgr:install[environment,ops_man_image]
+bundle exec rake opsmgr:prepare[environment]
+```
+
+#### Deploy the Ops Manager
+You need to specify the path to the Ops Manager image you want to use/have just downloaded.
+
+```
+bundle exec rake opsmgr:install[environment,path_to_ops_manager_image]
 ```
 
 #### Configure and Deploy Microbosh
@@ -63,45 +64,48 @@ bundle exec rake opsmgr:trigger_install[environment,<OM version>,<wait time>]
 ```
 
 #### Upload, Configure, and Deploy ERT
-Once the µBOSH is deployed, you can configure and deploy the Elastic Runtime product
+Once the µBOSH is deployed, you can configure and deploy the Elastic Runtime product.
 
 `<OM version>` is the Ops Manager version. Opsmgr supports Ops Manager `1.4`, `1.5`, and `1.6`.
 
-`<p-runtime .pivotal file>` is the .pivotal file created above
+`<p-runtime .pivotal file>` is the .pivotal file created above.
 
-`cf` is the p-runtime product name
+`cf` is the p-runtime product name.
 
-`<ert version>` is the ERT version. The p-runtime rake task supports ERT versions `1.5` and `1.6`
+`<ert version>` is the ERT version. The p-runtime rake task supports ERT versions `1.5` and `1.6`.
 
-`<wait time>` is number of minutes to wait for install, recommended wait time is `240`
+`<wait time>` is number of minutes to wait for install, recommended wait time is `240`.
 
 ```
 bundle exec rake opsmgr:product:upload_add[environment,<OM version>,<p-runtime .pivotal file>,cf]
 bundle exec rake ert:configure[environment,<ert version>,<OM version>]
 ```
 
-##### Turn on all experimental features
-After running `bundle exec rake ert:configure[...]`, you can optionally turn on all experimental features
+##### Turn on all experimental features (Optional)
+After running `bundle exec rake ert:configure[...]`, you can optionally turn on all experimental features.
 
 ```
 bundle exec rake ert:configure_experimental_features[environment,<ert version>,<OM version>]
 ```
 
 ##### Deploy ERT
+
 ```
 bundle exec rake opsmgr:trigger_install[environment,<OM version>,<wait time>]
 ```
 
+### Advanced Tasks
+
 #### Upgrade ERT to new version
 `<OM version>` is the Ops Manager version. Opsmgr supports Ops Manager `1.4`, `1.5`, and `1.6`.
 
-`<new p-runtime .pivotal file>` is the newer version of the .pivotal file created above
+`<new p-runtime .pivotal file>` is the newer version of the .pivotal file created above.
 
-`cf` is the p-runtime product name
+`cf` is the p-runtime product name.
 
-`<ert version>` is the ERT version. The p-runtime rake task supports ERT versions `1.5` and `1.6`
+`<ert version>` is the ERT version. The p-runtime rake task supports ERT versions `1.5` and `1.6`.
 
-`<wait time>` is number of minutes to wait for install, recommended wait time is `240`
+`<wait time>` is number of minutes to wait for install, recommended wait time is `240`.
 
 ```
 bundle exec rake opsmgr:product:upload_upgrade[environment,<OM version>,<new p-runtime .pivotal file>,cf]

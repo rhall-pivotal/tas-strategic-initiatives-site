@@ -4,7 +4,7 @@ class IntegrationSpecRunner
   class UnsupportedErtVersion < StandardError
   end
 
-  SUPPORTED_ERT_VERSIONS = %w(1.5 1.6)
+  SUPPORTED_ERT_VERSIONS = %w(1.5 1.6 1.7)
 
   def initialize(environment:, om_version:, ert_version:)
     fail 'No Environment Name provided' if environment.nil? || environment.empty?
@@ -38,6 +38,10 @@ class IntegrationSpecRunner
 
   def configure_external_file_storage
     run_spec(["integration/ERT-#{ert_version}/configure_external_file_storage_spec.rb"])
+  end
+
+  def configure_multi_az_instance_counts
+    run_spec(["integration/ERT-#{ert_version}/configure_multi_az_instance_counts_spec.rb"])
   end
 
   private

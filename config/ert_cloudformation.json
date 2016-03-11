@@ -49,7 +49,7 @@
     },
     "08OpsManagerTemplate": {
       "Type": "String",
-      "Default": "https://s3.amazonaws.com/pcf-cloudformation/1.5.0.0/pcf.json",
+      "Default": "https://s3.amazonaws.com/ops-man-references/pcf-cloudformation/1.7.0/pcf.json",
       "Description": "S3 Location for OpsManager CloudFormation Template"
     },
     "09ElbPrefix": {
@@ -184,7 +184,7 @@
           ]
         ]},
         "Scheme": "internet-facing",
-        "SecurityGroups": [ 
+        "SecurityGroups": [
           {
             "Ref": "PcfElbSecurityGroup"
           }

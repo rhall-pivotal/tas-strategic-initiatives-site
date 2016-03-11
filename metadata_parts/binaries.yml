@@ -1,35 +1,35 @@
 ---
 stemcell_criteria:
   os: ubuntu-trusty
-  version: '3100'
+  version: '3191'
   requires_cpi: false
 releases:
 # MySQL release is first because its packages take the longest to compile.
-- file: cf-mysql-23.tgz
+- file: cf-mysql-23.2.tgz
   name: cf-mysql
-  version: '23'
-  md5: 4e81e61c628d6c4726f90806a31dcf39
-  url: https://s3.amazonaws.com/cf-mysql-releases/final/cf-mysql-23.tgz
-- file: cf-222.tgz
+  version: '23.2'
+  md5: c245e86700c28f67685f2c5db18faab1
+  url: http://releng-artifacts.cf-app.com/cf-mysql-23.2.tgz
+- file: cf-231.tgz
   name: cf
-  version: '222'
-  sha1: ca2a82f0cf17c2bab54f564fac65ee1fd75f4b01
-  url: https://bosh.io/d/github.com/cloudfoundry/cf-release?v=222
-- file: diego-0.1437.0.tgz
+  version: '231'
+  sha1: 456a52f8a03728708252910eef90dc490bcb76a3
+  url: https://bosh.io/d/github.com/cloudfoundry/cf-release?v=231
+- file: diego-0.1454.0.tgz
   name: diego
-  version: '0.1437.0'
-  sha1: 0d38e6fadf323888477aec42844749a8d04a6c77
-  url: https://bosh.io/d/github.com/cloudfoundry-incubator/diego-release?v=0.1437.0
-- file: garden-linux-0.308.0.tgz
+  version: '0.1454.0'
+  sha1: 4e2ae4b13aac073eda3f114afcbd8dc72ddb39e8
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/diego-release?v=0.1454.0
+- file: garden-linux-0.333.0.tgz
   name: garden-linux
-  version: '0.308.0'
-  md5: 163d38e205a2215eff80bf2dbb789d05
-  url: https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release?v=0.308.0
-- file: etcd-release-16.tgz
+  version: '0.333.0'
+  sha1: 9ddccb3f0550a3f7f5ba119221c1a77c1081e6a0
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release?v=0.333.0
+- file: etcd-release-36.tgz
   name: etcd
-  version: '16'
-  sha1: 9868d26855cc5759839876f9d344faf77c252b2b
-  url: http://bosh.io/d/github.com/cloudfoundry-incubator/etcd-release?v=16
+  version: '36'
+  sha1: a0f2516e392838450e6e5af4aef972bc55494d32
+  url: http://bosh.io/d/github.com/cloudfoundry-incubator/etcd-release?v=36
 - name: push-apps-manager-release
   file: push-apps-manager-release-397.tgz
   version: '397'
@@ -44,12 +44,7 @@ releases:
   name: 'notifications-ui'
   version: '10'
   sha1: 46662869df4fe64fc77161ba4c475c6a32b3f573
-  aws:
-    access_key_id: AKIAI5MTLGMX77ZITPJA
-    secret_access_key: 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
-    region: us-west-1
-    bucket_name: ert-concourse-products
-    filename: upstream-releases/notifications-ui/notifications-ui-10.tgz
+  url: https://s3-us-west-1.amazonaws.com/ert-concourse-products/upstream-releases/notifications-ui/notifications-ui-10.tgz
 - file: cf-autoscaling-28.tgz
   name: 'cf-autoscaling'
   version: '28'

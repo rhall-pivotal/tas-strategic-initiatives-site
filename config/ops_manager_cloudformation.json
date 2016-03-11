@@ -1,6 +1,15 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Cloudformation template for configuring Pivotal Cloud Foundry on AWS",
+  "Conditions": {
+    "CreateRDS": {
+      "Fn::And":[
+        { "Fn::Not": [ { "Fn::Equals": [ { "Ref": "04RdsDBName"}, "" ]}]},
+        { "Fn::Not": [ { "Fn::Equals": [ { "Ref": "05RdsUsername"}, "" ]}]},
+        { "Fn::Not": [ { "Fn::Equals": [ { "Ref": "06RdsPassword"}, "" ]}]}
+      ]
+    }
+  },
   "Parameters": {
     "01NATKeyPair": {
       "Type": "AWS::EC2::KeyPair::KeyName",
@@ -29,19 +38,19 @@
     },
     "04RdsDBName": {
       "Type": "String",
-      "MinLength": "4",
+      "AllowedPattern": "(.{4,}|^$)",
       "Default": "bosh",
-      "Description": "BOSH database name"
+      "Description": "BOSH database name (leave blank to skip RDS)"
     },
     "05RdsUsername": {
       "Type": "String",
-      "Description": "BOSH database username"
+      "Description": "BOSH database username (leave blank to skip RDS)"
     },
     "06RdsPassword": {
       "Type": "String",
       "NoEcho": "true",
-      "MinLength": "8",
-      "Description": "BOSH database password"
+      "AllowedPattern": "(.{8,}|^$)",
+      "Description": "BOSH database password (leave blank to skip RDS, must be 8+ chars)"
     }
   },
   "Mappings": {
@@ -450,6 +459,7 @@
     },
     "PcfRdsSubnet1": {
       "Type": "AWS::EC2::Subnet",
+      "Condition": "CreateRDS",
       "Properties": {
         "AvailabilityZone": {
           "Fn::Select": [
@@ -471,6 +481,7 @@
     },
     "PcfRdsSubnet2": {
       "Type": "AWS::EC2::Subnet",
+      "Condition": "CreateRDS",
       "Properties": {
         "AvailabilityZone": {
           "Fn::Select": [
@@ -492,6 +503,7 @@
     },
     "PcfRdsSubnetGroup": {
       "Type": "AWS::RDS::DBSubnetGroup",
+      "Condition": "CreateRDS",
       "Properties": {
         "DBSubnetGroupDescription": "PCF RDS Subnet Group",
         "SubnetIds": [
@@ -502,6 +514,7 @@
     },
     "PcfRds": {
       "Type": "AWS::RDS::DBInstance",
+      "Condition": "CreateRDS",
       "Properties": {
         "AllocatedStorage": "100",
         "DBInstanceClass": "db.m3.large",
@@ -553,14 +566,25 @@
       "Value": { "Fn::GetAtt" : [ "PcfPublicSubnet", "AvailabilityZone" ] }
     },
     "PcfRdsAddress": {
+      "Condition": "CreateRDS",
       "Value": { "Fn::GetAtt": [ "PcfRds", "Endpoint.Address"]}
     },
     "PcfRdsPort": {
+      "Condition": "CreateRDS",
       "Value": {"Fn::GetAtt": [ "PcfRds", "Endpoint.Port"] }
     },
-    "PcfRdsUsername": {"Value": {"Ref": "05RdsUsername"}},
-    "PcfRdsPassword": {"Value": {"Ref": "06RdsPassword"}},
-    "PcfRdsDBName": {"Value": {"Ref": "04RdsDBName"}},
+    "PcfRdsUsername": {
+      "Condition": "CreateRDS",
+      "Value": {"Ref": "05RdsUsername"}
+    },
+    "PcfRdsPassword": {
+      "Condition": "CreateRDS",
+      "Value": {"Ref": "06RdsPassword"}
+    },
+    "PcfRdsDBName": {
+      "Condition": "CreateRDS",
+      "Value": {"Ref": "04RdsDBName"}
+    },
     "PcfKeyPairName": {"Value": {"Ref": "01NATKeyPair"}}
   }
 }
