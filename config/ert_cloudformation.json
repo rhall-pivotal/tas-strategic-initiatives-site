@@ -57,7 +57,7 @@
       "Default": "",
       "Description": "Prefix for the name of the ELBs generated. NOTE: Leave empty to use default prefix of AWS::StackName"
     },
-    "11AllowHttpOnElb": {
+    "10AllowHttpOnElb": {
       "Type": "String",
       "Default": "true",
       "AllowedValues": ["true", "false"],
@@ -73,7 +73,7 @@
       ]
     },
     "AllowHTTPTrafficOnELB": {
-      "Fn::Equals" : [{"Ref" : "11AllowHttpOnElb" }, "true"]
+      "Fn::Equals" : [{"Ref" : "10AllowHttpOnElb" }, "true"]
     }
   },
   "Resources": {
