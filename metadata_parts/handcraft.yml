@@ -4958,11 +4958,11 @@ property_blueprints:
   - name: route_services
     type: selector
     configurable: true
-    default: disable
+    default: enable
     option_templates:
       - name: enable
         select_value: enable
-        named_manifest:
+        named_manifests:
           - name: secret
             manifest: |
               (( .router.route_services_secret.value ))
@@ -4973,7 +4973,7 @@ property_blueprints:
             default: false
       - name: disable
         select_value: disable
-        named_manifest:
+        named_manifests:
           - name: secret
             manifest: |
 
