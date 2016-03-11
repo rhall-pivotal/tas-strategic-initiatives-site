@@ -100,11 +100,11 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
   private
 
   def configure_vsphere_ha_proxy(elastic_runtime_settings)
-    ips_and_ports_form =
-      current_ops_manager.product(elastic_runtime_settings['name']).product_form('ha_proxy')
-    ips_and_ports_form.open_form
-    ips_and_ports_form.property('.ha_proxy.static_ips').set(elastic_runtime_settings['ha_proxy_static_ips'])
-    ips_and_ports_form.save_form
+    networking_form =
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('networking')
+    networking_form.open_form
+    networking_form.property('.ha_proxy.static_ips').set(elastic_runtime_settings['ha_proxy_static_ips'])
+    networking_form.save_form
   end
 
   def configure_aws_load_balancers(elastic_runtime_settings)
