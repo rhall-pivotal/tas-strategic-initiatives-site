@@ -2714,13 +2714,7 @@ job_types:
           footer_legal_text: ©2016 Pivotal Software, Inc. All Rights Reserved.
         self_service_links_enabled: true
         protocol: https
-        tiles:
-          - name: Pivotal Apps Manager
-            login-link: "https://apps.(( .cloud_controller.system_domain.value ))"
-            image: "/resources/pivotal/images/dev-console-logo-gray.png"
-            image-hover: "/resources/pivotal/images/dev-console-logo-teal.png"
 
-        brand: pivotal
         links:
           home: "https://apps.(( .cloud_controller.system_domain.value ))"
           passwd: "https://login.(( .cloud_controller.system_domain.value ))/forgot_password"
@@ -2813,6 +2807,10 @@ job_types:
             scope: "openid,cloud_controller.read,cloud_controller.write,password.write,console.admin,console.support,cloud_controller.admin"
             access-token-validity: 1209600
             refresh-token-validity: 1209600
+            name: Pivotal Apps Manager
+            app-launch-url: "https://apps.(( .cloud_controller.system_domain.value ))"
+            show-on-homepage: true
+            app-icon: iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADNQTFRFH4B48Pf2h7u3TJqT4e7tPZGK0ubkw93bLomBlsTAaqulpczJtNXSebOuW6KcEHhv////CERlxAAAABF0Uk5T/////////////////////wAlrZliAAAEaklEQVR42syb17brKgxFRTPFxuz//9rrm5NiJ4AkXLCeEzOHaEsF+GswbWVUCtLbQKkorW75FnD/YOV65K2BkvZUAO1VQk15fQ6A9iYRzTAYqADTnFg2T0cCCO8S25wXBwEICanJQIoDAJqHJyJgAJNLu8xNuwC0SrtN6XYAmQ4x2QigTTrIjG4BGCEdZjDyAWI61CITQJh0sBnBARhcOtzcQAcYIJ1gMFABzhm/QJABGNNpNlIAhnSiDTjAWf4vzQJcOn6G4AtAuHSyOVEFMOl0MzWAmC6wWAYY0yU2lgA0XAMAugBg0kVm8gAyXWYyB6DThaYzAOpKAPULMKVLbfoGOP8ILByIsGsFqlkuFhS0r8MngOB/wsnVvTJ47h4GsQFgOyD8pEJ0hBYXQJMD8uGWCA0u+Afged4rBpyWs5T9CoC1BWqBlmAkUtwHgHUGmHrIH5hnwQNgPm58DsH8AtDN49vlDFjOgkm0EegnAGMJrq/yIRSSYoazDIGnA6binlMDX9iYfwCMGZg/zofCtmLtav0AYMyArqrH8CZw9DkAjhAIyN0tuepWPQD4DihO8sR1wf8Ali9jFHbFkQMMuwDQL8KXnrf4LU8NseUCoNgzoPBbnjoHagEg38SOIp9H3nG4DK/Zh4CnbBTqxGqgrkEXXzMgplD0mhnfSXba+WqBhmq22R0xZuc4bLIPlrK6JFA2DPhMGeEX0jYIpAgEzLwEGkwx3mMIJEUACIIiv4Y2eaIAyOdf/euyTSDh41clmM9Kha0hLkYBho0Ck9IPhZrKKwEnrPR2RY3EHIAe1j/lMzfmPfzw1UunBU3MPAEtglskwOqXZsgShD8RcwJJ7QAoSYwxW9qIJitfxh0AunQDB8IcvymhGcCUFU7A0+vv+QvNALHixICLYEmYAyBpoLme8JwRBTE0A9jqJE5ojv21hJqPQlv9wCf3X6oyWBQA6pcR8oHPMT22AigagMMilcJC1wSAiGdRKvuoftwRFmGsS7KIplGHWrE34ttQ1kWpQ0P+Twnol+CdTAg1UapJl/FA0Cs/BJ5wFGskMInZZQ5WZn7yJxQrln4GJshlKTIZiVlsDr8xX/MgXccKDU7jjyBR9tvfKzmun9MNK0EyIcGpTaTT+OGF6SO2VjmCTTV0UWSLJKPWQi2eoHAlUWpTnuDbZixBgcnWoiz2JIKAp2iwJFWBYBsZjU1hgael6bKh2XeXTxQNoZkmJip/g9NMj5ez7Oy9oadqzSbu0XnHqi0CHp57TrLaxefn9Vj2q3nHTVYSskSam64HpfC8h1KUX23S9VcXLTeasqFkc5S55qLVQeZ3lO2OsE3Z7srega+wqb10e4wDdhav9zvgPuX77g0M/Vs4+jexdG/j6d/I1L+Vq3szW/92vv4Njf1bOrs3tfZv6+3f2Ny/tbt/c3v/9v7+Dxz6P/Ho/8jlBs98+j906v/U6waP3fo/97vBg8f+Tz5v8Oj1Bs9+7/Dw+QZPv+/w+P2M5///CTAAA2y1hXW9UzcAAAAASUVORK5CYII=
           cf:
             id: cf
             override: true
