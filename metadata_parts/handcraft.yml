@@ -145,10 +145,10 @@ form_types:
           - reference: .properties.networking_point_of_entry.external_ssl
             label: "Select this option if you have an external load balancer, and it can forward encrypted traffic (SSL, HTTPS, etc.) to the Elastic Runtime Router(s). You may also select this option for a non-production environment where load balancing is not required, by configuring a single Router with TLS enabled as your point-of-entry to the Elastic Runtime platform."
             property_inputs:
-              - reference: .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate # MIGRATION from .ha_proxy.ssl_rsa_certificate
+              - reference: .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate
                 label: Router SSL Termination Certificate and Private Key
                 description: "Required for SSL encryption between the load balancer and Router(s)."
-              - reference: .properties.networking_point_of_entry.external_ssl.ssl_ciphers # MIGRATION from .router.ssl_ciphers
+              - reference: .properties.networking_point_of_entry.external_ssl.ssl_ciphers
                 label: Router SSL Ciphers
                 description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
           - reference: .properties.networking_point_of_entry.external_non_ssl
@@ -156,13 +156,13 @@ form_types:
           - reference: .properties.networking_point_of_entry.haproxy
             label: "Select this option if you want to use HAProxy as your first point-of-entry instead of your own load balancer. Note that HAProxy does not provide IP failover, so it is not a robust load balancer."
             property_inputs:
-              - reference: .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate # MIGRATION from .ha_proxy.ssl_rsa_certificate
+              - reference: .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate
                 label: SSL Certificate and Private Key
                 description: "This certificate and key are used to terminate SSL traffic at HAProxy. You can use a certificate that has multiple domains attributed to it, i.e. if you have separate system and application domains. You can also generate a self-signed certificate here with your wildcard system domain."
-              - reference: .properties.networking_point_of_entry.haproxy.disable_http # MIGRATION from .ha_proxy.disable_http
+              - reference: .properties.networking_point_of_entry.haproxy.disable_http
                 label: Disable HTTP traffic to HAProxy
                 description: "If checked, HAProxy will only allow HTTPS traffic."
-              - reference: .properties.networking_point_of_entry.haproxy.ssl_ciphers # MIGRATION from .ha_proxy.ssl_ciphers
+              - reference: .properties.networking_point_of_entry.haproxy.ssl_ciphers
                 label: HAProxy SSL Ciphers
                 description: "These ciphers should use dashes in their names, e.g. `ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384`"
       - reference: .ha_proxy.skip_cert_verify

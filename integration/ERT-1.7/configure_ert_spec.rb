@@ -60,24 +60,25 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
   end
 
   it 'configures ssl certificates' do
-    security_config_form =
-      current_ops_manager.product(elastic_runtime_settings['name']).product_form('security_config')
-    security_config_form.open_form
-    security_config_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings['trust_self_signed_certificates'])
+    networking_form =
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('networking')
+    networking_form.open_form
+    networking_form.property('.ha_proxy.skip_cert_verify').set
+    (elastic_runtime_settings['trust_self_signed_certificates'])
 
     if elastic_runtime_settings['ssl_certificate']
-      security_config_form.nested_property('.ha_proxy.ssl_rsa_certificate', 'cert_pem')
+      networking_form.nested_property('.ha_proxy.ssl_rsa_certificate', 'cert_pem')
         .set(elastic_runtime_settings['ssl_certificate'])
-      security_config_form.nested_property('.ha_proxy.ssl_rsa_certificate', 'private_key_pem')
+      networking_form.nested_property('.ha_proxy.ssl_rsa_certificate', 'private_key_pem')
         .set(elastic_runtime_settings['ssl_private_key'])
     else
       domain = elastic_runtime_settings['system_domain']
-      security_config_form.generate_self_signed_cert(
+      networking_form.generate_self_signed_cert(
         "*.#{domain},*.login.#{domain},*.uaa.#{domain}", '.ha_proxy.ssl_rsa_certificate'
       )
     end
 
-    security_config_form.save_form
+    networking_form.save_form
   end
 
   it 'configures smtp' do
