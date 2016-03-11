@@ -1,7 +1,7 @@
 exports.migrate = function(input) {
     var properties = input.properties;
 
-    if (properties['.haproxy.static_ips']['value']) {
+    if (properties['.ha_proxy.static_ips']['value']) {
         properties['.properties.networking_point_of_entry'] = {
             value: 'haproxy'
         };
@@ -19,6 +19,18 @@ exports.migrate = function(input) {
     } else {
         properties['.properties.networking_point_of_entry'] = {
             value: 'external_non_ssl'
+        };
+    }
+
+    if (properties['.ha_proxy.disable_http']['value']) {
+        properties['.properties.route_services'] = {
+            value: 'enable'
+        };
+
+        properties['.properties.route_services.enable.ignore_ssl_cert_verification'] = properties['.ha_proxy.disable_http'];
+    } else {
+        properties['.properties.route_services'] = {
+            value: 'disable'
         };
     }
 
