@@ -268,9 +268,6 @@ form_types:
       - reference: .ha_proxy.static_ips
         label: HAProxy IPs
         description: "Enter the IP address(es) for HAProxy. You must point your DNS to this IP unless you are using your own load balancer. HAProxy's IP must be in your subnet."
-      - reference: .properties.logger_endpoint_port
-        label: Loggregator Port
-        description: "Default is 443. Enter a new value to override the default"
 
   - name: security_config
     label: Security Config
@@ -343,6 +340,9 @@ form_types:
       - reference: .doppler.message_drain_buffer_size
         label: "Syslog Drain Buffer Size (# of messages)"
         description: "Sets the buffer size on Doppler before dropping log messages. Note that a larger buffer size has the potential to overload the system."
+      - reference: .properties.logger_endpoint_port
+        label: Loggregator Port
+        description: "Default is 4443. Enter a new value to override the default"
 
   - name: uaa_sso
     label: SSO Config
@@ -1802,9 +1802,9 @@ job_types:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
       logger_endpoint:
-        port: (( .properties.logger_endpoint_port.value || "443" ))
+        port: (( .properties.logger_endpoint_port.value ))
       doppler:
-        port: (( .properties.logger_endpoint_port.value || "443" ))
+        port: (( .properties.logger_endpoint_port.value ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -2187,7 +2187,7 @@ job_types:
         url: "https://login.(( .cloud_controller.system_domain.value ))"
 
       logger_endpoint:
-        port: (( .properties.logger_endpoint_port.value || "443" ))
+        port: (( .properties.logger_endpoint_port.value ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -2345,7 +2345,7 @@ job_types:
         url: "https://login.(( .cloud_controller.system_domain.value ))"
 
       logger_endpoint:
-        port: (( .properties.logger_endpoint_port.value || "443" ))
+        port: (( .properties.logger_endpoint_port.value ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -3128,7 +3128,7 @@ job_types:
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         tps:
-          traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value || "443" ))
+          traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value ))
           bbs:
             api_location: bbs.service.cf.internal:8889
             ca_cert: (( $ops_manager.ca_certificate ))
@@ -4818,7 +4818,7 @@ property_blueprints:
   - name: logger_endpoint_port
     type: port
     configurable: true
-    optional: true
+    default: 4443
 
   - name: allow_cross_container_traffic
     type: boolean
