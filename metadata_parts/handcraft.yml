@@ -1915,9 +1915,6 @@ job_types:
       default: 1
       constraints:
         min: 0
-      zero_if:
-        property_reference: '.properties.networking_point_of_entry.selected_option.scale_haproxy_to_zero'
-        property_value: true
 
     property_blueprints:
       - name: static_ips
@@ -4941,15 +4938,8 @@ property_blueprints:
             type: text
             configurable: true
             optional: true
-          - name: scale_haproxy_to_zero
-            type: boolean
-            default: true
       - name: external_non_ssl
         select_value: external_non_ssl
-        property_blueprints:
-          - name: scale_haproxy_to_zero
-            type: boolean
-            default: true
       - name: haproxy
         select_value: haproxy
         property_blueprints:
@@ -4964,9 +4954,6 @@ property_blueprints:
             type: text
             configurable: true
             optional: true
-          - name: scale_haproxy_to_zero
-            type: boolean
-            default: false
 
   - name: route_services
     type: selector
