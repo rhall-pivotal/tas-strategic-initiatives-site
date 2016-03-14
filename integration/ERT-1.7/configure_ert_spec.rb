@@ -103,10 +103,14 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
       resource_config.set_instances_for_job('consoledb', 0)
     end
 
-    it 'scales up the persistent disk on uaadb and ccdb' do
+    it 'scales up the persistent and ephemeral disks on uaadb and ccdb' do
       resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
+      # Persistent Disk
       resource_config.set_disk_type_for_job('ccdb', '5120')
       resource_config.set_disk_type_for_job('uaadb', '20480')
+      # Ephemeral Disk
+      resource_config.set_vm_type_for_job('ccdb', 'medium')
+      resource_config.set_vm_type_for_job('uaadb', 'medium')
     end
 
     it 'selects the internal mysql database' do
