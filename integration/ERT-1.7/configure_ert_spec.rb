@@ -112,12 +112,6 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
     resource_config.set_instances_for_job('ha_proxy', 0)
     resource_config.set_elb_names_for_job('router', elastic_runtime_settings['elb_name'])
     resource_config.set_elb_names_for_job('diego_brain', elastic_runtime_settings['ssh_elb_name'])
-
-    ips_and_ports_form =
-      current_ops_manager.product(elastic_runtime_settings['name']).product_form('ha_proxy')
-    ips_and_ports_form.open_form
-    ips_and_ports_form.property('.properties.logger_endpoint_port').set('4443')
-    ips_and_ports_form.save_form
   end
 
   def configure_openstack_ha_proxy(elastic_runtime_settings)
