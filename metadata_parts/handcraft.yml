@@ -505,8 +505,6 @@ form_types:
     label: Diego
     description: Diego is a new replacement for DEAs.
     property_inputs:
-      - reference: .cloud_controller.default_to_diego_backend
-        label: Use Diego by default instead of DEAs
       - reference: .diego_cell.garden_network_pool
         label: Application Containers Subnet Pool
         description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to containers running on Diego. This is an arbitrary assignment and should be different from the network used by the system VMs.
@@ -1754,11 +1752,6 @@ job_types:
           min: 0
           max: 1000
 
-      - name: default_to_diego_backend
-        type: boolean
-        configurable: true
-        default: true
-
       - name: allow_app_ssh_access
         type: boolean
         configurable: true
@@ -1792,7 +1785,7 @@ job_types:
         allowed_cors_domains:
         - https://apm.(( .cloud_controller.system_domain.value ))
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
-        default_to_diego_backend: (( default_to_diego_backend.value ))
+        default_to_diego_backend: true
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         service_name: cloud-controller-ng
@@ -4031,7 +4024,7 @@ job_types:
         network: notifications
         sender: (( .properties.smtp_from.value ))
         encryption_key: (( encryption_credentials.password ))
-        enable_diego: (( .cloud_controller.default_to_diego_backend.value ))
+        enable_diego: true
         instance_count: 3
         syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
         organization: system
@@ -4197,7 +4190,7 @@ job_types:
         network: notifications
         syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
         encryption_key: (( .notifications.encryption_credentials.password ))
-        enable_diego: (( .cloud_controller.default_to_diego_backend.value ))
+        enable_diego: true
         instance_count: 1
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
@@ -4349,7 +4342,7 @@ job_types:
         instance_count: 1
         database: (( .properties.system_database.selected_option.parsed_manifest(autoscaling) ))
         encryption_key: (( encryption_key.password ))
-        enable_diego: (( .cloud_controller.default_to_diego_backend.value ))
+        enable_diego: true
         notifications_host: "https://notifications.(( .cloud_controller.system_domain.value ))"
         organization: system
         space: autoscaling
