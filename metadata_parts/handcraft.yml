@@ -1757,6 +1757,9 @@ job_types:
         configurable: true
         default: true
 
+      - name: internal_api_user_credentials
+        type: simple_credentials
+
     manifest: |
       app_ssh:
         host_key_fingerprint: (( .diego_brain.ssh_host_key.public_key_fingerprint ))
@@ -1822,8 +1825,8 @@ job_types:
             package: php-buildpack
           - name: binary_buildpack
             package: binary-buildpack
-        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
-        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
+        internal_api_user: (( internal_api_user_credentials.identity ))
+        internal_api_password: (( internal_api_user_credentials.password ))
         logging_level: debug
         maximum_health_check_timeout: 600
         quota_definitions:
@@ -2037,116 +2040,6 @@ job_types:
           servers:
             lan: (( .consul_server.ips ))
 
-  - name: health_manager
-    label: Health Manager
-    resource_label: Health Manager
-    description: Reports app health to the Cloud Controller
-    templates:
-      - name: hm9000
-        release: cf
-      - name: metron_agent
-        release: cf
-      - name: route_registrar
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 1_024
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-    single_az_only: false
-
-    instance_definition:
-      name: instances
-      type: integer
-      label: Instances
-      configurable: true
-      default: 0
-      constraints:
-        min: 0
-
-    property_blueprints:
-      - name: internal_api_user_credentials
-        type: simple_credentials
-
-    manifest: |
-      cc:
-        srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
-        bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
-        bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
-        internal_api_user: (( internal_api_user_credentials.identity ))
-        internal_api_password: (( internal_api_user_credentials.password ))
-
-      domain: (( .cloud_controller.system_domain.value ))
-
-      dea_next:
-        heartbeat_interval_in_seconds: 10
-
-      hm9000:
-        port: 5155
-
-      ssl:
-        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines:  (( .nats.ips ))
-      syslog_daemon_config:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-      metron_agent:
-        zone: (( availability_zone ))
-        deployment: cf
-      metron_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-      etcd:
-        machines: (( .etcd_server.ips ))
-      loggregator:
-        etcd:
-          machines: (( .etcd_server.ips ))
-      route_registrar:
-        routes:
-        - name: hm9000
-          port: 5155
-          registration_interval: 20s
-          tags:
-            component: HM9K
-          uris:
-          - "hm9000.(( .cloud_controller.system_domain.value ))"
-
   - name: clock_global
     label: Clock Global
     resource_label: Clock Global
@@ -2228,8 +2121,8 @@ job_types:
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
         db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
-        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
-        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
+        internal_api_user: (( .cloud_controller.internal_api_user_credentials.identity ))
+        internal_api_password: (( .cloud_controller.internal_api_user_credentials.password ))
         quota_definitions:
           default:
             memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
@@ -2383,8 +2276,8 @@ job_types:
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
         db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
-        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
-        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
+        internal_api_user: (( .cloud_controller.internal_api_user_credentials.identity ))
+        internal_api_password: (( .cloud_controller.internal_api_user_credentials.password ))
         quota_definitions:
           default:
             memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
@@ -3117,8 +3010,8 @@ job_types:
         cc_uploader:
           cc:
             job_polling_interval_in_seconds: 25
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
@@ -3133,8 +3026,8 @@ job_types:
         file_server:
           cc:
             job_polling_interval_in_seconds: 25
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
@@ -3148,8 +3041,8 @@ job_types:
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
           cc:
             base_url: https://api.(( .cloud_controller.system_domain.value ))
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         route_emitter:
@@ -3192,8 +3085,8 @@ job_types:
             client_cert: (( .properties.bbs_client_cert.cert_pem ))
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
           cc:
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
@@ -3207,8 +3100,8 @@ job_types:
             client_cert: (( .properties.bbs_client_cert.cert_pem ))
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
           cc:
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
