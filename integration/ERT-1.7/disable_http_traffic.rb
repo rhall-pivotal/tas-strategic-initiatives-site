@@ -1,6 +1,6 @@
 require 'opsmgr/ui_helpers/config_helper'
 
-RSpec.describe 'Disable HTTP Traffic in Elastic Runtime 1.5.X', order: :defined do
+RSpec.describe 'Disable HTTP Traffic in Elastic Runtime 1.7.X', order: :defined do
   let(:current_ops_manager) { ops_manager_driver }
   let(:env_settings) { fetch_environment_settings }
 
@@ -14,13 +14,12 @@ RSpec.describe 'Disable HTTP Traffic in Elastic Runtime 1.5.X', order: :defined 
   end
 
   it 'disables HTTP traffic to the HAProxy and UAA' do
-    experimental_features_form =
-      current_ops_manager.product(elastic_runtime_settings['name']).product_form('experimental_features')
-    experimental_features_form.open_form
+    security_config_form =
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('security_config')
+    security_config_form.open_form
 
-    experimental_features_form.property('.ha_proxy.disable_http').set(true)
-    experimental_features_form.property('.uaa.disable_http').set(true)
+    check 'security_config[.ha_proxy.disable_http]'
 
-    experimental_features_form.save_form
+    security_config_form.save_form
   end
 end

@@ -1,9 +1,10 @@
 ---
-metadata_version: '1.6'
+metadata_version: '1.7'
 provides_product_versions:
 - name: cf
-  version: 1.6.4.0
-product_version: &product_version "1.6.4.0$PRERELEASE_VERSION$"
+  version: 1.7.0.0
+product_version: &product_version "1.7.0.0$PRERELEASE_VERSION$"
+minimum_version_for_upgrade: 1.6.0-build.0
 label: Pivotal Elastic Runtime
 description:
   Gives developers the ability to push apps on a dynamically-configured software stack
@@ -14,7 +15,7 @@ serial: false
 install_time_verifiers:
   - name: Verifiers::SsoUrlVerifier
     properties:
-      url: .uaa.sso_url
+      url: .properties.uaa.saml.sso_url
   - name: Verifiers::WildcardDomainVerifier
     ignorable: true
     properties:
@@ -101,14 +102,179 @@ install_time_verifiers:
       bucket_name: .properties.system_blobstore.external.resources_bucket
 
 post_deploy_errands:
-  - name: push-apps-manager
   - name: smoke-tests
+  - name: push-apps-manager
   - name: notifications
   - name: notifications-ui
   - name: autoscaling
   - name: autoscaling-register-broker
 
 form_types:
+  - name: domains
+    label: Domains
+    description: Elastic Runtime gives each deployed application its own hostname in the app domain, and each system component its own hostname on the system domain. Ensure that you have a wildcard DNS record configured for both domains. You can also use the same domain as your apps and system domains.
+    verifiers:
+      - name: Verifiers::WildcardDomainVerifier
+        properties:
+          domain: .cloud_controller.system_domain
+      - name: Verifiers::WildcardDomainVerifier
+        properties:
+          domain: .cloud_controller.apps_domain
+    property_inputs:
+      - reference: .cloud_controller.system_domain
+        label: System Domain
+        description: "This domain is for system-level PCF components, such as Apps Manager, service brokers, etc. You must set up a wildcard DNS record for this domain that points to your entry point load balancer or HAProxy."
+      - reference: .cloud_controller.apps_domain
+        label: Apps Domain
+        description: This is the default apps domain that pushed apps will use for their hostnames. Use the Cloud Foundry command line interface to add or delete domains. This also requires a wildcard DNS record.
+
+  - name: app_containers
+    label: Application Containers
+    description: "You can enable microservice frameworks, private Docker registries, and other services that support your applications at a container-level."
+    property_inputs:
+    - reference: .properties.allow_cross_container_traffic
+      label: "Microservices: Enable cross-container traffic"
+      description: Not recommended for untrusted application workloads. However, this is useful for microservice frameworks that require cross-container communication.
+    - reference: .diego_cell.insecure_docker_registry_list
+      label: Private Docker Registry Whitelist
+      description: If you use private Docker image registries that are secured with self-signed certificates, enter them here as a comma-delimited list. Individual entries may be either an IP:Port tuple or a Hostname:Port tuple.
+    - reference: .cloud_controller.enable_custom_buildpacks
+      label: Enable Custom Buildpacks
+      description: Enables the use of custom-built application runtime buildpacks.
+    - reference: .cloud_controller.allow_app_ssh_access
+      label: Allow SSH access to app containers
+      description: "If you are using a load balancer instead of HAProxy, ensure that your load balancer has port 2222 open to enable SSH traffic. To have SSH access to a given app, a Cloud Foundry user must also be granted the SpaceDeveloper privilege for that app's space, which can be granted to the user in Apps Manager or via the Cloud Foundry CLI."
+
+  - name: application_dev_controls
+    label: Application Developer Controls
+    description: Configure restrictions and default settings for applications pushed to Cloud Foundry.
+    property_inputs:
+      - reference: .cloud_controller.max_file_size
+        label: Maximum File Upload Size (MB)
+        description: Maximum size of an application upload
+      - reference: .cloud_controller.default_app_memory
+        label: Default App Memory (MB)
+        description: This is the default memory allocated to a newly pushed app when no value is specified at cf-push.
+      - reference: .cloud_controller.default_quota_memory_limit_mb
+        label: Default App Memory Quota per Org (only applies the first time you install Elastic Runtime for this environment)
+        description:  "Memory limit for all apps in an org using the default quota. (Only applies for the first install of Elastic Runtime. After initial installation, use the CLI to manage quotas.)"
+      - reference: .cloud_controller.max_disk_quota_app
+        label: Maximum Disk Quota per App (MB)
+        description: This is the maximum disk allocated per app. In the event of a system upgrade or outage that causes a rolling deploy, larger apps may not succeed to re-deploy if there is insufficient disk capacity.
+      - reference: .cloud_controller.default_disk_quota_app
+        label: Default Disk Quota per App (MB)
+        description: This is the default disk allocated per app. In the event of a system upgrade or outage that causes a rolling deploy, larger apps may not succeed to re-deploy if there is insufficient disk capacity.
+      - reference: .cloud_controller.default_quota_max_number_services
+        label: Default Service Instances Quota per Org (only applies the first time you install Elastic Runtime for this environment)
+        description: Maximum allowed number of service instances in an org using the default quota (this only applies for the first install of Elastic Runtime, otherwise use the CLI to manage quotas)
+
+  - name: uaa
+    label: Authentication and Enterprise SSO
+    description: Configure your user store access, which can be an interal user store (managed by Cloud Foundry's UAA) or an external user store (LDAP or SAML). You can also adjust the lifetimes of authentication tokens.
+    verifiers:
+      - name: Verifiers::LDAPBindVerifier
+        properties:
+          url: .properties.uaa.ldap.url
+          credentials: .properties.uaa.ldap.credentials
+    property_inputs:
+      - reference: .properties.uaa
+        label: Configure your UAA user account store with either internal or external authentication mechanisms
+        selector_property_inputs:
+          - reference: .properties.uaa.internal
+            label: "Internal UAA (provided by Elastic Runtime; configure your password policy below)"
+            description:
+            property_inputs:
+              - reference: .properties.uaa.internal.password_min_length
+                label: Minimum Password Length
+                description: Minimum number of characters for a valid password.
+              - reference: .properties.uaa.internal.password_min_uppercase
+                label: Minimum Uppercase Characters Required for Password
+                description: Minimum number of uppercase characters required for a valid password.
+              - reference: .properties.uaa.internal.password_min_lowercase
+                label: Minimum Lowercase Characters Required for Password
+                description: Minimum Lowercase Characters Required for Password.
+              - reference: .properties.uaa.internal.password_min_numeric
+                label: Minimum Numerical Digits Required for Password
+                description: Minimum number of digits required for a valid password.
+              - reference: .properties.uaa.internal.password_min_special
+                label: Minimum Special Characters Required for Password
+                description: Minimum number of special characters required for a valid password.
+              - reference: .properties.uaa.internal.password_expires_after_months
+                label: Number of Months Before Password Expires
+                description: Password will expire after this many months, input 0 if you want passwords to never expire.
+              - reference: .properties.uaa.internal.password_max_retry
+                label: Maximum Password Entry Attempts Allowed
+                description: Maximum number of failures allowed to enter a password (within a 5 minute timespan) before the account is locked.
+
+          - reference: .properties.uaa.ldap
+            label: LDAP Server
+            description:
+            property_inputs:
+              - reference: .properties.uaa.ldap.url
+                label: Server URL
+                description: 'Required for LDAP. Must start with `ldap://` or `ldaps://`.'
+              - reference: .properties.uaa.ldap.credentials
+                label: LDAP Credentials
+                description:  Required for LDAP. This is the unique username and password for binding to the server.
+              - reference: .properties.uaa.ldap.search_base
+                label: User Search Base
+                description: 'Required for LDAP. Example: `ou=Users,dc=example,dc=com`.'
+              - reference: .properties.uaa.ldap.search_filter
+                label: User Search Filter
+                description: "Required for LDAP. Replace `{0}` with username."
+              - reference: .properties.uaa.ldap.group_search_base
+                label: Group Search Base
+                description: 'Required if mapping LDAP groups to Admin role. Example: `ou=Groups,dc=example,dc=com`.'
+              - reference: .properties.uaa.ldap.group_search_filter
+                label: Group Search Filter
+                description: 'Required if mapping LDAP groups to Admin role. Replace `{0}` with user DN.'
+              - reference: .properties.uaa.ldap.server_ssl_cert
+                label: Server SSL Cert
+                description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate.'
+              - reference: .properties.uaa.ldap.server_ssl_cert_alias
+                label: Server SSL Cert AltName
+                description: "Required only for ldaps:// + using a Self Signed Certificate."
+              - reference: .properties.uaa.ldap.mail_attribute_name
+                label: Email Attribute
+                description: "The name of the attribute that contains the user's email address."
+          - reference: .properties.uaa.saml
+            label: SAML Identity Provider
+            description:
+            property_inputs:
+              - reference: .properties.uaa.saml.sso_name
+                label: Provider Name
+                description: "Name of Identity Provider. Allowed characters are alphanumeric, plus `_`, and `-`. Do NOT change this name once deployed."
+              - reference: .properties.uaa.saml.display_name
+                label: Display Name
+                description: "Shows as a link on the login page."
+              - reference: .properties.uaa.saml.sso_xml
+                label: "Provider Metadata (if you would rather provide an SSO endpoint URL, skip to the next field)"
+                description: "Metadata XML content for the Identity Provider."
+              - reference: .properties.uaa.saml.sso_url
+                label: "(OR) Provider Metadata URL"
+                description: "If you did not provide metadata above, enter an SSO endpoint that returns the metadata."
+              - reference: .properties.uaa.saml.sign_auth_requests
+                label: Sign Authentication Requests
+                description: "If enabled, signed authentication requests will be sent to the SAML identity provider."
+              - reference: .properties.uaa.saml.require_signed_assertions
+                label: Require Signed Assertions
+                description: "If enabled, the SAML identity provider should always send signed assertions."
+              - reference: .properties.uaa.saml.ssl_certificate
+                label: Provider Certificate and Provider Key
+                description: "This certificate and key pair is used as a digital signature for the identity provider."
+      - reference: .uaa.apps_manager_access_token_lifetime
+        label: Apps Manager Access Token Lifetime (in seconds)
+        description: Set the lifetime of the access token for the Apps Manager login portal.
+      - reference: .uaa.apps_manager_refresh_token_lifetime
+        label: Apps Manager Refresh Token Lifetime (in seconds)
+        description: Set the lifetime of the refresh token for Apps Manager.
+      - reference: .uaa.cf_cli_access_token_lifetime
+        label: Cloud Foundry CLI Access Token Lifetime (in seconds)
+        description: Set the lifetime of the access token for the Cloud Foundry CLI.
+      - reference: .uaa.cf_cli_refresh_token_lifetime
+        label: Cloud Foundry CLI Refresh Token Lifetime (in seconds)
+        description: Set the lifetime of the refresh token for the Cloud Foundry CLI.
+
   - name: system_database
     label: System Database Config
     description: Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details.
@@ -271,9 +437,6 @@ form_types:
       - reference: .ha_proxy.disable_http
         label: Disable HTTP traffic to HAProxy
         description: "Allows only HTTPS traffic to HAProxy and turns on secure flag for cookies generated by Router."
-      - reference: .properties.allow_cross_container_traffic
-        label: Enable cross-container traffic
-        description: Not recommended for untrusted workloads
       - reference: .router.enable_ssl
         label: Enable TLS on the Router
         description: Disable only if your load-balancer does not send HTTPS traffic to the Router
@@ -290,36 +453,12 @@ form_types:
         description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
 
   - name: cloud_controller
-    verifiers:
-      - name: Verifiers::WildcardDomainVerifier
-        properties:
-          domain: .cloud_controller.system_domain
-      - name: Verifiers::WildcardDomainVerifier
-        properties:
-          domain: .cloud_controller.apps_domain
     label: Cloud Controller
     description: Coordinates Pivotal CF Elastic Runtime application lifecycles
     property_inputs:
-      - reference: .cloud_controller.system_domain
-        label: System Domain
-        description: "This domain is used to target and push apps to Pivotal CF Elastic Runtime (ex: api.my-cf.com). You must set up a wildcard DNS record for this domain that points to the router static IP(s) or a load balancer."
-      - reference: .cloud_controller.apps_domain
-        label: Apps Domain
-        description: This field specifies a default apps domain for Pivotal CF Elastic Runtime. Use the command line interface to delete domains.
       - reference: .cloud_controller.encrypt_key
         label: Cloud Controller DB Encryption Key
         description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
-      - reference: .cloud_controller.max_file_size
-        label: Maximum File Upload Size (MB)
-        description: This value limits the size of an application upload.
-      - reference: .cloud_controller.disable_custom_buildpacks
-        label: Disable Custom Buildpacks
-      - reference: .cloud_controller.default_quota_memory_limit_mb
-        label: Default Quota App Memory (MB)
-        description: Memory limit for all apps in an org using the default quota. For initial install only. Use the CLI to manage quotas.
-      - reference: .cloud_controller.default_quota_max_number_services
-        label: Default Quota Service Instances
-        description: Maximum allowed number of service instances in an org using the default quota. For initial install only. Use the CLI to manage quotas.
 
   - name: syslog_aggregator
     label: System Logging
@@ -337,70 +476,6 @@ form_types:
       - reference: .doppler.message_drain_buffer_size
         label: "Syslog Drain Buffer Size (# of messages)"
         description: "Sets the buffer size on Doppler before dropping log messages. Note that a larger buffer size has the potential to overload the system."
-
-  - name: uaa_sso
-    label: SSO Config
-    description: Configure Identity Provider
-    verifiers:
-      - name: Verifiers::SsoUrlVerifier
-        properties:
-          url: .uaa.sso_url
-    property_inputs:
-      - reference: .uaa.sso_name
-        label: Provider Name
-        description: "Name of Identity Provider. Allowed characters are alphanumeric, _, and -."
-      - reference: .uaa.sso_xml
-        label: Provider Metadata
-        description: "Metadata XML content for the Identity Provider"
-      - reference: .uaa.sso_url
-        label: "(OR) Provider Metadata URL"
-        description: "Enter an SSO endpoint. This address will be used by the User Account and Authentication server. Note: Your SSO endpoint must provide metadata."
-
-  - name: login_ldap
-    label: LDAP Config
-    description: Configure an LDAP endpoint for the UAA
-    verifiers:
-      - name: Verifiers::LDAPBindVerifier
-        properties:
-          url: .uaa.ldap_url
-          credentials: .uaa.credentials
-    property_inputs:
-      - reference: .uaa.ldap_url
-        label: Server URL
-        description: 'Required for LDAP. Must start with ldap:// or ldaps://'
-      - reference: .uaa.credentials
-        label: LDAP Credentials
-        description:  Required for LDAP. This is the unique username and password for binding to the server
-      - reference: .uaa.ldap_search_base
-        label: User Search Base
-        description: 'Required for LDAP. Example ou=Users,dc=example,dc=com'
-      - reference: .uaa.ldap_search_filter
-        label: User Search Filter
-        description: "Required for LDAP. Replace {0} with username."
-      - reference: .properties.group_search
-        label: Admin Groups
-        description:
-        selector_property_inputs:
-        - reference: .properties.group_search.no_groups
-          label: No Groups
-        - reference: .properties.group_search.enable_admin_groups
-          label: Enable Admin Groups
-          property_inputs:
-            - reference: .properties.group_search.enable_admin_groups.ldap_group_search_base
-              label: Group Search Base
-              description: 'Required if mapping LDAP groups to Admin role. Example ou=Groups,dc=example,dc=com'
-            - reference: .properties.group_search.enable_admin_groups.ldap_group_search_filter
-              label: Group Search Filter
-              description: 'Required if mapping LDAP groups to Admin role. Replace {0} with user DN.'
-      - reference: .uaa.ldap_server_ssl_cert
-        label: Server SSL Cert
-        description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate'
-      - reference: .uaa.ldap_server_ssl_cert_alias
-        label: Server SSL Cert AltName
-        description: "Required only for ldaps:// + using a Self Signed Certificate"
-      - reference: .uaa.ldap_mail_attribute_name
-        label: Email Attribute
-        description: "The name of the attribute that contains the user's email address"
 
   - name: smtp_config
     label: SMTP Config
@@ -431,9 +506,6 @@ form_types:
     property_inputs:
       - reference: .cloud_controller.default_to_diego_backend
         label: Use Diego by default instead of DEAs
-      - reference: .cloud_controller.allow_app_ssh_access
-        label: Allow SSH access to apps
-        description: Enables SSH into app containers running on Diego.
       - reference: .diego_cell.garden_network_pool
         label: Application Containers Subnet Pool
         description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to containers running on Diego. This is an arbitrary assignment and should be different from the network used by the system VMs.
@@ -496,6 +568,99 @@ form_types:
     description: There are no features currently in experimental state. Check back in future releases for new experimental features.
 
 job_types:
+  - name: consul_server
+    label: Consul
+    resource_label: Consul
+    description:
+    templates:
+      - name: consul_agent
+        release: cf
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 1_024
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 1024
+        constraints:
+          min: 1024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+    single_az_only: false
+    serial: true
+
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        may_only_be_odd_or_zero: true
+
+    property_blueprints:
+
+    manifest: |
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
+        deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
+      consul:
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.value ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
+        agent:
+          mode: server
+          servers:
+            lan: (( .consul_server.ips ))
+
   - name: nats
     label: NATS
     resource_label: NATS
@@ -542,22 +707,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: credentials
         type: simple_credentials
         default:
@@ -574,107 +735,14 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
-      loggregator:
-        etcd:
-          machines: (( .etcd_server.ips ))
-
-  - name: consul_server
-    label: Consul
-    resource_label: Consul
-    description:
-    templates:
-      - name: consul_agent
-        release: cf
-      - name: metron_agent
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 1_024
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: true
-        default: 1024
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          may_only_be_odd_or_zero: true
-
-    property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-    manifest: |
-      syslog_daemon_config:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
+      metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
-      metron_agent:
-        zone: (( availability_zone ))
-        deployment: cf
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines: (( .nats.ips ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
-      consul:
-        encrypt_keys:
-        - (( .properties.consul_encrypt_key.value ))
-        ca_cert: (( $ops_manager.ca_certificate ))
-        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
-        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
-        server_cert: (( .properties.consul_server_cert.cert_pem ))
-        server_key: (( .properties.consul_server_cert.private_key_pem ))
-        agent:
-          mode: server
-          servers:
-            lan: (( .consul_server.ips ))
 
   - name: etcd_server
     label: etcd
@@ -725,33 +793,30 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          may_only_be_odd_or_zero: true
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        may_only_be_odd_or_zero: true
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -821,22 +886,19 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          may_only_be_odd_or_zero: true
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        may_only_be_odd_or_zero: true
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
       - name: bbs_encryption_passphrase
         type: secret
         configurable: false
@@ -888,15 +950,12 @@ job_types:
           servers:
             lan: (( .consul_server.ips ))
           services:
-            bbs: {}
             etcd: {}
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -904,6 +963,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -955,35 +1016,34 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          max: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        max: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       nfs_server:
         allow_from_entries:
-        - (( .cloud_controller.first_network_deprecated ))
+        - (( .cloud_controller.ips ))
+        - (( .cloud_controller_worker.ips ))
+        - (( .clock_global.ips ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1038,22 +1098,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: status_credentials
         type: simple_credentials
         default:
@@ -1089,9 +1145,6 @@ job_types:
         ssl_cert: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
         ssl_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem ))
 
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1104,6 +1157,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -1155,22 +1210,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: static_ips
         type: ip_ranges
         configurable: true
@@ -1212,6 +1263,7 @@ job_types:
       - name: mysql
         release: cf-mysql
     max_in_flight: 1
+    single_az_only: false
     resource_definitions:
     - name: ram
       type: integer
@@ -1244,8 +1296,8 @@ job_types:
         power_of_two: true
     static_ip: 1
     dynamic_ip: 0
-    instance_definitions:
-    - name: instances
+    instance_definition:
+      name: instances
       type: integer
       label: Instances
       configurable: true
@@ -1253,10 +1305,6 @@ job_types:
       constraints:
         may_only_be_odd_or_zero: true
     property_blueprints:
-    - name: vm_credentials
-      type: salted_credentials
-      default:
-        identity: vcap
     - name: mysql_admin_credentials
       type: simple_credentials
       default:
@@ -1355,21 +1403,17 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        default: 1
-        configurable: true
-        constraints:
-          max: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      default: 0
+      configurable: true
+      constraints:
+        max: 1
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: credentials
         type: simple_credentials
         default:
@@ -1392,11 +1436,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1453,22 +1497,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        constraints:
-          max: 1
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      constraints:
+        max: 1
+      default: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: credentials
         type: simple_credentials
         default:
@@ -1492,11 +1532,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1553,22 +1593,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        constraints:
-          max: 1
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      constraints:
+        max: 1
+      default: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: credentials
         type: simple_credentials
         default:
@@ -1592,11 +1628,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1611,11 +1647,25 @@ job_types:
     resource_label: Cloud Controller
     description: Coordinates Pivotal CF Elastic Runtime application lifecycles
     templates:
+      - name: consul_agent
+        release: cf
+      - name: go-buildpack
+        release: cf
+      - name: binary-buildpack
+        release: cf
+      - name: nodejs-buildpack
+        release: cf
+      - name: ruby-buildpack
+        release: cf
+      - name: php-buildpack
+        release: cf
+      - name: python-buildpack
+        release: cf
+      - name: staticfile-buildpack
+        release: cf
       - name: cloud_controller_ng
         release: cf
       - name: metron_agent
-        release: cf
-      - name: consul_agent
         release: cf
       - name: route_registrar
         release: cf
@@ -1654,26 +1704,22 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 0
-    dynamic_ip: 1
+    static_ip: 1
+    dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
     serial: true
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: staging_upload_credentials
         type: simple_credentials
         default:
@@ -1703,10 +1749,38 @@ job_types:
           min: 1024
           max: 2048
 
-      - name: disable_custom_buildpacks
+      - name: default_app_memory
+        type: integer
+        configurable: true
+        optional: false
+        default: 1024
+        constraints:
+          min: 64
+          max: 2048
+
+      - name: max_disk_quota_app
+        type: integer
+        configurable: true
+        optional: false
+        default: 2048
+        constraints:
+          min: 512
+          max: 10240
+
+      - name: default_disk_quota_app
+        type: integer
+        configurable: true
+        optional: false
+        default: 1024
+        constraints:
+          min: 512
+          max: 10240
+
+      - name: enable_custom_buildpacks
         type: boolean
         configurable: true
         optional: false
+        default: true
 
       - name: system_domain
         type: wildcard_domain
@@ -1755,6 +1829,7 @@ job_types:
         routes:
         - name: api
           port: 9022
+          registration_interval: 20s
           tags:
             component: CloudController
           uris:
@@ -1766,6 +1841,8 @@ job_types:
           machines: (( .nats.ips ))
 
       cc:
+        allowed_cors_domains:
+        - https://apm.(( .cloud_controller.system_domain.value ))
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
         default_to_diego_backend: (( default_to_diego_backend.value ))
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
@@ -1777,30 +1854,33 @@ job_types:
         bootstrap_admin_email: admin
         bulk_api_password: (( bulk_api_credentials.password ))
         client_max_body_size: (( max_file_size.value ))M
+        maximum_app_disk_in_mb: (( max_disk_quota_app.value ))
+        default_app_disk_in_mb: (( default_disk_quota_app.value ))
+        default_app_memory: (( default_app_memory.value ))
         db_encryption_key: (( encrypt_key.value || db_encryption_credentials.password ))
         default_running_security_groups:
           - all_open
         default_staging_security_groups:
           - all_open
-        disable_custom_buildpacks: (( disable_custom_buildpacks.value ))
+        disable_custom_buildpacks: "(( enable_custom_buildpacks.value ? 'false' : 'true' ))"
         external_host: api
         install_buildpacks:
           - name: staticfile_buildpack
-            package: buildpack_staticfile
+            package: staticfile-buildpack
           - name: java_buildpack_offline
             package: buildpack_java_offline
           - name: ruby_buildpack
-            package: buildpack_ruby
+            package: ruby-buildpack
           - name: nodejs_buildpack
-            package: buildpack_nodejs
+            package: nodejs-buildpack
           - name: go_buildpack
-            package: buildpack_go
+            package: go-buildpack
           - name: python_buildpack
-            package: buildpack_python
+            package: python-buildpack
           - name: php_buildpack
-            package: buildpack_php
+            package: php-buildpack
           - name: binary_buildpack
-            package: buildpack_binary
+            package: binary-buildpack
         internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
         internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
         logging_level: debug
@@ -1875,9 +1955,6 @@ job_types:
         port: (( .properties.logger_endpoint_port.value || "443" ))
       doppler:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1890,6 +1967,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -1941,22 +2020,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: static_ips
         type: ip_ranges
         configurable: true
@@ -1996,11 +2071,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -2068,22 +2143,18 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 0
-        constraints:
-          min: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 0
+      constraints:
+        min: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: internal_api_user_credentials
         type: simple_credentials
 
@@ -2100,6 +2171,9 @@ job_types:
       dea_next:
         heartbeat_interval_in_seconds: 10
 
+      hm9000:
+        port: 5155
+
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -2112,11 +2186,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       etcd:
         machines: (( .etcd_server.ips ))
       loggregator:
@@ -2126,6 +2200,7 @@ job_types:
         routes:
         - name: hm9000
           port: 5155
+          registration_interval: 20s
           tags:
             component: HM9K
           uris:
@@ -2175,24 +2250,21 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 0
-    dynamic_ip: 1
+    static_ip: 1
+    dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -2201,6 +2273,8 @@ job_types:
       app_domains: ["(( .cloud_controller.apps_domain.value ))"]
 
       cc:
+        allowed_cors_domains:
+        - https://apm.(( .cloud_controller.system_domain.value ))
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
@@ -2264,9 +2338,6 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -2282,6 +2353,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -2332,24 +2405,21 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 0
-    dynamic_ip: 1
+    static_ip: 1
+    dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -2358,6 +2428,8 @@ job_types:
       app_domains: ["(( .cloud_controller.apps_domain.value ))"]
 
       cc:
+        allowed_cors_domains:
+        - https://apm.(( .cloud_controller.system_domain.value ))
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
@@ -2424,9 +2496,6 @@ job_types:
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value || "443" ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -2442,6 +2511,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -2495,19 +2566,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       collector:
@@ -2525,11 +2593,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -2585,22 +2653,18 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        default: 1
-        configurable: true
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      default: 1
+      configurable: true
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: admin_credentials
         type: simple_credentials
         default:
@@ -2715,58 +2779,38 @@ job_types:
         default:
           identity: cc_routing
 
-      - name: ldap_url
-        type: ldap_url
-        configurable: true
-        optional: true
-
-      - name: credentials
+      - name: apps_metrics_credentials
         type: simple_credentials
-        configurable: true
-        optional: true
+        default:
+          identity: apps_metrics
 
-      - name: ldap_search_base
-        type: string
-        configurable: true
-        optional: true
-
-      - name: ldap_search_filter
-        type: string
-        configurable: true
-        default: "cn={0}"
-
-      - name: ldap_server_ssl_cert
-        type: text
-        configurable: true
-        optional: true
-
-      - name: ldap_server_ssl_cert_alias
-        type: string
-        configurable: true
-        optional: true
-
-      - name: ldap_mail_attribute_name
-        type: string
-        configurable: true
-        default: 'mail'
+      - name: apps_metrics_processing_credentials
+        type: simple_credentials
+        default:
+          identity: apps_metrics_processing
 
       - name: service_provider_key_credentials
         type: rsa_cert_credentials
 
-      - name: sso_url
-        type: http_url
+      - name: apps_manager_access_token_lifetime
+        type: integer
         configurable: true
-        optional: true
+        default: 1209600
 
-      - name: sso_xml
-        type: text
+      - name: apps_manager_refresh_token_lifetime
+        type: integer
         configurable: true
-        optional: true
+        default: 1209600
 
-      - name: sso_name
-        type: string
+      - name: cf_cli_access_token_lifetime
+        type: integer
         configurable: true
-        optional: true
+        default: 7200
+
+      - name: cf_cli_refresh_token_lifetime
+        type: integer
+        configurable: true
+        default: 1209600
 
     manifest: |
       consul:
@@ -2783,8 +2827,12 @@ job_types:
           services:
             uaa: {}
       login:
+        branding:
+          company_name: Pivotal
+          product_logo: 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
+          square_logo: iVBORw0KGgoAAAANSUhEUgAAAGwAAABsCAYAAACPZlfNAAAAAXNSR0IArs4c6QAABYtJREFUeAHtnVtsFFUYx7/d3ruWotUKVIkNaCw02YgJGBRTMd4CokUejD4QH4gxQcIDeHnBmPjkhSghUYLGe3ywPtAHNCo0QgkWwi2tXG2V1kIpLXTbLt1tS9dzlmzSJssZhv32zDk7/2km2znn7Pd9+/vt2Z2dmW0D9Obat4gCiwiLBQQSLflSViAQeN6Can1fYiJBFPQ9BcsAQBiEWUbAsnIxwyDMMgKWlYsZBmGWEbCsXMwwCLOMgGXlYoZBmGUELCsXMwzCLCNgWbmYYRBmGQHLysUMgzDLCFhWLmYYhFlGwLJyMcMgzDIClpWLGQZhlhGwrFzMMAizjIBl5WKGQZhlBCwrV1xbb96y59V1VFJQmLawQNrWa43x8XEaHo1fW+Oj1H8lSqf6eulEbw+dvNhLvcNDinvb0WWksAdm3UWhwiJ2gt2RAWo80UY7jrdSU8cZGrt6lT1HtgMaKSxbD7qqfDq99tAjyTUSG6FP9v1BH+3dTUPxeLZSssf17U5HeXEJbXr8aerY+A6tf7iOxFeu2OFmI6BvhaVgVoRCtHl5PTW8/AoV5xekmo299b2wlJn6+WFqWrOWKkpDqSYjbyFskpZFs++hL1e9NKnFvF+t3OmQOwzdkcgUmnnBABXm5Ys1j8qKisVadFPvS8tramn1goX09eEDU+KbsmGlsMbjbbT6x++UDOVORGXoFppXOYMerLqbVsyrpcWzqykYdH5R+fjZlcnd/8sjV5Q5vOh0rt6LqhhyJsQ3uC+ID8ry89aHYtf90W1bKLzlffr19EnH6HIP8oXasOM4LwbkrLB0MP+6cJ6e+eoz+vTP5nTdU9peDC+Ysm3Khq+ESehy5r3e2ECHu7uUDuqq59Id4iXVtMV3wqSACSHt3V2/KF3I97qayjuVY7zo9KUwCfq3M6coNjamZD6zrFzZ70Wnb4XFxseoK3JZyXzWtGnKfi86fStMwu6LRpXMZ5RBmBKQ7k75XqZa8gLmPZ/Nq0hFkLnvttJSZUT5Oc60xbfC5CGs6lsrlD56hgaV/V50+lbYkuo5VFygPp3SMwxhXjwp0+bcsGRp2vZU48TEBB09153aNObWlzNMHo1/6r4apYTmsx10MTqsHONFp5VH6zMBtWbhYtq6YpVjiJ/ajjmO8WKAL4QFxamWZffPT1678dicex05D4jTKj8cO+Q4zosBOSXs7bonktci5ovjgPIUye3ieo3wzKrk+TC5faPLGz83On6ovtFY3ONySth7Ty67qbPMk6Hu+edv+vzg/slNRv3uy52O6xk40HWW6r/94nrdRrTn1AzLhOju9tP03DfbKTo6mkmYrN/X98L6xQHgTb/vpG0t+5LnybJOPMMEvhXWOXCJvj9yiD7Yu4sGRkYyxKjv7r4RJi+Na+05Rwf/66SG1qO0v/NffZQZM+WUsI07d1BC/MTE144GYzHxJYcYDYq1vb/f8WQlI9OshsopYZubm7IKy4Tg2K03wYKLGiDMBSwThkKYCRZc1ABhLmCZMBTCTLDgogYIcwHLhKEQZoIFFzVAmAtYJgyFMBMsuKgBwlzAMmEohJlgwUUNEOYClglDIcwECy5qgDAXsEwYCmEmWHBRA4S5gGXCUAgzwYKLGow84yyvuyhR/GW19kt9Lh5ibg01UtjS7VtzizLjo8FLIiNMHaEgTAdlxhwQxghTRygI00GZMQeEMcLUEQrCdFBmzAFhjDB1hIIwHZQZc0AYI0wdoSBMB2XGHBDGCFNHKAjTQZkxB4QxwtQRCsJ0UGbMAWGMMHWEgjAdlBlzQBgjTB2hIEwHZcYcEMYIU0coCNNBmTEHhDHC1BEKwnRQZswBYYwwdYSCMB2UGXNAGCNMHaEgTAdlxhziUu1Ei8M/+WFMh1CZEUi0/A+j7hNSB5Wo2wAAAABJRU5ErkJggg==
+          footer_legal_text: ©2016 Pivotal Software, Inc. All Rights Reserved.
         self_service_links_enabled: true
-        asset_base_url: '/resources/pivotal'
         protocol: https
         tiles:
           - name: Pivotal Apps Manager
@@ -2802,16 +2850,11 @@ job_types:
           url: "https://notifications.(( .cloud_controller.system_domain.value ))"
         saml:
           entityid: "http://login.(( .cloud_controller.system_domain.value ))"
-          serviceProviderKey: (( service_provider_key_credentials.private_key_pem ))
-          serviceProviderCertificate: (( service_provider_key_credentials.cert_pem ))
-          providers:
-            (( sso_name.value )):
-              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-              idpMetadataXML: (( sso_xml.value ))
-              idpMetadataURL: (( sso_url.value ))
-              showSamlLoginLink: true
-              linkText: (( sso_name.value ))
-              metadataTrustCheck: false
+          serviceProviderKey: (( .properties.uaa.saml.ssl_certificate.private_key_pem ))
+          serviceProviderCertificate: (( .properties.uaa.saml.ssl_certificate.cert_pem ))
+          providers: (( .properties.uaa.selected_option.parsed_manifest(saml_provider) ))
+          signRequest: (( .properties.uaa.saml.sign_auth_requests.value ))
+          wantAssertionSigned: (( .properties.uaa.saml.require_signed_assertions.value ))
         logout:
           redirect:
             parameter:
@@ -2821,19 +2864,35 @@ job_types:
               - https://apps.(( .cloud_controller.system_domain.value ))/
             url: "/login"
       uaa:
+        authentication:
+          policy:
+            lockoutAfterFailures: (( .properties.uaa.internal.password_max_retry.value ))
+        password:
+          policy:
+            minLength: (( .properties.uaa.internal.password_min_length.value ))
+            requireUpperCaseCharacter: (( .properties.uaa.internal.password_min_uppercase.value ))
+            requireLowerCaseCharacter: (( .properties.uaa.internal.password_min_lowercase.value ))
+            requireDigit: (( .properties.uaa.internal.password_min_numeric.value ))
+            requireSpecialCharacter: (( .properties.uaa.internal.password_min_special.value ))
+            expirePasswordInMonths: (( .properties.uaa.internal.password_expires_after_months.value ))
         require_https: true
+        ssl:
+          port: -1
         ldap:
           profile_type: search-and-bind
-          url: (( ldap_url.value ))
-          userDN: (( credentials.identity ))
-          userPassword: (( credentials.password ))
-          searchBase: (( ldap_search_base.value ))
-          searchFilter: (( ldap_search_filter.value ))
-          sslCertificate: (( ldap_server_ssl_cert.value ))
-          sslCertificateAlias: (( ldap_server_ssl_cert_alias.value ))
-          mailAttributeName: (( ldap_mail_attribute_name.value ))
-          enabled: (( ldap_url.value_present? ))
-          groups: (( .properties.group_search.selected_option.parsed_manifest(ldap_group_profile) ))
+          url: (( .properties.uaa.ldap.url.value ))
+          userDN: (( .properties.uaa.ldap.credentials.identity ))
+          userPassword: (( .properties.uaa.ldap.credentials.password ))
+          searchBase: (( .properties.uaa.ldap.search_base.value ))
+          searchFilter: (( .properties.uaa.ldap.search_filter.value ))
+          sslCertificate: (( .properties.uaa.ldap.server_ssl_cert.value ))
+          sslCertificateAlias: (( .properties.uaa.ldap.server_ssl_cert_alias.value ))
+          mailAttributeName: (( .properties.uaa.ldap.mail_attribute_name.value ))
+          enabled: (( .properties.uaa.ldap.url.value_present? ))
+          groups:
+            profile_type: "(( .properties.uaa.ldap.group_search_base.value_present? ? 'groups-map-to-scopes' : 'no-groups' ))"
+            searchBase: (( .properties.uaa.ldap.group_search_base.value ))
+            groupSearchFilter: (( .properties.uaa.ldap.group_search_filter.value ))
         login:
           addnew: false
         catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
@@ -2858,7 +2917,7 @@ job_types:
           identity:
             id: (( identity_client_credentials.identity ))
             secret: (( identity_client_credentials.password ))
-            scope: "cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,zones.*.*,zones.*.*.*,zones.read,zones.write"
+            scope: "cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,zones.*.*,zones.*.*.*,zones.read,zones.write,scim.read"
             resource_ids: none
             override: true
             authorized-grant-types: "authorization_code,client_credentials,refresh_token"
@@ -2881,8 +2940,8 @@ job_types:
             authorities: "scim.write,scim.read,cloud_controller.read,cloud_controller.write,password.write,uaa.admin,uaa.resource,cloud_controller.admin,emails.write,notifications.write"
             authorized-grant-types: "authorization_code,client_credentials,password,implicit"
             scope: "openid,cloud_controller.read,cloud_controller.write,password.write,console.admin,console.support,cloud_controller.admin"
-            access-token-validity: 1209600
-            refresh-token-validity: 1209600
+            access-token-validity: (( apps_manager_access_token_lifetime.value ))
+            refresh-token-validity: (( apps_manager_refresh_token_lifetime.value ))
           apps_manager_js:
             override: true
             autoapprove:
@@ -2899,8 +2958,8 @@ job_types:
             authorities: "uaa.none"
             authorized-grant-types: "implicit,password,refresh_token"
             scope: "cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user"
-            access-token-validity: 7200
-            refresh-token-validity: 1209600
+            access-token-validity: (( cf_cli_access_token_lifetime.value ))
+            refresh-token-validity: (( cf_cli_refresh_token_lifetime.value ))
           (( autoscale_client_credentials.identity )):
             id: (( autoscale_client_credentials.identity ))
             secret: (( autoscale_client_credentials.password ))
@@ -2970,6 +3029,23 @@ job_types:
             redirect-uri: /login
             scope: openid,cloud_controller.read,cloud_controller.write
             secret: (( .uaa.ssh_proxy_client_credentials.password ))
+          apps_metrics:
+            id: (( apps_metrics_credentials.identity ))
+            secret: (( apps_metrics_credentials.password ))
+            override: true
+            authorized-grant-types: authorization_code,refresh_token
+            redirect-uri: "https://apm.(( .cloud_controller.system_domain.value )),https://apm.(( .cloud_controller.system_domain.value ))/,https://apm.(( .cloud_controller.system_domain.value ))/*,https://metrics.(( .cloud_controller.system_domain.value )),https://metrics.(( .cloud_controller.system_domain.value ))/,https://metrics.(( .cloud_controller.system_domain.value ))/*"
+            scope: cloud_controller.admin,cloud_controller.read,metrics.read
+            access-token-validity: 900
+            refresh-token-validity: 2628000
+          apps_metrics_processing:
+            id: (( apps_metrics_processing_credentials.identity ))
+            secret: (( apps_metrics_processing_credentials.password ))
+            override: true
+            authorized-grant-types: authorization_code,client_credentials,refresh_token
+            authorities: oauth.login,doppler.firehose,cloud_controller.admin
+            scope: openid,oauth.approvals,doppler.firehose,cloud_controller.admin
+            access-token-validity: 1209600
         scim:
           user:
             override: true
@@ -2996,11 +3072,11 @@ job_types:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -3008,6 +3084,7 @@ job_types:
         routes:
         - name: uaa
           port: 8080
+          registration_interval: 20s
           uris:
           - "uaa.(( .cloud_controller.system_domain.value ))"
           - "*.uaa.(( .cloud_controller.system_domain.value ))"
@@ -3064,6 +3141,8 @@ job_types:
         label: Persistent Disk
         configurable: true
         default: 1_024
+        constraints:
+          min: 1_024
 
       - name: cpu
         type: integer
@@ -3077,22 +3156,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: ssh_host_key
         type: rsa_pkey_credentials
         configurable: false
@@ -3190,6 +3265,7 @@ job_types:
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+          insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
         tps:
           traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value || "443" ))
           bbs:
@@ -3216,21 +3292,11 @@ job_types:
         agent:
           servers:
             lan: (( .consul_server.ips ))
-          services:
-            auctioneer: {}
-            cc_uploader: {}
-            file_server: {}
-            nsync: {}
-            ssh_proxy: {}
-            stager: {}
-            tps: {}
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -3238,6 +3304,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -3293,30 +3361,33 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 3
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 3
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: garden_network_pool
         type: string
         default: 10.254.0.0/22
         configurable: true
         optional: false
+      - name: insecure_docker_registry_list
+        type: string_list
+        configurable: true
+        optional: true
 
     manifest: |
       diego:
+        executor:
+          post_setup_hook: sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"
+          post_setup_user: "root"
         rep:
           bbs:
             api_location: bbs.service.cf.internal:8889
@@ -3342,8 +3413,6 @@ job_types:
         password: (( .nats.credentials.password ))
         port: 4222
         machines: (( .nats.ips ))
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -3351,6 +3420,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -3361,6 +3432,8 @@ job_types:
         enable_graph_cleanup: true
         network_pool: (( garden_network_pool.value ))
         deny_networks: ["0.0.0.0/0"]
+        network_mtu: 1454
+        insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
 
   - name: dea
     label: DEA
@@ -3409,22 +3482,18 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 0
-        constraints:
-          min: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 0
+      constraints:
+        min: 0
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: loggregator_agent_status_credentials
         type: simple_credentials
 
@@ -3446,9 +3515,7 @@ job_types:
         num_instances: 10
         evacuation_bail_out_time_in_seconds: 600
         zone: (( availability_zone ))
-
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
+        post_setup_hook: 'rm -f app/.java-buildpack.log app/**/.java-buildpack.log >/dev/null 2>&1'
 
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -3516,25 +3583,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
-      - name: status_credentials
-        type: simple_credentials
-
       - name: shared_secret_credentials
         type: simple_credentials
 
@@ -3546,10 +3606,6 @@ job_types:
     manifest: |
       doppler:
         zone: (( availability_zone ))
-        status:
-          user: (( status_credentials.identity ))
-          password: (( status_credentials.password ))
-          port: 5768
         message_drain_buffer_size: (( message_drain_buffer_size.value ))
 
       uaa:
@@ -3574,12 +3630,11 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
-
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
 
       system_domain: (( .cloud_controller.system_domain.value ))
       cc:
@@ -3633,22 +3688,18 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        default: 1
-        configurable: true
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      default: 1
+      configurable: true
+      constraints:
+        min: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: status_credentials
         type: simple_credentials
 
@@ -3661,8 +3712,6 @@ job_types:
 
       system_domain: (( .cloud_controller.system_domain.value ))
 
-      loggregator_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
       traffic_controller:
         zone: (( availability_zone ))
 
@@ -3681,6 +3730,8 @@ job_types:
       metron_agent:
         zone: (( availability_zone ))
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -3695,10 +3746,12 @@ job_types:
         routes:
         - name: doppler
           port: 8081
+          registration_interval: 20s
           uris:
           - "doppler.(( .cloud_controller.system_domain.value ))"
         - name: loggregator
           port: 8080
+          registration_interval: 20s
           uris:
           - "loggregator.(( .cloud_controller.system_domain.value ))"
 
@@ -3746,20 +3799,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: secret_token
         type: secret
         configurable: false
@@ -3933,19 +3982,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       smoke_tests:
@@ -4003,20 +4049,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: encryption_credentials
         type: simple_credentials
 
@@ -4029,7 +4071,7 @@ job_types:
         network: notifications
         sender: (( .properties.smtp_from.value ))
         encryption_key: (( encryption_credentials.password ))
-        enable_diego: true
+        enable_diego: (( .cloud_controller.default_to_diego_backend.value ))
         instance_count: 3
         syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
         organization: system
@@ -4105,19 +4147,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -4176,19 +4215,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -4201,7 +4237,7 @@ job_types:
         network: notifications
         syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
         encryption_key: (( .notifications.encryption_credentials.password ))
-        enable_diego: true
+        enable_diego: (( .cloud_controller.default_to_diego_backend.value ))
         instance_count: 1
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
@@ -4256,19 +4292,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
@@ -4327,20 +4360,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: broker_credentials
         type: salted_credentials
 
@@ -4360,7 +4389,7 @@ job_types:
         instance_count: 1
         database: (( .properties.system_database.selected_option.parsed_manifest(autoscaling) ))
         encryption_key: (( encryption_key.password ))
-        enable_diego: true
+        enable_diego: (( .cloud_controller.default_to_diego_backend.value ))
         notifications_host: "https://notifications.(( .cloud_controller.system_domain.value ))"
         organization: system
         space: autoscaling
@@ -4416,19 +4445,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       app_domains:
@@ -4490,19 +4516,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       autoscale:
@@ -4562,20 +4585,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
-
       - name: broker_credentials
         type: salted_credentials
 
@@ -4632,19 +4651,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       acceptance_tests:
@@ -4680,9 +4696,9 @@ job_types:
         type: integer
         label: Ephemeral Disk
         configurable: true
-        default: 1_024
+        default: 2_048
         constraints:
-          min: 1_024
+          min: 2_048
 
       - name: persistent_disk
         type: integer
@@ -4702,19 +4718,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       acceptance_tests:
@@ -4776,19 +4789,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        configurable: false
-        default: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
 
     property_blueprints:
-      - name: vm_credentials
-        type: salted_credentials
-        default:
-          identity: vcap
 
     manifest: |
       acceptance_tests:
@@ -4846,15 +4856,16 @@ job_types:
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
+    single_az_only: false
 
-    instance_definitions:
-      - name: instances
-        type: integer
-        label: Instances
-        default: 4
-        configurable: true
-        constraints:
-          min: 1
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      default: 4
+      configurable: true
+      constraints:
+        min: 1
 
 property_blueprints:
   - name: product_version
@@ -5008,6 +5019,122 @@ property_blueprints:
       - bbs.service.cf.internal
       - "*.bbs.service.cf.internal"
 
+  - name: uaa
+    type: selector
+    configurable: true
+    default: internal
+    option_templates:
+      - name: internal
+        select_value: internal
+        named_manifests:
+        - name: saml_provider
+          manifest: |
+
+        property_blueprints:
+          - name: password_min_length
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_min_uppercase
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_min_lowercase
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_min_numeric
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_min_special
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_expires_after_months
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_max_retry
+            type: integer
+            configurable: true
+            default: 5
+      - name: ldap
+        select_value: ldap
+        named_manifests:
+        - name: saml_provider
+          manifest: |
+
+        property_blueprints:
+          - name: url
+            type: ldap_url
+            configurable: true
+          - name: credentials
+            type: simple_credentials
+            configurable: true
+          - name: search_base
+            type: string
+            configurable: true
+          - name: search_filter
+            type: string
+            configurable: true
+            default: "cn={0}"
+          - name: group_search_base
+            type: string
+            configurable: true
+            optional: true
+          - name: group_search_filter
+            type: string
+            configurable: true
+            default: "member={0}"
+          - name: server_ssl_cert
+            type: text
+            configurable: true
+            optional: true
+          - name: server_ssl_cert_alias
+            type: string
+            configurable: true
+            optional: true
+          - name: mail_attribute_name
+            type: string
+            configurable: true
+            default: 'mail'
+      - name: saml
+        select_value: saml
+        named_manifests:
+        - name: saml_provider
+          manifest: |
+            (( .properties.uaa.saml.sso_name.value )):
+              metadataTrustCheck: false
+              idpMetadata: "(( .properties.uaa.saml.sso_url.value_present? ? .properties.uaa.saml.sso_url.value : .properties.uaa.saml.sso_xml.value ))"
+              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+              showSamlLoginLink: true
+              linkText: (( .properties.uaa.saml.display_name.value ))
+        property_blueprints:
+          - name: sso_name
+            type: string
+            configurable: true
+          - name: display_name
+            type: string
+            configurable: true
+          - name: sso_url
+            type: http_url
+            configurable: true
+            optional: true
+          - name: sso_xml
+            type: text
+            configurable: true
+            optional: true
+          - name: sign_auth_requests
+            type: boolean
+            configurable: true
+            default: true
+          - name: require_signed_assertions
+            type: boolean
+            configurable: true
+          - name: ssl_certificate
+            type: rsa_cert_credentials
+            configurable: true
 
   - name: system_database
     type: selector
@@ -5171,16 +5298,28 @@ property_blueprints:
         named_manifests:
           - name: ccbuildpack
             manifest: |
-
+              blobstore_type: fog
+              fog_connection:
+                provider: Local
+                local_root: /var/vcap/nfs/shared
           - name: ccdroplet
             manifest: |
-
+              blobstore_type: fog
+              fog_connection:
+                provider: Local
+                local_root: /var/vcap/nfs/shared
           - name: ccpackage
             manifest: |
-
+              blobstore_type: fog
+              fog_connection:
+                provider: Local
+                local_root: /var/vcap/nfs/shared
           - name: ccresource
             manifest: |
-
+              blobstore_type: fog
+              fog_connection:
+                provider: Local
+                local_root: /var/vcap/nfs/shared
       - name: external
         named_manifests:
           - name: ccbuildpack

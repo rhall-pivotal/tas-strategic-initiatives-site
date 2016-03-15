@@ -49,13 +49,19 @@
     },
     "08OpsManagerTemplate": {
       "Type": "String",
-      "Default": "https://s3.amazonaws.com/pcf-cloudformation/1.5.0.0/pcf.json",
+      "Default": "https://s3.amazonaws.com/ops-man-references/pcf-cloudformation/1.7.0/pcf.json",
       "Description": "S3 Location for OpsManager CloudFormation Template"
     },
     "09ElbPrefix": {
       "Type": "String",
       "Default": "",
       "Description": "Prefix for the name of the ELBs generated. NOTE: Leave empty to use default prefix of AWS::StackName"
+    },
+    "10AllowHttpOnElb": {
+      "Type": "String",
+      "Default": "true",
+      "AllowedValues": ["true", "false"],
+      "Description": "Allow HTTP traffic on PCF-ELB port 80. Default: true."
     }
   },
   "Conditions": {
@@ -65,6 +71,9 @@
           "Fn::Equals" : [{"Ref" : "09ElbPrefix" }, ""]
         }
       ]
+    },
+    "AllowHTTPTrafficOnELB": {
+      "Fn::Equals" : [{"Ref" : "10AllowHttpOnElb" }, "true"]
     }
   },
   "Resources": {
@@ -137,28 +146,45 @@
            "-pcf-elb"
           ]
         ] },
-        "Listeners": [ 
-          {
-            "InstancePort": "80",
-            "LoadBalancerPort": "80",
-            "Protocol": "http",
-            "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
-          }, 
-          {
-            "InstancePort": "80",
-            "LoadBalancerPort": "443",
-            "Protocol": "https",
-            "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
-          }, 
-          {
-            "InstancePort": "80",
-            "LoadBalancerPort": "4443",
-            "Protocol": "ssl",
-            "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
-          } 
-        ],
+        "Listeners": { "Fn::If" : [
+          "AllowHTTPTrafficOnELB",
+          [
+            {
+              "InstancePort": "80",
+              "LoadBalancerPort": "80",
+              "Protocol": "http",
+              "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
+            },
+            {
+              "InstancePort": "80",
+              "LoadBalancerPort": "443",
+              "Protocol": "https",
+              "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
+            },
+            {
+              "InstancePort": "80",
+              "LoadBalancerPort": "4443",
+              "Protocol": "ssl",
+              "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
+            }
+          ],
+          [
+            {
+              "InstancePort": "80",
+              "LoadBalancerPort": "443",
+              "Protocol": "https",
+              "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
+            },
+            {
+              "InstancePort": "80",
+              "LoadBalancerPort": "4443",
+              "Protocol": "ssl",
+              "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
+            }
+          ]
+        ]},
         "Scheme": "internet-facing",
-        "SecurityGroups": [ 
+        "SecurityGroups": [
           {
             "Ref": "PcfElbSecurityGroup"
           }

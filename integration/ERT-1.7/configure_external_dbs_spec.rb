@@ -1,6 +1,6 @@
 require 'opsmgr/ui_helpers/config_helper'
 
-RSpec.describe 'Configure Elastic Runtime 1.6.X External Databases', order: :defined do
+RSpec.describe 'Configure Elastic Runtime 1.7.X External Databases', order: :defined do
   let(:current_ops_manager) { ops_manager_driver }
   let(:env_settings) { fetch_environment_settings }
 

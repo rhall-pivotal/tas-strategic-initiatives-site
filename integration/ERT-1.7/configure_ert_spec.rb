@@ -1,6 +1,6 @@
 require 'opsmgr/ui_helpers/config_helper'
 
-RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
+RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
   let(:current_ops_manager) { ops_manager_driver }
   let(:env_settings) { fetch_environment_settings }
 
@@ -13,15 +13,39 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
     )
   end
 
+  # This is needed until ops manager fixes automatic sizing bug: https://www.pivotaltracker.com/story/show/115004337
+  it 'configures diego cell instance type' do
+    instance_type = case env_settings['iaas_type']
+                    when 'aws'
+                      'm3.2xlarge'
+                    when 'openstack'
+                      'm1.xlarge'
+                    when 'vsphere', 'vcloud'
+                      '2xlarge.cpu'
+                    end
+    resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
+    resource_config.set_vm_type_for_job('diego_cell', instance_type)
+  end
+
   it 'configures the availability zone' do
     if can_configure_availability_zones?('cf')
       unless any_availability_zones_have_been_selected_for_balancing?('cf')
-        current_ops_manager.assign_availability_zones_for_product(
-          product: 'cf',
-          zones: env_settings['ops_manager']['availability_zones']
+        current_ops_manager.assign_azs_and_network_for_product(
+          product_name: 'cf',
+          zones: env_settings['ops_manager']['availability_zones'],
+          network: env_settings['ops_manager']['networks'].first['name']
         )
       end
     end
+  end
+
+  it 'configures the domains' do
+    domains_form =
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('domains')
+    domains_form.open_form
+    domains_form.property('.cloud_controller.system_domain').set(elastic_runtime_settings['system_domain'])
+    domains_form.property('.cloud_controller.apps_domain').set(elastic_runtime_settings['apps_domain'])
+    domains_form.save_form
   end
 
   it 'configures ha proxy or an ELB' do
@@ -47,19 +71,13 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
       security_config_form.nested_property('.ha_proxy.ssl_rsa_certificate', 'private_key_pem')
         .set(elastic_runtime_settings['ssl_private_key'])
     else
-      security_config_form.generate_self_signed_cert("*.#{elastic_runtime_settings['system_domain']}")
+      domain = elastic_runtime_settings['system_domain']
+      security_config_form.generate_self_signed_cert(
+        "*.#{domain},*.login.#{domain},*.uaa.#{domain}", '.ha_proxy.ssl_rsa_certificate'
+      )
     end
 
     security_config_form.save_form
-  end
-
-  it 'configures cloud controller' do
-    cloud_controller_form =
-      current_ops_manager.product(elastic_runtime_settings['name']).product_form('cloud_controller')
-    cloud_controller_form.open_form
-    cloud_controller_form.property('.cloud_controller.system_domain').set(elastic_runtime_settings['system_domain'])
-    cloud_controller_form.property('.cloud_controller.apps_domain').set(elastic_runtime_settings['apps_domain'])
-    cloud_controller_form.save_form
   end
 
   it 'configures smtp' do
@@ -93,6 +111,7 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
     resource_config.set_instances_for_job('ha_proxy', 0)
     resource_config.set_elb_names_for_job('router', elastic_runtime_settings['elb_name'])
+    resource_config.set_elb_names_for_job('diego_brain', elastic_runtime_settings['ssh_elb_name'])
 
     ips_and_ports_form =
       current_ops_manager.product(elastic_runtime_settings['name']).product_form('ha_proxy')
@@ -105,13 +124,14 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
     resource_config.set_floating_ips_for_job('ha_proxy', elastic_runtime_settings['ha_proxy_floating_ips'])
   end
+
   AVAILABILITY_ZONE_INPUT_SELECTOR = "input[name='product[availability_zone_references][]']"
 
   def availability_zones_for_product(product:)
     visit '/'
     click_on "show-#{product}-configure-action"
 
-    az_selector = "show-#{product}-availability-zone-assignment-action"
+    az_selector = "show-#{product}-azs-and-network-assignment-action"
 
     click_on az_selector
     all("#{AVAILABILITY_ZONE_INPUT_SELECTOR}[checked='checked']").map do |checkbox|
@@ -127,7 +147,7 @@ RSpec.describe 'Configure Elastic Runtime 1.5.X', order: :defined do
     visit '/'
     click_on "show-#{product}-configure-action"
 
-    az_selector = "show-#{product}-availability-zone-assignment-action"
+    az_selector = "show-#{product}-azs-and-network-assignment-action"
     has_link? az_selector
   end
 end
