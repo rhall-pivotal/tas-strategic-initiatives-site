@@ -80,7 +80,7 @@ install_time_verifiers:
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.buildpacks_bucket
       region: .properties.system_blobstore.external.region
-      aws_signature_version: .properties.system_blobstore.external.signature_version
+      signature_version: .properties.system_blobstore.external.signature_version
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
@@ -89,7 +89,7 @@ install_time_verifiers:
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.droplets_bucket
       region: .properties.system_blobstore.external.region
-      aws_signature_version: .properties.system_blobstore.external.signature_version
+      signature_version: .properties.system_blobstore.external.signature_version
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
@@ -98,7 +98,7 @@ install_time_verifiers:
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.packages_bucket
       region: .properties.system_blobstore.external.region
-      aws_signature_version: .properties.system_blobstore.external.signature_version
+      signature_version: .properties.system_blobstore.external.signature_version
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
@@ -107,7 +107,7 @@ install_time_verifiers:
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.resources_bucket
       region: .properties.system_blobstore.external.region
-      aws_signature_version: .properties.system_blobstore.external.signature_version
+      signature_version: .properties.system_blobstore.external.signature_version
 
 post_deploy_errands:
   - name: smoke-tests
@@ -213,7 +213,7 @@ form_types:
           secret_access_key: .properties.system_blobstore.external.secret_key
           bucket_name: .properties.system_blobstore.external.buildpacks_bucket
           region: .properties.system_blobstore.external.region
-          aws_signature_version: .properties.system_blobstore.external.signature_version
+          signature_version: .properties.system_blobstore.external.signature_version
       - name: Verifiers::BlobstoreVerifier
         properties:
           endpoint: .properties.system_blobstore.external.endpoint
@@ -221,7 +221,7 @@ form_types:
           secret_access_key: .properties.system_blobstore.external.secret_key
           bucket_name: .properties.system_blobstore.external.droplets_bucket
           region: .properties.system_blobstore.external.region
-          aws_signature_version: .properties.system_blobstore.external.signature_version
+          signature_version: .properties.system_blobstore.external.signature_version
       - name: Verifiers::BlobstoreVerifier
         properties:
           endpoint: .properties.system_blobstore.external.endpoint
@@ -229,7 +229,7 @@ form_types:
           secret_access_key: .properties.system_blobstore.external.secret_key
           bucket_name: .properties.system_blobstore.external.packages_bucket
           region: .properties.system_blobstore.external.region
-          aws_signature_version: .properties.system_blobstore.external.signature_version
+          signature_version: .properties.system_blobstore.external.signature_version
       - name: Verifiers::BlobstoreVerifier
         properties:
           endpoint: .properties.system_blobstore.external.endpoint
@@ -237,7 +237,7 @@ form_types:
           secret_access_key: .properties.system_blobstore.external.secret_key
           bucket_name: .properties.system_blobstore.external.resources_bucket
           region: .properties.system_blobstore.external.region
-          aws_signature_version: .properties.system_blobstore.external.signature_version
+          signature_version: .properties.system_blobstore.external.signature_version
     property_inputs:
     - reference: .properties.system_blobstore
       label: "Configure your Cloud Controller's filesystem"
