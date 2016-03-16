@@ -188,6 +188,9 @@ form_types:
       - reference: .diego_cell.garden_network_mtu
         label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
         description: 1454 bytes is fine for most cases, but sometimes less is required, such as for networks that use GRE tunnels.
+      - reference: .router.request_timeout_in_seconds
+        label: Router Timeout to Backends
+        description: "Timeout for connections from Router to applications and system components. This may be increased to accommodate larger uploads over connections with high latency."
 
   - name: system_database
     label: System Database Config
@@ -1044,8 +1047,15 @@ job_types:
       - name: route_services_secret
         type: secret
 
+      - name: request_timeout_in_seconds
+        type: integer
+        configurable: true
+        default: 900
+        constraints:
+          min: 1
+
     manifest: |
-      request_timeout_in_seconds: 900
+      request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
       networks:
         apps: default
       router:
@@ -1927,6 +1937,7 @@ job_types:
         configurable: true
 
     manifest: |
+      request_timeout_in_seconds: (( .router.request_timeout_in_seconds.value ))
       ha_proxy:
         disable_http: (( .properties.networking_point_of_entry.haproxy.disable_http.value ))
         ssl_ciphers: (( .properties.networking_point_of_entry.haproxy.ssl_ciphers.value ))
