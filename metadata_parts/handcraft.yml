@@ -342,6 +342,17 @@ form_types:
           - reference: .properties.system_database.external.password
             label: Password
 
+  - name: mysql_config
+    label: MySQL Config
+    description:  "You only need to configure this section if you are using the Internal MySQL databases provided by Elastic Runtime. A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936.\nThe automated backups functionality works with any S3-compatible file store that can receive your backup files."
+    property_inputs:
+      - reference: .mysql_proxy.static_ips
+        label: MySQL Proxy IPs
+        description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer."
+      - reference: .mysql_proxy.service_hostname
+        label: MySQL Service Hostname
+        description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
+
   - name: system_blobstore
     label: File Storage Config
     description: "Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details."
@@ -441,17 +452,6 @@ form_types:
       - reference: .router.enable_ssl
         label: Enable TLS on the Router
         description: Disable only if your load-balancer does not send HTTPS traffic to the Router
-
-  - name: mysql_proxy
-    label: MySQL Proxy Config
-    description: "A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936."
-    property_inputs:
-      - reference: .mysql_proxy.static_ips
-        label: MySQL Proxy IPs
-        description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer."
-      - reference: .mysql_proxy.service_hostname
-        label: MySQL Service Hostname
-        description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
 
   - name: cloud_controller
     label: Cloud Controller
