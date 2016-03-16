@@ -1867,6 +1867,8 @@ job_types:
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
+      router:
+        route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
 
   - name: ha_proxy
     label: HAProxy
