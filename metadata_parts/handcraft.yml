@@ -479,8 +479,8 @@ form_types:
         description: "Sets the buffer size on Doppler before dropping log messages. Note that a larger buffer size has the potential to overload the system."
 
   - name: smtp_config
-    label: SMTP Config
-    description: Configuration for Simple Mail Transfer Protocol
+    label: Email Notifications
+    description: Configure Simple Mail Transfer Protocol for the Notifications application to send email notifications about your deployment. This application is deployed as an errand in Elastic Runtime. If you don't need this service, you may leave this section blank and disable the Notifications and Notifications UI errands.
     property_inputs:
       - reference: .properties.smtp_from
         label: From Email
