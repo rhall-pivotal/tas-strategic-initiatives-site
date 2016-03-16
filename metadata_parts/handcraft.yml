@@ -555,7 +555,12 @@ form_types:
 
   - name: experimental_features
     label: Experimental Features
-    description: There are no features currently in experimental state. Check back in future releases for new experimental features.
+    description: The virtual machines called Diego Cells are where the hosted applications actually run. With these fields you can specify how much memory or disk you would like to set as the Cells' available capacity, so that you can overcommit these resources against your configuration of the Cell VM's size in the Resource Config section.
+    property_inputs:
+      - reference: .diego_cell.executor_memory_capacity
+        label: Cell Memory Capacity (MB)
+      - reference: .diego_cell.executor_disk_capacity
+        label: Cell Disk Capacity (MB)
 
 job_types:
   - name: consul_server
@@ -3351,6 +3356,20 @@ job_types:
         min: 1
 
     property_blueprints:
+      - name: executor_disk_capacity
+        type: integer
+        label: Cell Disk Capacity (in MB)
+        configurable: true
+        optional: true
+        constraints:
+          min: 1
+      - name: executor_memory_capacity
+        type: integer
+        label: Cell Memory Capacity (in MB)
+        configurable: true
+        optional: true
+        constraints:
+          min: 1
       - name: garden_network_pool
         type: string
         default: 10.254.0.0/22
@@ -3364,6 +3383,8 @@ job_types:
     manifest: |
       diego:
         executor:
+          disk_capacity_mb: (( executor_disk_capacity.value ))
+          memory_capacity_mb: (( executor_memory_capacity.value ))
           post_setup_hook: sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"
           post_setup_user: "root"
         rep:
