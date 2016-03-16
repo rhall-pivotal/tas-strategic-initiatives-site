@@ -501,6 +501,28 @@ form_types:
       - reference: .properties.smtp_crammd5_secret
         label: SMTP CRAMMD5 secret
 
+  - name: smoke_tests
+    label: Smoke Tests
+    description: If you eventually decide to delete your Elastic Runtime deployment's shared domain(s), you will need to specify a dedicated Cloud Foundry organization and space where the smoke tests can be run.
+    property_inputs:
+      - reference: .properties.smoke_tests
+        label: Choose whether to create a new org and space on demand for smoke tests
+        selector_property_inputs:
+        - reference: .properties.smoke_tests.on_demand
+          label: On-demand org and space (this org and space are deleted after smoke tests finish running)
+        - reference: .properties.smoke_tests.specified
+          label: Specified org and space (the org and space must have a domain available for routing)
+          property_inputs:
+            - reference: .properties.smoke_tests.specified.org_name
+              label: Organization
+              description: The Elastic Runtime organization name to use when running tests
+            - reference: .properties.smoke_tests.specified.space_name
+              label: Space
+              description: The Elastic Runtime space name to use when running tests
+            - reference: .properties.smoke_tests.specified.apps_domain
+              label: Domain
+              description: Must be a domain available to the Organization
+
   - name: diego
     label: Diego
     description: Diego is a new replacement for DEAs.
@@ -3954,16 +3976,7 @@ job_types:
     property_blueprints:
 
     manifest: |
-      smoke_tests:
-        api: "https://api.(( .cloud_controller.system_domain.value ))"
-        apps_domain: (( .cloud_controller.apps_domain.value ))
-        user: (( .uaa.run_smoke_tests_credentials.identity ))
-        password: (( .uaa.run_smoke_tests_credentials.password ))
-        org: CF_SMOKE_TEST_ORG
-        space: CF_SMOKE_TEST_SPACE
-        skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
-        use_existing_org: false
-        use_existing_space: false
+      smoke_tests: (( .properties.smoke_tests.selected_option.parsed_manifest(smoke_tests) ))
 
   - name: notifications
     label: Notifications
@@ -5391,3 +5404,47 @@ property_blueprints:
             type: string
             configurable: true
             default: "member={0}"
+  - name: smoke_tests
+    type: selector
+    configurable: true
+    default: on_demand
+    option_templates:
+      - name: on_demand
+        select_value: on_demand
+        named_manifests:
+          - name: smoke_tests
+            manifest: |
+              api: "https://api.(( .cloud_controller.system_domain.value ))"
+              apps_domain: (( .cloud_controller.apps_domain.value ))
+              user: (( .uaa.run_smoke_tests_credentials.identity ))
+              password: (( .uaa.run_smoke_tests_credentials.password ))
+              org: CF_SMOKE_TEST_ORG
+              space: CF_SMOKE_TEST_SPACE
+              skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+              use_existing_org: false
+              use_existing_space: false
+
+      - name: specified
+        select_value: specified
+        named_manifests:
+          - name: smoke_tests
+            manifest: |
+              api: "https://api.(( .cloud_controller.system_domain.value ))"
+              apps_domain: (( .properties.smoke_tests.specified.apps_domain.value ))
+              user: (( .uaa.run_smoke_tests_credentials.identity ))
+              password: (( .uaa.run_smoke_tests_credentials.password ))
+              org: (( .properties.smoke_tests.specified.org_name.value ))
+              space: (( .properties.smoke_tests.specified.space_name.value ))
+              skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+              use_existing_org: true
+              use_existing_space: true
+        property_blueprints:
+          - name: org_name
+            type: string
+            configurable: true
+          - name: space_name
+            type: string
+            configurable: true
+          - name: apps_domain
+            type: string
+            configurable: true
