@@ -2852,6 +2852,7 @@ job_types:
         authentication:
           policy:
             lockoutAfterFailures: (( .properties.uaa.internal.password_max_retry.value ))
+        disableInternalUserManagement: (( .properties.uaa.selected_option.parsed_manifest(disable_internal_user_mgmt) ))
         password:
           policy:
             minLength: (( .properties.uaa.internal.password_min_length.value ))
@@ -5039,6 +5040,9 @@ property_blueprints:
         - name: saml_provider
           manifest: |
 
+        - name: disable_internal_user_mgmt
+          manifest: |
+            false
         property_blueprints:
           - name: password_min_length
             type: integer
@@ -5079,6 +5083,9 @@ property_blueprints:
               nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
               showSamlLoginLink: true
               linkText: (( .properties.uaa.saml.display_name.value ))
+        - name: disable_internal_user_mgmt
+          manifest: |
+            true
         property_blueprints:
           - name: sso_name
             type: string
@@ -5110,6 +5117,9 @@ property_blueprints:
         - name: saml_provider
           manifest: |
 
+        - name: disable_internal_user_mgmt
+          manifest: |
+            true
         property_blueprints:
           - name: url
             type: ldap_url
