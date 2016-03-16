@@ -193,7 +193,7 @@ form_types:
                 description: Minimum number of uppercase characters required for a valid password.
               - reference: .properties.uaa.internal.password_min_lowercase
                 label: Minimum Lowercase Characters Required for Password
-                description: Minimum Lowercase Characters Required for Password.
+                description: Minimum number of lowercase characters required for a valid password
               - reference: .properties.uaa.internal.password_min_numeric
                 label: Minimum Numerical Digits Required for Password
                 description: Minimum number of digits required for a valid password.
@@ -205,8 +205,29 @@ form_types:
                 description: Password will expire after this many months, input 0 if you want passwords to never expire.
               - reference: .properties.uaa.internal.password_max_retry
                 label: Maximum Password Entry Attempts Allowed
-                description: Maximum number of failures allowed to enter a password (within a 5 minute timespan) before the account is locked.
-
+                description: Maximum allowed password entry attempts (within a 5 min timespan) before the account is locked
+          - reference: .properties.uaa.saml
+            label: SAML Identity Provider
+            description:
+            property_inputs:
+              - reference: .properties.uaa.saml.sso_name
+                label: Provider Name
+                description: "Name of Identity Provider. Allowed characters are alphanumeric, plus `_`, and `-`. Do NOT change this name once deployed."
+              - reference: .properties.uaa.saml.display_name
+                label: Display Name
+                description: "Shows as a link on the login page."
+              - reference: .properties.uaa.saml.sso_xml
+                label: "Provider Metadata (if you would rather provide an SSO endpoint URL, skip to the next field)"
+                description: "Metadata XML content for the Identity Provider."
+              - reference: .properties.uaa.saml.sso_url
+                label: "(OR) Provider Metadata URL"
+                description: "If you did not provide metadata above, enter an SSO endpoint that returns the metadata."
+              - reference: .properties.uaa.saml.sign_auth_requests
+                label: Sign Authentication Requests
+                description: "If enabled, signed authentication requests will be sent to the SAML identity provider."
+              - reference: .properties.uaa.saml.require_signed_assertions
+                label: Require Signed Assertions
+                description: "If enabled, the SAML identity provider should always send signed assertions."
           - reference: .properties.uaa.ldap
             label: LDAP Server
             description:
@@ -238,31 +259,6 @@ form_types:
               - reference: .properties.uaa.ldap.mail_attribute_name
                 label: Email Attribute
                 description: "The name of the attribute that contains the user's email address."
-          - reference: .properties.uaa.saml
-            label: SAML Identity Provider
-            description:
-            property_inputs:
-              - reference: .properties.uaa.saml.sso_name
-                label: Provider Name
-                description: "Name of Identity Provider. Allowed characters are alphanumeric, plus `_`, and `-`. Do NOT change this name once deployed."
-              - reference: .properties.uaa.saml.display_name
-                label: Display Name
-                description: "Shows as a link on the login page."
-              - reference: .properties.uaa.saml.sso_xml
-                label: "Provider Metadata (if you would rather provide an SSO endpoint URL, skip to the next field)"
-                description: "Metadata XML content for the Identity Provider."
-              - reference: .properties.uaa.saml.sso_url
-                label: "(OR) Provider Metadata URL"
-                description: "If you did not provide metadata above, enter an SSO endpoint that returns the metadata."
-              - reference: .properties.uaa.saml.sign_auth_requests
-                label: Sign Authentication Requests
-                description: "If enabled, signed authentication requests will be sent to the SAML identity provider."
-              - reference: .properties.uaa.saml.require_signed_assertions
-                label: Require Signed Assertions
-                description: "If enabled, the SAML identity provider should always send signed assertions."
-              - reference: .properties.uaa.saml.ssl_certificate
-                label: Provider Certificate and Provider Key
-                description: "This certificate and key pair is used as a digital signature for the identity provider."
       - reference: .uaa.apps_manager_access_token_lifetime
         label: Apps Manager Access Token Lifetime (in seconds)
         description: Set the lifetime of the access token for the Apps Manager login portal.
@@ -5020,6 +5016,42 @@ property_blueprints:
             type: integer
             configurable: true
             default: 5
+      - name: saml
+        select_value: saml
+        named_manifests:
+        - name: saml_provider
+          manifest: |
+            (( .properties.uaa.saml.sso_name.value )):
+              metadataTrustCheck: false
+              idpMetadata: "(( .properties.uaa.saml.sso_url.value_present? ? .properties.uaa.saml.sso_url.value : .properties.uaa.saml.sso_xml.value ))"
+              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+              showSamlLoginLink: true
+              linkText: (( .properties.uaa.saml.display_name.value ))
+        property_blueprints:
+          - name: sso_name
+            type: string
+            configurable: true
+          - name: display_name
+            type: string
+            configurable: true
+          - name: sso_url
+            type: http_url
+            configurable: true
+            optional: true
+          - name: sso_xml
+            type: text
+            configurable: true
+            optional: true
+          - name: sign_auth_requests
+            type: boolean
+            configurable: true
+            default: true
+          - name: require_signed_assertions
+            type: boolean
+            configurable: true
+          - name: ssl_certificate
+            type: rsa_cert_credentials
+            configurable: false
       - name: ldap
         select_value: ldap
         named_manifests:
@@ -5060,42 +5092,6 @@ property_blueprints:
             type: string
             configurable: true
             default: 'mail'
-      - name: saml
-        select_value: saml
-        named_manifests:
-        - name: saml_provider
-          manifest: |
-            (( .properties.uaa.saml.sso_name.value )):
-              metadataTrustCheck: false
-              idpMetadata: "(( .properties.uaa.saml.sso_url.value_present? ? .properties.uaa.saml.sso_url.value : .properties.uaa.saml.sso_xml.value ))"
-              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-              showSamlLoginLink: true
-              linkText: (( .properties.uaa.saml.display_name.value ))
-        property_blueprints:
-          - name: sso_name
-            type: string
-            configurable: true
-          - name: display_name
-            type: string
-            configurable: true
-          - name: sso_url
-            type: http_url
-            configurable: true
-            optional: true
-          - name: sso_xml
-            type: text
-            configurable: true
-            optional: true
-          - name: sign_auth_requests
-            type: boolean
-            configurable: true
-            default: true
-          - name: require_signed_assertions
-            type: boolean
-            configurable: true
-          - name: ssl_certificate
-            type: rsa_cert_credentials
-            configurable: true
 
   - name: system_database
     type: selector
