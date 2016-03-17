@@ -98,11 +98,6 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
   end
 
   context 'postgres to mysql migration' do
-    it 'scales down apps manager database' do
-      resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
-      resource_config.set_instances_for_job('consoledb', 0)
-    end
-
     it 'scales up the persistent and ephemeral disks on uaadb and ccdb' do
       resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
       # Persistent Disk
