@@ -190,7 +190,7 @@ form_types:
         description: 1454 bytes is fine for most cases, but sometimes less is required, such as for networks that use GRE tunnels.
       - reference: .router.request_timeout_in_seconds
         label: Router Timeout to Backends (in seconds)
-        description: "Timeout for connections from Router to applications and system components. This may be increased to accommodate larger uploads over connections with high latency."
+        description: "Timeout for connections from Router (and HAProxy, if you use it) to applications and system components. This may be increased to accommodate larger uploads over connections with high latency."
 
   - name: system_database
     label: System Database Config
