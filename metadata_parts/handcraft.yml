@@ -1283,13 +1283,16 @@ job_types:
           password: (( mysql_backup_server_credentials.password ))
 
   - name: backup-prepare
+    label: Backup Prepare Node
     resource_label: Backup Prepare Node
+    description: Streams backups from MySQL Cluster
     templates:
     - name: streaming-mysql-backup-client
       release: mysql-backup
     - name: service-backup
       release: service-backup
     max_in_flight: 1
+    single_az_only: true
     resource_definitions:
     - name: ram
       type: integer
@@ -1320,8 +1323,8 @@ job_types:
         power_of_two: true
     static_ip: 1
     dynamic_ip: 0
-    instance_definitions:
-    - name: instances
+    instance_definition:
+      name: instances
       type: integer
       label: Instances
       configurable: true
@@ -1333,11 +1336,6 @@ job_types:
     - name: backup_encryption_key
       type: secret
       label: Backup Symmetric Encryption Key
-    - name: vm_credentials
-      type: salted_credentials
-      label: VM credentials
-      default:
-        identity: vcap
     manifest: |
       service-backup:
         blobstore:
@@ -4818,7 +4816,9 @@ job_types:
         java_buildpack_name: java_buildpack_offline
 
   - name: bootstrap
+    label: Bootstrap
     resource_label: Bootstrap
+    description: Errand for bootstrapping the MySQL cluster
     templates:
     - name: bootstrap
       release: cf-mysql
@@ -4854,8 +4854,9 @@ job_types:
         power_of_two: true
     static_ip: 0
     dynamic_ip: 1
-    instance_definitions:
-    - name: instances
+    single_az_only: false
+    instance_definition:
+      name: instances
       type: integer
       label: Instances
       configurable: false
