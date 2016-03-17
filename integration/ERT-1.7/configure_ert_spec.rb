@@ -138,15 +138,18 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
   def configure_ssl_cert(networking_form, elastic_runtime_settings, selector_option)
     networking_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings['trust_self_signed_certificates'])
 
+    ssl_rsa_cert_property = '.properties.networking_point_of_entry][' + \
+                            selector_option + '][.properties.networking_point_of_entry.' + \
+                            selector_option + '.ssl_rsa_certificate'
+
     if elastic_runtime_settings['ssl_certificate']
-      networking_form.nested_property('.properties.networking_point_of_entry]['+selector_option+'][.properties.networking_point_of_entry.'+selector_option+'.ssl_rsa_certificate', 'cert_pem')
-        .set(elastic_runtime_settings['ssl_certificate'])
-      networking_form.nested_property('.properties.networking_point_of_entry]['+selector_option+'][.properties.networking_point_of_entry.'+selector_option+'.ssl_rsa_certificate', 'private_key_pem')
-        .set(elastic_runtime_settings['ssl_private_key'])
+      networking_form.nested_property(ssl_rsa_cert_property, 'cert_pem').set(elastic_runtime_settings['ssl_certificate'])
+      networking_form.nested_property(ssl_rsa_cert_property, 'private_key_pem').set(elastic_runtime_settings['ssl_private_key'])
     else
       domain = elastic_runtime_settings['system_domain']
       networking_form.generate_self_signed_cert(
-        "*.#{domain},*.login.#{domain},*.uaa.#{domain}", '.properties.networking_point_of_entry.'+selector_option+'.ssl_rsa_certificate'
+        "*.#{domain},*.login.#{domain},*.uaa.#{domain}",
+        '.properties.networking_point_of_entry.' + selector_option + '.ssl_rsa_certificate'
       )
     end
   end
