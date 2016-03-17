@@ -648,6 +648,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           mode: server
           servers:
             lan: (( .consul_server.ips ))
@@ -938,6 +939,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
           services:
@@ -1916,6 +1918,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           services:
             cloud_controller_ng: {}
           servers:
@@ -2084,6 +2087,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
 
@@ -2469,6 +2473,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
 
@@ -2813,6 +2818,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
           services:
@@ -3271,6 +3277,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
       nats:
@@ -3403,6 +3410,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
       nats:
@@ -3426,7 +3434,7 @@ job_types:
         allow_host_access: (( .properties.allow_cross_container_traffic.value ))
         persistent_image_list:
           - "/var/vcap/packages/rootfs_cflinuxfs2/rootfs"
-        enable_graph_cleanup: true
+        graph_cleanup_threshold_in_mb: 0
         network_pool: (( garden_network_pool.value ))
         deny_networks: ["0.0.0.0/0"]
         network_mtu: 1454
