@@ -543,8 +543,6 @@ form_types:
     label: Diego
     description: Diego is a new replacement for DEAs.
     property_inputs:
-      - reference: .cloud_controller.default_to_diego_backend
-        label: Use Diego by default instead of DEAs
       - reference: .diego_cell.garden_network_pool
         label: Application Containers Subnet Pool
         description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to containers running on Diego. This is an arbitrary assignment and should be different from the network used by the system VMs.
@@ -1797,15 +1795,13 @@ job_types:
           min: 0
           max: 1000
 
-      - name: default_to_diego_backend
-        type: boolean
-        configurable: true
-        default: true
-
       - name: allow_app_ssh_access
         type: boolean
         configurable: true
         default: true
+
+      - name: internal_api_user_credentials
+        type: simple_credentials
 
     manifest: |
       app_ssh:
@@ -1835,7 +1831,7 @@ job_types:
         allowed_cors_domains:
         - https://apm.(( .cloud_controller.system_domain.value ))
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
-        default_to_diego_backend: (( default_to_diego_backend.value ))
+        default_to_diego_backend: true
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         service_name: cloud-controller-ng
@@ -1872,8 +1868,8 @@ job_types:
             package: php-buildpack
           - name: binary_buildpack
             package: binary-buildpack
-        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
-        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
+        internal_api_user: (( internal_api_user_credentials.identity ))
+        internal_api_password: (( internal_api_user_credentials.password ))
         logging_level: debug
         maximum_health_check_timeout: 600
         quota_definitions:
@@ -2087,116 +2083,6 @@ job_types:
           servers:
             lan: (( .consul_server.ips ))
 
-  - name: health_manager
-    label: Health Manager
-    resource_label: Health Manager
-    description: Reports app health to the Cloud Controller
-    templates:
-      - name: hm9000
-        release: cf
-      - name: metron_agent
-        release: cf
-      - name: route_registrar
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 1_024
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-    single_az_only: false
-
-    instance_definition:
-      name: instances
-      type: integer
-      label: Instances
-      configurable: true
-      default: 0
-      constraints:
-        min: 0
-
-    property_blueprints:
-      - name: internal_api_user_credentials
-        type: simple_credentials
-
-    manifest: |
-      cc:
-        srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
-        bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
-        bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
-        internal_api_user: (( internal_api_user_credentials.identity ))
-        internal_api_password: (( internal_api_user_credentials.password ))
-
-      domain: (( .cloud_controller.system_domain.value ))
-
-      dea_next:
-        heartbeat_interval_in_seconds: 10
-
-      hm9000:
-        port: 5155
-
-      ssl:
-        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines:  (( .nats.ips ))
-      syslog_daemon_config:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-      metron_agent:
-        zone: (( availability_zone ))
-        deployment: cf
-      metron_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-      etcd:
-        machines: (( .etcd_server.ips ))
-      loggregator:
-        etcd:
-          machines: (( .etcd_server.ips ))
-      route_registrar:
-        routes:
-        - name: hm9000
-          port: 5155
-          registration_interval: 20s
-          tags:
-            component: HM9K
-          uris:
-          - "hm9000.(( .cloud_controller.system_domain.value ))"
-
   - name: clock_global
     label: Clock Global
     resource_label: Clock Global
@@ -2278,8 +2164,8 @@ job_types:
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
         db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
-        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
-        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
+        internal_api_user: (( .cloud_controller.internal_api_user_credentials.identity ))
+        internal_api_password: (( .cloud_controller.internal_api_user_credentials.password ))
         quota_definitions:
           default:
             memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
@@ -2433,8 +2319,8 @@ job_types:
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
         db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
-        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
-        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
+        internal_api_user: (( .cloud_controller.internal_api_user_credentials.identity ))
+        internal_api_password: (( .cloud_controller.internal_api_user_credentials.password ))
         quota_definitions:
           default:
             memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
@@ -3166,8 +3052,8 @@ job_types:
         cc_uploader:
           cc:
             job_polling_interval_in_seconds: 25
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
@@ -3182,8 +3068,8 @@ job_types:
         file_server:
           cc:
             job_polling_interval_in_seconds: 25
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
@@ -3197,8 +3083,8 @@ job_types:
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
           cc:
             base_url: https://api.(( .cloud_controller.system_domain.value ))
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         route_emitter:
@@ -3241,8 +3127,8 @@ job_types:
             client_cert: (( .properties.bbs_client_cert.cert_pem ))
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
           cc:
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
@@ -3257,8 +3143,8 @@ job_types:
             client_cert: (( .properties.bbs_client_cert.cert_pem ))
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
           cc:
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
@@ -3431,107 +3317,6 @@ job_types:
         deny_networks: ["0.0.0.0/0"]
         network_mtu: 1454
         insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
-
-  - name: dea
-    label: DEA
-    resource_label: DEA
-    description: Droplet Execution Agents run the applications pushed to Pivotal CF Elastic Runtime
-    templates:
-      - name: dea_next
-        release: cf
-      - name: dea_logging_agent
-        release: cf
-      - name: metron_agent
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 16_384
-        constraints:
-          min: 4_096
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 32_768
-        constraints:
-          min: 10_240
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 2
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-    single_az_only: false
-
-    instance_definition:
-      name: instances
-      type: integer
-      label: Instances
-      configurable: true
-      default: 0
-      constraints:
-        min: 0
-
-    property_blueprints:
-      - name: loggregator_agent_status_credentials
-        type: simple_credentials
-
-    manifest: |
-      cc:
-        srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
-        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
-        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
-
-      domain: (( .cloud_controller.system_domain.value ))
-
-      dea_next:
-        allow_host_access: (( .properties.allow_cross_container_traffic.value ))
-        directory_server_protocol: https
-        memory_mb: (( ram ))
-        memory_overcommit_factor: 1
-        disk_mb: (( ephemeral_disk ))
-        disk_overcommit_factor: 1
-        num_instances: 10
-        evacuation_bail_out_time_in_seconds: 600
-        zone: (( availability_zone ))
-        post_setup_hook: 'rm -f app/.java-buildpack.log app/**/.java-buildpack.log >/dev/null 2>&1'
-
-      metron_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines: (( .nats.ips ))
-      syslog_daemon_config:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-      metron_agent:
-        zone: (( availability_zone ))
-        deployment: cf
-      loggregator:
-        etcd:
-          machines: (( .etcd_server.ips ))
 
   - name: doppler
     label: Doppler Server
@@ -4081,7 +3866,7 @@ job_types:
         network: notifications
         sender: (( .properties.smtp_from.value ))
         encryption_key: (( encryption_credentials.password ))
-        enable_diego: (( .cloud_controller.default_to_diego_backend.value ))
+        enable_diego: true
         instance_count: 3
         syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
         organization: system
@@ -4247,7 +4032,7 @@ job_types:
         network: notifications
         syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
         encryption_key: (( .notifications.encryption_credentials.password ))
-        enable_diego: (( .cloud_controller.default_to_diego_backend.value ))
+        enable_diego: true
         instance_count: 1
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
@@ -4399,7 +4184,7 @@ job_types:
         instance_count: 1
         database: (( .properties.system_database.selected_option.parsed_manifest(autoscaling) ))
         encryption_key: (( encryption_key.password ))
-        enable_diego: (( .cloud_controller.default_to_diego_backend.value ))
+        enable_diego: true
         notifications_host: "https://notifications.(( .cloud_controller.system_domain.value ))"
         organization: system
         space: autoscaling
