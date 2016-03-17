@@ -466,14 +466,6 @@ form_types:
         label: MySQL Service Hostname
         description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
 
-  - name: cloud_controller
-    label: Cloud Controller
-    description: Coordinates Pivotal CF Elastic Runtime application lifecycles
-    property_inputs:
-      - reference: .cloud_controller.encrypt_key
-        label: Cloud Controller DB Encryption Key
-        description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
-
   - name: syslog_aggregator
     label: System Logging
     description: Configure system logging. Leave the External Syslog fields blank unless you wish to use an external syslogd server.
@@ -516,6 +508,14 @@ form_types:
         label: SMTP Authentication Mechanism
       - reference: .properties.smtp_crammd5_secret
         label: SMTP CRAMMD5 secret
+
+  - name: cloud_controller
+    label: Restore CCDB Encryption Key
+    description: The Cloud Controller's database has an encryption key that should be re-instated whenever restoring this database from a backup.
+    property_inputs:
+      - reference: .cloud_controller.encrypt_key
+        label: Cloud Controller DB Encryption Key
+        description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
 
   - name: smoke_tests
     label: Smoke Tests
