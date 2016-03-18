@@ -1241,6 +1241,7 @@ job_types:
       configurable: false
       default: 1200
     manifest: |
+      roadmin_enabled: false
       admin_password: (( mysql_admin_credentials.password ))
       cluster_ips: (( .mysql.ips ))
       # allow up to 20 minutes for large SST's to succeed,

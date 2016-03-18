@@ -5,11 +5,16 @@ stemcell_criteria:
   requires_cpi: false
 releases:
 # MySQL release is first because its packages take the longest to compile.
-- file: cf-mysql-25.tgz
+- file: cf-mysql-25.2.tgz
   name: cf-mysql
-  version: '25'
-  md5: 6d68b5aa53827eeae34d628dcfbf915f
-  url: https://s3.amazonaws.com/cf-mysql-releases/final/cf-mysql-25.tgz
+  version: '25.2'
+  md5: e1ac3ea094b3884445240cb8570ba21b
+  aws:
+    access_key_id: AKIAIAXBRMZRNWF3EYDQ
+    secret_access_key: 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
+    region: us-east-1
+    bucket_name: pcf-mysql-releases
+    filename: final/cf-mysql-25.2.tgz
 - file: mysql-backup-1.tgz
   name: mysql-backup
   version: '1'
