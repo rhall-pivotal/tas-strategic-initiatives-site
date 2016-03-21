@@ -1156,6 +1156,8 @@ job_types:
         etcd:
           machines: (( .etcd_server.ips ))
       uaa:
+        ssl:
+          port: -1
         clients:
           gorouter:
             secret: (( .uaa.gorouter_client_credentials.password ))
