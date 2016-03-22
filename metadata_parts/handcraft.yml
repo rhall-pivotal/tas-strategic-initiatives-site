@@ -342,7 +342,7 @@ form_types:
         description: "Sets the buffer size on Doppler before dropping log messages. Note that a larger buffer size has the potential to overload the system."
       - reference: .properties.logger_endpoint_port
         label: Loggregator Port
-        description: "Default is 4443. Enter a new value to override the default"
+        description: "Default is 443. Enter a new value to override the default."
 
   - name: uaa_sso
     label: SSO Config
@@ -4818,7 +4818,7 @@ property_blueprints:
   - name: logger_endpoint_port
     type: port
     configurable: true
-    default: 4443
+    optional: true
 
   - name: allow_cross_container_traffic
     type: boolean
