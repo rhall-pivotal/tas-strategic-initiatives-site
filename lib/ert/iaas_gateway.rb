@@ -26,7 +26,7 @@ module Ert
 
     def ssh_password_gateway(block)
       ENV['DIRECTOR_IP_OVERRIDE'] = 'localhost'
-      uri = URI.parse(environment.settings.ops_manager.url)
+      uri = URI.parse(environment.settings.ops_manager['url'])
       director_ip = bosh_command.director_ip
       logger.info("Setting up SSH gateway to OpsManager at #{uri.host}")
       Net::SSH::Gateway.new(
@@ -41,7 +41,7 @@ module Ert
 
     def ssh_key_gateway(block)
       ENV['DIRECTOR_IP_OVERRIDE'] = 'localhost'
-      uri = URI.parse(environment.settings.ops_manager.url)
+      uri = URI.parse(environment.settings.ops_manager['url'])
       director_ip = bosh_command.director_ip
       Net::SSH::Gateway.new(
         uri.host,
@@ -56,9 +56,9 @@ module Ert
     def ssh_key
       case environment.settings.iaas_type
       when 'aws'
-        environment.settings.ops_manager.aws.ssh_key
+        environment.settings.ops_manager['aws']['ssh_key']
       when 'openstack'
-        environment.settings.ops_manager.openstack.ssh_private_key
+        environment.settings.ops_manager['openstack']['ssh_private_key']
       end
     end
   end
