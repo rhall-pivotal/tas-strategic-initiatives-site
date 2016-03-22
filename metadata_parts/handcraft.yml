@@ -740,6 +740,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           mode: server
           servers:
             lan: (( .consul_server.ips ))
@@ -1030,6 +1031,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
           services:
@@ -1253,6 +1255,8 @@ job_types:
         etcd:
           machines: (( .etcd_server.ips ))
       uaa:
+        ssl:
+          port: -1
         clients:
           gorouter:
             secret: (( .uaa.gorouter_client_credentials.password ))
@@ -1849,6 +1853,8 @@ job_types:
         release: cf
       - name: python-buildpack
         release: cf
+      - name: java-offline-buildpack
+        release: cf
       - name: staticfile-buildpack
         release: cf
       - name: cloud_controller_ng
@@ -2111,6 +2117,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           services:
             cloud_controller_ng: {}
           servers:
@@ -2267,6 +2274,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
 
@@ -2542,6 +2550,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
 
@@ -2886,6 +2895,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
           services:
@@ -3017,9 +3027,8 @@ job_types:
           cf:
             id: cf
             override: true
-            autoapprove: true
             authorities: "uaa.none"
-            authorized-grant-types: "implicit,password,refresh_token"
+            authorized-grant-types: "password,refresh_token"
             scope: "cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user"
             access-token-validity: (( cf_cli_access_token_lifetime.value ))
             refresh-token-validity: (( cf_cli_refresh_token_lifetime.value ))
@@ -3147,12 +3156,15 @@ job_types:
         routes:
         - name: uaa
           port: 8080
-          registration_interval: 20s
+          registration_interval: 4s
           uris:
           - "uaa.(( .cloud_controller.system_domain.value ))"
           - "*.uaa.(( .cloud_controller.system_domain.value ))"
           - "login.(( .cloud_controller.system_domain.value ))"
           - "*.login.(( .cloud_controller.system_domain.value ))"
+          health_check:
+            name: uaa-healthcheck
+            script_path: /var/vcap/jobs/uaa/bin/health_check
 
   - name: diego_brain
     label: Diego Brain
@@ -3353,6 +3365,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
       nats:
@@ -3491,6 +3504,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
       nats:
@@ -3514,7 +3528,7 @@ job_types:
         allow_host_access: (( .properties.allow_cross_container_traffic.value ))
         persistent_image_list:
           - "/var/vcap/packages/rootfs_cflinuxfs2/rootfs"
-        enable_graph_cleanup: true
+        graph_cleanup_threshold_in_mb: 0
         network_pool: (( garden_network_pool.value ))
         deny_networks: ["0.0.0.0/0"]
         network_mtu: (( garden_network_mtu.value ))
@@ -4581,73 +4595,6 @@ job_types:
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
           admin_password: (( .uaa.admin_credentials.password ))
-
-  - name: diego-acceptance-tests
-    label: Run Diego Acceptance Tests
-    resource_label: Run Diego Acceptance Tests
-    description: Runs Diego Acceptance Tests against your Elastic Runtime installation
-    templates:
-      - name: acceptance-tests
-        release: diego
-    errand: true
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-    single_az_only: false
-
-    instance_definition:
-      name: instances
-      type: integer
-      label: Instances
-      configurable: false
-      default: 1
-
-    property_blueprints:
-
-    manifest: |
-      acceptance_tests:
-        api: "https://api.(( .cloud_controller.system_domain.value ))"
-        apps_domain: (( .cloud_controller.apps_domain.value ))
-        admin_user: (( .uaa.admin_credentials.identity ))
-        admin_password: (( .uaa.admin_credentials.password ))
-        skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
-        run_security_groups_tests: false
-        run_ssh_tests: true
-        skip_docker_tests: true
-        nodes: 1
 
   - name: acceptance-tests
     label: Run CF Acceptance Tests
