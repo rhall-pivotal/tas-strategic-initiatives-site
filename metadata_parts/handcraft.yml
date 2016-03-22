@@ -454,9 +454,9 @@ form_types:
         label: Enable TLS on the Router
         description: Disable only if your load-balancer does not send HTTPS traffic to the Router
 
-  - name: mysql_proxy
+  - name: mysql_config
     label: MySQL Proxy Config
-    description: "A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936."
+    description:  "A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936."
     property_inputs:
       - reference: .mysql_proxy.static_ips
         label: MySQL Proxy IPs
@@ -464,6 +464,30 @@ form_types:
       - reference: .mysql_proxy.service_hostname
         label: MySQL Service Hostname
         description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
+      - reference: .properties.mysql_backups
+        label: Automated Backups Configuration
+        selector_property_inputs:
+        - reference: .properties.mysql_backups.disable
+          label: |
+            Disable mysql_backups (Must also set: Resource Config > Backup Prepare Node > Instances to 0)
+          description: Disable mysql_backups
+        - reference: .properties.mysql_backups.enable
+          label: Enable mysql_backups
+          description: Enable mysql_backups
+          property_inputs:
+          - reference: .properties.mysql_backups.enable.bucket_name
+            label: S3 Bucket Name
+            description: Do not include 's3://' prefix, trailing '/', or underscores. The bucket will be created automatically if it does not already exist.
+          - reference: .properties.mysql_backups.enable.bucket_path
+            label: Bucket Path
+            description: Specify a folder within the bucket which will hold the mysql_backups. Do not include a trailing slash.
+          - reference: .properties.mysql_backups.enable.access_key_id
+            label: AWS Access Key ID
+          - reference: .properties.mysql_backups.enable.secret_access_key
+            label: AWS Secret Access Key
+          - reference: .properties.mysql_backups.enable.cron_schedule
+            label: Cron Schedule (See http://godoc.org/github.com/robfig/cron)
+            description: Specify when mysql backups are to occur. Schedule uses the machine's local time zone.
 
   - name: cloud_controller
     label: Cloud Controller
@@ -1303,6 +1327,8 @@ job_types:
     templates:
       - name: mysql
         release: cf-mysql
+      - name: streaming-mysql-backup-tool
+        release: mysql-backup
     max_in_flight: 1
     single_az_only: false
     resource_definitions:
@@ -1350,6 +1376,12 @@ job_types:
       type: simple_credentials
       default:
         identity: root
+    - name: mysql_bootstrap_credentials
+      type: simple_credentials
+      label: Bootstrap Endpoint Credentials
+    - name: mysql_backup_server_credentials
+      type: simple_credentials
+      label: Backup Endpoint Credentials
     - name: app_usage_credentials
       type: simple_credentials
       default:
@@ -1364,15 +1396,23 @@ job_types:
       type: simple_credentials
     - name: consoledb_credentials
       type: simple_credentials
+    - name: database_startup_timeout
+      type: integer
+      configurable: false
+      default: 1200
     manifest: |
+      roadmin_enabled: false
       admin_password: (( mysql_admin_credentials.password ))
       cluster_ips: (( .mysql.ips ))
       # allow up to 20 minutes for large SST's to succeed,
       # this is temporary until BOSH pre-start is implemented
-      database_startup_timeout: 1200
+      database_startup_timeout: (( .mysql.database_startup_timeout.value ))
       innodb_buffer_pool_size: 2147483648
       max_connections: 1500
       network_name: default
+      bootstrap_endpoint:
+        username: (( mysql_bootstrap_credentials.identity ))
+        password: (( mysql_bootstrap_credentials.password ))
       seeded_databases:
         - name: ccdb
           username: (( ccdb_credentials.identity ))
@@ -1396,6 +1436,88 @@ job_types:
         address: (( ..cf.properties.syslog_host.value ))
         port: (( ..cf.properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      mysql-backup:
+        command: innobackupex --user=(( mysql_admin_credentials.identity )) --password=(( mysql_admin_credentials.password )) --stream=tar tmp/
+        port: 8081
+        credentials:
+          username: (( mysql_backup_server_credentials.identity ))
+          password: (( mysql_backup_server_credentials.password ))
+
+  - name: backup-prepare
+    label: Backup Prepare Node
+    resource_label: Backup Prepare Node
+    description: Streams backups from MySQL Cluster
+    templates:
+    - name: streaming-mysql-backup-client
+      release: mysql-backup
+    - name: service-backup
+      release: service-backup
+    max_in_flight: 1
+    single_az_only: true
+    resource_definitions:
+    - name: ram
+      type: integer
+      label: RAM
+      configurable: true
+      default: 1024
+      constraints:
+        min: 1024
+    - name: ephemeral_disk
+      type: integer
+      label: Ephemeral Disk
+      configurable: true
+      default: 200000 # This value must be twice the mysql persistent disk
+      contraints:
+        min: 10000
+    - name: persistent_disk
+      type: integer
+      label: Persistent Disk
+      configurable: false
+      default: 0
+    - name: cpu
+      type: integer
+      label: CPU
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        power_of_two: true
+    static_ip: 1
+    dynamic_ip: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 0
+      constraints:
+        min: 0
+        max: 1
+    property_blueprints:
+    - name: backup_encryption_key
+      type: secret
+      label: Backup Symmetric Encryption Key
+    manifest: |
+      service-backup:
+        blobstore:
+          bucket_name: (( .properties.mysql_backups.enable.bucket_name.value ))
+          bucket_path: (( .properties.mysql_backups.enable.bucket_path.value ))
+          access_key_id: (( .properties.mysql_backups.enable.access_key_id.value ))
+          secret_access_key: (( .properties.mysql_backups.enable.secret_access_key.value ))
+        source_folder: /var/vcap/data/mysql-mysql_backups
+        source_executable: /var/vcap/jobs/streaming-mysql-backup-client/bin/client
+        cleanup_executable: /bin/bash -c /var/vcap/jobs/streaming-mysql-backup-client/bin/cleanup-directories
+        cron_schedule: (( .properties.mysql_backups.enable.cron_schedule.value ))
+      streaming-mysql-backup-client:
+        output_folder: /var/vcap/data/mysql-mysql_backups
+        symmetric_key: (( backup_encryption_key.value ))
+        backup-generator:
+          cluster_ips: (( .mysql.ips ))
+          port: 8081
+          endpoint: /backup
+          credentials:
+            username: (( .mysql.mysql_backup_server_credentials.identity ))
+            password: (( .mysql.mysql_backup_server_credentials.password ))
 
   - name: ccdb
     label: Cloud Controller Database
@@ -4650,6 +4772,60 @@ job_types:
         skip_diego_unsupported_tests: true
         java_buildpack_name: java_buildpack_offline
 
+  - name: bootstrap
+    label: Bootstrap
+    resource_label: Bootstrap
+    description: Errand for bootstrapping the MySQL cluster
+    templates:
+    - name: bootstrap
+      release: cf-mysql
+    errand: true
+    max_in_flight: 1
+    resource_definitions:
+    - name: ram
+      type: integer
+      label: RAM
+      configurable: true
+      default: 2048
+      constraints:
+        min: 1024
+    - name: ephemeral_disk
+      type: integer
+      label: Ephemeral Disk
+      configurable: true
+      default: 2048
+      constraints:
+        min: 1024
+    - name: persistent_disk
+      type: integer
+      label: Persistent Disk
+      configurable: false
+      default: 0
+    - name: cpu
+      type: integer
+      label: CPU
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        power_of_two: true
+    static_ip: 0
+    dynamic_ip: 1
+    single_az_only: false
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
+    property_blueprints:
+    manifest: |
+      cluster_ips: (( .mysql.ips ))
+      database_startup_timeout: (( .mysql.database_startup_timeout.value ))
+      bootstrap_endpoint:
+        username: (( .mysql.mysql_bootstrap_credentials.identity ))
+        password: (( .mysql.mysql_bootstrap_credentials.password ))
+
   - name: compilation
     label: Compilation
     resource_label: Compilation
@@ -5300,6 +5476,33 @@ property_blueprints:
             type: string
             configurable: true
             default: "member={0}"
+
+  - name: mysql_backups
+    type: selector
+    configurable: true
+    default: disable
+    option_templates:
+    - name: disable
+      select_value: disable
+    - name: enable
+      select_value: enable
+      property_blueprints:
+      - name: bucket_name
+        type: string
+        configurable: true
+      - name: bucket_path
+        type: string
+        configurable: true
+      - name: access_key_id
+        type: string
+        configurable: true
+      - name: secret_access_key
+        type: secret
+        configurable: true
+      - name: cron_schedule
+        type: string
+        configurable: true
+        
   - name: smoke_tests
     type: selector
     configurable: true
