@@ -460,7 +460,7 @@ form_types:
 
   - name: system_blobstore
     label: File Storage
-    description: "Configure the location of file storage for Elastic Runtime. Only do this during the initial installation of Elastic Runtime. Do not change anything in this section when upgrading. For an existing installation, you must perform a manual data migration to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details."
+    description: "This section determines where you would like to place your Elastic Runtime Cloud Controller's file storage." 
     verifiers:
       - name: Verifiers::BlobstoreVerifier
         properties:
@@ -499,10 +499,10 @@ form_types:
       label: "Configure your Cloud Controller's filesystem"
       selector_property_inputs:
       - reference: .properties.system_blobstore.internal
-        label: Internal
+        label: Internal WebDAV (provided by Elastic Runtime)
         description:
       - reference: .properties.system_blobstore.external
-        label: External S3-Compatible File Store
+        label: External S3-Compatible File Store (if you want to use a service like S3 or Ceph)
         description:
         property_inputs:
           - reference: .properties.system_blobstore.external.endpoint
