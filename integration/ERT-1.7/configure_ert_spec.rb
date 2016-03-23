@@ -76,6 +76,33 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
     end
   end
 
+  context 'postgres to mysql migration' do
+    it 'scales up the persistent and ephemeral disks on uaadb and ccdb' do
+      resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
+      # Persistent Disk
+      resource_config.set_disk_type_for_job('ccdb', '5120')
+      resource_config.set_disk_type_for_job('uaadb', '20480')
+      # Ephemeral Disk
+      resource_config.set_vm_type_for_job('ccdb', 'medium')
+      resource_config.set_vm_type_for_job('uaadb', 'medium')
+    end
+
+    it 'selects the internal mysql database' do
+      database_config_form =
+        current_ops_manager.product(elastic_runtime_settings['name']).product_form('system_database')
+
+      database_config_form.open_form
+      database_config_form.fill_in_selector_property(
+        selector_input_reference: '.properties.system_database',
+        selector_name: 'system_database',
+        selector_value: 'internal_mysql',
+        sub_field_answers: {}
+      )
+
+      database_config_form.save_form
+    end
+  end
+
   private
 
   def configure_vsphere_ha_proxy(elastic_runtime_settings)
