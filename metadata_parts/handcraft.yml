@@ -1169,6 +1169,7 @@ job_types:
         type: rsa_cert_credentials
         configurable: false
     manifest: |
+      domain: (( .cloud_controller.system_domain.value ))
       nfs_server:
         allow_from_entries: (( .cloud_controller.subnet_cidrs ))
       syslog_daemon_config:
