@@ -1102,6 +1102,12 @@ job_types:
         release: cf
       - name: statsd-injector
         release: cf
+      - name: blobstore
+        release: cf
+      - name: route_registrar
+        release: cf
+      - name: consul_agent
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1152,7 +1158,16 @@ job_types:
         max: 1
 
     property_blueprints:
-
+      - name: blobstore_credentials
+        type: simple_credentials
+        default:
+          identity: blobstore
+      - name: blobstore_secret
+        type: secret
+        configurable: false
+      - name: blobstore_cert
+        type: rsa_cert_credentials
+        configurable: false
     manifest: |
       nfs_server:
         allow_from_entries: (( .cloud_controller.subnet_cidrs ))
@@ -1173,6 +1188,28 @@ job_types:
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
+      consul:
+        agent:
+          services:
+            blobstore: {}
+      route_registrar:
+        routes:
+          - name: blobstore
+            port: 80
+            tags:
+              component: blobstore
+            uris:
+            - blobstore.(( .cloud_controller.system_domain.value ))
+      blobstore:
+        admin_users:
+        - username: (( blobstore_credentials.identity ))
+          password: (( blobstore_credentials.password ))
+        secure_link:
+          secret: (( blobstore_secret.value ))
+        tls:
+          cert: (( blobstore_cert.cert_pem ))
+          port: 443
+          private_key: (( blobstore_cert.private_key_pem ))
 
   - name: router
     label: Router
@@ -1918,8 +1955,6 @@ job_types:
         release: cf
       - name: route_registrar
         release: cf
-      - name: nfs_mounter
-        release: cf
       - name: statsd-injector
         release: cf
 
@@ -2190,9 +2225,6 @@ job_types:
             cloud_controller_ng: {}
           servers:
             lan: (( .consul_server.ips ))
-
-      nfs_server:
-        address: (( .nfs_server.first_ip ))
 
       uaa:
         url: "https://uaa.(( .cloud_controller.system_domain.value ))"
@@ -2515,8 +2547,6 @@ job_types:
         release: cf
       - name: consul_agent
         release: cf
-      - name: nfs_mounter # NOTE: NFS Mounter must be last until #94152506 is resolved
-        release: cf
       - name: statsd-injector
         release: cf
 
@@ -2630,9 +2660,6 @@ job_types:
           domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
-
-      nfs_server:
-        address: (( .nfs_server.first_ip ))
 
       uaa:
         url: "https://uaa.(( .cloud_controller.system_domain.value ))"
@@ -5847,32 +5874,41 @@ property_blueprints:
         named_manifests:
           - name: ccbuildpack
             manifest: |
-              blobstore_type: fog
-              fog_connection:
-                provider: Local
-                local_root: /var/vcap/nfs/shared
+              blobstore_type: webdav
+              webdav_config:
+                username: (( .nfs_server.blobstore_credentials.identity ))
+                password: (( .nfs_server.blobstore_credentials.password ))
+                private_endpoint: https://blobstore.service.cf.internal
+                public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
           - name: ccdroplet
             manifest: |
-              blobstore_type: fog
-              fog_connection:
-                provider: Local
-                local_root: /var/vcap/nfs/shared
+              blobstore_type: webdav
+              webdav_config:
+                username: (( .nfs_server.blobstore_credentials.identity ))
+                password: (( .nfs_server.blobstore_credentials.password ))
+                private_endpoint: https://blobstore.service.cf.internal
+                public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
           - name: ccpackage
             manifest: |
-              blobstore_type: fog
-              fog_connection:
-                provider: Local
-                local_root: /var/vcap/nfs/shared
+              blobstore_type: webdav
+              webdav_config:
+                username: (( .nfs_server.blobstore_credentials.identity ))
+                password: (( .nfs_server.blobstore_credentials.password ))
+                private_endpoint: https://blobstore.service.cf.internal
+                public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
           - name: ccresource
             manifest: |
-              blobstore_type: fog
-              fog_connection:
-                provider: Local
-                local_root: /var/vcap/nfs/shared
+              blobstore_type: webdav
+              webdav_config:
+                username: (( .nfs_server.blobstore_credentials.identity ))
+                password: (( .nfs_server.blobstore_credentials.password ))
+                private_endpoint: https://blobstore.service.cf.internal
+                public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
       - name: external
         named_manifests:
           - name: ccbuildpack
             manifest: |
+              blobstore_type: fog
               buildpack_directory_key: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
               fog_connection:
                 provider: AWS
@@ -5884,6 +5920,7 @@ property_blueprints:
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccdroplet
             manifest: |
+              blobstore_type: fog
               droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
               fog_connection:
                 provider: AWS
@@ -5896,6 +5933,7 @@ property_blueprints:
           - name: ccpackage
             manifest: |
               app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
+              blobstore_type: fog
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -5906,6 +5944,7 @@ property_blueprints:
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccresource
             manifest: |
+              blobstore_type: fog
               resource_directory_key: (( .properties.system_blobstore.external.resources_bucket.value ))
               fog_connection:
                 provider: AWS
