@@ -4872,8 +4872,10 @@ job_types:
       name: instances
       type: integer
       label: Instances
-      default: 0
+      default: 1
       configurable: true
+      constraints:
+        min: 1
 
 property_blueprints:
   - name: product_version
