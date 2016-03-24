@@ -1168,6 +1168,9 @@ job_types:
       - name: blobstore_cert
         type: rsa_cert_credentials
         configurable: false
+        default:
+          domains:
+          - blobstore.service.cf.internal
     manifest: |
       domain: (( .cloud_controller.system_domain.value ))
       nfs_server:
