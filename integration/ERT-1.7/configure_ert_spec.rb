@@ -176,7 +176,9 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
       domain = elastic_runtime_settings['system_domain']
       networking_form.generate_self_signed_cert(
         "*.#{domain},*.login.#{domain},*.uaa.#{domain}",
-        '.properties.networking_point_of_entry.' + selector_option + '.ssl_rsa_certificate'
+        '.properties.networking_point_of_entry.' + selector_option + '.ssl_rsa_certificate',
+        '.properties.networking_point_of_entry',
+        selector_option
       )
     end
   end
