@@ -1022,8 +1022,7 @@ job_types:
 
     manifest: |
       nfs_server:
-        allow_from_entries:
-        - (( cloud_controller.subnet_cidrs ))
+        allow_from_entries: (( cloud_controller.subnet_cidrs ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
