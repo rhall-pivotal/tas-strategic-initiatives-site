@@ -3438,7 +3438,6 @@ job_types:
         allow_host_access: (( .properties.allow_cross_container_traffic.value ))
         persistent_image_list:
           - "/var/vcap/packages/rootfs_cflinuxfs2/rootfs"
-        enable_graph_cleanup: true
         graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
         network_pool: (( garden_network_pool.value ))
         deny_networks: ["0.0.0.0/0"]
