@@ -5,6 +5,7 @@ exports.migrate = function(input) {
         properties['.properties.uaa'] = {value: 'saml'};
 
         properties['.properties.uaa.saml.sso_name'] = properties['.uaa.sso_name'];
+        properties['.properties.uaa.saml.display_name'] = properties['.uaa.sso_name'];
         properties['.properties.uaa.saml.sso_xml'] = properties['.uaa.sso_xml'];
         properties['.properties.uaa.saml.sso_url'] = properties['.uaa.sso_url'];
     } else if( properties['.uaa.ldap_url']['value'] ) {

@@ -4,7 +4,7 @@ provides_product_versions:
 - name: cf
   version: 1.7.0.0
 product_version: &product_version "1.7.0.0$PRERELEASE_VERSION$"
-minimum_version_for_upgrade: 1.6.0-build.0
+minimum_version_for_upgrade: 1.6.4-build.0
 label: Pivotal Elastic Runtime
 description:
   Gives developers the ability to push apps on a dynamically-configured software stack
@@ -79,6 +79,8 @@ install_time_verifiers:
       access_key_id: .properties.system_blobstore.external.access_key
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.buildpacks_bucket
+      region: .properties.system_blobstore.external.region
+      signature_version: .properties.system_blobstore.external.signature_version
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
@@ -86,6 +88,8 @@ install_time_verifiers:
       access_key_id: .properties.system_blobstore.external.access_key
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.droplets_bucket
+      region: .properties.system_blobstore.external.region
+      signature_version: .properties.system_blobstore.external.signature_version
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
@@ -93,6 +97,8 @@ install_time_verifiers:
       access_key_id: .properties.system_blobstore.external.access_key
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.packages_bucket
+      region: .properties.system_blobstore.external.region
+      signature_version: .properties.system_blobstore.external.signature_version
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
@@ -100,11 +106,12 @@ install_time_verifiers:
       access_key_id: .properties.system_blobstore.external.access_key
       secret_access_key: .properties.system_blobstore.external.secret_key
       bucket_name: .properties.system_blobstore.external.resources_bucket
+      region: .properties.system_blobstore.external.region
+      signature_version: .properties.system_blobstore.external.signature_version
 
 post_deploy_errands:
   - name: smoke-tests
   - name: push-apps-manager
-  - name: push-app-usage-service
   - name: notifications
   - name: notifications-ui
   - name: autoscaling
@@ -128,6 +135,70 @@ form_types:
       - reference: .cloud_controller.apps_domain
         label: Apps Domain
         description: This is the default apps domain that pushed apps will use for their hostnames. Use the Cloud Foundry command line interface to add or delete domains. This also requires a wildcard DNS record.
+
+  - name: networking
+    label: Networking
+    description: This section allows you to employ various security and routing services for your platform.
+    property_inputs:
+      - reference: .router.static_ips
+        label: Router IPs
+        description: "Enter static IP address(es) for the Router(s), which must be in the subnet that you defined in the Ops Manager network configuration. If you have a load balancer, you should then configure your load balancer to point to these IPs. If deploying this to AWS with an ELB, then instead of defining any IP addresses here, you can add the name of your AWS ELB in the Resource Config section in the ELB Name column for Router."
+      - reference: .ha_proxy.static_ips
+        label: HAProxy IPs
+        description: "Enter the IP address(es) for HAProxy. You must point your DNS to this IP unless you are using your own load balancer. HAProxy's IP must be in your subnet."
+      - reference: .properties.networking_point_of_entry
+        label: Configure the point-of-entry to this environment
+        selector_property_inputs:
+          - reference: .properties.networking_point_of_entry.external_ssl
+            label: "Select this option if you have an external load balancer, and it can forward encrypted traffic (SSL, HTTPS, etc.) to the Elastic Runtime Router(s). You may also select this option for a non-production environment where load balancing is not required, by configuring a single Router with TLS enabled as your point-of-entry to the Elastic Runtime platform."
+            property_inputs:
+              - reference: .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate
+                label: Router SSL Termination Certificate and Private Key
+                description: "Required for SSL encryption between the load balancer and Router(s)."
+              - reference: .properties.networking_point_of_entry.external_ssl.ssl_ciphers
+                label: Router SSL Ciphers
+                description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
+          - reference: .properties.networking_point_of_entry.external_non_ssl
+            label: "Select this option if you have an external load balancer, but it will NOT forward any encrypted traffic to the Elastic Runtime Router(s). You may also select this option for a non-production environment where load balancing is not required, by configuring a single Router with TLS disabled as your point-of-entry to the Elastic Runtime platform."
+          - reference: .properties.networking_point_of_entry.haproxy
+            label: "Select this option if you want to use HAProxy as your first point-of-entry instead of your own load balancer. Note that HAProxy does not provide IP failover, so it is not a robust load balancer."
+            property_inputs:
+              - reference: .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate
+                label: SSL Certificate and Private Key
+                description: "This certificate and key are used to terminate SSL traffic at HAProxy. You can use a certificate that has multiple domains attributed to it, i.e. if you have separate system and application domains. You can also generate a self-signed certificate here with your wildcard system domain."
+              - reference: .properties.networking_point_of_entry.haproxy.disable_http
+                label: Disable HTTP traffic to HAProxy
+                description: "If checked, HAProxy will only allow HTTPS traffic."
+              - reference: .properties.networking_point_of_entry.haproxy.ssl_ciphers
+                label: HAProxy SSL Ciphers
+                description: "These ciphers should use dashes in their names, e.g. `ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384`"
+      - reference: .ha_proxy.skip_cert_verify
+        label: Disable SSL certificate verification for this environment
+        description: You can disable SSL verification if you are using your own self-signed certificates that are not from a trusted CA.
+      - reference: .router.disable_insecure_cookies
+        label: Disable insecure cookies on the Router
+        description: If checked, this turns on the secure flag for cookies generated by Router.
+      - reference: .properties.route_services
+        label: Choose whether to enable route services. Route services enable you to proxy requests to your app over TLS to arbitrary URLs before hitting your app.
+        selector_property_inputs:
+          - reference: .properties.route_services.enable
+            label: Enable route services
+            property_inputs:
+              - reference: .properties.route_services.enable.ignore_ssl_cert_verification
+                label: Ignore SSL certificate verification on route services
+                description: "When disabled, the routing tier will reject requests for routes bound to route services if the SSL certificate provided by the route service is not signed by a trusted CA."
+          - reference: .properties.route_services.disable
+            label: Disable route services
+      - reference: .diego_cell.garden_network_pool
+        label: Applications Subnet (you should not need to change this unless you need to avoid address collision with a third-party service on the same subnet)
+        description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
+      - reference: .diego_cell.garden_network_mtu
+        label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
+        description: 1454 bytes is fine for most cases, but sometimes less is required, such as for networks that use GRE tunnels.
+      - reference: .router.request_timeout_in_seconds
+        label: Router Timeout to Backends (in seconds)
+        description: "Timeout for connections from Router (and HAProxy, if you use it) to applications and system components. This may be increased to accommodate larger uploads over connections with high latency."
+
 
   - name: app_containers
     label: Application Containers
@@ -193,7 +264,7 @@ form_types:
                 description: Minimum number of uppercase characters required for a valid password.
               - reference: .properties.uaa.internal.password_min_lowercase
                 label: Minimum Lowercase Characters Required for Password
-                description: Minimum Lowercase Characters Required for Password.
+                description: Minimum number of lowercase characters required for a valid password
               - reference: .properties.uaa.internal.password_min_numeric
                 label: Minimum Numerical Digits Required for Password
                 description: Minimum number of digits required for a valid password.
@@ -205,8 +276,29 @@ form_types:
                 description: Password will expire after this many months, input 0 if you want passwords to never expire.
               - reference: .properties.uaa.internal.password_max_retry
                 label: Maximum Password Entry Attempts Allowed
-                description: Maximum number of failures allowed to enter a password (within a 5 minute timespan) before the account is locked.
-
+                description: Maximum allowed password entry attempts (within a 5 min timespan) before the account is locked
+          - reference: .properties.uaa.saml
+            label: SAML Identity Provider
+            description:
+            property_inputs:
+              - reference: .properties.uaa.saml.sso_name
+                label: Provider Name
+                description: "Name of Identity Provider. Allowed characters are alphanumeric, plus `_`, and `-`. Do NOT change this name once deployed."
+              - reference: .properties.uaa.saml.display_name
+                label: Display Name
+                description: "Shows as a link on the login page."
+              - reference: .properties.uaa.saml.sso_xml
+                label: "Provider Metadata (if you would rather provide an SSO endpoint URL, skip to the next field)"
+                description: "Metadata XML content for the Identity Provider."
+              - reference: .properties.uaa.saml.sso_url
+                label: "(OR) Provider Metadata URL"
+                description: "If you did not provide metadata above, enter an SSO endpoint that returns the metadata."
+              - reference: .properties.uaa.saml.sign_auth_requests
+                label: Sign Authentication Requests
+                description: "If enabled, signed authentication requests will be sent to the SAML identity provider."
+              - reference: .properties.uaa.saml.require_signed_assertions
+                label: Require Signed Assertions
+                description: "If enabled, the SAML identity provider should always send signed assertions."
           - reference: .properties.uaa.ldap
             label: LDAP Server
             description:
@@ -238,31 +330,6 @@ form_types:
               - reference: .properties.uaa.ldap.mail_attribute_name
                 label: Email Attribute
                 description: "The name of the attribute that contains the user's email address."
-          - reference: .properties.uaa.saml
-            label: SAML Identity Provider
-            description:
-            property_inputs:
-              - reference: .properties.uaa.saml.sso_name
-                label: Provider Name
-                description: "Name of Identity Provider. Allowed characters are alphanumeric, plus `_`, and `-`. Do NOT change this name once deployed."
-              - reference: .properties.uaa.saml.display_name
-                label: Display Name
-                description: "Shows as a link on the login page."
-              - reference: .properties.uaa.saml.sso_xml
-                label: "Provider Metadata (if you would rather provide an SSO endpoint URL, skip to the next field)"
-                description: "Metadata XML content for the Identity Provider."
-              - reference: .properties.uaa.saml.sso_url
-                label: "(OR) Provider Metadata URL"
-                description: "If you did not provide metadata above, enter an SSO endpoint that returns the metadata."
-              - reference: .properties.uaa.saml.sign_auth_requests
-                label: Sign Authentication Requests
-                description: "If enabled, signed authentication requests will be sent to the SAML identity provider."
-              - reference: .properties.uaa.saml.require_signed_assertions
-                label: Require Signed Assertions
-                description: "If enabled, the SAML identity provider should always send signed assertions."
-              - reference: .properties.uaa.saml.ssl_certificate
-                label: Provider Certificate and Provider Key
-                description: "This certificate and key pair is used as a digital signature for the identity provider."
       - reference: .uaa.apps_manager_access_token_lifetime
         label: Apps Manager Access Token Lifetime (in seconds)
         description: Set the lifetime of the access token for the Apps Manager login portal.
@@ -344,7 +411,7 @@ form_types:
 
   - name: mysql_config
     label: MySQL Config
-    description: You only need to configure this section if you are using the Internal MySQL databases provided by Elastic Runtime.
+    description:  You only need to configure this section if you are using the Internal MySQL databases provided by Elastic Runtime.
     markdown: |
       ## A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936.
       ## The automated backups functionality works with any S3-compatible file store that can receive your backup files.
@@ -355,6 +422,30 @@ form_types:
       - reference: .mysql_proxy.service_hostname
         label: MySQL Service Hostname
         description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
+      - reference: .properties.mysql_backups
+        label: Automated Backups Configuration
+        selector_property_inputs:
+        - reference: .properties.mysql_backups.disable
+          label: |
+            Disable mysql_backups (Must also set: Resource Config > Backup Prepare Node > Instances to 0)
+          description: Disable mysql_backups
+        - reference: .properties.mysql_backups.enable
+          label: Enable mysql_backups
+          description: Enable mysql_backups
+          property_inputs:
+          - reference: .properties.mysql_backups.enable.bucket_name
+            label: S3 Bucket Name
+            description: Do not include 's3://' prefix, trailing '/', or underscores. The bucket will be created automatically if it does not already exist.
+          - reference: .properties.mysql_backups.enable.bucket_path
+            label: Bucket Path
+            description: Specify a folder within the bucket which will hold the mysql_backups. Do not include a trailing slash.
+          - reference: .properties.mysql_backups.enable.access_key_id
+            label: AWS Access Key ID
+          - reference: .properties.mysql_backups.enable.secret_access_key
+            label: AWS Secret Access Key
+          - reference: .properties.mysql_backups.enable.cron_schedule
+            label: Cron Schedule (See http://godoc.org/github.com/robfig/cron)
+            description: Specify when mysql backups are to occur. Schedule uses the machine's local time zone.
 
   - name: system_blobstore
     label: File Storage Config
@@ -366,24 +457,32 @@ form_types:
           access_key_id: .properties.system_blobstore.external.access_key
           secret_access_key: .properties.system_blobstore.external.secret_key
           bucket_name: .properties.system_blobstore.external.buildpacks_bucket
+          region: .properties.system_blobstore.external.region
+          signature_version: .properties.system_blobstore.external.signature_version
       - name: Verifiers::BlobstoreVerifier
         properties:
           endpoint: .properties.system_blobstore.external.endpoint
           access_key_id: .properties.system_blobstore.external.access_key
           secret_access_key: .properties.system_blobstore.external.secret_key
           bucket_name: .properties.system_blobstore.external.droplets_bucket
+          region: .properties.system_blobstore.external.region
+          signature_version: .properties.system_blobstore.external.signature_version
       - name: Verifiers::BlobstoreVerifier
         properties:
           endpoint: .properties.system_blobstore.external.endpoint
           access_key_id: .properties.system_blobstore.external.access_key
           secret_access_key: .properties.system_blobstore.external.secret_key
           bucket_name: .properties.system_blobstore.external.packages_bucket
+          region: .properties.system_blobstore.external.region
+          signature_version: .properties.system_blobstore.external.signature_version
       - name: Verifiers::BlobstoreVerifier
         properties:
           endpoint: .properties.system_blobstore.external.endpoint
           access_key_id: .properties.system_blobstore.external.access_key
           secret_access_key: .properties.system_blobstore.external.secret_key
           bucket_name: .properties.system_blobstore.external.resources_bucket
+          region: .properties.system_blobstore.external.region
+          signature_version: .properties.system_blobstore.external.signature_version
     property_inputs:
     - reference: .properties.system_blobstore
       label: "Configure your Cloud Controller's filesystem"
@@ -402,6 +501,10 @@ form_types:
             label: Access Key
           - reference: .properties.system_blobstore.external.secret_key
             label: Secret Key
+          - reference: .properties.system_blobstore.external.signature_version
+            label: S3 Signature Version
+          - reference: .properties.system_blobstore.external.region
+            label: Region
           - reference: .properties.system_blobstore.external.buildpacks_bucket
             label: Buildpacks Bucket Name
             description: Bucket where the app buildpacks will be located.
@@ -414,47 +517,6 @@ form_types:
           - reference: .properties.system_blobstore.external.resources_bucket
             label: Resources Bucket Name
             description: Bucket where the app resources will be located. You can re-use the same bucket as above, however it is recommended to use different buckets if this is a new installation of Elastic Runtime.
-
-  - name: ha_proxy
-    label: IPs and Ports
-    description: |
-      HAProxy is the default load balancer for SSL termination. Alternatively,
-      you can use your own load balancer and forward traffic to the Cloud
-      Foundry router IP.
-    verifiers:
-      - name: Verifiers::StaticIpsVerifier
-    property_inputs:
-      - reference: .router.static_ips
-        label: Router IPs
-        description: "Enter the IP address(es) for the Pivotal CF Elastic Runtime Router. This IP must be in your subnet."
-      - reference: .ha_proxy.static_ips
-        label: HAProxy IPs
-        description: "Enter the IP address(es) for HAProxy. You must point your DNS to this IP unless you are using your own load balancer. HAProxy's IP must be in your subnet."
-      - reference: .properties.logger_endpoint_port
-        label: Loggregator Port
-        description: "Default is 443. Enter a new value to override the default"
-
-  - name: security_config
-    label: Security Config
-    description: Configure security settings
-    property_inputs:
-      - reference: .ha_proxy.ssl_rsa_certificate
-        label: SSL Termination Certificate
-        description: "This certificate is used by HAProxy and Router for SSL termination. You can generate a self-signed certificate with your system wildcard domain if you do not have a certificate available. If you use your own external load balancer to terminate SSL instead of HAProxy or the Router, you can enter any certificate and key pair here and scale down the instances of HAProxy to zero in the Resource Config section. You can also configure a certificate that has multiple domains attributed to it, i.e. if you have separate system and application domains."
-      - reference: .ha_proxy.skip_cert_verify
-        label: Ignore SSL certificate verification
-      - reference: .ha_proxy.ssl_ciphers
-        label: HAProxy SSL Ciphers
-        description: "HAProxy ciphers should use dashes in their names, e.g. ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384"
-      - reference: .router.ssl_ciphers
-        label: Router SSL Ciphers
-        description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
-      - reference: .ha_proxy.disable_http
-        label: Disable HTTP traffic to HAProxy
-        description: "Allows only HTTPS traffic to HAProxy and turns on secure flag for cookies generated by Router."
-      - reference: .router.enable_ssl
-        label: Enable TLS on the Router
-        description: Disable only if your load-balancer does not send HTTPS traffic to the Router
 
   - name: cloud_controller
     label: Cloud Controller
@@ -480,10 +542,13 @@ form_types:
       - reference: .doppler.message_drain_buffer_size
         label: "Syslog Drain Buffer Size (# of messages)"
         description: "Sets the buffer size on Doppler before dropping log messages. Note that a larger buffer size has the potential to overload the system."
+      - reference: .properties.logger_endpoint_port
+        label: Loggregator Port
+        description: "Default is 443. Enter a new value to override the default."
 
   - name: smtp_config
-    label: SMTP Config
-    description: Configuration for Simple Mail Transfer Protocol
+    label: Email Notifications
+    description: Configure Simple Mail Transfer Protocol for the Notifications application to send email notifications about your deployment. This application is deployed as an errand in Elastic Runtime. If you don't need this service, you may leave this section blank and disable the Notifications and Notifications UI errands.
     property_inputs:
       - reference: .properties.smtp_from
         label: From Email
@@ -504,19 +569,89 @@ form_types:
       - reference: .properties.smtp_crammd5_secret
         label: SMTP CRAMMD5 secret
 
-  - name: diego
-    label: Diego
-    description: Diego is a new replacement for DEAs.
+  - name: generic_white_label_config
+    label: Generic White Labeling
+    description: "Customize colors, images, and text"
     property_inputs:
-      - reference: .cloud_controller.default_to_diego_backend
-        label: Use Diego by default instead of DEAs
-      - reference: .diego_cell.garden_network_pool
-        label: Application Containers Subnet Pool
-        description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to containers running on Diego. This is an arbitrary assignment and should be different from the network used by the system VMs.
+      - reference: .push-apps-manager.company_name
+        label: Company Name
+        description: Defaults to 'Pivotal'
+      - reference: .push-apps-manager.accent_color
+        label: Accent Color
+        description: Enter a hexadecimal color code like '#71ffda'
+      - reference: .push-apps-manager.logo
+        label: Main Logo
+        description: "Enter a Base64-encoded image string like 'data:image/png;base64,iVBORw0...'"
+      - reference: .push-apps-manager.square_logo
+        label: Square Logo/Favicon
+        description: "Enter a Base64-encoded image string like 'data:image/png;base64,iVBORw0...'"
+      - reference: .push-apps-manager.footer_text
+        label: Footer Text
+        description: "Defaults to 'Pivotal Software Inc. All rights reserved.'"
+      - reference: .push-apps-manager.footer_links
+        label: Footer Links
+        description: "You may configure up to 3 links in the Apps Manager footer"
+        property_inputs:
+          - reference: name
+            label: "Link text"
+          - reference: href
+            label: "Url"
+
+  - name: apps_manager_config
+    label: Apps Manager Config
+    description: "Configure Apps Manager"
+    property_inputs:
+      - reference: .push-apps-manager.enable_internal_user_store
+        label: Enable Internal User Store
+      - reference: .push-apps-manager.enable_non_admin_org_creation
+        label: Enable Non Admin Org Creation
+      - reference: .push-apps-manager.enable_non_admin_role_management
+        label: Enable Non Admin Role Management
+      - reference: .push-apps-manager.product_name
+        label: Product Name
+        description: Replace "Apps Manager" in the header with a custom product name (defaults to "Apps Manager" if blank)
+      - reference: .push-apps-manager.marketplace_name
+        label: Marketplace Name
+        description: Replaces "Marketplace" on the Apps Manager Marketplace Pages.
+      - reference: .push-apps-manager.nav_links
+        label: Customize Sidebar Links
+        description: "You may configure up to 10 links in the Apps Manager sidebar"
+        property_inputs:
+          - reference: name
+            label: "Link text"
+          - reference: href
+            label: "Url"
+
+  - name: smoke_tests
+    label: Smoke Tests
+    description: If you eventually decide to delete your Elastic Runtime deployment's shared domain(s), you will need to specify a dedicated Cloud Foundry organization and space where the smoke tests can be run.
+    property_inputs:
+      - reference: .properties.smoke_tests
+        label: Choose whether to create a new org and space on demand for smoke tests
+        selector_property_inputs:
+        - reference: .properties.smoke_tests.on_demand
+          label: On-demand org and space (this org and space are deleted after smoke tests finish running)
+        - reference: .properties.smoke_tests.specified
+          label: Specified org and space (the org and space must have a domain available for routing)
+          property_inputs:
+            - reference: .properties.smoke_tests.specified.org_name
+              label: Organization
+              description: The Elastic Runtime organization name to use when running tests
+            - reference: .properties.smoke_tests.specified.space_name
+              label: Space
+              description: The Elastic Runtime space name to use when running tests
+            - reference: .properties.smoke_tests.specified.apps_domain
+              label: Domain
+              description: Must be a domain available to the Organization
 
   - name: experimental_features
     label: Experimental Features
-    description: There are no features currently in experimental state. Check back in future releases for new experimental features.
+    description: The virtual machines called Diego Cells are where the hosted applications actually run. With these fields you can specify how much memory or disk you would like to set as the Cells' available capacity, so that you can overcommit these resources against your configuration of the Cell VM's size in the Resource Config section.
+    property_inputs:
+      - reference: .diego_cell.executor_memory_capacity
+        label: Cell Memory Capacity (MB)
+      - reference: .diego_cell.executor_disk_capacity
+        label: Cell Disk Capacity (MB)
 
 job_types:
   - name: consul_server
@@ -608,6 +743,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           mode: server
           servers:
             lan: (( .consul_server.ips ))
@@ -898,6 +1034,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
           services:
@@ -1071,30 +1208,37 @@ job_types:
         configurable: true
         optional: true
 
-      - name: ssl_ciphers
-        type: text
-        configurable: true
-        optional: true
-
-      - name: enable_ssl
+      - name: disable_insecure_cookies
         type: boolean
         configurable: true
-        default: true
+        default: false
+
+      - name: route_services_secret
+        type: secret
+
+      - name: request_timeout_in_seconds
+        type: integer
+        configurable: true
+        default: 900
+        constraints:
+          min: 1
 
     manifest: |
-      request_timeout_in_seconds: 900
+      request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
       networks:
         apps: default
       router:
         enable_routing_api: false
-        secure_cookies: (( .ha_proxy.disable_http.value ))
+        secure_cookies: (( .router.disable_insecure_cookies.value ))
         status:
           user: router_status
           password: (( status_credentials.password ))
-        cipher_suites: (( ssl_ciphers.value ))
-        enable_ssl: (( enable_ssl.value ))
-        ssl_cert: (( .ha_proxy.ssl_rsa_certificate.cert_pem ))
-        ssl_key: (( .ha_proxy.ssl_rsa_certificate.private_key_pem ))
+        cipher_suites: (( .properties.networking_point_of_entry.external_ssl.ssl_ciphers.value ))
+        route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
+        enable_ssl: "(( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.value_present? ? 'true' : 'false' ))"
+        ssl_cert: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
+        ssl_key: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
+        ssl_skip_validation: (( .properties.route_services.enable.ignore_ssl_cert_verification.value ))
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -1114,6 +1258,8 @@ job_types:
         etcd:
           machines: (( .etcd_server.ips ))
       uaa:
+        ssl:
+          port: -1
         clients:
           gorouter:
             secret: (( .uaa.gorouter_client_credentials.password ))
@@ -1213,6 +1359,8 @@ job_types:
     templates:
       - name: mysql
         release: cf-mysql
+      - name: streaming-mysql-backup-tool
+        release: mysql-backup
     max_in_flight: 1
     single_az_only: false
     resource_definitions:
@@ -1260,6 +1408,12 @@ job_types:
       type: simple_credentials
       default:
         identity: root
+    - name: mysql_bootstrap_credentials
+      type: simple_credentials
+      label: Bootstrap Endpoint Credentials
+    - name: mysql_backup_server_credentials
+      type: simple_credentials
+      label: Backup Endpoint Credentials
     - name: app_usage_credentials
       type: simple_credentials
       default:
@@ -1274,15 +1428,23 @@ job_types:
       type: simple_credentials
     - name: consoledb_credentials
       type: simple_credentials
+    - name: database_startup_timeout
+      type: integer
+      configurable: false
+      default: 1200
     manifest: |
+      roadmin_enabled: false
       admin_password: (( mysql_admin_credentials.password ))
       cluster_ips: (( .mysql.ips ))
       # allow up to 20 minutes for large SST's to succeed,
       # this is temporary until BOSH pre-start is implemented
-      database_startup_timeout: 1200
+      database_startup_timeout: (( .mysql.database_startup_timeout.value ))
       innodb_buffer_pool_size: 2147483648
       max_connections: 1500
       network_name: default
+      bootstrap_endpoint:
+        username: (( mysql_bootstrap_credentials.identity ))
+        password: (( mysql_bootstrap_credentials.password ))
       seeded_databases:
         - name: ccdb
           username: (( ccdb_credentials.identity ))
@@ -1306,6 +1468,88 @@ job_types:
         address: (( ..cf.properties.syslog_host.value ))
         port: (( ..cf.properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
+      mysql-backup:
+        command: innobackupex --user=(( mysql_admin_credentials.identity )) --password=(( mysql_admin_credentials.password )) --stream=tar tmp/
+        port: 8081
+        credentials:
+          username: (( mysql_backup_server_credentials.identity ))
+          password: (( mysql_backup_server_credentials.password ))
+
+  - name: backup-prepare
+    label: Backup Prepare Node
+    resource_label: Backup Prepare Node
+    description: Streams backups from MySQL Cluster
+    templates:
+    - name: streaming-mysql-backup-client
+      release: mysql-backup
+    - name: service-backup
+      release: service-backup
+    max_in_flight: 1
+    single_az_only: true
+    resource_definitions:
+    - name: ram
+      type: integer
+      label: RAM
+      configurable: true
+      default: 1024
+      constraints:
+        min: 1024
+    - name: ephemeral_disk
+      type: integer
+      label: Ephemeral Disk
+      configurable: true
+      default: 200000 # This value must be twice the mysql persistent disk
+      contraints:
+        min: 10000
+    - name: persistent_disk
+      type: integer
+      label: Persistent Disk
+      configurable: false
+      default: 0
+    - name: cpu
+      type: integer
+      label: CPU
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        power_of_two: true
+    static_ip: 1
+    dynamic_ip: 0
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 0
+      constraints:
+        min: 0
+        max: 1
+    property_blueprints:
+    - name: backup_encryption_key
+      type: secret
+      label: Backup Symmetric Encryption Key
+    manifest: |
+      service-backup:
+        blobstore:
+          bucket_name: (( .properties.mysql_backups.enable.bucket_name.value ))
+          bucket_path: (( .properties.mysql_backups.enable.bucket_path.value ))
+          access_key_id: (( .properties.mysql_backups.enable.access_key_id.value ))
+          secret_access_key: (( .properties.mysql_backups.enable.secret_access_key.value ))
+        source_folder: /var/vcap/data/mysql-mysql_backups
+        source_executable: /var/vcap/jobs/streaming-mysql-backup-client/bin/client
+        cleanup_executable: /bin/bash -c /var/vcap/jobs/streaming-mysql-backup-client/bin/cleanup-directories
+        cron_schedule: (( .properties.mysql_backups.enable.cron_schedule.value ))
+      streaming-mysql-backup-client:
+        output_folder: /var/vcap/data/mysql-mysql_backups
+        symmetric_key: (( backup_encryption_key.value ))
+        backup-generator:
+          cluster_ips: (( .mysql.ips ))
+          port: 8081
+          endpoint: /backup
+          credentials:
+            username: (( .mysql.mysql_backup_server_credentials.identity ))
+            password: (( .mysql.mysql_backup_server_credentials.password ))
 
   - name: ccdb
     label: Cloud Controller Database
@@ -1612,6 +1856,8 @@ job_types:
         release: cf
       - name: python-buildpack
         release: cf
+      - name: java-offline-buildpack
+        release: cf
       - name: staticfile-buildpack
         release: cf
       - name: cloud_controller_ng
@@ -1757,15 +2003,13 @@ job_types:
           min: 0
           max: 1000
 
-      - name: default_to_diego_backend
-        type: boolean
-        configurable: true
-        default: true
-
       - name: allow_app_ssh_access
         type: boolean
         configurable: true
         default: true
+
+      - name: internal_api_user_credentials
+        type: simple_credentials
 
     manifest: |
       app_ssh:
@@ -1795,7 +2039,7 @@ job_types:
         allowed_cors_domains:
         - https://apm.(( .cloud_controller.system_domain.value ))
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
-        default_to_diego_backend: (( default_to_diego_backend.value ))
+        default_to_diego_backend: true
         buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
         droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
         service_name: cloud-controller-ng
@@ -1832,8 +2076,8 @@ job_types:
             package: php-buildpack
           - name: binary_buildpack
             package: binary-buildpack
-        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
-        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
+        internal_api_user: (( internal_api_user_credentials.identity ))
+        internal_api_password: (( internal_api_user_credentials.password ))
         logging_level: debug
         maximum_health_check_timeout: 600
         quota_definitions:
@@ -1876,6 +2120,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           services:
             cloud_controller_ng: {}
           servers:
@@ -1903,9 +2148,9 @@ job_types:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
       logger_endpoint:
-        port: (( .properties.logger_endpoint_port.value || "443" ))
+        port: (( .properties.logger_endpoint_port.value ))
       doppler:
-        port: (( .properties.logger_endpoint_port.value || "443" ))
+        port: (( .properties.logger_endpoint_port.value ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1923,6 +2168,8 @@ job_types:
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
+      router:
+        route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
 
   - name: ha_proxy
     label: HAProxy
@@ -1988,30 +2235,16 @@ job_types:
         configurable: true
         optional: true
 
-      - name: ssl_rsa_certificate
-        type: rsa_cert_credentials
-        configurable: true
-        optional: false
-
       - name: skip_cert_verify
         type: boolean
         configurable: true
 
-      - name: disable_http
-        type: boolean
-        configurable: true
-        default: false
-
-      - name: ssl_ciphers
-        type: text
-        configurable: true
-        optional: true
-
     manifest: |
+      request_timeout_in_seconds: (( .router.request_timeout_in_seconds.value ))
       ha_proxy:
-        disable_http: (( disable_http.value ))
-        ssl_ciphers: (( ssl_ciphers.value ))
-        ssl_pem: (( ssl_rsa_certificate.cert_and_private_key_pems ))
+        disable_http: (( .properties.networking_point_of_entry.haproxy.disable_http.value ))
+        ssl_ciphers: (( .properties.networking_point_of_entry.haproxy.ssl_ciphers.value ))
+        ssl_pem: (( .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate.cert_and_private_key_pems ))
       router:
         servers:
           z1: (( .router.ips ))
@@ -2044,118 +2277,9 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
-
-  - name: health_manager
-    label: Health Manager
-    resource_label: Health Manager
-    description: Reports app health to the Cloud Controller
-    templates:
-      - name: hm9000
-        release: cf
-      - name: metron_agent
-        release: cf
-      - name: route_registrar
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 1_024
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-    single_az_only: false
-
-    instance_definition:
-      name: instances
-      type: integer
-      label: Instances
-      configurable: true
-      default: 0
-      constraints:
-        min: 0
-
-    property_blueprints:
-      - name: internal_api_user_credentials
-        type: simple_credentials
-
-    manifest: |
-      cc:
-        srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
-        bulk_api_user: (( .cloud_controller.bulk_api_credentials.identity ))
-        bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
-        internal_api_user: (( internal_api_user_credentials.identity ))
-        internal_api_password: (( internal_api_user_credentials.password ))
-
-      domain: (( .cloud_controller.system_domain.value ))
-
-      dea_next:
-        heartbeat_interval_in_seconds: 10
-
-      hm9000:
-        port: 5155
-
-      ssl:
-        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines:  (( .nats.ips ))
-      syslog_daemon_config:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-      metron_agent:
-        zone: (( availability_zone ))
-        deployment: cf
-      metron_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-      etcd:
-        machines: (( .etcd_server.ips ))
-      loggregator:
-        etcd:
-          machines: (( .etcd_server.ips ))
-      route_registrar:
-        routes:
-        - name: hm9000
-          port: 5155
-          registration_interval: 20s
-          tags:
-            component: HM9K
-          uris:
-          - "hm9000.(( .cloud_controller.system_domain.value ))"
 
   - name: clock_global
     label: Clock Global
@@ -2238,8 +2362,8 @@ job_types:
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
         db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
-        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
-        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
+        internal_api_user: (( .cloud_controller.internal_api_user_credentials.identity ))
+        internal_api_password: (( .cloud_controller.internal_api_user_credentials.password ))
         quota_definitions:
           default:
             memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
@@ -2288,7 +2412,7 @@ job_types:
         url: "https://login.(( .cloud_controller.system_domain.value ))"
 
       logger_endpoint:
-        port: (( .properties.logger_endpoint_port.value || "443" ))
+        port: (( .properties.logger_endpoint_port.value ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -2393,8 +2517,8 @@ job_types:
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
         db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
-        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
-        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
+        internal_api_user: (( .cloud_controller.internal_api_user_credentials.identity ))
+        internal_api_password: (( .cloud_controller.internal_api_user_credentials.password ))
         quota_definitions:
           default:
             memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
@@ -2429,6 +2553,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
 
@@ -2446,7 +2571,7 @@ job_types:
         url: "https://login.(( .cloud_controller.system_domain.value ))"
 
       logger_endpoint:
-        port: (( .properties.logger_endpoint_port.value || "443" ))
+        port: (( .properties.logger_endpoint_port.value ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -2773,6 +2898,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
           services:
@@ -2785,13 +2911,7 @@ job_types:
           footer_legal_text: ©2016 Pivotal Software, Inc. All Rights Reserved.
         self_service_links_enabled: true
         protocol: https
-        tiles:
-          - name: Pivotal Apps Manager
-            login-link: "https://apps.(( .cloud_controller.system_domain.value ))"
-            image: "/resources/pivotal/images/dev-console-logo-gray.png"
-            image-hover: "/resources/pivotal/images/dev-console-logo-teal.png"
 
-        brand: pivotal
         links:
           home: "https://apps.(( .cloud_controller.system_domain.value ))"
           passwd: "https://login.(( .cloud_controller.system_domain.value ))/forgot_password"
@@ -2818,6 +2938,7 @@ job_types:
         authentication:
           policy:
             lockoutAfterFailures: (( .properties.uaa.internal.password_max_retry.value ))
+        disableInternalUserManagement: (( .properties.uaa.selected_option.parsed_manifest(disable_internal_user_mgmt) ))
         password:
           policy:
             minLength: (( .properties.uaa.internal.password_min_length.value ))
@@ -2893,12 +3014,24 @@ job_types:
             scope: "openid,cloud_controller.read,cloud_controller.write,password.write,console.admin,console.support,cloud_controller.admin"
             access-token-validity: (( apps_manager_access_token_lifetime.value ))
             refresh-token-validity: (( apps_manager_refresh_token_lifetime.value ))
+            name: Pivotal Apps Manager
+            app-launch-url: "https://apps.(( .cloud_controller.system_domain.value ))"
+            show-on-homepage: true
+            app-icon: iVBORw0KGgoAAAANSUhEUgAAAGwAAABsCAYAAACPZlfNAAAAAXNSR0IArs4c6QAABYtJREFUeAHtnVtsFFUYx7/d3ruWotUKVIkNaCw02YgJGBRTMd4CokUejD4QH4gxQcIDeHnBmPjkhSghUYLGe3ywPtAHNCo0QgkWwi2tXG2V1kIpLXTbLt1tS9dzlmzSJssZhv32zDk7/2km2znn7Pd9+/vt2Z2dmW0D9Obat4gCiwiLBQQSLflSViAQeN6Can1fYiJBFPQ9BcsAQBiEWUbAsnIxwyDMMgKWlYsZBmGWEbCsXMwwCLOMgGXlYoZBmGUELCsXMwzCLCNgWbmYYRBmGQHLysUMgzDLCFhWLmYYhFlGwLJyMcMgzDIClpWLGQZhlhGwrFzMMAizjIBl5WKGQZhlBCwrV1xbb96y59V1VFJQmLawQNrWa43x8XEaHo1fW+Oj1H8lSqf6eulEbw+dvNhLvcNDinvb0WWksAdm3UWhwiJ2gt2RAWo80UY7jrdSU8cZGrt6lT1HtgMaKSxbD7qqfDq99tAjyTUSG6FP9v1BH+3dTUPxeLZSssf17U5HeXEJbXr8aerY+A6tf7iOxFeu2OFmI6BvhaVgVoRCtHl5PTW8/AoV5xekmo299b2wlJn6+WFqWrOWKkpDqSYjbyFskpZFs++hL1e9NKnFvF+t3OmQOwzdkcgUmnnBABXm5Ys1j8qKisVadFPvS8tramn1goX09eEDU+KbsmGlsMbjbbT6x++UDOVORGXoFppXOYMerLqbVsyrpcWzqykYdH5R+fjZlcnd/8sjV5Q5vOh0rt6LqhhyJsQ3uC+ID8ry89aHYtf90W1bKLzlffr19EnH6HIP8oXasOM4LwbkrLB0MP+6cJ6e+eoz+vTP5nTdU9peDC+Ysm3Khq+ESehy5r3e2ECHu7uUDuqq59Id4iXVtMV3wqSACSHt3V2/KF3I97qayjuVY7zo9KUwCfq3M6coNjamZD6zrFzZ70Wnb4XFxseoK3JZyXzWtGnKfi86fStMwu6LRpXMZ5RBmBKQ7k75XqZa8gLmPZ/Nq0hFkLnvttJSZUT5Oc60xbfC5CGs6lsrlD56hgaV/V50+lbYkuo5VFygPp3SMwxhXjwp0+bcsGRp2vZU48TEBB09153aNObWlzNMHo1/6r4apYTmsx10MTqsHONFp5VH6zMBtWbhYtq6YpVjiJ/ajjmO8WKAL4QFxamWZffPT1678dicex05D4jTKj8cO+Q4zosBOSXs7bonktci5ovjgPIUye3ieo3wzKrk+TC5faPLGz83On6ovtFY3ONySth7Ty67qbPMk6Hu+edv+vzg/slNRv3uy52O6xk40HWW6r/94nrdRrTn1AzLhOju9tP03DfbKTo6mkmYrN/X98L6xQHgTb/vpG0t+5LnybJOPMMEvhXWOXCJvj9yiD7Yu4sGRkYyxKjv7r4RJi+Na+05Rwf/66SG1qO0v/NffZQZM+WUsI07d1BC/MTE144GYzHxJYcYDYq1vb/f8WQlI9OshsopYZubm7IKy4Tg2K03wYKLGiDMBSwThkKYCRZc1ABhLmCZMBTCTLDgogYIcwHLhKEQZoIFFzVAmAtYJgyFMBMsuKgBwlzAMmEohJlgwUUNEOYClglDIcwECy5qgDAXsEwYCmEmWHBRA4S5gGXCUAgzwYKLGow84yyvuyhR/GW19kt9Lh5ibg01UtjS7VtzizLjo8FLIiNMHaEgTAdlxhwQxghTRygI00GZMQeEMcLUEQrCdFBmzAFhjDB1hIIwHZQZc0AYI0wdoSBMB2XGHBDGCFNHKAjTQZkxB4QxwtQRCsJ0UGbMAWGMMHWEgjAdlBlzQBgjTB2hIEwHZcYcEMYIU0coCNNBmTEHhDHC1BEKwnRQZswBYYwwdYSCMB2UGXNAGCNMHaEgTAdlxhziUu1Ei8M/+WFMh1CZEUi0/A+j7hNSB5Wo2wAAAABJRU5ErkJggg==
+          apps_manager_js:
+            override: true
+            autoapprove:
+              - cloud_controller.read
+              - cloud_controller.write
+              - cloud_controller.admin
+            scope: cloud_controller.read,cloud_controller.write,cloud_controller.admin
+            authorized-grant-types: implicit
+            access-token-validity: 28800
           cf:
             id: cf
             override: true
-            autoapprove: true
             authorities: "uaa.none"
-            authorized-grant-types: "implicit,password,refresh_token"
+            authorized-grant-types: "password,refresh_token"
             scope: "cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user"
             access-token-validity: (( cf_cli_access_token_lifetime.value ))
             refresh-token-validity: (( cf_cli_refresh_token_lifetime.value ))
@@ -3026,12 +3159,15 @@ job_types:
         routes:
         - name: uaa
           port: 8080
-          registration_interval: 20s
+          registration_interval: 4s
           uris:
           - "uaa.(( .cloud_controller.system_domain.value ))"
           - "*.uaa.(( .cloud_controller.system_domain.value ))"
           - "login.(( .cloud_controller.system_domain.value ))"
           - "*.login.(( .cloud_controller.system_domain.value ))"
+          health_check:
+            name: uaa-healthcheck
+            script_path: /var/vcap/jobs/uaa/bin/health_check
 
   - name: diego_brain
     label: Diego Brain
@@ -3127,8 +3263,8 @@ job_types:
         cc_uploader:
           cc:
             job_polling_interval_in_seconds: 25
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
@@ -3143,8 +3279,8 @@ job_types:
         file_server:
           cc:
             job_polling_interval_in_seconds: 25
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
@@ -3158,8 +3294,8 @@ job_types:
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
           cc:
             base_url: https://api.(( .cloud_controller.system_domain.value ))
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         route_emitter:
@@ -3202,14 +3338,14 @@ job_types:
             client_cert: (( .properties.bbs_client_cert.cert_pem ))
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
           cc:
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
           insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
         tps:
-          traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value || "443" ))
+          traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value ))
           bbs:
             api_location: bbs.service.cf.internal:8889
             ca_cert: (( $ops_manager.ca_certificate ))
@@ -3218,8 +3354,8 @@ job_types:
             client_cert: (( .properties.bbs_client_cert.cert_pem ))
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
           cc:
-            basic_auth_username: (( .health_manager.internal_api_user_credentials.identity ))
-            basic_auth_password: (( .health_manager.internal_api_user_credentials.password ))
+            basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+            basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
             external_port: 9022
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
@@ -3232,6 +3368,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
       nats:
@@ -3300,8 +3437,8 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 1
-    dynamic_ip: 0
+    static_ip: 0
+    dynamic_ip: 1
     max_in_flight: 1
     single_az_only: false
 
@@ -3315,6 +3452,20 @@ job_types:
         min: 1
 
     property_blueprints:
+      - name: executor_disk_capacity
+        type: integer
+        label: Cell Disk Capacity (in MB)
+        configurable: true
+        optional: true
+        constraints:
+          min: 1
+      - name: executor_memory_capacity
+        type: integer
+        label: Cell Memory Capacity (in MB)
+        configurable: true
+        optional: true
+        constraints:
+          min: 1
       - name: garden_network_pool
         type: string
         default: 10.254.0.0/22
@@ -3325,9 +3476,17 @@ job_types:
         configurable: true
         optional: true
 
+      - name: garden_network_mtu
+        type: integer
+        configurable: true
+        optional: false
+        default: 1454
+
     manifest: |
       diego:
         executor:
+          disk_capacity_mb: (( executor_disk_capacity.value ))
+          memory_capacity_mb: (( executor_memory_capacity.value ))
           post_setup_hook: sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"
           post_setup_user: "root"
         rep:
@@ -3348,6 +3507,7 @@ job_types:
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
         agent:
+          domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
       nats:
@@ -3371,112 +3531,11 @@ job_types:
         allow_host_access: (( .properties.allow_cross_container_traffic.value ))
         persistent_image_list:
           - "/var/vcap/packages/rootfs_cflinuxfs2/rootfs"
-        enable_graph_cleanup: true
+        graph_cleanup_threshold_in_mb: 0
         network_pool: (( garden_network_pool.value ))
         deny_networks: ["0.0.0.0/0"]
-        network_mtu: 1454
+        network_mtu: (( garden_network_mtu.value ))
         insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
-
-  - name: dea
-    label: DEA
-    resource_label: DEA
-    description: Droplet Execution Agents run the applications pushed to Pivotal CF Elastic Runtime
-    templates:
-      - name: dea_next
-        release: cf
-      - name: dea_logging_agent
-        release: cf
-      - name: metron_agent
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 16_384
-        constraints:
-          min: 4_096
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 32_768
-        constraints:
-          min: 10_240
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 2
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-    single_az_only: false
-
-    instance_definition:
-      name: instances
-      type: integer
-      label: Instances
-      configurable: true
-      default: 0
-      constraints:
-        min: 0
-
-    property_blueprints:
-      - name: loggregator_agent_status_credentials
-        type: simple_credentials
-
-    manifest: |
-      cc:
-        srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
-        internal_api_user: (( .health_manager.internal_api_user_credentials.identity ))
-        internal_api_password: (( .health_manager.internal_api_user_credentials.password ))
-
-      domain: (( .cloud_controller.system_domain.value ))
-
-      dea_next:
-        allow_host_access: (( .properties.allow_cross_container_traffic.value ))
-        directory_server_protocol: https
-        memory_mb: (( ram ))
-        memory_overcommit_factor: 1
-        disk_mb: (( ephemeral_disk ))
-        disk_overcommit_factor: 1
-        num_instances: 10
-        evacuation_bail_out_time_in_seconds: 600
-        zone: (( availability_zone ))
-        post_setup_hook: 'rm -f app/.java-buildpack.log app/**/.java-buildpack.log >/dev/null 2>&1'
-
-      metron_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines: (( .nats.ips ))
-      syslog_daemon_config:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-      metron_agent:
-        zone: (( availability_zone ))
-        deployment: cf
-      loggregator:
-        etcd:
-          machines: (( .etcd_server.ips ))
 
   - name: doppler
     label: Doppler Server
@@ -3719,9 +3778,9 @@ job_types:
         type: integer
         label: Ephemeral Disk
         configurable: true
-        default: 1_024
+        default: 2_048
         constraints:
-          min: 1_024
+          min: 2_048
 
       - name: persistent_disk
         type: integer
@@ -3754,6 +3813,82 @@ job_types:
       - name: secret_token
         type: secret
         configurable: false
+
+      - name: company_name
+        type: string
+        configurable: true
+        optional: true
+
+      - name: accent_color
+        type: string
+        configurable: true
+        optional: true
+
+      - name: logo
+        type: string
+        configurable: true
+        optional: true
+
+      - name: square_logo
+        type: string
+        configurable: true
+        optional: true
+
+      - name: footer_text
+        type: string
+        configurable: true
+        optional: true
+
+      - name: footer_links
+        type: collection
+        configurable: true
+        optional: true
+        property_blueprints:
+          - name: name
+            type: string
+          - name: href
+            type: string
+
+      - name: nav_links
+        type: collection
+        configurable: true
+        property_blueprints:
+          - name: name
+            type: string
+          - name: href
+            type: string
+        default:
+          - name: Marketplace
+            href: /marketplace
+          - name: Docs
+            href: http://docs.pivotal.io/pivotalcf/getstarted/pcf-docs.html
+          - name: Tools
+            href: /tools
+
+      - name: product_name
+        type: string
+        configurable: true
+        optional: true
+
+      - name: marketplace_name
+        type: string
+        configurable: true
+        optional: true
+
+      - name: enable_internal_user_store
+        type: boolean
+        configurable: true
+        default: false
+
+      - name: enable_non_admin_org_creation
+        type: boolean
+        configurable: true
+        default: false
+
+      - name: enable_non_admin_role_management
+        type: boolean
+        configurable: true
+        default: false
 
     manifest: |
       cf:
@@ -3783,124 +3918,26 @@ job_types:
         usage_service_host: "https://app-usage.(( .cloud_controller.system_domain.value ))"
         bundle_without: test development hosted_only
         apps_manager_version: (( .properties.product_version.value ))
+        enable_internal_user_store: (( enable_internal_user_store.value ))
+        enable_non_admin_org_creation: (( enable_non_admin_org_creation.value ))
+        enable_non_admin_role_management: (( enable_non_admin_role_management.value ))
+        generic_white_label_config_json:
+          company_name: (( company_name.value ))
+          accent_color: (( accent_color.value ))
+          logo: (( logo.value ))
+          square_logo: (( square_logo.value ))
+          footer_text: (( footer_text.value ))
+          footer_links: (( footer_links.value ))
+        apps_manager_config_json:
+          product_name: (( product_name.value ))
+          marketplace_name: (( marketplace_name.value ))
+          nav_links: (( nav_links.value ))
       databases:
         console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
-      ssl:
-        skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-        https_only_mode: true
-
-  - name: push-app-usage-service
-    label: Push App Usage Service
-    resource_label: Push App Usage Service
-    description: Monitors usage of an application pushed to your Elastic Runtime installation
-    templates:
-      - name: push-app-usage-service
-        release: push-apps-manager-release
-    errand: true
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-    single_az_only: false
-
-    instance_definition:
-      name: instances
-      type: integer
-      label: Instances
-      configurable: false
-      default: 1
-
-    property_blueprints:
-      - name: secret_token
-        type: secret
-        configurable: false
-
-      - name: reply_to
-        type: email
-        configurable: true
-        optional: true
-
-      - name: from
-        type: email
-        configurable: true
-        optional: true
-
-      - name: smtp_address
-        type: network_address
-        configurable: true
-        optional: true
-
-      - name: smtp_port
-        type: port
-        configurable: true
-        optional: true
-
-      - name: smtp_credentials
-        type: simple_credentials
-        configurable: true
-        optional: true
-
-      - name: smtp_enable_starttls_auto
-        type: boolean
-        configurable: true
-        default: false
-
-    manifest: |
-      cf:
-        api_url: "https://api.(( .cloud_controller.system_domain.value ))"
-        admin_username: (( .uaa.push_apps_manager_credentials.identity ))
-        admin_password: (( .uaa.push_apps_manager_credentials.password ))
-        system_domain: (( .cloud_controller.system_domain.value ))
-      services:
-        authentication:
-          CF_CLIENT_ID: (( .uaa.apps_manager_client_credentials.identity ))
-          CF_CLIENT_SECRET: (( .uaa.apps_manager_client_credentials.password ))
-          CF_LOGIN_SERVER_URL: "https://login.(( .cloud_controller.system_domain.value ))"
-          CF_UAA_SERVER_URL: "https://uaa.(( .cloud_controller.system_domain.value ))"
-      env:
-        secret_token: (( secret_token.value ))
-        cf_cc_api_url: "https://api.(( .cloud_controller.system_domain.value ))"
-        cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
-        cf_console_url: "https://apps.(( .cloud_controller.system_domain.value ))"
-        default_reply_to: (( reply_to.value ))
-        default_from: (( .properties.smtp_from.value ))
-        bundle_without: test development hosted_only
-      databases:
         app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+        https_only_mode: true
 
   - name: smoke-tests
     label: Run Smoke Tests
@@ -3958,16 +3995,7 @@ job_types:
     property_blueprints:
 
     manifest: |
-      smoke_tests:
-        api: "https://api.(( .cloud_controller.system_domain.value ))"
-        apps_domain: (( .cloud_controller.apps_domain.value ))
-        user: (( .uaa.run_smoke_tests_credentials.identity ))
-        password: (( .uaa.run_smoke_tests_credentials.password ))
-        org: CF_SMOKE_TEST_ORG
-        space: CF_SMOKE_TEST_SPACE
-        skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
-        use_existing_org: false
-        use_existing_space: false
+      smoke_tests: (( .properties.smoke_tests.selected_option.parsed_manifest(smoke_tests) ))
 
   - name: notifications
     label: Notifications
@@ -4035,7 +4063,7 @@ job_types:
         network: notifications
         sender: (( .properties.smtp_from.value ))
         encryption_key: (( encryption_credentials.password ))
-        enable_diego: (( .cloud_controller.default_to_diego_backend.value ))
+        enable_diego: true
         instance_count: 3
         syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
         organization: system
@@ -4201,7 +4229,7 @@ job_types:
         network: notifications
         syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
         encryption_key: (( .notifications.encryption_credentials.password ))
-        enable_diego: (( .cloud_controller.default_to_diego_backend.value ))
+        enable_diego: true
         instance_count: 1
         cf:
           admin_user: (( .uaa.admin_credentials.identity ))
@@ -4353,7 +4381,7 @@ job_types:
         instance_count: 1
         database: (( .properties.system_database.selected_option.parsed_manifest(autoscaling) ))
         encryption_key: (( encryption_key.password ))
-        enable_diego: (( .cloud_controller.default_to_diego_backend.value ))
+        enable_diego: true
         notifications_host: "https://notifications.(( .cloud_controller.system_domain.value ))"
         organization: system
         space: autoscaling
@@ -4571,73 +4599,6 @@ job_types:
           admin_user: (( .uaa.admin_credentials.identity ))
           admin_password: (( .uaa.admin_credentials.password ))
 
-  - name: diego-acceptance-tests
-    label: Run Diego Acceptance Tests
-    resource_label: Run Diego Acceptance Tests
-    description: Runs Diego Acceptance Tests against your Elastic Runtime installation
-    templates:
-      - name: acceptance-tests
-        release: diego
-    errand: true
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 0
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 0
-    dynamic_ip: 1
-    max_in_flight: 1
-    single_az_only: false
-
-    instance_definition:
-      name: instances
-      type: integer
-      label: Instances
-      configurable: false
-      default: 1
-
-    property_blueprints:
-
-    manifest: |
-      acceptance_tests:
-        api: "https://api.(( .cloud_controller.system_domain.value ))"
-        apps_domain: (( .cloud_controller.apps_domain.value ))
-        admin_user: (( .uaa.admin_credentials.identity ))
-        admin_password: (( .uaa.admin_credentials.password ))
-        skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
-        run_security_groups_tests: false
-        run_ssh_tests: true
-        skip_docker_tests: true
-        nodes: 1
-
   - name: acceptance-tests
     label: Run CF Acceptance Tests
     resource_label: Run CF Acceptance Tests
@@ -4779,6 +4740,60 @@ job_types:
         skip_regex: lucid64
         skip_diego_unsupported_tests: true
         java_buildpack_name: java_buildpack_offline
+
+  - name: bootstrap
+    label: Bootstrap
+    resource_label: Bootstrap
+    description: Errand for bootstrapping the MySQL cluster
+    templates:
+    - name: bootstrap
+      release: cf-mysql
+    errand: true
+    max_in_flight: 1
+    resource_definitions:
+    - name: ram
+      type: integer
+      label: RAM
+      configurable: true
+      default: 2048
+      constraints:
+        min: 1024
+    - name: ephemeral_disk
+      type: integer
+      label: Ephemeral Disk
+      configurable: true
+      default: 2048
+      constraints:
+        min: 1024
+    - name: persistent_disk
+      type: integer
+      label: Persistent Disk
+      configurable: false
+      default: 0
+    - name: cpu
+      type: integer
+      label: CPU
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+        power_of_two: true
+    static_ip: 0
+    dynamic_ip: 1
+    single_az_only: false
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
+    property_blueprints:
+    manifest: |
+      cluster_ips: (( .mysql.ips ))
+      database_startup_timeout: (( .mysql.database_startup_timeout.value ))
+      bootstrap_endpoint:
+        username: (( .mysql.mysql_bootstrap_credentials.identity ))
+        password: (( .mysql.mysql_bootstrap_credentials.password ))
 
   - name: compilation
     label: Compilation
@@ -4994,6 +5009,9 @@ property_blueprints:
         - name: saml_provider
           manifest: |
 
+        - name: disable_internal_user_mgmt
+          manifest: |
+            false
         property_blueprints:
           - name: password_min_length
             type: integer
@@ -5023,12 +5041,54 @@ property_blueprints:
             type: integer
             configurable: true
             default: 5
+      - name: saml
+        select_value: saml
+        named_manifests:
+        - name: saml_provider
+          manifest: |
+            (( .properties.uaa.saml.sso_name.value )):
+              metadataTrustCheck: false
+              idpMetadata: "(( .properties.uaa.saml.sso_url.value_present? ? .properties.uaa.saml.sso_url.value : .properties.uaa.saml.sso_xml.value ))"
+              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+              showSamlLoginLink: true
+              linkText: (( .properties.uaa.saml.display_name.value ))
+        - name: disable_internal_user_mgmt
+          manifest: |
+            true
+        property_blueprints:
+          - name: sso_name
+            type: string
+            configurable: true
+          - name: display_name
+            type: string
+            configurable: true
+          - name: sso_url
+            type: http_url
+            configurable: true
+            optional: true
+          - name: sso_xml
+            type: text
+            configurable: true
+            optional: true
+          - name: sign_auth_requests
+            type: boolean
+            configurable: true
+            default: true
+          - name: require_signed_assertions
+            type: boolean
+            configurable: true
+          - name: ssl_certificate
+            type: rsa_cert_credentials
+            configurable: false
       - name: ldap
         select_value: ldap
         named_manifests:
         - name: saml_provider
           manifest: |
 
+        - name: disable_internal_user_mgmt
+          manifest: |
+            true
         property_blueprints:
           - name: url
             type: ldap_url
@@ -5063,42 +5123,60 @@ property_blueprints:
             type: string
             configurable: true
             default: 'mail'
-      - name: saml
-        select_value: saml
-        named_manifests:
-        - name: saml_provider
-          manifest: |
-            (( .properties.uaa.saml.sso_name.value )):
-              metadataTrustCheck: false
-              idpMetadata: "(( .properties.uaa.saml.sso_url.value_present? ? .properties.uaa.saml.sso_url.value : .properties.uaa.saml.sso_xml.value ))"
-              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-              showSamlLoginLink: true
-              linkText: (( .properties.uaa.saml.display_name.value ))
+
+  - name: networking_point_of_entry
+    type: selector
+    configurable: true
+    default: haproxy
+    option_templates:
+      - name: external_ssl
+        select_value: external_ssl
         property_blueprints:
-          - name: sso_name
-            type: string
+          - name: ssl_rsa_certificate
+            type: rsa_cert_credentials
             configurable: true
-          - name: display_name
-            type: string
-            configurable: true
-          - name: sso_url
-            type: http_url
-            configurable: true
-            optional: true
-          - name: sso_xml
+          - name: ssl_ciphers
             type: text
             configurable: true
             optional: true
-          - name: sign_auth_requests
-            type: boolean
-            configurable: true
-            default: true
-          - name: require_signed_assertions
-            type: boolean
-            configurable: true
-          - name: ssl_certificate
+      - name: external_non_ssl
+        select_value: external_non_ssl
+      - name: haproxy
+        select_value: haproxy
+        property_blueprints:
+          - name: ssl_rsa_certificate
             type: rsa_cert_credentials
             configurable: true
+          - name: disable_http
+            type: boolean
+            configurable: true
+            default: false
+          - name: ssl_ciphers
+            type: text
+            configurable: true
+            optional: true
+
+  - name: route_services
+    type: selector
+    configurable: true
+    default: enable
+    option_templates:
+      - name: enable
+        select_value: enable
+        named_manifests:
+          - name: secret
+            manifest: |
+              (( .router.route_services_secret.value ))
+        property_blueprints:
+          - name: ignore_ssl_cert_verification
+            type: boolean
+            configurable: true
+            default: false
+      - name: disable
+        select_value: disable
+        named_manifests:
+          - name: secret
+            manifest: |
 
   - name: system_database
     type: selector
@@ -5189,13 +5267,6 @@ property_blueprints:
         - name: autoscaling
           manifest: |
             url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
-        - name: push-app-usage-service
-          manifest: |
-            name: app_usage_service
-            port: 3306
-            ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-            username: (( .mysql.app_usage_credentials.identity ))
-            password: (( .mysql.app_usage_credentials.password ))
         - name: console
           manifest: |
             ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
@@ -5203,6 +5274,13 @@ property_blueprints:
             username: (( .mysql.consoledb_credentials.identity ))
             password: (( .mysql.consoledb_credentials.password ))
             adapter: mysql
+        - name: push-app-usage-service
+          manifest: |
+            name: app_usage_service
+            port: 3306
+            ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
+            username: (( .mysql.app_usage_credentials.identity ))
+            password: (( .mysql.app_usage_credentials.password ))
 
       - name: external
         named_manifests:
@@ -5307,7 +5385,8 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: 2
+                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+                region:  (( .properties.system_blobstore.external.region.value ))
                 path_style: true
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccdroplet
@@ -5317,7 +5396,8 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: 2
+                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+                region:  (( .properties.system_blobstore.external.region.value ))
                 path_style: true
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccpackage
@@ -5327,7 +5407,8 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: 2
+                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+                region:  (( .properties.system_blobstore.external.region.value ))
                 path_style: true
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
           - name: ccresource
@@ -5337,7 +5418,8 @@ property_blueprints:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
                 aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: 2
+                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+                region:  (( .properties.system_blobstore.external.region.value ))
                 path_style: true
                 endpoint: (( .properties.system_blobstore.external.endpoint.value ))
         select_value: external
@@ -5364,6 +5446,28 @@ property_blueprints:
           - name: secret_key
             type: secret
             configurable: true
+          - name: signature_version
+            type: dropdown_select
+            configurable: true
+            optional: false
+            default: 2
+            options:
+            - name: 2
+              label: V2 Signature
+            - name: 4
+              label: V4 Signature
+          - name: region
+            type: dropdown_select
+            configurable: true
+            optional: false
+            default: "''"
+            options:
+            - name: "''"
+              label: "V2 Signature - N/A"
+            - name: "eu-central-1"
+              label: "V4 Signature - EU Region (Frankfurt)"
+            - name: "cn-north-1"
+              label: "V4 Signature - China Region (Beijing)"
 
   - name: group_search
     type: selector
@@ -5395,3 +5499,74 @@ property_blueprints:
             type: string
             configurable: true
             default: "member={0}"
+
+  - name: mysql_backups
+    type: selector
+    configurable: true
+    default: disable
+    option_templates:
+    - name: disable
+      select_value: disable
+    - name: enable
+      select_value: enable
+      property_blueprints:
+      - name: bucket_name
+        type: string
+        configurable: true
+      - name: bucket_path
+        type: string
+        configurable: true
+      - name: access_key_id
+        type: string
+        configurable: true
+      - name: secret_access_key
+        type: secret
+        configurable: true
+      - name: cron_schedule
+        type: string
+        configurable: true
+
+  - name: smoke_tests
+    type: selector
+    configurable: true
+    default: on_demand
+    option_templates:
+      - name: on_demand
+        select_value: on_demand
+        named_manifests:
+          - name: smoke_tests
+            manifest: |
+              api: "https://api.(( .cloud_controller.system_domain.value ))"
+              apps_domain: (( .cloud_controller.apps_domain.value ))
+              user: (( .uaa.run_smoke_tests_credentials.identity ))
+              password: (( .uaa.run_smoke_tests_credentials.password ))
+              org: CF_SMOKE_TEST_ORG
+              space: CF_SMOKE_TEST_SPACE
+              skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+              use_existing_org: false
+              use_existing_space: false
+
+      - name: specified
+        select_value: specified
+        named_manifests:
+          - name: smoke_tests
+            manifest: |
+              api: "https://api.(( .cloud_controller.system_domain.value ))"
+              apps_domain: (( .properties.smoke_tests.specified.apps_domain.value ))
+              user: (( .uaa.run_smoke_tests_credentials.identity ))
+              password: (( .uaa.run_smoke_tests_credentials.password ))
+              org: (( .properties.smoke_tests.specified.org_name.value ))
+              space: (( .properties.smoke_tests.specified.space_name.value ))
+              skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+              use_existing_org: true
+              use_existing_space: true
+        property_blueprints:
+          - name: org_name
+            type: string
+            configurable: true
+          - name: space_name
+            type: string
+            configurable: true
+          - name: apps_domain
+            type: string
+            configurable: true
