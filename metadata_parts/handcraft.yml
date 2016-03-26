@@ -409,6 +409,44 @@ form_types:
           - reference: .properties.system_database.external.password
             label: Password
 
+  - name: mysql_config
+    label: MySQL Config
+    description:  You only need to configure this section if you are using the Internal MySQL databases provided by Elastic Runtime.
+    markdown: |
+      ## A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936.
+      ## The automated backups functionality works with any S3-compatible file store that can receive your backup files.
+    property_inputs:
+      - reference: .mysql_proxy.static_ips
+        label: MySQL Proxy IPs
+        description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer."
+      - reference: .mysql_proxy.service_hostname
+        label: MySQL Service Hostname
+        description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
+      - reference: .properties.mysql_backups
+        label: Automated Backups Configuration
+        selector_property_inputs:
+        - reference: .properties.mysql_backups.disable
+          label: |
+            Disable mysql_backups (Must also set: Resource Config > Backup Prepare Node > Instances to 0)
+          description: Disable mysql_backups
+        - reference: .properties.mysql_backups.enable
+          label: Enable mysql_backups
+          description: Enable mysql_backups
+          property_inputs:
+          - reference: .properties.mysql_backups.enable.bucket_name
+            label: S3 Bucket Name
+            description: Do not include 's3://' prefix, trailing '/', or underscores. The bucket will be created automatically if it does not already exist.
+          - reference: .properties.mysql_backups.enable.bucket_path
+            label: Bucket Path
+            description: Specify a folder within the bucket which will hold the mysql_backups. Do not include a trailing slash.
+          - reference: .properties.mysql_backups.enable.access_key_id
+            label: AWS Access Key ID
+          - reference: .properties.mysql_backups.enable.secret_access_key
+            label: AWS Secret Access Key
+          - reference: .properties.mysql_backups.enable.cron_schedule
+            label: Cron Schedule (See http://godoc.org/github.com/robfig/cron)
+            description: Specify when mysql backups are to occur. Schedule uses the machine's local time zone.
+
   - name: system_blobstore
     label: File Storage Config
     description: "Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details."
@@ -479,41 +517,6 @@ form_types:
           - reference: .properties.system_blobstore.external.resources_bucket
             label: Resources Bucket Name
             description: Bucket where the app resources will be located. You can re-use the same bucket as above, however it is recommended to use different buckets if this is a new installation of Elastic Runtime.
-
-  - name: mysql_config
-    label: MySQL Proxy Config
-    description:  "A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936."
-    property_inputs:
-      - reference: .mysql_proxy.static_ips
-        label: MySQL Proxy IPs
-        description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer."
-      - reference: .mysql_proxy.service_hostname
-        label: MySQL Service Hostname
-        description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
-      - reference: .properties.mysql_backups
-        label: Automated Backups Configuration
-        selector_property_inputs:
-        - reference: .properties.mysql_backups.disable
-          label: |
-            Disable mysql_backups (Must also set: Resource Config > Backup Prepare Node > Instances to 0)
-          description: Disable mysql_backups
-        - reference: .properties.mysql_backups.enable
-          label: Enable mysql_backups
-          description: Enable mysql_backups
-          property_inputs:
-          - reference: .properties.mysql_backups.enable.bucket_name
-            label: S3 Bucket Name
-            description: Do not include 's3://' prefix, trailing '/', or underscores. The bucket will be created automatically if it does not already exist.
-          - reference: .properties.mysql_backups.enable.bucket_path
-            label: Bucket Path
-            description: Specify a folder within the bucket which will hold the mysql_backups. Do not include a trailing slash.
-          - reference: .properties.mysql_backups.enable.access_key_id
-            label: AWS Access Key ID
-          - reference: .properties.mysql_backups.enable.secret_access_key
-            label: AWS Secret Access Key
-          - reference: .properties.mysql_backups.enable.cron_schedule
-            label: Cron Schedule (See http://godoc.org/github.com/robfig/cron)
-            description: Specify when mysql backups are to occur. Schedule uses the machine's local time zone.
 
   - name: syslog_aggregator
     label: System Logging
