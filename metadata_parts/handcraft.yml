@@ -515,14 +515,6 @@ form_types:
             label: Cron Schedule (See http://godoc.org/github.com/robfig/cron)
             description: Specify when mysql backups are to occur. Schedule uses the machine's local time zone.
 
-  - name: cloud_controller
-    label: Cloud Controller
-    description: Coordinates Pivotal CF Elastic Runtime application lifecycles
-    property_inputs:
-      - reference: .cloud_controller.encrypt_key
-        label: Cloud Controller DB Encryption Key
-        description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
-
   - name: syslog_aggregator
     label: System Logging
     description: Configure system logging. Leave the External Syslog fields blank unless you wish to use an external syslogd server.
@@ -565,6 +557,14 @@ form_types:
         label: SMTP Authentication Mechanism
       - reference: .properties.smtp_crammd5_secret
         label: SMTP CRAMMD5 secret
+
+  - name: cloud_controller
+    label: Restore CCDB Encryption Key
+    description: The Cloud Controller's database has an encryption key that should be re-instated whenever restoring this database from a backup.
+    property_inputs:
+      - reference: .cloud_controller.encrypt_key
+        label: Cloud Controller DB Encryption Key
+        description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
 
   - name: generic_white_label_config
     label: Generic White Labeling
