@@ -5466,37 +5466,6 @@ property_blueprints:
             - name: "cn-north-1"
               label: "V4 Signature - China Region (Beijing)"
 
-  - name: group_search
-    type: selector
-    configurable: true
-    default: no_groups
-    option_templates:
-      - name: no_groups
-        select_value: no_groups
-        named_manifests:
-          - name: ldap_group_profile
-            manifest: |
-              profile_type: no-groups
-
-      - name: enable_admin_groups
-        select_value: enable_admin_groups
-        named_manifests:
-          - name: ldap_group_profile
-            manifest: |
-              profile_type: groups-map-to-scopes
-              searchBase: (( .properties.group_search.enable_admin_groups.ldap_group_search_base.value ))
-              groupSearchFilter: (( .properties.group_search.enable_admin_groups.ldap_group_search_filter.value ))
-        property_blueprints:
-          - name: ldap_group_search_base
-            type: string
-            configurable: true
-            optional: true
-
-          - name: ldap_group_search_filter
-            type: string
-            configurable: true
-            default: "member={0}"
-
   - name: mysql_backups
     type: selector
     configurable: true
