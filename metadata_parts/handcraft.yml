@@ -3342,7 +3342,7 @@ job_types:
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
           insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
         tps:
-          traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value ))
+          traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value || "443" ))
           bbs:
             api_location: bbs.service.cf.internal:8889
             ca_cert: (( $ops_manager.ca_certificate ))
