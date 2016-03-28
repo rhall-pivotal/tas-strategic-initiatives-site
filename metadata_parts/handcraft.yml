@@ -3128,7 +3128,7 @@ job_types:
             staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
             staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
         tps:
-          traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value ))
+          traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value || "443" ))
           bbs:
             api_location: bbs.service.cf.internal:8889
             ca_cert: (( $ops_manager.ca_certificate ))
