@@ -27,6 +27,13 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
     resource_config.set_vm_type_for_job('diego_cell', instance_type)
   end
 
+  it 'configure postgres instance counts to zero' do
+    resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
+    resource_config.set_instances_for_job('ccdb', 0)
+    resource_config.set_instances_for_job('consoledb', 0)
+    resource_config.set_instances_for_job('uaadb', 0)
+  end
+
   it 'configures the availability zone' do
     if can_configure_availability_zones?('cf')
       unless any_availability_zones_have_been_selected_for_balancing?('cf')
