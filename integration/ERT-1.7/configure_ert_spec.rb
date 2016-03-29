@@ -30,7 +30,6 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
   it 'configure postgres instance counts to zero' do
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
     resource_config.set_instances_for_job('ccdb', 0)
-    resource_config.set_instances_for_job('consoledb', 0)
     resource_config.set_instances_for_job('uaadb', 0)
   end
 
