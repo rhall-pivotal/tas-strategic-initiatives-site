@@ -344,8 +344,8 @@ form_types:
         description: Set the lifetime of the refresh token for the Cloud Foundry CLI.
 
   - name: system_database
-    label: System Database Config
-    description: Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details.
+    label: Databases
+    description: This section determines where you would like to place your Elastic Runtime databases, for components like Cloud Controller and UAA.
     verifiers:
       - name: Verifiers::MysqlDatabaseVerifier
         properties:
