@@ -305,6 +305,9 @@ form_types:
               - reference: .properties.uaa.saml.sso_url
                 label: "(OR) Provider Metadata URL"
                 description: "If you did not provide metadata above, enter an SSO endpoint that returns the metadata."
+              - reference: .properties.uaa.saml.name_id_format
+                label: Name ID Format
+                description: "Select the name identifier format configured for the identity provider. This translates to the username on Pivotal Cloud Foundry"
               - reference: .properties.uaa.saml.sign_auth_requests
                 label: Sign Authentication Requests
                 description: "If enabled, signed authentication requests will be sent to the SAML identity provider."
@@ -4967,7 +4970,7 @@ property_blueprints:
             (( .properties.uaa.saml.sso_name.value )):
               metadataTrustCheck: false
               idpMetadata: "(( .properties.uaa.saml.sso_url.value_present? ? .properties.uaa.saml.sso_url.value : .properties.uaa.saml.sso_xml.value ))"
-              nameID: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+              nameID: (( .properties.uaa.saml.name_id_format.value ))
               showSamlLoginLink: true
               linkText: (( .properties.uaa.saml.display_name.value ))
         - name: self_service_links_enabled
@@ -4984,6 +4987,18 @@ property_blueprints:
             type: http_url
             configurable: true
             optional: true
+          - name: name_id_format
+            type: dropdown_select
+            configurable: true
+            optional: false
+            default: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+            options:
+            - name: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+              label: Email Address
+            - name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+              label: Unspecified
+            - name: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+              label: Persistent
           - name: sso_xml
             type: text
             configurable: true
