@@ -207,16 +207,28 @@ form_types:
     - reference: .properties.allow_cross_container_traffic
       label: "Microservices: Enable cross-container traffic"
       description: Not recommended for untrusted application workloads. However, this is useful for microservice frameworks that require cross-container communication.
-    - reference: .diego_cell.insecure_docker_registry_list
-      label: Private Docker Registry Whitelist
-      description: If you use private Docker image registries that are secured with self-signed certificates, enter them here as a comma-delimited list. Individual entries may be either an IP:Port tuple or a Hostname:Port tuple.
     - reference: .cloud_controller.enable_custom_buildpacks
       label: Enable Custom Buildpacks
       description: Enables the use of custom-built application runtime buildpacks.
     - reference: .cloud_controller.allow_app_ssh_access
       label: Allow SSH access to app containers
       description: "If you are using a load balancer instead of HAProxy, ensure that your load balancer has port 2222 open to enable SSH traffic. To have SSH access to a given app, a Cloud Foundry user must also be granted the SpaceDeveloper privilege for that app's space, which can be granted to the user in Apps Manager or via the Cloud Foundry CLI."
-
+    - reference: .diego_cell.insecure_docker_registry_list
+      label: Private Docker Registry Whitelist
+      description: If you use private Docker image registries that are secured with self-signed certificates, enter them here as a comma-delimited list. Individual entries may be either an IP:Port tuple or a Hostname:Port tuple.
+    - reference: .properties.garden_disk_cleanup
+      label: Docker Images Disk-Cleanup on Cell VMs
+      selector_property_inputs:
+      - reference: .properties.garden_disk_cleanup.never
+        label: Never cleanup Cell disk-space
+      - reference: .properties.garden_disk_cleanup.routine
+        label: Routinely cleanup Cell disk-space
+      - reference: .properties.garden_disk_cleanup.threshold
+        label: Cleanup disk-space once threshold is reached
+        property_inputs:
+          - reference: .properties.garden_disk_cleanup.threshold.cleanup_threshold_in_mb
+            label: Threshold of Disk-Used (MB)
+            description: Disk cleanup will initiate whenever a Cell has exceeded this much disk-space for filesystem layers.
   - name: application_dev_controls
     label: Application Developer Controls
     description: Configure restrictions and default settings for applications pushed to Cloud Foundry.
@@ -3440,7 +3452,7 @@ job_types:
         allow_host_access: (( .properties.allow_cross_container_traffic.value ))
         persistent_image_list:
           - "/var/vcap/packages/rootfs_cflinuxfs2/rootfs"
-        graph_cleanup_threshold_in_mb: 0
+        graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
         network_pool: (( garden_network_pool.value ))
         deny_networks: ["0.0.0.0/0"]
         network_mtu: (( garden_network_mtu.value ))
@@ -5437,3 +5449,32 @@ property_blueprints:
           - name: apps_domain
             type: string
             configurable: true
+
+  - name: garden_disk_cleanup
+    type: selector
+    configurable: true
+    default: routine
+    option_templates:
+      - name: never
+        named_manifests:
+        - name: graph_cleanup_threshold_in_mb
+          manifest: |
+            -1
+        select_value: never
+      - name: routine
+        named_manifests:
+        - name: graph_cleanup_threshold_in_mb
+          manifest: |
+            0
+        select_value: routine
+      - name: threshold
+        named_manifests:
+        - name: graph_cleanup_threshold_in_mb
+          manifest: |
+            (( .properties.garden_disk_cleanup.threshold.cleanup_threshold_in_mb.value ))
+        select_value: threshold
+        property_blueprints:
+          - name: cleanup_threshold_in_mb
+            type: integer
+            constraints:
+              min: 1
