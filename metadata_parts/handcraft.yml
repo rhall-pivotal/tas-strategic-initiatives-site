@@ -1131,10 +1131,7 @@ job_types:
 
     manifest: |
       nfs_server:
-        allow_from_entries:
-        - (( .cloud_controller.ips ))
-        - (( .cloud_controller_worker.ips ))
-        - (( .clock_global.ips ))
+        allow_from_entries: (( .cloud_controller.subnet_cidrs ))
       syslog_daemon_config:
         address: (( .properties.syslog_host.value ))
         port: (( .properties.syslog_port.value ))
@@ -1823,8 +1820,8 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 1
-    dynamic_ip: 0
+    static_ip: 0
+    dynamic_ip: 1
     max_in_flight: 1
     single_az_only: false
     serial: true
@@ -2212,8 +2209,6 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
-      - name: nfs_mounter # NOTE: NFS Mounter must be last until #94152506 is resolved
-        release: cf
 
     resource_definitions:
       - name: ram
@@ -2247,8 +2242,8 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 1
-    dynamic_ip: 0
+    static_ip: 0
+    dynamic_ip: 1
     max_in_flight: 1
     single_az_only: false
 
@@ -2319,9 +2314,6 @@ job_types:
         agent_key: (( .properties.consul_agent_cert.private_key_pem ))
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
-
-      nfs_server:
-        address: (( .nfs_server.first_ip ))
 
       uaa:
         url: "https://uaa.(( .cloud_controller.system_domain.value ))"
@@ -2402,8 +2394,8 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 1
-    dynamic_ip: 0
+    static_ip: 0
+    dynamic_ip: 1
     max_in_flight: 1
     single_az_only: false
 
