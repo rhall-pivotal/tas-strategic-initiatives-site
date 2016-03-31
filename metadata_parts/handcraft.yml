@@ -344,8 +344,8 @@ form_types:
         description: Set the lifetime of the refresh token for the Cloud Foundry CLI.
 
   - name: system_database
-    label: System Database Config
-    description: Configurations should only be made on the initial installation of Elastic Runtime (do NOT change anything on this section when upgrading). Once Elastic Runtime is installed, a manual data migration is required in order to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details.
+    label: Databases
+    description: This section determines where you would like to place your Elastic Runtime databases, for components like Cloud Controller and UAA.
     verifiers:
       - name: Verifiers::MysqlDatabaseVerifier
         properties:
@@ -408,6 +408,44 @@ form_types:
             label: Username
           - reference: .properties.system_database.external.password
             label: Password
+
+  - name: mysql_config
+    label: MySQL Config
+    description:  You only need to configure this section if you are using the Internal MySQL databases provided by Elastic Runtime.
+    markdown: |
+      ## A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936.
+      ## The automated backups functionality works with any S3-compatible file store that can receive your backup files.
+    property_inputs:
+      - reference: .mysql_proxy.static_ips
+        label: MySQL Proxy IPs
+        description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer."
+      - reference: .mysql_proxy.service_hostname
+        label: MySQL Service Hostname
+        description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
+      - reference: .properties.mysql_backups
+        label: Automated Backups Configuration
+        selector_property_inputs:
+        - reference: .properties.mysql_backups.disable
+          label: |
+            Disable mysql_backups (Must also set: Resource Config > Backup Prepare Node > Instances to 0)
+          description: Disable mysql_backups
+        - reference: .properties.mysql_backups.enable
+          label: Enable mysql_backups
+          description: Enable mysql_backups
+          property_inputs:
+          - reference: .properties.mysql_backups.enable.bucket_name
+            label: S3 Bucket Name
+            description: Do not include 's3://' prefix, trailing '/', or underscores. The bucket will be created automatically if it does not already exist.
+          - reference: .properties.mysql_backups.enable.bucket_path
+            label: Bucket Path
+            description: Specify a folder within the bucket which will hold the mysql_backups. Do not include a trailing slash.
+          - reference: .properties.mysql_backups.enable.access_key_id
+            label: AWS Access Key ID
+          - reference: .properties.mysql_backups.enable.secret_access_key
+            label: AWS Secret Access Key
+          - reference: .properties.mysql_backups.enable.cron_schedule
+            label: Cron Schedule (See http://godoc.org/github.com/robfig/cron)
+            description: Specify when mysql backups are to occur. Schedule uses the machine's local time zone.
 
   - name: system_blobstore
     label: File Storage Config
@@ -480,49 +518,6 @@ form_types:
             label: Resources Bucket Name
             description: Bucket where the app resources will be located. You can re-use the same bucket as above, however it is recommended to use different buckets if this is a new installation of Elastic Runtime.
 
-  - name: mysql_config
-    label: MySQL Proxy Config
-    description:  "A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936."
-    property_inputs:
-      - reference: .mysql_proxy.static_ips
-        label: MySQL Proxy IPs
-        description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer."
-      - reference: .mysql_proxy.service_hostname
-        label: MySQL Service Hostname
-        description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
-      - reference: .properties.mysql_backups
-        label: Automated Backups Configuration
-        selector_property_inputs:
-        - reference: .properties.mysql_backups.disable
-          label: |
-            Disable mysql_backups (Must also set: Resource Config > Backup Prepare Node > Instances to 0)
-          description: Disable mysql_backups
-        - reference: .properties.mysql_backups.enable
-          label: Enable mysql_backups
-          description: Enable mysql_backups
-          property_inputs:
-          - reference: .properties.mysql_backups.enable.bucket_name
-            label: S3 Bucket Name
-            description: Do not include 's3://' prefix, trailing '/', or underscores. The bucket will be created automatically if it does not already exist.
-          - reference: .properties.mysql_backups.enable.bucket_path
-            label: Bucket Path
-            description: Specify a folder within the bucket which will hold the mysql_backups. Do not include a trailing slash.
-          - reference: .properties.mysql_backups.enable.access_key_id
-            label: AWS Access Key ID
-          - reference: .properties.mysql_backups.enable.secret_access_key
-            label: AWS Secret Access Key
-          - reference: .properties.mysql_backups.enable.cron_schedule
-            label: Cron Schedule (See http://godoc.org/github.com/robfig/cron)
-            description: Specify when mysql backups are to occur. Schedule uses the machine's local time zone.
-
-  - name: cloud_controller
-    label: Cloud Controller
-    description: Coordinates Pivotal CF Elastic Runtime application lifecycles
-    property_inputs:
-      - reference: .cloud_controller.encrypt_key
-        label: Cloud Controller DB Encryption Key
-        description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
-
   - name: syslog_aggregator
     label: System Logging
     description: Configure system logging. Leave the External Syslog fields blank unless you wish to use an external syslogd server.
@@ -565,6 +560,14 @@ form_types:
         label: SMTP Authentication Mechanism
       - reference: .properties.smtp_crammd5_secret
         label: SMTP CRAMMD5 secret
+
+  - name: cloud_controller
+    label: Restore CCDB Encryption Key
+    description: The Cloud Controller's database has an encryption key that should be re-instated whenever restoring this database from a backup.
+    property_inputs:
+      - reference: .cloud_controller.encrypt_key
+        label: Cloud Controller DB Encryption Key
+        description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
 
   - name: generic_white_label_config
     label: Generic White Labeling
@@ -1304,6 +1307,7 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    serial: true
     single_az_only: false
 
     instance_definition:
@@ -1359,6 +1363,7 @@ job_types:
       - name: streaming-mysql-backup-tool
         release: mysql-backup
     max_in_flight: 1
+    serial: true
     single_az_only: false
     resource_definitions:
     - name: ram
@@ -1571,7 +1576,7 @@ job_types:
         type: integer
         label: Ephemeral Disk
         configurable: true
-        default: 2_048
+        default: 4_096
         constraints:
           min: 2_048
 
@@ -1579,7 +1584,7 @@ job_types:
         type: integer
         label: Persistent Disk
         configurable: true
-        default: 2_048
+        default: 4_096
         constraints:
           min: 2_048
 
@@ -1595,6 +1600,7 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    serial: true
     single_az_only: true
 
     instance_definition:
@@ -1612,9 +1618,10 @@ job_types:
           identity: admin
 
     manifest: |
+      mysql: (( .properties.system_database.selected_option.parsed_manifest(mysql_target_cc) ))
       databases:
         address: (( first_ip ))
-        port: 2544
+        port: 9999
         db_scheme: "postgres"
         roles:
         - tag: admin
@@ -1665,7 +1672,7 @@ job_types:
         type: integer
         label: Ephemeral Disk
         configurable: true
-        default: 2_048
+        default: 4_096
         constraints:
           min: 2_048
 
@@ -1689,6 +1696,7 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    serial: true
     single_az_only: true
 
     instance_definition:
@@ -1707,9 +1715,10 @@ job_types:
           identity: root
 
     manifest: |
+      mysql: (( .properties.system_database.selected_option.parsed_manifest(mysql_target_uaa) ))
       databases:
         address: (( first_ip ))
-        port: 2544
+        port: 9999
         db_scheme: postgresql
         roles:
         - tag: admin
@@ -1718,102 +1727,6 @@ job_types:
         databases:
         - tag: uaa
           name: uaa
-      networks:
-        services: default
-      syslog_daemon_config:
-        address: (( .properties.syslog_host.value ))
-        port: (( .properties.syslog_port.value ))
-        transport: (( .properties.syslog_protocol.value ))
-      metron_agent:
-        zone: (( availability_zone ))
-        deployment: cf
-      metron_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines: (( .nats.ips ))
-      loggregator:
-        etcd:
-          machines: (( .etcd_server.ips ))
-
-  - name: consoledb
-    label: Apps Manager Database
-    resource_label: Apps Manager Database (Postgres)
-    description: Apps Manager Database
-    templates:
-      - name: postgres
-        release: cf
-      - name: metron_agent
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: true
-        default: 2_048
-        constraints:
-          min: 2_048
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-    single_az_only: true
-
-    instance_definition:
-      name: instances
-      type: integer
-      label: Instances
-      configurable: true
-      constraints:
-        max: 1
-      default: 0
-
-    property_blueprints:
-      - name: credentials
-        type: simple_credentials
-        default:
-          identity: root
-
-    manifest: |
-      databases:
-        address: (( first_ip ))
-        port: 2544
-        db_scheme: postgresql
-        roles:
-        - tag: admin
-          name: (( credentials.identity ))
-          password: (( credentials.password ))
-        databases:
-        - tag: console
-          name: console
       networks:
         services: default
       syslog_daemon_config:
@@ -2918,8 +2831,8 @@ job_types:
           url: "https://notifications.(( .cloud_controller.system_domain.value ))"
         saml:
           entityid: "http://login.(( .cloud_controller.system_domain.value ))"
-          serviceProviderKey: (( .properties.uaa.saml.ssl_certificate.private_key_pem ))
-          serviceProviderCertificate: (( .properties.uaa.saml.ssl_certificate.cert_pem ))
+          serviceProviderKey: (( service_provider_key_credentials.private_key_pem ))
+          serviceProviderCertificate: (( service_provider_key_credentials.cert_pem ))
           providers: (( .properties.uaa.selected_option.parsed_manifest(saml_provider) ))
           signRequest: (( .properties.uaa.saml.sign_auth_requests.value ))
           wantAssertionSigned: (( .properties.uaa.saml.require_signed_assertions.value ))
@@ -4666,6 +4579,9 @@ job_types:
         skip_regex: lucid64
         skip_diego_unsupported_tests: true
         java_buildpack_name: java_buildpack_offline
+        include_diego_ssh: true
+        include_route_services: true
+        include_sso: true
 
   - name: acceptance-tests-internetless
     label: Run CF Acceptance Tests without internet
@@ -4838,7 +4754,7 @@ job_types:
       name: instances
       type: integer
       label: Instances
-      default: 4
+      default: 1
       configurable: true
       constraints:
         min: 1
@@ -5074,9 +4990,6 @@ property_blueprints:
           - name: require_signed_assertions
             type: boolean
             configurable: true
-          - name: ssl_certificate
-            type: rsa_cert_credentials
-            configurable: false
       - name: ldap
         select_value: ldap
         named_manifests:
@@ -5180,55 +5093,6 @@ property_blueprints:
     configurable: true
     default: internal_mysql
     option_templates:
-      - name: internal
-        select_value: internal
-        named_manifests:
-          - name: ccdb
-            manifest: |
-              address: (( .ccdb.first_ip ))
-              port: 2544
-              db_scheme: "postgres"
-              roles:
-              - tag: admin
-                name: (( .ccdb.credentials.identity ))
-                password: (( .ccdb.credentials.password ))
-              databases:
-              - tag: cc
-                name: ccdb
-                citext: true
-          - name: uaadb
-            manifest: |
-              address: (( .uaadb.first_ip ))
-              port: 2544
-              db_scheme: postgresql
-              roles:
-              - tag: admin
-                name: (( .uaadb.credentials.identity ))
-                password: (( .uaadb.credentials.password ))
-              databases:
-              - tag: uaa
-                name: uaa
-          - name: notifications
-            manifest: |
-              url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
-              max_open_connections: 10
-          - name: autoscaling
-            manifest: |
-              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
-          - name: console
-            manifest: |
-              ip: (( .consoledb.first_ip ))
-              username: (( .consoledb.credentials.identity ))
-              password: (( .consoledb.credentials.password ))
-              adapter: postgres
-          - name: push-app-usage-service
-            manifest: |
-              name: app_usage_service
-              port: 3306
-              ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
-              username: (( .mysql.app_usage_credentials.identity ))
-              password: (( .mysql.app_usage_credentials.password ))
-
       - name: internal_mysql
         select_value: internal_mysql
         named_manifests:
@@ -5257,6 +5121,26 @@ property_blueprints:
             databases:
             - tag: uaa
               name: uaa
+        - name: mysql_target_cc
+          manifest: |
+            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            user: (( .mysql.mysql_admin_credentials.identity ))
+            password: (( .mysql.mysql_admin_credentials.password ))
+            database:
+              username:  (( .mysql.ccdb_credentials.identity ))
+              password: (( .mysql.ccdb_credentials.password ))
+            db: ccdb
+            migration_check_table: app_usage_events
+        - name: mysql_target_uaa
+          manifest: |
+            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            user: (( .mysql.mysql_admin_credentials.identity ))
+            password: (( .mysql.mysql_admin_credentials.password ))
+            database:
+              username:  (( .mysql.uaadb_credentials.identity ))
+              password: (( .mysql.uaadb_credentials.password ))
+            db: uaa
+            migration_check_table: groups
         - name: notifications
           manifest: |
             url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
@@ -5305,6 +5189,24 @@ property_blueprints:
               databases:
               - tag: uaa
                 name: uaa
+          - name: mysql_target_cc
+            manifest: |
+              host: (( .properties.system_database.external.host.value ))
+              user: (( .properties.system_database.external.password.value ))
+              password: (( .properties.system_database.external.password.value ))
+              database:
+                username:  (( .properties.system_database.external.username.value ))
+                password: (( .properties.system_database.external.password.value ))
+              db: ccdb
+          - name: mysql_target_uaa
+            manifest: |
+              host: (( .properties.system_database.external.host.value ))
+              user: (( .properties.system_database.external.password.value ))
+              password: (( .properties.system_database.external.password.value ))
+              database:
+                username:  (( .properties.system_database.external.username.value ))
+                password: (( .properties.system_database.external.password.value ))
+              db: uaa
           - name: notifications
             manifest: |
               url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/notifications
