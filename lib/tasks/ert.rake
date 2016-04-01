@@ -62,6 +62,15 @@ namespace :ert do
     ).configure_external_dbs
   end
 
+  desc 'Configure Elastic Runtime to use Postgres Databases - 1.6 only'
+  task :configure_postgres, [:environment_name, :ert_version, :om_version] do |_, args|
+    IntegrationSpecRunner.new(
+      environment: args.environment_name,
+      ert_version: args.ert_version,
+      om_version: args.om_version
+    ).configure_postgres
+  end
+
   desc 'Disable HTTP Traffic in Elastic Runtime'
   task :disable_http_traffic, [:environment_name, :ert_version, :om_version] do |_, args|
     IntegrationSpecRunner.new(

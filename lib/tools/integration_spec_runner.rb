@@ -36,6 +36,14 @@ class IntegrationSpecRunner
     run_spec(["integration/ERT-#{ert_version}/configure_external_dbs_spec.rb"])
   end
 
+  def configure_postgres
+    unless ert_version == '1.6'
+      fail UnsupportedErtVersion, "Version #{ert_version} is not supported for this task"
+    end
+
+    run_spec(["integration/ERT-#{ert_version}/configure_postgres_spec.rb"])
+  end
+
   def configure_external_file_storage
     run_spec(["integration/ERT-#{ert_version}/configure_external_file_storage_spec.rb"])
   end
