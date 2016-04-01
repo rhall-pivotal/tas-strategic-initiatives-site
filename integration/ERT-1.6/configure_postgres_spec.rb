@@ -21,6 +21,7 @@ RSpec.describe 'Configure Elastic Runtime 1.6.X to use Postgres Databases', orde
       selector_input_reference: '.properties.system_database',
       selector_name: 'internal',
       selector_value: 'internal',
+      sub_field_answers: {}
     )
     database_form.save_form
   end
