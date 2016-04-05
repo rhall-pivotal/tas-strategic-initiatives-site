@@ -593,6 +593,12 @@ form_types:
             label: "Link text"
           - reference: href
             label: "Url"
+      - reference: .push-apps-manager.global_wrapper_bg_color
+        label: Classification Header/Footer Background Color
+        description: Enter a hexadecimal color code like '#71ffda'
+      - reference: .push-apps-manager.global_wrapper_text_color
+        label: Classification Header/Footer Text Color
+        description: Enter a hexadecimal color code like '#71ffda'
 
   - name: apps_manager_config
     label: Apps Manager Config
@@ -3821,6 +3827,16 @@ job_types:
         configurable: true
         optional: true
 
+      - name: global_wrapper_bg_color
+        type: string
+        configurable: true
+        optional: true
+
+      - name: global_wrapper_text_color
+        type: string
+        configurable: true
+        optional: true
+
       - name: logo
         type: string
         configurable: true
@@ -3919,6 +3935,8 @@ job_types:
           square_logo: (( square_logo.value ))
           footer_text: (( footer_text.value ))
           footer_links: (( footer_links.value ))
+          global_wrapper_bg_color: (( global_wrapper_bg_color.value ))
+          global_wrapper_text_color: (( global_wrapper_text_color.value ))
         apps_manager_config_json:
           product_name: (( product_name.value ))
           marketplace_name: (( marketplace_name.value ))
