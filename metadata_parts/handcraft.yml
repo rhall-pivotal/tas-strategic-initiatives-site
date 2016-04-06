@@ -599,6 +599,12 @@ form_types:
       - reference: .push-apps-manager.global_wrapper_text_color
         label: Classification Header/Footer Text Color
         description: Enter a hexadecimal color code like '#71ffda'
+      - reference: .push-apps-manager.global_wrapper_header_content
+        label: Classification Header Content
+        description: 'Markdown support for links only. e.g. This is [my link](http://example.com).'
+      - reference: .push-apps-manager.global_wrapper_footer_content
+        label: Classification Footer Content
+        description: 'Markdown support for links only. e.g. This is [my link](http://example.com).'
 
   - name: apps_manager_config
     label: Apps Manager Config
@@ -3837,6 +3843,16 @@ job_types:
         configurable: true
         optional: true
 
+      - name: global_wrapper_header_content
+        type: text
+        configurable: true
+        optional: true
+
+      - name: global_wrapper_footer_content
+        type: text
+        configurable: true
+        optional: true
+
       - name: logo
         type: string
         configurable: true
@@ -3937,6 +3953,8 @@ job_types:
           footer_links: (( footer_links.value ))
           global_wrapper_bg_color: (( global_wrapper_bg_color.value ))
           global_wrapper_text_color: (( global_wrapper_text_color.value ))
+          global_wrapper_header_content: (( global_wrapper_header_content.value ))
+          global_wrapper_footer_content: (( global_wrapper_footer_content.value ))
         apps_manager_config_json:
           product_name: (( product_name.value ))
           marketplace_name: (( marketplace_name.value ))
