@@ -138,14 +138,14 @@ form_types:
 
   - name: networking
     label: Networking
-    description: This section allows you to employ various security and routing services for your platform.
+    description: This section allows you to employ various security and routing services for your platform. It is usually preferable to use your own load balancer instead of an HAProxy instance as your point-of-entry to the platform.
     property_inputs:
       - reference: .router.static_ips
         label: Router IPs
-        description: "Enter static IP address(es) for the Router(s), which must be in the subnet that you defined in the Ops Manager network configuration. If you have a load balancer, you should then configure your load balancer to point to these IPs. If deploying this to AWS with an ELB, then instead of defining any IP addresses here, you can add the name of your AWS ELB in the Resource Config section in the ELB Name column for Router."
+        description: "If you are opting not to use HAProxy, you should enter static IP address(es) for the Router(s), which must be in the subnet that you defined in the Ops Manager network configuration. If you have a load balancer, you should then configure your load balancer to point to these IPs. If deploying this to AWS with an ELB, then instead of defining any IP addresses here, you can add the name of your AWS ELB in the Resource Config section in the ELB Name column for Router."
       - reference: .ha_proxy.static_ips
         label: HAProxy IPs
-        description: "Enter the IP address(es) for HAProxy. You must point your DNS to this IP unless you are using your own load balancer. HAProxy's IP must be in your subnet."
+        description: "If you are opting to use HAProxy instead of your own load-balancer, you should enter the IP address(es) for HAProxy. This IP must be in your subnet."
       - reference: .properties.networking_point_of_entry
         label: Configure the point-of-entry to this environment
         selector_property_inputs:
