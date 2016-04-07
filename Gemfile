@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'vara', require: false
+gem 'vara', '0.21.1', require: false
 
 gem 'opsmgr'
 gem 'recursive-open-struct', '0.5.0'
