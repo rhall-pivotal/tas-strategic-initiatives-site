@@ -2,26 +2,6 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Cloudformation template for configuring Pivotal Cloud Foundry on AWS",
   "Parameters": {
-    "01NATKeyPair": {
-      "Type": "AWS::EC2::KeyPair::KeyName",
-      "Description": "Select the SSH keypair to use for the NAT vm"
-    },
-    "02NATInstanceType": {
-      "Type": "String",
-      "AllowedValues": [
-        "t2.micro",
-        "t2.small",
-        "t2.medium",
-        "m3.large",
-        "c4.large",
-        "m3.xlarge",
-        "c4.xlarge",
-        "c4.8xlarge"
-      ],
-      "ConstraintDescription": "Instance Type must be of a valid EC2 type",
-      "Default": "t2.medium",
-      "Description": "Select the Instance Type to use for the NAT vm"
-    },
     "03OpsManagerIngress": {
       "Type": "String",
       "Default": "0.0.0.0/0",
@@ -49,7 +29,7 @@
     },
     "08OpsManagerTemplate": {
       "Type": "String",
-      "Default": "https://s3.amazonaws.com/ops-man-references/pcf-cloudformation/1.7.0/pcf.json",
+      "Default": "https://s3.amazonaws.com/ops-man-references/pcf-cloudformation/1.7.0/pcf-release.json",
       "Description": "S3 Location for OpsManager CloudFormation Template"
     },
     "09ElbPrefix": {
@@ -81,8 +61,6 @@
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
         "Parameters": {
-          "01NATKeyPair": {"Ref": "01NATKeyPair"},
-          "02NATInstanceType": {"Ref": "02NATInstanceType"},
           "03OpsManagerIngress": {"Ref": "03OpsManagerIngress"},
           "04RdsDBName": {"Ref": "04RdsDBName"},
           "05RdsUsername": {"Ref": "05RdsUsername"},
@@ -464,9 +442,6 @@
     },
     "PcfRdsDBName": {
       "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfRdsDBName" ]}
-    },
-    "PcfKeyPairName": {
-      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfKeyPairName" ]}
     }
   }
 }
