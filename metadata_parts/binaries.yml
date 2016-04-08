@@ -1,78 +1,77 @@
----
-stemcell_criteria:
-  os: ubuntu-trusty
-  version: '3215'
-  requires_cpi: false
 releases:
-# MySQL release is first because its packages take the longest to compile.
-- file: cf-mysql-25.2.tgz
-  name: cf-mysql
-  version: '25.2'
-  md5: e1ac3ea094b3884445240cb8570ba21b
+- name: cf-mysql
+  file: cf-mysql-25.2.tgz
+  version: "25.2"
   aws:
     access_key_id: AKIAIAXBRMZRNWF3EYDQ
-    secret_access_key: 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
-    region: us-east-1
     bucket_name: pcf-mysql-releases
     filename: final/cf-mysql-25.2.tgz
-- file: mysql-backup-1.tgz
-  name: mysql-backup
-  version: '1'
-  md5: 39b548e15fdaa60b39d98fa885b2350e
+    region: us-east-1
+    secret_access_key: jJGdMFhwwLMH8x8fHwkXsutkxYYIWZy4mhuGJj6A
+  md5: e1ac3ea094b3884445240cb8570ba21b
+- name: mysql-backup
+  file: mysql-backup-1.tgz
+  version: "1"
   aws:
     access_key_id: AKIAICLIEL7A4BA2RTQA
-    secret_access_key: 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
-    region: us-east-1
     bucket_name: pivotal-cf-core-services-artifacts
     filename: mysql-backup/final/mysql-backup-1.tgz
-- file: service-backup-1.tgz
-  name: service-backup
-  version: '1'
-  md5: 863b03b0fe6f2df8711da42d8e8de8ac
+    region: us-east-1
+    secret_access_key: sJyJrXAJB+rJ7PMRhR0GqbZyTtBEz0nztBkN3SE0
+  md5: 39b548e15fdaa60b39d98fa885b2350e
+- name: service-backup
+  file: service-backup-1.tgz
+  version: "1"
   aws:
     access_key_id: AKIAIJMBQDX5OOG5DW2Q
-    secret_access_key: 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
-    region: eu-west-1
     bucket_name: cf-services-external-builds
     filename: service-backup/final/service-backup-1.tgz
-- file: cf-232.4.tgz
-  name: cf
-  version: '232.4'
-  sha1: 9286829f4738a2e16cb034e3d928d56387573972
-  url: http://releng-artifacts.cf-app.com/cf/cf-232.4.tgz
-- file: diego-0.1460.0.tgz
-  name: diego
-  version: '0.1460.0'
-  sha1: 2d9a65acc34802ef0deb4446c684d7973c65cc94
-  url: https://bosh.io/d/github.com/cloudfoundry-incubator/diego-release?v=0.1460.0
-- file: garden-linux-0.334.0.tgz
-  name: garden-linux
-  version: '0.334.0'
+    region: eu-west-1
+    secret_access_key: fTorVoL5H+YcDJyJZjZdRHTezSuLbynadgandxbT
+  md5: 863b03b0fe6f2df8711da42d8e8de8ac
+- name: cf
+  file: cf-232.6.0.tgz
+  version: 232.6.0
+  sha1: b451b4724c824584fa8e52b5d4e8e3367d92d1ed
+  url: http://releng-artifacts.cf-app.com/cf/cf-232.6.0.tgz
+- name: diego
+  file: diego-0.1460.2.tgz
+  version: 0.1460.2
+  sha1: df67d90e9e6b829711af90e1f55b8ceb07947f5f
+  url: http://releng-artifacts.cf-app.com/diego/diego-0.1460.2.tgz
+- name: garden-linux
+  file: garden-linux-0.334.0.tgz
+  version: 0.334.0
   sha1: 85170c5089fa4ff317f139c2f1da024860dbea85
   url: https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release?v=0.334.0
-- file: etcd-release-38.tgz
-  name: etcd
-  version: '38'
+- name: etcd
+  file: etcd-release-38.tgz
+  version: "38"
   sha1: c7d303c1b733e77c5c5f3dedfe4dbf75997f30bc
   url: http://bosh.io/d/github.com/cloudfoundry-incubator/etcd-release?v=38
 - name: push-apps-manager-release
-  file: push-apps-manager-release-575.tgz
-  version: '575'
-  md5: cc8c9dc2039c4b0dc46d6d58fad554c2
-  url: http://apps-manager-releases.s3.amazonaws.com/push-apps-manager-release-575.tgz
-- file: notifications-19.tgz
-  name: notifications
+  file: push-apps-manager-release-597.tgz
+  version: '597'
+  md5: dffcf77f469639522eb0228dea8b36e9
+  url: http://apps-manager-releases.s3.amazonaws.com/push-apps-manager-release-597.tgz
+- name: notifications
+  file: notifications-19.tgz
   version: '19'
   md5: aef60f44f0878aca5cb19501dbe8e022
   url: https://s3-us-west-1.amazonaws.com/ert-concourse-products/upstream-releases/notifications/notifications-19.tgz
-- file: notifications-ui-10.tgz
-  name: 'notifications-ui'
-  version: '10'
+  md5: aef60f44f0878aca5cb19501dbe8e022
+- name: notifications-ui
+  file: notifications-ui-10.tgz
+  version: "10"
   sha1: 46662869df4fe64fc77161ba4c475c6a32b3f573
   url: https://s3-us-west-1.amazonaws.com/ert-concourse-products/upstream-releases/notifications-ui/notifications-ui-10.tgz
-- file: cf-autoscaling-28.tgz
-  name: 'cf-autoscaling'
-  version: '28'
-  md5: d3a973fe36c0ad257bcb29f8bcda7160
+- name: cf-autoscaling
+  file: cf-autoscaling-28.tgz
+  version: "28"
   url: https://s3-us-west-1.amazonaws.com/ert-concourse-products/upstream-releases/cf-autoscaling/cf-autoscaling-28.tgz
+  md5: d3a973fe36c0ad257bcb29f8bcda7160
 name: cf
+stemcell_criteria:
+  os: ubuntu-trusty
+  requires_cpi: false
+  version: "3215"

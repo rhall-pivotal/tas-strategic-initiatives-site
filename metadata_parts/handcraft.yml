@@ -446,7 +446,7 @@ form_types:
             Disable automated MySQL backups
           description: Disable mysql_backups
         - reference: .properties.mysql_backups.enable
-          label: Enable automated MySQL backups  (Must also set: Resource Config > Backup Prepare Node > Instances to 1)
+          label: "Enable automated MySQL backups  (Must also set: Resource Config > Backup Prepare Node > Instances to 1)"
           description: Enable mysql_backups
           property_inputs:
           - reference: .properties.mysql_backups.enable.bucket_name
@@ -3818,12 +3818,6 @@ job_types:
           CF_CLIENT_SECRET: (( .uaa.apps_manager_client_credentials.password ))
           CF_LOGIN_SERVER_URL: "https://login.(( .cloud_controller.system_domain.value ))"
           CF_UAA_SERVER_URL: "https://uaa.(( .cloud_controller.system_domain.value ))"
-        smtp:
-          address: (( .properties.smtp_address.value ))
-          port: (( .properties.smtp_port.value ))
-          user_name: (( .properties.smtp_credentials.identity ))
-          password: (( .properties.smtp_credentials.password ))
-          enable_starttls_auto: (( .properties.smtp_enable_starttls_auto.value ))
       env:
         secret_token: (( secret_token.value ))
         cf_cc_api_url: "https://api.(( .cloud_controller.system_domain.value ))"
