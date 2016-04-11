@@ -58,6 +58,30 @@ RSpec.describe 'IntegrationSpecRunner' do
     end
   end
 
+  context 'when using a 1.6 specific task' do
+    let(:ert_version) { '1.6' }
+
+    describe '#configure_postgres' do
+      it 'runs the correct version of configure postgres' do
+        expect(RSpecExiter).to receive(:exit_rspec).with(0)
+        expect(RSpec::Core::Runner).to receive(:run).with(
+          ['integration/ERT-1.6/configure_postgres_spec.rb']
+        ).and_return(0)
+
+        integration_spec_runner.configure_postgres
+      end
+
+      context 'when called with a unsupported version' do
+        let(:ert_version) { '1.7' }
+        it 'returns an UnsupportedErtVersion error' do
+          expect do
+            integration_spec_runner.configure_postgres
+          end.to raise_error(IntegrationSpecRunner::UnsupportedErtVersion, 'Version 1.7 is not supported for this task')
+        end
+      end
+    end
+  end
+
   %w(1.5 1.6).each do |version|
     describe 'configuring ert' do
       let(:ert_version) { version }

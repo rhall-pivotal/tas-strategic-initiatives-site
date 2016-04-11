@@ -104,6 +104,7 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
       sub_field_answers: {}
     )
     configure_ssl_cert(networking_form, elastic_runtime_settings, 'external_ssl')
+    networking_form.property('.properties.logger_endpoint_port').set('4443')
     networking_form.save_form
 
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
@@ -114,7 +115,6 @@ RSpec.describe 'Configure Elastic Runtime 1.7.X', order: :defined do
     system_logging_form =
       current_ops_manager.product(elastic_runtime_settings['name']).product_form('syslog_aggregator')
     system_logging_form.open_form
-    system_logging_form.property('.properties.logger_endpoint_port').set('4443')
     system_logging_form.save_form
   end
 
