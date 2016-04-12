@@ -2148,6 +2148,11 @@ job_types:
       default: 1
       constraints:
         min: 0
+      zero_if:
+        property_reference: .properties.networking_point_of_entry
+        property_values:
+        - external_ssl
+        - external_non_ssl
 
     property_blueprints:
       - name: static_ips
