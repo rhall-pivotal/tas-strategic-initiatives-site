@@ -1,0 +1,447 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Cloudformation template for configuring Pivotal Cloud Foundry on AWS",
+  "Parameters": {
+    "03OpsManagerIngress": {
+      "Type": "String",
+      "Default": "0.0.0.0/0",
+      "Description": "CIDR range allowed to connect to Ops Manager instance"
+    },
+    "04RdsDBName": {
+      "Type": "String",
+      "MinLength": "4",
+      "Default": "bosh",
+      "Description": "BOSH database name"
+    },
+    "05RdsUsername": {
+      "Type": "String",
+      "Description": "BOSH database username"
+    },
+    "06RdsPassword": {
+      "Type": "String",
+      "NoEcho": "true",
+      "MinLength": "8",
+      "Description": "BOSH database password"
+    },
+    "07SSLCertificateARN": {
+      "Type": "String",
+      "Description": "ARN for pre-uploaded SSL certificate"
+    },
+    "08OpsManagerTemplate": {
+      "Type": "String",
+      "Default": "https://s3.amazonaws.com/ops-man-references/pcf-cloudformation/1.7.0/ops-manager.json",
+      "Description": "S3 Location for OpsManager CloudFormation Template"
+    },
+    "09ElbPrefix": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Prefix for the name of the ELBs generated. NOTE: Leave empty to use default prefix of AWS::StackName"
+    },
+    "10AllowHttpOnElb": {
+      "Type": "String",
+      "Default": "true",
+      "AllowedValues": ["true", "false"],
+      "Description": "Allow HTTP traffic on PCF-ELB port 80. Default: true."
+    }
+  },
+  "Conditions": {
+    "ElbPrefixProvided": {
+      "Fn::Not": [
+        {
+          "Fn::Equals" : [{"Ref" : "09ElbPrefix" }, ""]
+        }
+      ]
+    },
+    "AllowHTTPTrafficOnELB": {
+      "Fn::Equals" : [{"Ref" : "10AllowHttpOnElb" }, "true"]
+    }
+  },
+  "Resources": {
+    "OpsManStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "Parameters": {
+          "03OpsManagerIngress": {"Ref": "03OpsManagerIngress"},
+          "04RdsDBName": {"Ref": "04RdsDBName"},
+          "05RdsUsername": {"Ref": "05RdsUsername"},
+          "06RdsPassword": {"Ref": "06RdsPassword"}
+        },
+        "TemplateURL": {"Ref": "08OpsManagerTemplate"}
+      }
+    },
+    "PcfElbSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfVpc" ] },
+        "GroupDescription": "ELB Security Group",
+        "SecurityGroupIngress": [
+          {
+             "CidrIp": "0.0.0.0/0",
+             "FromPort": "80",
+             "IpProtocol": "tcp",
+             "ToPort": "80"
+          },
+          {
+             "CidrIp": "0.0.0.0/0",
+             "FromPort": "443",
+             "IpProtocol": "tcp",
+             "ToPort": "443"
+          },
+          {
+             "CidrIp": "0.0.0.0/0",
+             "FromPort": "4443",
+             "IpProtocol": "tcp",
+             "ToPort": "4443"
+          }
+        ]
+      }
+    },
+    "PcfElb": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "DependsOn": [
+        "PcfElbSecurityGroup",
+        "OpsManStack"
+      ],
+      "Properties": {
+        "CrossZone": true,
+        "HealthCheck": {
+          "HealthyThreshold": "10",
+          "Interval": "30",
+          "Target": "TCP:80",
+          "Timeout": "5",
+          "UnhealthyThreshold": "2"
+        },
+        "ConnectionSettings": {
+          "IdleTimeout": 3600
+        },
+        "LoadBalancerName": { "Fn::Join" : [
+          "",
+          [ { "Fn::If" : [
+              "ElbPrefixProvided",
+              { "Ref" : "09ElbPrefix" },
+              { "Ref" : "AWS::StackName" }
+            ]},
+           "-pcf-elb"
+          ]
+        ] },
+        "Listeners": { "Fn::If" : [
+          "AllowHTTPTrafficOnELB",
+          [
+            {
+              "InstancePort": "80",
+              "LoadBalancerPort": "80",
+              "Protocol": "http",
+              "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
+            },
+            {
+              "InstancePort": "80",
+              "LoadBalancerPort": "443",
+              "Protocol": "https",
+              "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
+            },
+            {
+              "InstancePort": "80",
+              "LoadBalancerPort": "4443",
+              "Protocol": "ssl",
+              "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
+            }
+          ],
+          [
+            {
+              "InstancePort": "80",
+              "LoadBalancerPort": "443",
+              "Protocol": "https",
+              "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
+            },
+            {
+              "InstancePort": "80",
+              "LoadBalancerPort": "4443",
+              "Protocol": "ssl",
+              "SSLCertificateId": {"Ref": "07SSLCertificateARN"}
+            }
+          ]
+        ]},
+        "Scheme": "internet-facing",
+        "SecurityGroups": [
+          {
+            "Ref": "PcfElbSecurityGroup"
+          }
+        ],
+        "Subnets": [
+          { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId" ] }
+        ]
+      }
+    },
+    "PcfElbSshSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfVpc" ] },
+        "GroupDescription": "ELB Security Group",
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "FromPort": "2222",
+            "IpProtocol": "tcp",
+            "ToPort": "2222"
+          }
+        ]
+      }
+    },
+    "PcfElbSsh": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "DependsOn": [
+        "PcfElbSshSecurityGroup",
+        "OpsManStack"
+      ],
+      "Properties": {
+        "CrossZone": true,
+        "HealthCheck": {
+          "HealthyThreshold": "10",
+          "Interval": "30",
+          "Target": "TCP:2222",
+          "Timeout": "5",
+          "UnhealthyThreshold": "2"
+        },
+        "ConnectionSettings": {
+          "IdleTimeout": 3600
+        },
+        "LoadBalancerName": { "Fn::Join" : [
+          "",
+          [ { "Fn::If" : [
+              "ElbPrefixProvided",
+              { "Ref" : "09ElbPrefix" },
+              { "Ref" : "AWS::StackName" }
+            ]},
+            "-pcf-ssh-elb"
+          ]
+        ] },
+        "Listeners": [
+          {
+            "InstancePort": "2222",
+            "LoadBalancerPort": "2222",
+            "Protocol": "tcp"
+          }
+        ],
+        "Scheme": "internet-facing",
+        "SecurityGroups": [
+          {
+            "Ref": "PcfElbSshSecurityGroup"
+          }
+        ],
+        "Subnets": [
+          { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId" ] }
+        ]
+      }
+    },
+    "PcfErtS3BucketIamPolicy": {
+      "DependsOn": [
+        "OpsManStack"
+      ],
+      "Type" : "AWS::IAM::Policy",
+      "Properties" : {
+        "PolicyName" : "PcfErtPolicy",
+        "PolicyDocument" : {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "ElasticRuntimeS3Permissions",
+              "Effect": "Allow",
+              "Action": ["s3:*"],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3BuildpacksBucket"}
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3BuildpacksBucket"},
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3DropletsBucket"}
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3DropletsBucket"},
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3PackagesBucket"}
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3PackagesBucket"},
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3ResourcesBucket"}
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {"Ref": "PcfElasticRuntimeS3ResourcesBucket"},
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "Users" : [ {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUserName" ]} ]
+      }
+    },
+    "PcfElasticRuntimeS3BuildpacksBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "PCF Elastic Runtime S3 Buildpacks Bucket"
+          }
+        ]
+      }
+    },
+    "PcfElasticRuntimeS3DropletsBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "PCF Elastic Runtime S3 Droplets Bucket"
+          }
+        ]
+      }
+    },
+    "PcfElasticRuntimeS3PackagesBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "PCF Elastic Runtime S3 Packages Bucket"
+          }
+        ]
+      }
+    },
+    "PcfElasticRuntimeS3ResourcesBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "PCF Elastic Runtime S3 Resources Bucket"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "PcfElbDnsName": {
+      "Value": { "Fn::GetAtt": [ "PcfElb", "DNSName"]}
+    },
+    "PcfElbSshDnsName": {
+      "Value": { "Fn::GetAtt": [ "PcfElbSsh", "DNSName"]}
+    },
+    "PcfVpc": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfVpc" ]}
+    },
+    "PcfIamUserName": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUserName" ]}
+    },
+    "PcfIamUserAccessKey": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUserAccessKey" ]}
+    },
+    "PcfIamUserSecretAccessKey": {
+      "Value": { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfIamUserSecretAccessKey" ]}
+    },
+    "PcfOpsManagerS3Bucket": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfOpsManagerS3Bucket" ]}
+    },
+    "PcfElasticRuntimeS3BuildpacksBucket": {
+      "Value": {"Ref": "PcfElasticRuntimeS3BuildpacksBucket"}
+    },
+    "PcfElasticRuntimeS3DropletsBucket": {
+      "Value": {"Ref": "PcfElasticRuntimeS3DropletsBucket"}
+    },
+    "PcfElasticRuntimeS3PackagesBucket": {
+      "Value": {"Ref": "PcfElasticRuntimeS3PackagesBucket"}
+    },
+    "PcfElasticRuntimeS3ResourcesBucket": {
+      "Value": {"Ref": "PcfElasticRuntimeS3ResourcesBucket"}
+    },
+    "PcfVmsSecurityGroupId": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfVmsSecurityGroupId" ]}
+    },
+    "PcfOpsManagerSecurityGroupId": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfOpsManagerSecurityGroupId" ]}
+    },
+    "PcfPrivateSubnetId": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPrivateSubnetId" ]}
+    },
+    "PcfPrivateSubnetAvailabilityZone": {
+      "Value": { "Fn::GetAtt" : [ "OpsManStack", "Outputs.PcfPrivateSubnetAvailabilityZone" ] }
+    },
+    "PcfPublicSubnetId": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId" ]}
+    },
+    "PcfPublicSubnetAvailabilityZone": {
+      "Value": { "Fn::GetAtt" : [ "OpsManStack", "Outputs.PcfPublicSubnetAvailabilityZone" ] }
+    },
+    "PcfRdsAddress": {
+      "Value": { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfRdsAddress" ]}
+    },
+    "PcfRdsPort": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfRdsPort" ]}
+    },
+    "PcfRdsUsername": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfRdsUsername" ]}
+    },
+    "PcfRdsPassword": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfRdsPassword" ]}
+    },
+    "PcfRdsDBName": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfRdsDBName" ]}
+    }
+  }
+}
