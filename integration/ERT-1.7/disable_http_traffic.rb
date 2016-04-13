@@ -14,12 +14,12 @@ RSpec.describe 'Disable HTTP Traffic in Elastic Runtime 1.7.X', order: :defined 
   end
 
   it 'disables HTTP traffic to the HAProxy and UAA' do
-    security_config_form =
-      current_ops_manager.product(elastic_runtime_settings['name']).product_form('security_config')
-    security_config_form.open_form
+    networking_form =
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('networking')
+    networking_form.open_form
 
-    check 'security_config[.ha_proxy.disable_http]'
+    check 'networking[.properties.networking_point_of_entry][haproxy][.properties.networking_point_of_entry.haproxy.disable_http]'
 
-    security_config_form.save_form
+    networking_form.save_form
   end
 end
