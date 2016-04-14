@@ -411,10 +411,12 @@ form_types:
     - reference: .properties.system_database
       label: "Configure your system's databases"
       selector_property_inputs:
+      - reference: .properties.system_database.internal
+        label: Internal Databases - MySQL and Postgres (the Postgres DBs are not highly-available, but this selection is required if you want to keep your system data from a pre-1.6.0 Elastic Runtime that you upgraded)
       - reference: .properties.system_database.internal_mysql
         label: Internal Databases - MySQL
       - reference: .properties.system_database.external
-        label: External Databases (or example, if you want to use AWS RDS)
+        label: External Databases (for example, if you want to use AWS RDS)
         property_inputs:
           - reference: .properties.system_database.external.host
             label: Hostname DNS Name
