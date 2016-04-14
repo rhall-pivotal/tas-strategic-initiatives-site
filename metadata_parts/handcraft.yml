@@ -1627,7 +1627,6 @@ job_types:
           identity: admin
 
     manifest: |
-      mysql: (( .properties.system_database.selected_option.parsed_manifest(mysql_target_cc) ))
       databases:
         address: (( first_ip ))
         port: 2544
@@ -1723,7 +1722,6 @@ job_types:
           identity: root
 
     manifest: |
-      mysql: (( .properties.system_database.selected_option.parsed_manifest(mysql_target_uaa) ))
       databases:
         address: (( first_ip ))
         port: 2544
@@ -5247,12 +5245,7 @@ property_blueprints:
               ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
               username: (( .mysql.app_usage_credentials.identity ))
               password: (( .mysql.app_usage_credentials.password ))
-          - name: mysql_target_cc
-            manifest: |
-              db: ccdb
-          - name: mysql_target_uaa
-            manifest: |
-              db: uaa
+
       - name: internal_mysql
         select_value: internal_mysql
         named_manifests:
@@ -5281,26 +5274,6 @@ property_blueprints:
             databases:
             - tag: uaa
               name: uaa
-        - name: mysql_target_cc
-          manifest: |
-            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-            user: (( .mysql.mysql_admin_credentials.identity ))
-            password: (( .mysql.mysql_admin_credentials.password ))
-            database:
-              username:  (( .mysql.ccdb_credentials.identity ))
-              password: (( .mysql.ccdb_credentials.password ))
-            db: ccdb
-            migration_check_table: app_usage_events
-        - name: mysql_target_uaa
-          manifest: |
-            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-            user: (( .mysql.mysql_admin_credentials.identity ))
-            password: (( .mysql.mysql_admin_credentials.password ))
-            database:
-              username:  (( .mysql.uaadb_credentials.identity ))
-              password: (( .mysql.uaadb_credentials.password ))
-            db: uaa
-            migration_check_table: groups
         - name: notifications
           manifest: |
             url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
@@ -5349,24 +5322,6 @@ property_blueprints:
               databases:
               - tag: uaa
                 name: uaa
-          - name: mysql_target_cc
-            manifest: |
-              host: (( .properties.system_database.external.host.value ))
-              user: (( .properties.system_database.external.password.value ))
-              password: (( .properties.system_database.external.password.value ))
-              database:
-                username:  (( .properties.system_database.external.username.value ))
-                password: (( .properties.system_database.external.password.value ))
-              db: ccdb
-          - name: mysql_target_uaa
-            manifest: |
-              host: (( .properties.system_database.external.host.value ))
-              user: (( .properties.system_database.external.password.value ))
-              password: (( .properties.system_database.external.password.value ))
-              database:
-                username:  (( .properties.system_database.external.username.value ))
-                password: (( .properties.system_database.external.password.value ))
-              db: uaa
           - name: notifications
             manifest: |
               url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/notifications
