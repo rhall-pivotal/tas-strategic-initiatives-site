@@ -1755,6 +1755,102 @@ job_types:
         etcd:
           machines: (( .etcd_server.ips ))
 
+  - name: consoledb
+    label: Apps Manager Database
+    resource_label: Apps Manager Database (Postgres)
+    description: Apps Manager Database
+    templates:
+      - name: postgres
+        release: cf
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+    single_az_only: true
+
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      constraints:
+        max: 1
+      default: 0
+
+    property_blueprints:
+      - name: credentials
+        type: simple_credentials
+        default:
+          identity: root
+
+    manifest: |
+      databases:
+        address: (( first_ip ))
+        port: 2544
+        db_scheme: postgresql
+        roles:
+        - tag: admin
+          name: (( credentials.identity ))
+          password: (( credentials.password ))
+        databases:
+        - tag: console
+          name: console
+      networks:
+        services: default
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
+        deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
+
   - name: cloud_controller
     label: Cloud Controller
     resource_label: Cloud Controller
