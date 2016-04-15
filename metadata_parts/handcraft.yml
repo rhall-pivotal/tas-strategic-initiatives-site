@@ -3406,8 +3406,8 @@ job_types:
         release: cf
       - name: garden
         release: garden-linux
-      - name: rootfses
-        release: diego
+      - name: cflinuxfs2-rootfs-setup
+        release: cflinuxfs2-rootfs
       - name: metron_agent
         release: cf
 
@@ -3503,9 +3503,11 @@ job_types:
             server_key: (( .properties.bbs_server_cert.private_key_pem ))
             client_cert: (( .properties.bbs_client_cert.cert_pem ))
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
+          preloaded_rootfses:
+          - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
           zone: (( availability_zone ))
-        rootfs_cflinuxfs2:
-          trusted_certs: (( $ops_manager.trusted_certificates ))
+      cflinuxfs2-rootfs:
+        trusted_certs: (( $ops_manager.trusted_certificates ))
       consul:
         encrypt_keys:
         - (( .properties.consul_encrypt_key.value ))
