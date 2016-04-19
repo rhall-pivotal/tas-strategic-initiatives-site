@@ -925,7 +925,6 @@ job_types:
         port: 4222
         machines: (( .nats.ips ))
       etcd:
-        advertise_urls_dns_suffix: etcd.service.cf.internal
         machines: (( ips ))
         peer_require_ssl: false
         require_ssl: false
@@ -1008,6 +1007,7 @@ job_types:
 
     manifest: |
       etcd:
+        advertise_urls_dns_suffix: etcd.service.cf.internal
         machines: ['etcd.service.cf.internal']
         cluster: (( bosh_job_partition_stats ))
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -1032,6 +1032,7 @@ job_types:
           auctioneer:
             api_url: http://auctioneer.service.cf.internal:9016
           etcd:
+            advertise_urls_dns_suffix: etcd.service.cf.internal
             machines: ['etcd.service.cf.internal']
             ca_cert: (( $ops_manager.ca_certificate ))
             server_cert: (( .properties.etcd_server_cert.cert_pem ))
