@@ -207,9 +207,6 @@ form_types:
     label: Application Containers
     description: "You can enable microservice frameworks, private Docker registries, and other services that support your applications at a container-level."
     property_inputs:
-    - reference: .properties.allow_cross_container_traffic
-      label: "Microservices: Enable cross-container traffic"
-      description: Not recommended for untrusted application workloads. However, this is useful for microservice frameworks that require cross-container communication.
     - reference: .cloud_controller.enable_custom_buildpacks
       label: Enable Custom Buildpacks
       description: Enables the use of custom-built application runtime buildpacks.
@@ -3444,7 +3441,6 @@ job_types:
         etcd:
           machines: (( .etcd_server.ips ))
       garden:
-        allow_host_access: (( .properties.allow_cross_container_traffic.value ))
         persistent_image_list:
           - "/var/vcap/packages/rootfs_cflinuxfs2/rootfs"
         graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
@@ -4833,11 +4829,6 @@ property_blueprints:
     type: port
     configurable: true
     optional: true
-
-  - name: allow_cross_container_traffic
-    type: boolean
-    configurable: true
-    default: false
 
   - name: app_usage_service_database
     type: string
