@@ -408,10 +408,12 @@ form_types:
     - reference: .properties.system_database
       label: "Configure your system's databases"
       selector_property_inputs:
+      - reference: .properties.system_database.internal
+        label: Internal Databases - MySQL and Postgres (the Postgres DBs are not highly-available, but this selection is required if you want to keep your system data from a pre-1.6.0 Elastic Runtime that you upgraded)
       - reference: .properties.system_database.internal_mysql
         label: Internal Databases - MySQL
       - reference: .properties.system_database.external
-        label: External Databases (or example, if you want to use AWS RDS)
+        label: External Databases (for example, if you want to use AWS RDS)
         property_inputs:
           - reference: .properties.system_database.external.host
             label: Hostname DNS Name
@@ -983,6 +985,7 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
+    serial: true
     single_az_only: false
 
     instance_definition:
@@ -1002,6 +1005,7 @@ job_types:
 
     manifest: |
       etcd:
+        advertise_urls_dns_suffix: etcd.service.cf.internal
         machines: ['etcd.service.cf.internal']
         cluster: (( bosh_job_partition_stats ))
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -1026,6 +1030,7 @@ job_types:
           auctioneer:
             api_url: http://auctioneer.service.cf.internal:9016
           etcd:
+            advertise_urls_dns_suffix: etcd.service.cf.internal
             machines: ['etcd.service.cf.internal']
             ca_cert: (( $ops_manager.ca_certificate ))
             server_cert: (( .properties.etcd_server_cert.cert_pem ))
@@ -1314,7 +1319,6 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
-    serial: true
     single_az_only: false
 
     instance_definition:
@@ -1370,7 +1374,6 @@ job_types:
       - name: streaming-mysql-backup-tool
         release: mysql-backup
     max_in_flight: 1
-    serial: true
     single_az_only: false
     resource_definitions:
     - name: ram
@@ -1583,7 +1586,7 @@ job_types:
         type: integer
         label: Ephemeral Disk
         configurable: true
-        default: 4_096
+        default: 2_048
         constraints:
           min: 2_048
 
@@ -1591,7 +1594,7 @@ job_types:
         type: integer
         label: Persistent Disk
         configurable: true
-        default: 12_288
+        default: 2_048
         constraints:
           min: 2_048
 
@@ -1607,7 +1610,6 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
-    serial: true
     single_az_only: true
 
     instance_definition:
@@ -1625,10 +1627,9 @@ job_types:
           identity: admin
 
     manifest: |
-      mysql: (( .properties.system_database.selected_option.parsed_manifest(mysql_target_cc) ))
       databases:
         address: (( first_ip ))
-        port: 9999
+        port: 2544
         db_scheme: "postgres"
         roles:
         - tag: admin
@@ -1679,7 +1680,7 @@ job_types:
         type: integer
         label: Ephemeral Disk
         configurable: true
-        default: 4_096
+        default: 2_048
         constraints:
           min: 2_048
 
@@ -1687,7 +1688,7 @@ job_types:
         type: integer
         label: Persistent Disk
         configurable: true
-        default: 24_576
+        default: 8_192
         constraints:
           min: 8_192
 
@@ -1703,7 +1704,6 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
-    serial: true
     single_az_only: true
 
     instance_definition:
@@ -1722,10 +1722,9 @@ job_types:
           identity: root
 
     manifest: |
-      mysql: (( .properties.system_database.selected_option.parsed_manifest(mysql_target_uaa) ))
       databases:
         address: (( first_ip ))
-        port: 9999
+        port: 2544
         db_scheme: postgresql
         roles:
         - tag: admin
@@ -1734,6 +1733,102 @@ job_types:
         databases:
         - tag: uaa
           name: uaa
+      networks:
+        services: default
+      syslog_daemon_config:
+        address: (( .properties.syslog_host.value ))
+        port: (( .properties.syslog_port.value ))
+        transport: (( .properties.syslog_protocol.value ))
+      metron_agent:
+        zone: (( availability_zone ))
+        deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
+
+  - name: consoledb
+    label: Apps Manager Database
+    resource_label: Apps Manager Database (Postgres)
+    description: Apps Manager Database
+    templates:
+      - name: postgres
+        release: cf
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+    single_az_only: true
+
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      constraints:
+        max: 1
+      default: 0
+
+    property_blueprints:
+      - name: credentials
+        type: simple_credentials
+        default:
+          identity: root
+
+    manifest: |
+      databases:
+        address: (( first_ip ))
+        port: 2544
+        db_scheme: postgresql
+        roles:
+        - tag: admin
+          name: (( credentials.identity ))
+          password: (( credentials.password ))
+        databases:
+        - tag: console
+          name: console
       networks:
         services: default
       syslog_daemon_config:
@@ -3316,8 +3411,8 @@ job_types:
         release: cf
       - name: garden
         release: garden-linux
-      - name: rootfses
-        release: diego
+      - name: cflinuxfs2-rootfs-setup
+        release: cflinuxfs2-rootfs
       - name: metron_agent
         release: cf
 
@@ -3413,9 +3508,11 @@ job_types:
             server_key: (( .properties.bbs_server_cert.private_key_pem ))
             client_cert: (( .properties.bbs_client_cert.cert_pem ))
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
+          preloaded_rootfses:
+          - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
           zone: (( availability_zone ))
-        rootfs_cflinuxfs2:
-          trusted_certs: (( $ops_manager.trusted_certificates ))
+      cflinuxfs2-rootfs:
+        trusted_certs: (( $ops_manager.trusted_certificates ))
       consul:
         encrypt_keys:
         - (( .properties.consul_encrypt_key.value ))
@@ -5101,6 +5198,55 @@ property_blueprints:
     configurable: true
     default: internal_mysql
     option_templates:
+      - name: internal
+        select_value: internal
+        named_manifests:
+          - name: ccdb
+            manifest: |
+              address: (( .ccdb.first_ip ))
+              port: 2544
+              db_scheme: "postgres"
+              roles:
+              - tag: admin
+                name: (( .ccdb.credentials.identity ))
+                password: (( .ccdb.credentials.password ))
+              databases:
+              - tag: cc
+                name: ccdb
+                citext: true
+          - name: uaadb
+            manifest: |
+              address: (( .uaadb.first_ip ))
+              port: 2544
+              db_scheme: postgresql
+              roles:
+              - tag: admin
+                name: (( .uaadb.credentials.identity ))
+                password: (( .uaadb.credentials.password ))
+              databases:
+              - tag: uaa
+                name: uaa
+          - name: notifications
+            manifest: |
+              url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
+              max_open_connections: 10
+          - name: autoscaling
+            manifest: |
+              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
+          - name: console
+            manifest: |
+              ip: (( .consoledb.first_ip ))
+              username: (( .consoledb.credentials.identity ))
+              password: (( .consoledb.credentials.password ))
+              adapter: postgres
+          - name: push-app-usage-service
+            manifest: |
+              name: app_usage_service
+              port: 3306
+              ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
+              username: (( .mysql.app_usage_credentials.identity ))
+              password: (( .mysql.app_usage_credentials.password ))
+
       - name: internal_mysql
         select_value: internal_mysql
         named_manifests:
@@ -5129,26 +5275,6 @@ property_blueprints:
             databases:
             - tag: uaa
               name: uaa
-        - name: mysql_target_cc
-          manifest: |
-            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-            user: (( .mysql.mysql_admin_credentials.identity ))
-            password: (( .mysql.mysql_admin_credentials.password ))
-            database:
-              username:  (( .mysql.ccdb_credentials.identity ))
-              password: (( .mysql.ccdb_credentials.password ))
-            db: ccdb
-            migration_check_table: app_usage_events
-        - name: mysql_target_uaa
-          manifest: |
-            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-            user: (( .mysql.mysql_admin_credentials.identity ))
-            password: (( .mysql.mysql_admin_credentials.password ))
-            database:
-              username:  (( .mysql.uaadb_credentials.identity ))
-              password: (( .mysql.uaadb_credentials.password ))
-            db: uaa
-            migration_check_table: groups
         - name: notifications
           manifest: |
             url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
@@ -5197,24 +5323,6 @@ property_blueprints:
               databases:
               - tag: uaa
                 name: uaa
-          - name: mysql_target_cc
-            manifest: |
-              host: (( .properties.system_database.external.host.value ))
-              user: (( .properties.system_database.external.password.value ))
-              password: (( .properties.system_database.external.password.value ))
-              database:
-                username:  (( .properties.system_database.external.username.value ))
-                password: (( .properties.system_database.external.password.value ))
-              db: ccdb
-          - name: mysql_target_uaa
-            manifest: |
-              host: (( .properties.system_database.external.host.value ))
-              user: (( .properties.system_database.external.password.value ))
-              password: (( .properties.system_database.external.password.value ))
-              database:
-                username:  (( .properties.system_database.external.username.value ))
-                password: (( .properties.system_database.external.password.value ))
-              db: uaa
           - name: notifications
             manifest: |
               url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/notifications
