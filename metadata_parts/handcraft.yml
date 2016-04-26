@@ -577,6 +577,18 @@ form_types:
             label: "Link text"
           - reference: href
             label: "Url"
+      - reference: .push-apps-manager.global_wrapper_bg_color
+        label: Classification Header/Footer Background Color
+        description: Enter a hexadecimal color code like '#71ffda'
+      - reference: .push-apps-manager.global_wrapper_text_color
+        label: Classification Header/Footer Text Color
+        description: Enter a hexadecimal color code like '#71ffda'
+      - reference: .push-apps-manager.global_wrapper_header_content
+        label: Classification Header Content
+        description: 'Plain text or HTML Markup'
+      - reference: .push-apps-manager.global_wrapper_footer_content
+        label: Classification Footer Content
+        description: 'Plain text or HTML Markup'
 
   - name: apps_manager_config
     label: Apps Manager
@@ -584,8 +596,6 @@ form_types:
     property_inputs:
       - reference: .push-apps-manager.enable_internal_user_store
         label: Enable Internal User Store
-      - reference: .push-apps-manager.enable_non_admin_org_creation
-        label: Enable Non Admin Org Creation
       - reference: .push-apps-manager.enable_non_admin_role_management
         label: Enable Non Admin Role Management
       - reference: .push-apps-manager.product_name
@@ -3838,6 +3848,26 @@ job_types:
         configurable: true
         optional: true
 
+      - name: global_wrapper_bg_color
+        type: string
+        configurable: true
+        optional: true
+
+      - name: global_wrapper_text_color
+        type: string
+        configurable: true
+        optional: true
+
+      - name: global_wrapper_header_content
+        type: text
+        configurable: true
+        optional: true
+
+      - name: global_wrapper_footer_content
+        type: text
+        configurable: true
+        optional: true
+
       - name: logo
         type: string
         configurable: true
@@ -3894,11 +3924,6 @@ job_types:
         configurable: true
         default: false
 
-      - name: enable_non_admin_org_creation
-        type: boolean
-        configurable: true
-        default: false
-
       - name: enable_non_admin_role_management
         type: boolean
         configurable: true
@@ -3927,7 +3952,6 @@ job_types:
         bundle_without: test development hosted_only
         apps_manager_version: (( .properties.product_version.value ))
         enable_internal_user_store: (( enable_internal_user_store.value ))
-        enable_non_admin_org_creation: (( enable_non_admin_org_creation.value ))
         enable_non_admin_role_management: (( enable_non_admin_role_management.value ))
         generic_white_label_config_json:
           company_name: (( company_name.value || "Pivotal" ))
@@ -3936,6 +3960,10 @@ job_types:
           square_logo: data:image/png;base64,(( square_logo.value || "iVBORw0KGgoAAAANSUhEUgAAAGwAAABsCAYAAACPZlfNAAAAAXNSR0IArs4c6QAABYtJREFUeAHtnVtsFFUYx7/d3ruWotUKVIkNaCw02YgJGBRTMd4CokUejD4QH4gxQcIDeHnBmPjkhSghUYLGe3ywPtAHNCo0QgkWwi2tXG2V1kIpLXTbLt1tS9dzlmzSJssZhv32zDk7/2km2znn7Pd9+/vt2Z2dmW0D9Obat4gCiwiLBQQSLflSViAQeN6Can1fYiJBFPQ9BcsAQBiEWUbAsnIxwyDMMgKWlYsZBmGWEbCsXMwwCLOMgGXlYoZBmGUELCsXMwzCLCNgWbmYYRBmGQHLysUMgzDLCFhWLmYYhFlGwLJyMcMgzDIClpWLGQZhlhGwrFzMMAizjIBl5WKGQZhlBCwrV1xbb96y59V1VFJQmLawQNrWa43x8XEaHo1fW+Oj1H8lSqf6eulEbw+dvNhLvcNDinvb0WWksAdm3UWhwiJ2gt2RAWo80UY7jrdSU8cZGrt6lT1HtgMaKSxbD7qqfDq99tAjyTUSG6FP9v1BH+3dTUPxeLZSssf17U5HeXEJbXr8aerY+A6tf7iOxFeu2OFmI6BvhaVgVoRCtHl5PTW8/AoV5xekmo299b2wlJn6+WFqWrOWKkpDqSYjbyFskpZFs++hL1e9NKnFvF+t3OmQOwzdkcgUmnnBABXm5Ys1j8qKisVadFPvS8tramn1goX09eEDU+KbsmGlsMbjbbT6x++UDOVORGXoFppXOYMerLqbVsyrpcWzqykYdH5R+fjZlcnd/8sjV5Q5vOh0rt6LqhhyJsQ3uC+ID8ry89aHYtf90W1bKLzlffr19EnH6HIP8oXasOM4LwbkrLB0MP+6cJ6e+eoz+vTP5nTdU9peDC+Ysm3Khq+ESehy5r3e2ECHu7uUDuqq59Id4iXVtMV3wqSACSHt3V2/KF3I97qayjuVY7zo9KUwCfq3M6coNjamZD6zrFzZ70Wnb4XFxseoK3JZyXzWtGnKfi86fStMwu6LRpXMZ5RBmBKQ7k75XqZa8gLmPZ/Nq0hFkLnvttJSZUT5Oc60xbfC5CGs6lsrlD56hgaV/V50+lbYkuo5VFygPp3SMwxhXjwp0+bcsGRp2vZU48TEBB09153aNObWlzNMHo1/6r4apYTmsx10MTqsHONFp5VH6zMBtWbhYtq6YpVjiJ/ajjmO8WKAL4QFxamWZffPT1678dicex05D4jTKj8cO+Q4zosBOSXs7bonktci5ovjgPIUye3ieo3wzKrk+TC5faPLGz83On6ovtFY3ONySth7Ty67qbPMk6Hu+edv+vzg/slNRv3uy52O6xk40HWW6r/94nrdRrTn1AzLhOju9tP03DfbKTo6mkmYrN/X98L6xQHgTb/vpG0t+5LnybJOPMMEvhXWOXCJvj9yiD7Yu4sGRkYyxKjv7r4RJi+Na+05Rwf/66SG1qO0v/NffZQZM+WUsI07d1BC/MTE144GYzHxJYcYDYq1vb/f8WQlI9OshsopYZubm7IKy4Tg2K03wYKLGiDMBSwThkKYCRZc1ABhLmCZMBTCTLDgogYIcwHLhKEQZoIFFzVAmAtYJgyFMBMsuKgBwlzAMmEohJlgwUUNEOYClglDIcwECy5qgDAXsEwYCmEmWHBRA4S5gGXCUAgzwYKLGow84yyvuyhR/GW19kt9Lh5ibg01UtjS7VtzizLjo8FLIiNMHaEgTAdlxhwQxghTRygI00GZMQeEMcLUEQrCdFBmzAFhjDB1hIIwHZQZc0AYI0wdoSBMB2XGHBDGCFNHKAjTQZkxB4QxwtQRCsJ0UGbMAWGMMHWEgjAdlBlzQBgjTB2hIEwHZcYcEMYIU0coCNNBmTEHhDHC1BEKwnRQZswBYYwwdYSCMB2UGXNAGCNMHaEgTAdlxhziUu1Ei8M/+WFMh1CZEUi0/A+j7hNSB5Wo2wAAAABJRU5ErkJggg==" ))
           footer_text: (( footer_text.value || "©2016 Pivotal Software, Inc. All Rights Reserved." ))
           footer_links: (( footer_links.value ))
+          global_wrapper_bg_color: (( global_wrapper_bg_color.value ))
+          global_wrapper_text_color: (( global_wrapper_text_color.value ))
+          global_wrapper_header_content: (( global_wrapper_header_content.value ))
+          global_wrapper_footer_content: (( global_wrapper_footer_content.value ))
         apps_manager_config_json:
           product_name: (( product_name.value ))
           marketplace_name: (( marketplace_name.value ))
