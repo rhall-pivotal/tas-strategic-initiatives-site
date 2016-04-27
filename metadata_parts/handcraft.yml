@@ -120,7 +120,7 @@ post_deploy_errands:
 form_types:
   - name: domains
     label: Domains
-    description: Elastic Runtime gives each deployed application its own hostname in the app domain, and each system component its own hostname on the system domain. Ensure that you have a wildcard DNS record configured for both domains.
+    description: Elastic Runtime hosts applications at subdomains under its apps domain and assigns system components to subdomains under its system domain. You need to configure a wildcard DNS for both the apps domain and system domain. The two domains can be the same.
     verifiers:
       - name: Verifiers::WildcardDomainVerifier
         properties:
@@ -134,18 +134,18 @@ form_types:
         description: "This domain is for system-level PCF components, such as Apps Manager, service brokers, etc. You must set up a wildcard DNS record for this domain that points to your entry point load balancer or HAProxy."
       - reference: .cloud_controller.apps_domain
         label: Apps Domain
-        description: This is the default apps domain that pushed apps will use for their hostnames. Use the Cloud Foundry command line interface to add or delete domains. This also requires a wildcard DNS record.
+        description: Default parent domain that pushed apps use for their hostnames. This domain also requires a wildcard DNS record. Use the Cloud Foundry command line interface (cf CLI) to add or delete subdomains assigned to individual apps.
 
   - name: networking
     label: Networking
-    description: This section allows you to employ various security and routing services for your platform. It is usually preferable to use your own load balancer instead of an HAProxy instance as your point-of-entry to the platform.
+    description: Configure security and routing services for your platform. It is usually preferable to use your own load balancer instead of an HAProxy instance as your point-of-entry to the platform.
     property_inputs:
       - reference: .router.static_ips
         label: Router IPs
-        description: "If you are opting not to use HAProxy, you should enter static IP address(es) for the Router(s), which must be in the subnet that you defined in the Ops Manager network configuration. If you have a load balancer, you should then configure your load balancer to point to these IPs. If deploying this to AWS with an ELB, then instead of defining any IP addresses here, you can add the name of your AWS ELB in the Resource Config section in the ELB Name column for Router."
+        description: "If you are not using HAProxy, enter static IP address(es) for the Router(s), which must be within the subnet CIDR block  that you defined in the Ops Manager network configuration. If you have a load balancer, configure it to point to these IPs. If deploying PCF to AWS with an ELB, do not enter IP addresses here. Instead, add the name of your ELB in the Resource Config section, in the ELB Name column for Router."
       - reference: .ha_proxy.static_ips
         label: HAProxy IPs
-        description: "If you are opting to use HAProxy instead of your own load-balancer, you should enter the IP address(es) for HAProxy. This IP must be in your subnet."
+        description: "If you are using HAProxy, enter its IP address(es). The addresses must be within your subnet CIDR block. Point your DNS to this IP address unless you are using your own load balancer."
       - reference: .properties.networking_point_of_entry
         label: Configure the point-of-entry to this environment
         selector_property_inputs:
@@ -159,13 +159,13 @@ form_types:
                 label: Router SSL Ciphers
                 description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
           - reference: .properties.networking_point_of_entry.external_non_ssl
-            label: "Select this option if you have an external load balancer, but it will NOT forward any encrypted traffic to the Elastic Runtime Router(s). You may also select this option for a non-production environment where load balancing is not required, by configuring a single Router with TLS disabled as your point-of-entry to the Elastic Runtime platform."
+            label: "Select this option if you have an external load balancer, but it will not forward any encrypted traffic to the Elastic Runtime Router(s). You may also select this option for a non-production environment where load balancing is not required, by configuring a single Router with TLS disabled as your point-of-entry to the Elastic Runtime platform."
           - reference: .properties.networking_point_of_entry.haproxy
             label: "Select this option if you want to use HAProxy as your first point-of-entry instead of your own load balancer. Note that HAProxy does not provide IP failover, so it is not a robust load balancer."
             property_inputs:
               - reference: .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate
                 label: SSL Certificate and Private Key
-                description: "This certificate and key are used to terminate SSL traffic at HAProxy. You can use a certificate that has multiple domains attributed to it, i.e. if you have separate system and application domains. You can also generate a self-signed certificate here with your wildcard system domain."
+                description: "This certificate and key are used to terminate SSL traffic at HAProxy. The certificate can have multiple domains attributed to it, for example if you have separate system and application domains. You can also generate a self-signed certificate here with your wildcard system domain."
               - reference: .properties.networking_point_of_entry.haproxy.disable_http
                 label: Disable HTTP traffic to HAProxy
                 description: "If checked, HAProxy will only allow HTTPS traffic."
@@ -177,7 +177,7 @@ form_types:
         description: You can disable SSL verification if you are using your own self-signed certificates that are not from a trusted CA.
       - reference: .router.disable_insecure_cookies
         label: Disable insecure cookies on the Router
-        description: If checked, this turns on the secure flag for cookies generated by Router.
+        description: If checked, this turns on the secure flag for cookies generated by router.
       - reference: .properties.route_services
         label: Choose whether to enable route services. Route services enable you to proxy requests to your app over TLS to arbitrary URLs before hitting your app.
         selector_property_inputs:
@@ -186,36 +186,36 @@ form_types:
             property_inputs:
               - reference: .properties.route_services.enable.ignore_ssl_cert_verification
                 label: Ignore SSL certificate verification on route services
-                description: "When disabled, the routing tier will reject requests for routes bound to route services if the SSL certificate provided by the route service is not signed by a trusted CA."
+                description: "When disabled, the routing tier rejects requests for routes bound to route services if the SSL certificate provided by the route service is not signed by a trusted CA."
           - reference: .properties.route_services.disable
             label: Disable route services
       - reference: .properties.logger_endpoint_port
         label: Loggregator Port
         description: "Default is 443. Enter a new value to override the default, for instance if port 443 on your load balancer is used for other traffic."
       - reference: .diego_cell.garden_network_pool
-        label: Applications Subnet (you should not need to change this unless you need to avoid address collision with a third-party service on the same subnet)
+        label: Applications Subnet (Only change this if you need to avoid address collision with a third-party service on the same subnet.)
         description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
       - reference: .diego_cell.garden_network_mtu
         label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
-        description: 1454 bytes is fine for most cases, but sometimes less is required, such as for networks that use GRE tunnels.
+        description: The default 1454 bytes is fine for most cases, but you might need less, such as for networks that use GRE tunnels.
       - reference: .router.request_timeout_in_seconds
         label: Router Timeout to Backends (in seconds)
-        description: "Timeout for connections from Router (and HAProxy, if you use it) to applications and system components. This may be increased to accommodate larger uploads over connections with high latency."
+        description: "Timeout for connections from Router (and HAProxy, if you use it) to applications and system components. Increase this to accommodate larger uploads over connections with high latency."
 
 
   - name: app_containers
     label: Application Containers
-    description: "You can enable microservice frameworks, private Docker registries, and other services that support your applications at a container-level."
+    description: "Enable microservice frameworks, private Docker registries, and other services that support your applications at a container level."
     property_inputs:
     - reference: .cloud_controller.enable_custom_buildpacks
       label: Enable Custom Buildpacks
-      description: Enables the use of custom-built application runtime buildpacks.
+      description: Enable custom-built application runtime buildpacks.
     - reference: .cloud_controller.allow_app_ssh_access
       label: Allow SSH access to app containers
-      description: "If you are using a load balancer instead of HAProxy, ensure that your load balancer has port 2222 open to enable SSH traffic. To have SSH access to a given app, a Cloud Foundry user must also be granted the SpaceDeveloper privilege for that app's space, which can be granted to the user in Apps Manager or via the Cloud Foundry CLI."
+      description: "If you are using a load balancer instead of HAProxy, to enable SSH traffic ensure that your load balancer has port 2222 open. PCF users can give SSH access to an app only if an admin assigns them a Space Developer role in the space that the app runs in. Admins can grant this role in Apps Manager or via the cf CLI."
     - reference: .diego_cell.insecure_docker_registry_list
       label: Private Docker Insecure Registry Whitelist
-      description: SSL validation will be ignored for private Docker image registries secured with self-signed certificates at these locations. Individual entries may be either an IP:Port tuple or a Hostname:Port tuple, multiple entries must be in a comma-delimited sequence.
+      description: If you use private Docker image registries that are secured with self-signed certificates, enter them here as a comma-delimited list. List each registry as either an IP:Port tuple or a Hostname:Port tuple.
     - reference: .properties.garden_disk_cleanup
       label: Docker Images Disk-Cleanup Scheduling on Cell VMs
       selector_property_inputs:
@@ -231,30 +231,30 @@ form_types:
             description: Disk cleanup will initiate whenever a Cell has exceeded this much disk-space for filesystem layers.
   - name: application_dev_controls
     label: Application Developer Controls
-    description: Configure restrictions and default settings for applications pushed to Cloud Foundry.
+    description: Configure restrictions and default settings for applications pushed to Elastic Runtime.
     property_inputs:
       - reference: .cloud_controller.max_file_size
         label: Maximum File Upload Size (MB)
         description: Maximum size of an application upload
       - reference: .cloud_controller.default_app_memory
         label: Default App Memory (MB)
-        description: This is the default memory allocated to a newly pushed app when no value is specified at cf-push.
+        description: Memory allocated to a newly-pushed app when no value is specified at cf push.
       - reference: .cloud_controller.default_quota_memory_limit_mb
-        label: Default App Memory Quota per Org (only applies the first time you install Elastic Runtime for this environment)
-        description:  "Memory limit for all apps in an org using the default quota. (Only applies for the first install of Elastic Runtime. After initial installation, use the CLI to manage quotas.)"
+        label: Default App Memory Quota per Org
+        description:  "Default memory limit for all apps in an org. This default only applies for the first installation of Elastic Runtime. After initial installation, use the CLI to manage quotas."
       - reference: .cloud_controller.max_disk_quota_app
         label: Maximum Disk Quota per App (MB)
-        description: This is the maximum disk allocated per app. In the event of a system upgrade or outage that causes a rolling deploy, larger apps may not succeed to re-deploy if there is insufficient disk capacity.
+        description: Maximum disk allocated per app. In the event of a system upgrade or outage that causes a rolling deploy, larger apps may not succeed to re-deploy if there is insufficient disk capacity.
       - reference: .cloud_controller.default_disk_quota_app
         label: Default Disk Quota per App (MB)
-        description: This is the default disk allocated per app. In the event of a system upgrade or outage that causes a rolling deploy, larger apps may not succeed to re-deploy if there is insufficient disk capacity.
+        description: Default disk allocated per app. In the event of a system upgrade or outage that causes a rolling deploy, larger apps may not re-deploy successfully if there is insufficient disk capacity.
       - reference: .cloud_controller.default_quota_max_number_services
-        label: Default Service Instances Quota per Org (only applies the first time you install Elastic Runtime for this environment)
-        description: Maximum allowed number of service instances in an org using the default quota (this only applies for the first install of Elastic Runtime, otherwise use the CLI to manage quotas)
+        label: Default Service Instances Quota per Org
+        description: Default maximum number of service instances in an org. This default only applies for the first installation of Elastic Runtime, otherwise use the CLI to manage quotas
 
   - name: uaa
     label: Authentication and Enterprise SSO
-    description: Configure your user store access, which can be an interal user store (managed by Cloud Foundry's UAA) or an external user store (LDAP or SAML). You can also adjust the lifetimes of authentication tokens.
+    description: Configure your user store access, which can be an internal user store (managed by Cloud Foundry's UAA) or an external user store (LDAP or SAML). You can also adjust the lifetimes of authentication tokens.
     verifiers:
       - name: Verifiers::LDAPBindVerifier
         properties:
@@ -288,14 +288,14 @@ form_types:
                 description: Password will expire after this many months, input 0 if you want passwords to never expire.
               - reference: .properties.uaa.internal.password_max_retry
                 label: Maximum Password Entry Attempts Allowed
-                description: Maximum allowed password entry attempts (within a 5 min timespan) before the account is locked
+                description: Maximum allowed password entry attempts (within a five minute timespan) before the account is locked
           - reference: .properties.uaa.saml
             label: SAML Identity Provider
             description:
             property_inputs:
               - reference: .properties.uaa.saml.sso_name
                 label: Provider Name
-                description: "Name of Identity Provider. Allowed characters are alphanumeric, plus `_`, and `-`. Do NOT change this name once deployed."
+                description: "Name of Identity Provider. Allowed characters are alphanumeric, plus `_`, and `-`. Do not change this name once deployed."
               - reference: .properties.uaa.saml.display_name
                 label: Display Name
                 description: "Shows as a link on the login page."
@@ -338,10 +338,10 @@ form_types:
                 description: 'Required if mapping LDAP groups to Admin role. Replace `{0}` with user DN.'
               - reference: .properties.uaa.ldap.server_ssl_cert
                 label: Server SSL Cert
-                description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate.'
+                description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate. If using a CA certificate, this must be the root certificate from your CA.'
               - reference: .properties.uaa.ldap.server_ssl_cert_alias
                 label: Server SSL Cert AltName
-                description: "Required only for ldaps:// + using a Self Signed Certificate."
+                description: "Required only for ldaps:// and using a Self Signed Certificate."
               - reference: .properties.uaa.ldap.mail_attribute_name
                 label: Email Attribute
                 description: "The name of the attribute that contains the user's email address."
@@ -360,7 +360,7 @@ form_types:
 
   - name: system_database
     label: Databases
-    description: This section determines where you would like to place your Elastic Runtime databases, for components like Cloud Controller and UAA.
+    description: Place the databases used by Elastic Runtime components like Cloud Controller and UAA.
     verifiers:
       - name: Verifiers::MysqlDatabaseVerifier
         properties:
@@ -406,14 +406,14 @@ form_types:
           database: .properties.uaa_database
     property_inputs:
     - reference: .properties.system_database
-      label: "Configure your system's databases"
+      label: "Choose the location of your system databases"
       selector_property_inputs:
       - reference: .properties.system_database.internal
         label: Internal Databases - MySQL and Postgres (the Postgres DBs are not highly-available, but this selection is required if you want to keep your system data from a pre-1.6.0 Elastic Runtime that you upgraded)
       - reference: .properties.system_database.internal_mysql
-        label: Internal Databases - MySQL
+        label: Internal Databases - MySQL (preferred for complete high-availability)
       - reference: .properties.system_database.external
-        label: External Databases (for example, if you want to use AWS RDS)
+        label: External Databases (preferred if, for example, you use AWS RDS)
         property_inputs:
           - reference: .properties.system_database.external.host
             label: Hostname DNS Name
@@ -426,7 +426,7 @@ form_types:
 
   - name: mysql_config
     label: Internal MySQL
-    description:  You only need to configure this section if you are using the Internal MySQL databases provided by Elastic Runtime.
+    description:  Only configure this section if you selected Internal Databases - MySQL in the Databases section above.
     markdown: |
       ## A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936.
       ## The automated backups functionality works with any S3-compatible file store that can receive your backup files.
@@ -436,35 +436,35 @@ form_types:
         description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer."
       - reference: .mysql_proxy.service_hostname
         label: MySQL Service Hostname
-        description: "In order to remove the proxy as a SPOF, a load balancer should be configured to route application connections to multiple proxy instances. Enter a IP or hostname that resolves to this load balancer; components which use the MySQL service will be configured to use this hostname to reach their databases. If this field is blank, components will be configured with the IP of the first proxy instance."
+        description: "To remove a MySQL proxy as a single point of failure, configure your load balancer to route application requests to multiple proxy instances. Then enter the IP or hostname of the load balancer here, so components reach their MySQL databases through the load balancer. If this field is blank, components use the IP of the first MySQL proxy instance."
       - reference: .properties.mysql_backups
         label: Automated Backups Configuration
         selector_property_inputs:
         - reference: .properties.mysql_backups.disable
           label: |
-            Disable automated MySQL backups
+            Disable Automated MySQL Backups (With this option, set Resource Config > Backup Prepare Node > Instances to 0.)
           description: Disable mysql_backups
         - reference: .properties.mysql_backups.enable
-          label: "Enable automated MySQL backups  (Must also set: Resource Config > Backup Prepare Node > Instances to 1)"
-          description: Enable mysql_backups
+          label: "Enable Automated MySQL Backups (With this option, set Resource Config > Backup Prepare Node > Instances to 1.)"
+          description: Enable MySQL Backups
           property_inputs:
           - reference: .properties.mysql_backups.enable.bucket_name
             label: S3 Bucket Name
-            description: Do not include 's3://' prefix, trailing '/', or underscores. The bucket will be created automatically if it does not already exist.
+            description: Do not include 's3://' prefix, trailing '/', or underscores. The bucket is created automatically if it does not already exist.
           - reference: .properties.mysql_backups.enable.bucket_path
             label: Bucket Path
-            description: Specify a folder within the bucket which will hold the mysql_backups. Do not include a trailing slash.
+            description: Specify a folder within the bucket to hold the MySQL backups. Do not include a trailing slash.
           - reference: .properties.mysql_backups.enable.access_key_id
             label: AWS Access Key ID
           - reference: .properties.mysql_backups.enable.secret_access_key
             label: AWS Secret Access Key
           - reference: .properties.mysql_backups.enable.cron_schedule
-            label: Cron Schedule (See http://godoc.org/github.com/robfig/cron)
-            description: Specify when mysql backups are to occur. Schedule uses the machine's local time zone.
+            label: Cron Schedule
+            description: Schedule MySQL backups as a cron expression (see http://godoc.org/github.com/robfig/cron). Schedule uses the machine local time zone.
 
   - name: system_blobstore
     label: File Storage
-    description: "Configure where you would like to store Cloud Controller's files, either internally or on another S3-compatible service."
+    description: "Configure the location of file storage for Elastic Runtime. Only do this during the initial installation of Elastic Runtime. Do not change anything in this section when upgrading. For an existing installation, you must perform a manual data migration to change this configuration safely. Consult Pivotal Cloud Foundry documentation for details."
     verifiers:
       - name: Verifiers::BlobstoreVerifier
         properties:
@@ -506,12 +506,12 @@ form_types:
         label: Internal
         description:
       - reference: .properties.system_blobstore.external
-        label: External S3-Compatible Filestore
+        label: External S3-Compatible File Store
         description:
         property_inputs:
           - reference: .properties.system_blobstore.external.endpoint
             label: URL Endpoint
-            description: URL endpoint of your S3-compatible blobstore
+            description: URL endpoint of your S3-compatible file store
           - reference: .properties.system_blobstore.external.access_key
             label: Access Key
           - reference: .properties.system_blobstore.external.secret_key
@@ -522,33 +522,33 @@ form_types:
             label: Region
           - reference: .properties.system_blobstore.external.buildpacks_bucket
             label: Buildpacks Bucket Name
-            description: Bucket where the app buildpacks will be located.
+            description: S3 bucket for storing app buildpacks.
           - reference: .properties.system_blobstore.external.droplets_bucket
             label: Droplets Bucket Name
-            description: Bucket where the app droplets will be located. You can re-use the same bucket as above, however it is recommended to use different buckets if this is a new installation of Elastic Runtime.
+            description: S3 bucket for storing app droplets. Pivotal recommends that you use a unique bucket name for droplets, but you can also use the same name as above.
           - reference: .properties.system_blobstore.external.packages_bucket
             label: Packages Bucket Name
-            description: Bucket where the app packages will be located. You can re-use the same bucket as above, however it is recommended to use different buckets if this is a new installation of Elastic Runtime.
+            description: S3 bucket for storing app packages. Pivotal recommends that you use a unique bucket name for packages, but you can also use the same name as above.
           - reference: .properties.system_blobstore.external.resources_bucket
             label: Resources Bucket Name
-            description: Bucket where the app resources will be located. You can re-use the same bucket as above, however it is recommended to use different buckets if this is a new installation of Elastic Runtime.
+            description: S3 bucket for storing app resources. Pivotal recommends that you use a unique bucket name for app resources, but you can also use the same name as above.
 
   - name: syslog_aggregator
     label: System Logging
-    description: Configure system logging. Leave the External Syslog fields blank unless you wish to use an external syslogd server.
+    description: Configure system logging. Complete the External Syslog fields only if using an external syslogd server.
     property_inputs:
       - reference: .properties.syslog_host
         label: External Syslog Aggregator Hostname
-        description: The aggregator must be reachable from the Elastic Runtime network, accept TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd). This can also be configured with an IP address.
+        description: The aggregator must be reachable from the Elastic Runtime network, accept TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd). You can also configure this with an IP address.
       - reference: .properties.syslog_port
         label: External Syslog Aggregator Port
         description: The typical syslogd port is 514. Ensure syslogd is listening on external interfaces.
       - reference: .properties.syslog_protocol
         label: External Syslog Network Protocol
-        description: Transport to be used when forwarding logs
+        description: Select the transport protocol for forwarding logs.
       - reference: .doppler.message_drain_buffer_size
         label: "Syslog Drain Buffer Size (# of messages)"
-        description: "Sets the buffer size on Doppler before dropping log messages. Note that a larger buffer size has the potential to overload the system."
+        description: "The number of log messages the buffer holds before dropping messages. A larger buffer size might overload the system."
 
   - name: generic_white_label_config
     label: Custom Branding
@@ -562,21 +562,21 @@ form_types:
         description: Enter a hexadecimal color code like '#71ffda'
       - reference: .push-apps-manager.logo
         label: Main Logo (PNGs only)
-        description: "Enter a base64-encoded PNG image string, but leave out the mime-type (data:image/png;base64,) string, only enter the base64 encoded data."
+        description: "Enter a base64-encoded PNG image string, but leave out the mime-type (data:image/png;base64,) string. Only enter the base64 encoded data."
       - reference: .push-apps-manager.square_logo
         label: Square Logo/Favicon (PNGs only)
-        description: "Enter a base64-encoded PNG image string, but leave out the mime-type (data:image/png;base64,) string, only enter the base64 encoded data."
+        description: "Enter a base64-encoded PNG image string, but leave out the mime-type (data:image/png;base64,) string. Only enter the base64 encoded data."
       - reference: .push-apps-manager.footer_text
         label: Footer Text
         description: "Defaults to 'Pivotal Software Inc. All rights reserved.'"
       - reference: .push-apps-manager.footer_links
         label: Footer Links
-        description: "You may configure up to 3 links in the Apps Manager footer"
+        description: "You may configure up to three links in the Apps Manager footer"
         property_inputs:
           - reference: name
             label: "Link text"
           - reference: href
-            label: "Url"
+            label: "URL"
       - reference: .push-apps-manager.global_wrapper_bg_color
         label: Classification Header/Footer Background Color
         description: Enter a hexadecimal color code like '#71ffda'
@@ -611,24 +611,24 @@ form_types:
           - reference: name
             label: "Link text"
           - reference: href
-            label: "Url"
+            label: "URL"
 
   - name: smtp_config
     label: Email Notifications
-    description: Configure Simple Mail Transfer Protocol for the Notifications application to send email notifications about your deployment. This application is deployed as an errand in Elastic Runtime. If you don't need this service, you may leave this section blank and disable the Notifications and Notifications UI errands.
+    description: Configure Simple Mail Transfer Protocol for the Notifications application to send email notifications about your deployment. This application is deployed as an errand in Elastic Runtime. If you do not need this service, leave this section blank and disable the Notifications and Notifications UI errands.
     property_inputs:
       - reference: .properties.smtp_from
         label: From Email
         description: The email address from which emails are sent.
       - reference: .properties.smtp_address
         label: Address of SMTP Server
-        description: The SMTP address of the server that will send emails.
+        description: The SMTP address of the server that sends emails.
       - reference: .properties.smtp_port
         label: Port of SMTP Server
-        description: The port of the SMTP server that will send emails.
+        description: The port of the SMTP server that sends emails.
       - reference: .properties.smtp_credentials
         label: SMTP Server Credentials
-        description: The credentials for the SMTP server that will send emails.
+        description: The credentials for the SMTP server that sends emails.
       - reference: .properties.smtp_enable_starttls_auto
         label: SMTP Enable Automatic STARTTLS
       - reference: .properties.smtp_auth_mechanism
@@ -638,7 +638,7 @@ form_types:
 
   - name: cloud_controller
     label: Restore CCDB Encryption Key
-    description: The Cloud Controller's database has an encryption key that should be re-instated whenever restoring this database from a backup.
+    description: Enter the encryption key for restoring the Cloud Controller database from a backup.
     property_inputs:
       - reference: .cloud_controller.encrypt_key
         label: Cloud Controller DB Encryption Key
@@ -646,29 +646,29 @@ form_types:
 
   - name: smoke_tests
     label: Smoke Tests
-    description: If you eventually decide to delete your Elastic Runtime deployment's shared domain(s), you will need to specify a dedicated Cloud Foundry organization and space where the smoke tests can be run.
+    description: Specify a Cloud Foundry organization and space where smoke tests can run if in the future you delete your Elastic Runtime deployment domains.
     property_inputs:
       - reference: .properties.smoke_tests
         label: Choose whether to create a new org and space on demand for smoke tests
         selector_property_inputs:
         - reference: .properties.smoke_tests.on_demand
-          label: On-demand org and space (this org and space are deleted after smoke tests finish running)
+          label: Temporary org and space (This org and space are deleted after smoke tests finish.)
         - reference: .properties.smoke_tests.specified
-          label: Specified org and space (the org and space must have a domain available for routing)
+          label: Specified org and space (The org and space must have a domain available for routing.)
           property_inputs:
             - reference: .properties.smoke_tests.specified.org_name
               label: Organization
-              description: The Elastic Runtime organization name to use when running tests
+              description: The Elastic Runtime organization to use when running tests
             - reference: .properties.smoke_tests.specified.space_name
               label: Space
-              description: The Elastic Runtime space name to use when running tests
+              description: The Elastic Runtime space to use when running tests
             - reference: .properties.smoke_tests.specified.apps_domain
               label: Domain
-              description: Must be a domain available to the Organization
+              description: Must be accessible to the organization
 
   - name: experimental_features
     label: Experimental Features
-    description: The virtual machines called Diego Cells are where the hosted applications actually run. With these fields you can specify how much memory or disk you would like to set as the Cells' available capacity, so that you can overcommit these resources against your configuration of the Cell VM's size in the Resource Config section.
+    description: Diego Cells are virtual machines that host applications. Specify how much memory or disk you want to set as the cells available capacity. You can overcommit these resources with values that exceed the Diego Cell VM sizes configured in the Resource Config section.
     property_inputs:
       - reference: .diego_cell.executor_memory_capacity
         label: Cell Memory Capacity (MB)
