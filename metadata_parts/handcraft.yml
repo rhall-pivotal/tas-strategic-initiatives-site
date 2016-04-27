@@ -675,6 +675,8 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -769,6 +771,8 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -853,6 +857,8 @@ job_types:
       - name: etcd_metrics_server
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -946,6 +952,8 @@ job_types:
       - name: consul_agent
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -1081,6 +1089,8 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1161,6 +1171,8 @@ job_types:
       - name: gorouter
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -1283,6 +1295,8 @@ job_types:
     templates:
       - name: proxy
         release: cf-mysql
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1373,6 +1387,8 @@ job_types:
         release: cf-mysql
       - name: streaming-mysql-backup-tool
         release: mysql-backup
+      - name: statsd-injector
+        release: cf
     max_in_flight: 1
     single_az_only: false
     resource_definitions:
@@ -1496,6 +1512,8 @@ job_types:
       release: mysql-backup
     - name: service-backup
       release: service-backup
+    - name: statsd-injector
+      release: cf
     max_in_flight: 1
     single_az_only: true
     resource_definitions:
@@ -1571,6 +1589,8 @@ job_types:
       - name: postgres
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -1665,6 +1685,8 @@ job_types:
       - name: postgres
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -1761,6 +1783,8 @@ job_types:
       - name: postgres
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -2196,6 +2220,8 @@ job_types:
         release: cf
       - name: consul_agent
         release: cf
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -2308,6 +2334,8 @@ job_types:
       - name: cloud_controller_clock
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -2460,6 +2488,8 @@ job_types:
       - name: consul_agent
         release: cf
       - name: nfs_mounter # NOTE: NFS Mounter must be last until #94152506 is resolved
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -2615,6 +2645,8 @@ job_types:
       - name: collector
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     requires_product_versions:
@@ -3209,6 +3241,8 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -3416,6 +3450,8 @@ job_types:
       - name: cflinuxfs2-rootfs-setup
         release: cflinuxfs2-rootfs
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -3668,6 +3704,8 @@ job_types:
       - name: metron_agent
         release: cf
       - name: route_registrar
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
