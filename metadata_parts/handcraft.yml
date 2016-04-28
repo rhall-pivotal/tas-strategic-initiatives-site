@@ -949,12 +949,12 @@ job_types:
     resource_label: Diego BBS
     description: An etcd cluster node for Diego
     templates:
+      - name: consul_agent
+        release: cf
       - name: etcd
         release: etcd
       - name: bbs
         release: diego
-      - name: consul_agent
-        release: cf
       - name: metron_agent
         release: cf
 
