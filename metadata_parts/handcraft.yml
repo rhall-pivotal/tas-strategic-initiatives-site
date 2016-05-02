@@ -685,6 +685,8 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -779,6 +781,8 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -863,6 +867,8 @@ job_types:
       - name: etcd_metrics_server
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -957,6 +963,8 @@ job_types:
         release: diego
       - name: metron_agent
         release: cf
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -992,8 +1000,8 @@ job_types:
           min: 1
           power_of_two: true
 
-    static_ip: 1
-    dynamic_ip: 0
+    static_ip: 0
+    dynamic_ip: 1
     max_in_flight: 1
     serial: true
     single_az_only: false
@@ -1091,6 +1099,8 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1171,6 +1181,8 @@ job_types:
       - name: gorouter
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -1293,6 +1305,8 @@ job_types:
     templates:
       - name: proxy
         release: cf-mysql
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -1383,6 +1397,8 @@ job_types:
         release: cf-mysql
       - name: streaming-mysql-backup-tool
         release: mysql-backup
+      - name: statsd-injector
+        release: cf
     max_in_flight: 1
     single_az_only: false
     resource_definitions:
@@ -1506,6 +1522,8 @@ job_types:
       release: mysql-backup
     - name: service-backup
       release: service-backup
+    - name: statsd-injector
+      release: cf
     max_in_flight: 1
     single_az_only: true
     resource_definitions:
@@ -1581,6 +1599,8 @@ job_types:
       - name: postgres
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -1675,6 +1695,8 @@ job_types:
       - name: postgres
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -1771,6 +1793,8 @@ job_types:
       - name: postgres
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -1889,6 +1913,8 @@ job_types:
       - name: route_registrar
         release: cf
       - name: nfs_mounter
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -2130,6 +2156,8 @@ job_types:
         uaa_resource_id: cloud_controller,cloud_controller_service_permissions
         min_cli_version: 6.7.0
         min_recommended_cli_version: 6.11.2
+        security_event_logging:
+          enabled: true
 
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
@@ -2203,6 +2231,8 @@ job_types:
       - name: metron_agent
         release: cf
       - name: consul_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -2316,6 +2346,8 @@ job_types:
       - name: cloud_controller_clock
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -2468,6 +2500,8 @@ job_types:
       - name: consul_agent
         release: cf
       - name: nfs_mounter # NOTE: NFS Mounter must be last until #94152506 is resolved
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -2623,6 +2657,8 @@ job_types:
       - name: collector
         release: cf
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     requires_product_versions:
@@ -3217,6 +3253,8 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
+      - name: statsd-injector
+        release: cf
 
     resource_definitions:
       - name: ram
@@ -3424,6 +3462,8 @@ job_types:
       - name: cflinuxfs2-rootfs-setup
         release: cflinuxfs2-rootfs
       - name: metron_agent
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -3676,6 +3716,8 @@ job_types:
       - name: metron_agent
         release: cf
       - name: route_registrar
+        release: cf
+      - name: statsd-injector
         release: cf
 
     resource_definitions:
