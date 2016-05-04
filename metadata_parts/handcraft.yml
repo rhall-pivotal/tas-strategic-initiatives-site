@@ -537,6 +537,9 @@ form_types:
     label: System Logging
     description: Configure system logging. Complete the External Syslog fields only if using an external syslogd server.
     property_inputs:
+      - reference: .cloud_controller.security_event_logging_enabled
+        label: Enable Cloud Controller security event logging
+        description: When enabled, all requests to Cloud Controller will be captured in the syslog
       - reference: .properties.syslog_host
         label: External Syslog Aggregator Hostname
         description: The aggregator must be reachable from the Elastic Runtime network, accept TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd). You can also configure this with an IP address.
@@ -2059,6 +2062,11 @@ job_types:
       - name: internal_api_user_credentials
         type: simple_credentials
 
+      - name: security_event_logging_enabled
+        type: boolean
+        configurable: true
+        default: true
+
     manifest: |
       app_ssh:
         host_key_fingerprint: (( .diego_brain.ssh_host_key.public_key_fingerprint ))
@@ -2157,7 +2165,7 @@ job_types:
         min_cli_version: 6.7.0
         min_recommended_cli_version: 6.11.2
         security_event_logging:
-          enabled: true
+          enabled: (( security_event_logging_enabled.value ))
 
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
