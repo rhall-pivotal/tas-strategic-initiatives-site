@@ -3647,6 +3647,7 @@ job_types:
           memory_capacity_mb: (( executor_memory_capacity.value ))
           post_setup_hook: sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"
           post_setup_user: "root"
+          ca_certs_for_downloads: (( $ops_manager.trusted_certificates ))
         rep:
           bbs:
             api_location: bbs.service.cf.internal:8889
