@@ -1375,11 +1375,12 @@ job_types:
 
     manifest: |
       network_name: default
-      external_host: "p-mysql.internal.(( .cloud_controller.system_domain.value ))"
-      proxy:
-        api_password: (( dashboard_credentials.password ))
-        api_username: (( dashboard_credentials.identity ))
-        proxy_ips: (( .mysql_proxy.ips ))
+      cf_mysql:
+        external_host: "p-mysql.internal.(( .cloud_controller.system_domain.value ))"
+        proxy:
+          api_password: (( dashboard_credentials.password ))
+          api_username: (( dashboard_credentials.identity ))
+          proxy_ips: (( .mysql_proxy.ips ))
       cluster_ips: (( .mysql.ips ))
       nats:
         user: (( .nats.credentials.identity ))
@@ -1474,37 +1475,39 @@ job_types:
       configurable: false
       default: 1200
     manifest: |
-      roadmin_enabled: false
-      admin_password: (( mysql_admin_credentials.password ))
-      cluster_ips: (( .mysql.ips ))
-      # allow up to 20 minutes for large SST's to succeed,
-      # this is temporary until BOSH pre-start is implemented
-      database_startup_timeout: (( .mysql.database_startup_timeout.value ))
-      innodb_buffer_pool_size: 2147483648
-      max_connections: 1500
-      network_name: default
-      bootstrap_endpoint:
-        username: (( mysql_bootstrap_credentials.identity ))
-        password: (( mysql_bootstrap_credentials.password ))
-      seeded_databases:
-        - name: ccdb
-          username: (( ccdb_credentials.identity ))
-          password: (( ccdb_credentials.password ))
-        - name: uaa
-          username: (( uaadb_credentials.identity ))
-          password: (( uaadb_credentials.password ))
-        - name: app_usage_service
-          username: (( app_usage_credentials.identity ))
-          password: (( app_usage_credentials.password ))
-        - name: notifications
-          username: (( notifications_credentials.identity ))
-          password: (( notifications_credentials.password ))
-        - name: autoscale
-          username: (( autoscale_credentials.identity ))
-          password: (( autoscale_credentials.password ))
-        - name: console
-          username: (( consoledb_credentials.identity ))
-          password: (( consoledb_credentials.password ))
+      cf_mysql:
+        mysql:
+          roadmin_enabled: false
+          admin_password: (( mysql_admin_credentials.password ))
+          cluster_ips: (( .mysql.ips ))
+          # allow up to 20 minutes for large SST's to succeed,
+          # this is temporary until BOSH pre-start is implemented
+          database_startup_timeout: (( .mysql.database_startup_timeout.value ))
+          innodb_buffer_pool_size: 2147483648
+          max_connections: 1500
+          network_name: default
+          bootstrap_endpoint:
+            username: (( mysql_bootstrap_credentials.identity ))
+            password: (( mysql_bootstrap_credentials.password ))
+          seeded_databases:
+            - name: ccdb
+              username: (( ccdb_credentials.identity ))
+              password: (( ccdb_credentials.password ))
+            - name: uaa
+              username: (( uaadb_credentials.identity ))
+              password: (( uaadb_credentials.password ))
+            - name: app_usage_service
+              username: (( app_usage_credentials.identity ))
+              password: (( app_usage_credentials.password ))
+            - name: notifications
+              username: (( notifications_credentials.identity ))
+              password: (( notifications_credentials.password ))
+            - name: autoscale
+              username: (( autoscale_credentials.identity ))
+              password: (( autoscale_credentials.password ))
+            - name: console
+              username: (( consoledb_credentials.identity ))
+              password: (( consoledb_credentials.password ))
       syslog_aggregator:
         address: (( ..cf.properties.syslog_host.value ))
         port: (( ..cf.properties.syslog_port.value ))
