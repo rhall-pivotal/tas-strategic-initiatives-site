@@ -1374,7 +1374,6 @@ job_types:
           identity: admin
 
     manifest: |
-      network_name: default
       cf_mysql:
         external_host: "p-mysql.internal.(( .cloud_controller.system_domain.value ))"
         proxy:
@@ -1476,7 +1475,6 @@ job_types:
       configurable: false
       default: 1200
     manifest: |
-      network_name: default
       cf_mysql:
         mysql:
           admin_password: (( mysql_admin_credentials.password ))
