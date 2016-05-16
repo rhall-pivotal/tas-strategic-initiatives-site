@@ -1381,7 +1381,8 @@ job_types:
           api_password: (( dashboard_credentials.password ))
           api_username: (( dashboard_credentials.identity ))
           proxy_ips: (( .mysql_proxy.ips ))
-      cluster_ips: (( .mysql.ips ))
+        mysql:
+          cluster_ips: (( .mysql.ips ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
@@ -1475,17 +1476,15 @@ job_types:
       configurable: false
       default: 1200
     manifest: |
+      network_name: default
       cf_mysql:
         mysql:
-          roadmin_enabled: false
           admin_password: (( mysql_admin_credentials.password ))
           cluster_ips: (( .mysql.ips ))
           # allow up to 20 minutes for large SST's to succeed,
           # this is temporary until BOSH pre-start is implemented
           database_startup_timeout: (( .mysql.database_startup_timeout.value ))
           innodb_buffer_pool_size: 2147483648
-          max_connections: 1500
-          network_name: default
           bootstrap_endpoint:
             username: (( mysql_bootstrap_credentials.identity ))
             password: (( mysql_bootstrap_credentials.password ))
@@ -1512,10 +1511,8 @@ job_types:
         address: (( ..cf.properties.syslog_host.value ))
         port: (( ..cf.properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
-      mysql-backup:
-        command: innobackupex --user=(( mysql_admin_credentials.identity )) --password=(( mysql_admin_credentials.password )) --stream=tar tmp/
-        port: 8081
-        credentials:
+      cf-mysql-backup:
+        endpoint_credentials:
           username: (( mysql_backup_server_credentials.identity ))
           password: (( mysql_backup_server_credentials.password ))
 
