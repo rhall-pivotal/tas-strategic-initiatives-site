@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'vara', '0.22.0', require: false
 
-gem 'opsmgr', '0.35.1'
+gem 'opsmgr', '0.35.2'
 gem 'recursive-open-struct', '0.5.0'
 gem 'mysql2'
 gem 'net-ssh-gateway'
