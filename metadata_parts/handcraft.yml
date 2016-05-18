@@ -183,10 +183,6 @@ form_types:
         selector_property_inputs:
           - reference: .properties.route_services.enable
             label: Enable route services
-            property_inputs:
-              - reference: .properties.route_services.enable.ignore_ssl_cert_verification
-                label: Ignore SSL certificate verification on route services
-                description: "When disabled, the routing tier rejects requests for routes bound to route services if the SSL certificate provided by the route service is not signed by a trusted CA."
           - reference: .properties.route_services.disable
             label: Disable route services
       - reference: .properties.logger_endpoint_port
@@ -1275,7 +1271,7 @@ job_types:
         enable_ssl: "(( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.value_present? ? 'true' : 'false' ))"
         ssl_cert: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
         ssl_key: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
-        ssl_skip_validation: (( .properties.route_services.enable.ignore_ssl_cert_verification.value ))
+        ssl_skip_validation: (( .ha_proxy.skip_cert_verify ))
 
       nats:
         user: (( .nats.credentials.identity ))
