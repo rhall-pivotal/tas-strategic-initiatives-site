@@ -1271,7 +1271,7 @@ job_types:
         enable_ssl: "(( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.value_present? ? 'true' : 'false' ))"
         ssl_cert: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
         ssl_key: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
-        ssl_skip_validation: (( .ha_proxy.skip_cert_verify ))
+        ssl_skip_validation: (( .ha_proxy.skip_cert_verify.value ))
 
       nats:
         user: (( .nats.credentials.identity ))
