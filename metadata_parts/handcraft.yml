@@ -1025,7 +1025,7 @@ job_types:
         advertise_urls_dns_suffix: etcd.service.cf.internal
         machines: ['etcd.service.cf.internal']
         cluster:
-          instances: (( .etcd_server.instances ))
+        - instances: (( .etcd_server.instances ))
           name: "etcd_server"
         ca_cert: (( $ops_manager.ca_certificate ))
         server_cert: (( .properties.etcd_server_cert.cert_pem ))
