@@ -2309,9 +2309,7 @@ job_types:
         ssl_ciphers: (( .properties.networking_point_of_entry.haproxy.ssl_ciphers.value ))
         ssl_pem: (( .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate.cert_and_private_key_pems ))
       router:
-        servers:
-          z1: (( .router.ips ))
-          z2: []
+        servers: (( .router.ips ))
       cc:
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
       syslog_daemon_config:
