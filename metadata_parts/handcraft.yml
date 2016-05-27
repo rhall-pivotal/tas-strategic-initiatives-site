@@ -4691,7 +4691,7 @@ job_types:
   - name: acceptance-tests
     label: Run CF Acceptance Tests
     resource_label: Run CF Acceptance Tests
-    description: Runs CF Acceptance Tests against your Elastic Runtime installation
+    description: Runs CF Acceptance Tests against your Elastic Runtime installation. This errand is deprecated and will be removed in a future release.
     templates:
       - name: acceptance-tests
         release: cf
@@ -4762,10 +4762,10 @@ job_types:
         include_route_services: true
         include_sso: true
 
-  - name: acceptance-tests-internetless
-    label: Run CF Acceptance Tests without internet
-    resource_label: Run CF Acceptance Tests without internet
-    description: Runs CF Acceptance Tests against your Elastic Runtime installation without internet
+  - name: releng-only-acceptance-tests
+    label: Release Engineering Only Acceptance Tests
+    resource_label: Run Release Engineering Acceptance Tests
+    description: This is used by Release Engineering and should not be relied on. This could be removed at any moment without prior notice.
     templates:
       - name: acceptance-tests
         release: cf
@@ -4784,9 +4784,9 @@ job_types:
         type: integer
         label: Ephemeral Disk
         configurable: true
-        default: 1_024
+        default: 2_048
         constraints:
-          min: 1_024
+          min: 2_048
 
       - name: persistent_disk
         type: integer
@@ -4825,13 +4825,16 @@ job_types:
         admin_password: (( .uaa.admin_credentials.password ))
         include_logging: true
         include_internet_dependent: false
-        include_operator: true
-        include_services: true
+        include_operator: false
+        include_services: false
         include_security_groups: false
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         skip_regex: lucid64
         skip_diego_unsupported_tests: true
         java_buildpack_name: java_buildpack_offline
+        include_diego_ssh: false
+        include_route_services: false
+        include_sso: false
 
   - name: bootstrap
     label: Bootstrap
