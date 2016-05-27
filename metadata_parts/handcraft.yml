@@ -1557,11 +1557,10 @@ job_types:
     resource_label: Run Release Engineering TCP Routing Acceptance Tests
     description: This is used by Release Engineering and should not be relied on. This could be removed at any moment without prior notice.
     templates:
-      - name: acceptance-tests
+      - name: acceptance_tests
         release: routing
       - name: consul_agent
         release: cf
-
     errand: true
 
     resource_definitions:
