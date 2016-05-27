@@ -76,6 +76,16 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
     end
   end
 
+  it 'acknowledges the security text box' do
+    if can_acknowledge_security?(elastic_runtime_settings['name'])
+      security_form =
+        current_ops_manager.product(elastic_runtime_settings['name']).product_form('application_security_groups')
+      security_form.open_form
+      security_form.property('.properties.security_acknowledgement').set('I agree')
+      security_form.save_form
+    end
+  end
+
   private
 
   def configure_vsphere_ha_proxy(elastic_runtime_settings)
@@ -180,5 +190,11 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
 
     az_selector = "show-#{product}-azs-and-network-assignment-action"
     has_link? az_selector
+  end
+
+  def can_acknowledge_security?(product)
+    visit '/'
+    click_on "show-#{product}-configure-action"
+    has_link? "show-application_security_groups-action"
   end
 end
