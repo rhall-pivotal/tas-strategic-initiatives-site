@@ -1263,7 +1263,7 @@ job_types:
       networks:
         apps: default
       router:
-        enable_routing_api: false
+        enable_routing_api: true
         secure_cookies: (( .router.disable_insecure_cookies.value ))
         status:
           user: router_status
@@ -1274,6 +1274,9 @@ job_types:
         ssl_cert: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
         ssl_key: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
         ssl_skip_validation: (( .ha_proxy.skip_cert_verify.value ))
+				haproxy:
+          health_check_port: 80
+          request_timeout_in_seconds: 300
 
       nats:
         user: (( .nats.credentials.identity ))
@@ -1294,10 +1297,325 @@ job_types:
           machines: (( .etcd_server.ips ))
       uaa:
         ssl:
-          port: -1
+          port: 8443
         clients:
           gorouter:
             secret: (( .uaa.gorouter_client_credentials.password ))
+
+  - name: tcp-router
+    label: TCP Router
+    resource_label: TCP Router
+    description: TCP Routers route TCP traffic.
+    templates:
+      - name: consul_agent
+        release: cf
+      - name: haproxy
+        release: routing
+      - name: router_configurer
+        release: routing
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: false
+        default: 0
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 1024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+    serial: true
+    single_az_only: false
+
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+
+    property_blueprints:
+      - name: static_ips
+        type: ip_ranges
+        configurable: true
+        optional: true
+
+    manifest: |
+      router:
+        router_configurer:
+          debug_addr: null
+          log_level: info
+          routing_api_auth_disabled: false
+          skip_oauth_tls_verification: true
+          tcp_config_file: /var/vcap/jobs/haproxy/config/haproxy.conf
+          tcp_config_file_template: /var/vcap/jobs/haproxy/config/haproxy.conf.template
+          tcp_router_secret: tcp-router-secret
+          tcp_stats_collection_interval: 1m
+          tcp_stats_unix_socket: /var/vcap/jobs/haproxy/config/haproxy.sock
+          uaa_port: 8080
+          uaa_ssl_port: 8443
+
+  - name: tcp-emitter
+    label: TCP Emitter
+    resource_label: TCP Emitter
+    description: TCP Emitter, emits things
+    templates:
+      - name: consul_agent
+        release: cf
+      - name: tcp_emitter
+        release: routing
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: false
+        default: 0
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 1024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+    serial: true
+    single_az_only: false
+
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+
+    property_blueprints:
+      - name: static_ips
+        type: ip_ranges
+        configurable: true
+        optional: true
+
+    manifest: |
+      router:
+        tcp_emitter:
+          bbs:
+            api_location: bbs.service.cf.internal:8889
+            ca_cert: (( $ops_manager.ca_certificate ))
+            client_cert: (( .properties.bbs_client_cert.cert_pem ))
+            client_key: (( .properties.bbs_client_cert.private_key_pem ))
+            require_ssl: true
+          debug_addr: null
+          lock_retry_interval: null
+          lock_ttl: null
+          log_level: debug
+          route_ttl: null
+          routing_api_auth_disabled: false
+          routing_api_port: 3000
+          session_name: null
+          skip_oauth_tls_verification: true
+          sync_interval: null
+          tcp_emitter_secret: tcp-emitter-secret
+          uaa_port: 8080
+          uaa_ssl_port: 8443
+
+  - name: routing-api
+    label: TCP Routing API
+    resource_label: TCP Routing API
+    description: TCP Routing API allows you to interact with the TCP router.
+    templates:
+      - name: consul_agent
+        release: cf
+      - name: routing-api
+        release: routing
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: false
+        default: 0
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 1024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+    serial: true
+    single_az_only: false
+
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+
+    property_blueprints:
+      - name: static_ips
+        type: ip_ranges
+        configurable: true
+        optional: true
+
+    manifest: |
+      routing-api:
+        auth_disabled: false
+        etcd_machines: (( .etcd_server.ips ))
+        log_level: null
+        max_ttl: null
+        port: 3000
+        router_groups:
+          - name: default-tcp
+            reservable_ports: 1024-65535
+            type: tcp
+        skip_oauth_tls_verification: true
+        system_domain: (( .cloud_controller.system_domain.value ))
+        uaa_ssl_port: 8443
+
+  - name: releng-only-tcp-routing-acceptance-test
+    label: Release Engineering Only TCP Routing Acceptance Tests
+    resource_label: Run Release Engineering TCP Routing Acceptance Tests
+    description: This is used by Release Engineering and should not be relied on. This could be removed at any moment without prior notice.
+    templates:
+      - name: acceptance-tests
+        release: routing
+      - name: consul_agent
+        release: cf
+
+    errand: true
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: true
+        default: 2_048
+        constraints:
+          min: 2_048
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 0
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 0
+    dynamic_ip: 1
+    max_in_flight: 1
+    single_az_only: false
+
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: false
+      default: 1
+
+    property_blueprints:
+
+    manifest: |
+      acceptance_tests:
+        addresses: (( .tcp-router.ips ))
+        api: "https://api.(( .cloud_controller.system_domain.value ))"
+        apps_domain: (( .cloud_controller.apps_domain.value ))
+        admin_user: (( .uaa.admin_credentials.identity ))
+        admin_password: (( .uaa.admin_credentials.password ))
+        skip_oauth_tls_verification: true
+        skip_ssl_validation: true
+        tcp_emitter_secret: tcp-emitter-secret
+        uaa_port: 8443
+        use_http: true
 
   - name: mysql_proxy
     label: MySQL Proxy
@@ -2227,6 +2545,7 @@ job_types:
         etcd:
           machines: (( .etcd_server.ips ))
       router:
+        enable_routing_api: true
         route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
 
   - name: ha_proxy
@@ -3016,7 +3335,7 @@ job_types:
             expirePasswordInMonths: (( .properties.uaa.internal.password_expires_after_months.value ))
         require_https: true
         ssl:
-          port: -1
+          port: 8443
         ldap:
           profile_type: search-and-bind
           url: (( .properties.uaa.ldap.url.value ))
