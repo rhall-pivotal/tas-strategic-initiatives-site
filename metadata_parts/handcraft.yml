@@ -1392,6 +1392,9 @@ job_types:
       metron_agent:
         zone: meow
         deployment: cf
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: tcp-emitter
     label: TCP Emitter
@@ -1489,6 +1492,9 @@ job_types:
       metron_agent:
         zone: meow
         deployment: cf
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: routing-api
     label: TCP Routing API
@@ -1578,6 +1584,9 @@ job_types:
       metron_agent:
         zone: meow
         deployment: cf
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
 
   - name: releng-only-tcp-routing-acceptance-test
     label: Release Engineering Only TCP Routing Acceptance Tests
