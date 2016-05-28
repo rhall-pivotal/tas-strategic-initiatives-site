@@ -1383,6 +1383,15 @@ job_types:
           tcp_stats_unix_socket: /var/vcap/jobs/haproxy/config/haproxy.sock
           uaa_port: 8080
           uaa_ssl_port: 8443
+      consul:
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
+      metron_agent:
+        zone: meow
+        deployment: cf
 
   - name: tcp-emitter
     label: TCP Emitter
@@ -1471,6 +1480,15 @@ job_types:
           tcp_emitter_secret: tcp-emitter-secret
           uaa_port: 8080
           uaa_ssl_port: 8443
+      consul:
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
+      metron_agent:
+        zone: meow
+        deployment: cf
 
   - name: routing-api
     label: TCP Routing API
@@ -1551,6 +1569,15 @@ job_types:
         skip_oauth_tls_verification: true
         system_domain: (( .cloud_controller.system_domain.value ))
         uaa_ssl_port: 8443
+      consul:
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
+      metron_agent:
+        zone: meow
+        deployment: cf
 
   - name: releng-only-tcp-routing-acceptance-test
     label: Release Engineering Only TCP Routing Acceptance Tests
