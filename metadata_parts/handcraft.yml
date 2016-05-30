@@ -1392,6 +1392,8 @@ job_types:
       metron_agent:
         zone: meow
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -1492,6 +1494,8 @@ job_types:
       metron_agent:
         zone: meow
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
@@ -1584,6 +1588,8 @@ job_types:
       metron_agent:
         zone: meow
         deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
