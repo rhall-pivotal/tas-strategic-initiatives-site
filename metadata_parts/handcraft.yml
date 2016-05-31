@@ -1298,6 +1298,8 @@ job_types:
       uaa:
         ssl:
           port: 8443
+        sslCertificate: (( .uaa.ssl_key_credentials.cert_pem ))
+        sslPrivateKey: (( .uaa.ssl_key_credentials.private_key_pem ))
         clients:
           gorouter:
             secret: (( .uaa.gorouter_client_credentials.password ))
@@ -3322,6 +3324,9 @@ job_types:
         configurable: true
         default: 1209600
 
+      - name: ssl_key_credentials
+        type: rsa_cert_credentials
+
     manifest: |
       consul:
         encrypt_keys:
@@ -3383,6 +3388,8 @@ job_types:
         require_https: true
         ssl:
           port: 8443
+        sslCertificate: (( ssl_key_credentials.cert_pem ))
+        sslPrivateKey: (( ssl_key_credentials.private_key_pem ))
         ldap:
           profile_type: search-and-bind
           url: (( .properties.uaa.ldap.url.value ))
