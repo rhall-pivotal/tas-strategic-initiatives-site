@@ -1391,6 +1391,10 @@ job_types:
         agent_key: (( .properties.consul_agent_cert.private_key_pem ))
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
+        agent:
+          domain: cf.internal
+          servers:
+            lan: (( .consul_server.ips ))
       metron_agent:
         zone: meow
         deployment: cf
@@ -1493,6 +1497,10 @@ job_types:
         agent_key: (( .properties.consul_agent_cert.private_key_pem ))
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
+        agent:
+          domain: cf.internal
+          servers:
+            lan: (( .consul_server.ips ))
       metron_agent:
         zone: meow
         deployment: cf
@@ -1587,6 +1595,10 @@ job_types:
         agent_key: (( .properties.consul_agent_cert.private_key_pem ))
         server_cert: (( .properties.consul_server_cert.cert_pem ))
         server_key: (( .properties.consul_server_cert.private_key_pem ))
+        agent:
+          domain: cf.internal
+          servers:
+            lan: (( .consul_server.ips ))
       metron_agent:
         zone: meow
         deployment: cf
