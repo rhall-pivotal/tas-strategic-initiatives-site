@@ -3024,6 +3024,10 @@ job_types:
               - https://apps.(( .cloud_controller.system_domain.value ))/
             url: "/login"
       uaa:
+        zones:
+          internal:
+            hostnames:
+            - uaa.service.cf.internal
         authentication:
           policy:
             lockoutAfterFailures: (( .properties.uaa.internal.password_max_retry.value ))
