@@ -2941,6 +2941,16 @@ job_types:
         default:
           identity: apps_metrics_processing
 
+      - name: tcp_router_credentials
+        type: simple_credentials
+        default:
+          identity: tcp_router
+
+      - name: tcp_emitter_credentials
+        type: simple_credentials
+        default:
+          identity: tcp_emitter
+
       - name: service_provider_key_credentials
         type: rsa_cert_credentials
 
@@ -3200,6 +3210,22 @@ job_types:
             authorized-grant-types: authorization_code,client_credentials,refresh_token
             authorities: oauth.login,doppler.firehose,cloud_controller.admin
             scope: openid,oauth.approvals,doppler.firehose,cloud_controller.admin
+            access-token-validity: 1209600
+          tcp_router:
+            id: (( tcp_router_credentials.identity ))
+            secret: (( tcp_router_credentials.password ))
+            override: true
+            authorized-grant-types: client_credentials,refresh_token
+            authorities: routing.routes.read,routing.router_groups.read
+            scope: routing.routes.read,routing.router_groups.read
+            access-token-validity: 1209600
+          tcp_emitter:
+            id: (( tcp_emitter_credentials.identity ))
+            secret: (( tcp_emitter_credentials.password ))
+            override: true
+            authorized-grant-types: client_credentials,refresh_token
+            authorities: routing.routes.write,routing.routes.read,routing.router_groups.read
+            scope: routing.routes.write,routing.routes.read,routing.router_groups.read
             access-token-validity: 1209600
         scim:
           user:
@@ -3922,7 +3948,7 @@ job_types:
           skip_oauth_tls_verification: true
           tcp_config_file: /var/vcap/jobs/haproxy/config/haproxy.conf
           tcp_config_file_template: /var/vcap/jobs/haproxy/config/haproxy.conf.template
-          tcp_router_secret: tcp-router-secret
+          tcp_router_secret: (( .uaa.tcp_router_credentials.password ))
           tcp_stats_collection_interval: 1m
           tcp_stats_unix_socket: /var/vcap/jobs/haproxy/config/haproxy.sock
           uaa_port: 8080
@@ -4032,7 +4058,7 @@ job_types:
           session_name: null
           skip_oauth_tls_verification: true
           sync_interval: null
-          tcp_emitter_secret: tcp-emitter-secret
+          tcp_emitter_secret: (( .uaa.tcp_emitter_credentials.password ))
           uaa_port: 8080
           uaa_ssl_port: 8443
       consul:
