@@ -53,7 +53,8 @@ module Ert
     def hosted_zone_id
       resp = route53.client.list_hosted_zones
       resp[:hosted_zones].find do |zone|
-        zone[:name].include? name
+        (name+".").include? zone[:name]
+        zone
       end[:id]
     end
 

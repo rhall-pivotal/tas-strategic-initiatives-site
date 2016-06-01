@@ -27,14 +27,14 @@ describe Ert::DnsUpdater do
       hosted_zones: [
         {
           id: hosted_zone_id,
-          name: 'some.hosted.name',
+          name: 'some.hosted.name.',
           caller_reference: 'some-caller-reference',
           config: { private_zone: false },
           resource_record_set_count: 4
         },
         {
           id: 'another-hosted-zone',
-          name: 'another.hosted.name',
+          name: 'another.hosted.name.',
           caller_reference: 'another-caller-reference',
           config: { private_zone: false },
           resource_record_set_count: 4
