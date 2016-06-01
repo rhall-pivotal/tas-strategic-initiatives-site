@@ -39,6 +39,7 @@ namespace :ert do
 
       dns_updater = Ert::DnsUpdater.new(settings: environment.settings)
       dns_updater.update_record
+      sleep(60)
     else
       logger.info "Not updating ELB's DNS because environment is: #{iaas}"
     end

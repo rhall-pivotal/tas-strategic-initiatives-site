@@ -6,9 +6,10 @@ require 'aws/route_53'
 describe Ert::DnsUpdater do
   let(:settings) do
     {
-      'name' => 'some',
+      'name' => 'some.hosted.name',
       'vm_shepherd' => {
         'env_config' => {
+          'stack_name' => 'some',
           'aws_access_key' => 'some-access-key',
           'aws_secret_key' => 'some-secret-key'
         }

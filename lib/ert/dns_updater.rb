@@ -5,11 +5,11 @@ using OpsManagerUiDrivers::BackportRefinements
 module Ert
   class DnsUpdater
     def initialize(settings:)
-      self.name = settings.dig('name')
+      env_config = settings.dig('vm_shepherd', 'env_config')
+      self.name = env_config.dig('stack_name')
       self.elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'elb_dns_name')
       self.ssh_elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'ssh_elb_dns_name')
 
-      env_config = settings.dig('vm_shepherd', 'env_config')
       self.route53 = AWS::Route53.new(
         access_key_id: env_config.dig('aws_access_key'),
         secret_access_key: env_config.dig('aws_secret_key')
@@ -53,8 +53,7 @@ module Ert
     def hosted_zone_id
       resp = route53.client.list_hosted_zones
       resp[:hosted_zones].find do |zone|
-        (name+".").include? zone[:name]
-        zone
+        zone[:name].include? name
       end[:id]
     end
 
