@@ -3204,6 +3204,7 @@ job_types:
             override: true
             authorized-grant-types: authorization_code,refresh_token
             redirect-uri: "https://apm.(( .cloud_controller.system_domain.value )),https://apm.(( .cloud_controller.system_domain.value ))/,https://apm.(( .cloud_controller.system_domain.value ))/*,https://metrics.(( .cloud_controller.system_domain.value )),https://metrics.(( .cloud_controller.system_domain.value ))/,https://metrics.(( .cloud_controller.system_domain.value ))/*"
+            authorities: uaa.resource
             scope: cloud_controller.admin,cloud_controller.read,metrics.read
             access-token-validity: 900
             refresh-token-validity: 2628000
