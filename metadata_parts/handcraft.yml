@@ -5263,17 +5263,22 @@ job_types:
         admin_user: (( .uaa.admin_credentials.identity ))
         admin_password: (( .uaa.admin_credentials.password ))
         include_logging: true
+        include_diego_ssh: false
+        include_route_services: false
+        include_sso: false
+        include_backend: false
+        include_v3: false
+        include_tasks: false
+        include_diego_docker: false
         include_internet_dependent: false
         include_operator: false
         include_services: false
         include_security_groups: false
+        include_backend_compatibility: false
+        skip_diego_unsupported_tests: true
         skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         skip_regex: lucid64
-        skip_diego_unsupported_tests: true
         java_buildpack_name: java_buildpack_offline
-        include_diego_ssh: false
-        include_route_services: false
-        include_sso: false
 
   - name: bootstrap
     label: Bootstrap
