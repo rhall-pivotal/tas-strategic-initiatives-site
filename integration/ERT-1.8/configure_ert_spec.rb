@@ -13,20 +13,6 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
     )
   end
 
-  # This is needed until ops manager fixes automatic sizing bug: https://www.pivotaltracker.com/story/show/115004337
-  it 'configures diego cell instance type' do
-    instance_type = case env_settings['iaas_type']
-                    when 'aws'
-                      'm3.2xlarge'
-                    when 'openstack'
-                      'm1.xlarge'
-                    when 'vsphere', 'vcloud'
-                      '2xlarge.cpu'
-                    end
-    resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
-    resource_config.set_vm_type_for_job('diego_cell', instance_type)
-  end
-
   it 'configures the availability zone' do
     if can_configure_availability_zones?('cf')
       unless any_availability_zones_have_been_selected_for_balancing?('cf')
