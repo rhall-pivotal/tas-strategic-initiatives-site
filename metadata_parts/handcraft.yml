@@ -1172,7 +1172,7 @@ job_types:
           domains:
           - blobstore.service.cf.internal
     manifest: |
-      domain: (( .cloud_controller.system_domain.value ))
+      system_domain: (( .cloud_controller.system_domain.value ))
       nfs_server:
         allow_from_entries: (( .cloud_controller.subnet_cidrs ))
       syslog_daemon_config:
