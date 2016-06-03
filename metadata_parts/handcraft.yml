@@ -3327,6 +3327,8 @@ job_types:
     resource_label: Diego Brain
     description: Diego Brain
     templates:
+      - name: consul_agent
+        release: cf
       - name: auctioneer
         release: diego
       - name: cc_uploader
@@ -3344,8 +3346,6 @@ job_types:
       - name: stager
         release: cf
       - name: tps
-        release: cf
-      - name: consul_agent
         release: cf
       - name: metron_agent
         release: cf
@@ -3550,10 +3550,10 @@ job_types:
     resource_label: Diego Cell
     description: Diego Cell
     templates:
-      - name: rep
-        release: diego
       - name: consul_agent
         release: cf
+      - name: rep
+        release: diego
       - name: garden
         release: garden-linux
       - name: cflinuxfs2-rootfs-setup
