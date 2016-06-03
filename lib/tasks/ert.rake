@@ -107,13 +107,4 @@ namespace :ert do
       om_version: args.om_version
     ).configure_multi_az_instance_counts
   end
-
-  desc 'Configure instance counts for a 1.6 upgrade deployment'
-  task :configure_dea_instance_counts, [:environment_name, :ert_version, :om_version] do |_, args|
-    IntegrationSpecRunner.new(
-      environment: args.environment_name,
-      ert_version: args.ert_version,
-      om_version: args.om_version
-    ).configure_dea_instance_counts
-  end
 end
