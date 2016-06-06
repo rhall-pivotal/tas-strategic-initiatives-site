@@ -4284,7 +4284,7 @@ job_types:
     manifest: |
       acceptance_tests:
         addresses: (( .tcp-router.ips ))
-        api: "https://api.(( .cloud_controller.system_domain.value ))"
+        api: "api.(( .cloud_controller.system_domain.value ))"
         apps_domain: (( .cloud_controller.apps_domain.value ))
         admin_user: (( .uaa.admin_credentials.identity ))
         admin_password: (( .uaa.admin_credentials.password ))
