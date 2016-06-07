@@ -52,6 +52,10 @@ class IntegrationSpecRunner
     run_spec(["integration/ERT-#{ert_version}/configure_multi_az_instance_counts_spec.rb"])
   end
 
+  def configure_dea_instance_counts
+    run_spec(["integration/ERT-#{ert_version}/configure_dea_instance_counts_spec.rb"])
+  end
+
   private
 
   def run_spec(spec_to_run)
