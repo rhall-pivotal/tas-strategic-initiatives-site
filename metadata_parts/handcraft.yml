@@ -201,6 +201,7 @@ form_types:
   - name: tcp_routing
     label: TCP Routing
     description: The TCP router enables you to send TCP requests to your apps via specific ports. You will want to configure a load balancer to forward these TCP requests to the TCP routers. If you do not have a load balancer, then you can also send traffic directly to the TCP router.
+    property_inputs:
       - reference: .tcp-router.static_ips
         label: TCP Router IPs
         description: "Enter the IP address(es) you would like to designate for the TCP Routers. The addresses must be within your subnet CIDR block. Point your load balancer to these address(es)."
