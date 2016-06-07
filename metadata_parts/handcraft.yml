@@ -198,6 +198,9 @@ form_types:
         label: Router Timeout to Backends (in seconds)
         description: "Timeout for connections from Router (and HAProxy, if you use it) to applications and system components. Increase this to accommodate larger uploads over connections with high latency."
 
+  - name: tcp_routing
+    label: TCP Routing
+    description: The TCP router enables you to send TCP requests to your apps via specific ports. You will want to configure a load balancer to forward these TCP requests to the TCP routers. If you do not have a load balancer, then you can also send traffic directly to the TCP router.
 
   - name: app_containers
     label: Application Containers
