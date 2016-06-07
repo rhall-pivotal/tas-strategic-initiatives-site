@@ -1334,6 +1334,8 @@ job_types:
         haproxy:
           health_check_port: 80
           request_timeout_in_seconds: 300
+      routing_api:
+        enabled: true
 
       nats:
         user: (( .nats.credentials.identity ))
