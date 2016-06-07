@@ -2918,6 +2918,11 @@ job_types:
         default:
           identity: portal
 
+      - name: invitations_client_credentials
+        type: simple_credentials
+        default:
+          identity: invitations
+
       - name: autoscale_client_credentials
         type: simple_credentials
         default:
@@ -3161,6 +3166,12 @@ job_types:
             scope: cloud_controller.read,cloud_controller.write,cloud_controller.admin
             authorized-grant-types: implicit
             access-token-validity: 28800
+          invitations:
+            id: (( invitations_client_credentials.identity ))
+            secret: (( invitations_client_credentials.password ))
+            scope: uaa.none
+            authorized-grant-types: client_credentials
+            authorities: emails.write,cloud_controller.read,cloud_controller.write,uaa.resource,scim.invite,notifications.write,cloud_controller.admin
           cf:
             id: cf
             override: true
@@ -4468,6 +4479,7 @@ job_types:
           CF_LOGIN_SERVER_URL: "https://login.(( .cloud_controller.system_domain.value ))"
           CF_UAA_SERVER_URL: "https://uaa.(( .cloud_controller.system_domain.value ))"
       env:
+        invitations_client_secret: (( .uaa.invitations_client_credentials.password ))
         secret_token: (( secret_token.value ))
         cf_cc_api_url: "https://api.(( .cloud_controller.system_domain.value ))"
         cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
