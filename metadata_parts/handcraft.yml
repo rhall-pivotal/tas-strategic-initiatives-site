@@ -3883,7 +3883,6 @@ job_types:
       networks:
         apps: default
       router:
-        enable_routing_api: true
         secure_cookies: (( .router.disable_insecure_cookies.value ))
         status:
           user: router_status
@@ -3986,7 +3985,6 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
-    serial: true
     single_az_only: false
 
     instance_definition:
@@ -4009,14 +4007,9 @@ job_types:
         router_configurer:
           debug_addr: null
           log_level: info
-          routing_api_auth_disabled: false
-          skip_oauth_tls_verification: true
-          tcp_config_file: /var/vcap/jobs/haproxy/config/haproxy.conf
-          tcp_config_file_template: /var/vcap/jobs/haproxy/config/haproxy.conf.template
           tcp_router_secret: (( .uaa.tcp_router_credentials.password ))
           tcp_stats_collection_interval: 1m
           tcp_stats_unix_socket: /var/vcap/jobs/haproxy/config/haproxy.sock
-          uaa_port: 8080
           uaa_ssl_port: 8443
       consul:
         encrypt_keys:
@@ -4086,7 +4079,6 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
-    serial: true
     single_az_only: false
 
     instance_definition:
@@ -4112,19 +4104,8 @@ job_types:
             ca_cert: (( $ops_manager.ca_certificate ))
             client_cert: (( .properties.bbs_client_cert.cert_pem ))
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
-            require_ssl: true
           debug_addr: null
-          lock_retry_interval: null
-          lock_ttl: null
-          log_level: debug
-          route_ttl: null
-          routing_api_auth_disabled: false
-          routing_api_port: 3000
-          session_name: null
-          skip_oauth_tls_verification: true
-          sync_interval: null
           tcp_emitter_secret: (( .uaa.tcp_emitter_credentials.password ))
-          uaa_port: 8080
           uaa_ssl_port: 8443
       consul:
         encrypt_keys:
@@ -4194,7 +4175,6 @@ job_types:
     static_ip: 1
     dynamic_ip: 0
     max_in_flight: 1
-    serial: true
     single_az_only: false
 
     instance_definition:
@@ -4214,16 +4194,11 @@ job_types:
 
     manifest: |
       routing-api:
-        auth_disabled: false
         etcd_machines: (( .etcd_server.ips ))
-        log_level: null
-        max_ttl: null
-        port: 3000
         router_groups:
           - name: default-tcp
             reservable_ports: 1024-65535
             type: tcp
-        skip_oauth_tls_verification: true
         system_domain: (( .cloud_controller.system_domain.value ))
         uaa_ssl_port: 8443
       consul:
@@ -4311,11 +4286,9 @@ job_types:
         apps_domain: (( .cloud_controller.apps_domain.value ))
         admin_user: (( .uaa.admin_credentials.identity ))
         admin_password: (( .uaa.admin_credentials.password ))
-        skip_oauth_tls_verification: true
-        skip_ssl_validation: true
+        skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
         tcp_emitter_secret: (( .uaa.tcp_emitter_credentials.password ))
         uaa_port: 8443
-        use_http: true
       consul:
         encrypt_keys:
         - (( .properties.consul_encrypt_key.value ))
