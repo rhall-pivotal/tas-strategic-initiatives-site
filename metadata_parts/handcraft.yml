@@ -4203,6 +4203,8 @@ job_types:
           domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
+          services:
+            routing-api: {}
       metron_agent:
         zone: meow
         deployment: cf
