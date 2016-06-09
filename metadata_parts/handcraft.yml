@@ -4099,6 +4099,7 @@ job_types:
           tcp_stats_collection_interval: 1m
           tcp_stats_unix_socket: /var/vcap/jobs/haproxy/config/haproxy.sock
           uaa_ssl_port: 8443
+          skip_oauth_tls_verification: true
       consul:
         encrypt_keys:
         - (( .properties.consul_encrypt_key.value ))
