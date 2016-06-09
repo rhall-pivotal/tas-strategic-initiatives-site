@@ -3782,6 +3782,104 @@ job_types:
           uris:
           - "loggregator.(( .cloud_controller.system_domain.value ))"
 
+  - name: routing-api
+    label: TCP Routing API
+    resource_label: TCP Routing API
+    description: TCP Routing API allows you to interact with the TCP router.
+    templates:
+      - name: consul_agent
+        release: cf
+      - name: routing-api
+        release: routing
+      - name: metron_agent
+        release: cf
+
+    resource_definitions:
+      - name: ram
+        type: integer
+        label: RAM
+        configurable: true
+        default: 1_024
+        constraints:
+          min: 1_024
+
+      - name: ephemeral_disk
+        type: integer
+        label: Ephemeral Disk
+        configurable: false
+        default: 0
+
+      - name: persistent_disk
+        type: integer
+        label: Persistent Disk
+        configurable: false
+        default: 1024
+        constraints:
+          min: 1024
+
+      - name: cpu
+        type: integer
+        label: CPU
+        configurable: true
+        default: 1
+        constraints:
+          min: 1
+          power_of_two: true
+
+    static_ip: 1
+    dynamic_ip: 0
+    max_in_flight: 1
+    single_az_only: false
+    serial: true
+
+    instance_definition:
+      name: instances
+      type: integer
+      label: Instances
+      configurable: true
+      default: 1
+      constraints:
+        min: 1
+
+    property_blueprints:
+      - name: static_ips
+        type: ip_ranges
+        configurable: true
+        optional: true
+
+    manifest: |
+      routing-api:
+        etcd_machines: (( .etcd_server.ips ))
+        router_groups:
+          - name: default-tcp
+            reservable_ports: 1024-65535
+            type: tcp
+        system_domain: (( .cloud_controller.system_domain.value ))
+        skip_oauth_tls_verification: true
+        uaa_ssl_port: 8443
+      consul:
+        encrypt_keys:
+        - (( .properties.consul_encrypt_key.value ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+        server_cert: (( .properties.consul_server_cert.cert_pem ))
+        server_key: (( .properties.consul_server_cert.private_key_pem ))
+        agent:
+          domain: cf.internal
+          servers:
+            lan: (( .consul_server.ips ))
+          services:
+            routing-api: {}
+      metron_agent:
+        zone: meow
+        deployment: cf
+      metron_endpoint:
+        shared_secret: (( .doppler.shared_secret_credentials.password ))
+      loggregator:
+        etcd:
+          machines: (( .etcd_server.ips ))
+
   - name: router
     label: Router
     resource_label: Router
@@ -4110,103 +4208,6 @@ job_types:
           domain: cf.internal
           servers:
             lan: (( .consul_server.ips ))
-      metron_agent:
-        zone: meow
-        deployment: cf
-      metron_endpoint:
-        shared_secret: (( .doppler.shared_secret_credentials.password ))
-      loggregator:
-        etcd:
-          machines: (( .etcd_server.ips ))
-
-  - name: routing-api
-    label: TCP Routing API
-    resource_label: TCP Routing API
-    description: TCP Routing API allows you to interact with the TCP router.
-    templates:
-      - name: consul_agent
-        release: cf
-      - name: routing-api
-        release: routing
-      - name: metron_agent
-        release: cf
-
-    resource_definitions:
-      - name: ram
-        type: integer
-        label: RAM
-        configurable: true
-        default: 1_024
-        constraints:
-          min: 1_024
-
-      - name: ephemeral_disk
-        type: integer
-        label: Ephemeral Disk
-        configurable: false
-        default: 0
-
-      - name: persistent_disk
-        type: integer
-        label: Persistent Disk
-        configurable: false
-        default: 1024
-        constraints:
-          min: 1024
-
-      - name: cpu
-        type: integer
-        label: CPU
-        configurable: true
-        default: 1
-        constraints:
-          min: 1
-          power_of_two: true
-
-    static_ip: 1
-    dynamic_ip: 0
-    max_in_flight: 1
-    single_az_only: false
-
-    instance_definition:
-      name: instances
-      type: integer
-      label: Instances
-      configurable: true
-      default: 1
-      constraints:
-        min: 1
-
-    property_blueprints:
-      - name: static_ips
-        type: ip_ranges
-        configurable: true
-        optional: true
-
-    manifest: |
-      routing-api:
-        etcd_machines: (( .etcd_server.ips ))
-        router_groups:
-          - name: default-tcp
-            reservable_ports: 1024-65535
-            type: tcp
-        system_domain: (( .cloud_controller.system_domain.value ))
-        skip_oauth_tls_verification: true
-        uaa_ssl_port: 8443
-      consul:
-        encrypt_keys:
-        - (( .properties.consul_encrypt_key.value ))
-        ca_cert: (( $ops_manager.ca_certificate ))
-        agent_cert: (( .properties.consul_agent_cert.cert_pem ))
-        agent_key: (( .properties.consul_agent_cert.private_key_pem ))
-        server_cert: (( .properties.consul_server_cert.cert_pem ))
-        server_key: (( .properties.consul_server_cert.private_key_pem ))
-        agent:
-          domain: cf.internal
-          servers:
-            lan: (( .consul_server.ips ))
-          services:
-            routing-api: {}
       metron_agent:
         zone: meow
         deployment: cf
