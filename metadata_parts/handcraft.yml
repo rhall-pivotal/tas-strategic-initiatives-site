@@ -2883,13 +2883,6 @@ job_types:
 
       - name: ssl_key_credentials
         type: rsa_cert_credentials
-        default:
-          domains:
-          - uaa.service.cf.internal
-          - "uaa.(( .cloud_controller.system_domain.value ))"
-          - "*.uaa.(( .cloud_controller.system_domain.value ))"
-          - "login.(( .cloud_controller.system_domain.value ))"
-          - "*.login.(( .cloud_controller.system_domain.value ))"
 
     manifest: |
       consul:
@@ -3861,6 +3854,7 @@ job_types:
             reservable_ports: 1024-65535
             type: tcp
         system_domain: (( .cloud_controller.system_domain.value ))
+        skip_oauth_tls_verification: true
         uaa_ssl_port: 8443
       consul:
         encrypt_keys:
@@ -3986,6 +3980,7 @@ job_types:
         ssl_cert: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
         ssl_key: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
         ssl_skip_validation: (( .ha_proxy.skip_cert_verify.value ))
+        skip_oauth_tls_verification: true
         haproxy:
           health_check_port: 80
           request_timeout_in_seconds: 300
