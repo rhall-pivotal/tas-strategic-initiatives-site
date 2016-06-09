@@ -2070,8 +2070,6 @@ job_types:
             total_services: -1
             total_routes: 1000
             non_basic_services_allowed: true
-        routing_api:
-          enabled: true
         security_group_definitions:
           - name: default_security_group
             rules:
@@ -2150,8 +2148,9 @@ job_types:
         etcd:
           machines: (( .etcd_server.ips ))
       router:
-        enable_routing_api: true
         route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
+      routing_api:
+        enable: true
 
   - name: ha_proxy
     label: HAProxy
