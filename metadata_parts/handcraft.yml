@@ -4284,6 +4284,7 @@ job_types:
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
         https_only_mode: true
+        disable_http_for_links: (( .properties.networking_point_of_entry.haproxy.disable_http.value ))
 
   - name: smoke-tests
     label: Run Smoke Tests
