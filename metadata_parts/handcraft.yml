@@ -1104,6 +1104,8 @@ job_types:
     resource_label: NFS Server
     description: Stores droplets and app packages on behalf of Cloud Controller
     templates:
+      - name: consul_agent
+        release: cf
       - name: debian_nfs_server
         release: cf
       - name: metron_agent
@@ -1111,8 +1113,6 @@ job_types:
       - name: blobstore
         release: cf
       - name: route_registrar
-        release: cf
-      - name: consul_agent
         release: cf
 
     resource_definitions:
@@ -1816,11 +1816,11 @@ job_types:
     resource_label: UAA
     description: Pivotal CF Elastic Runtime's Authentication and Authorization server
     templates:
+      - name: consul_agent
+        release: cf
       - name: uaa
         release: cf
       - name: metron_agent
-        release: cf
-      - name: consul_agent
         release: cf
       - name: route_registrar
         release: cf
@@ -2725,11 +2725,11 @@ job_types:
     resource_label: HAProxy
     description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal CF Elastic Runtime router IP. Self signed certificates will function properly.
     templates:
+      - name: consul_agent
+        release: cf
       - name: haproxy
         release: cf
       - name: metron_agent
-        release: cf
-      - name: consul_agent
         release: cf
 
     resource_definitions:
