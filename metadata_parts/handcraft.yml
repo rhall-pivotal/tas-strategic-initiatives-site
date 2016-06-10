@@ -2714,6 +2714,7 @@ job_types:
         route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
       routing_api:
         enabled: true
+      routing-api:
         etcd_machines: (( .etcd_server.ips ))
         router_groups:
           - name: default-tcp
