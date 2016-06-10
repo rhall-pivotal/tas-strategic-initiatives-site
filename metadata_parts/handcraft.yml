@@ -4229,7 +4229,7 @@ job_types:
       env:
         secret_token: (( secret_token.value ))
         cf_cc_api_url: "https://api.(( .cloud_controller.system_domain.value ))"
-        cf_loggregator_http_url: http://loggregator.(( .cloud_controller.system_domain.value )) # this property is not yet used, so this value may be wrong when the time comes
+        cf_loggregator_http_url: https://loggregator.(( .cloud_controller.system_domain.value ))
         cf_console_url: "https://apps.(( .cloud_controller.system_domain.value ))"
         cf_notifications_service_url: "https://notifications.(( .cloud_controller.system_domain.value ))"
         default_from: (( .properties.smtp_from.value ))
