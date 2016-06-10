@@ -3985,6 +3985,7 @@ job_types:
         admin_username: (( .uaa.push_apps_manager_credentials.identity ))
         admin_password: (( .uaa.push_apps_manager_credentials.password ))
         system_domain: (( .cloud_controller.system_domain.value ))
+        apps_domain: (( .cloud_controller.apps_domain.value ))
       services:
         authentication:
           CF_CLIENT_ID: (( .uaa.apps_manager_client_credentials.identity ))
