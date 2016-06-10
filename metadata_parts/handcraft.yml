@@ -2654,6 +2654,8 @@ job_types:
         min_recommended_cli_version: 6.11.2
         security_event_logging:
           enabled: (( security_event_logging_enabled.value ))
+        system_hostnames:
+          [api, uaa, login, doppler, loggregator, hm9000, apps, notifications-ui, app-usage, notifications, autoscale, console, apps-manager-js]
 
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
