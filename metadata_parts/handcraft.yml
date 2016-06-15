@@ -2675,6 +2675,7 @@ job_types:
             lan: (( .consul_server.ips ))
 
       uaa:
+        tls_port: 8443
         url: "https://uaa.(( .cloud_controller.system_domain.value ))"
         jwt:
           verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
@@ -2691,6 +2692,8 @@ job_types:
 
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+
+      skip_ssl_validation: true
 
       logger_endpoint:
         port: (( .properties.logger_endpoint_port.value ))
@@ -2717,15 +2720,15 @@ job_types:
         route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
       routing_api:
         enabled: true
-      routing-api:
-        etcd_machines: (( .etcd_server.ips ))
+        system_domain: (( .cloud_controller.system_domain.value ))
+        log_level: debug
         router_groups:
           - name: default-tcp
             reservable_ports: 1024-65535
             type: tcp
-        system_domain: (( .cloud_controller.system_domain.value ))
-        skip_oauth_tls_verification: true
-        uaa_ssl_port: 8443
+      routing:
+        etcd:
+          servers: (( .etcd_server.ips ))
 
   - name: ha_proxy
     label: HAProxy
@@ -3462,16 +3465,18 @@ job_types:
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
-      router:
-        tcp_emitter:
-          bbs:
-            api_location: bbs.service.cf.internal:8889
-            ca_cert: (( $ops_manager.ca_certificate ))
-            client_cert: (( .properties.bbs_client_cert.cert_pem ))
-            client_key: (( .properties.bbs_client_cert.private_key_pem ))
-          debug_addr: null
-          tcp_emitter_secret: (( .uaa.tcp_emitter_credentials.password ))
-          uaa_ssl_port: 8443
+      tcp_emitter:
+        bbs:
+          client_cert: (( .properties.bbs_client_cert.cert_pem ))
+          client_key: (( .properties.bbs_client_cert.private_key_pem ))
+        debug_addr: null
+        oauth_secret: (( .uaa.tcp_emitter_credentials.password ))
+      uaa:
+        tls_port: 8443
+      bbs:
+        api_location: bbs.service.cf.internal:8889
+        ca_cert: (( $ops_manager.ca_certificate ))
+      skip_ssl_validation: true
 
   - name: diego_cell
     label: Diego Cell
@@ -4058,15 +4063,15 @@ job_types:
         optional: true
 
     manifest: |
-      router:
-        router_configurer:
-          debug_addr: null
-          log_level: info
-          tcp_router_secret: (( .uaa.tcp_router_credentials.password ))
-          tcp_stats_collection_interval: 1m
-          tcp_stats_unix_socket: /var/vcap/jobs/haproxy/config/haproxy.sock
-          uaa_ssl_port: 8443
-          skip_oauth_tls_verification: true
+      skip_ssl_validation: true
+      uaa:
+        tls_port: 8443
+      router_configurer:
+        debug_addr: null
+        log_level: debug
+        oauth_secret: (( .uaa.tcp_router_credentials.password ))
+        tcp_stats_collection_interval: 1m
+        tcp_stats_unix_socket: /var/vcap/jobs/haproxy/config/haproxy.sock
       consul:
         encrypt_keys:
         - (( .properties.consul_encrypt_key.value ))
