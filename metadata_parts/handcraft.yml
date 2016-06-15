@@ -4576,6 +4576,8 @@ job_types:
         network: notifications
         syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
         encryption_key: (( .notifications.encryption_credentials.password ))
+        footer_text: (( .push-apps-manager.footer_text ))
+        footer_image: (( .push-apps-manager.logo ))
         enable_diego: true
         instance_count: 1
         cf:
