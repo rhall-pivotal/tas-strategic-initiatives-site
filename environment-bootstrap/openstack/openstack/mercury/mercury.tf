@@ -27,12 +27,13 @@ variable "route53_zone" {
 
 variable "access_key" {}
 variable "secret_key" {}
+variable "password" {}
 
 # Configure the OpenStack Provider
 provider "openstack" {
   user_name = "releng-ci"
   tenant_name = "${var.tenant}"
-  password = "cS3T3SZOaxKU"
+  password = "${var.password}"
   auth_url = "http://10.85.38.2:5000/v2.0"
 }
 

@@ -25,16 +25,17 @@ variable "route53_zone" {
   default = "Z146UWE0IL6Q3O"
 }
 
+variable "access_key" {}
+variable "secret_key" {}
+variable "password" {}
+
 # Configure the OpenStack Provider
 provider "openstack" {
   user_name = "releng-ci"
   tenant_name = "${var.tenant}"
-  password = "cS3T3SZOaxKU"
+  password = "${var.password}"
   auth_url = "http://10.85.38.2:5000/v2.0"
 }
-
-variable "access_key" {}
-variable "secret_key" {}
 
 resource "openstack_compute_secgroup_v2" "secgroup_products" {
   name = "${var.tenant}-products"
