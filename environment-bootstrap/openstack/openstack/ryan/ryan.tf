@@ -25,11 +25,15 @@ variable "route53_zone" {
   default = "Z1TYG15GBMWRCL"
 }
 
+variable "access_key" {}
+variable "secret_key" {}
+variable "password" {}
+
 # Configure the OpenStack Provider
 provider "openstack" {
   user_name = "ryan"
   tenant_name = "${var.tenant}"
-  password = "R&*O83LpO61U"
+  password = "${var.password}"
   auth_url = "http://10.85.38.2:5000/v2.0"
 }
 
@@ -178,8 +182,8 @@ output "ha_proxy_floating_ip"
 
 provider "aws" {
   alias = "aws"
-  access_key = "AKIAJEAGY2FWB7DEGFXQ"
-  secret_key = "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"
+  access_key = "${var.access_key}"
+  secret_key = "${var.secret_key}"
   region = "us-west-1"
 }
 
