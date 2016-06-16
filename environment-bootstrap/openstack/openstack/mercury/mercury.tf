@@ -25,6 +25,9 @@ variable "route53_zone" {
   default = "Z1LJ01GQXUQD2U"
 }
 
+variable "access_key" {}
+variable "secret_key" {}
+
 # Configure the OpenStack Provider
 provider "openstack" {
   user_name = "releng-ci"
@@ -178,8 +181,8 @@ output "ha_proxy_floating_ip"
 
 provider "aws" {
   alias = "aws"
-  access_key = "AKIAJEAGY2FWB7DEGFXQ"
-  secret_key = "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"
+  access_key = "${var.access_key}"
+  secret_key = "${var.secret_key}"
   region = "us-west-1"
 }
 

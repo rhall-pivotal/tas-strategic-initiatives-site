@@ -33,6 +33,9 @@ provider "openstack" {
   auth_url = "http://10.85.38.2:5000/v2.0"
 }
 
+variable "access_key" {}
+variable "secret_key" {}
+
 resource "openstack_compute_secgroup_v2" "secgroup_products" {
   name = "${var.tenant}-products"
   description = "Products Security Group"
@@ -178,8 +181,8 @@ output "ha_proxy_floating_ip"
 
 provider "aws" {
   alias = "aws"
-  access_key = "AKIAJEAGY2FWB7DEGFXQ"
-  secret_key = "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"
+  access_key = "${var.access_key}"
+  secret_key = "${var.secret_key}"
   region = "us-west-1"
 }
 
