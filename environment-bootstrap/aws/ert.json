@@ -233,7 +233,7 @@
         ]
       }
     },
-    "PcfElbTcpSecurityGroup": {
+    "PcfElbTcpSecurityGroup1": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "VpcId": { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfVpc" ] },
@@ -538,7 +538,16 @@
             "FromPort": "1073",
             "IpProtocol": "tcp",
             "ToPort": "1073"
-          },
+          }
+        ]
+      }
+    },
+    "PcfElbTcpSecurityGroup2": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfVpc" ] },
+        "GroupDescription": "ELB Security Group",
+        "SecurityGroupIngress": [
           {
             "CidrIp": "0.0.0.0/0",
             "FromPort": "1074",
@@ -845,7 +854,8 @@
     "PcfElbTcp": {
       "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
       "DependsOn": [
-        "PcfElbTcpSecurityGroup",
+        "PcfElbTcpSecurityGroup1",
+        "PcfElbTcpSecurityGroup2",
         "OpsManStack"
       ],
       "Properties": {
@@ -1375,7 +1385,10 @@
         "Scheme": "internet-facing",
         "SecurityGroups": [
           {
-            "Ref": "PcfElbTcpSecurityGroup"
+            "Ref": "PcfElbTcpSecurityGroup1"
+          },
+          {
+            "Ref": "PcfElbTcpSecurityGroup2"
           }
         ],
         "Subnets": [
