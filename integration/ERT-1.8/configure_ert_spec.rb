@@ -108,6 +108,11 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
     resource_config.set_elb_names_for_job('router', elastic_runtime_settings['elb_name'])
     resource_config.set_elb_names_for_job('diego_brain', elastic_runtime_settings['ssh_elb_name'])
 
+    # takes advantage of the pcf.<name>.cf-app.com format
+    env_name = env_settings['name'].split('.')[1]
+    tcp_elb_name = env_name + '-pcf-tcp-elb'
+    resource_config.set_elb_names_for_job('tcp-router', tcp_elb_name)
+
     system_logging_form =
       current_ops_manager.product(elastic_runtime_settings['name']).product_form('syslog_aggregator')
     system_logging_form.open_form
