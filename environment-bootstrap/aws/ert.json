@@ -1546,6 +1546,9 @@
     "PcfElbSshDnsName": {
       "Value": { "Fn::GetAtt": [ "PcfElbSsh", "DNSName"]}
     },
+    "PcfElbTcpDnsName": {
+      "Value": { "Fn::GetAtt": [ "PcfElbTcp", "DNSName"]}
+    },
     "PcfVpc": {
       "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfVpc" ]}
     },
