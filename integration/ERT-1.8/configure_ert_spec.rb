@@ -40,6 +40,7 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
       configure_aws_load_balancers(elastic_runtime_settings)
     when 'vsphere', 'vcloud'
       configure_vsphere_ha_proxy(elastic_runtime_settings)
+      configure_vsphere_tcp_routing(elastic_runtime_settings)
     when 'openstack'
       configure_openstack_ha_proxy(elastic_runtime_settings)
     end
@@ -87,6 +88,14 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
     )
     configure_ssl_cert(networking_form, elastic_runtime_settings, 'haproxy')
     networking_form.save_form
+  end
+
+  def configure_vsphere_tcp_routing(elastic_runtime_settings)
+    tcp_routing_form =
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('tcp_routing')
+    tcp_routing_form.open_form
+    tcp_routing_form.property('.tcp-router.static_ips').set(elastic_runtime_settings['tcp_router_static_ips'])
+    tcp_routing_form.save_form
   end
 
   def configure_aws_load_balancers(elastic_runtime_settings)
