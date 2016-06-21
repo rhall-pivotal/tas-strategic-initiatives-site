@@ -9,6 +9,7 @@ module Ert
       self.name = env_config.dig('stack_name')
       self.elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'elb_dns_name')
       self.ssh_elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'ssh_elb_dns_name')
+      self.tcp_elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'tcp_elb_dns_name')
 
       self.route53 = AWS::Route53.new(
         access_key_id: env_config.dig('aws_access_key'),
@@ -25,6 +26,10 @@ module Ert
       new_ssh_record[:resource_records].first[:value] = ssh_elb_dns_name
       new_ssh_record[:ttl] = 5
 
+      new_tcp_record = tcp_record
+      new_tcp_record[:resource_records].first[:value] = tcp_elb_dns_name
+      new_tcp_record[:ttl] = 5
+
       change_record = {
         hosted_zone_id: hosted_zone_id,
         change_batch: {
@@ -36,6 +41,10 @@ module Ert
             {
               action: 'UPSERT',
               resource_record_set: new_ssh_record
+            },
+            {
+              action: 'UPSERT',
+              resource_record_set: new_tcp_record
             }
           ]
         }
@@ -48,7 +57,7 @@ module Ert
 
     private
 
-    attr_accessor :name, :elb_dns_name, :ssh_elb_dns_name
+    attr_accessor :name, :elb_dns_name, :ssh_elb_dns_name, :tcp_elb_dns_name
 
     def hosted_zone_id
       resp = route53.client.list_hosted_zones
@@ -73,6 +82,14 @@ module Ert
       end
     end
 
+    def tcp_record
+      resource_record_sets = route53.client.list_resource_record_sets(hosted_zone_id: hosted_zone_id)
+      record_sets = resource_record_sets[:resource_record_sets]
+      record_sets.find(default_tcp_record) do |set|
+        set[:name].include? 'tcp.'
+      end
+    end
+
     def default_ssh_record
       proc do
         {
@@ -82,6 +99,21 @@ module Ert
             }
           ],
           name: "ssh.#{name}.cf-app.com.",
+          type: 'CNAME',
+          ttl: 5
+        }
+      end
+    end
+
+    def default_tcp_record
+      proc do
+        {
+          resource_records: [
+            {
+              value: 'bogus'
+            }
+          ],
+          name: "tcp.#{name}.cf-app.com.",
           type: 'CNAME',
           ttl: 5
         }
