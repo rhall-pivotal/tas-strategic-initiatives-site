@@ -43,6 +43,7 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
       configure_vsphere_tcp_routing(elastic_runtime_settings)
     when 'openstack'
       configure_openstack_ha_proxy(elastic_runtime_settings)
+      configure_openstack_tcp_router(elastic_runtime_settings)
     end
   end
 
@@ -143,6 +144,11 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
 
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
     resource_config.set_floating_ips_for_job('ha_proxy', elastic_runtime_settings['ha_proxy_floating_ips'])
+  end
+
+  def configure_openstack_tcp_router(elastic_runtime_settings)
+    resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
+    resource_config.set_floating_ips_for_job('tcp-router', elastic_runtime_settings['tcp_router_floating_ips'])
   end
 
   def configure_ssl_cert(networking_form, elastic_runtime_settings, selector_option)
