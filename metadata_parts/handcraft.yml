@@ -1609,6 +1609,10 @@ job_types:
       constraints:
         max: 1
         min: 0
+      zero_if:
+        property_reference: .properties.system_database
+        property_values:
+        - external
     property_blueprints:
       - name: credentials
         type: simple_credentials
@@ -1704,6 +1708,10 @@ job_types:
         max: 1
         min: 0
       default: 0
+      zero_if:
+        property_reference: .properties.system_database
+        property_values:
+        - external
 
     property_blueprints:
       - name: credentials
@@ -1801,6 +1809,10 @@ job_types:
         max: 1
         min: 0
       default: 0
+      zero_if:
+        property_reference: .properties.system_database
+        property_values:
+        - external
 
     property_blueprints:
       - name: credentials
