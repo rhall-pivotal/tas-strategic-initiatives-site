@@ -3622,6 +3622,7 @@ job_types:
         etcd:
           machines: (( .etcd_server.ips ))
       garden:
+        default_container_grace_time: 0
         persistent_image_list:
           - "/var/vcap/packages/cflinuxfs2/rootfs"
         graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
