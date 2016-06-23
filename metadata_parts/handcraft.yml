@@ -1173,6 +1173,7 @@ job_types:
       default: 1
       constraints:
         max: 1
+        min: 0
 
     property_blueprints:
       - name: blobstore_credentials
@@ -1384,6 +1385,7 @@ job_types:
       default: 1
       constraints:
         may_only_be_odd_or_zero: true
+        min: 0
     property_blueprints:
     - name: mysql_admin_credentials
       type: simple_credentials
@@ -1587,6 +1589,7 @@ job_types:
       configurable: true
       constraints:
         max: 1
+        min: 0
     property_blueprints:
       - name: credentials
         type: simple_credentials
@@ -1680,6 +1683,7 @@ job_types:
       configurable: true
       constraints:
         max: 1
+        min: 0
       default: 0
 
     property_blueprints:
@@ -1776,6 +1780,7 @@ job_types:
       configurable: true
       constraints:
         max: 1
+        min: 0
       default: 0
 
     property_blueprints:
@@ -3203,6 +3208,8 @@ job_types:
       label: Instances
       configurable: true
       default: 0
+      constraints:
+        min: 0
 
     property_blueprints:
 
@@ -4135,6 +4142,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
       - name: secret_token
@@ -4333,6 +4342,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
 
@@ -4391,6 +4402,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
       - name: encryption_credentials
@@ -4489,6 +4502,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
 
@@ -4557,6 +4572,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
 
@@ -4636,6 +4653,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
 
@@ -4704,6 +4723,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
       - name: broker_credentials
@@ -4793,6 +4814,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
 
@@ -4864,6 +4887,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
 
@@ -4933,6 +4958,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
       - name: broker_credentials
@@ -4999,6 +5026,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
 
@@ -5073,6 +5102,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
 
     property_blueprints:
 
@@ -5146,6 +5177,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
     property_blueprints:
     manifest: |
       cluster_ips: (( .mysql.ips ))
@@ -5200,6 +5233,8 @@ job_types:
       label: Instances
       configurable: false
       default: 1
+      constraints:
+        min: 0
     property_blueprints:
       - name: encryption_key
         type: salted_credentials
