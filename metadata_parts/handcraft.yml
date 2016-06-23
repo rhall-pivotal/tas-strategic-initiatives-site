@@ -1304,6 +1304,10 @@ job_types:
       default: 1
       constraints:
         min: 0
+      zero_if:
+        property_reference: .properties.system_database
+        property_values:
+        - external
 
     property_blueprints:
       - name: static_ips
@@ -1393,6 +1397,10 @@ job_types:
       constraints:
         may_only_be_odd_or_zero: true
         min: 0
+      zero_if:
+        property_reference: .properties.system_database
+        property_values:
+        - external
     property_blueprints:
     - name: mysql_admin_credentials
       type: simple_credentials
@@ -1513,6 +1521,10 @@ job_types:
       constraints:
         min: 0
         max: 1
+      zero_if:
+        property_reference: .properties.system_database
+        property_values:
+        - external
     property_blueprints:
     - name: backup_encryption_key
       type: secret
