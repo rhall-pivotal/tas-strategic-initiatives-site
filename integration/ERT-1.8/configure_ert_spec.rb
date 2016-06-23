@@ -92,11 +92,11 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
   end
 
   def configure_vsphere_tcp_routing(elastic_runtime_settings)
-    tcp_routing_form =
-      current_ops_manager.product(elastic_runtime_settings['name']).product_form('tcp_routing')
-    tcp_routing_form.open_form
-    tcp_routing_form.property('.tcp-router.static_ips').set(elastic_runtime_settings['tcp_router_static_ips'])
-    tcp_routing_form.save_form
+    networking_form =
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('networking')
+    networking_form.open_form
+    networking_form.property('.tcp-router.static_ips').set(elastic_runtime_settings['tcp_router_static_ips'])
+    networking_form.save_form
   end
 
   def configure_aws_load_balancers(elastic_runtime_settings)
