@@ -231,6 +231,7 @@ form_types:
     - reference: .diego_cell.insecure_docker_registry_list
       label: Private Docker Insecure Registry Whitelist
       description: If you use private Docker image registries that are secured with self-signed certificates, enter them here as a comma-delimited list. List each registry as either an IP:Port tuple or a Hostname:Port tuple.
+      placeholder: "10.10.10.10:8888,example.com:8888"
     - reference: .properties.garden_disk_cleanup
       label: Docker Images Disk-Cleanup Scheduling on Cell VMs
       selector_property_inputs:
@@ -344,18 +345,21 @@ form_types:
               - reference: .properties.uaa.ldap.url
                 label: Server URL
                 description: 'Required for LDAP. Must start with `ldap://` or `ldaps://`.'
+                placeholder: "ldaps://example.com"
               - reference: .properties.uaa.ldap.credentials
                 label: LDAP Credentials
                 description:  Required for LDAP. This is the unique username and password for binding to the server.
               - reference: .properties.uaa.ldap.search_base
                 label: User Search Base
                 description: 'Required for LDAP. Example: `ou=Users,dc=example,dc=com`.'
+                placeholder: "ou=Groups,dc=example,dc=com"
               - reference: .properties.uaa.ldap.search_filter
                 label: User Search Filter
                 description: "Required for LDAP. Replace `{0}` with username."
               - reference: .properties.uaa.ldap.group_search_base
                 label: Group Search Base
                 description: 'Required if mapping LDAP groups to Admin role. Example: `ou=Groups,dc=example,dc=com`.'
+                placeholder: "ou=Groups,dc=example,dc=com"
               - reference: .properties.uaa.ldap.group_search_filter
                 label: Group Search Filter
                 description: 'Required if mapping LDAP groups to Admin role. Replace `{0}` with user DN.'
@@ -474,9 +478,11 @@ form_types:
           - reference: .properties.mysql_backups.enable.bucket_name
             label: S3 Bucket Name
             description: Do not include 's3://' prefix, trailing '/', or underscores. The bucket is created automatically if it does not already exist.
+            placeholder: "my-bucket"
           - reference: .properties.mysql_backups.enable.bucket_path
             label: Bucket Path
             description: Specify a folder within the bucket to hold the MySQL backups. Do not include a trailing slash.
+            placeholder: "my-backups-folder/elastic-runtime"
           - reference: .properties.mysql_backups.enable.access_key_id
             label: AWS Access Key ID
           - reference: .properties.mysql_backups.enable.secret_access_key
@@ -484,10 +490,11 @@ form_types:
           - reference: .properties.mysql_backups.enable.cron_schedule
             label: Cron Schedule
             description: Schedule MySQL backups as a cron expression (see http://godoc.org/github.com/robfig/cron). Schedule uses the machine local time zone.
+            placeholder: "@every 15m"
 
   - name: system_blobstore
     label: File Storage
-    description: "This section determines where you would like to place your Elastic Runtime Cloud Controller's file storage." 
+    description: "This section determines where you would like to place your Elastic Runtime Cloud Controller's file storage."
     verifiers:
       - name: Verifiers::BlobstoreVerifier
         properties:
