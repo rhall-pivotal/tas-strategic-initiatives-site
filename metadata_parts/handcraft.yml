@@ -1250,8 +1250,6 @@ job_types:
     templates:
       - name: proxy
         release: cf-mysql
-      - name: statsd-injector
-        release: cf
 
     resource_definitions:
       - name: ram
@@ -1344,8 +1342,6 @@ job_types:
         release: cf-mysql
       - name: streaming-mysql-backup-tool
         release: mysql-backup
-      - name: statsd-injector
-        release: cf
     max_in_flight: 1
     single_az_only: false
     resource_definitions:
@@ -1467,8 +1463,6 @@ job_types:
       release: mysql-backup
     - name: service-backup
       release: service-backup
-    - name: statsd-injector
-      release: cf
     max_in_flight: 1
     single_az_only: true
     resource_definitions:
@@ -2855,8 +2849,6 @@ job_types:
         release: cf
       - name: metron_agent
         release: cf
-      - name: statsd-injector
-        release: cf
 
     resource_definitions:
       - name: ram
@@ -3008,8 +3000,6 @@ job_types:
       - name: cloud_controller_worker
         release: cf
       - name: metron_agent
-        release: cf
-      - name: statsd-injector
         release: cf
 
     resource_definitions:
@@ -3750,8 +3740,6 @@ job_types:
         release: cf
       - name: route_registrar
         release: cf
-      - name: statsd-injector
-        release: cf
 
     resource_definitions:
       - name: ram
@@ -3865,8 +3853,6 @@ job_types:
       - name: gorouter
         release: cf
       - name: metron_agent
-        release: cf
-      - name: statsd-injector
         release: cf
 
     resource_definitions:
