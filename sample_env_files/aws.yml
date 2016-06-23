@@ -8,11 +8,11 @@ vm_shepherd:
     region: us-west-1
     json_file: config/ert_cloudformation.json
     parameters:
-      01NATKeyPair: _AWS_SSH_KEY_NAME_
       05RdsUsername: pivotalcf
       06RdsPassword: pivotalcf
       07SSLCertificateARN: arn:aws:iam::_CERT_ID_:server-certificate/ugli
     outputs:
+      instance_profile:
       ssh_key_name: {{ssh_key_pair_name}}
       security_group: {{ops_manager_security_group_id}}
       public_subnet_id: {{public_subnet_id}}
@@ -25,6 +25,7 @@ vm_shepherd:
         - {{ ert_s3_resources_bucket_name }}
   vm_configs:
     - vm_name: Ugli OpsManager
+      key_name: {{ssh_key_pair_name}}
       vm_ip_address: _OM_IP_ADDRESS_
 
 ops_manager:
@@ -40,6 +41,7 @@ ops_manager:
     aws_secret_key: {{iam_aws_secret_access_key}}
     vpc_id: {{vpc}}
     security_group: {{vms_security_group_name}}
+    security_group_id: {{vms_security_group_id}}
     key_pair_name: {{ssh_key_pair_name}}
     region: {{region}}
     ssh_key: _KEY_
@@ -51,6 +53,13 @@ ops_manager:
     reserved_ips: 10.0.16.2-10.0.16.4
     dns: 10.0.0.2
     gateway: 10.0.16.1
+    subnets:
+    - identifier: {{ private_subnet_id }}
+      cidr: 10.0.16.0/20
+      reserved_ips: 10.0.16.2-10.0.16.4
+      dns: 10.0.0.2
+      gateway: 10.0.16.1
+      availability_zones: [us-west-1b]
 
   elastic_runtime:
     name: cf
@@ -60,6 +69,8 @@ ops_manager:
     elb_dns_name: {{ ert_elb_dns_name }}
     ssh_elb_name: ugli-pcf-ssh-elb
     ssh_elb_dns_name: {{ ert_ssh_elb_dns_name }}
+    tcp_elb_name: ugli-pcf-tcp-elb
+    tcp_elb_dns_name: {{ ert_tcp_elb_dns_name }}
     file_storage:
       endpoint: https://s3-us-west-1.amazonaws.com
       bucket: {{ ert_s3_buildpacks_bucket_name }}
