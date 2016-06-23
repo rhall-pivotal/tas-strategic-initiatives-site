@@ -192,6 +192,10 @@ form_types:
         selector_property_inputs:
           - reference: .properties.tcp_routing.enable
             label: Enable TCP Routing
+            property_inputs:
+              - reference: .properties.tcp_routing.enable.reservable_ports
+                label: TCP Routing Ports (one-time configuration, if you want to update this value you can via the CF CLI)
+                description: Enter the range of ports reserved for TCP routes. These ports must be available on your load balancer. You can specify a list of ports with commas between each port number and specify ranges of ports with dashes between the first and last port number. This configuration only applies the first time you specify it here, if you later want to update the ports you must do so with the CF CLI.
           - reference: .properties.tcp_routing.disable
             label: Disable TCP Routing
       - reference: .properties.route_services
@@ -5565,8 +5569,13 @@ property_blueprints:
         - name: default_router_group
           manifest: |
             - name: default-tcp
-              reservable_ports: 1024-1123
+              reservable_ports: (( .properties.tcp_routing.enable.reservable_ports.value ))
               type: tcp
+      property_blueprints:
+        - name: reservable_ports
+          type: string
+          configurable: true
+          placeholder: "e.g: 1024-10000,65535"
     - name: disable
       select_value: disable
       named_manifests:
