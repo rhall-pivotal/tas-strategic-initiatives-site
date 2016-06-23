@@ -1111,8 +1111,8 @@ job_types:
           machines: (( .etcd_server.ips ))
 
   - name: nfs_server
-    label: NFS Server
-    resource_label: NFS Server
+    label: File Storage
+    resource_label: File Storage
     description: Stores droplets and app packages on behalf of Cloud Controller
     templates:
       - name: consul_agent
