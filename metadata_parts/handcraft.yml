@@ -4058,7 +4058,11 @@ job_types:
       configurable: true
       default: 1
       constraints:
-        min: 1
+        min: 0
+      zero_if:
+        property_reference: .properties.tcp_routing
+        property_values:
+        - disable
 
     property_blueprints:
       - name: static_ips
