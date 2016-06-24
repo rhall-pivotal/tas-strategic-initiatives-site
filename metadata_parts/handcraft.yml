@@ -1181,6 +1181,10 @@ job_types:
       constraints:
         max: 1
         min: 0
+      zero_if:
+        property_reference: .properties.system_blobstore
+        property_values:
+        - external
 
     property_blueprints:
       - name: blobstore_credentials
