@@ -36,15 +36,10 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
 
   it 'configures networking' do
     networking_form = current_ops_manager.product(elastic_runtime_settings['name']).product_form('networking')
-    networking_form.open_form
 
     case env_settings['iaas_type']
     when 'aws'
-      system_logging_form = current_ops_manager.product(elastic_runtime_settings['name']).product_form('syslog_aggregator')
-      system_logging_form.open_form
-      system_logging_form.save_form
-
-      networking_form.open_form
+    networking_form.open_form
       networking_form.fill_in_selector_property(
         selector_input_reference: '.properties.tcp_routing',
         selector_name: 'enable',
@@ -55,15 +50,6 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
           },
         },
       )
-      resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
-      resource_config.set_instances_for_job('ha_proxy', 0)
-      resource_config.set_elb_names_for_job('router', elastic_runtime_settings['elb_name'])
-      resource_config.set_elb_names_for_job('diego_brain', elastic_runtime_settings['ssh_elb_name'])
-
-      # takes advantage of the pcf.<name>.cf-app.com format
-      env_name = env_settings['name'].split('.')[1]
-      tcp_elb_name = env_name + '-pcf-tcp-elb'
-      resource_config.set_elb_names_for_job('tcp-router', tcp_elb_name)
 
       networking_form.fill_in_selector_property(
         selector_input_reference: '.properties.networking_point_of_entry',
@@ -87,7 +73,19 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
       end
 
       networking_form.property('.properties.logger_endpoint_port').set('4443')
+      networking_form.save_form
+
+      resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
+      resource_config.set_instances_for_job('ha_proxy', 0)
+      resource_config.set_elb_names_for_job('router', elastic_runtime_settings['elb_name'])
+      resource_config.set_elb_names_for_job('diego_brain', elastic_runtime_settings['ssh_elb_name'])
+
+      # takes advantage of the pcf.<name>.cf-app.com format
+      env_name = env_settings['name'].split('.')[1]
+      tcp_elb_name = env_name + '-pcf-tcp-elb'
+      resource_config.set_elb_names_for_job('tcp-router', tcp_elb_name)
     when 'vsphere', 'vcloud'
+      networking_form.open_form
       networking_form.property('.ha_proxy.static_ips').set(elastic_runtime_settings['ha_proxy_static_ips'])
       networking_form.fill_in_selector_property(
         selector_input_reference: '.properties.networking_point_of_entry',
@@ -122,7 +120,9 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
         },
       )
       networking_form.property('.tcp-router.static_ips').set(elastic_runtime_settings['tcp_router_static_ips'])
+      networking_form.save_form
     when 'openstack'
+      networking_form.open_form
       networking_form.fill_in_selector_property(
         selector_input_reference: '.properties.tcp_routing',
         selector_name: 'enable',
@@ -155,6 +155,7 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
           'haproxy'
         )
       end
+      networking_form.save_form
 
       resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
       resource_config.set_floating_ips_for_job('ha_proxy', elastic_runtime_settings['ha_proxy_floating_ips'])
@@ -163,7 +164,6 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
       resource_config.set_floating_ips_for_job('tcp-router', elastic_runtime_settings['tcp_router_floating_ips'])
     end
 
-    networking_form.save_form
   end
 
   it 'configures smtp' do
