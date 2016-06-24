@@ -76,7 +76,6 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
       networking_form.save_form
 
       resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
-      resource_config.set_instances_for_job('ha_proxy', 0)
       resource_config.set_elb_names_for_job('router', elastic_runtime_settings['elb_name'])
       resource_config.set_elb_names_for_job('diego_brain', elastic_runtime_settings['ssh_elb_name'])
 
