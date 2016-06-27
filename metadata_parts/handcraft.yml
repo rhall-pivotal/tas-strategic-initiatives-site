@@ -2766,6 +2766,8 @@ job_types:
       routing:
         etcd:
           servers: (( .etcd_server.ips ))
+      hm9000:
+        port: 12345
 
   - name: ha_proxy
     label: HAProxy
@@ -3029,6 +3031,8 @@ job_types:
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
+      hm9000:
+        port: 12345
 
   - name: cloud_controller_worker
     label: Cloud Controller Worker
@@ -3185,6 +3189,8 @@ job_types:
       loggregator:
         etcd:
           machines: (( .etcd_server.ips ))
+      hm9000:
+        port: 12345
 
   - name: collector
     label: Collector
@@ -5876,6 +5882,7 @@ property_blueprints:
             manifest: |
               blobstore_type: fog
               buildpack_directory_key: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
+              fog_aws_storage_options: ['encryption']
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -5888,6 +5895,7 @@ property_blueprints:
             manifest: |
               blobstore_type: fog
               droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
+              fog_aws_storage_options: ['encryption']
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -5900,6 +5908,7 @@ property_blueprints:
             manifest: |
               app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
               blobstore_type: fog
+              fog_aws_storage_options: ['encryption']
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -5912,6 +5921,7 @@ property_blueprints:
             manifest: |
               blobstore_type: fog
               resource_directory_key: (( .properties.system_blobstore.external.resources_bucket.value ))
+              fog_aws_storage_options: ['encryption']
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
