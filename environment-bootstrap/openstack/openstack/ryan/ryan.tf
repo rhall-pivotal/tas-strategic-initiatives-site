@@ -83,6 +83,13 @@ resource "openstack_compute_secgroup_v2" "secgroup_products" {
     to_port = "65535"
     self = true
   }
+
+  rule {
+    ip_protocol = "tcp"
+    from_port = "1024"
+    to_port = "1123"
+    cidr = "0.0.0.0/0"
+  }
 }
 
 resource "openstack_compute_secgroup_v2" "secgroup_ops_manager" {
