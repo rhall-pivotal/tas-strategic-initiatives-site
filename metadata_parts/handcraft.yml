@@ -777,7 +777,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -878,7 +877,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -955,7 +953,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -1109,7 +1106,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -1209,7 +1205,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -1641,7 +1636,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -1742,7 +1736,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -1843,7 +1836,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -2390,7 +2382,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -2749,7 +2740,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -2857,7 +2847,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -3024,7 +3013,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -3182,7 +3170,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -3271,7 +3258,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -3499,7 +3485,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -3630,7 +3615,6 @@ job_types:
             client_key: (( .properties.bbs_client_cert.private_key_pem ))
           preloaded_rootfses:
           - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
-          zone: meow
       cflinuxfs2-rootfs:
         trusted_certs: (( $ops_manager.trusted_certificates ))
       consul:
@@ -3655,7 +3639,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -3741,7 +3724,6 @@ job_types:
 
     manifest: |
       doppler:
-        zone: meow
         message_drain_buffer_size: (( message_drain_buffer_size.value ))
 
       uaa:
@@ -3764,7 +3746,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -3848,9 +3829,6 @@ job_types:
 
       system_domain: (( .cloud_controller.system_domain.value ))
 
-      traffic_controller:
-        zone: meow
-
       ssl:
         skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
@@ -3864,7 +3842,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -4018,7 +3995,6 @@ job_types:
         port: (( .properties.syslog_port.value ))
         transport: (( .properties.syslog_protocol.value ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
@@ -4127,7 +4103,6 @@ job_types:
           servers:
             lan: (( .consul_server.ips ))
       metron_agent:
-        zone: meow
         deployment: cf
       metron_endpoint:
         shared_secret: (( .doppler.shared_secret_credentials.password ))
