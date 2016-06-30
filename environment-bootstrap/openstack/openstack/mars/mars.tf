@@ -172,6 +172,10 @@ resource "openstack_networking_floatingip_v2" "floatip_2" {
   region = "RegionOne"
   pool = "net04_ext"
 }
+resource "openstack_networking_floatingip_v2" "floatip_3" {
+  region = "RegionOne"
+  pool = "net04_ext"
+}
 
 output "internal_network_id"
 {
@@ -185,6 +189,10 @@ output "ops_man_floating_ip"
 output "ha_proxy_floating_ip"
 {
   value = "${openstack_networking_floatingip_v2.floatip_2.address}"
+}
+output "tcp_router_floating_ip"
+{
+  value = "${openstack_networking_floatingip_v2.floatip_3.address}"
 }
 
 provider "aws" {
@@ -211,4 +219,13 @@ resource "aws_route53_record" "wildcard" {
   ttl = "60"
   records = [
     "${openstack_networking_floatingip_v2.floatip_2.address}"]
+}
+resource "aws_route53_record" "tcp" {
+  provider = "aws.aws"
+  zone_id = "${var.route53_zone}"
+  name = "tcp"
+  type = "A"
+  ttl = "60"
+  records = [
+    "${openstack_networking_floatingip_v2.floatip_3.address}"]
 }
