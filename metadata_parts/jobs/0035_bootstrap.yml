@@ -1,0 +1,55 @@
+name: bootstrap
+label: Bootstrap
+resource_label: Bootstrap
+description: Errand for bootstrapping the MySQL cluster
+templates:
+- name: bootstrap
+  release: cf-mysql
+errand: true
+max_in_flight: 1
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 2048
+  constraints:
+    min: 1024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 2048
+  constraints:
+    min: 1024
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+    power_of_two: true
+static_ip: 0
+dynamic_ip: 1
+single_az_only: false
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: false
+  default: 1
+  constraints:
+    min: 0
+property_blueprints:
+manifest: |
+  cluster_ips: (( .mysql.ips ))
+  database_startup_timeout: (( .mysql.database_startup_timeout.value ))
+  bootstrap_endpoint:
+    username: (( .mysql.mysql_bootstrap_credentials.identity ))
+    password: (( .mysql.mysql_bootstrap_credentials.password ))

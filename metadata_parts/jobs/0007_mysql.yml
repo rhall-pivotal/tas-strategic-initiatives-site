@@ -1,0 +1,125 @@
+name: mysql
+label: MySQL Server
+resource_label: MySQL Server
+description: Multi-tenant MySQL server.
+templates:
+  - name: mysql
+    release: cf-mysql
+  - name: streaming-mysql-backup-tool
+    release: mysql-backup
+max_in_flight: 1
+single_az_only: false
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 8192
+  constraints:
+    min: 4096
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 30000
+  constraints:
+    min: 10000
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: true
+  default: 100000
+  constraints:
+    min: 10000
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 2
+  constraints:
+    min: 1
+    power_of_two: true
+static_ip: 1
+dynamic_ip: 0
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 1
+  constraints:
+    may_only_be_odd_or_zero: true
+    min: 0
+  zero_if:
+    property_reference: .properties.system_database
+    property_values:
+    - external
+property_blueprints:
+- name: mysql_admin_credentials
+  type: simple_credentials
+  default:
+    identity: root
+- name: mysql_bootstrap_credentials
+  type: simple_credentials
+  label: Bootstrap Endpoint Credentials
+- name: mysql_backup_server_credentials
+  type: simple_credentials
+  label: Backup Endpoint Credentials
+- name: app_usage_credentials
+  type: simple_credentials
+  default:
+    identity: app_usage
+- name: notifications_credentials
+  type: simple_credentials
+- name: autoscale_credentials
+  type: simple_credentials
+- name: ccdb_credentials
+  type: simple_credentials
+- name: uaadb_credentials
+  type: simple_credentials
+- name: consoledb_credentials
+  type: simple_credentials
+- name: database_startup_timeout
+  type: integer
+  configurable: false
+  default: 1200
+manifest: |
+  network_name: default
+  cf_mysql:
+    mysql:
+      admin_password: (( mysql_admin_credentials.password ))
+      cluster_ips: (( .mysql.ips ))
+      # allow up to 20 minutes for large SST's to succeed,
+      # this is temporary until BOSH pre-start is implemented
+      database_startup_timeout: (( .mysql.database_startup_timeout.value ))
+      innodb_buffer_pool_size: 2147483648
+      bootstrap_endpoint:
+        username: (( mysql_bootstrap_credentials.identity ))
+        password: (( mysql_bootstrap_credentials.password ))
+      seeded_databases:
+        - name: ccdb
+          username: (( ccdb_credentials.identity ))
+          password: (( ccdb_credentials.password ))
+        - name: uaa
+          username: (( uaadb_credentials.identity ))
+          password: (( uaadb_credentials.password ))
+        - name: app_usage_service
+          username: (( app_usage_credentials.identity ))
+          password: (( app_usage_credentials.password ))
+        - name: notifications
+          username: (( notifications_credentials.identity ))
+          password: (( notifications_credentials.password ))
+        - name: autoscale
+          username: (( autoscale_credentials.identity ))
+          password: (( autoscale_credentials.password ))
+        - name: console
+          username: (( consoledb_credentials.identity ))
+          password: (( consoledb_credentials.password ))
+  syslog_aggregator:
+    address: (( ..cf.properties.syslog_host.value ))
+    port: (( ..cf.properties.syslog_port.value ))
+    transport: (( .properties.syslog_protocol.value ))
+  cf-mysql-backup:
+    endpoint_credentials:
+      username: (( mysql_backup_server_credentials.identity ))
+      password: (( mysql_backup_server_credentials.password ))

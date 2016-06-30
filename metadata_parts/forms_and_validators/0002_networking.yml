@@ -1,0 +1,79 @@
+form:
+  name: networking
+  label: Networking
+  description: Configure security and routing services for your platform. It is usually preferable to use your own load balancer instead of an HAProxy instance as your point-of-entry to the platform.
+  property_inputs:
+    - reference: .router.static_ips
+      label: Router IPs
+      description: "If you are not using HAProxy, enter static IP address(es) for the Router(s), which must be within the subnet CIDR block  that you defined in the Ops Manager network configuration. If you have a load balancer, configure it to point to these IPs. If deploying PCF to AWS with an ELB, do not enter IP addresses here. Instead, add the name of your ELB in the Resource Config section, in the ELB Name column for Router."
+    - reference: .diego_brain.static_ips
+      label: SSH Proxy IPs
+      description: "Enter static IPs for the Diego Brain(s), which will accept requests to SSH into application containers on port 2222, and register a load balancer with these IPs. If deploying PCF to AWS with an ELB, do not enter IP addresses here. Instead, add the name of your ELB in the Resource Config section, in the ELB Name column for Diego Brain."
+    - reference: .ha_proxy.static_ips
+      label: HAProxy IPs
+      description: "If you are using HAProxy, enter its IP address(es). The addresses must be within your subnet CIDR block. Point your DNS to this IP address unless you are using your own load balancer."
+    - reference: .tcp-router.static_ips
+      label: TCP Router IPs
+      description: "Enter the IP address(es) you would like to designate for the TCP Routers. The addresses must be within your subnet CIDR block. Point your load balancer to these address(es)."
+    - reference: .properties.networking_point_of_entry
+      label: Configure the point-of-entry to this environment
+      selector_property_inputs:
+        - reference: .properties.networking_point_of_entry.external_ssl
+          label: "Select this option if you have an external load balancer, and it can forward encrypted traffic (SSL, HTTPS, etc.) to the Elastic Runtime Router(s). You may also select this option for a non-production environment where load balancing is not required, by configuring a single Router with TLS enabled as your point-of-entry to the Elastic Runtime platform."
+          property_inputs:
+            - reference: .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate
+              label: Router SSL Termination Certificate and Private Key
+              description: "Required for SSL encryption between the load balancer and Router(s)."
+            - reference: .properties.networking_point_of_entry.external_ssl.ssl_ciphers
+              label: Router SSL Ciphers
+              description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
+        - reference: .properties.networking_point_of_entry.external_non_ssl
+          label: "Select this option if you have an external load balancer, but it will not forward any encrypted traffic to the Elastic Runtime Router(s). You may also select this option for a non-production environment where load balancing is not required, by configuring a single Router with TLS disabled as your point-of-entry to the Elastic Runtime platform."
+        - reference: .properties.networking_point_of_entry.haproxy
+          label: "Select this option if you want to use HAProxy as your first point-of-entry instead of your own load balancer. Note that HAProxy does not provide IP failover, so it is not a robust load balancer."
+          property_inputs:
+            - reference: .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate
+              label: SSL Certificate and Private Key
+              description: "This certificate and key are used to terminate SSL traffic at HAProxy. The certificate can have multiple domains attributed to it, for example if you have separate system and application domains. You can also generate a self-signed certificate here with your wildcard system domain."
+            - reference: .properties.networking_point_of_entry.haproxy.disable_http
+              label: Disable HTTP traffic to HAProxy
+              description: "If checked, HAProxy will only allow HTTPS traffic."
+            - reference: .properties.networking_point_of_entry.haproxy.ssl_ciphers
+              label: HAProxy SSL Ciphers
+              description: "These ciphers should use dashes in their names, e.g. `ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384`"
+    - reference: .ha_proxy.skip_cert_verify
+      label: Disable SSL certificate verification for this environment
+      description: You can disable SSL verification if you are using your own self-signed certificates that are not from a trusted CA.
+    - reference: .router.disable_insecure_cookies
+      label: Disable insecure cookies on the Router
+      description: If checked, this turns on the secure flag for cookies generated by router.
+    - reference: .properties.tcp_routing
+      label: Enable TCP requests to your apps via specific ports on the TCP router. You will want to configure a load balancer to forward these TCP requests to the TCP routers. If you do not have a load balancer, then you can also send traffic directly to the TCP router.
+      selector_property_inputs:
+        - reference: .properties.tcp_routing.enable
+          label: Enable TCP Routing
+          property_inputs:
+            - reference: .properties.tcp_routing.enable.reservable_ports
+              label: TCP Routing Ports (one-time configuration, if you want to update this value you can via the CF CLI)
+              description: Enter the range of ports reserved for TCP routes. These ports must be available on your load balancer. You can specify a list of ports with commas between each port number and specify ranges of ports with dashes between the first and last port number. This configuration only applies the first time you specify it here, if you later want to update the ports you must do so with the CF CLI.
+        - reference: .properties.tcp_routing.disable
+          label: Disable TCP Routing
+    - reference: .properties.route_services
+      label: Choose whether to enable route services. Route services enable you to proxy requests to your app over TLS to arbitrary URLs before hitting your app.
+      selector_property_inputs:
+        - reference: .properties.route_services.enable
+          label: Enable route services
+        - reference: .properties.route_services.disable
+          label: Disable route services
+    - reference: .properties.logger_endpoint_port
+      label: Loggregator Port
+      description: "Default is 443. Enter a new value to override the default, for instance if port 443 on your load balancer is used for other traffic."
+    - reference: .diego_cell.garden_network_pool
+      label: Applications Subnet (Only change this if you need to avoid address collision with a third-party service on the same subnet.)
+      description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
+    - reference: .diego_cell.garden_network_mtu
+      label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
+      description: The default 1454 bytes is fine for most cases, but you might need less, such as for networks that use GRE tunnels.
+    - reference: .router.request_timeout_in_seconds
+      label: Router Timeout to Backends (in seconds)
+      description: "Timeout for connections from Router (and HAProxy, if you use it) to applications and system components. Increase this to accommodate larger uploads over connections with high latency."

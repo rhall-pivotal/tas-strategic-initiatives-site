@@ -1,0 +1,114 @@
+form:
+  name: uaa
+  label: Authentication and Enterprise SSO
+  description: Configure your user store access, which can be an internal user store (managed by Cloud Foundry's UAA) or an external user store (LDAP or SAML). You can also adjust the lifetimes of authentication tokens.
+  verifiers:
+    - name: Verifiers::LDAPBindVerifier
+      properties:
+        url: .properties.uaa.ldap.url
+        credentials: .properties.uaa.ldap.credentials
+  property_inputs:
+    - reference: .properties.uaa
+      label: Configure your UAA user account store with either internal or external authentication mechanisms
+      selector_property_inputs:
+        - reference: .properties.uaa.internal
+          label: "Internal UAA (provided by Elastic Runtime; configure your password policy below)"
+          description:
+          property_inputs:
+            - reference: .properties.uaa.internal.password_min_length
+              label: Minimum Password Length
+              description: Minimum number of characters for a valid password.
+            - reference: .properties.uaa.internal.password_min_uppercase
+              label: Minimum Uppercase Characters Required for Password
+              description: Minimum number of uppercase characters required for a valid password.
+            - reference: .properties.uaa.internal.password_min_lowercase
+              label: Minimum Lowercase Characters Required for Password
+              description: Minimum number of lowercase characters required for a valid password
+            - reference: .properties.uaa.internal.password_min_numeric
+              label: Minimum Numerical Digits Required for Password
+              description: Minimum number of digits required for a valid password.
+            - reference: .properties.uaa.internal.password_min_special
+              label: Minimum Special Characters Required for Password
+              description: Minimum number of special characters required for a valid password.
+            - reference: .properties.uaa.internal.password_expires_after_months
+              label: Number of Months Before Password Expires
+              description: Password will expire after this many months, input 0 if you want passwords to never expire.
+            - reference: .properties.uaa.internal.password_max_retry
+              label: Maximum Password Entry Attempts Allowed
+              description: Maximum allowed password entry attempts (within a five minute timespan) before the account is locked
+        - reference: .properties.uaa.saml
+          label: SAML Identity Provider
+          description:
+          property_inputs:
+            - reference: .properties.uaa.saml.sso_name
+              label: Provider Name
+              description: "Name of Identity Provider. Allowed characters are alphanumeric, plus `_`, and `-`. Do not change this name once deployed."
+            - reference: .properties.uaa.saml.display_name
+              label: Display Name
+              description: "Shows as a link on the login page."
+            - reference: .properties.uaa.saml.sso_xml
+              label: "Provider Metadata (if you would rather provide an SSO endpoint URL, skip to the next field)"
+              description: "Metadata XML content for the Identity Provider."
+            - reference: .properties.uaa.saml.sso_url
+              label: "(OR) Provider Metadata URL"
+              description: "If you did not provide metadata above, enter an SSO endpoint that returns the metadata."
+            - reference: .properties.uaa.saml.name_id_format
+              label: Name ID Format
+              description: "Select the name identifier format configured for the identity provider. This translates to the username on Pivotal Cloud Foundry"
+            - reference: .properties.uaa.saml.sign_auth_requests
+              label: Sign Authentication Requests
+              description: "If enabled, signed authentication requests will be sent to the SAML identity provider."
+            - reference: .properties.uaa.saml.require_signed_assertions
+              label: Require Signed Assertions
+              description: "If enabled, the SAML identity provider should always send signed assertions."
+        - reference: .properties.uaa.ldap
+          label: LDAP Server
+          description:
+          property_inputs:
+            - reference: .properties.uaa.ldap.url
+              label: Server URL
+              description: 'Required for LDAP. Must start with `ldap://` or `ldaps://`.'
+              placeholder: "ldaps://example.com"
+            - reference: .properties.uaa.ldap.credentials
+              label: LDAP Credentials
+              description:  Required for LDAP. This is the unique username and password for binding to the server.
+            - reference: .properties.uaa.ldap.search_base
+              label: User Search Base
+              description: 'Required for LDAP. Example: `ou=Users,dc=example,dc=com`.'
+              placeholder: "ou=Groups,dc=example,dc=com"
+            - reference: .properties.uaa.ldap.search_filter
+              label: User Search Filter
+              description: "Required for LDAP. Replace `{0}` with username."
+            - reference: .properties.uaa.ldap.group_search_base
+              label: Group Search Base
+              description: 'Required if mapping LDAP groups to Admin role. Example: `ou=Groups,dc=example,dc=com`.'
+              placeholder: "ou=Groups,dc=example,dc=com"
+            - reference: .properties.uaa.ldap.group_search_filter
+              label: Group Search Filter
+              description: 'Required if mapping LDAP groups to Admin role. Replace `{0}` with user DN.'
+            - reference: .properties.uaa.ldap.server_ssl_cert
+              label: Server SSL Cert
+              description: 'Required only for ldaps://. This is the server certificate if using a Self Signed Certificate. If using a CA certificate, this must be the root certificate from your CA.'
+            - reference: .properties.uaa.ldap.server_ssl_cert_alias
+              label: Server SSL Cert AltName
+              description: "Required only for ldaps:// and using a Self Signed Certificate."
+            - reference: .properties.uaa.ldap.mail_attribute_name
+              label: Email Attribute
+              description: "The name of the attribute that contains the user's email address."
+    - reference: .uaa.apps_manager_access_token_lifetime
+      label: Apps Manager Access Token Lifetime (in seconds)
+      description: Set the lifetime of the access token for the Apps Manager login portal.
+    - reference: .uaa.apps_manager_refresh_token_lifetime
+      label: Apps Manager Refresh Token Lifetime (in seconds)
+      description: Set the lifetime of the refresh token for Apps Manager.
+    - reference: .uaa.cf_cli_access_token_lifetime
+      label: Cloud Foundry CLI Access Token Lifetime (in seconds)
+      description: Set the lifetime of the access token for the Cloud Foundry CLI.
+    - reference: .uaa.cf_cli_refresh_token_lifetime
+      label: Cloud Foundry CLI Refresh Token Lifetime (in seconds)
+      description: Set the lifetime of the refresh token for the Cloud Foundry CLI.
+
+install_time_verifiers:
+  - name: Verifiers::SsoUrlVerifier
+    properties:
+      url: .properties.uaa.saml.sso_url

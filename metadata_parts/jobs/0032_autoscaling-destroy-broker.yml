@@ -1,0 +1,70 @@
+name: autoscaling-destroy-broker
+label: Destroy autoscaling service broker
+resource_label: Destroy autoscaling service broker
+description: Destroy autoscaling service broker
+templates:
+  - name: destroy-broker
+    release: cf-autoscaling
+errand: true
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 512
+    constraints:
+      min: 512
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: false
+    default: 0
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 1
+    constraints:
+      min: 1
+      power_of_two: true
+
+static_ip: 0
+dynamic_ip: 1
+max_in_flight: 1
+single_az_only: false
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: false
+  default: 1
+  constraints:
+    min: 0
+
+property_blueprints:
+
+manifest: |
+  autoscale:
+    broker:
+      user: (( .autoscaling.broker_credentials.identity ))
+      password: (( .autoscaling.broker_credentials.password ))
+    cf:
+      admin_user: (( .uaa.admin_credentials.identity ))
+      admin_password: (( .uaa.admin_credentials.password ))
+    organization: system
+    space: autoscaling
+  domain: (( .cloud_controller.system_domain.value ))
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))

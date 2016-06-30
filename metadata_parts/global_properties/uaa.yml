@@ -1,0 +1,136 @@
+property_blueprints:
+  - name: uaa
+    type: selector
+    configurable: true
+    default: internal
+    option_templates:
+      - name: internal
+        select_value: internal
+        named_manifests:
+        - name: saml_provider
+          manifest: |
+
+        - name: self_service_links_enabled
+          manifest: |
+            true
+        property_blueprints:
+          - name: password_min_length
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_min_uppercase
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_min_lowercase
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_min_numeric
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_min_special
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_expires_after_months
+            type: integer
+            configurable: true
+            default: 0
+          - name: password_max_retry
+            type: integer
+            configurable: true
+            default: 5
+      - name: saml
+        select_value: saml
+        named_manifests:
+        - name: saml_provider
+          manifest: |
+            (( .properties.uaa.saml.sso_name.value )):
+              metadataTrustCheck: false
+              idpMetadata: "(( .properties.uaa.saml.sso_url.value_present? ? .properties.uaa.saml.sso_url.value : .properties.uaa.saml.sso_xml.value ))"
+              nameID: (( .properties.uaa.saml.name_id_format.value ))
+              showSamlLoginLink: true
+              linkText: (( .properties.uaa.saml.display_name.value ))
+        - name: self_service_links_enabled
+          manifest: |
+            false
+        property_blueprints:
+          - name: sso_name
+            type: string
+            configurable: true
+          - name: display_name
+            type: string
+            configurable: true
+          - name: sso_url
+            type: http_url
+            configurable: true
+            optional: true
+          - name: name_id_format
+            type: dropdown_select
+            configurable: true
+            optional: false
+            default: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+            options:
+            - name: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+              label: Email Address
+            - name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+              label: Unspecified
+            - name: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+              label: Persistent
+          - name: sso_xml
+            type: text
+            configurable: true
+            optional: true
+          - name: sign_auth_requests
+            type: boolean
+            configurable: true
+            default: true
+          - name: require_signed_assertions
+            type: boolean
+            configurable: true
+      - name: ldap
+        select_value: ldap
+        named_manifests:
+        - name: saml_provider
+          manifest: |
+
+        - name: self_service_links_enabled
+          manifest: |
+            false
+        property_blueprints:
+          - name: url
+            type: ldap_url
+            configurable: true
+          - name: credentials
+            type: simple_credentials
+            configurable: true
+          - name: search_base
+            type: string
+            configurable: true
+          - name: search_filter
+            type: string
+            configurable: true
+            default: "cn={0}"
+          - name: group_search_base
+            type: string
+            configurable: true
+            optional: true
+          - name: group_search_filter
+            type: string
+            configurable: true
+            default: "member={0}"
+          - name: server_ssl_cert
+            type: text
+            configurable: true
+            optional: true
+          - name: server_ssl_cert_alias
+            type: string
+            configurable: true
+            optional: true
+          - name: mail_attribute_name
+            type: string
+            configurable: true
+            default: 'mail'
+

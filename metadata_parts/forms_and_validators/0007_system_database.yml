@@ -1,0 +1,116 @@
+form:
+  name: system_database
+  label: Databases
+  description: Place the databases used by Elastic Runtime components like Cloud Controller and UAA.
+  verifiers:
+    - name: Verifiers::MysqlDatabaseVerifier
+      properties:
+        host: .properties.system_database.external.host
+        port: .properties.system_database.external.port
+        username: .properties.system_database.external.username
+        password: .properties.system_database.external.password
+        database: .properties.app_usage_service_database
+    - name: Verifiers::MysqlDatabaseVerifier
+      properties:
+        host: .properties.system_database.external.host
+        port: .properties.system_database.external.port
+        username: .properties.system_database.external.username
+        password: .properties.system_database.external.password
+        database: .properties.autoscale_database
+    - name: Verifiers::MysqlDatabaseVerifier
+      properties:
+        host: .properties.system_database.external.host
+        port: .properties.system_database.external.port
+        username: .properties.system_database.external.username
+        password: .properties.system_database.external.password
+        database: .properties.ccdb_database
+    - name: Verifiers::MysqlDatabaseVerifier
+      properties:
+        host: .properties.system_database.external.host
+        port: .properties.system_database.external.port
+        username: .properties.system_database.external.username
+        password: .properties.system_database.external.password
+        database: .properties.console_database
+    - name: Verifiers::MysqlDatabaseVerifier
+      properties:
+        host: .properties.system_database.external.host
+        port: .properties.system_database.external.port
+        username: .properties.system_database.external.username
+        password: .properties.system_database.external.password
+        database: .properties.notifications_database
+    - name: Verifiers::MysqlDatabaseVerifier
+      properties:
+        host: .properties.system_database.external.host
+        port: .properties.system_database.external.port
+        username: .properties.system_database.external.username
+        password: .properties.system_database.external.password
+        database: .properties.uaa_database
+  property_inputs:
+  - reference: .properties.system_database
+    label: "Choose the location of your system databases"
+    selector_property_inputs:
+    - reference: .properties.system_database.internal
+      label: Internal Databases - MySQL and Postgres (the Postgres DBs are not highly-available, but this selection is required if you want to keep your system data from a pre-1.6.0 Elastic Runtime that you upgraded)
+    - reference: .properties.system_database.internal_mysql
+      label: Internal Databases - MySQL (preferred for complete high-availability)
+    - reference: .properties.system_database.external
+      label: External Databases (preferred if, for example, you use AWS RDS)
+      property_inputs:
+        - reference: .properties.system_database.external.host
+          label: Hostname DNS Name
+        - reference: .properties.system_database.external.port
+          label: TCP Port
+        - reference: .properties.system_database.external.username
+          label: Username
+        - reference: .properties.system_database.external.password
+          label: Password
+
+install_time_verifiers:
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.app_usage_service_database
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.autoscale_database
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.ccdb_database
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.console_database
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.notifications_database
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.uaa_database

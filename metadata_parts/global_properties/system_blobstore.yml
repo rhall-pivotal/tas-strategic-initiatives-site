@@ -1,0 +1,162 @@
+property_blueprints:
+  - name: system_blobstore
+    type: selector
+    configurable: true
+    default: internal
+    option_templates:
+      - name: internal
+        select_value: internal
+        named_manifests:
+          - name: ccbuildpack
+            manifest: |
+              blobstore_type: webdav
+              webdav_config:
+                username: (( .nfs_server.blobstore_credentials.identity ))
+                password: (( .nfs_server.blobstore_credentials.password ))
+                private_endpoint: https://blobstore.service.cf.internal
+                public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+          - name: ccdroplet
+            manifest: |
+              blobstore_type: webdav
+              webdav_config:
+                username: (( .nfs_server.blobstore_credentials.identity ))
+                password: (( .nfs_server.blobstore_credentials.password ))
+                private_endpoint: https://blobstore.service.cf.internal
+                public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+          - name: ccpackage
+            manifest: |
+              blobstore_type: webdav
+              webdav_config:
+                username: (( .nfs_server.blobstore_credentials.identity ))
+                password: (( .nfs_server.blobstore_credentials.password ))
+                private_endpoint: https://blobstore.service.cf.internal
+                public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+          - name: ccresource
+            manifest: |
+              blobstore_type: webdav
+              webdav_config:
+                username: (( .nfs_server.blobstore_credentials.identity ))
+                password: (( .nfs_server.blobstore_credentials.password ))
+                private_endpoint: https://blobstore.service.cf.internal
+                public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+      - name: external
+        named_manifests:
+          - name: ccbuildpack
+            manifest: |
+              blobstore_type: fog
+              buildpack_directory_key: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
+              fog_aws_storage_options: ['encryption']
+              fog_connection:
+                provider: AWS
+                aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+                aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+                region:  (( .properties.system_blobstore.external.region.value ))
+                path_style: true
+                endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+          - name: ccdroplet
+            manifest: |
+              blobstore_type: fog
+              droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
+              fog_aws_storage_options: ['encryption']
+              fog_connection:
+                provider: AWS
+                aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+                aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+                region:  (( .properties.system_blobstore.external.region.value ))
+                path_style: true
+                endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+          - name: ccpackage
+            manifest: |
+              app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
+              blobstore_type: fog
+              fog_aws_storage_options: ['encryption']
+              fog_connection:
+                provider: AWS
+                aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+                aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+                region:  (( .properties.system_blobstore.external.region.value ))
+                path_style: true
+                endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+          - name: ccresource
+            manifest: |
+              blobstore_type: fog
+              resource_directory_key: (( .properties.system_blobstore.external.resources_bucket.value ))
+              fog_aws_storage_options: ['encryption']
+              fog_connection:
+                provider: AWS
+                aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+                aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+                region:  (( .properties.system_blobstore.external.region.value ))
+                path_style: true
+                endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+        select_value: external
+        property_blueprints:
+          - name: endpoint
+            type: string
+            configurable: true
+            default: "https://s3.amazonaws.com"
+          - name: buildpacks_bucket
+            type: string
+            configurable: true
+          - name: droplets_bucket
+            type: string
+            configurable: true
+          - name: packages_bucket
+            type: string
+            configurable: true
+          - name: resources_bucket
+            type: string
+            configurable: true
+          - name: access_key
+            type: string
+            configurable: true
+          - name: secret_key
+            type: secret
+            configurable: true
+          - name: signature_version
+            type: dropdown_select
+            configurable: true
+            optional: false
+            default: 2
+            options:
+            - name: 2
+              label: V2 Signature
+            - name: 4
+              label: V4 Signature
+          - name: region
+            type: dropdown_select
+            configurable: true
+            optional: false
+            default: "''"
+            options:
+            - name: "''"
+              label: "V2 Signature - N/A"
+            - name: "us-east-1"
+              label: "US East (N. Virginia)"
+            - name: "us-west-1"
+              label: "US West (N. California)"
+            - name: "us-west-2"
+              label: "US West (Oregon)"
+            - name: "eu-west-1"
+              label: "EU (Ireland)"
+            - name: "ap-southeast-1"
+              label: "Asia Pacific (Singapore)"
+            - name: "ap-northeast-1"
+              label: "Asia Pacific (Tokyo)"
+            - name: "ap-southeast-2"
+              label: "Asia Pacific (Sydney)"
+            - name: "sa-east-1"
+              label: "South America (São Paulo)"
+            - name: "us-gov-west-1"
+              label: "V4 Signature Only - GovCloud Region (US)"
+            - name: "cn-north-1"
+              label: "V4 Signature Only - China Region (Beijing)"
+            - name: "eu-central-1"
+              label: "V4 Signature Only - EU Region (Frankfurt)"
+            - name: "ap-northeast-2"
+              label: "V4 Signature Only - Asia Pacific (Seoul)"
+

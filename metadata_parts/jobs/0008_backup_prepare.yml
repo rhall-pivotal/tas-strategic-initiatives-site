@@ -1,0 +1,79 @@
+name: backup-prepare
+label: Backup Prepare Node
+resource_label: Backup Prepare Node
+description: Streams backups from MySQL Cluster
+templates:
+- name: streaming-mysql-backup-client
+  release: mysql-backup
+- name: service-backup
+  release: service-backup
+max_in_flight: 1
+single_az_only: true
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 1024
+  constraints:
+    min: 1024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 200000 # This value must be twice the mysql persistent disk
+  contraints:
+    min: 10000
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+    power_of_two: true
+static_ip: 1
+dynamic_ip: 0
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 0
+  constraints:
+    min: 0
+    max: 1
+  zero_if:
+    property_reference: .properties.system_database
+    property_values:
+    - external
+property_blueprints:
+- name: backup_encryption_key
+  type: secret
+  label: Backup Symmetric Encryption Key
+manifest: |
+  service-backup:
+    blobstore:
+      bucket_name: (( .properties.mysql_backups.enable.bucket_name.value ))
+      bucket_path: (( .properties.mysql_backups.enable.bucket_path.value ))
+      access_key_id: (( .properties.mysql_backups.enable.access_key_id.value ))
+      secret_access_key: (( .properties.mysql_backups.enable.secret_access_key.value ))
+    source_folder: /var/vcap/data/mysql-mysql_backups
+    source_executable: /var/vcap/jobs/streaming-mysql-backup-client/bin/client
+    cleanup_executable: /bin/bash -c /var/vcap/jobs/streaming-mysql-backup-client/bin/cleanup-directories
+    cron_schedule: (( .properties.mysql_backups.enable.cron_schedule.value ))
+  streaming-mysql-backup-client:
+    output_folder: /var/vcap/data/mysql-mysql_backups
+    symmetric_key: (( backup_encryption_key.value ))
+    backup-generator:
+      cluster_ips: (( .mysql.ips ))
+      port: 8081
+      endpoint: /backup
+      credentials:
+        username: (( .mysql.mysql_backup_server_credentials.identity ))
+        password: (( .mysql.mysql_backup_server_credentials.password ))

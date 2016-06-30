@@ -1,0 +1,92 @@
+name: consul_server
+label: Consul
+resource_label: Consul
+description:
+templates:
+  - name: consul_agent
+    release: cf
+  - name: metron_agent
+    release: cf
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 2_048
+    constraints:
+      min: 1_024
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: true
+    default: 1024
+    constraints:
+      min: 1024
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 1
+    constraints:
+      min: 1
+      power_of_two: true
+
+static_ip: 1
+dynamic_ip: 0
+max_in_flight: 1
+single_az_only: false
+serial: true
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+    may_only_be_odd_or_zero: true
+
+property_blueprints:
+
+manifest: |
+  syslog_daemon_config:
+    address: (( .properties.syslog_host.value ))
+    port: (( .properties.syslog_port.value ))
+    transport: (( .properties.syslog_protocol.value ))
+  metron_agent:
+    deployment: cf
+  metron_endpoint:
+    shared_secret: (( .doppler.shared_secret_credentials.password ))
+  nats:
+    user: (( .nats.credentials.identity ))
+    password: (( .nats.credentials.password ))
+    port: 4222
+    machines: (( .nats.ips ))
+  loggregator:
+    etcd:
+      machines: (( .etcd_server.ips ))
+  consul:
+    encrypt_keys:
+    - (( .properties.consul_encrypt_key.value ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+    server_cert: (( .properties.consul_server_cert.cert_pem ))
+    server_key: (( .properties.consul_server_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      mode: server
+      servers:
+        lan: (( .consul_server.ips ))

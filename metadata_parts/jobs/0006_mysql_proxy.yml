@@ -1,0 +1,93 @@
+name: mysql_proxy
+label: MySQL Proxy
+resource_label: MySQL Proxy
+description: MySQL Proxy
+templates:
+  - name: proxy
+    release: cf-mysql
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 4_096
+    constraints:
+      min: 4_096
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: false
+    default: 0
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 1
+    constraints:
+      min: 1
+      power_of_two: true
+
+static_ip: 1
+dynamic_ip: 0
+max_in_flight: 1
+single_az_only: false
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 1
+  constraints:
+    min: 0
+  zero_if:
+    property_reference: .properties.system_database
+    property_values:
+    - external
+
+property_blueprints:
+  - name: static_ips
+    type: ip_ranges
+    configurable: true
+    optional: true
+
+  - name: service_hostname
+    type: network_address
+    configurable: true
+    optional: true
+
+  - name: dashboard_credentials
+    type: simple_credentials
+    default:
+      identity: admin
+
+manifest: |
+  network_name: default
+  cf_mysql:
+    external_host: "p-mysql.internal.(( .cloud_controller.system_domain.value ))"
+    proxy:
+      api_password: (( dashboard_credentials.password ))
+      api_username: (( dashboard_credentials.identity ))
+      proxy_ips: (( .mysql_proxy.ips ))
+    mysql:
+      cluster_ips: (( .mysql.ips ))
+  nats:
+    user: (( .nats.credentials.identity ))
+    password: (( .nats.credentials.password ))
+    machines: (( .nats.ips ))
+    port: 4222
+  syslog_aggregator:
+    address: (( .properties.syslog_host.value ))
+    port: (( .properties.syslog_port.value ))
+    transport: (( .properties.syslog_protocol.value ))

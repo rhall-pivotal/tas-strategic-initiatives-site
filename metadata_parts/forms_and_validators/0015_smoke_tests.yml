@@ -1,0 +1,22 @@
+form:
+  name: smoke_tests
+  label: Smoke Tests
+  description: Specify a Cloud Foundry organization and space where smoke tests can run if in the future you delete your Elastic Runtime deployment domains.
+  property_inputs:
+    - reference: .properties.smoke_tests
+      label: Choose whether to create a new org and space on demand for smoke tests
+      selector_property_inputs:
+      - reference: .properties.smoke_tests.on_demand
+        label: Temporary org and space (This org and space are deleted after smoke tests finish.)
+      - reference: .properties.smoke_tests.specified
+        label: Specified org and space (The org and space must have a domain available for routing.)
+        property_inputs:
+          - reference: .properties.smoke_tests.specified.org_name
+            label: Organization
+            description: The Elastic Runtime organization to use when running tests
+          - reference: .properties.smoke_tests.specified.space_name
+            label: Space
+            description: The Elastic Runtime space to use when running tests
+          - reference: .properties.smoke_tests.specified.apps_domain
+            label: Domain
+            description: Must be accessible to the organization

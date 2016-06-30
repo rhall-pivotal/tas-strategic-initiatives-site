@@ -1,0 +1,27 @@
+property_blueprints:
+  - name: logger_endpoint_port
+    type: port
+    configurable: true
+    optional: true
+
+  - name: syslog_host
+    type: network_address
+    configurable: true
+    optional: true
+
+  - name: syslog_port
+    type: port
+    configurable: true
+    optional: true
+
+  - name: syslog_protocol
+    type: dropdown_select
+    configurable: true
+    optional: true
+    options:
+      - name: tcp
+        label: TCP protocol
+      - name: relp
+        label: RELP protocol
+      - name: udp
+        label: UDP protocol

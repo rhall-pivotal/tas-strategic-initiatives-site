@@ -1,0 +1,23 @@
+form:
+  name: apps_manager_config
+  label: Apps Manager
+  description: "Configure Apps Manager"
+  property_inputs:
+    - reference: .push-apps-manager.enable_internal_user_store
+      label: Enable Internal User Store
+    - reference: .push-apps-manager.enable_non_admin_role_management
+      label: Enable Non Admin Role Management
+    - reference: .push-apps-manager.product_name
+      label: Product Name
+      description: Replace "Apps Manager" in the header with a custom product name (defaults to "Apps Manager" if blank)
+    - reference: .push-apps-manager.marketplace_name
+      label: Marketplace Name
+      description: Replaces "Marketplace" on the Apps Manager Marketplace Pages.
+    - reference: .push-apps-manager.nav_links
+      label: Customize Sidebar Links
+      description: "You may configure up to 10 links in the Apps Manager sidebar"
+      property_inputs:
+        - reference: name
+          label: "Link text"
+        - reference: href
+          label: "URL"

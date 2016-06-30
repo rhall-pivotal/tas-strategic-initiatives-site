@@ -1,0 +1,222 @@
+property_blueprints:
+  - name: app_usage_service_database
+    type: string
+    configurable: false
+    default: app_usage_service
+
+  - name: autoscale_database
+    type: string
+    configurable: false
+    default: autoscale
+
+  - name: ccdb_database
+    type: string
+    configurable: false
+    default: ccdb
+
+  - name: console_database
+    type: string
+    configurable: false
+    default: console
+
+  - name: notifications_database
+    type: string
+    configurable: false
+    default: notifications
+
+  - name: uaa_database
+    type: string
+    configurable: false
+    default: uaa
+
+  - name: system_database
+    type: selector
+    configurable: true
+    default: internal_mysql
+    option_templates:
+      - name: internal
+        select_value: internal
+        named_manifests:
+          - name: ccdb
+            manifest: |
+              address: (( .ccdb.first_ip ))
+              port: 2544
+              db_scheme: "postgres"
+              roles:
+              - tag: admin
+                name: (( .ccdb.credentials.identity ))
+                password: (( .ccdb.credentials.password ))
+              databases:
+              - tag: cc
+                name: ccdb
+                citext: true
+          - name: uaadb
+            manifest: |
+              address: (( .uaadb.first_ip ))
+              port: 2544
+              db_scheme: postgresql
+              roles:
+              - tag: admin
+                name: (( .uaadb.credentials.identity ))
+                password: (( .uaadb.credentials.password ))
+              databases:
+              - tag: uaa
+                name: uaa
+          - name: notifications
+            manifest: |
+              url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
+              max_open_connections: 10
+          - name: autoscaling
+            manifest: |
+              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
+          - name: console
+            manifest: |
+              ip: (( .consoledb.first_ip ))
+              username: (( .consoledb.credentials.identity ))
+              password: (( .consoledb.credentials.password ))
+              adapter: postgres
+          - name: push-app-usage-service
+            manifest: |
+              name: app_usage_service
+              port: 3306
+              ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
+              username: (( .mysql.app_usage_credentials.identity ))
+              password: (( .mysql.app_usage_credentials.password ))
+
+      - name: internal_mysql
+        select_value: internal_mysql
+        named_manifests:
+        - name: ccdb
+          manifest: |
+            address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            port: 3306
+            db_scheme: mysql
+            roles:
+            - tag: admin
+              name: (( .mysql.ccdb_credentials.identity ))
+              password: (( .mysql.ccdb_credentials.password ))
+            databases:
+            - tag: cc
+              name: ccdb
+              citext: true
+        - name: uaadb
+          manifest: |
+            address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            port: 3306
+            db_scheme: mysql
+            roles:
+            - tag: admin
+              name: (( .mysql.uaadb_credentials.identity ))
+              password: (( .mysql.uaadb_credentials.password ))
+            databases:
+            - tag: uaa
+              name: uaa
+        - name: notifications
+          manifest: |
+            url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
+            max_open_connections: 10
+        - name: autoscaling
+          manifest: |
+            url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
+        - name: console
+          manifest: |
+            ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            port: 3306
+            username: (( .mysql.consoledb_credentials.identity ))
+            password: (( .mysql.consoledb_credentials.password ))
+            adapter: mysql
+        - name: push-app-usage-service
+          manifest: |
+            name: app_usage_service
+            port: 3306
+            ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
+            username: (( .mysql.app_usage_credentials.identity ))
+            password: (( .mysql.app_usage_credentials.password ))
+
+      - name: external
+        named_manifests:
+          - name: ccdb
+            manifest: |
+              address: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              db_scheme: "mysql"
+              roles:
+              - tag: admin
+                name: (( .properties.system_database.external.username.value ))
+                password: (( .properties.system_database.external.password.value ))
+              databases:
+              - tag: cc
+                name: ccdb
+          - name: uaadb
+            manifest: |
+              address: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              db_scheme: "mysql"
+              roles:
+              - tag: admin
+                name: (( .properties.system_database.external.username.value ))
+                password: (( .properties.system_database.external.password.value ))
+              databases:
+              - tag: uaa
+                name: uaa
+          - name: notifications
+            manifest: |
+              url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/notifications
+              max_open_connections: 10
+          - name: autoscaling
+            manifest: |
+              url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/autoscale
+          - name: console
+            manifest: |
+              ip: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              username: (( .properties.system_database.external.username.value ))
+              password: (( .properties.system_database.external.password.value ))
+              adapter: mysql
+          - name: push-app-usage-service
+            manifest: |
+              name: app_usage_service
+              port: (( .properties.system_database.external.port.value ))
+              ip: (( .properties.system_database.external.host.value ))
+              username: (( .properties.system_database.external.username.value ))
+              password: (( .properties.system_database.external.password.value ))
+        select_value: external
+        property_blueprints:
+          - name: port
+            type: port
+            configurable: true
+          - name: host
+            type: string
+            configurable: true
+          - name: username
+            type: string
+            configurable: true
+          - name: password
+            type: secret
+            configurable: true
+
+  - name: mysql_backups
+    type: selector
+    configurable: true
+    default: disable
+    option_templates:
+    - name: disable
+      select_value: disable
+    - name: enable
+      select_value: enable
+      property_blueprints:
+      - name: bucket_name
+        type: string
+        configurable: true
+      - name: bucket_path
+        type: string
+        configurable: true
+      - name: access_key_id
+        type: string
+        configurable: true
+      - name: secret_access_key
+        type: secret
+        configurable: true
+      - name: cron_schedule
+        type: string
+        configurable: true

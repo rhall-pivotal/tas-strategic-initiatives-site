@@ -1,0 +1,102 @@
+name: doppler
+label: Doppler Server
+resource_label: Doppler Server
+description: Doppler server collects application logs
+templates:
+  - name: doppler
+    release: cf
+  - name: metron_agent
+    release: cf
+  - name: syslog_drain_binder
+    release: cf
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 2_048
+    constraints:
+      min: 2_048
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: false
+    default: 0
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 1
+    constraints:
+      min: 1
+      power_of_two: true
+
+static_ip: 0
+dynamic_ip: 1
+max_in_flight: 1
+single_az_only: false
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+
+property_blueprints:
+  - name: shared_secret_credentials
+    type: simple_credentials
+
+  - name: message_drain_buffer_size
+    type: integer
+    default: 10000
+    configurable: true
+
+manifest: |
+  doppler:
+    message_drain_buffer_size: (( message_drain_buffer_size.value ))
+
+  uaa:
+    jwt:
+      verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
+
+  doppler_endpoint:
+    shared_secret: (( .doppler.shared_secret_credentials.password ))
+
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+
+  nats:
+    user: (( .nats.credentials.identity ))
+    password: (( .nats.credentials.password ))
+    port: 4222
+    machines: (( .nats.ips ))
+  syslog_daemon_config:
+    address: (( .properties.syslog_host.value ))
+    port: (( .properties.syslog_port.value ))
+    transport: (( .properties.syslog_protocol.value ))
+  metron_agent:
+    deployment: cf
+  metron_endpoint:
+    shared_secret: (( .doppler.shared_secret_credentials.password ))
+  loggregator:
+    etcd:
+      machines: (( .etcd_server.ips ))
+
+  system_domain: (( .cloud_controller.system_domain.value ))
+  cc:
+    bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
+    srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"

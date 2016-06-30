@@ -1,0 +1,20 @@
+form:
+  name: syslog_aggregator
+  label: System Logging
+  description: Configure system logging. Complete the External Syslog fields only if using an external syslogd server.
+  property_inputs:
+    - reference: .cloud_controller.security_event_logging_enabled
+      label: Enable Cloud Controller security event logging
+      description: When enabled, all requests to Cloud Controller will be captured in the syslog
+    - reference: .properties.syslog_host
+      label: External Syslog Aggregator Hostname
+      description: The aggregator must be reachable from the Elastic Runtime network, accept TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd). You can also configure this with an IP address.
+    - reference: .properties.syslog_port
+      label: External Syslog Aggregator Port
+      description: The typical syslogd port is 514. Ensure syslogd is listening on external interfaces.
+    - reference: .properties.syslog_protocol
+      label: External Syslog Network Protocol
+      description: Select the transport protocol for forwarding logs.
+    - reference: .doppler.message_drain_buffer_size
+      label: "Syslog Drain Buffer Size (# of messages)"
+      description: "The number of log messages the buffer holds before dropping messages. A larger buffer size might overload the system."

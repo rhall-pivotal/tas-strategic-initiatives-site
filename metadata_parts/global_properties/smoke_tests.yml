@@ -1,0 +1,45 @@
+property_blueprints:
+  - name: smoke_tests
+    type: selector
+    configurable: true
+    default: on_demand
+    option_templates:
+      - name: on_demand
+        select_value: on_demand
+        named_manifests:
+          - name: smoke_tests
+            manifest: |
+              api: "https://api.(( .cloud_controller.system_domain.value ))"
+              apps_domain: (( .cloud_controller.apps_domain.value ))
+              user: (( .uaa.run_smoke_tests_credentials.identity ))
+              password: (( .uaa.run_smoke_tests_credentials.password ))
+              org: CF_SMOKE_TEST_ORG
+              space: CF_SMOKE_TEST_SPACE
+              skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+              use_existing_org: false
+              use_existing_space: false
+
+      - name: specified
+        select_value: specified
+        named_manifests:
+          - name: smoke_tests
+            manifest: |
+              api: "https://api.(( .cloud_controller.system_domain.value ))"
+              apps_domain: (( .properties.smoke_tests.specified.apps_domain.value ))
+              user: (( .uaa.run_smoke_tests_credentials.identity ))
+              password: (( .uaa.run_smoke_tests_credentials.password ))
+              org: (( .properties.smoke_tests.specified.org_name.value ))
+              space: (( .properties.smoke_tests.specified.space_name.value ))
+              skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+              use_existing_org: true
+              use_existing_space: true
+        property_blueprints:
+          - name: org_name
+            type: string
+            configurable: true
+          - name: space_name
+            type: string
+            configurable: true
+          - name: apps_domain
+            type: string
+            configurable: true

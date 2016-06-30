@@ -1,0 +1,138 @@
+name: diego_database
+label: Diego BBS
+resource_label: Diego BBS
+description: An etcd cluster node for Diego
+templates:
+  - name: consul_agent
+    release: cf
+  - name: etcd
+    release: etcd
+  - name: bbs
+    release: diego
+  - name: metron_agent
+    release: cf
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 2_048
+    constraints:
+      min: 1_024
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 1
+    constraints:
+      min: 1
+      power_of_two: true
+
+static_ip: 0
+dynamic_ip: 1
+max_in_flight: 1
+serial: true
+single_az_only: false
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+    may_only_be_odd_or_zero: true
+
+property_blueprints:
+  - name: bbs_encryption_passphrase
+    type: secret
+    configurable: false
+
+manifest: |
+  etcd:
+    advertise_urls_dns_suffix: etcd.service.cf.internal
+    machines: ['etcd.service.cf.internal']
+    cluster:
+    - instances: (( .etcd_server.instances ))
+      name: "etcd_server"
+    ca_cert: (( $ops_manager.ca_certificate ))
+    server_cert: (( .properties.etcd_server_cert.cert_pem ))
+    server_key: (( .properties.etcd_server_cert.private_key_pem ))
+    client_cert: (( .properties.etcd_client_cert.cert_pem ))
+    client_key: (( .properties.etcd_client_cert.private_key_pem ))
+    peer_ca_cert: (( $ops_manager.ca_certificate ))
+    peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
+    peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
+  diego:
+    bbs:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      server_cert: (( .properties.bbs_server_cert.cert_pem ))
+      server_key: (( .properties.bbs_server_cert.private_key_pem ))
+      client_cert: (( .properties.bbs_client_cert.cert_pem ))
+      client_key: (( .properties.bbs_client_cert.private_key_pem ))
+      active_key_label: key1
+      encryption_keys:
+        - label: key1
+          passphrase: (( bbs_encryption_passphrase.value ))
+      auctioneer:
+        api_url: http://auctioneer.service.cf.internal:9016
+      etcd:
+        advertise_urls_dns_suffix: etcd.service.cf.internal
+        machines: ['etcd.service.cf.internal']
+        ca_cert: (( $ops_manager.ca_certificate ))
+        server_cert: (( .properties.etcd_server_cert.cert_pem ))
+        server_key: (( .properties.etcd_server_cert.private_key_pem ))
+        client_cert: (( .properties.etcd_client_cert.cert_pem ))
+        client_key: (( .properties.etcd_client_cert.private_key_pem ))
+        peer_ca_cert: (( $ops_manager.ca_certificate ))
+        peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
+        peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
+  consul:
+    encrypt_keys:
+    - (( .properties.consul_encrypt_key.value ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+    server_cert: (( .properties.consul_server_cert.cert_pem ))
+    server_key: (( .properties.consul_server_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      servers:
+        lan: (( .consul_server.ips ))
+      services:
+        etcd: {}
+  nats:
+    user: (( .nats.credentials.identity ))
+    password: (( .nats.credentials.password ))
+    port: 4222
+    machines: (( .nats.ips ))
+  syslog_daemon_config:
+    address: (( .properties.syslog_host.value ))
+    port: (( .properties.syslog_port.value ))
+    transport: (( .properties.syslog_protocol.value ))
+  metron_agent:
+    deployment: cf
+  metron_endpoint:
+    shared_secret: (( .doppler.shared_secret_credentials.password ))
+  loggregator:
+    etcd:
+      machines: (( .etcd_server.ips ))

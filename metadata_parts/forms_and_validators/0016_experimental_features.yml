@@ -1,0 +1,9 @@
+form:
+  name: experimental_features
+  label: Experimental Features
+  description: Diego Cells are virtual machines that host applications. Specify how much memory or disk you want to set as the cells available capacity. You can overcommit these resources with values that exceed the Diego Cell VM sizes configured in the Resource Config section.
+  property_inputs:
+    - reference: .diego_cell.executor_memory_capacity
+      label: Cell Memory Capacity (MB)
+    - reference: .diego_cell.executor_disk_capacity
+      label: Cell Disk Capacity (MB)

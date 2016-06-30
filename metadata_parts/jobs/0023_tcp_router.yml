@@ -1,0 +1,99 @@
+name: tcp_router
+label: TCP Router
+resource_label: TCP Router
+description: TCP Routers route TCP traffic.
+templates:
+  - name: consul_agent
+    release: cf
+  - name: haproxy
+    release: routing
+  - name: router_configurer
+    release: routing
+  - name: metron_agent
+    release: cf
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: false
+    default: 0
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: false
+    default: 1024
+    constraints:
+      min: 1024
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 1
+    constraints:
+      min: 1
+      power_of_two: true
+
+static_ip: 1
+dynamic_ip: 0
+max_in_flight: 1
+single_az_only: false
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 1
+  constraints:
+    min: 0
+  zero_if:
+    property_reference: .properties.tcp_routing
+    property_values:
+    - disable
+
+property_blueprints:
+  - name: static_ips
+    type: ip_ranges
+    configurable: true
+    optional: true
+
+manifest: |
+  skip_ssl_validation: true
+  uaa:
+    tls_port: 8443
+  router_configurer:
+    debug_addr: null
+    log_level: debug
+    oauth_secret: (( .uaa.tcp_router_credentials.password ))
+    tcp_stats_collection_interval: 1m
+    tcp_stats_unix_socket: /var/vcap/jobs/haproxy/config/haproxy.sock
+  consul:
+    encrypt_keys:
+    - (( .properties.consul_encrypt_key.value ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+    server_cert: (( .properties.consul_server_cert.cert_pem ))
+    server_key: (( .properties.consul_server_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      servers:
+        lan: (( .consul_server.ips ))
+  metron_agent:
+    deployment: cf
+  metron_endpoint:
+    shared_secret: (( .doppler.shared_secret_credentials.password ))
+  loggregator:
+    etcd:
+      machines: (( .etcd_server.ips ))

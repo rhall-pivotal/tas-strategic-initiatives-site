@@ -1,0 +1,111 @@
+name: ha_proxy
+label: HAProxy
+resource_label: HAProxy
+description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal CF Elastic Runtime router IP. Self signed certificates will function properly.
+templates:
+  - name: consul_agent
+    release: cf
+  - name: haproxy
+    release: cf
+  - name: metron_agent
+    release: cf
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 2_048
+    constraints:
+      min: 2_048
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: false
+    default: 0
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 1
+    constraints:
+      min: 1
+      power_of_two: true
+
+static_ip: 1
+dynamic_ip: 0
+max_in_flight: 1
+single_az_only: false
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 1
+  constraints:
+    min: 0
+  zero_if:
+    property_reference: .properties.networking_point_of_entry
+    property_values:
+    - external_ssl
+    - external_non_ssl
+
+property_blueprints:
+  - name: static_ips
+    type: ip_ranges
+    configurable: true
+    optional: true
+
+  - name: skip_cert_verify
+    type: boolean
+    configurable: true
+
+manifest: |
+  request_timeout_in_seconds: (( .router.request_timeout_in_seconds.value ))
+  ha_proxy:
+    disable_http: (( .properties.networking_point_of_entry.haproxy.disable_http.value ))
+    ssl_ciphers: (( .properties.networking_point_of_entry.haproxy.ssl_ciphers.value ))
+    ssl_pem: (( .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate.cert_and_private_key_pems ))
+  router:
+    servers: (( .router.ips ))
+  cc:
+    allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
+  syslog_daemon_config:
+    address: (( .properties.syslog_host.value ))
+    port: (( .properties.syslog_port.value ))
+    transport: (( .properties.syslog_protocol.value ))
+  metron_agent:
+    deployment: cf
+  metron_endpoint:
+    shared_secret: (( .doppler.shared_secret_credentials.password ))
+  nats:
+    user: (( .nats.credentials.identity ))
+    password: (( .nats.credentials.password ))
+    port: 4222
+    machines: (( .nats.ips ))
+  loggregator:
+    etcd:
+      machines: (( .etcd_server.ips ))
+  consul:
+    encrypt_keys:
+    - (( .properties.consul_encrypt_key.value ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+    server_cert: (( .properties.consul_server_cert.cert_pem ))
+    server_key: (( .properties.consul_server_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      servers:
+        lan: (( .consul_server.ips ))

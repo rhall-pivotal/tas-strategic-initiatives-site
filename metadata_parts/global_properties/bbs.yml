@@ -1,0 +1,12 @@
+property_blueprints:
+  - name: bbs_client_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: bbs_server_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - bbs.service.cf.internal
+      - "*.bbs.service.cf.internal"

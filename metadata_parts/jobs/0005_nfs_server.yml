@@ -1,0 +1,136 @@
+name: nfs_server
+label: File Storage
+resource_label: File Storage
+description: Stores droplets and app packages on behalf of Cloud Controller
+templates:
+  - name: consul_agent
+    release: cf
+  - name: debian_nfs_server
+    release: cf
+  - name: metron_agent
+    release: cf
+  - name: blobstore
+    release: cf
+  - name: route_registrar
+    release: cf
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 4_096
+    constraints:
+      min: 4_096
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 8_192
+    constraints:
+      min: 8_192
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: true
+    default: 102_400
+    constraints:
+      min: 10_240
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 8
+    constraints:
+      min: 4
+      power_of_two: true
+
+static_ip: 1
+dynamic_ip: 0
+max_in_flight: 1
+single_az_only: true
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 1
+  constraints:
+    max: 1
+    min: 0
+  zero_if:
+    property_reference: .properties.system_blobstore
+    property_values:
+    - external
+
+property_blueprints:
+  - name: blobstore_credentials
+    type: simple_credentials
+    default:
+      identity: blobstore
+  - name: blobstore_secret
+    type: secret
+    configurable: false
+  - name: blobstore_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - blobstore.service.cf.internal
+manifest: |
+  system_domain: (( .cloud_controller.system_domain.value ))
+  nfs_server:
+    allow_from_entries: (( .cloud_controller.subnet_cidrs ))
+  syslog_daemon_config:
+    address: (( .properties.syslog_host.value ))
+    port: (( .properties.syslog_port.value ))
+    transport: (( .properties.syslog_protocol.value ))
+  metron_agent:
+    deployment: cf
+  metron_endpoint:
+    shared_secret: (( .doppler.shared_secret_credentials.password ))
+  nats:
+    user: (( .nats.credentials.identity ))
+    password: (( .nats.credentials.password ))
+    port: 4222
+    machines: (( .nats.ips ))
+  loggregator:
+    etcd:
+      machines: (( .etcd_server.ips ))
+  consul:
+    encrypt_keys:
+    - (( .properties.consul_encrypt_key.value ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+    server_cert: (( .properties.consul_server_cert.cert_pem ))
+    server_key: (( .properties.consul_server_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      services:
+        blobstore: {}
+      servers:
+        lan: (( .consul_server.ips ))
+  route_registrar:
+    routes:
+      - name: blobstore
+        port: 80
+        registration_interval: 20s
+        tags:
+          component: blobstore
+        uris:
+        - blobstore.(( .cloud_controller.system_domain.value ))
+  blobstore:
+    admin_users:
+    - username: (( blobstore_credentials.identity ))
+      password: (( blobstore_credentials.password ))
+    secure_link:
+      secret: (( blobstore_secret.value ))
+    tls:
+      cert: (( blobstore_cert.cert_pem ))
+      port: 443
+      private_key: (( blobstore_cert.private_key_pem ))

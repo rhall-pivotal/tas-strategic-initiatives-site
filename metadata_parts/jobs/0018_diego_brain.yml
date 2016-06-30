@@ -1,0 +1,238 @@
+name: diego_brain
+label: Diego Brain
+resource_label: Diego Brain
+description: Diego Brain
+templates:
+  - name: consul_agent
+    release: cf
+  - name: auctioneer
+    release: diego
+  - name: cc_uploader
+    release: cf
+  - name: converger
+    release: diego
+  - name: file_server
+    release: diego
+  - name: nsync
+    release: cf
+  - name: route_emitter
+    release: diego
+  - name: tcp_emitter
+    release: routing
+  - name: ssh_proxy
+    release: diego
+  - name: stager
+    release: cf
+  - name: tps
+    release: cf
+  - name: metron_agent
+    release: cf
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 2_048
+    constraints:
+      min: 1_024
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 4_096
+    constraints:
+      min: 4_096
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 1
+    constraints:
+      min: 1
+      power_of_two: true
+
+static_ip: 1
+dynamic_ip: 0
+max_in_flight: 1
+single_az_only: false
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+
+property_blueprints:
+  - name: ssh_host_key
+    type: rsa_pkey_credentials
+    configurable: false
+
+  - name: static_ips
+    type: ip_ranges
+    configurable: true
+    optional: true
+
+manifest: |
+  capi:
+    cc_uploader:
+      cc:
+        job_polling_interval_in_seconds: 25
+        basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+        basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
+        external_port: 9022
+        staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+        staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+    nsync:
+      bbs:
+        api_location: bbs.service.cf.internal:8889
+        ca_cert: (( $ops_manager.ca_certificate ))
+        server_cert: (( .properties.bbs_server_cert.cert_pem ))
+        server_key: (( .properties.bbs_server_cert.private_key_pem ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
+      cc:
+        base_url: https://api.(( .cloud_controller.system_domain.value ))
+        basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+        basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
+        staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+        staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+    stager:
+      bbs:
+        api_location: bbs.service.cf.internal:8889
+        ca_cert: (( $ops_manager.ca_certificate ))
+        server_cert: (( .properties.bbs_server_cert.cert_pem ))
+        server_key: (( .properties.bbs_server_cert.private_key_pem ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
+      cc:
+        basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+        basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
+        external_port: 9022
+        staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+        staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+      insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
+    tps:
+      traffic_controller_url: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value || "443" ))
+      bbs:
+        api_location: bbs.service.cf.internal:8889
+        ca_cert: (( $ops_manager.ca_certificate ))
+        server_cert: (( .properties.bbs_server_cert.cert_pem ))
+        server_key: (( .properties.bbs_server_cert.private_key_pem ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
+      cc:
+        basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+        basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
+        external_port: 9022
+        staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+        staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+  diego:
+    auctioneer:
+      bbs:
+        api_location: bbs.service.cf.internal:8889
+        ca_cert: (( $ops_manager.ca_certificate ))
+        server_cert: (( .properties.bbs_server_cert.cert_pem ))
+        server_key: (( .properties.bbs_server_cert.private_key_pem ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
+    converger:
+      bbs:
+        api_location: bbs.service.cf.internal:8889
+        ca_cert: (( $ops_manager.ca_certificate ))
+        server_cert: (( .properties.bbs_server_cert.cert_pem ))
+        server_key: (( .properties.bbs_server_cert.private_key_pem ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
+    file_server:
+      cc:
+        job_polling_interval_in_seconds: 25
+        basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+        basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
+        external_port: 9022
+        staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+        staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+    route_emitter:
+      bbs:
+        api_location: bbs.service.cf.internal:8889
+        ca_cert: (( $ops_manager.ca_certificate ))
+        server_cert: (( .properties.bbs_server_cert.cert_pem ))
+        server_key: (( .properties.bbs_server_cert.private_key_pem ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        port: 4222
+        machines: (( .nats.ips ))
+    ssh_proxy:
+      bbs:
+        api_location: bbs.service.cf.internal:8889
+        ca_cert: (( $ops_manager.ca_certificate ))
+        server_cert: (( .properties.bbs_server_cert.cert_pem ))
+        server_key: (( .properties.bbs_server_cert.private_key_pem ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
+      host_key: (( ssh_host_key.private_key_pem ))
+      enable_cf_auth: true
+      enable_diego_auth: false
+      diego_credentials: ""
+      cc:
+        external_port: 9022
+      uaa_token_url: "https://uaa.(( .cloud_controller.system_domain.value ))/oauth/token"
+      uaa_secret: (( .uaa.ssh_proxy_client_credentials.password ))
+    ssl:
+      skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  consul:
+    encrypt_keys:
+    - (( .properties.consul_encrypt_key.value ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+    server_cert: (( .properties.consul_server_cert.cert_pem ))
+    server_key: (( .properties.consul_server_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      servers:
+        lan: (( .consul_server.ips ))
+  nats:
+    user: (( .nats.credentials.identity ))
+    password: (( .nats.credentials.password ))
+    port: 4222
+    machines: (( .nats.ips ))
+  syslog_daemon_config:
+    address: (( .properties.syslog_host.value ))
+    port: (( .properties.syslog_port.value ))
+    transport: (( .properties.syslog_protocol.value ))
+  metron_agent:
+    deployment: cf
+  metron_endpoint:
+    shared_secret: (( .doppler.shared_secret_credentials.password ))
+  loggregator:
+    etcd:
+      machines: (( .etcd_server.ips ))
+  tcp_emitter:
+    bbs:
+      client_cert: (( .properties.bbs_client_cert.cert_pem ))
+      client_key: (( .properties.bbs_client_cert.private_key_pem ))
+    debug_addr: 0.0.0.0:17017
+    oauth_secret: (( .uaa.tcp_emitter_credentials.password ))
+  uaa:
+    tls_port: 8443
+  bbs:
+    api_location: bbs.service.cf.internal:8889
+    ca_cert: (( $ops_manager.ca_certificate ))
+  skip_ssl_validation: true

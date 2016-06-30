@@ -1,0 +1,78 @@
+property_blueprints:
+  - name: networking_point_of_entry
+    type: selector
+    configurable: true
+    default: haproxy
+    option_templates:
+      - name: external_ssl
+        select_value: external_ssl
+        property_blueprints:
+          - name: ssl_rsa_certificate
+            type: rsa_cert_credentials
+            configurable: true
+          - name: ssl_ciphers
+            type: text
+            configurable: true
+            optional: true
+      - name: external_non_ssl
+        select_value: external_non_ssl
+      - name: haproxy
+        select_value: haproxy
+        property_blueprints:
+          - name: ssl_rsa_certificate
+            type: rsa_cert_credentials
+            configurable: true
+          - name: disable_http
+            type: boolean
+            configurable: true
+            default: false
+          - name: ssl_ciphers
+            type: text
+            configurable: true
+            optional: true
+
+  - name: tcp_routing
+    type: selector
+    configurable: true
+    default: enable
+    option_templates:
+    - name: enable
+      select_value: enable
+      named_manifests:
+        - name: default_router_group
+          manifest: |
+            - name: default-tcp
+              reservable_ports: (( .properties.tcp_routing.enable.reservable_ports.value ))
+              type: tcp
+      property_blueprints:
+        - name: reservable_ports
+          type: string
+          configurable: true
+          placeholder: "e.g: 1024-10000,65535"
+    - name: disable
+      select_value: disable
+      named_manifests:
+        - name: default_router_group
+          manifest: |
+
+  - name: route_services
+    type: selector
+    configurable: true
+    default: enable
+    option_templates:
+      - name: enable
+        select_value: enable
+        named_manifests:
+          - name: secret
+            manifest: |
+              (( .router.route_services_secret.value ))
+        property_blueprints:
+          - name: ignore_ssl_cert_verification
+            type: boolean
+            configurable: true
+            default: false
+      - name: disable
+        select_value: disable
+        named_manifests:
+          - name: secret
+            manifest: |

@@ -1,0 +1,41 @@
+form:
+  name: mysql_config
+  label: Internal MySQL
+  description:  Only configure this section if you selected Internal Databases - MySQL or Internal Databases - MySQL and Postgres in the previous Databases section.
+  markdown: |
+    ## A proxy tier routes MySQL connections from internal components to healthy cluster nodes. Configure DNS and/or your own load balancer to point to multiple proxy instances for increased availability. TCP healthchecks can be configured against port 1936.
+    ## The automated backups functionality works with any S3-compatible file store that can receive your backup files.
+  property_inputs:
+    - reference: .mysql_proxy.static_ips
+      label: MySQL Proxy IPs
+      description: "Enter the IP address(es) for the MySQL proxy instances configured on your external load balancer."
+    - reference: .mysql_proxy.service_hostname
+      label: MySQL Service Hostname
+      description: "To remove a MySQL proxy as a single point of failure, configure your load balancer to route application requests to multiple proxy instances. Then enter the IP or hostname of the load balancer here, so components reach their MySQL databases through the load balancer. If this field is blank, components use the IP of the first MySQL proxy instance."
+    - reference: .properties.mysql_backups
+      label: Automated Backups Configuration
+      selector_property_inputs:
+      - reference: .properties.mysql_backups.disable
+        label: |
+          Disable Automated MySQL Backups (With this option, set Resource Config > Backup Prepare Node > Instances to 0.)
+        description: Disable mysql_backups
+      - reference: .properties.mysql_backups.enable
+        label: "Enable Automated MySQL Backups (With this option, set Resource Config > Backup Prepare Node > Instances to 1.)"
+        description: Enable MySQL Backups
+        property_inputs:
+        - reference: .properties.mysql_backups.enable.bucket_name
+          label: S3 Bucket Name
+          description: Do not include 's3://' prefix, trailing '/', or underscores. The bucket is created automatically if it does not already exist.
+          placeholder: "my-bucket"
+        - reference: .properties.mysql_backups.enable.bucket_path
+          label: Bucket Path
+          description: Specify a folder within the bucket to hold the MySQL backups. Do not include a trailing slash.
+          placeholder: "my-backups-folder/elastic-runtime"
+        - reference: .properties.mysql_backups.enable.access_key_id
+          label: AWS Access Key ID
+        - reference: .properties.mysql_backups.enable.secret_access_key
+          label: AWS Secret Access Key
+        - reference: .properties.mysql_backups.enable.cron_schedule
+          label: Cron Schedule
+          description: Schedule MySQL backups as a cron expression (see http://godoc.org/github.com/robfig/cron). Schedule uses the machine local time zone.
+          placeholder: "@every 15m"
