@@ -2359,11 +2359,49 @@ job_types:
             override: true
           userids_enabled: true
           users:
-          - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose,notification_preferences.read,notification_preferences.write,notifications.manage,notification_templates.read,notification_templates.write,emails.write,notifications.write,zones.read,zones.write,routing.router_groups.read
-          - (( push_apps_manager_credentials.identity ))|(( push_apps_manager_credentials.password ))|cloud_controller.admin
-          - (( run_smoke_tests_credentials.identity ))|(( run_smoke_tests_credentials.password ))|cloud_controller.admin
-          - (( system_services_credentials.identity ))|(( system_services_credentials.password ))|cloud_controller.admin
-          - (( system_verification_credentials.identity ))|(( system_verification_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support
+          - name: (( admin_credentials.identity ))
+            password: (( admin_credentials.password ))
+            groups:
+              - scim.write
+              - scim.read
+              - openid
+              - cloud_controller.admin
+              - dashboard.user
+              - console.admin
+              - console.support
+              - doppler.firehose
+              - notification_preferences.read
+              - notification_preferences.write
+              - notifications.manage
+              - notification_templates.read
+              - notification_templates.write
+              - emails.write
+              - notifications.write
+              - zones.read
+              - zones.write
+              - routing.router_groups.read
+          - name: (( push_apps_manager_credentials.identity ))
+            password: (( push_apps_manager_credentials.password ))
+            groups:
+              - cloud_controller.admin
+          - name: (( run_smoke_tests_credentials.identity ))
+            password: (( run_smoke_tests_credentials.password ))
+            groups:
+              - cloud_controller.admin
+          - name: (( system_services_credentials.identity ))
+            password: (( system_services_credentials.password ))
+            groups:
+              - cloud_controller.admin
+          - name: (( system_verification_credentials.identity ))
+            password: (( system_verification_credentials.password ))
+            groups:
+              - scim.write
+              - scim.read
+              - openid
+              - cloud_controller.admin
+              - dashboard.user
+              - console.admin
+              - console.support
 
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
