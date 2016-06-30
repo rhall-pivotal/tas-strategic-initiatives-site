@@ -11,6 +11,7 @@
 #   - internal network id
 #   - ops manager ip address
 #   - ha_proxy floating ip
+#   - tcp_router floating ip
 
 variable "tenant" {
   default = "mars"
