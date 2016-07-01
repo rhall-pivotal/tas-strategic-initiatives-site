@@ -13,7 +13,7 @@ form:
     - reference: .ha_proxy.static_ips
       label: HAProxy IPs
       description: "If you are using HAProxy, enter its IP address(es). The addresses must be within your subnet CIDR block. Point your DNS to this IP address unless you are using your own load balancer."
-    - reference: .tcp-router.static_ips
+    - reference: .tcp_router.static_ips
       label: TCP Router IPs
       description: "Enter the IP address(es) you would like to designate for the TCP Routers. The addresses must be within your subnet CIDR block. Point your load balancer to these address(es)."
     - reference: .properties.networking_point_of_entry
