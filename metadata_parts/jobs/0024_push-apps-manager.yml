@@ -173,7 +173,6 @@ manifest: |
     default_from: (( .properties.smtp_from.value ))
     usage_service_host: "https://app-usage.(( .cloud_controller.system_domain.value ))"
     bundle_without: test development hosted_only
-    apps_manager_version: (( .properties.product_version.value ))
     enable_internal_user_store: (( enable_internal_user_store.value ))
     enable_non_admin_role_management: (( enable_non_admin_role_management.value ))
     generic_white_label_config_json:
