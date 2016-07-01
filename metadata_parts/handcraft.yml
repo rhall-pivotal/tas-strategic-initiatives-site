@@ -2359,11 +2359,49 @@ job_types:
             override: true
           userids_enabled: true
           users:
-          - (( admin_credentials.identity ))|(( admin_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose,notification_preferences.read,notification_preferences.write,notifications.manage,notification_templates.read,notification_templates.write,emails.write,notifications.write,zones.read,zones.write,routing.router_groups.read
-          - (( push_apps_manager_credentials.identity ))|(( push_apps_manager_credentials.password ))|cloud_controller.admin
-          - (( run_smoke_tests_credentials.identity ))|(( run_smoke_tests_credentials.password ))|cloud_controller.admin
-          - (( system_services_credentials.identity ))|(( system_services_credentials.password ))|cloud_controller.admin
-          - (( system_verification_credentials.identity ))|(( system_verification_credentials.password ))|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support
+          - name: (( admin_credentials.identity ))
+            password: (( admin_credentials.password ))
+            groups:
+              - scim.write
+              - scim.read
+              - openid
+              - cloud_controller.admin
+              - dashboard.user
+              - console.admin
+              - console.support
+              - doppler.firehose
+              - notification_preferences.read
+              - notification_preferences.write
+              - notifications.manage
+              - notification_templates.read
+              - notification_templates.write
+              - emails.write
+              - notifications.write
+              - zones.read
+              - zones.write
+              - routing.router_groups.read
+          - name: (( push_apps_manager_credentials.identity ))
+            password: (( push_apps_manager_credentials.password ))
+            groups:
+              - cloud_controller.admin
+          - name: (( run_smoke_tests_credentials.identity ))
+            password: (( run_smoke_tests_credentials.password ))
+            groups:
+              - cloud_controller.admin
+          - name: (( system_services_credentials.identity ))
+            password: (( system_services_credentials.password ))
+            groups:
+              - cloud_controller.admin
+          - name: (( system_verification_credentials.identity ))
+            password: (( system_verification_credentials.password ))
+            groups:
+              - scim.write
+              - scim.read
+              - openid
+              - cloud_controller.admin
+              - dashboard.user
+              - console.admin
+              - console.support
 
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
@@ -5539,7 +5577,7 @@ property_blueprints:
       select_value: disable
       named_manifests:
         - name: default_router_group
-          manifest: |
+          manifest: []
 
   - name: route_services
     type: selector
@@ -5775,7 +5813,6 @@ property_blueprints:
             manifest: |
               blobstore_type: fog
               buildpack_directory_key: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
-              fog_aws_storage_options: ['encryption']
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -5788,7 +5825,6 @@ property_blueprints:
             manifest: |
               blobstore_type: fog
               droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
-              fog_aws_storage_options: ['encryption']
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -5801,7 +5837,6 @@ property_blueprints:
             manifest: |
               app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
               blobstore_type: fog
-              fog_aws_storage_options: ['encryption']
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
@@ -5814,7 +5849,6 @@ property_blueprints:
             manifest: |
               blobstore_type: fog
               resource_directory_key: (( .properties.system_blobstore.external.resources_bucket.value ))
-              fog_aws_storage_options: ['encryption']
               fog_connection:
                 provider: AWS
                 aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
