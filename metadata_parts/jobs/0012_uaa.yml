@@ -233,6 +233,16 @@ property_blueprints:
     default:
       identity: pivotal_account
 
+  - name: customize_username_label
+    type: string
+    configurable: true
+    default: "Email"
+
+  - name: customize_password_label
+    type: string
+    configurable: true
+    default: "Password"
+
 manifest: |
   consul:
     encrypt_keys:
@@ -259,9 +269,9 @@ manifest: |
     protocol: https
     prompt:
       username:
-        text: (( .properties.uaa.internal.customize_username_label ))
+        text: (( .uaa.customize_username_label ))
       password:
-        text: (( .properties.uaa.internal.customize_password_label ))
+        text: (( .uaa.customize_password_label ))
 
     links:
       home: "https://apps.(( .cloud_controller.system_domain.value ))"
