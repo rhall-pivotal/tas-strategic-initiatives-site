@@ -78,11 +78,8 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
       resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
       resource_config.set_elb_names_for_job('router', elastic_runtime_settings['elb_name'])
       resource_config.set_elb_names_for_job('diego_brain', elastic_runtime_settings['ssh_elb_name'])
+      resource_config.set_elb_names_for_job('tcp_router', elastic_runtime_settings['tcp_elb_name'])
 
-      # takes advantage of the pcf.<name>.cf-app.com format
-      env_name = env_settings['name'].split('.')[1]
-      tcp_elb_name = env_name + '-pcf-tcp-elb'
-      resource_config.set_elb_names_for_job('tcp_router', tcp_elb_name)
     when 'vsphere', 'vcloud'
       networking_form.open_form
       networking_form.property('.ha_proxy.static_ips').set(elastic_runtime_settings['ha_proxy_static_ips'])
