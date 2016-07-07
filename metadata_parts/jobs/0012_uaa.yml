@@ -257,6 +257,11 @@ manifest: |
       footer_legal_text: (( .push-apps-manager.footer_text.value ))
     self_service_links_enabled: (( .properties.uaa.selected_option.parsed_manifest(self_service_links_enabled) ))
     protocol: https
+    prompt:
+      username:
+        text: (( .properties.uaa.internal.customize_username_label ))
+      password:
+        text: (( .properties.uaa.internal.customize_password_label ))
 
     links:
       home: "https://apps.(( .cloud_controller.system_domain.value ))"
@@ -315,6 +320,9 @@ manifest: |
         profile_type: "(( .properties.uaa.ldap.group_search_base.value_present? ? 'groups-map-to-scopes' : 'no-groups' ))"
         searchBase: (( .properties.uaa.ldap.group_search_base.value ))
         groupSearchFilter: (( .properties.uaa.ldap.group_search_filter.value ))
+      email_domain: (( .properties.uaa.ldap.email_domains ))
+      given_name: (( .properties.uaa.ldap.first_name_attribute ))
+      family_name: (( .properties.uaa.ldap.last_name_attribute ))
     login:
       addnew: false
     catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"

@@ -56,6 +56,21 @@ form:
             - reference: .properties.uaa.saml.name_id_format
               label: Name ID Format
               description: "Select the name identifier format configured for the identity provider. This translates to the username on Pivotal Cloud Foundry"
+            - reference: .properties.uaa.saml.email_domains
+              label: Email Domain(s)
+              description: "Comma-separated list of domains, e.g. example.com. This is used for inviting external users to Apps Manager"
+            - reference: .properties.uaa.saml.first_name_attribute
+              label: First Name Attribute
+              description: "Map the first name attribute from the SAML assertion."
+            - reference: .properties.uaa.saml.last_name_attribute
+              label: Last Name Attribute
+              description: "Map the last name attribute from the SAML assertion."
+            - reference: .properties.uaa.saml.email_attribute
+              label: Email Attribute
+              description: "Map the email attribute from the SAML assertion."
+            - reference: .properties.uaa.saml.external_groups_attribute
+              label: External Groups Attribute
+              description: "Map the external groups attribute from the SAML assertion."
             - reference: .properties.uaa.saml.sign_auth_requests
               label: Sign Authentication Requests
               description: "If enabled, signed authentication requests will be sent to the SAML identity provider."
@@ -93,9 +108,18 @@ form:
             - reference: .properties.uaa.ldap.server_ssl_cert_alias
               label: Server SSL Cert AltName
               description: "Required only for ldaps:// and using a Self Signed Certificate."
+            - reference: .properties.uaa.ldap.first_name_attribute
+              label: First Name Attribute
+              description: The name of the attribute that contains the first name.
+            - reference: .properties.uaa.ldap.last_name_attribute
+              label: Last Name Attribute
+              description: The name of the attribute that contains the last name.
             - reference: .properties.uaa.ldap.mail_attribute_name
               label: Email Attribute
               description: "The name of the attribute that contains the user's email address."
+            - reference: .properties.uaa.ldap.email_domains
+              label: Email Domain(s)
+              description: "Comma-separated list of domains, e.g. example.com. This is used for inviting external users to Apps Manager."
     - reference: .uaa.apps_manager_access_token_lifetime
       label: Apps Manager Access Token Lifetime (in seconds)
       description: Set the lifetime of the access token for the Apps Manager login portal.
@@ -108,6 +132,12 @@ form:
     - reference: .uaa.cf_cli_refresh_token_lifetime
       label: Cloud Foundry CLI Refresh Token Lifetime (in seconds)
       description: Set the lifetime of the refresh token for the Cloud Foundry CLI.
+    - reference: .uaa.customize_username_label
+      label: Customize Username Label (on login page)
+      description: The text used to prompt for a username during login
+    - reference: .uaa.customize_password_label
+      label: Customize Password Label (on login page)
+      description: The text used to prompt for a password during login
 
 install_time_verifiers:
   - name: Verifiers::SsoUrlVerifier
