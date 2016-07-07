@@ -58,6 +58,8 @@ form:
           label: S3 Signature Version
         - reference: .properties.system_blobstore.external.region
           label: Region
+        - reference: .properties.system_blobstore.external.encryption
+          label: Server-side Encryption (available for AWS S3 only)
         - reference: .properties.system_blobstore.external.buildpacks_bucket
           label: Buildpacks Bucket Name
           description: S3 bucket for storing app buildpacks.
