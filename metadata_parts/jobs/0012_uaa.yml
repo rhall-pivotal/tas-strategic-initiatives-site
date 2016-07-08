@@ -124,6 +124,11 @@ property_blueprints:
     default:
       identity: portal
 
+  - name: usage_service_client_credentials
+    type: simple_credentials
+    default:
+      identity: usage_service
+
   - name: invitations_client_credentials
     type: simple_credentials
     default:
@@ -395,6 +400,12 @@ manifest: |
         scope: cloud_controller.read,cloud_controller.write,cloud_controller.admin
         authorized-grant-types: implicit
         access-token-validity: 28800
+      (( usage_service_client_credentials.identity )):
+        id: (( usage_service_client_credentials.identity ))
+        secret: (( usage_service_client_credentials.password ))
+        override: true
+        authorities: "cloud_controller.read,uaa.resource,cloud_controller.admin"
+        authorized-grant-types: "client_credentials"
       invitations:
         id: (( invitations_client_credentials.identity ))
         secret: (( invitations_client_credentials.password ))
