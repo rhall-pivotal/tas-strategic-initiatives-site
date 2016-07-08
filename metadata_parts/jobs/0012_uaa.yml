@@ -269,9 +269,9 @@ manifest: |
     protocol: https
     prompt:
       username:
-        text: (( .uaa.customize_username_label ))
+        text: (( .uaa.customize_username_label.value ))
       password:
-        text: (( .uaa.customize_password_label ))
+        text: (( .uaa.customize_password_label.value ))
 
     links:
       home: "https://apps.(( .cloud_controller.system_domain.value ))"
