@@ -149,3 +149,6 @@ manifest: |
     deny_networks: ["0.0.0.0/0"]
     network_mtu: (( garden_network_mtu.value ))
     insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
+    http_proxy: (( $ops_manager.http_proxy ))
+    https_proxy: (( $ops_manager.https_proxy ))
+    no_proxy: (( $ops_manager.no_proxy ))
