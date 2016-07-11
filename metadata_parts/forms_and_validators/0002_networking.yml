@@ -54,6 +54,9 @@ form:
         - reference: .properties.tcp_routing.enable
           label: Enable TCP Routing
           property_inputs:
+            - reference: .properties.tcp_routing.enable.domain
+              label: TCP Routing Domain
+              description: Enter the domain name(s) that resolves to the load balancer(s) or router serving the range of ports for TCP routes. Note that if your apps and system domains are the same domain, then you must use a different base domain for this.
             - reference: .properties.tcp_routing.enable.reservable_ports
               label: TCP Routing Ports (one-time configuration, if you want to update this value you can via the CF CLI)
               description: Enter the range of ports reserved for TCP routes. These ports must be available on your load balancer. You can specify a list of ports with commas between each port number and specify ranges of ports with dashes between the first and last port number. This configuration only applies the first time you specify it here, if you later want to update the ports you must do so with the CF CLI.
