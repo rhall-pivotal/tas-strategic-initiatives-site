@@ -190,7 +190,8 @@
           }
         ],
         "Subnets": [
-          { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId" ] }
+          { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId" ] },
+          { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId2" ] }
         ]
       }
     },
@@ -251,7 +252,8 @@
           }
         ],
         "Subnets": [
-          { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId" ] }
+          { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId" ] },
+          { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId2" ] }
         ]
       }
     },
@@ -1414,7 +1416,8 @@
           }
         ],
         "Subnets": [
-          { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId" ] }
+          { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId" ] },
+          { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId2" ] }
         ]
       }
     },
@@ -1607,14 +1610,26 @@
     "PcfPrivateSubnetId": {
       "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPrivateSubnetId" ]}
     },
+    "PcfPrivateSubnet2Id": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPrivateSubnet2Id" ]}
+    },
     "PcfPrivateSubnetAvailabilityZone": {
       "Value": { "Fn::GetAtt" : [ "OpsManStack", "Outputs.PcfPrivateSubnetAvailabilityZone" ] }
+    },
+    "PcfPrivateSubnet2AvailabilityZone": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPrivateSubnet2AvailabilityZone" ]}
     },
     "PcfPublicSubnetId": {
       "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId" ]}
     },
+    "PcfPublicSubnetId2": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetId2" ]}
+    },
     "PcfPublicSubnetAvailabilityZone": {
       "Value": { "Fn::GetAtt" : [ "OpsManStack", "Outputs.PcfPublicSubnetAvailabilityZone" ] }
+    },
+    "PcfPublicSubnetAvailabilityZone2": {
+      "Value": {"Fn::GetAtt": [ "OpsManStack", "Outputs.PcfPublicSubnetAvailabilityZone2" ]}
     },
     "PcfRdsAddress": {
       "Value": { "Fn::GetAtt": [ "OpsManStack", "Outputs.PcfRdsAddress" ]}
