@@ -45,7 +45,16 @@ property_blueprints:
             - name: default-tcp
               reservable_ports: (( .properties.tcp_routing.enable.reservable_ports.value ))
               type: tcp
+        - name: app_domains
+          manifest: |
+            - name: "(( .cloud_controller.apps_domain.value ))"
+            - name: "(( .properties.tcp_routing.enable.domain.value ))"
+              router_group_name: default-tcp
       property_blueprints:
+        - name: domain
+          type: string
+          configurable: true
+          optional: false
         - name: reservable_ports
           type: string
           configurable: true
@@ -55,6 +64,9 @@ property_blueprints:
       named_manifests:
         - name: default_router_group
           manifest: []
+        - name: app_domains
+          manifest: |
+            - name: "(( .cloud_controller.apps_domain.value ))"
 
   - name: route_services
     type: selector

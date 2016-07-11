@@ -188,7 +188,7 @@ manifest: |
   domain: (( .cloud_controller.system_domain.value ))
   system_domain: (( .cloud_controller.system_domain.value ))
   system_domain_organization: system
-  app_domains: ["(( .cloud_controller.apps_domain.value ))"]
+  app_domains: (( .properties.tcp_routing.selected_option.parsed_manifest(app_domains) ))
   support_address: https://support.pivotal.io
 
   route_registrar:
