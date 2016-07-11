@@ -304,6 +304,7 @@ manifest: |
 
   uaa:
     tls_port: 8443
+    ca_cert: (( $ops_manager.ca_certificate ))
     url: "https://uaa.(( .cloud_controller.system_domain.value ))"
     jwt:
       verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
