@@ -36,6 +36,7 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
 
   it 'configures networking' do
     networking_form = current_ops_manager.product(elastic_runtime_settings['name']).product_form('networking')
+    tcp_domain = elastic_runtime_settings['tcp_domain']
 
     case env_settings['iaas_type']
     when 'aws'
@@ -45,6 +46,9 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
         selector_name: 'enable',
         selector_value: 'enable',
         sub_field_answers: {
+          '.properties.tcp_routing.enable.domain' => {
+            attribute_value: "#{tcp_domain}",
+          },
           '.properties.tcp_routing.enable.reservable_ports' => {
             attribute_value: '1024-1123',
           },
@@ -113,6 +117,9 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
         selector_name: 'enable',
         selector_value: 'enable',
         sub_field_answers: {
+          '.properties.tcp_routing.enable.domain' => {
+            attribute_value: "#{tcp_domain}",
+          },
           '.properties.tcp_routing.enable.reservable_ports' => {
             attribute_value: '1024-1123',
           },
@@ -127,6 +134,9 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
         selector_name: 'enable',
         selector_value: 'enable',
         sub_field_answers: {
+          '.properties.tcp_routing.enable.domain' => {
+            attribute_value: "#{tcp_domain}",
+          },
           '.properties.tcp_routing.enable.reservable_ports' => {
             attribute_value: '1024-1123',
           },
