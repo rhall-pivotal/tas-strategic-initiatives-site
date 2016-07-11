@@ -233,7 +233,7 @@ manifest: |
     oauth_secret: (( .uaa.tcp_emitter_credentials.password ))
   uaa:
     tls_port: 8443
+    ca_cert: (( $ops_manager.ca_certificate ))
   bbs:
     api_location: bbs.service.cf.internal:8889
     ca_cert: (( $ops_manager.ca_certificate ))
-  skip_ssl_validation: true
