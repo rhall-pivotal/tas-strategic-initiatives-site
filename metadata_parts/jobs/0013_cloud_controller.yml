@@ -349,6 +349,8 @@ manifest: |
     system_domain: (( .cloud_controller.system_domain.value ))
     log_level: debug
     router_groups: (( .properties.tcp_routing.selected_option.parsed_manifest(default_router_group) ))
+    etcd:
+      servers: (( .etcd_server.ips ))
   routing:
     etcd:
       servers: (( .etcd_server.ips ))
