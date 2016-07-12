@@ -229,7 +229,7 @@ manifest: |
     bbs:
       client_cert: (( .properties.bbs_client_cert.cert_pem ))
       client_key: (( .properties.bbs_client_cert.private_key_pem ))
-    debug_addr: 0.0.0.0:17017
+    debug_address: 0.0.0.0:17017
     oauth_secret: (( .uaa.tcp_emitter_credentials.password ))
   uaa:
     tls_port: 8443

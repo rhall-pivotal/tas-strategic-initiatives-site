@@ -74,7 +74,7 @@ manifest: |
     tls_port: 8443
     ca_cert: (( $ops_manager.ca_certificate ))
   router_configurer:
-    debug_addr: null
+    debug_address: null
     log_level: debug
     oauth_secret: (( .uaa.tcp_router_credentials.password ))
     tcp_stats_collection_interval: 1m

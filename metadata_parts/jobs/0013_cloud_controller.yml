@@ -351,8 +351,5 @@ manifest: |
     router_groups: (( .properties.tcp_routing.selected_option.parsed_manifest(default_router_group) ))
     etcd:
       servers: (( .etcd_server.ips ))
-  routing:
-    etcd:
-      servers: (( .etcd_server.ips ))
   hm9000:
     port: 12345

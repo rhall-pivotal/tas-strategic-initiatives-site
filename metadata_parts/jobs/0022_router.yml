@@ -133,6 +133,7 @@ manifest: |
     etcd:
       machines: (( .etcd_server.ips ))
   uaa:
+    ca_cert: (( $ops_manager.ca_certificate ))
     ssl:
       port: 8443
     sslCertificate: (( .uaa.ssl_key_credentials.cert_pem ))
