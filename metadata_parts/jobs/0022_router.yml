@@ -136,8 +136,8 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     ssl:
       port: 8443
-    sslCertificate: (( .uaa.ssl_key_credentials.cert_pem ))
-    sslPrivateKey: (( .uaa.ssl_key_credentials.private_key_pem ))
+    sslCertificate: (( .uaa.ssl_credentials.cert_pem ))
+    sslPrivateKey: (( .uaa.ssl_credentials.private_key_pem ))
     clients:
       gorouter:
         secret: (( .uaa.gorouter_client_credentials.password ))
