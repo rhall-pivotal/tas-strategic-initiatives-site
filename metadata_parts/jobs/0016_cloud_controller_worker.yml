@@ -63,7 +63,7 @@ manifest: |
   domain: (( .cloud_controller.system_domain.value ))
   system_domain: (( .cloud_controller.system_domain.value ))
   system_domain_organization: system
-  app_domains: (( .properties.tcp_routing.selected_option.parsed_manifest(app_domains) ))
+  app_domains: ["(( .cloud_controller.apps_domain.value ))"]
 
   cc:
     allowed_cors_domains:
