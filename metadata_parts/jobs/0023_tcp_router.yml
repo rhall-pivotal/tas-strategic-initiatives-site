@@ -70,6 +70,7 @@ property_blueprints:
     optional: true
 
 manifest: |
+  skip_ssl_validation: true
   uaa:
     tls_port: 8443
     ca_cert: (( $ops_manager.ca_certificate ))

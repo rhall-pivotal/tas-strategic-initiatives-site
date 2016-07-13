@@ -322,6 +322,8 @@ manifest: |
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
 
+  skip_ssl_validation: true
+
   logger_endpoint:
     port: (( .properties.logger_endpoint_port.value ))
   doppler:
