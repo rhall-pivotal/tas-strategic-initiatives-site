@@ -43,8 +43,8 @@ property_blueprints:
         - name: default_router_group
           manifest: |
             - name: default-tcp
-              type: tcp
               reservable_ports: (( .properties.tcp_routing.enable.reservable_ports.value ))
+              type: tcp
       property_blueprints:
         - name: reservable_ports
           type: string
@@ -54,10 +54,7 @@ property_blueprints:
       select_value: disable
       named_manifests:
         - name: default_router_group
-          manifest: |
-            - name: default-tcp
-              type: tcp
-              reservable_ports: []
+          manifest: []
 
   - name: route_services
     type: selector
