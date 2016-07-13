@@ -230,8 +230,11 @@ property_blueprints:
     configurable: true
     default: 1209600
 
-  - name: ssl_key_credentials
+  - name: ssl_credentials
     type: rsa_cert_credentials
+    default:
+      domains:
+      - uaa.service.cf.internal
 
   - name: pivotal_account_client_credentials
     type: simple_credentials
@@ -318,8 +321,8 @@ manifest: |
     require_https: true
     ssl:
       port: 8443
-    sslCertificate: (( ssl_key_credentials.cert_pem ))
-    sslPrivateKey: (( ssl_key_credentials.private_key_pem ))
+    sslCertificate: (( ssl_credentials.cert_pem ))
+    sslPrivateKey: (( ssl_credentials.private_key_pem ))
     ldap:
       profile_type: search-and-bind
       url: (( .properties.uaa.ldap.url.value ))
