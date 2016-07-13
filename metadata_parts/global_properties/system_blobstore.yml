@@ -14,7 +14,6 @@ property_blueprints:
               webdav_config:
                 username: (( .nfs_server.blobstore_credentials.identity ))
                 password: (( .nfs_server.blobstore_credentials.password ))
-                private_endpoint: https://blobstore.service.cf.internal
                 public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
           - name: ccdroplet
             manifest: |
@@ -22,7 +21,6 @@ property_blueprints:
               webdav_config:
                 username: (( .nfs_server.blobstore_credentials.identity ))
                 password: (( .nfs_server.blobstore_credentials.password ))
-                private_endpoint: https://blobstore.service.cf.internal
                 public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
           - name: ccpackage
             manifest: |
@@ -30,7 +28,6 @@ property_blueprints:
               webdav_config:
                 username: (( .nfs_server.blobstore_credentials.identity ))
                 password: (( .nfs_server.blobstore_credentials.password ))
-                private_endpoint: https://blobstore.service.cf.internal
                 public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
           - name: ccresource
             manifest: |
@@ -38,7 +35,6 @@ property_blueprints:
               webdav_config:
                 username: (( .nfs_server.blobstore_credentials.identity ))
                 password: (( .nfs_server.blobstore_credentials.password ))
-                private_endpoint: https://blobstore.service.cf.internal
                 public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
       - name: external
         named_manifests:

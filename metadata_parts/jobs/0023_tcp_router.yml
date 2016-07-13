@@ -78,7 +78,6 @@ manifest: |
     log_level: debug
     oauth_secret: (( .uaa.tcp_router_credentials.password ))
     tcp_stats_collection_interval: 1m
-    tcp_stats_unix_socket: /var/vcap/jobs/haproxy/config/haproxy.sock
   consul:
     encrypt_keys:
     - (( .properties.consul_encrypt_key.value ))
