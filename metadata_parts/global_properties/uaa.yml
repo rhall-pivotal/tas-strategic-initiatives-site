@@ -54,7 +54,8 @@ property_blueprints:
               nameID: (( .properties.uaa.saml.name_id_format.value ))
               showSamlLoginLink: true
               linkText: (( .properties.uaa.saml.display_name.value ))
-              emailDomain: (( .properties.uaa.saml.email_domains ))
+              emailDomain:
+              - (( .properties.uaa.saml.email_domains.value ))
               attributeMappings:
                 given_name: (( .properties.uaa.saml.first_name_attribute ))
                 family_name: (( .properties.uaa.saml.last_name_attribute ))
