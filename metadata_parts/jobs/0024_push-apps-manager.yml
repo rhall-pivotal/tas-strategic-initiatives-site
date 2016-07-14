@@ -168,13 +168,8 @@ manifest: |
     secret_token: (( secret_token.value ))
     cf_cc_api_url: "https://api.(( .cloud_controller.system_domain.value ))"
     cf_loggregator_http_url: https://loggregator.(( .cloud_controller.system_domain.value ))
-    cf_console_url: "https://apps.(( .cloud_controller.system_domain.value ))"
     cf_notifications_service_url: "https://notifications.(( .cloud_controller.system_domain.value ))"
-    default_from: (( .properties.smtp_from.value ))
     usage_service_host: "https://app-usage.(( .cloud_controller.system_domain.value ))"
-    bundle_without: test development hosted_only
-    enable_internal_user_store: (( enable_internal_user_store.value ))
-    enable_non_admin_role_management: (( enable_non_admin_role_management.value ))
     generic_white_label_config_json:
       company_name: (( company_name.value || "Pivotal" ))
       accent_color: (( accent_color.value ))
@@ -191,9 +186,7 @@ manifest: |
       marketplace_name: (( marketplace_name.value ))
       nav_links: (( nav_links.value ))
   databases:
-    console: (( .properties.system_database.selected_option.parsed_manifest(console) ))
     app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-    https_only_mode: true
     disable_http_for_links: (( .properties.networking_point_of_entry.haproxy.disable_http.value ))
