@@ -119,7 +119,7 @@ manifest: |
   route_registrar:
     routes:
       - name: blobstore
-        port: 80
+        port: 8080
         registration_interval: 20s
         tags:
           component: blobstore
@@ -134,3 +134,4 @@ manifest: |
     tls:
       cert: (( blobstore_cert.cert_pem ))
       private_key: (( blobstore_cert.private_key_pem ))
+    port: 8080
