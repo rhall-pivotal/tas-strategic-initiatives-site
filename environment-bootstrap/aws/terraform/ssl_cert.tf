@@ -26,7 +26,7 @@ resource "tls_self_signed_cert" "self_signed_cert" {
 }
 
 resource "aws_iam_server_certificate" "self_signed_cert" {
-  name_prefix = "${var.env_name}"
+  name_prefix = "${var.env_name}-"
   certificate_body = "${tls_self_signed_cert.self_signed_cert.cert_pem}"
   private_key = "${tls_private_key.private_key.private_key_pem}"
 
