@@ -778,3 +778,15 @@ resource "aws_elb" "tcp_elb" {
   security_groups = ["${aws_security_group.tcp_elb_security_group1.id}", "${aws_security_group.tcp_elb_security_group2.id}"]
   subnets = ["${aws_subnet.public_subnet1.id}", "${aws_subnet.public_subnet2.id}"]
 }
+
+output "elb_dns_name" {
+  value = "${aws_elb.elb.dns_name}"
+}
+
+output "ssh_elb_dns_name" {
+  value = "${aws_elb.ssh_elb.dns_name}"
+}
+
+output "tcp_elb_dns_name" {
+  value = "${aws_elb.tcp_elb.dns_name}"
+}

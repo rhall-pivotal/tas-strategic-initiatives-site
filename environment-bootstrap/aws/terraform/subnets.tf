@@ -2,7 +2,7 @@ resource "aws_subnet" "public_subnet1" {
   depends_on = ["aws_vpc.vpc"]
   vpc_id = "${aws_vpc.vpc.id}"
   cidr_block = "10.0.0.0/24"
-  availability_zone = "us-west-1b" # TODO: don't hardcode this value
+  availability_zone = "${var.availability_zone1}"
 
   tags {
     Name = "${var.env_name}-public-subnet1"
@@ -13,7 +13,7 @@ resource "aws_subnet" "public_subnet2" {
   depends_on = ["aws_vpc.vpc"]
   vpc_id = "${aws_vpc.vpc.id}"
   cidr_block = "10.0.1.0/24"
-  availability_zone = "us-west-1c" # TODO: don't hardcode this value
+  availability_zone = "${var.availability_zone2}"
 
   tags {
     Name = "${var.env_name}-public-subnet2"
@@ -24,7 +24,7 @@ resource "aws_subnet" "private_subnet1" {
   depends_on = ["aws_vpc.vpc"]
   vpc_id = "${aws_vpc.vpc.id}"
   cidr_block = "10.0.16.0/20"
-  availability_zone = "us-west-1b" # TODO: don't hardcode this value
+  availability_zone = "${var.availability_zone1}"
 
   tags {
     Name = "${var.env_name}-private-subnet1"
@@ -35,10 +35,46 @@ resource "aws_subnet" "private_subnet2" {
   depends_on = ["aws_vpc.vpc"]
   vpc_id = "${aws_vpc.vpc.id}"
   cidr_block = "10.0.32.0/20"
-  availability_zone = "us-west-1c" # TODO: don't hardcode this value
+  availability_zone = "${var.availability_zone2}"
 
   tags {
     Name = "${var.env_name}-private-subnet2"
+  }
+}
+
+resource "aws_subnet" "rds_subnet1" {
+  depends_on = ["aws_vpc.vpc"]
+  vpc_id = "${aws_vpc.vpc.id}"
+  cidr_block = "10.0.2.0/24"
+  availability_zone = "${var.availability_zone1}"
+
+  tags {
+    Name = "${var.env_name}-rds-subnet1"
+  }
+}
+
+resource "aws_subnet" "rds_subnet2" {
+  depends_on = ["aws_vpc.vpc"]
+  vpc_id = "${aws_vpc.vpc.id}"
+  cidr_block = "10.0.3.0/24"
+  availability_zone = "${var.availability_zone2}"
+
+  tags {
+    Name = "${var.env_name}-rds-subnet2"
+  }
+}
+
+resource "aws_db_subnet_group" "rds_subnet_group" {
+  name = "${var.env_name}_db_subnet_group"
+  description = "RDS Subnet Group"
+
+  subnet_ids = [
+    "${aws_subnet.rds_subnet1.id}",
+    "${aws_subnet.rds_subnet2.id}"
+  ]
+
+  tags {
+    Name = "${var.env_name}-db-subnet-group"
   }
 }
 
@@ -48,4 +84,28 @@ output "public_subnet1_id" {
 
 output "public_subnet2_id" {
   value = "${aws_subnet.public_subnet2.id}"
+}
+
+output "public_subnet1_availability_zone" {
+  value = "${aws_subnet.public_subnet1.availability_zone}"
+}
+
+output "public_subnet2_availability_zone" {
+  value = "${aws_subnet.public_subnet2.availability_zone}"
+}
+
+output "private_subnet1_id" {
+  value = "${aws_subnet.private_subnet1.id}"
+}
+
+output "private_subnet2_id" {
+  value = "${aws_subnet.private_subnet2.id}"
+}
+
+output "private_subnet1_availability_zone" {
+  value = "${aws_subnet.private_subnet1.availability_zone}"
+}
+
+output "private_subnet2_availability_zone" {
+  value = "${aws_subnet.private_subnet2.availability_zone}"
 }

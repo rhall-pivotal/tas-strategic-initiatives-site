@@ -5,10 +5,14 @@ resource "aws_security_group" "nat_security_group" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   ingress {
-    cidr_blocks = ["${var.internal_cidr_block}"]
+    cidr_blocks = ["10.0.0.0/16"]
     protocol = "-1"
     from_port = 0
     to_port = 0
+  }
+
+  tags {
+    Name = "${var.env_name}-nat-security-group"
   }
 }
 
@@ -40,24 +44,28 @@ resource "aws_security_group" "ops_manager_security_group" {
   }
 
   ingress {
-    cidr_blocks = ["${var.internal_cidr_block}"]
+    cidr_blocks = ["10.0.0.0/16"]
     protocol = "tcp"
     from_port = 22
     to_port = 22
   }
 
   ingress {
-    cidr_blocks = ["${var.internal_cidr_block}"]
+    cidr_blocks = ["10.0.0.0/16"]
     protocol = "tcp"
     from_port = 25555
     to_port = 25555
   }
 
   ingress {
-    cidr_blocks = ["${var.internal_cidr_block}"]
+    cidr_blocks = ["10.0.0.0/16"]
     protocol = "tcp"
     from_port = 6868
     to_port = 6868
+  }
+
+  tags {
+    Name = "${var.env_name}-ops-manager-security-group"
   }
 }
 
@@ -68,10 +76,14 @@ resource "aws_security_group" "vms_security_group" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   ingress {
-    cidr_blocks = ["${var.internal_cidr_block}"]
+    cidr_blocks = ["10.0.0.0/16"]
     protocol = "-1"
     from_port = 0
     to_port = 0
+  }
+
+  tags {
+    Name = "${var.env_name}-vms-security-group"
   }
 }
 
@@ -82,10 +94,14 @@ resource "aws_security_group" "mysql_security_group" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   ingress {
-    cidr_blocks = ["${var.internal_cidr_block}"]
+    cidr_blocks = ["10.0.0.0/16"]
     protocol = "tcp"
     from_port = 3306
     to_port = 3306
+  }
+
+  tags {
+    Name = "${var.env_name}-mysql-security-group"
   }
 }
 
@@ -115,6 +131,10 @@ resource "aws_security_group" "elb_security_group" {
     from_port = 4443
     to_port = 4443
   }
+
+  tags {
+    Name = "${var.env_name}-elb-security-group"
+  }
 }
 
 resource "aws_security_group" "ssh_elb_security_group" {
@@ -128,6 +148,10 @@ resource "aws_security_group" "ssh_elb_security_group" {
     protocol = "tcp"
     from_port = 2222
     to_port = 2222
+  }
+
+  tags {
+    Name = "${var.env_name}-ssh-elb-security-group"
   }
 }
 
@@ -486,6 +510,10 @@ resource "aws_security_group" "tcp_elb_security_group1" {
     from_port = 1073
     to_port = 1073
   }
+
+  tags {
+    Name = "${var.env_name}-tcp-elb-security-group1"
+  }
 }
 
 resource "aws_security_group" "tcp_elb_security_group2" {
@@ -843,10 +871,10 @@ resource "aws_security_group" "tcp_elb_security_group2" {
     from_port = 1123
     to_port = 1123
   }
-}
 
-output "nat_security_group_id" {
-  value = "${aws_security_group.nat_security_group.id}"
+  tags {
+    Name = "${var.env_name}-tcp-elb-security-group2"
+  }
 }
 
 output "ops_manager_security_group_id" {
@@ -855,8 +883,4 @@ output "ops_manager_security_group_id" {
 
 output "vms_security_group_id" {
   value = "${aws_security_group.vms_security_group.id}"
-}
-
-output "mysql_security_group_id" {
-  value = "${aws_security_group.mysql_security_group.id}"
 }

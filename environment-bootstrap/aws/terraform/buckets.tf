@@ -37,3 +37,23 @@ resource "aws_s3_bucket" "resources_bucket" {
     Name = "Elastic Runtime S3 Resources Bucket"
   }
 }
+
+output "ops_manager_bucket" {
+  value = "${aws_s3_bucket.ops_manager_bucket.arn}"
+}
+
+output "ert_buildpacks_bucket" {
+  value = "${aws_s3_bucket.buildpacks_bucket.arn}"
+}
+
+output "ert_droplets_bucket" {
+  value = "${aws_s3_bucket.droplets_bucket.arn}"
+}
+
+output "ert_packages_bucket" {
+  value = "${aws_s3_bucket.packages_bucket.arn}"
+}
+
+output "ert_resources_bucket" {
+  value = "${aws_s3_bucket.resources_bucket.arn}"
+}

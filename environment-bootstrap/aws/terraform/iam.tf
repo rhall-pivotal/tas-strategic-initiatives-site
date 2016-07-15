@@ -82,3 +82,15 @@ resource "aws_iam_policy_attachment" "ert_user_policy" {
   users = ["${aws_iam_user.iam_user.name}"]
   policy_arn = "${aws_iam_policy.ert.arn}"
 }
+
+output "iam_user_name" {
+  value = "${aws_iam_user.iam_user.name}"
+}
+
+output "iam_user_access_key" {
+  value = "${aws_iam_access_key.iam_user_access_key.id}"
+}
+
+output "iam_user_secret_access_key" {
+  value = "${aws_iam_access_key.iam_user_access_key.secret}"
+}
