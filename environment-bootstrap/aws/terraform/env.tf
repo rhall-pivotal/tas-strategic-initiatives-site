@@ -5,7 +5,6 @@ variable "region" {}
 variable "availability_zone1" {}
 variable "availability_zone2" {}
 variable "nat_key_pair_name" {}
-variable "ssl_certificate_arn" {}
 variable "rds_db_name" {
   default = "bosh"
 }

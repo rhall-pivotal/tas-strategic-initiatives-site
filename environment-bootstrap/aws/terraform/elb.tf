@@ -1,5 +1,6 @@
 resource "aws_elb" "elb" {
   name = "${var.env_name}-elb"
+  depends_on = ["tls_self_signed_cert.self_signed_cert"]
   cross_zone_load_balancing = true
 
   health_check {
@@ -24,7 +25,7 @@ resource "aws_elb" "elb" {
     instance_protocol = "http"
     lb_port = 443
     lb_protocol = "https"
-    ssl_certificate_id = "${var.ssl_certificate_arn}"
+    ssl_certificate_id = "${aws_iam_server_certificate.self_signed_cert.arn}"
   }
 
   listener {
@@ -32,7 +33,7 @@ resource "aws_elb" "elb" {
     instance_protocol = "tcp"
     lb_port = 4443
     lb_protocol = "ssl"
-    ssl_certificate_id = "${var.ssl_certificate_arn}"
+    ssl_certificate_id = "${aws_iam_server_certificate.self_signed_cert.arn}"
   }
 
   security_groups = ["${aws_security_group.elb_security_group.id}"]
