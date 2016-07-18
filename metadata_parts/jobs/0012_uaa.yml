@@ -338,7 +338,7 @@ manifest: |
         profile_type: "(( .properties.uaa.ldap.group_search_base.value_present? ? 'groups-map-to-scopes' : 'no-groups' ))"
         searchBase: (( .properties.uaa.ldap.group_search_base.value ))
         groupSearchFilter: (( .properties.uaa.ldap.group_search_filter.value ))
-      email_domain: (( .properties.uaa.ldap.email_domains.value ))
+      emailDomain: (( .properties.uaa.ldap.email_domains.parsed_strings ))
       given_name: (( .properties.uaa.ldap.first_name_attribute.value ))
       family_name: (( .properties.uaa.ldap.last_name_attribute.value ))
     login:
