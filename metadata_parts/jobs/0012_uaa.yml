@@ -552,6 +552,7 @@ manifest: |
         refresh-token-validity: 3600
         autoapprove: true
         override: true
+        redirect-uri: "https://p-concourse.(( .cloud_controller.system_domain.value ))/auth/uaa/callback"
     scim:
       user:
         override: true
