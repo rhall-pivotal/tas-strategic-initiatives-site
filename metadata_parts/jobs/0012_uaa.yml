@@ -241,6 +241,11 @@ property_blueprints:
     default:
       identity: pivotal_account
 
+  - name: concourse_atc_client_credentials
+    type: simple_credentials
+    default:
+      identity: concourse_atc
+
   - name: customize_username_label
     type: string
     configurable: true
@@ -537,6 +542,16 @@ manifest: |
         autoapprove: true
         override: true
         redirect-uri: "https://account.(( .cloud_controller.system_domain.value ))/sign-in,https://account.(( .cloud_controller.system_domain.value ))/identity/,https://account.(( .cloud_controller.system_domain.value ))/**"
+      concourse_atc:
+        id: (( concourse_atc_client_credentials.identity ))
+        secret: (( concourse_atc_client_credentials.password ))
+        scope: cloud_controller.read
+        authorities: cloud_controller.admin
+        authorized-grant-types: "authorization_code,client_credentials,refresh_token"
+        access-token-validity: 3600
+        refresh-token-validity: 3600
+        autoapprove: true
+        override: true
     scim:
       user:
         override: true
