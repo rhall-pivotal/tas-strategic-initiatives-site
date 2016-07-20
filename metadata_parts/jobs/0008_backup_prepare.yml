@@ -68,13 +68,13 @@ manifest: |
     source_executable: /var/vcap/jobs/streaming-mysql-backup-client/bin/client
     cleanup_executable: /bin/bash -c /var/vcap/jobs/streaming-mysql-backup-client/bin/cleanup-directories
     cron_schedule: (( .properties.mysql_backups.enable.cron_schedule.value ))
-  streaming-mysql-backup-client:
-    output_folder: /var/vcap/data/mysql-mysql_backups
-    symmetric_key: (( backup_encryption_key.value ))
-    backup-generator:
+  cf_mysql:
+    mysql:
       cluster_ips: (( .mysql.ips ))
+  cf-mysql-backup:
+    symmetric_key: (( backup_encryption_key.value ))
+    endpoint_credentials:
+      username: (( .mysql.mysql_backup_server_credentials.identity ))
+      password: (( .mysql.mysql_backup_server_credentials.password ))
+    backup-server:
       port: 8081
-      endpoint: /backup
-      credentials:
-        username: (( .mysql.mysql_backup_server_credentials.identity ))
-        password: (( .mysql.mysql_backup_server_credentials.password ))
