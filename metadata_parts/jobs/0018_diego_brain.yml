@@ -10,8 +10,6 @@ templates:
     release: diego
   - name: cc_uploader
     release: cf
-  - name: converger
-    release: diego
   - name: file_server
     release: diego
   - name: nsync
@@ -150,14 +148,6 @@ manifest: |
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
   diego:
     auctioneer:
-      bbs:
-        api_location: bbs.service.cf.internal:8889
-        ca_cert: (( $ops_manager.ca_certificate ))
-        server_cert: (( .properties.bbs_server_cert.cert_pem ))
-        server_key: (( .properties.bbs_server_cert.private_key_pem ))
-        client_cert: (( .properties.bbs_client_cert.cert_pem ))
-        client_key: (( .properties.bbs_client_cert.private_key_pem ))
-    converger:
       bbs:
         api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))
