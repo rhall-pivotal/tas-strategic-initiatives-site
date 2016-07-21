@@ -56,10 +56,10 @@ property_blueprints:
               linkText: (( .properties.uaa.saml.display_name.value ))
               emailDomain: (( .properties.uaa.saml.email_domains.parsed_strings ))
               attributeMappings:
-                given_name: (( .properties.uaa.saml.first_name_attribute ))
-                family_name: (( .properties.uaa.saml.last_name_attribute ))
-                email: (( .properties.uaa.saml.email_attribute ))
-                external_groups: (( .properties.uaa.saml.external_groups_attribute ))
+                given_name: (( .properties.uaa.saml.first_name_attribute.value ))
+                family_name: (( .properties.uaa.saml.last_name_attribute.value ))
+                email: (( .properties.uaa.saml.email_attribute.value ))
+                external_groups: (( .properties.uaa.saml.external_groups_attribute.value ))
         - name: self_service_links_enabled
           manifest: |
             false
