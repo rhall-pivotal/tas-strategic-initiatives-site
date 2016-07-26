@@ -15,11 +15,6 @@ property_blueprints:
     configurable: false
     default: ccdb
 
-  - name: console_database
-    type: string
-    configurable: false
-    default: console
-
   - name: notifications_database
     type: string
     configurable: false
@@ -70,12 +65,6 @@ property_blueprints:
           - name: autoscaling
             manifest: |
               url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
-          - name: console
-            manifest: |
-              ip: (( .consoledb.first_ip ))
-              username: (( .consoledb.credentials.identity ))
-              password: (( .consoledb.credentials.password ))
-              adapter: postgres
           - name: push-app-usage-service
             manifest: |
               name: app_usage_service
@@ -119,13 +108,6 @@ property_blueprints:
         - name: autoscaling
           manifest: |
             url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
-        - name: console
-          manifest: |
-            ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
-            port: 3306
-            username: (( .mysql.consoledb_credentials.identity ))
-            password: (( .mysql.consoledb_credentials.password ))
-            adapter: mysql
         - name: push-app-usage-service
           manifest: |
             name: app_usage_service
@@ -167,13 +149,6 @@ property_blueprints:
           - name: autoscaling
             manifest: |
               url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/autoscale
-          - name: console
-            manifest: |
-              ip: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.username.value ))
-              password: (( .properties.system_database.external.password.value ))
-              adapter: mysql
           - name: push-app-usage-service
             manifest: |
               name: app_usage_service

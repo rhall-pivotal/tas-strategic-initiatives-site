@@ -78,8 +78,6 @@ property_blueprints:
   type: simple_credentials
 - name: uaadb_credentials
   type: simple_credentials
-- name: consoledb_credentials
-  type: simple_credentials
 - name: database_startup_timeout
   type: integer
   configurable: false
@@ -112,9 +110,6 @@ manifest: |
         - name: autoscale
           username: (( autoscale_credentials.identity ))
           password: (( autoscale_credentials.password ))
-        - name: console
-          username: (( consoledb_credentials.identity ))
-          password: (( consoledb_credentials.password ))
   syslog_aggregator:
     address: (( ..cf.properties.syslog_host.value ))
     port: (( ..cf.properties.syslog_port.value ))

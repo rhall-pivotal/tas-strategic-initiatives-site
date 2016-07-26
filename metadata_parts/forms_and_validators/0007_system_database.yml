@@ -98,14 +98,6 @@ install_time_verifiers:
       port: .properties.system_database.external.port
       username: .properties.system_database.external.username
       password: .properties.system_database.external.password
-      database: .properties.console_database
-  - name: Verifiers::MysqlDatabaseVerifier
-    ignorable: true
-    properties:
-      host: .properties.system_database.external.host
-      port: .properties.system_database.external.port
-      username: .properties.system_database.external.username
-      password: .properties.system_database.external.password
       database: .properties.notifications_database
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
