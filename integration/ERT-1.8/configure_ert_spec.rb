@@ -39,18 +39,7 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
 
     case env_settings['iaas_type']
     when 'aws'
-    networking_form.open_form
-      networking_form.fill_in_selector_property(
-        selector_input_reference: '.properties.tcp_routing',
-        selector_name: 'enable',
-        selector_value: 'enable',
-        sub_field_answers: {
-          '.properties.tcp_routing.enable.reservable_ports' => {
-            attribute_value: '1024-1123',
-          },
-        },
-      )
-
+      networking_form.open_form
       networking_form.fill_in_selector_property(
         selector_input_reference: '.properties.networking_point_of_entry',
         selector_name: '',
@@ -78,7 +67,6 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
       resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
       resource_config.set_elb_names_for_job('router', elastic_runtime_settings['elb_name'])
       resource_config.set_elb_names_for_job('diego_brain', elastic_runtime_settings['ssh_elb_name'])
-      resource_config.set_elb_names_for_job('tcp_router', elastic_runtime_settings['tcp_elb_name'])
 
     when 'vsphere', 'vcloud'
       networking_form.open_form
@@ -105,30 +93,9 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
         )
       end
 
-      networking_form.fill_in_selector_property(
-        selector_input_reference: '.properties.tcp_routing',
-        selector_name: 'enable',
-        selector_value: 'enable',
-        sub_field_answers: {
-          '.properties.tcp_routing.enable.reservable_ports' => {
-            attribute_value: '1024-1123',
-          },
-        },
-      )
-      networking_form.property('.tcp_router.static_ips').set(elastic_runtime_settings['tcp_router_static_ips'])
       networking_form.save_form
     when 'openstack'
       networking_form.open_form
-      networking_form.fill_in_selector_property(
-        selector_input_reference: '.properties.tcp_routing',
-        selector_name: 'enable',
-        selector_value: 'enable',
-        sub_field_answers: {
-          '.properties.tcp_routing.enable.reservable_ports' => {
-            attribute_value: '1024-1123',
-          },
-        },
-      )
 
       networking_form.fill_in_selector_property(
         selector_input_reference: '.properties.networking_point_of_entry',
@@ -152,12 +119,8 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
         )
       end
       networking_form.save_form
-
       resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
       resource_config.set_floating_ips_for_job('ha_proxy', elastic_runtime_settings['ha_proxy_floating_ips'])
-
-      resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
-      resource_config.set_floating_ips_for_job('tcp_router', elastic_runtime_settings['tcp_router_floating_ips'])
     end
 
   end
