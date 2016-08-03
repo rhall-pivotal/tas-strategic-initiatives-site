@@ -22,25 +22,32 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X Experimental Features', order: :
       checkbox.click unless checkbox.checked?
     end
 
+ #   experimental_features_form.fill_in_selector_property(
+ #     selector_input_reference: '.properties.tcp_routing',
+ #     selector_name: 'enable',
+ #     selector_value: 'enable',
+ #     sub_field_answers: {
+ #       '.properties.tcp_routing.enable.reservable_ports' => {
+ #         attribute_value: '1024-1123',
+ #       },
+ #     },
+ #   )
+
+    # Disable TCP Routing by default
     experimental_features_form.fill_in_selector_property(
       selector_input_reference: '.properties.tcp_routing',
-      selector_name: 'enable',
-      selector_value: 'enable',
-      sub_field_answers: {
-        '.properties.tcp_routing.enable.reservable_ports' => {
-          attribute_value: '1024-1123',
-        },
-      },
+      selector_name: 'disable',
+      selector_value: 'disable'
     )
 
     experimental_features_form.save_form
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
 
-    case env_settings['iaas_type']
-    when 'aws'
-      resource_config.set_elb_names_for_job('tcp_router', elastic_runtime_settings['tcp_elb_name'])
-    when 'openstack'
-      resource_config.set_floating_ips_for_job('tcp_router', elastic_runtime_settings['tcp_router_floating_ips'])
-    end
+ #   case env_settings['iaas_type']
+ #   when 'aws'
+ #     resource_config.set_elb_names_for_job('tcp_router', elastic_runtime_settings['tcp_elb_name'])
+ #   when 'openstack'
+ #     resource_config.set_floating_ips_for_job('tcp_router', elastic_runtime_settings['tcp_router_floating_ips'])
+ #   end
   end
 end
