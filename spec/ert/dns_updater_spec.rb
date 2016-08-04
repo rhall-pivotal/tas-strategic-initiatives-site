@@ -4,11 +4,13 @@ require 'ert/dns_updater'
 require 'aws/route_53'
 
 describe Ert::DnsUpdater do
+  let(:hosted_zone_id) { 'some-hosted-zone' }
   let(:settings) do
     {
       'name' => 'some.hosted.name',
       'vm_shepherd' => {
         'env_config' => {
+          'route53_hosted_zone_id' => hosted_zone_id,
           'stack_name' => 'some',
           'aws_access_key' => 'some-access-key',
           'aws_secret_key' => 'some-secret-key'
@@ -16,13 +18,14 @@ describe Ert::DnsUpdater do
       },
       'ops_manager' => {
         'elastic_runtime' => {
+          'deployment_domain' => 'some.cf-app.com',
           'elb_dns_name' => 'some-fake-elb-dns-name',
-          'ssh_elb_dns_name' => 'some-fake-ssh-elb-dns-name'
+          'ssh_elb_dns_name' => 'some-fake-ssh-elb-dns-name',
+          'tcp_elb_dns_name' => 'some-fake-tcp-elb-dns-name'
         }
       }
     }
   end
-  let(:hosted_zone_id) { 'some-hosted-zone' }
   let(:hosted_zones) do
     {
       hosted_zones: [
@@ -73,7 +76,7 @@ describe Ert::DnsUpdater do
       resource_records: [
         { value: 'elb-pcf-specific-hostname' }
       ],
-      name: '\\052.some.cf-app.com.',
+      name: '*.some.cf-app.com.',
       type: 'CNAME', ttl: 300
     }
   end
@@ -121,7 +124,7 @@ describe Ert::DnsUpdater do
                 resource_records: [
                   { value: 'some-fake-elb-dns-name' }
                 ],
-                name: '\\052.some.cf-app.com.',
+                name: '*.some.cf-app.com.',
                 type: 'CNAME',
                 ttl: 5
               }
@@ -137,7 +140,17 @@ describe Ert::DnsUpdater do
                 type: 'CNAME',
                 ttl: 5
               }
-
+            },
+            {
+              action: 'UPSERT',
+              resource_record_set: {
+                resource_records: [
+                  { value: 'some-fake-tcp-elb-dns-name' }
+                ],
+                name: 'tcp.some.cf-app.com.',
+                type: 'CNAME',
+                ttl: 5
+              }
             }
           ]
         }
