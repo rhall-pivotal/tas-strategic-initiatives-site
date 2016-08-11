@@ -29,7 +29,7 @@ templates:
   - name: metron_agent
     release: cf
   - name: route_registrar
-    release: cf
+    release: routing
   - name: statsd-injector
     release: cf
 
@@ -200,12 +200,6 @@ manifest: |
         component: CloudController
       uris:
       - "api.(( .cloud_controller.system_domain.value ))"
-    nats:
-      user: (( .nats.credentials.identity ))
-      password: (( .nats.credentials.password ))
-      port: 4222
-      machines: (( .nats.ips ))
-
   cc:
     allowed_cors_domains:
     - https://apm.(( .cloud_controller.system_domain.value ))
