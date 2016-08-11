@@ -217,11 +217,16 @@ manifest: |
     transport: (( .properties.syslog_protocol.value ))
   metron_agent:
     deployment: cf
+    etcd:
+      client_cert: (( .properties.etcd_client_cert.cert_pem ))
+      client_key: (( .properties.etcd_client_cert.private_key_pem ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   loggregator:
     etcd:
-      machines: (( .etcd_server.ips ))
+      require_ssl: true
+      machines: ['cf-etcd.service.cf.internal']
+      ca_cert: (( $ops_manager.ca_certificate ))
   tcp_emitter:
     bbs:
       client_cert: (( .properties.bbs_client_cert.cert_pem ))

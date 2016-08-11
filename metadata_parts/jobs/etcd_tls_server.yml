@@ -1,11 +1,15 @@
 ---
-name: consul_server
-label: Consul
-resource_label: Consul
-description:
+name: etcd_tls_server
+label: etcd_tls
+resource_label: etcd_tls
+description: An etcd TLS cluster node, which maintains the state of applications, and its metrics server
 templates:
   - name: consul_agent
     release: consul
+  - name: etcd
+    release: etcd
+  - name: etcd_metrics_server
+    release: etcd
   - name: metron_agent
     release: cf
 
@@ -30,9 +34,9 @@ resource_definitions:
     type: integer
     label: Persistent Disk
     configurable: true
-    default: 1024
+    default: 1_024
     constraints:
-      min: 1024
+      min: 1_024
 
   - name: cpu
     type: integer
@@ -47,7 +51,6 @@ static_ip: 1
 dynamic_ip: 0
 max_in_flight: 1
 single_az_only: false
-serial: true
 
 instance_definition:
   name: instances
@@ -73,16 +76,36 @@ manifest: |
       client_key: (( .properties.etcd_client_cert.private_key_pem ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
-  nats:
-    user: (( .nats.credentials.identity ))
-    password: (( .nats.credentials.password ))
-    port: 4222
-    machines: (( .nats.ips ))
+  etcd:
+    advertise_urls_dns_suffix: cf-etcd.service.cf.internal
+    machines: ['cf-etcd.service.cf.internal']
+    cluster:
+    - instances: (( instances ))
+      name: "etcd_tls_server"
+    ca_cert: (( $ops_manager.ca_certificate ))
+    server_cert: (( .properties.etcd_server_cert.cert_pem ))
+    server_key: (( .properties.etcd_server_cert.private_key_pem ))
+    client_cert: (( .properties.etcd_client_cert.cert_pem ))
+    client_key: (( .properties.etcd_client_cert.private_key_pem ))
+    peer_ca_cert: (( $ops_manager.ca_certificate ))
+    peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
+    peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
   loggregator:
     etcd:
       require_ssl: true
       machines: ['cf-etcd.service.cf.internal']
       ca_cert: (( $ops_manager.ca_certificate ))
+  etcd_metrics_server:
+    etcd:
+      require_ssl: true
+      dns_suffix: 'cf-etcd.service.cf.internal'
+      ca_cert: (( $ops_manager.ca_certificate ))
+      client_cert: (( .properties.etcd_client_cert.cert_pem ))
+      client_key: (( .properties.etcd_client_cert.private_key_pem ))
+    nats:
+      username: (( .nats.credentials.identity ))
+      password: (( .nats.credentials.password ))
+      machines: (( .nats.ips ))
   consul:
     encrypt_keys:
     - (( .properties.consul_encrypt_key.value ))
@@ -93,6 +116,7 @@ manifest: |
     server_key: (( .properties.consul_server_cert.private_key_pem ))
     agent:
       domain: cf.internal
-      mode: server
       servers:
         lan: (( .consul_server.ips ))
+      services:
+        cf-etcd: {}

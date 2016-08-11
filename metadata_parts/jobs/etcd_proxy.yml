@@ -4,10 +4,8 @@ label: etcd
 resource_label: etcd
 description: An etcd cluster node, which maintains the state of applications, and its metrics server
 templates:
-  - name: etcd
-    release: cf
-  - name: etcd_metrics_server
-    release: cf
+  - name: etcd_proxy
+    release: etcd
   - name: metron_agent
     release: cf
 
@@ -69,22 +67,19 @@ manifest: |
     transport: (( .properties.syslog_protocol.value ))
   metron_agent:
     deployment: cf
+    etcd:
+      client_cert: (( .properties.etcd_client_cert.cert_pem ))
+      client_key: (( .properties.etcd_client_cert.private_key_pem ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
-  nats:
-    user: (( .nats.credentials.identity ))
-    password: (( .nats.credentials.password ))
-    port: 4222
-    machines: (( .nats.ips ))
-  etcd:
-    machines: (( ips ))
-    peer_require_ssl: false
-    require_ssl: false
+  etcd_proxy:
+    etcd:
+      dns_suffix: 'cf-etcd.service.cf.internal'
+      ca_cert: (( $ops_manager.ca_certificate ))
+      client_cert: (( .properties.etcd_client_cert.cert_pem ))
+      client_key: (( .properties.etcd_client_cert.private_key_pem ))
   loggregator:
     etcd:
-      machines: (( .etcd_server.ips ))
-  etcd_metrics_server:
-    nats:
-      username: (( .nats.credentials.identity ))
-      password: (( .nats.credentials.password ))
-      machines: (( .nats.ips ))
+      require_ssl: true
+      machines: ['cf-etcd.service.cf.internal']
+      ca_cert: (( $ops_manager.ca_certificate ))
