@@ -21,11 +21,11 @@ form:
     - reference: .properties.tcp_routing
       label: Enable TCP requests to your apps via specific ports on the TCP router. You will want to configure a load balancer to forward these TCP requests to the TCP routers. If you do not have a load balancer, then you can also send traffic directly to the TCP router.
       selector_property_inputs:
+        - reference: .properties.tcp_routing.disable
+          label: Select this option if you prefer to enable TCP Routing at a later time
         - reference: .properties.tcp_routing.enable
           label: Enable TCP Routing
           property_inputs:
             - reference: .properties.tcp_routing.enable.reservable_ports
               label: TCP Routing Ports (one-time configuration, if you want to update this value you can via the CF CLI)
               description: Enter the range of ports reserved for TCP routes. These ports must be available on your load balancer. You can specify a list of ports with commas between each port number and specify ranges of ports with dashes between the first and last port number. This configuration only applies the first time you specify it here, if you later want to update the ports you must do so with the CF CLI.
-        - reference: .properties.tcp_routing.disable
-          label: Select this option if you prefer to enable TCP Routing at a later time
