@@ -246,6 +246,11 @@ property_blueprints:
     default:
       identity: concourse_atc
 
+  - name: logsearch_firehose_credentials
+    type: simple_credentials
+    default:
+      identity: logsearch-firehose
+
   - name: customize_username_label
     type: string
     configurable: true
@@ -601,6 +606,11 @@ manifest: |
           - dashboard.user
           - console.admin
           - console.support
+      - name: (( logsearch_firehose_credentials.identity ))
+        password: (( logsearch_firehose_credentials.password ))
+        groups:
+          - cloud_controller.admin
+          - doppler.firehose
 
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
