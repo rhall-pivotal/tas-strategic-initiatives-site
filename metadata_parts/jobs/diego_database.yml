@@ -143,4 +143,6 @@ manifest: |
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   loggregator:
     etcd:
-      machines: (( .etcd_server.ips ))
+      require_ssl: true
+      machines: ['cf-etcd.service.cf.internal']
+      ca_cert: (( $ops_manager.ca_certificate ))
