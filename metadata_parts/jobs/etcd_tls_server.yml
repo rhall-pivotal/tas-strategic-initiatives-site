@@ -119,4 +119,5 @@ manifest: |
       servers:
         lan: (( .consul_server.ips ))
       services:
-        cf-etcd: {}
+        etcd:
+          name: cf-etcd
