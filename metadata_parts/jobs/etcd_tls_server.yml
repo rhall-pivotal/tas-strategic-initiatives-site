@@ -72,8 +72,8 @@ manifest: |
   metron_agent:
     deployment: cf
     etcd:
-      client_cert: (( .properties.etcd_client_cert.cert_pem ))
-      client_key: (( .properties.etcd_client_cert.private_key_pem ))
+      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
+      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   etcd:
@@ -83,13 +83,13 @@ manifest: |
     - instances: (( instances ))
       name: "etcd_tls_server"
     ca_cert: (( $ops_manager.ca_certificate ))
-    server_cert: (( .properties.etcd_server_cert.cert_pem ))
-    server_key: (( .properties.etcd_server_cert.private_key_pem ))
-    client_cert: (( .properties.etcd_client_cert.cert_pem ))
-    client_key: (( .properties.etcd_client_cert.private_key_pem ))
+    server_cert: (( .properties.cf_etcd_server_cert.cert_pem ))
+    server_key: (( .properties.cf_etcd_server_cert.private_key_pem ))
+    client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
+    client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
     peer_ca_cert: (( $ops_manager.ca_certificate ))
-    peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
-    peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
+    peer_cert: (( .properties.cf_etcd_peer_cert.cert_pem ))
+    peer_key: (( .properties.cf_etcd_peer_cert.private_key_pem ))
   loggregator:
     etcd:
       require_ssl: true
@@ -100,8 +100,8 @@ manifest: |
       require_ssl: true
       dns_suffix: 'cf-etcd.service.cf.internal'
       ca_cert: (( $ops_manager.ca_certificate ))
-      client_cert: (( .properties.etcd_client_cert.cert_pem ))
-      client_key: (( .properties.etcd_client_cert.private_key_pem ))
+      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
+      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
     nats:
       username: (( .nats.credentials.identity ))
       password: (( .nats.credentials.password ))

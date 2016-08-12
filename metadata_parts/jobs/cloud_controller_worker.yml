@@ -149,8 +149,8 @@ manifest: |
   metron_agent:
     deployment: cf
     etcd:
-      client_cert: (( .properties.etcd_client_cert.cert_pem ))
-      client_key: (( .properties.etcd_client_cert.private_key_pem ))
+      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
+      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   loggregator:

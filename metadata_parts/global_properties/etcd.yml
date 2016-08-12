@@ -19,3 +19,23 @@ property_blueprints:
       domains:
       - etcd.service.cf.internal
       - "*.etcd.service.cf.internal"
+
+  - name: cf_etcd_peer_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - cf-etcd.service.cf.internal
+      - "*.cf-etcd.service.cf.internal"
+
+  - name: cf_etcd_client_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: cf_etcd_server_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - cf-etcd.service.cf.internal
+      - "*.cf-etcd.service.cf.internal"
