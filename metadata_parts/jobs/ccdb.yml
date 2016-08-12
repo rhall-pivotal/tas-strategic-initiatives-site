@@ -4,6 +4,8 @@ label: Cloud Controller Database
 resource_label: Cloud Controller Database (Postgres)
 description: Stores Cloud Controller information
 templates:
+  - name: consul_agent
+    release: consul
   - name: postgres
     release: cf
   - name: metron_agent
@@ -101,3 +103,15 @@ manifest: |
       require_ssl: true
       machines: ['cf-etcd.service.cf.internal']
       ca_cert: (( $ops_manager.ca_certificate ))
+  consul:
+    encrypt_keys:
+    - (( .properties.consul_encrypt_key.value ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+    server_cert: (( .properties.consul_server_cert.cert_pem ))
+    server_key: (( .properties.consul_server_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      servers:
+        lan: (( .consul_server.ips ))

@@ -4,6 +4,8 @@ label: Doppler Server
 resource_label: Doppler Server
 description: Doppler server collects application logs
 templates:
+  - name: consul_agent
+    release: consul
   - name: doppler
     release: cf
   - name: metron_agent
@@ -69,17 +71,13 @@ property_blueprints:
 manifest: |
   doppler:
     message_drain_buffer_size: (( message_drain_buffer_size.value ))
-
   uaa:
     jwt:
       verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
-
   doppler_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
-
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-
   nats:
     user: (( .nats.credentials.identity ))
     password: (( .nats.credentials.password ))
@@ -105,3 +103,15 @@ manifest: |
   cc:
     bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
     srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
+  consul:
+    encrypt_keys:
+    - (( .properties.consul_encrypt_key.value ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+    server_cert: (( .properties.consul_server_cert.cert_pem ))
+    server_key: (( .properties.consul_server_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      servers:
+        lan: (( .consul_server.ips ))
