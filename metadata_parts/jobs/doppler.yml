@@ -71,6 +71,9 @@ property_blueprints:
 manifest: |
   doppler:
     message_drain_buffer_size: (( message_drain_buffer_size.value ))
+    etcd:
+      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
+      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
   uaa:
     jwt:
       verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
@@ -103,6 +106,10 @@ manifest: |
   cc:
     bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
     srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
+  syslog_drain_binder:
+    etcd:
+      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
+      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
   consul:
     encrypt_keys:
     - (( .properties.consul_encrypt_key.value ))

@@ -66,6 +66,13 @@ property_blueprints:
 manifest: |
   loggregator:
     doppler_port: 8081
+    etcd:
+      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
+      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
+  traffic_controller:
+    etcd:
+      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
+      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
   cc:
     srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
   system_domain: (( .cloud_controller.system_domain.value ))
