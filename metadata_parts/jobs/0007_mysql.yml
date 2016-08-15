@@ -78,6 +78,16 @@ property_blueprints:
   type: simple_credentials
 - name: uaadb_credentials
   type: simple_credentials
+- name: cluster_health_user
+  type: simple_credentials
+  default:
+    identity: cluster-health-logger
+- name: galera_sidecar_user
+  type: simple_credentials
+  default:
+    identity: galera-healthcheck
+- name: galera_basic_auth_user
+  type: simple_credentials
 - name: database_startup_timeout
   type: integer
   configurable: false
@@ -91,6 +101,12 @@ manifest: |
       # this is temporary until BOSH pre-start is implemented
       database_startup_timeout: (( .mysql.database_startup_timeout.value ))
       innodb_buffer_pool_size: 2147483648
+      galera_healthcheck:
+        db_password: (( galera_sidecar_user.password ))
+        endpoint_username: (( galera_basic_auth_user.password ))
+        endpoint_password: (( galera_basic_auth_user.password ))
+      cluster_health:
+        password: (( cluster_health_user.password ))
       bootstrap_endpoint:
         username: (( mysql_bootstrap_credentials.identity ))
         password: (( mysql_bootstrap_credentials.password ))
