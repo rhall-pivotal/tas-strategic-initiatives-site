@@ -10,6 +10,12 @@ module Ert
       self.elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'elb_dns_name')
       self.ssh_elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'ssh_elb_dns_name')
       self.tcp_elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'tcp_elb_dns_name')
+      self.hosted_zone_id = settings.dig('vm_shepherd', 'env_config', 'route53_hosted_zone_id')
+      self.deployment_domain = settings.dig('ops_manager', 'elastic_runtime', 'deployment_domain')
+
+      self.wildcard_fqdn = "*.#{deployment_domain}."
+      self.ssh_fqdn = "ssh.#{deployment_domain}."
+      self.tcp_fqdn = "tcp.#{deployment_domain}."
 
       self.route53 = AWS::Route53.new(
         access_key_id: env_config.dig('aws_access_key'),
@@ -18,15 +24,15 @@ module Ert
     end
 
     def update_record
-      record = wildcard_record
+      record = wildcard_record || new_a_record_set
       record[:resource_records].first[:value] = elb_dns_name
       record[:ttl] = 5
 
-      new_ssh_record = ssh_record
+      new_ssh_record = ssh_record || new_a_record_set
       new_ssh_record[:resource_records].first[:value] = ssh_elb_dns_name
       new_ssh_record[:ttl] = 5
 
-      new_tcp_record = tcp_record
+      new_tcp_record = tcp_record || new_a_record_set
       new_tcp_record[:resource_records].first[:value] = tcp_elb_dns_name
       new_tcp_record[:ttl] = 5
 
@@ -57,20 +63,22 @@ module Ert
 
     private
 
-    attr_accessor :name, :elb_dns_name, :ssh_elb_dns_name, :tcp_elb_dns_name
+    attr_accessor :name, :elb_dns_name, :ssh_elb_dns_name, :tcp_elb_dns_name, :hosted_zone_id, :deployment_domain
 
-    def hosted_zone_id
-      resp = route53.client.list_hosted_zones
-      resp[:hosted_zones].find do |zone|
-        zone[:name].include? name
-      end[:id]
+    attr_accessor :wildcard_fqdn, :ssh_fqdn, :tcp_fqdn
+
+    def new_a_record_set
+      record = Aws::Route53::Types::ResourceRecordSet.new
+      record.type = "A"
+      record[:resource_records] = [Aws::Route53::Types::ResourceRecord.new]
+      record
     end
 
     def wildcard_record
       resource_record_sets = route53.client.list_resource_record_sets(hosted_zone_id: hosted_zone_id)
       record_sets = resource_record_sets[:resource_record_sets]
       record_sets.find(default_wildcard_record) do |set|
-        set[:name].include? '052'
+        set[:name] == @wildcard_fqdn
       end
     end
 
@@ -78,7 +86,7 @@ module Ert
       resource_record_sets = route53.client.list_resource_record_sets(hosted_zone_id: hosted_zone_id)
       record_sets = resource_record_sets[:resource_record_sets]
       record_sets.find(default_ssh_record) do |set|
-        set[:name].include? 'ssh.'
+        set[:name] == @ssh_fqdn
       end
     end
 
@@ -86,7 +94,7 @@ module Ert
       resource_record_sets = route53.client.list_resource_record_sets(hosted_zone_id: hosted_zone_id)
       record_sets = resource_record_sets[:resource_record_sets]
       record_sets.find(default_tcp_record) do |set|
-        set[:name].include? 'tcp.'
+        set[:name] == @tcp_fqdn
       end
     end
 
@@ -98,7 +106,7 @@ module Ert
               value: 'bogus'
             }
           ],
-          name: "ssh.#{name}.cf-app.com.",
+          name: @ssh_fqdn,
           type: 'CNAME',
           ttl: 5
         }
@@ -113,7 +121,7 @@ module Ert
               value: 'bogus'
             }
           ],
-          name: "tcp.#{name}.cf-app.com.",
+          name: @tcp_fqdn,
           type: 'CNAME',
           ttl: 5
         }
@@ -128,7 +136,7 @@ module Ert
               value: 'bogus'
             }
           ],
-          name: "\\052.#{name}.cf-app.com.",
+          name: @wildcard_fqdn,
           type: 'CNAME',
           ttl: 5
         }
