@@ -13,6 +13,15 @@ form:
     - reference: .mysql_proxy.service_hostname
       label: MySQL Service Hostname
       description: "To remove a MySQL proxy as a single point of failure, configure your load balancer to route application requests to multiple proxy instances. Then enter the IP or hostname of the load balancer here, so components reach their MySQL databases through the load balancer. If this field is blank, components use the IP of the first MySQL proxy instance."
+    - reference: .mysql_monitor.poll_frequency
+      label: Replication canary time period
+      description: "How frequently the canary checks for replication failure, in seconds. Lower numbers will cause the canary to run more frequently, adding load to the database."
+    - reference: .mysql_monitor.write_read_delay
+      label: Replication canary read delay
+      description: "How long the canary waits to verify data is replicating across each MySQL node, in seconds. Clusters under heavily load will experience some small replication lag as writesets are committed across the nodes."
+    - reference: .mysql_monitor.recipient_email
+      label: E-mail address (required)
+      description: "The MySQL service will send alerts when the cluster experiences a replication issue or a node is not allowed to auto-rejoin the cluster."
     - reference: .properties.mysql_backups
       label: Automated Backups Configuration
       selector_property_inputs:

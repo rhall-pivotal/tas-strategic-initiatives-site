@@ -8,8 +8,9 @@ templates:
     release: cf-mysql
   - name: streaming-mysql-backup-tool
     release: mysql-backup
-max_in_flight: 1
-single_az_only: false
+  - name: send-email
+    release: mysql-monitoring
+
 resource_definitions:
 - name: ram
   type: integer
@@ -40,8 +41,12 @@ resource_definitions:
   constraints:
     min: 1
     power_of_two: true
+
 static_ip: 1
 dynamic_ip: 0
+max_in_flight: 1
+single_az_only: false
+
 instance_definition:
   name: instances
   type: integer
@@ -55,6 +60,7 @@ instance_definition:
     property_reference: .properties.system_database
     property_values:
     - external
+
 property_blueprints:
 - name: mysql_admin_credentials
   type: simple_credentials
@@ -78,6 +84,8 @@ property_blueprints:
   type: simple_credentials
 - name: uaadb_credentials
   type: simple_credentials
+- name: monitordb_credentials
+  type: simple_credentials
 - name: cluster_health_user
   type: simple_credentials
   default:
@@ -92,7 +100,16 @@ property_blueprints:
   type: integer
   configurable: false
   default: 1200
+
 manifest: |
+  mysql-monitoring:
+    recipient_email: (( .mysql_monitor.recipient_email.value ))
+    admin_client:
+      username: (( .uaa.admin_client_credentials.identity ))
+      secret: (( .uaa.admin_client_credentials.password ))
+    client:
+      username: (( .uaa.notifications_client_credentials.identity ))
+      secret: (( .uaa.notifications_client_credentials.password ))
   cf_mysql:
     mysql:
       admin_password: (( mysql_admin_credentials.password ))
@@ -126,6 +143,10 @@ manifest: |
         - name: autoscale
           username: (( autoscale_credentials.identity ))
           password: (( autoscale_credentials.password ))
+        - name: monitor
+          username: (( monitordb_credentials.identity ))
+          password: (( monitordb_credentials.password ))
+      disable_auto_sst: true
   syslog_aggregator:
     address: (( ..cf.properties.syslog_host.value ))
     port: (( ..cf.properties.syslog_port.value ))
