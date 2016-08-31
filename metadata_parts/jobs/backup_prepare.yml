@@ -80,3 +80,4 @@ manifest: |
     endpoint_credentials:
       username: (( .mysql.mysql_backup_server_credentials.identity ))
       password: (( .mysql.mysql_backup_server_credentials.password ))
+    backup-all-masters: (( .properties.mysql_backups.enable.backup_all_masters.value ))

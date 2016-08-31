@@ -49,3 +49,6 @@ form:
           label: Cron Schedule
           description: Schedule MySQL backups as a cron expression (see http://godoc.org/github.com/robfig/cron). Schedule uses the machine local time zone.
           placeholder: "@every 15m"
+        - reference: .properties.mysql_backups.enable.backup_all_masters
+          label: Backup All Nodes
+          description: Each node is a duplicate master. This option makes unique backups from each master, rather than from a single instance.
