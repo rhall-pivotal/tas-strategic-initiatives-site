@@ -102,6 +102,7 @@ property_blueprints:
   default: 1200
 
 manifest: |
+  domain: (( .cloud_controller.system_domain.value ))
   mysql-monitoring:
     recipient_email: (( .mysql_monitor.recipient_email.value ))
     admin_client:
