@@ -61,24 +61,18 @@ property_blueprints:
   label: Backup Symmetric Encryption Key
 manifest: |
   service-backup:
-    destination:
-      s3:
-        endpoint_url: (( .properties.mysql_backups.enable.endpoint_url.value ))
-        bucket_name: (( .properties.mysql_backups.enable.bucket_name.value ))
-        bucket_path: (( .properties.mysql_backups.enable.bucket_path.value ))
-        access_key_id: (( .properties.mysql_backups.enable.access_key_id.value ))
-        secret_access_key: (( .properties.mysql_backups.enable.secret_access_key.value ))
+    destination: (( .properties.mysql_backups.selected_option.parsed_manifest(destination) ))
     source_folder: /var/vcap/store/mysql-backups
     source_executable: /var/vcap/jobs/streaming-mysql-backup-client/bin/client
     cleanup_executable: /bin/bash -c /var/vcap/jobs/streaming-mysql-backup-client/bin/cleanup-directories
-    cron_schedule: (( .properties.mysql_backups.enable.cron_schedule.value ))
+    cron_schedule: (( .properties.mysql_backups.selected_option.parsed_manifest(cron_schedule) ))
     exit_if_in_progress: true
-  cf_mysql:
-    mysql:
-      cluster_ips: (( .mysql.ips ))
   cf-mysql-backup:
     symmetric_key: (( backup_encryption_key.value ))
     endpoint_credentials:
       username: (( .mysql.mysql_backup_server_credentials.identity ))
       password: (( .mysql.mysql_backup_server_credentials.password ))
-    backup-all-masters: (( .properties.mysql_backups.enable.backup_all_masters.value ))
+    backup-all-masters: (( .properties.mysql_backups.selected_option.parsed_manifest(backup_all_masters) ))
+  cf_mysql:
+    mysql:
+      cluster_ips: (( .mysql.ips ))
