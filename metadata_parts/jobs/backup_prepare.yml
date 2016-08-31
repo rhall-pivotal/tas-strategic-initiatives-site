@@ -63,6 +63,7 @@ manifest: |
   service-backup:
     destination:
       s3:
+        endpoint_url: (( .properties.mysql_backups.enable.endpoint_url.value ))
         bucket_name: (( .properties.mysql_backups.enable.bucket_name.value ))
         bucket_path: (( .properties.mysql_backups.enable.bucket_path.value ))
         access_key_id: (( .properties.mysql_backups.enable.access_key_id.value ))

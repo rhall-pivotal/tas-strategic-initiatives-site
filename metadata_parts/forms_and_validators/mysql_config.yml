@@ -33,6 +33,9 @@ form:
         label: "Enable Automated MySQL Backups (With this option, set Resource Config > Backup Prepare Node > Instances to 1.)"
         description: Enable MySQL Backups
         property_inputs:
+        - reference: .properties.mysql_backups.enable.endpoint_url
+          label: S3 Endpoint URL
+          description: Specify the endpoint that matches the region the bucket is hosted in. Defaults to https://s3.amazonaws.com for us-east-1 if no url is provided.
         - reference: .properties.mysql_backups.enable.bucket_name
           label: S3 Bucket Name
           description: Do not include 's3://' prefix, trailing '/', or underscores. The bucket is created automatically if it does not already exist.

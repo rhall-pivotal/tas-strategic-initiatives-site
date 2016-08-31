@@ -181,6 +181,10 @@ property_blueprints:
     - name: enable
       select_value: enable
       property_blueprints:
+      - name: endpoint_url
+        type: string
+        configurable: true
+        default: https://s3.amazonaws.com
       - name: bucket_name
         type: string
         configurable: true
