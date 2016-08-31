@@ -6,21 +6,22 @@ module Ert
   class DnsUpdater
     def initialize(settings:)
       env_config = settings.dig('vm_shepherd', 'env_config')
-      self.name = env_config.dig('stack_name')
-      self.elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'elb_dns_name')
-      self.ssh_elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'ssh_elb_dns_name')
-      self.tcp_elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'tcp_elb_dns_name')
-      self.hosted_zone_id = settings.dig('vm_shepherd', 'env_config', 'route53_hosted_zone_id')
-      self.deployment_domain = settings.dig('ops_manager', 'elastic_runtime', 'deployment_domain')
-
-      self.wildcard_fqdn = "*.#{deployment_domain}."
-      self.ssh_fqdn = "ssh.#{deployment_domain}."
-      self.tcp_fqdn = "tcp.#{deployment_domain}."
 
       self.route53 = AWS::Route53.new(
         access_key_id: env_config.dig('aws_access_key'),
         secret_access_key: env_config.dig('aws_secret_key')
       )
+
+      self.name = env_config.dig('stack_name')
+      self.elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'elb_dns_name')
+      self.ssh_elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'ssh_elb_dns_name')
+      self.tcp_elb_dns_name = settings.dig('ops_manager', 'elastic_runtime', 'tcp_elb_dns_name')
+      self.hosted_zone_id = settings.dig('vm_shepherd', 'env_config', 'route53_hosted_zone_id') || find_hosted_zone_id
+      self.deployment_domain = settings.dig('ops_manager', 'elastic_runtime', 'deployment_domain') || "#{name}.cf-app.com"
+
+      self.wildcard_fqdn = "*.#{deployment_domain}."
+      self.ssh_fqdn = "ssh.#{deployment_domain}."
+      self.tcp_fqdn = "tcp.#{deployment_domain}."
     end
 
     def update_record
@@ -66,6 +67,13 @@ module Ert
     attr_accessor :name, :elb_dns_name, :ssh_elb_dns_name, :tcp_elb_dns_name, :hosted_zone_id, :deployment_domain
 
     attr_accessor :wildcard_fqdn, :ssh_fqdn, :tcp_fqdn
+
+    def find_hosted_zone_id
+      resp = route53.client.list_hosted_zones
+      resp[:hosted_zones].find do |zone|
+        zone[:name].include? name
+      end[:id]
+    end
 
     def new_a_record_set
       record = Aws::Route53::Types::ResourceRecordSet.new

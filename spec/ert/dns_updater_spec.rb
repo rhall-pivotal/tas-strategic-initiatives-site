@@ -192,5 +192,59 @@ describe Ert::DnsUpdater do
         expect(dns_updater.update_record).to eq(data_response)
       end
     end
+
+    context 'when route53_hosted_zone_id is not set in the env settings' do
+      let(:settings) do
+        {
+          'name' => 'some.hosted.name',
+          'vm_shepherd' => {
+            'env_config' => {
+              'stack_name' => 'some',
+              'aws_access_key' => 'some-access-key',
+              'aws_secret_key' => 'some-secret-key'
+            }
+          },
+          'ops_manager' => {
+            'elastic_runtime' => {
+              'deployment_domain' => 'some.cf-app.com',
+              'elb_dns_name' => 'some-fake-elb-dns-name',
+              'ssh_elb_dns_name' => 'some-fake-ssh-elb-dns-name',
+              'tcp_elb_dns_name' => 'some-fake-tcp-elb-dns-name'
+            }
+          }
+        }
+      end
+
+      it 'uses the route53 client to find the correct hosted zone' do
+        expect(dns_updater.update_record).to eq(data_response)
+      end
+    end
+
+    context 'when deployment_domain is not set in the env settings' do
+      let(:settings) do
+        {
+          'name' => 'some.hosted.name',
+          'vm_shepherd' => {
+            'env_config' => {
+              'route53_hosted_zone_id' => hosted_zone_id,
+              'stack_name' => 'some',
+              'aws_access_key' => 'some-access-key',
+              'aws_secret_key' => 'some-secret-key'
+            }
+          },
+          'ops_manager' => {
+            'elastic_runtime' => {
+              'elb_dns_name' => 'some-fake-elb-dns-name',
+              'ssh_elb_dns_name' => 'some-fake-ssh-elb-dns-name',
+              'tcp_elb_dns_name' => 'some-fake-tcp-elb-dns-name'
+            }
+          }
+        }
+      end
+
+      it 'uses #{name}.cf-app.com' do
+        expect(dns_updater.update_record).to eq(data_response)
+      end
+    end
   end
 end
