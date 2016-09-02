@@ -259,7 +259,7 @@ property_blueprints:
   - name: greenplum_router_admin_client_credentials
     type: simple_credentials
     default:
-      identity: greenplum_router
+      identity: greenplum_router_admin
 
   - name: greenplum_router_client_credentials
     type: simple_credentials
@@ -605,14 +605,14 @@ manifest: |
         authorities: "cloud_controller.read"
         authorized-grant-types: "refresh_token,client_credentials"
       greenplum_router_admin:
-        id: (( greenplum_broker_client_credentials.identity ))
-        secret: (( greenplum_broker_client_credentials.password ))
+        id: (( greenplum_router_admin_client_credentials.identity ))
+        secret: (( greenplum_router_admin_client_credentials.password ))
         scope: "uaa.none"
         authorities: "cloud_controller.admin,routing.router_groups.read"
         authorized-grant-types: "refresh_token,client_credentials"
       greenplum_router:
-        id: (( greenplum_broker_client_credentials.identity ))
-        secret: (( greenplum_broker_client_credentials.password ))
+        id: (( greenplum_router_client_credentials.identity ))
+        secret: (( greenplum_router_client_credentials.password ))
         scope: "uaa.none"
         authorities: "routing.routes.write"
         authorized-grant-types: "refresh_token,client_credentials"
