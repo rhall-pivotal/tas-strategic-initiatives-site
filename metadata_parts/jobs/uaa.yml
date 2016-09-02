@@ -251,6 +251,21 @@ property_blueprints:
     default:
       identity: logsearch-firehose
 
+  - name: greenplum_broker_client_credentials
+    type: simple_credentials
+    default:
+      identity: greenplum_broker
+
+  - name: greenplum_router_admin_client_credentials
+    type: simple_credentials
+    default:
+      identity: greenplum_router
+
+  - name: greenplum_router_client_credentials
+    type: simple_credentials
+    default:
+      identity: greenplum_router
+
   - name: customize_username_label
     type: string
     configurable: true
@@ -583,6 +598,24 @@ manifest: |
         scope: uaa.none
         authorities: uaa.resource
         authorized-grant-types: client_credentials
+      greenplum_broker:
+        id: (( greenplum_broker_client_credentials.identity ))
+        secret: (( greenplum_broker_client_credentials.password ))
+        scope: "uaa.none"
+        authorities: "cloud_controller.read"
+        authorized-grant-types: "refresh_token,client_credentials"
+      greenplum_router_admin:
+        id: (( greenplum_broker_client_credentials.identity ))
+        secret: (( greenplum_broker_client_credentials.password ))
+        scope: "uaa.none"
+        authorities: "cloud_controller.admin,routing.router_groups.read"
+        authorized-grant-types: "refresh_token,client_credentials"
+      greenplum_router:
+        id: (( greenplum_broker_client_credentials.identity ))
+        secret: (( greenplum_broker_client_credentials.password ))
+        scope: "uaa.none"
+        authorities: "routing.routes.write"
+        authorized-grant-types: "refresh_token,client_credentials"
     scim:
       user:
         override: true
