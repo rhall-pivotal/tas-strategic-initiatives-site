@@ -14,21 +14,21 @@ form:
       label: HAProxy IPs
       description: "If you are using HAProxy, enter its IP address(es). The addresses must be within your subnet CIDR block. Point your DNS to this IP address unless you are using your own load balancer."
     - reference: .properties.networking_point_of_entry
-      label: Configure the point-of-entry to this environment
+      label: Select one of the following point-of-entry options:
       selector_property_inputs:
         - reference: .properties.networking_point_of_entry.external_ssl
-          label: "Select this option if you have an external load balancer, and it can forward encrypted traffic (SSL, HTTPS, etc.) to the Elastic Runtime Router(s). You may also select this option for a non-production environment where load balancing is not required, by configuring a single Router with TLS enabled as your point-of-entry to the Elastic Runtime platform."
+          label: "Forward SSL to Elastic Runtime Router. Assumes an external load balancer is configured to forward encrypted traffic."
           property_inputs:
             - reference: .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate
               label: Router SSL Termination Certificate and Private Key
-              description: "Required for SSL encryption between the load balancer and Router(s)."
+              description: "Required for SSL encryption between the load balancer and router(s)."
             - reference: .properties.networking_point_of_entry.external_ssl.ssl_ciphers
               label: Router SSL Ciphers
               description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
         - reference: .properties.networking_point_of_entry.external_non_ssl
-          label: "Select this option if you have an external load balancer, but it will not forward any encrypted traffic to the Elastic Runtime Router(s). You may also select this option for a non-production environment where load balancing is not required, by configuring a single Router with TLS disabled as your point-of-entry to the Elastic Runtime platform."
+          label: "Forward unencrypted traffic to Elastic Runtime Router. Assumes an external load balancer is configured to forward unencrypted traffic."
         - reference: .properties.networking_point_of_entry.haproxy
-          label: "Select this option if you want to use HAProxy as your first point-of-entry instead of your own load balancer. Note that HAProxy does not provide IP failover, so it is not a robust load balancer."
+          label: "Forward SSL to HA Proxy. Like first option - Assumes an external load balancer is configured to forward encrypted traffic."
           property_inputs:
             - reference: .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate
               label: SSL Certificate and Private Key
