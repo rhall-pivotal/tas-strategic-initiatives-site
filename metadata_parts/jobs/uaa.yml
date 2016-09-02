@@ -261,6 +261,16 @@ property_blueprints:
     configurable: true
     default: "Password"
 
+  - name: push_notifications_dashboard_client
+    type: simple_credentials
+    default:
+      identity: push-notifications-dashboard
+
+  - name: push_api_client
+    type: simple_credentials
+    default:
+      identity: push-api-client
+
 manifest: |
   consul:
     encrypt_keys:
@@ -558,6 +568,21 @@ manifest: |
         autoapprove: true
         override: true
         redirect-uri: "https://p-concourse.(( .cloud_controller.system_domain.value ))/auth/uaa/callback"
+      push-notifications-dashboard:
+        id: (( push_notifications_dashboard_client.identity ))
+        secret: (( push_notifications_dashboard_client.password ))
+        scope: cloud_controller.read,cloud_controller.write,openid
+        authorities: scim.read
+        authorized-grant-types: "refresh_token,client_credentials,authorization_code"
+        access-token-validity: 3600
+        autoapprove: true
+        redirect-uri: "https://push.(( .cloud_controller.system_domain.value ))/auth/cloudfoundry/callback"
+      push-api:
+        id: (( push_api_client.identity ))
+        secret: (( push_api_client.password ))
+        scope: uaa.none
+        authorities: uaa.resource
+        authorized-grant-types: client_credentials
     scim:
       user:
         override: true
