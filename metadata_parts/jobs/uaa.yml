@@ -527,7 +527,7 @@ manifest: |
         secret: (( apps_metrics_processing_credentials.password ))
         override: true
         authorized-grant-types: authorization_code,client_credentials,refresh_token
-        authorities: oauth.login,doppler.firehose,cloud_controller.admin
+        authorities: oauth.login,doppler.firehose,cloud_controller.admin,uaa.resource
         scope: openid,oauth.approvals,doppler.firehose,cloud_controller.admin
         access-token-validity: 1209600
       tcp_router:
