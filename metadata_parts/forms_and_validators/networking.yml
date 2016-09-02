@@ -14,7 +14,7 @@ form:
       label: HAProxy IPs
       description: "If you are using HAProxy, enter its IP address(es). The addresses must be within your subnet CIDR block. Point your DNS to this IP address unless you are using your own load balancer."
     - reference: .properties.networking_point_of_entry
-      label: Select one of the following point-of-entry options:
+      label: "Select one of the following point-of-entry options:"
       selector_property_inputs:
         - reference: .properties.networking_point_of_entry.external_ssl
           label: "Forward SSL to Elastic Runtime Router. Assumes an external load balancer is configured to forward encrypted traffic."
