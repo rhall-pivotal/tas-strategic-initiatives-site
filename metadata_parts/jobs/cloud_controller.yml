@@ -203,6 +203,7 @@ manifest: |
   cc:
     allowed_cors_domains:
     - https://apm.(( .cloud_controller.system_domain.value ))
+    - https://metrics.(( .cloud_controller.system_domain.value ))
     allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
     default_to_diego_backend: true
     buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))

@@ -532,8 +532,9 @@ manifest: |
         id: (( apps_metrics_credentials.identity ))
         secret: (( apps_metrics_credentials.password ))
         override: true
-        authorized-grant-types: authorization_code,refresh_token
-        redirect-uri: "https://apm.(( .cloud_controller.system_domain.value )),https://apm.(( .cloud_controller.system_domain.value ))/,https://apm.(( .cloud_controller.system_domain.value ))/*,https://metrics.(( .cloud_controller.system_domain.value )),https://metrics.(( .cloud_controller.system_domain.value ))/,https://metrics.(( .cloud_controller.system_domain.value ))/*"
+        autoapprove: true
+        authorized-grant-types: authorization_code,refresh_token,client_credentials,password
+        redirect-uri: "https://metrics.(( .cloud_controller.system_domain.value )),https://metrics.(( .cloud_controller.system_domain.value ))/,https://metrics.(( .cloud_controller.system_domain.value ))/*"
         authorities: uaa.resource
         scope: cloud_controller.admin,cloud_controller.read,metrics.read
         access-token-validity: 900
