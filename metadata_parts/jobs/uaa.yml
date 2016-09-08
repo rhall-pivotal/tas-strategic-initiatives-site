@@ -435,7 +435,7 @@ manifest: |
           - cloud_controller.read
           - cloud_controller.write
           - cloud_controller.admin
-        scope: cloud_controller.read,cloud_controller.write,cloud_controller.admin
+        scope: cloud_controller.read,cloud_controller.write,cloud_controller.admin,usage_service.audit
         authorized-grant-types: implicit
         access-token-validity: 28800
       (( usage_service_client_credentials.identity )):
