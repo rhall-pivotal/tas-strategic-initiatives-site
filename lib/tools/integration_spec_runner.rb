@@ -56,6 +56,10 @@ class IntegrationSpecRunner
     run_spec(["integration/ERT-#{ert_version}/configure_dea_instance_counts_spec.rb"])
   end
 
+  def configure_aws_diego_cell_instance
+    run_spec(["integration/ERT-#{ert_version}/configure_aws_diego_cell_instance_spec.rb"])
+  end
+
   private
 
   def run_spec(spec_to_run)

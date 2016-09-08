@@ -116,4 +116,13 @@ namespace :ert do
       om_version: args.om_version
     ).configure_dea_instance_counts
   end
+
+  desc 'Configure diego cell instance for AWS deployment'
+  task :configure_aws_diego_cell_instance, [:environment_name, :ert_version, :om_version] do |_, args|
+    IntegrationSpecRunner.new(
+      environment: args.environment_name,
+      ert_version: args.ert_version,
+      om_version: args.om_version
+    ).configure_aws_diego_cell_instance
+  end
 end
