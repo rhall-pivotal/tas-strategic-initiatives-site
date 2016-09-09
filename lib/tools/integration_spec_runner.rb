@@ -48,8 +48,8 @@ class IntegrationSpecRunner
     run_spec(["integration/ERT-#{ert_version}/configure_external_file_storage_spec.rb"])
   end
 
-  def configure_multi_az_instance_counts
-    run_spec(["integration/ERT-#{ert_version}/configure_multi_az_instance_counts_spec.rb"])
+  def configure_ha_instance_counts
+    run_spec(["integration/ERT-#{ert_version}/configure_ha_instance_counts_spec.rb"])
   end
 
   def configure_dea_instance_counts

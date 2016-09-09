@@ -1,6 +1,6 @@
 require 'opsmgr/ui_helpers/config_helper'
 
-RSpec.describe 'Configure Elastic Runtime 1.5.X Multi-AZ Instance Counts', order: :defined do
+RSpec.describe 'Configure Elastic Runtime 1.5.X HA Instance Counts', order: :defined do
   let(:current_ops_manager) { ops_manager_driver }
   let(:env_settings) { fetch_environment_settings }
 

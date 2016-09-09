@@ -99,13 +99,13 @@ namespace :ert do
     ).configure_experimental_features
   end
 
-  desc 'Configure instance counts for multi-az deployment'
-  task :configure_multi_az_instance_counts, [:environment_name, :ert_version, :om_version] do |_, args|
+  desc 'Configure instance counts for jobs to ensure high availability'
+  task :configure_ha_instance_counts, [:environment_name, :ert_version, :om_version] do |_, args|
     IntegrationSpecRunner.new(
       environment: args.environment_name,
       ert_version: args.ert_version,
       om_version: args.om_version
-    ).configure_multi_az_instance_counts
+    ).configure_ha_instance_counts
   end
 
   desc 'Configure instance counts for a 1.6 upgrade deployment'
