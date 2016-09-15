@@ -168,6 +168,7 @@ manifest: |
     secret_token: (( secret_token.value ))
     cf_cc_api_url: "https://api.(( .cloud_controller.system_domain.value ))"
     cf_loggregator_http_url: https://loggregator.(( .cloud_controller.system_domain.value ))
+    cf_loggregator_websocket_url: wss://loggregator.(( .cloud_controller.system_domain.value )):4443
     cf_notifications_service_url: "https://notifications.(( .cloud_controller.system_domain.value ))"
     usage_service_host: "https://app-usage.(( .cloud_controller.system_domain.value ))"
     generic_white_label_config_json:
