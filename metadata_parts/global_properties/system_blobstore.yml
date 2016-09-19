@@ -15,6 +15,7 @@ property_blueprints:
                 username: (( .nfs_server.blobstore_credentials.identity ))
                 password: (( .nfs_server.blobstore_credentials.password ))
                 public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+                ca_cert: (( $ops_manager.ca_certificate ))
           - name: ccdroplet
             manifest: |
               blobstore_type: webdav
@@ -22,6 +23,7 @@ property_blueprints:
                 username: (( .nfs_server.blobstore_credentials.identity ))
                 password: (( .nfs_server.blobstore_credentials.password ))
                 public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+                ca_cert: (( $ops_manager.ca_certificate ))
           - name: ccpackage
             manifest: |
               blobstore_type: webdav
@@ -29,6 +31,7 @@ property_blueprints:
                 username: (( .nfs_server.blobstore_credentials.identity ))
                 password: (( .nfs_server.blobstore_credentials.password ))
                 public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+                ca_cert: (( $ops_manager.ca_certificate ))
           - name: ccresource
             manifest: |
               blobstore_type: webdav
@@ -36,6 +39,7 @@ property_blueprints:
                 username: (( .nfs_server.blobstore_credentials.identity ))
                 password: (( .nfs_server.blobstore_credentials.password ))
                 public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+                ca_cert: (( $ops_manager.ca_certificate ))
       - name: external
         named_manifests:
           - name: aes_hash
