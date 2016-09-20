@@ -145,6 +145,12 @@ property_blueprints:
     configurable: true
     default: false
 
+  - name: currency_lookup
+    type: string
+    optional: true
+    configurable: true
+    default: '{ "usd": "$", "eur": "€" }'
+
 manifest: |
   cf:
     api_url: "https://api.(( .cloud_controller.system_domain.value ))"
@@ -182,6 +188,7 @@ manifest: |
       marketplace_name: (( marketplace_name.value ))
       nav_links: (( nav_links.value ))
       display_plan_prices: (( display_plan_prices.value ))
+      currency_lookup: (( currency_lookup.value ))
   databases:
     app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
   ssl:
