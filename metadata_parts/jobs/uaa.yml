@@ -251,6 +251,11 @@ property_blueprints:
     default:
       identity: logsearch-firehose
 
+  - name: splunk_firehose_credentials
+    type: simple_credentials
+    default:
+      identity: splunk-firehose
+
   - name: greenplum_broker_client_credentials
     type: simple_credentials
     default:
@@ -675,6 +680,11 @@ manifest: |
           - console.support
       - name: (( logsearch_firehose_credentials.identity ))
         password: (( logsearch_firehose_credentials.password ))
+        groups:
+          - cloud_controller.admin
+          - doppler.firehose
+      - name: (( splunk_firehose_credentials.identity ))
+        password: (( splunk_firehose_credentials.password ))
         groups:
           - cloud_controller.admin
           - doppler.firehose
