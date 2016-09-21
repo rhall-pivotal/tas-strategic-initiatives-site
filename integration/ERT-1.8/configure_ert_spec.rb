@@ -53,8 +53,9 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
         networking_form.nested_property(ssl_rsa_cert_property, 'private_key_pem').set(elastic_runtime_settings['ssl_private_key'])
       else
         domain = elastic_runtime_settings['system_domain']
+        apps_domain = elastic_runtime_settings['apps_domain']
         networking_form.generate_self_signed_cert(
-          "*.#{domain},*.login.#{domain},*.uaa.#{domain}",
+          "*.#{domain},*.login.#{domain},*.uaa.#{domain},*.#{apps_domain}",
           '.properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate',
           '.properties.networking_point_of_entry',
           'external_ssl'
@@ -85,8 +86,9 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
         networking_form.nested_property(ssl_rsa_cert_property, 'private_key_pem').set(elastic_runtime_settings['ssl_private_key'])
       else
         domain = elastic_runtime_settings['system_domain']
+        apps_domain = elastic_runtime_settings['apps_domain']
         networking_form.generate_self_signed_cert(
-          "*.#{domain},*.login.#{domain},*.uaa.#{domain}",
+          "*.#{domain},*.login.#{domain},*.uaa.#{domain},*.#{apps_domain}",
           '.properties.networking_point_of_entry.haproxy.ssl_rsa_certificate',
           '.properties.networking_point_of_entry',
           'haproxy'
@@ -111,8 +113,9 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
         networking_form.nested_property(ssl_rsa_cert_property, 'private_key_pem').set(elastic_runtime_settings['ssl_private_key'])
       else
         domain = elastic_runtime_settings['system_domain']
+        apps_domain = elastic_runtime_settings['apps_domain']
         networking_form.generate_self_signed_cert(
-          "*.#{domain},*.login.#{domain},*.uaa.#{domain}",
+          "*.#{domain},*.login.#{domain},*.uaa.#{domain},*.#{apps_domain}",
           '.properties.networking_point_of_entry.haproxy.ssl_rsa_certificate',
           '.properties.networking_point_of_entry',
           'haproxy'
@@ -122,7 +125,6 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
       resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
       resource_config.set_floating_ips_for_job('ha_proxy', elastic_runtime_settings['ha_proxy_floating_ips'])
     end
-
   end
 
   it 'configures smtp' do
