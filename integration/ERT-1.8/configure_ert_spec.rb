@@ -121,6 +121,9 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
           'haproxy'
         )
       end
+      if elastic_runtime_settings['mtu']
+        networking_form.property('.diego_cell.garden_network_mtu').set(elastic_runtime_settings['mtu'])
+      end
       networking_form.save_form
       resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
       resource_config.set_floating_ips_for_job('ha_proxy', elastic_runtime_settings['ha_proxy_floating_ips'])
