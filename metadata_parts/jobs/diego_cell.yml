@@ -101,6 +101,7 @@ manifest: |
       post_setup_user: "root"
       ca_certs_for_downloads: (( $ops_manager.ca_certificate ))
     rep:
+      use_azure_fault_domains: true
       bbs:
         api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))
