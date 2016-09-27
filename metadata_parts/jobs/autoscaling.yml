@@ -71,7 +71,6 @@ manifest: |
     cf:
       admin_user: (( .uaa.admin_credentials.identity ))
       admin_password: (( .uaa.admin_credentials.password ))
-    instance_count: 1
     database: (( .properties.system_database.selected_option.parsed_manifest(autoscaling) ))
     encryption_key: (( encryption_key.password ))
     enable_diego: true
