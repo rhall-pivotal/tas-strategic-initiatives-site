@@ -75,7 +75,7 @@ property_blueprints:
 
 manifest: |
   cf_mysql:
-    external_host: "p-mysql.internal.(( .cloud_controller.system_domain.value ))"
+    external_host: "p-mysql-ert.(( .cloud_controller.system_domain.value ))"
     proxy:
       api_password: (( dashboard_credentials.password ))
       api_username: (( dashboard_credentials.identity ))

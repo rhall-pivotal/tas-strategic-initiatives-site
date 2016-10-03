@@ -75,7 +75,7 @@ property_blueprints:
 manifest: |
   domain: (( .cloud_controller.system_domain.value ))
   cf_mysql:
-    external_host: "p-mysql.internal.(( .cloud_controller.system_domain.value ))"
+    external_host: "p-mysql-ert.(( .cloud_controller.system_domain.value ))"
   mysql-monitoring:
     recipient_email: (( recipient_email.value ))
     replication-canary:
