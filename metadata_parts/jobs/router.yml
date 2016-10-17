@@ -94,11 +94,6 @@ property_blueprints:
     configurable: true
     default: 20
 
-  - name: healthcheck_user_agent
-    type: string
-    configurable: true
-    default: "HTTP-Monitor/1.1"
-
 manifest: |
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   networks:
@@ -120,7 +115,6 @@ manifest: |
       request_timeout_in_seconds: 300
     drain_wait: (( .router.drain_wait ))
     load_balancer_healthy_threshold: (( .router.lb_healthy_threshold ))
-    healthcheck_user_agent: (( .router.healthcheck_user_agent ))
   routing_api:
     enabled: true
   consul:
