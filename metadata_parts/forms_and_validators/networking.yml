@@ -64,3 +64,12 @@ form:
     - reference: .router.request_timeout_in_seconds
       label: Router Timeout to Backends (in seconds)
       description: "Timeout for connections from Router (and HAProxy, if you use it) to applications and system components. Increase this to accommodate larger uploads over connections with high latency."
+    - reference: .router.drain_wait
+      label: Router Drain Wait Time
+      description: "Specifies the amount of time, in seconds, that the Router will continue to accept connections before shutting down. During this period the healthcheck will report unhealthy to cause load balancers to fail over to other Routers. This value should be greater than or equal to the max time it could take your load balancer to consider a Router instance unhealthy, given contiguous failed healthchecks."
+    - reference: .router.lb_healthy_threshold
+      label: Load Balancer Healthy Threshold
+      description: "Specifies the amount of time, in seconds, to wait until declaring the router instance started. This allows an external load balancer time to register the instance as healthy."
+    - reference: .router.healthcheck_user_agent
+      label: Router Healthcheck User Agent Header
+      description: "Specifies the expected User-Agent header for the health check agent (usually the Load Balancer). When the router is draining requests, responses from an agent with this header will be treated as a healthcheck and return a 503 Service Unavailable status code."
