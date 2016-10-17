@@ -138,6 +138,9 @@ form:
     - reference: .uaa.customize_password_label
       label: Customize Password Label (on login page)
       description: The text used to prompt for a password during login
+    - reference: .uaa.proxy_ips_regex
+      label: Proxy IPs Regular Expression
+      description: "A pipe delimited set of regular expressions of IP addresses that are considered reverse proxies. When a request from these IP addresses come in, the x-forwarded-for and x-forwarded-proto headers will be respected."
 
 install_time_verifiers:
   - name: Verifiers::SsoUrlVerifier
