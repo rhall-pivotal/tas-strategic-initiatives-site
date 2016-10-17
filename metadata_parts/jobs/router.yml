@@ -113,8 +113,8 @@ manifest: |
     haproxy:
       health_check_port: 80
       request_timeout_in_seconds: 300
-    drain_wait: (( .router.drain_wait ))
-    load_balancer_healthy_threshold: (( .router.lb_healthy_threshold ))
+    drain_wait: (( .router.drain_wait.value ))
+    load_balancer_healthy_threshold: (( .router.lb_healthy_threshold.value ))
   routing_api:
     enabled: true
   consul:

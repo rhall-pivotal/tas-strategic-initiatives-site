@@ -343,7 +343,7 @@ manifest: |
           - https://apps.(( .cloud_controller.system_domain.value ))/
         url: "/login"
   uaa:
-    proxy_ips_regex: (( .uaa.proxy_ips_regex ))
+    proxy_ips_regex: (( .uaa.proxy_ips_regex.value ))
     zones:
       internal:
         hostnames:
