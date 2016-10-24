@@ -94,7 +94,7 @@ manifest: |
   capi:
     cc_uploader:
       cc:
-        job_polling_interval_in_seconds: 25
+        job_polling_interval_in_seconds: 5
         basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
         basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
         external_port: 9022
