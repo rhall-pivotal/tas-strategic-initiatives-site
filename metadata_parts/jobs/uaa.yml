@@ -408,6 +408,7 @@ manifest: |
         secret: (( opentsdb_nozzle_credentials.password ))
         scope: openid,oauth.approvals,doppler.firehose
         authorities: oauth.login,doppler.firehose
+        redirect-uri: "https://apps.(( .cloud_controller.system_domain.value ))"
       identity:
         id: (( identity_client_credentials.identity ))
         secret: (( identity_client_credentials.password ))
@@ -558,6 +559,7 @@ manifest: |
         authorities: oauth.login,doppler.firehose,cloud_controller.admin,uaa.resource
         scope: openid,oauth.approvals,doppler.firehose,cloud_controller.admin
         access-token-validity: 1209600
+        redirect-uri: "https://metrics.(( .cloud_controller.system_domain.value ))"
       tcp_router:
         id: (( tcp_router_credentials.identity ))
         secret: (( tcp_router_credentials.password ))
