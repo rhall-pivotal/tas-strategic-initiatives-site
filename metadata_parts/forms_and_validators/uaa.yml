@@ -3,11 +3,6 @@ form:
   name: uaa
   label: Authentication and Enterprise SSO
   description: Configure your user store access, which can be an internal user store (managed by Cloud Foundry's UAA) or an external user store (LDAP or SAML). You can also adjust the lifetimes of authentication tokens.
-  verifiers:
-    - name: Verifiers::LDAPBindVerifier
-      properties:
-        url: .properties.uaa.ldap.url
-        credentials: .properties.uaa.ldap.credentials
   property_inputs:
     - reference: .properties.uaa
       label: Configure your UAA user account store with either internal or external authentication mechanisms
