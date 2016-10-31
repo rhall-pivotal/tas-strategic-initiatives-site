@@ -387,6 +387,7 @@ manifest: |
       emailDomain: (( .properties.uaa.ldap.email_domains.parsed_strings ))
       given_name: (( .properties.uaa.ldap.first_name_attribute.value ))
       family_name: (( .properties.uaa.ldap.last_name_attribute.value ))
+      referral: (( .properties.uaa.ldap.ldap_referrals.value ))
     login:
       addnew: false
     catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"

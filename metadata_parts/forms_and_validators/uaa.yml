@@ -120,6 +120,9 @@ form:
             - reference: .properties.uaa.ldap.email_domains
               label: Email Domain(s)
               description: "Comma-separated list of domains, e.g. example.com. This is used for inviting external users to Apps Manager."
+            - reference: .properties.uaa.ldap.ldap_referrals
+              label: LDAP Referrals
+              description: "Configures the UAA LDAP referral behavior."
     - reference: .uaa.apps_manager_access_token_lifetime
       label: Apps Manager Access Token Lifetime (in seconds)
       description: Set the lifetime of the access token for the Apps Manager login portal.

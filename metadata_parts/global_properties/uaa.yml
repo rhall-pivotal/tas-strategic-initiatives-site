@@ -172,3 +172,15 @@ property_blueprints:
             type: string
             configurable: true
             optional: true
+          - name: ldap_referrals
+            type: dropdown_select
+            configurable: true
+            optional: false
+            default: "follow"
+            options:
+            - name: "follow"
+              label: Automatically follow any referrals
+            - name: "ignore"
+              label: Ignore referrals and return partial result
+            - name: "throw"
+              label: Throw exception for each referral and abort authentication
