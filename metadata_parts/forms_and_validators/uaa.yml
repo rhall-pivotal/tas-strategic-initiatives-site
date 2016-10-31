@@ -72,6 +72,9 @@ form:
             - reference: .properties.uaa.saml.require_signed_assertions
               label: Require Signed Assertions
               description: "If enabled, the SAML identity provider should always send signed assertions."
+            - reference: .properties.uaa.saml.signature_algorithm
+              label: Signature Algorithm
+              description: "The supported algorithm for signed requests and assertions."
         - reference: .properties.uaa.ldap
           label: LDAP Server
           description:

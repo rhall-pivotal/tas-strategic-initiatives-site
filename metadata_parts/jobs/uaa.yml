@@ -339,6 +339,7 @@ manifest: |
       providers: (( .properties.uaa.selected_option.parsed_manifest(saml_provider) ))
       signRequest: (( .properties.uaa.saml.sign_auth_requests.value ))
       wantAssertionSigned: (( .properties.uaa.saml.require_signed_assertions.value ))
+      signatureAlgorithm: (( .properties.uaa.saml.signature_algorithm.value ))
     logout:
       redirect:
         parameter:
