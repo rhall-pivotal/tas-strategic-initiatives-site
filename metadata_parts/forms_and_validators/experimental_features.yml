@@ -29,3 +29,7 @@ form:
             - reference: .properties.tcp_routing.enable.reservable_ports
               label: TCP Routing Ports (one-time configuration, if you want to update this value you can via the CF CLI)
               description: Enter the range of ports reserved for TCP routes. These ports must be available on your load balancer. You can specify a list of ports with commas between each port number and specify ranges of ports with dashes between the first and last port number. This configuration only applies the first time you specify it here, if you later want to update the ports you must do so with the CF CLI.
+    - reference: .nfs_server.blobstore_internal_access_rules
+      label: Whitelist for non-RFC-1918 Private Networks
+      description: 'If your Elastic Runtime deployment is using a private network that is not RFC 1918 (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16), then you must type in "allow <your-network>;" here. It is important to include the word "allow" and the semi-colon at the end. For example, "allow 172.99.0.0/24;"'
+      placeholder: "e.g.: allow 172.99.0.0/24;"
