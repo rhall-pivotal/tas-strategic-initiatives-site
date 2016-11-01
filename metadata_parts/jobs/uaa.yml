@@ -480,7 +480,7 @@ manifest: |
         secret: (( autoscale_client_credentials.password ))
         override: true
         autoapprove: true
-        authorities: "cloud_controller.write,cloud_controller.read,cloud_controller.admin,notifications.write,critical_notifications.write,emails.write,doppler.firehose"
+        authorities: "uaa.resource,cloud_controller.write,cloud_controller.read,cloud_controller.admin,notifications.write,critical_notifications.write,emails.write,doppler.firehose"
         authorized-grant-types: "client_credentials,authorization_code,refresh_token"
         scope: "openid,cloud_controller.permissions,cloud_controller.read,cloud_controller.write,doppler.firehose"
         access-token-validity: 3600
