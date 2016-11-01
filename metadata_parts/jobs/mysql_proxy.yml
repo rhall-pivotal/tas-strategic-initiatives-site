@@ -6,6 +6,8 @@ description: MySQL Proxy
 templates:
   - name: proxy
     release: cf-mysql
+  - name: consul_agent
+    release: consul
 
 resource_definitions:
   - name: ram
@@ -63,11 +65,6 @@ property_blueprints:
     configurable: true
     optional: true
 
-  - name: service_hostname
-    type: network_address
-    configurable: true
-    optional: true
-
   - name: dashboard_credentials
     type: simple_credentials
     default:
@@ -91,3 +88,15 @@ manifest: |
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
     transport: (( .properties.syslog_protocol.value ))
+  consul:
+    encrypt_keys:
+    - (( .properties.consul_encrypt_key.value ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+    server_cert: (( .properties.consul_server_cert.cert_pem ))
+    server_key: (( .properties.consul_server_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      servers:
+        lan: (( .consul_server.ips ))
