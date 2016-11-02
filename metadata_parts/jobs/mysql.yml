@@ -88,6 +88,8 @@ property_blueprints:
   type: simple_credentials
 - name: monitordb_credentials
   type: simple_credentials
+- name: diegodb_credentials
+  type: simple_credentials
 - name: cluster_health_user
   type: simple_credentials
   default:
@@ -151,6 +153,9 @@ manifest: |
         - name: monitor
           username: (( monitordb_credentials.identity ))
           password: (( monitordb_credentials.password ))
+        - name: diegodb
+          username: (( diegodb_credentials.identity ))
+          password: (( diegodb_credentials.password ))
       disable_auto_sst: true
   syslog_aggregator:
     address: (( ..cf.properties.syslog_host.value ))
