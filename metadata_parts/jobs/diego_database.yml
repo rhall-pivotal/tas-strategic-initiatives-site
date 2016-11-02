@@ -2,7 +2,7 @@
 name: diego_database
 label: Diego BBS
 resource_label: Diego BBS
-description: A datastore node for diego
+description: An etcd cluster node for Diego
 templates:
   - name: consul_agent
     release: consul
@@ -103,7 +103,6 @@ manifest: |
         server_key: (( .properties.bbs_server_cert.private_key_pem ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
-      sql: (( .properties.system_database.selected_option.parsed_manifest(diegodb) ))
       etcd:
         advertise_urls_dns_suffix: etcd.service.cf.internal
         machines: ['etcd.service.cf.internal']
