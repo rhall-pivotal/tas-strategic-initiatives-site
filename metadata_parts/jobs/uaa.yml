@@ -394,8 +394,11 @@ manifest: |
     catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
     url: "https://uaa.(( .cloud_controller.system_domain.value ))"
     jwt:
-      signing_key: (( jwt_signing_key_credentials.private_key_pem ))
-      verification_key: (( jwt_signing_key_credentials.public_key_pem ))
+      policy:
+        active_key_id: key-1
+        keys:
+          key-1:
+            signingKey: (( jwt_signing_key_credentials.private_key_pem ))
     cc:
       client_secret: (( cc_client_credentials.password ))
     admin:
