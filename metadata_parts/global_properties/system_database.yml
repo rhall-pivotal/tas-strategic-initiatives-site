@@ -85,7 +85,7 @@ property_blueprints:
               password: (( .mysql.app_usage_credentials.password ))
           - name: diegodb
             manifest: |
-              db_connection_string: (( .mysql.diegodb_credentials.identity )):(( .mysql.diegodb_credentials.password ))@tcp\((( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))\):3306/diegodb
+              db_connection_string: (( .mysql.diegodb_credentials.identity )):(( .mysql.diegodb_credentials.password ))@tcp( (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )) ):3306/diegodb
               max_open_connections: 100
 
       - name: internal_mysql
@@ -139,7 +139,7 @@ property_blueprints:
             password: (( .mysql.app_usage_credentials.password ))
         - name: diegodb
           manifest: |
-            db_connection_string: (( .mysql.diegodb_credentials.identity )):(( .mysql.diegodb_credentials.password ))@tcp\((( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))\):3306/diegodb
+            db_connection_string: (( .mysql.diegodb_credentials.identity )):(( .mysql.diegodb_credentials.password ))@tcp( (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )) ):3306/diegodb
             max_open_connections: 100
 
       - name: external
