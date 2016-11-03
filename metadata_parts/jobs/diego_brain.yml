@@ -85,11 +85,6 @@ property_blueprints:
     configurable: true
     optional: true
 
-  - name: disable_privileged_containers
-    type: boolean
-    configurable: true
-    default: false
-
 manifest: |
   capi:
     cc_uploader:
@@ -101,7 +96,7 @@ manifest: |
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
     nsync:
-      diego_privileged_containers: "(( disable_privileged_containers.value ? 'false' : 'true' ))"
+      diego_privileged_containers: false
       bbs:
         api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -116,7 +111,7 @@ manifest: |
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
     stager:
-      diego_privileged_containers: "(( disable_privileged_containers.value ? 'false' : 'true' ))"
+      diego_privileged_containers: false
       bbs:
         api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))

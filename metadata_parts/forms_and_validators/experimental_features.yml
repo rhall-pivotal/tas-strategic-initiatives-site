@@ -12,9 +12,6 @@ form:
       label: Cell Memory Capacity (MB)
     - reference: .diego_cell.executor_disk_capacity
       label: Cell Disk Capacity (MB)
-    - reference: .diego_brain.disable_privileged_containers
-      label: Disable privileged app containers
-      description: This determines whether or not to use privileged containers for your apps. Containers based on Docker images however are always unprivileged. Otherwise, this setting only applies to newly pushed apps, so you must restart any pre-existing apps that you want to adopt a new setting.
     - reference: .tcp_router.static_ips
       label: TCP Router IPs
       description: "Enter the IP address(es) you would like to designate for the TCP Routers, and point your load balancer to these addresses. If deploying to AWS with an ELB, do not enter IP addresses here. Instead, in the Resource Config section, add your ELB by name to the ELB Name column for TCP Router."
