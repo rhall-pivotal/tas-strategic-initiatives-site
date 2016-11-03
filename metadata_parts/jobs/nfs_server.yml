@@ -6,8 +6,6 @@ description: Stores droplets and app packages on behalf of Cloud Controller
 templates:
   - name: consul_agent
     release: consul
-  - name: debian_nfs_server
-    release: cf
   - name: metron_agent
     release: cf
   - name: blobstore
@@ -90,8 +88,6 @@ property_blueprints:
 
 manifest: |
   system_domain: (( .cloud_controller.system_domain.value ))
-  nfs_server:
-    allow_from_entries: (( .cloud_controller.subnet_cidrs ))
   syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
