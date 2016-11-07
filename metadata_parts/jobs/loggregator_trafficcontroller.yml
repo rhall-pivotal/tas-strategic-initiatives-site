@@ -65,7 +65,6 @@ property_blueprints:
 
 manifest: |
   loggregator:
-    doppler_port: 8081
     etcd:
       client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
       client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
@@ -101,6 +100,7 @@ manifest: |
       ca_cert: (( $ops_manager.ca_certificate ))
   doppler:
     uaa_client_id: (( .uaa.doppler_client_credentials.identity ))
+    outgoing_port: 8081
   uaa:
     clients:
       doppler:
