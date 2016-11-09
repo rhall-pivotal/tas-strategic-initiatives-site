@@ -73,8 +73,8 @@ manifest: |
     advertise_urls_dns_suffix: etcd.service.cf.internal
     machines: ['etcd.service.cf.internal']
     cluster:
-    - instances: (( .etcd_server.instances ))
-      name: "etcd_server"
+    - instances: (( .diego_database.instances ))
+      name: "diego_database"
     ca_cert: (( $ops_manager.ca_certificate ))
     server_cert: (( .properties.etcd_server_cert.cert_pem ))
     server_key: (( .properties.etcd_server_cert.private_key_pem ))
