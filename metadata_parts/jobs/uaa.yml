@@ -473,7 +473,9 @@ manifest: |
           - cloud_controller.read
           - cloud_controller.write
           - cloud_controller.admin
-        scope: cloud_controller.read,cloud_controller.write,cloud_controller.admin,usage_service.audit
+          - cloud_controller.user
+          - actuator.read
+        scope: cloud_controller.read,cloud_controller.write,cloud_controller.admin,usage_service.audit,cloud_controller.user,actuator.read
         authorized-grant-types: implicit
         access-token-validity: 28800
         redirect-uri: "https://apps.(( .cloud_controller.system_domain.value )),https://apps.(( .cloud_controller.system_domain.value ))/*"
