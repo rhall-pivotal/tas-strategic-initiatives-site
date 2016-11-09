@@ -72,6 +72,26 @@ form:
         - reference: .properties.system_blobstore.external.resources_bucket
           label: Resources Bucket Name
           description: S3 bucket for storing app resources. Pivotal recommends that you use a unique bucket name for app resources, but you can also use the same name as above.
+    - reference: .properties.system_blobstore.external_gcs
+      label: External Google Cloud Storage
+      description:
+      property_inputs:
+        - reference: .properties.system_blobstore.external_gcs.access_key
+          label: Access Key
+        - reference: .properties.system_blobstore.external_gcs.secret_key
+          label: Secret Key
+        - reference: .properties.system_blobstore.external_gcs.buildpacks_bucket
+          label: Buildpacks Bucket Name
+          description: Bucket for storing app buildpacks.
+        - reference: .properties.system_blobstore.external_gcs.droplets_bucket
+          label: Droplets Bucket Name
+          description: Bucket for storing app droplets. Pivotal recommends that you use a unique bucket name for droplets, but you can also use the same name as above.
+        - reference: .properties.system_blobstore.external_gcs.packages_bucket
+          label: Packages Bucket Name
+          description: Bucket for storing app packages. Pivotal recommends that you use a unique bucket name for packages, but you can also use the same name as above.
+        - reference: .properties.system_blobstore.external_gcs.resources_bucket
+          label: Resources Bucket Name
+          description: Bucket for storing app resources. Pivotal recommends that you use a unique bucket name for app resources, but you can also use the same name as above.
 
 install_time_verifiers:
   - name: Verifiers::BlobstoreVerifier
