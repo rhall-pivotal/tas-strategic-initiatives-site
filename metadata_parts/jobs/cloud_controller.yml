@@ -22,6 +22,8 @@ templates:
     release: java-offline-buildpack
   - name: staticfile-buildpack
     release: staticfile-buildpack
+  - name: dotnet-core-buildpack
+    release: dotnet-core-buildpack
   - name: cloud_controller_ng
     release: capi
   - name: routing-api
@@ -240,6 +242,8 @@ manifest: |
         package: python-buildpack
       - name: php_buildpack
         package: php-buildpack
+      - name: dotnet_core_buildpack
+        package: dotnet-core-buildpack
       - name: binary_buildpack
         package: binary-buildpack
     internal_api_user: (( internal_api_user_credentials.identity ))
