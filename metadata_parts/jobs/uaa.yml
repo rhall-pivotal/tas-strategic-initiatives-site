@@ -405,6 +405,25 @@ manifest: |
       client_secret: (( admin_client_credentials.password ))
     proxy:
       servers: (( .router.ips ))
+    user:
+      authorities:
+      - openid
+      - scim.me
+      - cloud_controller.read
+      - cloud_controller.write
+      - cloud_controller_service_permissions.read
+      - password.write
+      - uaa.user
+      - approvals.me
+      - oauth.approvals
+      - notification_preferences.read
+      - notification_preferences.write
+      - profile
+      - roles
+      - user_attributes
+      - uaa.offline_token
+      - actuator.read
+      - cloud_controller.user
     clients:
       opentsdb-firehose-nozzle:
         access-token-validity: 1209600
