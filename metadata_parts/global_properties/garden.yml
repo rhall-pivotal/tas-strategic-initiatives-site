@@ -3,7 +3,7 @@ property_blueprints:
   - name: garden_disk_cleanup
     type: selector
     configurable: true
-    default: routine
+    default: threshold
     option_templates:
       - name: never
         named_manifests:
@@ -26,5 +26,6 @@ property_blueprints:
         property_blueprints:
           - name: cleanup_threshold_in_mb
             type: integer
+            default: 10_240
             constraints:
               min: 1
