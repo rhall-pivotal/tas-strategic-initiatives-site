@@ -98,8 +98,6 @@ property_blueprints:
   type: simple_credentials
   default:
     identity: galera-healthcheck
-- name: galera_basic_auth_user
-  type: simple_credentials
 - name: database_startup_timeout
   type: integer
   configurable: false
@@ -124,13 +122,10 @@ manifest: |
       max_open_files: 1048576
       galera_healthcheck:
         db_password: (( galera_sidecar_user.password ))
-        endpoint_username: (( galera_basic_auth_user.password ))
-        endpoint_password: (( galera_basic_auth_user.password ))
+        endpoint_username: (( mysql_bootstrap_credentials.identity ))
+        endpoint_password: (( mysql_bootstrap_credentials.password ))
       cluster_health:
         password: (( cluster_health_user.password ))
-      bootstrap_endpoint:
-        username: (( mysql_bootstrap_credentials.identity ))
-        password: (( mysql_bootstrap_credentials.password ))
       seeded_databases:
         - name: ccdb
           username: (( ccdb_credentials.identity ))
