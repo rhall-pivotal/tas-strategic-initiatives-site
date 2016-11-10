@@ -98,10 +98,6 @@ property_blueprints:
   type: simple_credentials
   default:
     identity: galera-healthcheck
-- name: database_startup_timeout
-  type: integer
-  configurable: false
-  default: 1200
 
 manifest: |
   domain: (( .cloud_controller.system_domain.value ))
@@ -117,7 +113,6 @@ manifest: |
     mysql:
       admin_password: (( mysql_admin_credentials.password ))
       cluster_ips: (( .mysql.ips ))
-      database_startup_timeout: (( .mysql.database_startup_timeout.value ))
       innodb_buffer_pool_size: 2147483648
       max_open_files: 1048576
       galera_healthcheck:
