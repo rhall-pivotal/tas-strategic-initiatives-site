@@ -49,8 +49,9 @@ instance_definition:
     min: 0
 property_blueprints:
 manifest: |
-  cluster_ips: (( .mysql.ips ))
-  database_startup_timeout: (( .mysql.database_startup_timeout.value ))
-  bootstrap_endpoint:
-    username: (( .mysql.mysql_bootstrap_credentials.identity ))
-    password: (( .mysql.mysql_bootstrap_credentials.password ))
+  cf_mysql:
+    mysql:
+      cluster_ips: (( .mysql.ips ))
+      galera_healthcheck:
+        endpoint_username: (( .mysql.mysql_bootstrap_credentials.identity ))
+        endpoint_password: (( .mysql.mysql_bootstrap_credentials.password ))
