@@ -115,6 +115,8 @@ manifest: |
         peer_ca_cert: (( $ops_manager.ca_certificate ))
         peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
         peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
+      rep:
+        require_tls: false
   consul:
     encrypt_keys:
     - (( .properties.consul_encrypt_key.value ))
