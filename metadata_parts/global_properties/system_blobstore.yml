@@ -180,7 +180,7 @@ property_blueprints:
               fog_connection:
                 provider: Google
                 google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
-                google_storage_secret_access_key: (( (( .properties.system_blobstore.external_gcs.secret_key.value )) ))
+                google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
           - name: ccdroplet
             manifest: |
               blobstore_type: fog
@@ -188,7 +188,7 @@ property_blueprints:
               fog_connection:
                 provider: Google
                 google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
-                google_storage_secret_access_key: (( (( .properties.system_blobstore.external_gcs.secret_key.value )) ))
+                google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
           - name: ccpackage
             manifest: |
               blobstore_type: fog
@@ -196,7 +196,7 @@ property_blueprints:
               fog_connection:
                 provider: Google
                 google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
-                google_storage_secret_access_key: (( (( .properties.system_blobstore.external_gcs.secret_key.value )) ))
+                google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
           - name: ccresource
             manifest: |
               blobstore_type: fog
@@ -204,7 +204,7 @@ property_blueprints:
               fog_connection:
                 provider: Google
                 google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
-                google_storage_secret_access_key: (( (( .properties.system_blobstore.external_gcs.secret_key.value )) ))
+                google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
         property_blueprints:
           - name: buildpacks_bucket
             type: string
