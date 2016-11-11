@@ -11,3 +11,15 @@ property_blueprints:
       domains:
       - bbs.service.cf.internal
       - "*.bbs.service.cf.internal"
+
+  - name: rep_client_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: rep_server_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - cell.service.cf.internal
+      - "*.cell.service.cf.internal"
