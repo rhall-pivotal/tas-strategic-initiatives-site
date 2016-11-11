@@ -350,7 +350,7 @@ manifest: |
     route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
   routing_api:
     enabled: true
-    sqldb: (( .properties.route_services.selected_option.parsed_manifest(routingdb) ))
+    sqldb: (( .properties.system_database.selected_option.parsed_manifest(routingdb) ))
     system_domain: (( .cloud_controller.system_domain.value ))
     log_level: debug
     router_groups: (( .properties.tcp_routing.selected_option.parsed_manifest(default_router_group) ))
