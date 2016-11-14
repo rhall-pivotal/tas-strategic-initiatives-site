@@ -4,6 +4,8 @@ label: MySQL Proxy
 resource_label: MySQL Proxy
 description: MySQL Proxy
 templates:
+  - name: consul_agent
+    release: consul
   - name: proxy
     release: cf-mysql
 
@@ -63,11 +65,6 @@ property_blueprints:
     configurable: true
     optional: true
 
-  - name: service_hostname
-    type: network_address
-    configurable: true
-    optional: true
-
   - name: dashboard_credentials
     type: simple_credentials
     default:
@@ -80,6 +77,7 @@ manifest: |
       api_password: (( dashboard_credentials.password ))
       api_username: (( dashboard_credentials.identity ))
       proxy_ips: (( .mysql_proxy.ips ))
+      consul_enabled: true
     mysql:
       cluster_ips: (( .mysql.ips ))
   nats:
@@ -91,3 +89,13 @@ manifest: |
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
     transport: (( .properties.syslog_protocol.value ))
+  consul:
+    encrypt_keys:
+    - (( .properties.consul_encrypt_key.value ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      servers:
+        lan: (( .consul_server.ips ))
