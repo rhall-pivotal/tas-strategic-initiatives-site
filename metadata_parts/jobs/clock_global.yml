@@ -4,6 +4,8 @@ label: Clock Global
 resource_label: Clock Global
 description: Schedules asynchronous tasks for cloud controller
 templates:
+  - name: consul_agent
+    release: consul
   - name: cloud_controller_clock
     release: capi
   - name: metron_agent
@@ -115,6 +117,10 @@ manifest: |
     agent_key: (( .properties.consul_agent_cert.private_key_pem ))
     server_cert: (( .properties.consul_server_cert.cert_pem ))
     server_key: (( .properties.consul_server_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      servers:
+        lan: (( .consul_server.ips ))
 
   uaa:
     url: "https://uaa.(( .cloud_controller.system_domain.value ))"
