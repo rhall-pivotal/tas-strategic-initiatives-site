@@ -94,11 +94,18 @@ property_blueprints:
     configurable: true
     default: 20
 
+  - name: enable_zipkin
+    type: boolean
+    configurable: true
+    default: true
+
 manifest: |
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   networks:
     apps: default
   router:
+    tracing:
+      enable_zipkin: (( enable_zipkin.value ))
     secure_cookies: (( .router.disable_insecure_cookies.value ))
     status:
       user: router_status
