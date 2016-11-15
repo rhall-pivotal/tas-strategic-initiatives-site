@@ -65,11 +65,11 @@ property_blueprints:
                 name: uaa
           - name: notifications
             manifest: |
-              url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@mysql.service.cf.internal:3306/notifications
+              url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
               max_open_connections: 10
           - name: autoscaling
             manifest: |
-              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@mysql.service.cf.internal:3306/autoscale
+              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
           - name: console
             manifest: |
               ip: (( .consoledb.first_ip ))
@@ -80,7 +80,7 @@ property_blueprints:
             manifest: |
               name: app_usage_service
               port: 3306
-              ip: mysql.service.cf.internal
+              ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
               username: (( .mysql.app_usage_credentials.identity ))
               password: (( .mysql.app_usage_credentials.password ))
           - name: diegodb
@@ -126,14 +126,14 @@ property_blueprints:
               name: uaa
         - name: notifications
           manifest: |
-            url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@mysql.service.cf.internal:3306/notifications
+            url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
             max_open_connections: 10
         - name: autoscaling
           manifest: |
-            url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@mysql.service.cf.internal:3306/autoscale
+            url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
         - name: console
           manifest: |
-            ip: mysql.service.cf.internal
+            ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
             port: 3306
             username: (( .mysql.consoledb_credentials.identity ))
             password: (( .mysql.consoledb_credentials.password ))
@@ -142,7 +142,7 @@ property_blueprints:
           manifest: |
             name: app_usage_service
             port: 3306
-            ip: mysql.service.cf.internal
+            ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
             username: (( .mysql.app_usage_credentials.identity ))
             password: (( .mysql.app_usage_credentials.password ))
         - name: diegodb
