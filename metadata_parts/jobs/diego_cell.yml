@@ -105,8 +105,6 @@ manifest: |
       ca_cert: (( $ops_manager.ca_certificate ))
       server_cert: (( .properties.rep_server_cert.cert_pem ))
       server_key: (( .properties.rep_server_cert.private_key_pem ))
-      client_cert: (( .properties.rep_client_cert.cert_pem ))
-      client_key: (( .properties.rep_client_cert.private_key_pem ))
       use_azure_fault_domains: true
       bbs:
         api_location: bbs.service.cf.internal:8889
