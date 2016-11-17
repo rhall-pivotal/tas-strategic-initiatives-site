@@ -13,6 +13,9 @@ form:
     - reference: .ha_proxy.static_ips
       label: HAProxy IPs
       description: "If you are using HAProxy, enter its IP address(es). The addresses must be within your subnet CIDR block. Point your DNS to this IP address unless you are using your own load balancer."
+    - reference: .tcp_router.static_ips
+      label: TCP Router IPs
+      description: "Enter the IP address(es) you would like to designate for the TCP Routers, and point your load balancer to these addresses. If deploying to AWS with an ELB, do not enter IP addresses here. Instead, in the Resource Config section, add your ELB by name to the ELB Name column for TCP Router."
     - reference: .properties.networking_point_of_entry
       label: "Select one of the following point-of-entry options:"
       selector_property_inputs:
@@ -76,3 +79,14 @@ form:
     - reference: .router.lb_healthy_threshold
       label: Load Balancer Healthy Threshold
       description: "Specifies the amount of time, in seconds, to wait until declaring the router instance started. This allows an external load balancer time to register the instance as healthy."
+    - reference: .properties.tcp_routing
+      label: Enable TCP requests to your apps via specific ports on the TCP router. You will want to configure a load balancer to forward these TCP requests to the TCP routers. If you do not have a load balancer, then you can also send traffic directly to the TCP router.
+      selector_property_inputs:
+        - reference: .properties.tcp_routing.disable
+          label: Select this option if you prefer to enable TCP Routing at a later time
+        - reference: .properties.tcp_routing.enable
+          label: Enable TCP Routing
+          property_inputs:
+            - reference: .properties.tcp_routing.enable.reservable_ports
+              label: TCP Routing Ports (one-time configuration, if you want to update this value you can via the CF CLI)
+              description: Enter the range of ports reserved for TCP routes. These ports must be available on your load balancer. You can specify a list of ports with commas between each port number and specify ranges of ports with dashes between the first and last port number. This configuration only applies the first time you specify it here, if you later want to update the ports you must do so with the CF CLI.
