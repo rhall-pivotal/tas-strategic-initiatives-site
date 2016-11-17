@@ -85,7 +85,11 @@ property_blueprints:
               password: (( .mysql.app_usage_credentials.password ))
           - name: diegodb
             manifest: |
-              db_connection_string: (( .mysql.diegodb_credentials.identity )):(( .mysql.diegodb_credentials.password ))@tcp(mysql.service.cf.internal:3306)/diego
+              db_host: mysql.service.cf.internal
+              db_port: 3306
+              db_schema: diego
+              db_username: (( .mysql.diegodb_credentials.identity ))
+              db_password: (( .mysql.diegodb_credentials.password ))
               max_open_connections: 100
           - name: routingdb
             manifest: |
@@ -147,7 +151,11 @@ property_blueprints:
             password: (( .mysql.app_usage_credentials.password ))
         - name: diegodb
           manifest: |
-            db_connection_string: (( .mysql.diegodb_credentials.identity )):(( .mysql.diegodb_credentials.password ))@tcp(mysql.service.cf.internal:3306)/diego
+            db_host: mysql.service.cf.internal
+            db_port: 3306
+            db_schema: diego
+            db_username: (( .mysql.diegodb_credentials.identity ))
+            db_password: (( .mysql.diegodb_credentials.password ))
             max_open_connections: 100
         - name: routingdb
           manifest: |
@@ -208,7 +216,11 @@ property_blueprints:
               password: (( .properties.system_database.external.password.value ))
           - name: diegodb
             manifest: |
-              db_connection_string: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/diego
+              db_host: (( .properties.system_database.external.host.value ))
+              db_port: (( .properties.system_database.external.port.value ))
+              db_schema: diego
+              db_username: (( .properties.system_database.external.username.value ))
+              db_password: (( .properties.system_database.external.password.value ))
               max_open_connections: 100
           - name: routingdb
             manifest: |
