@@ -48,6 +48,7 @@ RSpec.describe 'Configure Elastic Runtime 1.9.X', order: :defined do
       )
       networking_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings['trust_self_signed_certificates'])
       ssl_rsa_cert_property = '.properties.networking_point_of_entry][external_ssl][.properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate'
+
       if elastic_runtime_settings['ssl_certificate']
         networking_form.nested_property(ssl_rsa_cert_property, 'cert_pem').set(elastic_runtime_settings['ssl_certificate'])
         networking_form.nested_property(ssl_rsa_cert_property, 'private_key_pem').set(elastic_runtime_settings['ssl_private_key'])
@@ -61,6 +62,17 @@ RSpec.describe 'Configure Elastic Runtime 1.9.X', order: :defined do
           'external_ssl'
         )
       end
+
+      networking_form.fill_in_selector_property(
+        selector_input_reference: '.properties.tcp_routing',
+        selector_name: 'enable',
+        selector_value: 'enable',
+        sub_field_answers: {
+          '.properties.tcp_routing.enable.reservable_ports' => {
+            attribute_value: '1024-1123',
+          },
+        },
+      )
 
       networking_form.property('.properties.logger_endpoint_port').set('4443')
       networking_form.save_form

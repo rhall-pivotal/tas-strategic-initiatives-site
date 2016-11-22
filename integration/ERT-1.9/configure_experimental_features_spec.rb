@@ -22,17 +22,6 @@ RSpec.describe 'Configure Elastic Runtime 1.9.X Experimental Features', order: :
       checkbox.click unless checkbox.checked?
     end
 
-    experimental_features_form.fill_in_selector_property(
-      selector_input_reference: '.properties.tcp_routing',
-      selector_name: 'enable',
-      selector_value: 'enable',
-      sub_field_answers: {
-        '.properties.tcp_routing.enable.reservable_ports' => {
-          attribute_value: '1024-1123',
-        },
-      },
-    )
-
     experimental_features_form.save_form
     resource_config = current_ops_manager.product_resources_configuration(elastic_runtime_settings['name'])
 
