@@ -63,11 +63,19 @@ property_blueprints:
   - name: status_credentials
     type: simple_credentials
 
+  - name: trafficcontroller_tls_cert
+    type: rsa_cert_credentials
+    configurable: false
+
 manifest: |
   loggregator:
     etcd:
       client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
       client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
+    tls:
+      trafficcontroller:
+        cert: (( trafficcontroller_tls_cert.cert_pem ))
+        key: (( trafficcontroller_tls_cert.private_key_pem ))
   traffic_controller:
     etcd:
       client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))

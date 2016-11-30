@@ -78,6 +78,7 @@ manifest: |
     external_host: "p-mysql-ert.(( .cloud_controller.system_domain.value ))"
   mysql-monitoring:
     recipient_email: (( recipient_email.value ))
+    cluster_identifier: "pcf-mysql"
     replication-canary:
       cluster_ips: (( .mysql.ips ))
       canary_database: monitor
