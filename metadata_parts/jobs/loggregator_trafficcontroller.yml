@@ -68,14 +68,6 @@ property_blueprints:
     configurable: false
 
 manifest: |
-  loggregator:
-    etcd:
-      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
-      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
-    tls:
-      trafficcontroller:
-        cert: (( trafficcontroller_tls_cert.cert_pem ))
-        key: (( trafficcontroller_tls_cert.private_key_pem ))
   traffic_controller:
     etcd:
       client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
@@ -102,7 +94,13 @@ manifest: |
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   loggregator:
+    tls:
+      trafficcontroller:
+        cert: (( trafficcontroller_tls_cert.cert_pem ))
+        key: (( trafficcontroller_tls_cert.private_key_pem ))
     etcd:
+      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
+      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
       require_ssl: true
       machines: ['cf-etcd.service.cf.internal']
       ca_cert: (( $ops_manager.ca_certificate ))
