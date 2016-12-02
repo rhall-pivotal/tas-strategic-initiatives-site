@@ -216,7 +216,7 @@ manifest: |
     resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
     bootstrap_admin_email: admin
     bulk_api_password: (( bulk_api_credentials.password ))
-    client_max_body_size: (( max_file_size.value ))M
+    app_bits_max_body_size: (( max_file_size.value ))M
     maximum_app_disk_in_mb: (( max_disk_quota_app.value ))
     default_app_disk_in_mb: (( default_disk_quota_app.value ))
     default_app_memory: (( default_app_memory.value ))

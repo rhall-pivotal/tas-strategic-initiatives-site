@@ -26,6 +26,7 @@ property_blueprints:
                 ca_cert: (( $ops_manager.ca_certificate ))
           - name: ccpackage
             manifest: |
+              max_package_size: 2147483648
               blobstore_type: webdav
               webdav_config:
                 username: (( .nfs_server.blobstore_credentials.identity ))
@@ -76,6 +77,7 @@ property_blueprints:
               fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
           - name: ccpackage
             manifest: |
+              max_package_size: 2147483648
               app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
               blobstore_type: fog
               fog_connection:
@@ -191,6 +193,7 @@ property_blueprints:
                 google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
           - name: ccpackage
             manifest: |
+              max_package_size: 2147483648
               blobstore_type: fog
               app_package_directory_key: (( .properties.system_blobstore.external_gcs.packages_bucket.value ))
               fog_connection:
