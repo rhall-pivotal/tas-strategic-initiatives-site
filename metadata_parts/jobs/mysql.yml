@@ -84,8 +84,6 @@ property_blueprints:
   type: simple_credentials
 - name: uaadb_credentials
   type: simple_credentials
-- name: consoledb_credentials
-  type: simple_credentials
 - name: monitordb_credentials
   type: simple_credentials
 - name: diegodb_credentials
@@ -131,9 +129,6 @@ manifest: |
         - name: uaa
           username: (( uaadb_credentials.identity ))
           password: (( uaadb_credentials.password ))
-        - name: console
-          username: (( consoledb_credentials.identity ))
-          password: (( consoledb_credentials.password ))
         - name: app_usage_service
           username: (( app_usage_credentials.identity ))
           password: (( app_usage_credentials.password ))
