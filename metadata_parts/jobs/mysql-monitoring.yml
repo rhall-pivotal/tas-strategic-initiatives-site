@@ -76,6 +76,8 @@ manifest: |
   domain: (( .cloud_controller.system_domain.value ))
   cf_mysql:
     external_host: "p-mysql-ert.(( .cloud_controller.system_domain.value ))"
+  cf:
+    skip_ssl_validation: true
   mysql-monitoring:
     recipient_email: (( recipient_email.value ))
     cluster_identifier: "pcf-mysql"
