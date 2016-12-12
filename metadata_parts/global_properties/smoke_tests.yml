@@ -1,5 +1,10 @@
 ---
 property_blueprints:
+  - name: cf_dial_timeout_in_seconds
+    type: integer
+    configurable: true
+    optional: true
+
   - name: smoke_tests
     type: selector
     configurable: true
@@ -19,6 +24,7 @@ property_blueprints:
               skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
               use_existing_org: false
               use_existing_space: false
+              cf_dial_timeout_in_seconds: (( .properties.cf_dial_timeout_in_seconds.value ))
 
       - name: specified
         select_value: specified
@@ -34,6 +40,7 @@ property_blueprints:
               skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
               use_existing_org: true
               use_existing_space: true
+              cf_dial_timeout_in_seconds: (( .properties.cf_dial_timeout_in_seconds.value ))
         property_blueprints:
           - name: org_name
             type: string
