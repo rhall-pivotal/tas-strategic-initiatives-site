@@ -188,6 +188,7 @@ manifest: |
       nav_links: (( nav_links.value ))
       display_plan_prices: (( display_plan_prices.value ))
       currency_lookup: (( currency_lookup.value ))
+      cf_dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
   databases:
     app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
   ssl:
