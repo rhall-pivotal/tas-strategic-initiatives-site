@@ -6,9 +6,7 @@ description: TCP Routers route TCP traffic.
 templates:
   - name: consul_agent
     release: consul
-  - name: haproxy
-    release: routing
-  - name: router_configurer
+  - name: tcp_router
     release: routing
   - name: metron_agent
     release: loggregator
@@ -73,11 +71,10 @@ manifest: |
   uaa:
     tls_port: 8443
     ca_cert: (( $ops_manager.ca_certificate ))
-  router_configurer:
+  tcp_router:
     debug_address: null
     log_level: debug
     oauth_secret: (( .uaa.tcp_router_credentials.password ))
-    tcp_stats_collection_interval: 1m
   consul:
     encrypt_keys:
     - (( .properties.consul_encrypt_key.value ))
