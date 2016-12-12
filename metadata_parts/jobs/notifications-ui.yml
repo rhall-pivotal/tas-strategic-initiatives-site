@@ -74,6 +74,7 @@ manifest: |
     cf:
       admin_user: (( .uaa.admin_credentials.identity ))
       admin_password: (( .uaa.admin_credentials.password ))
+      dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
     uaa:
       admin_client: (( .uaa.admin_client_credentials.identity ))
       admin_secret: (( .uaa.admin_client_credentials.password ))
