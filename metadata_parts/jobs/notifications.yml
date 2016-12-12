@@ -76,6 +76,7 @@ manifest: |
     cf:
       admin_user: (( .uaa.admin_credentials.identity ))
       admin_password: (( .uaa.admin_credentials.password ))
+      dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
     smtp:
       host: (( .properties.smtp_address.value ))
       pass: (( .properties.smtp_credentials.password ))
