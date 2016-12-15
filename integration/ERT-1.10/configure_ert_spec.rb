@@ -46,7 +46,7 @@ RSpec.describe 'Configure Elastic Runtime 1.10.X', order: :defined do
         selector_value: 'external_ssl',
         sub_field_answers: {}
       )
-      networking_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings['trust_self_signed_certificates'])
+      networking_form.property('.properties.skip_cert_verify').set(elastic_runtime_settings['trust_self_signed_certificates'])
       ssl_rsa_cert_property = '.properties.networking_point_of_entry][external_ssl][.properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate'
 
       if elastic_runtime_settings['ssl_certificate']
@@ -91,7 +91,7 @@ RSpec.describe 'Configure Elastic Runtime 1.10.X', order: :defined do
         sub_field_answers: {}
       )
 
-      networking_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings['trust_self_signed_certificates'])
+      networking_form.property('.properties.skip_cert_verify').set(elastic_runtime_settings['trust_self_signed_certificates'])
       ssl_rsa_cert_property = '.properties.networking_point_of_entry][haproxy][.properties.networking_point_of_entry.haproxy.ssl_rsa_certificate'
       if elastic_runtime_settings['ssl_certificate']
         networking_form.nested_property(ssl_rsa_cert_property, 'cert_pem').set(elastic_runtime_settings['ssl_certificate'])
@@ -118,7 +118,7 @@ RSpec.describe 'Configure Elastic Runtime 1.10.X', order: :defined do
         sub_field_answers: {}
       )
 
-      networking_form.property('.ha_proxy.skip_cert_verify').set(elastic_runtime_settings['trust_self_signed_certificates'])
+      networking_form.property('.properties.skip_cert_verify').set(elastic_runtime_settings['trust_self_signed_certificates'])
       ssl_rsa_cert_property = '.properties.networking_point_of_entry][haproxy][.properties.networking_point_of_entry.haproxy.ssl_rsa_certificate'
       if elastic_runtime_settings['ssl_certificate']
         networking_form.nested_property(ssl_rsa_cert_property, 'cert_pem').set(elastic_runtime_settings['ssl_certificate'])
