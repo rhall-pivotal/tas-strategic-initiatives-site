@@ -85,7 +85,7 @@ manifest: |
   doppler:
     host: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value || "443" ))
   ssl:
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+    skip_cert_verify: (( .properties.skip_cert_verify.value ))
   uaa:
     clients:
       autoscaling_service:

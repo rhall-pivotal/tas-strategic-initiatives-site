@@ -192,5 +192,5 @@ manifest: |
   databases:
     app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
   ssl:
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+    skip_cert_verify: (( .properties.skip_cert_verify.value ))
     disable_http_for_links: (( .properties.networking_point_of_entry.haproxy.disable_http.value ))

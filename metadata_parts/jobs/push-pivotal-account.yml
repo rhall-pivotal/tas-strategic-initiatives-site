@@ -62,7 +62,7 @@ manifest: |
       memory: 1024
       instance_number: 2
   ssl:
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+    skip_cert_verify: (( .properties.skip_cert_verify.value ))
   cf:
     domain: (( .cloud_controller.system_domain.value ))
     admin_username: (( .uaa.admin_credentials.identity ))

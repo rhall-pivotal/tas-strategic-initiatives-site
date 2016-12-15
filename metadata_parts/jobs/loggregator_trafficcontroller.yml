@@ -76,7 +76,7 @@ manifest: |
     srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
   system_domain: (( .cloud_controller.system_domain.value ))
   ssl:
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+    skip_cert_verify: (( .properties.skip_cert_verify.value ))
   nats:
     user: (( .nats.credentials.identity ))
     password: (( .nats.credentials.password ))

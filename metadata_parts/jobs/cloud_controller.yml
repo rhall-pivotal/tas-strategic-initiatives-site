@@ -318,7 +318,7 @@ manifest: |
     url: "https://login.(( .cloud_controller.system_domain.value ))"
 
   ssl:
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+    skip_cert_verify: (( .properties.skip_cert_verify.value ))
 
   logger_endpoint:
     port: (( .properties.logger_endpoint_port.value ))

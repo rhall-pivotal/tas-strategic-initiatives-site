@@ -45,7 +45,7 @@ form:
             - reference: .properties.networking_point_of_entry.haproxy.max_buffer_size
               label: Request Max Buffer Size
               description: "Buffer size (in bytes) to use for requests, any requests larger than this (large cookies or query strings) will result in a gateway error. The default value is 16384."
-    - reference: .ha_proxy.skip_cert_verify
+    - reference: .properties.skip_cert_verify
       label: Disable SSL certificate verification for this environment
       description: You can disable SSL verification if you are using your own self-signed certificates that are not from a trusted CA.
     - reference: .router.disable_insecure_cookies
