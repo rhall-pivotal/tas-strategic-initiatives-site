@@ -66,6 +66,7 @@ manifest: |
     cf:
       admin_user: (( .uaa.admin_credentials.identity ))
       admin_password: (( .uaa.admin_credentials.password ))
+      dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
     organization: system
     space: autoscaling
   domain: (( .cloud_controller.system_domain.value ))
