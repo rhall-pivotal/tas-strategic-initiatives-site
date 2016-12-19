@@ -102,7 +102,7 @@ manifest: |
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       cc:
-        base_url: http://cloud_controller_ng.service.cf.internal:9022
+        base_url: http://cloud-controller-ng.service.cf.internal:9022
         basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
         basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
         staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
