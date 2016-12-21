@@ -86,3 +86,18 @@ property_blueprints:
         named_manifests:
           - name: secret
             manifest: |
+
+  - name: container_networking
+    type: boolean
+    configurable: true
+    default: false
+
+  - name: network_policy_server_cert
+    type: rsa_cert_credentials
+    default:
+      domains:
+        - network-policy-server.service.cf.internal
+        - "*.network-policy-server.service.cf.internal"
+
+  - name: network_policy_agent_cert
+    type: rsa_cert_credentials

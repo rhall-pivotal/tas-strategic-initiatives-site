@@ -14,6 +14,14 @@ templates:
     release: cflinuxfs2-rootfs
   - name: metron_agent
     release: loggregator
+  - name: cni-flannel
+    release: netman
+  - name: garden-cni
+    release: netman
+  - name: netmon
+    release: netman
+  - name: vxlan-policy-agent
+    release: netman
 
 resource_definitions:
   - name: ram
@@ -160,3 +168,24 @@ manifest: |
     http_proxy: (( $ops_manager.http_proxy ))
     https_proxy: (( $ops_manager.https_proxy ))
     no_proxy: (( $ops_manager.no_proxy ))
+    network_plugin: "(( .properties.container_networking.value ? '/var/vcap/packages/runc-cni/bin/garden-external-networker' : '' ))"
+    network_plugin_extra_args: ["(( .properties.container_networking.value ? '--configFile=/var/vcap/jobs/garden-cni/config/adapter.json' : '' ))"]
+
+  vxlan-policy-agent:
+    policy_server_url: https://network-policy-server.service.cf.internal:4003
+    ca_cert: (( $ops_manager.ca_certificate ))
+    client_cert: (( .properties.network_policy_agent_cert.cert_pem ))
+    client_key: (( .properties.network_policy_agent_cert.private_key_pem ))
+
+  garden-cni:
+    cni_plugin_dir: /var/vcap/packages/flannel/bin
+    cni_config_dir: /var/vcap/jobs/cni-flannel/config/cni
+
+  cni-flannel:
+    etcd_endpoints: ['cf-etcd.service.cf.internal']
+    etcd_ca_cert: (( $ops_manager.ca_certificate ))
+    etcd_client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
+    etcd_client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
+
+  netman:
+    disable: "(( .properties.container_networking.value ? 'false' : 'true' ))"

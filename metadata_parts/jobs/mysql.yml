@@ -90,6 +90,8 @@ property_blueprints:
   type: simple_credentials
 - name: routingdb_credentials
   type: simple_credentials
+- name: networkpolicyserverdb_credentials
+  type: simple_credentials
 - name: cluster_health_user
   type: simple_credentials
   default:
@@ -147,6 +149,9 @@ manifest: |
         - name: routing
           username: (( routingdb_credentials.identity ))
           password: (( routingdb_credentials.password ))
+        - name: networkpolicyserver
+          username: (( networkpolicyserverdb_credentials.identity ))
+          password: (( networkpolicyserverdb_credentials.password ))
       disable_auto_sst: true
   syslog_aggregator:
     address: (( ..cf.properties.syslog_host.value ))

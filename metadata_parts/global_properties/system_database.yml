@@ -88,6 +88,14 @@ property_blueprints:
               port: 3306
               username: (( .mysql.routingdb_credentials.identity ))
               password: (( .mysql.routingdb_credentials.password ))
+          - name: networkpolicyserverdb
+            manifest: |
+              type: "mysql"
+              name: networkpolicyserver
+              host: mysql.service.cf.internal
+              port: 3306
+              username: (( .mysql.networkpolicyserverdb_credentials.identity ))
+              password: (( .mysql.networkpolicyserverdb_credentials.password ))
 
       - name: internal_mysql
         select_value: internal_mysql
@@ -147,6 +155,14 @@ property_blueprints:
             port: 3306
             username: (( .mysql.routingdb_credentials.identity ))
             password: (( .mysql.routingdb_credentials.password ))
+        - name: networkpolicyserverdb
+          manifest: |
+            type: "mysql"
+            name: networkpolicyserver
+            host: mysql.service.cf.internal
+            port: 3306
+            username: (( .mysql.networkpolicyserverdb_credentials.identity ))
+            password: (( .mysql.networkpolicyserverdb_credentials.password ))
 
       - name: external
         select_value: external
@@ -205,6 +221,15 @@ property_blueprints:
               port: (( .properties.system_database.external.port.value ))
               username: (( .properties.system_database.external.username.value ))
               password: (( .properties.system_database.external.password.value ))
+          - name: networkpolicyserverdb
+            manifest: |
+              type: "mysql"
+              name: networkpolicyserver
+              host: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              username: (( .properties.system_database.external.username.value ))
+              password: (( .properties.system_database.external.password.value ))
+
         property_blueprints:
           - name: port
             type: port

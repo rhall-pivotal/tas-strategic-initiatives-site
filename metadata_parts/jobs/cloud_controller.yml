@@ -34,6 +34,8 @@ templates:
     release: routing
   - name: statsd-injector
     release: loggregator
+  - name: policy-server
+    release: netman
 
 resource_definitions:
   - name: ram
@@ -297,6 +299,8 @@ manifest: |
       services:
         cloud_controller_ng: {}
         routing-api: {}
+        policy-server:
+          name: network-policy-server
       servers:
         lan: (( .consul_server.ips ))
 
@@ -363,3 +367,12 @@ manifest: |
     port: 12345
   dea_next:
     staging_disk_limit_mb: 6144
+
+  policy-server:
+    uaa_client: (( .uaa.network_policy_server_client.identity ))
+    uaa_client_secret: (( .uaa.network_policy_server_client.password ))
+    skip_ssl_validation: (( .properties.skip_cert_verify.value ))
+    database: (( .properties.system_database.selected_option.parsed_manifest(networkpolicyserverdb) ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    server_cert: (( .properties.network_policy_server_cert.cert_pem ))
+    server_key: (( .properties.network_policy_server_cert.private_key_pem ))
