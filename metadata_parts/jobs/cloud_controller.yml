@@ -204,6 +204,13 @@ manifest: |
         component: CloudController
       uris:
       - "api.(( .cloud_controller.system_domain.value ))"
+    - name: network-policy-server
+      port: 4002
+      registration_interval: 20s
+      tags:
+        component: NetworkPolicyServer
+      uris:
+      - "api.(( .cloud_controller.system_domain.value ))/networking"
   cc:
     allowed_cors_domains:
     - https://apm.(( .cloud_controller.system_domain.value ))
@@ -301,6 +308,9 @@ manifest: |
         routing-api: {}
         policy-server:
           name: network-policy-server
+          check:
+            interval: 5s
+            script: /bin/true
       servers:
         lan: (( .consul_server.ips ))
 
