@@ -20,7 +20,7 @@ form:
       label: CF CLI Connection Timeout
       description: "Max wait time to establish a connection, including name resolution, in seconds."
     - reference: .properties.container_networking
-      label: Enabling the Container-to-Container network will move all container network traffic onto an overlay network occupying the 10.255.0.0/16 range. Container will be allocated their own IP address, and will be capable to communicating directly to other containers over the network.
+      label: Enabling Container-to-Container networking will move all container network traffic onto an overlay network occupying the 10.255.0.0/16 range. Each container will be allocated its own IP address, and will be capable of communicating directly with other containers over the network.
       selector_property_inputs:
         - reference: .properties.container_networking.enable
           label: Enable Container-to-Container Networking
