@@ -168,8 +168,8 @@ manifest: |
     http_proxy: (( $ops_manager.http_proxy ))
     https_proxy: (( $ops_manager.https_proxy ))
     no_proxy: (( $ops_manager.no_proxy ))
-    network_plugin: "(( .properties.container_networking.value ? '/var/vcap/packages/runc-cni/bin/garden-external-networker' : '' ))"
-    network_plugin_extra_args: ["(( .properties.container_networking.value ? '--configFile=/var/vcap/jobs/garden-cni/config/adapter.json' : '' ))"]
+    network_plugin: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin) ))
+    network_plugin_extra_args: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin_extra_args) ))
 
   vxlan-policy-agent:
     policy_server_url: https://network-policy-server.service.cf.internal:4003
@@ -188,4 +188,4 @@ manifest: |
     etcd_client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
 
   netman:
-    disable: "(( .properties.container_networking.value ? 'false' : 'true' ))"
+    disable: (( .properties.container_networking.selected_option.parsed_manifest(netman_disabled) ))
