@@ -81,6 +81,11 @@ manifest: |
       client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
       client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
   loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      metron:
+        cert: (( .doppler.metron_tls_cert.cert_pem ))
+        key: (( .doppler.metron_tls_cert.private_key_pem ))
     etcd:
       require_ssl: true
       machines: ['cf-etcd.service.cf.internal']

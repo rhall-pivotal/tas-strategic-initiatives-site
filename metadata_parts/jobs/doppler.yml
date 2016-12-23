@@ -74,6 +74,12 @@ property_blueprints:
     default:
       domains: ["doppler"]
 
+  - name: metron_tls_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains: ["metron"]
+
 manifest: |
   doppler:
     message_drain_buffer_size: (( message_drain_buffer_size.value ))
@@ -113,6 +119,9 @@ manifest: |
       doppler:
         cert: (( doppler_tls_cert.cert_pem ))
         key: (( doppler_tls_cert.private_key_pem ))
+      metron:
+        cert: (( metron_tls_cert.cert_pem ))
+        key: (( metron_tls_cert.private_key_pem ))
   system_domain: (( .cloud_controller.system_domain.value ))
   cc:
     bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))

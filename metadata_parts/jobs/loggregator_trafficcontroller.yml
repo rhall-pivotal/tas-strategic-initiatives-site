@@ -66,6 +66,8 @@ property_blueprints:
   - name: trafficcontroller_tls_cert
     type: rsa_cert_credentials
     configurable: false
+    default:
+      domains: ["trafficcontroller"]
 
 manifest: |
   traffic_controller:
@@ -99,6 +101,9 @@ manifest: |
       trafficcontroller:
         cert: (( trafficcontroller_tls_cert.cert_pem ))
         key: (( trafficcontroller_tls_cert.private_key_pem ))
+      metron:
+        cert: (( .doppler.metron_tls_cert.cert_pem ))
+        key: (( .doppler.metron_tls_cert.private_key_pem ))
     etcd:
       require_ssl: true
       machines: ['cf-etcd.service.cf.internal']
