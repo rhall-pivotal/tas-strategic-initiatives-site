@@ -179,7 +179,7 @@ manifest: |
       uaa_token_url: "https://uaa.(( .cloud_controller.system_domain.value ))/oauth/token"
       uaa_secret: (( .uaa.ssh_proxy_client_credentials.password ))
     ssl:
-      skip_cert_verify: (( .properties.skip_cert_verify.value ))
+      skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
   consul:
     encrypt_keys:
     - (( .properties.consul_encrypt_key.value ))

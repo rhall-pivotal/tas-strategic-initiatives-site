@@ -21,7 +21,7 @@ property_blueprints:
               password: (( .uaa.run_smoke_tests_credentials.password ))
               org: CF_SMOKE_TEST_ORG
               space: CF_SMOKE_TEST_SPACE
-              skip_ssl_validation: (( .properties.skip_cert_verify.value ))
+              skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
               use_existing_org: false
               use_existing_space: false
               cf_dial_timeout_in_seconds: (( .properties.cf_dial_timeout_in_seconds.value ))
@@ -37,7 +37,7 @@ property_blueprints:
               password: (( .uaa.run_smoke_tests_credentials.password ))
               org: (( .properties.smoke_tests.specified.org_name.value ))
               space: (( .properties.smoke_tests.specified.space_name.value ))
-              skip_ssl_validation: (( .properties.skip_cert_verify.value ))
+              skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
               use_existing_org: true
               use_existing_space: true
               cf_dial_timeout_in_seconds: (( .properties.cf_dial_timeout_in_seconds.value ))

@@ -92,7 +92,7 @@ manifest: |
   doppler_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   ssl:
-    skip_cert_verify: (( .properties.skip_cert_verify.value ))
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
   nats:
     user: (( .nats.credentials.identity ))
     password: (( .nats.credentials.password ))
