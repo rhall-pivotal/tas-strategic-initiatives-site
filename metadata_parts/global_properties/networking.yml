@@ -100,6 +100,11 @@ property_blueprints:
           - name: garden_network_plugin_extra_args
             manifest: |
               - "--configFile=/var/vcap/jobs/garden-cni/config/adapter.json"
+        property_blueprints:
+          - name: network_cidr
+            type: string
+            configurable: true
+            optional: true
       - name: disable
         select_value: disable
         named_manifests:

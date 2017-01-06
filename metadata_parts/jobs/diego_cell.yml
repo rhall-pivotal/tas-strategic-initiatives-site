@@ -191,6 +191,8 @@ manifest: |
     etcd_ca_cert: (( $ops_manager.ca_certificate ))
     etcd_client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
     etcd_client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
+    flannel:
+      Network: (( .properties.container_networking.enable.network_cidr.value ))
 
   netman:
     disable: (( .properties.container_networking.selected_option.parsed_manifest(netman_disabled) ))
