@@ -290,6 +290,7 @@ manifest: |
     min_recommended_cli_version: 6.11.2
     security_event_logging:
       enabled: (( security_event_logging_enabled.value ))
+    volume_services_enabled: true
 
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
