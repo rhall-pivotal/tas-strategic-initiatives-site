@@ -1,0 +1,165 @@
+---
+name: diego_cell
+label: Diego Cell
+resource_label: Diego Cell
+templates:
+  - name: consul_agent
+    release: consul
+  - name: rep
+    release: diego
+  - name: garden
+    release: garden-runc
+  - name: cflinuxfs2-rootfs-setup
+    release: cflinuxfs2-rootfs
+  - name: metron_agent
+    release: loggregator
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 16_384
+    constraints:
+      min: 2_048
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 65_536
+    constraints:
+      min: 4_096
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: false
+    default: 0
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 2
+    constraints:
+      min: 1
+      power_of_two: true
+
+static_ip: 0
+dynamic_ip: 1
+max_in_flight: "10%"
+single_az_only: false
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 3
+  constraints:
+    min: 1
+
+property_blueprints:
+
+  - name: executor_disk_capacity
+    type: integer
+    label: Cell Disk Capacity (in MB)
+    configurable: true
+    optional: true
+    constraints:
+      min: 1
+
+  - name: executor_memory_capacity
+    type: integer
+    label: Cell Memory Capacity (in MB)
+    configurable: true
+    optional: true
+    constraints:
+      min: 1
+
+  - name: garden_network_pool
+    type: string
+    default: 10.254.0.0/22
+    configurable: true
+    optional: false
+
+  - name: insecure_docker_registry_list
+    type: string_list
+    configurable: true
+    optional: true
+
+  - name: garden_network_mtu
+    type: integer
+    configurable: true
+    optional: false
+    default: 1454
+
+manifest: |
+  diego:
+    executor:
+      disk_capacity_mb: (( executor_disk_capacity.value ))
+      memory_capacity_mb: (( executor_memory_capacity.value ))
+      post_setup_hook: sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"
+      post_setup_user: "root"
+      ca_certs_for_downloads: (( $ops_manager.ca_certificate ))
+    rep:
+      require_tls: true
+      ca_cert: (( $ops_manager.ca_certificate ))
+      server_cert: (( ..cf.properties.rep_server_cert.cert_pem ))
+      server_key: (( ..cf.properties.rep_server_cert.private_key_pem ))
+      use_azure_fault_domains: true
+      bbs:
+        api_location: bbs.service.cf.internal:8889
+        ca_cert: (( $ops_manager.ca_certificate ))
+        client_cert: (( ..cf.properties.bbs_client_cert.cert_pem ))
+        client_key: (( ..cf.properties.bbs_client_cert.private_key_pem ))
+      preloaded_rootfses:
+      - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
+  cflinuxfs2-rootfs:
+    trusted_certs: (( $ops_manager.trusted_certificates ))
+  consul:
+    encrypt_keys:
+    - (( ..cf.properties.consul_encrypt_key.value ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    agent_cert: (( ..cf.properties.consul_agent_cert.cert_pem ))
+    agent_key: (( ..cf.properties.consul_agent_cert.private_key_pem ))
+    server_cert: (( ..cf.properties.consul_server_cert.cert_pem ))
+    server_key: (( ..cf.properties.consul_server_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      servers:
+        lan: (( ..cf.consul_server.ips ))
+  nats:
+    user: (( ..cf.nats.credentials.identity ))
+    password: (( ..cf.nats.credentials.password ))
+    port: 4222
+    machines: (( ..cf.nats.ips ))
+  syslog_daemon_config:
+    address: (( ..cf.properties.syslog_host.value ))
+    port: (( ..cf.properties.syslog_port.value ))
+    transport: (( ..cf.properties.syslog_protocol.value ))
+  metron_agent:
+    deployment: cf
+    etcd:
+      client_cert: (( ..cf.properties.cf_etcd_client_cert.cert_pem ))
+      client_key: (( ..cf.properties.cf_etcd_client_cert.private_key_pem ))
+  metron_endpoint:
+    shared_secret: (( ..cf.doppler.shared_secret_credentials.password ))
+  loggregator:
+    etcd:
+      require_ssl: true
+      machines: ['cf-etcd.service.cf.internal']
+      ca_cert: (( $ops_manager.ca_certificate ))
+  garden:
+    default_container_grace_time: 0
+    persistent_image_list:
+      - "/var/vcap/packages/cflinuxfs2/rootfs"
+    graph_cleanup_threshold_in_mb: (( ..cf.properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
+    network_pool: (( garden_network_pool.value ))
+    deny_networks: ["0.0.0.0/0"]
+    network_mtu: (( garden_network_mtu.value ))
+    insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
+    http_proxy: (( $ops_manager.http_proxy ))
+    https_proxy: (( $ops_manager.https_proxy ))
+    no_proxy: (( $ops_manager.no_proxy ))
