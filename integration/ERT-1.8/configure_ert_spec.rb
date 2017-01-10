@@ -157,6 +157,14 @@ RSpec.describe 'Configure Elastic Runtime 1.8.X', order: :defined do
     end
   end
 
+  it 'configures mysql' do
+    mysql_form =
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('mysql_config')
+    mysql_form.open_form
+    mysql_form.property('.mysql_monitor.recipient_email').set(elastic_runtime_settings['mysql_monitor_email'])
+    mysql_form.save_form
+  end
+
   private
 
   AVAILABILITY_ZONE_INPUT_SELECTOR = "input[name='product[availability_zone_references][]']"
