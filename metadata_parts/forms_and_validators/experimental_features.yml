@@ -4,9 +4,7 @@ form:
   label: Advanced Features
   description: These are several features that may require a greater understanding of Cloud Foundry system components and their more recently introduced capabilities.
   markdown: |
-  ## You can specify how much memory or disk you want to set as the Diego Cells' available capacity. You can overcommit these resources with values that exceed the Diego Cell VM sizes configured in the Resource Config section.
-  ## TCP Routing allows you to map TCP routes to your apps. You will need to setup a TCP load balancer and domain to support this feature.
-  ## Unprivileged containers greatly improve security as root escalation inside application containers no longer threaten the host operating system, however you should enable this feature only after you've tested that this will not break integration workloads.
+    ## You can specify how much memory or disk you want to set as the Diego Cells' available capacity. You can overcommit these resources with values that exceed the Diego Cell VM sizes configured in the Resource Config section.
   property_inputs:
     - reference: .diego_cell.executor_memory_capacity
       label: Cell Memory Capacity (MB)
