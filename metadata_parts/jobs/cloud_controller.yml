@@ -316,7 +316,8 @@ manifest: |
         lan: (( .consul_server.ips ))
 
   uaa:
-    tls_port: 8443
+    ssl:
+      port: 8443
     ca_cert: (( $ops_manager.ca_certificate ))
     url: "https://uaa.(( .cloud_controller.system_domain.value ))"
     jwt:
