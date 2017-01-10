@@ -55,9 +55,9 @@ instance_definition:
 property_blueprints:
 
 manifest: |
-  cluster_ips: (( .mysql.ips ))
   cf_mysql:
     mysql:
+      cluster_ips: (( .mysql.ips ))
       galera_healthcheck:
         endpoint_username: (( .mysql.mysql_bootstrap_credentials.identity ))
         endpoint_password: (( .mysql.mysql_bootstrap_credentials.password ))
