@@ -3,11 +3,14 @@ name: push-pivotal-account
 label: Push Pivotal Account
 resource_label: Push Pivotal Account
 description: Pushes the Pivotal Account application to your Elastic Runtime installation
+
 templates:
 - name: push-pivotal-account
   release: pivotal-account
+
 errand: true
 max_in_flight: 1
+
 resource_definitions:
 - name: ram
   type: integer
@@ -47,9 +50,13 @@ instance_definition:
   default: 1
   constraints:
     min: 0
+
 property_blueprints:
   - name: encryption_key
-    type: salted_credentials
+    type: secret
+    optional: false
+    configurable: false
+
 manifest: |
   pivotal_account:
     route: account
@@ -58,6 +65,7 @@ manifest: |
     uaa_location: https://login.(( .cloud_controller.system_domain.value ))
     notifications_location: "https://notifications.(( .cloud_controller.system_domain.value ))"
     notifications_ui_location: "https://notifications-ui.(( .cloud_controller.system_domain.value ))"
+    encryption_key: (( encryption_key.value ))
     app_push:
       memory: 1024
       instance_number: 2

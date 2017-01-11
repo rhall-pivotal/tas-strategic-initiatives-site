@@ -100,6 +100,8 @@ property_blueprints:
   type: simple_credentials
   default:
     identity: galera-healthcheck
+- name: pivotal_account_credentials
+  type: simple_credentials
 
 manifest: |
   domain: (( .cloud_controller.system_domain.value ))
