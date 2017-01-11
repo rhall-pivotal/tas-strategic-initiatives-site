@@ -33,8 +33,10 @@ function main() {
     --stemcell-tarball "${stemcell_dir}/stemcell.tgz" \
     --handcraft "${PWD}/metadata.yml" \
     --version "$(cat ${tile_repo_path}/version)" \
+    --name "p-isolation-segment" \
     --output-dir "${PWD}"
 }
+
 
 function release_tarball_args() {
   local tarballs
