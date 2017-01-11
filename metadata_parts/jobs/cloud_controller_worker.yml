@@ -123,6 +123,8 @@ manifest: |
         lan: (( .consul_server.ips ))
 
   uaa:
+    ssl:
+      port: (( .cloud_controller.uaa.ssl.port ))
     url: "https://uaa.(( .cloud_controller.system_domain.value ))"
     jwt:
       verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
