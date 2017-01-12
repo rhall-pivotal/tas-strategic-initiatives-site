@@ -379,8 +379,8 @@ manifest: |
       require_ssl: true
       servers: ['cf-etcd.service.cf.internal']
       ca_cert: (( $ops_manager.ca_certificate ))
-      client_cert: (( .properties.etcd_client_cert.cert_pem ))
-      client_key: (( .properties.etcd_client_cert.private_key_pem ))
+      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
+      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
   hm9000:
     port: 12345
   dea_next:
