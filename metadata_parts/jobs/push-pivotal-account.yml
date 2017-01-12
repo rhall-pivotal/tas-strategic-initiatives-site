@@ -59,6 +59,7 @@ property_blueprints:
 
 manifest: |
   pivotal_account:
+    db: (( .properties.system_database.selected_option.parsed_manifest(pivotal_account) ))
     route: account
     client_id: (( .uaa.pivotal_account_client_credentials.identity ))
     client_secret: (( .uaa.pivotal_account_client_credentials.password ))
