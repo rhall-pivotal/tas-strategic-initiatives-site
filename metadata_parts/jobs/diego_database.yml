@@ -6,8 +6,6 @@ description: An datastore node for Diego
 templates:
   - name: consul_agent
     release: consul
-  - name: etcd
-    release: etcd
   - name: bbs
     release: diego
   - name: metron_agent
@@ -27,14 +25,6 @@ resource_definitions:
     label: Ephemeral Disk
     configurable: true
     default: 2_048
-    constraints:
-      min: 1_024
-
-  - name: persistent_disk
-    type: integer
-    label: Persistent Disk
-    configurable: true
-    default: 1_024
     constraints:
       min: 1_024
 
@@ -61,7 +51,6 @@ instance_definition:
   default: 1
   constraints:
     min: 1
-    may_only_be_odd_or_zero: true
 
 property_blueprints:
   - name: bbs_encryption_passphrase
@@ -69,20 +58,6 @@ property_blueprints:
     configurable: false
 
 manifest: |
-  etcd:
-    advertise_urls_dns_suffix: etcd.service.cf.internal
-    machines: ['etcd.service.cf.internal']
-    cluster:
-    - instances: (( .diego_database.instances ))
-      name: "diego_database"
-    ca_cert: (( $ops_manager.ca_certificate ))
-    server_cert: (( .properties.etcd_server_cert.cert_pem ))
-    server_key: (( .properties.etcd_server_cert.private_key_pem ))
-    client_cert: (( .properties.etcd_client_cert.cert_pem ))
-    client_key: (( .properties.etcd_client_cert.private_key_pem ))
-    peer_ca_cert: (( $ops_manager.ca_certificate ))
-    peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
-    peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
   diego:
     bbs:
       ca_cert: (( $ops_manager.ca_certificate ))
@@ -104,17 +79,6 @@ manifest: |
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       sql: (( .properties.system_database.selected_option.parsed_manifest(diegodb) ))
-      etcd:
-        advertise_urls_dns_suffix: etcd.service.cf.internal
-        machines: ['etcd.service.cf.internal']
-        ca_cert: (( $ops_manager.ca_certificate ))
-        server_cert: (( .properties.etcd_server_cert.cert_pem ))
-        server_key: (( .properties.etcd_server_cert.private_key_pem ))
-        client_cert: (( .properties.etcd_client_cert.cert_pem ))
-        client_key: (( .properties.etcd_client_cert.private_key_pem ))
-        peer_ca_cert: (( $ops_manager.ca_certificate ))
-        peer_cert: (( .properties.etcd_peer_cert.cert_pem ))
-        peer_key: (( .properties.etcd_peer_cert.private_key_pem ))
       rep:
         require_tls: false
         ca_cert: (( $ops_manager.ca_certificate ))
