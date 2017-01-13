@@ -153,6 +153,11 @@ manifest: |
   metron_endpoint:
     shared_secret: (( ..cf.doppler.shared_secret_credentials.password ))
   loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      metron:
+        cert: (( ..cf.doppler.metron_tls_cert.cert_pem ))
+        key: (( ..cf.doppler.metron_tls_cert.private_key_pem ))
     etcd:
       require_ssl: true
       machines: ['cf-etcd.service.cf.internal']
