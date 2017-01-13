@@ -90,6 +90,11 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.rep_client_cert.cert_pem ))
         client_key: (( .properties.rep_client_cert.private_key_pem ))
+      etcd:
+        machines: []
+        ca_cert: ""
+        client_cert: ""
+        client_key: ""
   consul:
     encrypt_keys:
     - (( .properties.consul_encrypt_key.value ))
