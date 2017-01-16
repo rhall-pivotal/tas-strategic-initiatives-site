@@ -217,6 +217,7 @@ manifest: |
     - https://metrics.(( .cloud_controller.system_domain.value ))
     allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
     default_to_diego_backend: true
+    broker_client_default_async_poll_interval_seconds: 10
     buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
     droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
     service_name: cloud-controller-ng
