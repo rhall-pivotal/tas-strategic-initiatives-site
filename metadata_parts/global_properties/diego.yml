@@ -1,5 +1,17 @@
 ---
 property_blueprints:
+  - name: auctioneer_client_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: auctioneer_server_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - auctioneer.service.cf.internal
+      - "*.auctioneer.service.cf.internal"
+
   - name: bbs_client_cert
     type: rsa_cert_credentials
     configurable: false

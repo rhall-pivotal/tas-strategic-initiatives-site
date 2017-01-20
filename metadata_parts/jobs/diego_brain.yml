@@ -135,6 +135,9 @@ manifest: |
         staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
   diego:
     auctioneer:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      server_cert: (( .properties.auctioneer_server_cert.cert_pem ))
+      server_key: (( .properties.auctioneer_server_cert.private_key_pem ))
       bbs:
         api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))

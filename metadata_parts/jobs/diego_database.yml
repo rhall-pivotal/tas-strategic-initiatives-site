@@ -76,7 +76,10 @@ manifest: |
         - label: key1
           passphrase: (( bbs_encryption_passphrase.value ))
       auctioneer:
-        api_url: http://auctioneer.service.cf.internal:9016
+        api_location: "auctioneer.service.cf.internal:9016"
+        ca_cert: (( $ops_manager.ca_certificate ))
+        client_cert: (( .properties.auctioneer_client_cert.cert_pem ))
+        client_key: (( .properties.auctioneer_client_cert.private_key_pem ))
       converger:
         api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))
