@@ -29,3 +29,17 @@ form:
               placeholder: 10.255.0.0/16
         - reference: .properties.container_networking.disable
           label: Disable Container-to-Container Networking
+    - reference: .properties.cc_api_rate_limit
+      label: Enabling CF API Rate Limiting will prevent API consumers from overwhelming the platform API servers. Limits are imposed on a per-user or per-client basis and reset on an hourly interval.
+      selector_property_inputs:
+        - reference: .properties.cc_api_rate_limit.enable
+          label: Enable
+          property_inputs:
+            - reference: .properties.cc_api_rate_limit.enable.general_limit
+              label: General Limit
+              description: The number of requests a user or client is allowed to make for all endpoints that do not have a custom limit over an hour interval.
+            - reference: .properties.cc_api_rate_limit.enable.unauthenticated_limit
+              label: Unauthenticated Limit
+              description: The number of requests an unauthenticated client is allowed to make over an hour interval.
+        - reference: .properties.cc_api_rate_limit.disable
+          label: Disable
