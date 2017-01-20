@@ -86,7 +86,7 @@ manifest: |
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       sql: (( .properties.system_database.selected_option.parsed_manifest(diegodb) ))
       rep:
-        require_tls: false
+        require_tls: true
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.rep_client_cert.cert_pem ))
         client_key: (( .properties.rep_client_cert.private_key_pem ))
