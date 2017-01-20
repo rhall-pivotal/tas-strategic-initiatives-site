@@ -25,7 +25,7 @@ form:
           property_inputs:
             - reference: .properties.container_networking.enable.network_cidr
               label: Network CIDR
-              description: Defines the range of the overlay network. The CIDR must specify a /16 subnet mask. Defaults to 10.255.0.0/16.
+              description: Defines the range of the overlay network. The CIDR must specify a RFC 1918 range. Defaults to 10.255.0.0/16.
               placeholder: 10.255.0.0/16
         - reference: .properties.container_networking.disable
           label: Disable Container-to-Container Networking
