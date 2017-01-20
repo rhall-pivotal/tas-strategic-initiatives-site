@@ -19,3 +19,13 @@ form:
       label: Apps Domain
       description: Default parent domain that pushed apps use for their hostnames. This domain also requires a wildcard DNS record. Use the Cloud Foundry command line interface (cf CLI) to add or delete subdomains assigned to individual apps.
       placeholder: 'apps.mydomain.com'
+
+install_time_verifiers:
+  - name: Verifiers::WildcardDomainVerifier
+    ignorable: true
+    properties:
+      domain: .cloud_controller.system_domain
+  - name: Verifiers::WildcardDomainVerifier
+    ignorable: true
+    properties:
+      domain: .cloud_controller.apps_domain
