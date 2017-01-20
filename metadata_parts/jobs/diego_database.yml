@@ -101,8 +101,6 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     agent_cert: (( .properties.consul_agent_cert.cert_pem ))
     agent_key: (( .properties.consul_agent_cert.private_key_pem ))
-    server_cert: (( .properties.consul_server_cert.cert_pem ))
-    server_key: (( .properties.consul_server_cert.private_key_pem ))
     agent:
       domain: cf.internal
       servers:
