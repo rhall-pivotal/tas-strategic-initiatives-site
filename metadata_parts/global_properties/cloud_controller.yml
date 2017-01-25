@@ -28,3 +28,10 @@ property_blueprints:
           - name: rate_limiter
             manifest: |
               enabled: false
+
+  - name: cloud_controller_mutual_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - cloud-controller-ng.service.cf.internal

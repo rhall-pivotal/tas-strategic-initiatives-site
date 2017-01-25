@@ -259,6 +259,10 @@ manifest: |
     internal_api_password: (( internal_api_user_credentials.password ))
     logging_level: debug
     maximum_health_check_timeout: 600
+    mutual_tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      public_cert: (( .properties.cloud_controller_mutual_cert.cert_pem ))
+      private_key: (( .properties.cloud_controller_mutual_cert.private_key_pem ))
     quota_definitions:
       default:
         memory_limit: (( default_quota_memory_limit_mb.value ))
