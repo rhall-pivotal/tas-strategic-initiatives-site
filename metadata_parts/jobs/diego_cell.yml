@@ -17,13 +17,13 @@ templates:
   - name: metron_agent
     release: loggregator
   - name: cni-flannel
-    release: netman
+    release: cf-networking
   - name: garden-cni
-    release: netman
+    release: cf-networking
   - name: netmon
-    release: netman
+    release: cf-networking
   - name: vxlan-policy-agent
-    release: netman
+    release: cf-networking
 
 resource_definitions:
   - name: ram
@@ -200,5 +200,5 @@ manifest: |
     flannel:
       Network: (( .properties.container_networking.enable.network_cidr.value ))
 
-  netman:
-    disable: (( .properties.container_networking.selected_option.parsed_manifest(netman_disabled) ))
+  cf-networking:
+    disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
