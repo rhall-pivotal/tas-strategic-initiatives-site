@@ -161,11 +161,6 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        port: 4222
-        machines: (( .nats.ips ))
     ssh_proxy:
       bbs:
         api_location: bbs.service.cf.internal:8889

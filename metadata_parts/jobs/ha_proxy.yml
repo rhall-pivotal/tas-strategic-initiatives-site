@@ -91,11 +91,6 @@ manifest: |
     deployment: cf
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
-  nats:
-    user: (( .nats.credentials.identity ))
-    password: (( .nats.credentials.password ))
-    port: 4222
-    machines: (( .nats.ips ))
   loggregator:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))

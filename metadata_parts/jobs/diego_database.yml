@@ -110,11 +110,6 @@ manifest: |
         lan: (( .consul_server.ips ))
       services:
         etcd: {}
-  nats:
-    user: (( .nats.credentials.identity ))
-    password: (( .nats.credentials.password ))
-    port: 4222
-    machines: (( .nats.ips ))
   syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
