@@ -156,10 +156,6 @@ manifest: |
       metron:
         cert: (( .doppler.metron_tls_cert.cert_pem ))
         key: (( .doppler.metron_tls_cert.private_key_pem ))
-    etcd:
-      require_ssl: true
-      machines: ['cf-etcd.service.cf.internal']
-      ca_cert: (( $ops_manager.ca_certificate ))
   uaa:
     ca_cert: (( $ops_manager.ca_certificate ))
     ssl:

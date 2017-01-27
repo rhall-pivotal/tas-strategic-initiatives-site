@@ -163,10 +163,6 @@ manifest: |
       metron:
         cert: (( .doppler.metron_tls_cert.cert_pem ))
         key: (( .doppler.metron_tls_cert.private_key_pem ))
-    etcd:
-      require_ssl: true
-      machines: ['cf-etcd.service.cf.internal']
-      ca_cert: (( $ops_manager.ca_certificate ))
   garden:
     default_container_grace_time: 0
     persistent_image_list:
