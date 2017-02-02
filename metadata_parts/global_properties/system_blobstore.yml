@@ -227,3 +227,62 @@ property_blueprints:
           - name: secret_key
             type: secret
             configurable: true
+      - name: external_azure
+        select_value: external_azure
+        named_manifests:
+          - name: ccbuildpack
+            manifest: |
+              blobstore_type: fog
+              buildpack_directory_key: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
+              fog_connection:
+                provider: AzureRM
+                environment: AzureCloud
+                azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
+                azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+          - name: ccdroplet
+            manifest: |
+              blobstore_type: fog
+              droplet_directory_key: (( .properties.system_blobstore.external_azure.droplets_container.value ))
+              fog_connection:
+                provider: AzureRM
+                environment: AzureCloud
+                azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
+                azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+          - name: ccpackage
+            manifest: |
+              max_package_size: 2147483648
+              blobstore_type: fog
+              app_package_directory_key: (( .properties.system_blobstore.external_azure.packages_container.value ))
+              fog_connection:
+                provider: AzureRM
+                environment: AzureCloud
+                azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
+                azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+          - name: ccresource
+            manifest: |
+              blobstore_type: fog
+              resource_directory_key: (( .properties.system_blobstore.external_azure.resources_container.value ))
+              fog_connection:
+                provider: AzureRM
+                environment: AzureCloud
+                azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
+                azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+        property_blueprints:
+          - name: buildpacks_container
+            type: string
+            configurable: true
+          - name: droplets_container
+            type: string
+            configurable: true
+          - name: packages_container
+            type: string
+            configurable: true
+          - name: resources_container
+            type: string
+            configurable: true
+          - name: account_name
+            type: string
+            configurable: true
+          - name: access_key
+            type: secret
+            configurable: true

@@ -92,6 +92,26 @@ form:
         - reference: .properties.system_blobstore.external_gcs.resources_bucket
           label: Resources Bucket Name
           description: Bucket for storing app resources. Pivotal recommends that you use a unique bucket name for app resources, but you can also use the same name as above.
+    - reference: .properties.system_blobstore.external_azure
+      label: External Azure Storage
+      description:
+      property_inputs:
+        - reference: .properties.system_blobstore.external_azure.account_name
+          label: Account Name
+        - reference: .properties.system_blobstore.external_azure.access_key
+          label: Access Key
+        - reference: .properties.system_blobstore.external_azure.buildpacks_container
+          label: Buildpacks Container Name
+          description: Container for storing app buildpacks.
+        - reference: .properties.system_blobstore.external_azure.droplets_container
+          label: Droplets Container Name
+          description: Container for storing app droplets. Pivotal recommends that you use a unique container name for droplets, but you can also use the same name as above.
+        - reference: .properties.system_blobstore.external_azure.packages_container
+          label: Packages Container Name
+          description: Container for storing app packages. Pivotal recommends that you use a unique container name for packages, but you can also use the same name as above.
+        - reference: .properties.system_blobstore.external_azure.resources_container
+          label: Resources Container Name
+          description: Container for storing app resources. Pivotal recommends that you use a unique container name for app resources, but you can also use the same name as above.
 
 install_time_verifiers:
   - name: Verifiers::BlobstoreVerifier
