@@ -96,6 +96,10 @@ property_blueprints:
     optional: false
     default: 1454
 
+  - name: placement_tag
+    type: uuid
+    configurable: false
+
 manifest: |
   diego:
     executor:
@@ -117,6 +121,8 @@ manifest: |
         client_key: (( ..cf.properties.bbs_client_cert.private_key_pem ))
       preloaded_rootfses:
       - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
+      placement_tags:
+      - (( placement_tag.value ))
     cfdot:
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
