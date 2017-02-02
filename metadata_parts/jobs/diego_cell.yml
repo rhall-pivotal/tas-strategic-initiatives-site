@@ -170,23 +170,19 @@ manifest: |
     network_plugin: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin) ))
     network_plugin_extra_args: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin_extra_args) ))
 
-  vxlan-policy-agent:
-    policy_server_url: https://network-policy-server.service.cf.internal:4003
-    ca_cert: (( $ops_manager.ca_certificate ))
-    client_cert: (( .properties.network_policy_agent_cert.cert_pem ))
-    client_key: (( .properties.network_policy_agent_cert.private_key_pem ))
-
-  garden-cni:
-    cni_plugin_dir: /var/vcap/packages/flannel/bin
-    cni_config_dir: /var/vcap/jobs/cni-flannel/config/cni
-
-  cni-flannel:
-    etcd_endpoints: ['cf-etcd.service.cf.internal']
-    etcd_ca_cert: (( $ops_manager.ca_certificate ))
-    etcd_client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
-    etcd_client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
-    flannel:
-      Network: (( .properties.container_networking.enable.network_cidr.value ))
-
-  cf-networking:
+  cf_networking:
     disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
+    network: (( .properties.container_networking.enable.network_cidr.value ))
+    garden_external_networker:
+      cni_plugin_dir: /var/vcap/packages/flannel/bin
+      cni_config_dir: /var/vcap/jobs/cni-flannel/config/cni
+    plugin:
+      etcd_endpoints: ['cf-etcd.service.cf.internal']
+      etcd_ca_cert: (( $ops_manager.ca_certificate ))
+      etcd_client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
+      etcd_client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
+    vxlan_policy_agent:
+      policy_server_url: https://network-policy-server.service.cf.internal:4003
+      ca_cert: (( $ops_manager.ca_certificate ))
+      client_cert: (( .properties.network_policy_agent_cert.cert_pem ))
+      client_key: (( .properties.network_policy_agent_cert.private_key_pem ))
