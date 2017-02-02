@@ -142,20 +142,12 @@ manifest: |
       domain: cf.internal
       servers:
         lan: (( ..cf.consul_server.ips ))
-  nats:
-    user: (( ..cf.nats.credentials.identity ))
-    password: (( ..cf.nats.credentials.password ))
-    port: 4222
-    machines: (( ..cf.nats.ips ))
   syslog_daemon_config:
     address: (( ..cf.properties.syslog_host.value ))
     port: (( ..cf.properties.syslog_port.value ))
     transport: (( ..cf.properties.syslog_protocol.value ))
   metron_agent:
     deployment: cf
-    etcd:
-      client_cert: (( ..cf.properties.cf_etcd_client_cert.cert_pem ))
-      client_key: (( ..cf.properties.cf_etcd_client_cert.private_key_pem ))
   metron_endpoint:
     shared_secret: (( ..cf.doppler.shared_secret_credentials.password ))
   loggregator:
@@ -164,10 +156,6 @@ manifest: |
       metron:
         cert: (( ..cf.doppler.metron_tls_cert.cert_pem ))
         key: (( ..cf.doppler.metron_tls_cert.private_key_pem ))
-    etcd:
-      require_ssl: true
-      machines: ['cf-etcd.service.cf.internal']
-      ca_cert: (( $ops_manager.ca_certificate ))
   garden:
     default_container_grace_time: 0
     persistent_image_list:
