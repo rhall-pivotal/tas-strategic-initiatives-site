@@ -1,0 +1,129 @@
+---
+name: router
+label: Router
+resource_label: Router
+description: Routers route Internet traffic to applications placed in the isolation segment.
+templates:
+  - name: consul_agent
+    release: consul
+  - name: gorouter
+    release: routing
+  - name: metron_agent
+    release: loggregator
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 2_048
+    constraints:
+      min: 2_048
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: false
+    default: 0
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 1
+    constraints:
+      min: 1
+      power_of_two: true
+
+static_ip: 1
+dynamic_ip: 0
+max_in_flight: 1
+single_az_only: false
+serial: true
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+
+property_blueprints:
+  - name: static_ips
+    type: ip_ranges
+    configurable: true
+    optional: true
+
+manifest: |
+  request_timeout_in_seconds: (( ..cf.router.request_timeout_in_seconds.value ))
+  networks:
+    apps: default
+  router:
+    tracing:
+      enable_zipkin: (( ..cf.router.enable_zipkin.value ))
+    secure_cookies: (( ..cf.router.disable_insecure_cookies.value ))
+    status:
+      user: router_status
+      password: (( ..cf.router.status_credentials.password ))
+    cipher_suites: (( ..cf.properties.networking_point_of_entry.external_ssl.ssl_ciphers.value ))
+    route_services_secret: (( ..cf.properties.route_services.selected_option.parsed_manifest(secret) ))
+    enable_ssl: "(( ..cf.properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.value_present? ? 'true' : 'false' ))"
+    ssl_cert: (( ..cf.properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
+    ssl_key: (( ..cf.properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
+    ssl_skip_validation: (( ..cf.ha_proxy.skip_cert_verify.value ))
+    skip_oauth_tls_verification: true
+    haproxy:
+      health_check_port: 80
+      request_timeout_in_seconds: 300
+    drain_wait: (( ..cf.router.drain_wait.value ))
+    load_balancer_healthy_threshold: (( ..cf.router.lb_healthy_threshold.value ))
+  routing_api:
+    enabled: true
+  consul:
+    encrypt_keys:
+    - (( ..cf.properties.consul_encrypt_key.value ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    agent_cert: (( ..cf.properties.consul_agent_cert.cert_pem ))
+    agent_key: (( ..cf.properties.consul_agent_cert.private_key_pem ))
+    agent:
+      domain: cf.internal
+      servers:
+        lan: (( ..cf.consul_server.ips ))
+  nats:
+    user: (( ..cf.nats.credentials.identity ))
+    password: (( ..cf.nats.credentials.password ))
+    port: 4222
+    machines: (( ..cf.nats.ips ))
+  syslog_daemon_config:
+    address: (( ..cf.properties.syslog_host.value ))
+    port: (( ..cf.properties.syslog_port.value ))
+    transport: (( ..cf.properties.syslog_protocol.value ))
+  metron_agent:
+    deployment: cf
+  metron_endpoint:
+    shared_secret: (( ..cf.doppler.shared_secret_credentials.password ))
+  loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      metron:
+        cert: (( ..cf.doppler.metron_tls_cert.cert_pem ))
+        key: (( ..cf.doppler.metron_tls_cert.private_key_pem ))
+  uaa:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    ssl:
+      port: 8443
+    sslCertificate: (( ..cf.uaa.ssl_credentials.cert_pem ))
+    sslPrivateKey: (( ..cf.uaa.ssl_credentials.private_key_pem ))
+    clients:
+      gorouter:
+        secret: (( ..cf.uaa.gorouter_client_credentials.password ))
