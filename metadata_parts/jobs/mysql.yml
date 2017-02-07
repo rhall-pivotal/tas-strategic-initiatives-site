@@ -158,6 +158,9 @@ manifest: |
           username: (( pivotal_account_credentials.identity ))
           password: (( pivotal_account_credentials.password ))
       disable_auto_sst: true
+      server_audit_events: (( .properties.mysql_activity_logging.selected_option.parsed_manifest(mysql_audit_events) ))
+      server_audit_excluded_users:
+        - repcanary
   syslog_aggregator:
     address: (( ..cf.properties.syslog_host.value ))
     port: (( ..cf.properties.syslog_port.value ))
