@@ -82,8 +82,6 @@ manifest: |
     databases:
     - tag: uaa
       name: uaa
-  networks:
-    services: default
   syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
