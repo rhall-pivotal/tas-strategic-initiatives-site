@@ -101,8 +101,6 @@ property_blueprints:
 
 manifest: |
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
-  networks:
-    apps: default
   router:
     tracing:
       enable_zipkin: (( enable_zipkin.value ))
@@ -116,10 +114,6 @@ manifest: |
     ssl_cert: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
     ssl_key: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
     ssl_skip_validation: (( .ha_proxy.skip_cert_verify.value ))
-    skip_oauth_tls_verification: true
-    haproxy:
-      health_check_port: 80
-      request_timeout_in_seconds: 300
     drain_wait: (( .router.drain_wait.value ))
     load_balancer_healthy_threshold: (( .router.lb_healthy_threshold.value ))
   routing_api:
@@ -157,8 +151,6 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     ssl:
       port: 8443
-    sslCertificate: (( .uaa.ssl_credentials.cert_pem ))
-    sslPrivateKey: (( .uaa.ssl_credentials.private_key_pem ))
     clients:
       gorouter:
         secret: (( .uaa.gorouter_client_credentials.password ))
