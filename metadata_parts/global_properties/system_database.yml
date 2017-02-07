@@ -1,5 +1,10 @@
 ---
 property_blueprints:
+  - name: account_database
+    type: string
+    configurable: false
+    default: account
+
   - name: app_usage_service_database
     type: string
     configurable: false
@@ -15,10 +20,25 @@ property_blueprints:
     configurable: false
     default: ccdb
 
+  - name: diego_database
+    type: string
+    configurable: false
+    default: diego
+
+  - name: networkpolicyserver_database
+    type: string
+    configurable: false
+    default: networkpolicyserver
+
   - name: notifications_database
     type: string
     configurable: false
     default: notifications
+
+  - name: routing_database
+    type: string
+    configurable: false
+    default: routing
 
   - name: uaa_database
     type: string
