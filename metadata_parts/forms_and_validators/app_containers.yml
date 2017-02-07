@@ -10,6 +10,9 @@ form:
   - reference: .cloud_controller.allow_app_ssh_access
     label: Allow SSH access to app containers
     description: "If you are using a load balancer instead of HAProxy, to enable SSH traffic ensure that your load balancer has port 2222 open. PCF users can give SSH access to an app only if an admin assigns them a Space Developer role in the space that the app runs in. Admins can grant this role in Apps Manager or via the cf CLI."
+  - reference: .cloud_controller.default_app_ssh_access
+    label: Enable SSH when an app is created
+    description: "When enabled and the space has SSH enabled, a new app will have SSH enabled. Turning this feature off will disable SSH for new apps but allow developers to enable it when necessary."
   - reference: .diego_cell.insecure_docker_registry_list
     label: Private Docker Insecure Registry Whitelist
     description: If you use private Docker image registries that are secured with self-signed certificates, enter them here as a comma-delimited list. List each registry as either an IP:Port tuple or a Hostname:Port tuple.

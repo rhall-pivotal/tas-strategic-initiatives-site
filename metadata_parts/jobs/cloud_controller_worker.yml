@@ -67,6 +67,7 @@ manifest: |
 
   cc:
     allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
+    default_app_ssh_access: (( .cloud_controller.default_app_ssh_access.value ))
     buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
     droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
     packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
