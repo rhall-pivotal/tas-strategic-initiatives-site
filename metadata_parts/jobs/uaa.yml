@@ -388,11 +388,7 @@ manifest: |
         searchBase: (( .properties.uaa.ldap.group_search_base.value ))
         groupSearchFilter: (( .properties.uaa.ldap.group_search_filter.value ))
       emailDomain: (( .properties.uaa.ldap.email_domains.parsed_strings ))
-      given_name: (( .properties.uaa.ldap.first_name_attribute.value ))
-      family_name: (( .properties.uaa.ldap.last_name_attribute.value ))
       referral: (( .properties.uaa.ldap.ldap_referrals.value ))
-    login:
-      addnew: false
     catalina_opts: "-Xmx768m -XX:MaxPermSize=256m"
     url: "https://uaa.(( .cloud_controller.system_domain.value ))"
     jwt:
@@ -401,8 +397,6 @@ manifest: |
         keys:
           key-1:
             signingKey: (( jwt_signing_key_credentials.private_key_pem ))
-    cc:
-      client_secret: (( cc_client_credentials.password ))
     admin:
       client_secret: (( admin_client_credentials.password ))
     proxy:
@@ -733,8 +727,6 @@ manifest: |
           - doppler.firehose
 
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
-
-  domain: (( .cloud_controller.system_domain.value ))
 
   uaadb: (( .properties.system_database.selected_option.parsed_manifest(uaadb) ))
 
