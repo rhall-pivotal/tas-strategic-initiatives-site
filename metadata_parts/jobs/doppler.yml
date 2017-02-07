@@ -86,9 +86,6 @@ manifest: |
     etcd:
       client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
       client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
-  uaa:
-    jwt:
-      verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
   doppler_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   ssl:
