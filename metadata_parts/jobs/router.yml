@@ -99,6 +99,14 @@ property_blueprints:
     configurable: true
     default: true
 
+  - name: max_idle_connections
+    type: integer
+    configurable: true
+    default: 0
+    constraints:
+      min: 0
+      max: 100
+
 manifest: |
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   router:
@@ -116,6 +124,7 @@ manifest: |
     ssl_skip_validation: (( .ha_proxy.skip_cert_verify.value ))
     drain_wait: (( .router.drain_wait.value ))
     load_balancer_healthy_threshold: (( .router.lb_healthy_threshold.value ))
+    max_idle_connections: (( max_idle_connections.value ))
   routing_api:
     enabled: true
   consul:
