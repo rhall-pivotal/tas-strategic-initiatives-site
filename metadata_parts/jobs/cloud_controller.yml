@@ -220,11 +220,9 @@ manifest: |
     broker_client_default_async_poll_interval_seconds: 10
     buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
     droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
-    service_name: cloud-controller-ng
     external_protocol: https
     packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
     resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
-    bootstrap_admin_email: admin
     bulk_api_password: (( bulk_api_credentials.password ))
     app_bits_max_body_size: (( max_file_size.value ))M
     maximum_app_disk_in_mb: (( max_disk_quota_app.value ))
@@ -325,8 +323,6 @@ manifest: |
       port: 8443
     ca_cert: (( $ops_manager.ca_certificate ))
     url: "https://uaa.(( .cloud_controller.system_domain.value ))"
-    jwt:
-      verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
     clients:
       cc-service-dashboards:
         scope: cloud_controller.write,openid,cloud_controller.read,cloud_controller_service_permissions.read
