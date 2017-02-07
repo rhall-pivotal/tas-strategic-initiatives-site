@@ -8,6 +8,8 @@ templates:
     release: consul
   - name: rep
     release: diego
+  - name: route_emitter
+    release: diego
   - name: cfdot
     release: diego
   - name: garden
@@ -124,6 +126,16 @@ manifest: |
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       preloaded_rootfses:
       - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
+    route_emitter:
+      local_mode: true
+      bbs:
+        ca_cert: (( $ops_manager.ca_certificate ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
+      nats:
+        user: (( .nats.credentials.identity ))
+        password: (( .nats.credentials.password ))
+        machines: (( .nats.ips ))
     cfdot:
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
