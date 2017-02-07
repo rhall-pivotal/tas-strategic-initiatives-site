@@ -65,13 +65,10 @@ manifest: |
   app_domains: ["(( .cloud_controller.apps_domain.value ))"]
 
   cc:
-    allowed_cors_domains:
-    - https://apm.(( .cloud_controller.system_domain.value ))
     allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
     buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
     droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
     packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
-    service_name: cloud-controller-ng
     resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
     logging_level: debug
     maximum_health_check_timeout: 600
@@ -123,8 +120,6 @@ manifest: |
     ssl:
       port: 8443
     url: "https://uaa.(( .cloud_controller.system_domain.value ))"
-    jwt:
-      verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
     clients:
       cc-service-dashboards:
         secret: (( .uaa.cc_service_dashboards_credentials.password ))
