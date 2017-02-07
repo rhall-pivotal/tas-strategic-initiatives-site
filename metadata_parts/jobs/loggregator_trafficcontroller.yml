@@ -106,7 +106,6 @@ manifest: |
       machines: ['cf-etcd.service.cf.internal']
       ca_cert: (( $ops_manager.ca_certificate ))
   doppler:
-    uaa_client_id: (( .uaa.doppler_client_credentials.identity ))
     outgoing_port: 8081
   uaa:
     clients:
