@@ -69,6 +69,12 @@ property_blueprints:
     default:
       domains: ["trafficcontroller"]
 
+  - name: statsdinjector_tls_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains: ["statsdinjector"]
+
 manifest: |
   traffic_controller:
     etcd:

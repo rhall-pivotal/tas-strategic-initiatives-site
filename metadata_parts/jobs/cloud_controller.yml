@@ -366,6 +366,9 @@ manifest: |
       metron:
         cert: (( .doppler.metron_tls_cert.cert_pem ))
         key: (( .doppler.metron_tls_cert.private_key_pem ))
+      statsd_injector:
+        cert: (( .loggregator_trafficcontroller.statsdinjector_tls_cert.cert_pem ))
+        key: (( .loggregator_trafficcontroller.statsdinjector_tls_cert.private_key_pem ))
   router:
     route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
   routing_api:
