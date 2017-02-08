@@ -185,6 +185,7 @@ manifest: |
   cf_networking:
     disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
     network: (( .properties.container_networking.enable.network_cidr.value ))
+    mtu: (( .properties.container_networking.enable.mtu.value ))
     garden_external_networker:
       cni_plugin_dir: /var/vcap/packages/flannel/bin
       cni_config_dir: /var/vcap/jobs/cni-flannel/config/cni
