@@ -199,7 +199,6 @@ manifest: |
   system_domain_organization: system
   app_domains: ["(( .cloud_controller.apps_domain.value ))"]
   support_address: https://support.pivotal.io
-
   route_registrar:
     routes:
     - name: api
@@ -301,9 +300,7 @@ manifest: |
     security_event_logging:
       enabled: (( security_event_logging_enabled.value ))
     volume_services_enabled: true
-
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
-
   consul:
     encrypt_keys:
     - (( .properties.consul_encrypt_key.value ))
@@ -322,7 +319,6 @@ manifest: |
             script: /bin/true
       servers:
         lan: (( .consul_server.ips ))
-
   uaa:
     tls_port: 8443
     ssl:
@@ -339,10 +335,8 @@ manifest: |
         secret: (( .uaa.cc_routing_credentials.password ))
   login:
     url: "https://login.(( .cloud_controller.system_domain.value ))"
-
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-
   logger_endpoint:
     port: (( .properties.logger_endpoint_port.value ))
   doppler:
@@ -387,7 +381,6 @@ manifest: |
     port: 12345
   dea_next:
     staging_disk_limit_mb: 6144
-
   cf_networking:
     policy_server:
       ca_cert: (( $ops_manager.ca_certificate ))
@@ -397,3 +390,5 @@ manifest: |
       uaa_client_secret: (( .uaa.network_policy_server_client.password ))
       skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
       database: (( .properties.system_database.selected_option.parsed_manifest(networkpolicyserverdb) ))
+  statsd_injector:
+    deployment: cf

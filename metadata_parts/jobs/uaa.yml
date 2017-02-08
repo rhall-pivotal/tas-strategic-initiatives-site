@@ -326,7 +326,6 @@ manifest: |
         text: (( .uaa.customize_username_label.value ))
       password:
         text: (( .uaa.customize_password_label.value ))
-
     links:
       home: "https://apps.(( .cloud_controller.system_domain.value ))"
       passwd: "https://account.(( .cloud_controller.system_domain.value ))/forgot-password"
@@ -725,11 +724,8 @@ manifest: |
         groups:
           - cloud_controller.admin
           - doppler.firehose
-
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
-
   uaadb: (( .properties.system_database.selected_option.parsed_manifest(uaadb) ))
-
   nats:
     user: (( .nats.credentials.identity ))
     password: (( .nats.credentials.password ))
@@ -765,3 +761,5 @@ manifest: |
       health_check:
         name: uaa-healthcheck
         script_path: /var/vcap/jobs/uaa/bin/health_check
+  statsd_injector:
+    deployment: cf
