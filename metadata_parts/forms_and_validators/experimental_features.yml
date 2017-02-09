@@ -21,7 +21,7 @@ form:
       label: Enabling the Container-to-Container network will allow policy-driven, direct communication between containers on an overlay network occupying the 10.255.0.0/16 range.
       selector_property_inputs:
         - reference: .properties.container_networking.enable
-          label: Enable Container-to-Container Networking
+          label: Enable
           property_inputs:
             - reference: .properties.container_networking.enable.network_cidr
               label: Network CIDR
@@ -31,7 +31,7 @@ form:
               label: Network Maximum Transmission Unit (MTU) (in bytes)
               description: Sets the MTU for the container networking driver. Leaving this unset will use the driver default value.
         - reference: .properties.container_networking.disable
-          label: Disable Container-to-Container Networking
+          label: Disable
     - reference: .properties.cc_api_rate_limit
       label: Enabling CF API Rate Limiting will prevent API consumers from overwhelming the platform API servers. Limits are imposed on a per-user or per-client basis and reset on an hourly interval.
       selector_property_inputs:
