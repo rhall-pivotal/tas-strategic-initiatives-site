@@ -102,6 +102,8 @@ property_blueprints:
     identity: galera-healthcheck
 - name: pivotal_account_credentials
   type: simple_credentials
+- name: nfsv3driver_credentials
+  type: simple_credentials
 
 manifest: |
   domain: (( .cloud_controller.system_domain.value ))
@@ -157,6 +159,9 @@ manifest: |
         - name: account
           username: (( pivotal_account_credentials.identity ))
           password: (( pivotal_account_credentials.password ))
+        - name: nfsv3driver
+          username: (( nfsv3driver_credentials.identity ))
+          password: (( nfsv3driver_credentials.password ))
       disable_auto_sst: true
       server_audit_events: (( .properties.mysql_activity_logging.selected_option.parsed_manifest(mysql_audit_events) ))
       server_audit_excluded_users:

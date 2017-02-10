@@ -26,6 +26,8 @@ templates:
     release: cf-networking
   - name: vxlan-policy-agent
     release: cf-networking
+  - name: nfsv3driver
+    release: nfs-volume
 
 resource_definitions:
   - name: ram
@@ -103,6 +105,11 @@ property_blueprints:
     configurable: true
     optional: false
     default: 1454
+
+  - name: disable_nfsv3driver
+    type: boolean
+    configurable: true
+    default: false
 
 manifest: |
   diego:
@@ -199,3 +206,6 @@ manifest: |
       ca_cert: (( $ops_manager.ca_certificate ))
       client_cert: (( .properties.network_policy_agent_cert.cert_pem ))
       client_key: (( .properties.network_policy_agent_cert.private_key_pem ))
+
+  nfsv3driver:
+    disable: (( .properties.disable_nfsv3driver.value) ))

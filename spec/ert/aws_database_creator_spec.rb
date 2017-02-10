@@ -64,6 +64,7 @@ describe Ert::AwsDatabaseCreator do
     it 'creates dbs for all ERT apps' do
       expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS ccdb')
       expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS uaa')
+      expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS nfs_volume')
       expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS notifications')
       expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS autoscale')
       expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS console')

@@ -45,6 +45,11 @@ property_blueprints:
     configurable: false
     default: uaa
 
+  - name: nfs_volume_database
+    type: string
+    configurable: false
+    default: nfs_volume
+
   - name: system_database
     type: selector
     configurable: true
@@ -121,6 +126,10 @@ property_blueprints:
               url: jdbc:mysql://(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/account
               username: (( .mysql.pivotal_account_credentials.identity ))
               password: (( .mysql.pivotal_account_credentials.password ))
+          - name: nfs_volume
+            manifest: |
+              url: mysql://(( .mysql.nfsv3driver_credentials.identity )):(( .mysql.nfsv3driver_credentials.password ))@(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/nfsv3driver
+              max_open_connections: 10
 
       - name: internal_mysql
         select_value: internal_mysql
@@ -193,6 +202,10 @@ property_blueprints:
             url: jdbc:mysql://(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/account
             username: (( .mysql.pivotal_account_credentials.identity ))
             password: (( .mysql.pivotal_account_credentials.password ))
+        - name: nfs_volume
+          manifest: |
+            url: mysql://(( .mysql.nfsv3driver_credentials.identity )):(( .mysql.nfsv3driver_credentials.password ))@(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/nfsv3driver
+            max_open_connections: 10
 
       - name: external
         select_value: external
@@ -264,6 +277,10 @@ property_blueprints:
               url: jdbc:mysql://(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/account
               username: (( .properties.system_database.external.username.value ))
               password: (( .properties.system_database.external.password.value ))
+          - name: nfs_volume
+            manifest: |
+              url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/nfsv3driver
+              max_open_connections: 10
 
         property_blueprints:
           - name: port

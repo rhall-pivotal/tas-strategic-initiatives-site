@@ -67,6 +67,13 @@ form:
         username: .properties.system_database.external.username
         password: .properties.system_database.external.password
         database: .properties.uaa_database
+    - name: Verifiers::MysqlDatabaseVerifier
+      properties:
+        host: .properties.system_database.external.host
+        port: .properties.system_database.external.port
+        username: .properties.system_database.external.username
+        password: .properties.system_database.external.password
+        database: .properties.nfs_volume_database
   property_inputs:
   - reference: .properties.system_database
     label: "Choose the location of your system databases"
@@ -160,3 +167,11 @@ install_time_verifiers:
       username: .properties.system_database.external.username
       password: .properties.system_database.external.password
       database: .properties.uaa_database
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.username
+      password: .properties.system_database.external.password
+      database: .properties.nfs_volume_database
