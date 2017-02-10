@@ -19,7 +19,18 @@ module Ert
           password: rds_settings.dig('password')
         )
 
-        %w(ccdb uaa notifications autoscale console app_usage_service nfs_volume).each do |db_name|
+        %w(
+          account
+          app_usage_service
+          autoscale
+          ccdb
+          diego
+          networkpolicyserver
+          nfs_volume
+          notifications
+          routing
+          uaa
+        ).each do |db_name|
           mysql_client.query("CREATE DATABASE IF NOT EXISTS #{db_name}")
         end
       end

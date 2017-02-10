@@ -62,13 +62,16 @@ describe Ert::AwsDatabaseCreator do
     end
 
     it 'creates dbs for all ERT apps' do
+      expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS account')
+      expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS app_usage_service')
+      expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS autoscale')
       expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS ccdb')
-      expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS uaa')
+      expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS diego')
+      expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS networkpolicyserver')
       expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS nfs_volume')
       expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS notifications')
-      expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS autoscale')
-      expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS console')
-      expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS app_usage_service')
+      expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS routing')
+      expect(mysql2_client).to receive(:query).with('CREATE DATABASE IF NOT EXISTS uaa')
 
       aws_database_creator.create_dbs
     end
