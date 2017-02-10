@@ -55,7 +55,7 @@ instance_definition:
     min: 0
 
 property_blueprints:
-  - name: nfs_broker_push
+  - name: nfs_broker_push_credentials
     type: simple_credentials
 
 manifest: |
@@ -67,7 +67,7 @@ manifest: |
       dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
     organization: system
     space: nfs
-    username: (( nfs_broker_push.username ))
-    password: (( nfs_broker_push.password ))
+    username: (( nfs_broker_push_credentials.identity ))
+    password: (( nfs_broker_push_credentials.password ))
     db: (( .properties.system_database.selected_option.parsed_manifest(nfs_volume) ))
     syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
