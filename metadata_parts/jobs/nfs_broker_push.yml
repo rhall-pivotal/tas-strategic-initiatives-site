@@ -1,0 +1,73 @@
+---
+name: nfsbrokerpush
+label: NFS Broker
+resource_label: NFS Broker
+description: Pushes the NFS Broker application to your Elastic Runtime installation
+templates:
+  - name: nfsbrokerpush
+    release: nfs-volume
+errand: true
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: false
+    default: 0
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 1
+    constraints:
+      min: 1
+      power_of_two: true
+
+static_ip: 0
+dynamic_ip: 1
+max_in_flight: 1
+single_az_only: false
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: false
+  default: 1
+  constraints:
+    min: 0
+
+property_blueprints:
+  - name: nfs_broker_push
+    type: simple_credentials
+
+manifest: |
+  nfsbrokerpush:
+    domain: (( .cloud_controller.system_domain.value ))
+    cf:
+      admin_user: (( .uaa.admin_credentials.identity ))
+      admin_password: (( .uaa.admin_credentials.password ))
+      dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
+    organization: system
+    space: nfs
+    username: (( nfs_broker_push.username ))
+    password: (( nfs_broker_push.password ))
+    db: (( .properties.system_database.selected_option.parsed_manifest(nfs_volume) ))
+    syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
