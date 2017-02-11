@@ -165,7 +165,7 @@ manifest: |
       disable_auto_sst: true
       server_audit_events: (( .properties.mysql_activity_logging.selected_option.parsed_manifest(mysql_audit_events) ))
       server_audit_excluded_users:
-        - repcanary
+        - (( monitordb_credentials.identity ))
   syslog_aggregator:
     address: (( ..cf.properties.syslog_host.value ))
     port: (( ..cf.properties.syslog_port.value ))
