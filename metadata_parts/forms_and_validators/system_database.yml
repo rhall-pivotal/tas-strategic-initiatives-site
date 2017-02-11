@@ -8,72 +8,72 @@ form:
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
-        username: .properties.system_database.external.username
-        password: .properties.system_database.external.password
+        username: .properties.system_database.external.account_username
+        password: .properties.system_database.external.account_password
         database: .properties.account_database
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
-        username: .properties.system_database.external.username
-        password: .properties.system_database.external.password
+        username: .properties.system_database.external.app_usage_service_username
+        password: .properties.system_database.external.app_usage_service_password
         database: .properties.app_usage_service_database
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
-        username: .properties.system_database.external.username
-        password: .properties.system_database.external.password
+        username: .properties.system_database.external.autoscale_username
+        password: .properties.system_database.external.autoscale_password
         database: .properties.autoscale_database
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
-        username: .properties.system_database.external.username
-        password: .properties.system_database.external.password
+        username: .properties.system_database.external.ccdb_username
+        password: .properties.system_database.external.ccdb_password
         database: .properties.ccdb_database
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
-        username: .properties.system_database.external.username
-        password: .properties.system_database.external.password
+        username: .properties.system_database.external.diego_username
+        password: .properties.system_database.external.diego_password
         database: .properties.diego_database
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
-        username: .properties.system_database.external.username
-        password: .properties.system_database.external.password
+        username: .properties.system_database.external.networkpolicyserver_username
+        password: .properties.system_database.external.networkpolicyserver_password
         database: .properties.networkpolicyserver_database
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
-        username: .properties.system_database.external.username
-        password: .properties.system_database.external.password
+        username: .properties.system_database.external.nfs_volume_username
+        password: .properties.system_database.external.nfs_volume_password
+        database: .properties.nfs_volume_database
+    - name: Verifiers::MysqlDatabaseVerifier
+      properties:
+        host: .properties.system_database.external.host
+        port: .properties.system_database.external.port
+        username: .properties.system_database.external.notifications_username
+        password: .properties.system_database.external.notifications_password
         database: .properties.notifications_database
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
-        username: .properties.system_database.external.username
-        password: .properties.system_database.external.password
+        username: .properties.system_database.external.routing_username
+        password: .properties.system_database.external.routing_password
         database: .properties.routing_database
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
-        username: .properties.system_database.external.username
-        password: .properties.system_database.external.password
+        username: .properties.system_database.external.uaa_username
+        password: .properties.system_database.external.uaa_password
         database: .properties.uaa_database
-    - name: Verifiers::MysqlDatabaseVerifier
-      properties:
-        host: .properties.system_database.external.host
-        port: .properties.system_database.external.port
-        username: .properties.system_database.external.username
-        password: .properties.system_database.external.password
-        database: .properties.nfs_volume_database
   property_inputs:
   - reference: .properties.system_database
     label: "Choose the location of your system databases"
@@ -89,10 +89,46 @@ form:
           label: Hostname
         - reference: .properties.system_database.external.port
           label: TCP Port
-        - reference: .properties.system_database.external.username
-          label: Username
-        - reference: .properties.system_database.external.password
-          label: Password
+        - reference: .properties.system_database.external.app_usage_service_username
+          label: App Usage Service database username
+        - reference: .properties.system_database.external.app_usage_service_password
+          label: App Usage Service database password
+        - reference: .properties.system_database.external.autoscale_username
+          label: Autoscaling Service database username
+        - reference: .properties.system_database.external.autoscale_password
+          label: Autoscaling Service database password
+        - reference: .properties.system_database.external.ccdb_username
+          label: Cloud Controller database username
+        - reference: .properties.system_database.external.ccdb_password
+          label: Cloud Controller database password
+        - reference: .properties.system_database.external.diego_username
+          label: Diego database username
+        - reference: .properties.system_database.external.diego_password
+          label: Diego database password
+        - reference: .properties.system_database.external.networkpolicyserver_username
+          label: Network Policy Server database username
+        - reference: .properties.system_database.external.networkpolicyserver_password
+          label: Network Policy Server database password
+        - reference: .properties.system_database.external.nfs_volume_username
+          label: NFS Volume database username
+        - reference: .properties.system_database.external.nfs_volume_password
+          label: NFS Volume database password
+        - reference: .properties.system_database.external.notifications_username
+          label: Notifications Service database username
+        - reference: .properties.system_database.external.notifications_password
+          label: Notifications Service database password
+        - reference: .properties.system_database.external.account_username
+          label: Pivotal Account application database username
+        - reference: .properties.system_database.external.account_password
+          label: Pivotal Account application database password
+        - reference: .properties.system_database.external.routing_username
+          label: Routing database username
+        - reference: .properties.system_database.external.routing_password
+          label: Routing database password
+        - reference: .properties.system_database.external.uaa_username
+          label: User Account and Authentication database username
+        - reference: .properties.system_database.external.uaa_password
+          label: User Account and Authentication database password
 
 install_time_verifiers:
   - name: Verifiers::MysqlDatabaseVerifier
@@ -100,78 +136,78 @@ install_time_verifiers:
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
-      username: .properties.system_database.external.username
-      password: .properties.system_database.external.password
+      username: .properties.system_database.external.account_username
+      password: .properties.system_database.external.account_password
       database: .properties.account_database
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
-      username: .properties.system_database.external.username
-      password: .properties.system_database.external.password
+      username: .properties.system_database.external.app_usage_service_username
+      password: .properties.system_database.external.app_usage_service_password
       database: .properties.app_usage_service_database
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
-      username: .properties.system_database.external.username
-      password: .properties.system_database.external.password
+      username: .properties.system_database.external.autoscale_username
+      password: .properties.system_database.external.autoscale_password
       database: .properties.autoscale_database
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
-      username: .properties.system_database.external.username
-      password: .properties.system_database.external.password
+      username: .properties.system_database.external.ccdb_username
+      password: .properties.system_database.external.ccdb_password
       database: .properties.ccdb_database
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
-      username: .properties.system_database.external.username
-      password: .properties.system_database.external.password
+      username: .properties.system_database.external.diego_username
+      password: .properties.system_database.external.diego_password
       database: .properties.diego_database
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
-      username: .properties.system_database.external.username
-      password: .properties.system_database.external.password
+      username: .properties.system_database.external.networkpolicyserver_username
+      password: .properties.system_database.external.networkpolicyserver_password
       database: .properties.networkpolicyserver_database
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
-      username: .properties.system_database.external.username
-      password: .properties.system_database.external.password
+      username: .properties.system_database.external.nfs_volume_username
+      password: .properties.system_database.external.nfs_volume_password
+      database: .properties.nfs_volume_database
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.notifications_username
+      password: .properties.system_database.external.notifications_password
       database: .properties.notifications_database
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
-      username: .properties.system_database.external.username
-      password: .properties.system_database.external.password
+      username: .properties.system_database.external.routing_username
+      password: .properties.system_database.external.routing_password
       database: .properties.routing_database
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
-      username: .properties.system_database.external.username
-      password: .properties.system_database.external.password
+      username: .properties.system_database.external.uaa_username
+      password: .properties.system_database.external.uaa_password
       database: .properties.uaa_database
-  - name: Verifiers::MysqlDatabaseVerifier
-    ignorable: true
-    properties:
-      host: .properties.system_database.external.host
-      port: .properties.system_database.external.port
-      username: .properties.system_database.external.username
-      password: .properties.system_database.external.password
-      database: .properties.nfs_volume_database

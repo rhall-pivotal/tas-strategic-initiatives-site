@@ -217,8 +217,8 @@ property_blueprints:
               db_scheme: "mysql"
               roles:
               - tag: admin
-                name: (( .properties.system_database.external.username.value ))
-                password: (( .properties.system_database.external.password.value ))
+                name: (( .properties.system_database.external.ccdb_username.value ))
+                password: (( .properties.system_database.external.ccdb_password.value ))
               databases:
               - tag: cc
                 name: ccdb
@@ -229,32 +229,32 @@ property_blueprints:
               db_scheme: "mysql"
               roles:
               - tag: admin
-                name: (( .properties.system_database.external.username.value ))
-                password: (( .properties.system_database.external.password.value ))
+                name: (( .properties.system_database.external.uaa_username.value ))
+                password: (( .properties.system_database.external.uaa_password.value ))
               databases:
               - tag: uaa
                 name: uaa
           - name: notifications
             manifest: |
-              url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/notifications
+              url: mysql://(( .properties.system_database.external.notifications_username.value )):(( .properties.system_database.external.notifications_password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/notifications
               max_open_connections: 10
           - name: autoscaling
             manifest: |
-              url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/autoscale
+              url: mysql://(( .properties.system_database.external.autoscale_username.value )):(( .properties.system_database.external.autoscale_password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/autoscale
           - name: push-app-usage-service
             manifest: |
               name: app_usage_service
               port: (( .properties.system_database.external.port.value ))
               ip: (( .properties.system_database.external.host.value ))
-              username: (( .properties.system_database.external.username.value ))
-              password: (( .properties.system_database.external.password.value ))
+              username: (( .properties.system_database.external.app_usage_service_username.value ))
+              password: (( .properties.system_database.external.app_usage_service_password.value ))
           - name: diegodb
             manifest: |
               db_host: (( .properties.system_database.external.host.value ))
               db_port: (( .properties.system_database.external.port.value ))
               db_schema: diego
-              db_username: (( .properties.system_database.external.username.value ))
-              db_password: (( .properties.system_database.external.password.value ))
+              db_username: (( .properties.system_database.external.diego_username.value ))
+              db_password: (( .properties.system_database.external.diego_password.value ))
               max_open_connections: 100
           - name: routingdb
             manifest: |
@@ -262,37 +262,91 @@ property_blueprints:
               schema: routing
               host: (( .properties.system_database.external.host.value ))
               port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.username.value ))
-              password: (( .properties.system_database.external.password.value ))
+              username: (( .properties.system_database.external.routing_username.value ))
+              password: (( .properties.system_database.external.routing_password.value ))
           - name: networkpolicyserverdb
             manifest: |
               type: "mysql"
               name: networkpolicyserver
               host: (( .properties.system_database.external.host.value ))
               port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.username.value ))
-              password: (( .properties.system_database.external.password.value ))
+              username: (( .properties.system_database.external.networkpolicyserver_username.value ))
+              password: (( .properties.system_database.external.networkpolicyserver_password.value ))
           - name: pivotal_account
             manifest: |
               url: jdbc:mysql://(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/account
-              username: (( .properties.system_database.external.username.value ))
-              password: (( .properties.system_database.external.password.value ))
+              username: (( .properties.system_database.external.account_username.value ))
+              password: (( .properties.system_database.external.account_password.value ))
           - name: nfs_volume
             manifest: |
-              url: mysql://(( .properties.system_database.external.username.value )):(( .properties.system_database.external.password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/nfs_volume
+              url: mysql://(( .properties.system_database.external.nfs_volume_username.value )):(( .properties.system_database.external.nfs_volume_password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/nfs_volume
               max_open_connections: 10
 
         property_blueprints:
-          - name: port
-            type: port
-            configurable: true
           - name: host
             type: string
             configurable: true
-          - name: username
+          - name: port
+            type: port
+            configurable: true
+          - name: account_username
             type: string
             configurable: true
-          - name: password
+          - name: account_password
+            type: secret
+            configurable: true
+          - name: app_usage_service_username
+            type: string
+            configurable: true
+          - name: app_usage_service_password
+            type: secret
+            configurable: true
+          - name: autoscale_username
+            type: string
+            configurable: true
+          - name: autoscale_password
+            type: secret
+            configurable: true
+          - name: ccdb_username
+            type: string
+            configurable: true
+          - name: ccdb_password
+            type: secret
+            configurable: true
+          - name: diego_username
+            type: string
+            configurable: true
+          - name: diego_password
+            type: secret
+            configurable: true
+          - name: networkpolicyserver_username
+            type: string
+            configurable: true
+          - name: networkpolicyserver_password
+            type: secret
+            configurable: true
+          - name: nfs_volume_username
+            type: string
+            configurable: true
+          - name: nfs_volume_password
+            type: secret
+            configurable: true
+          - name: notifications_username
+            type: string
+            configurable: true
+          - name: notifications_password
+            type: secret
+            configurable: true
+          - name: routing_username
+            type: string
+            configurable: true
+          - name: routing_password
+            type: secret
+            configurable: true
+          - name: uaa_username
+            type: string
+            configurable: true
+          - name: uaa_password
             type: secret
             configurable: true
 
