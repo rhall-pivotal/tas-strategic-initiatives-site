@@ -87,3 +87,9 @@ form:
             - reference: .properties.mysql_activity_logging.enable.audit_logging_events
               label: Event types
               description: "The MySQL service will keep a record of server activity. The default setting tracks who connected to the system and what queries were processed. For more information, see: https://mariadb.com/kb/en/mariadb/about-the-mariadb-audit-plugin/"
+    - reference: .mysql_proxy.startup_delay
+      label: Load Balancer Unhealthy Threshold
+      description: Specifies the amount of time, in seconds, to wait until declaring the Proxy instance started. This allows an external load balancer time to register the instance as healthy.
+    - reference: .mysql_proxy.shutdown_delay
+      label: Load Balancer Healthy Threshold
+      description: Specifies the amount of time, in seconds, that the MySQL Proxy will continue to accept connections before shutting down. During this period, the healthcheck will report unhealthy to cause load balancers to fail over to other Proxies. This value should be greater than or equal to the max time it could take your load balancer to consider a Proxy instance unhealthy, given contiguous failed healthchecks.
