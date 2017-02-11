@@ -80,6 +80,12 @@ property_blueprints:
     default:
       domains: ["metron"]
 
+  - name: syslogdrainbinder_tls_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains: ["syslogdrainbinder"]
+
 manifest: |
   doppler:
     message_drain_buffer_size: (( message_drain_buffer_size.value ))
@@ -111,10 +117,15 @@ manifest: |
       metron:
         cert: (( metron_tls_cert.cert_pem ))
         key: (( metron_tls_cert.private_key_pem ))
+      syslogdrainbinder:
+        cert: (( syslogdrainbinder_tls_cert.cert_pem ))
+        key: (( syslogdrainbinder_tls_cert.private_key_pem ))
   system_domain: (( .cloud_controller.system_domain.value ))
   cc:
     bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
     srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
+    mutual_tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
   syslog_drain_binder:
     etcd:
       client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
