@@ -106,11 +106,6 @@ property_blueprints:
     optional: false
     default: 1454
 
-  - name: disable_nfsv3driver
-    type: boolean
-    configurable: true
-    default: false
-
 manifest: |
   diego:
     executor:
@@ -208,4 +203,4 @@ manifest: |
       client_key: (( .properties.network_policy_agent_cert.private_key_pem ))
 
   nfsv3driver:
-    disable: (( disable_nfsv3driver.value ))
+    disable: (( .properties.nfs_volume_driver.selected_option.parsed_manifest(disable_nfsv3driver) ))
