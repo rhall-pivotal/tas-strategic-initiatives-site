@@ -7,3 +7,9 @@ form:
   - reference: .router.static_ips
     label: Router IPs
     description: "Enter static IP address(es) for the Router(s), which must be within the subnet CIDR block that you defined in the Ops Manager network configuration. If you have a load balancer, configure it to point to these IPs."
+  - reference: .isolated_diego_cell.garden_network_pool
+    label: Applications Subnet (Only change this if you need to avoid address collision with a third-party service on the same subnet.)
+    description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
+  - reference: .isolated_diego_cell.garden_network_mtu
+    label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
+    description: The default 1454 bytes is fine for most cases, but you might need less, such as for networks that use GRE tunnels.

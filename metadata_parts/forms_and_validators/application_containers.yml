@@ -1,0 +1,10 @@
+---
+form:
+  name: application_containers
+  label: Application Containers
+  description: "Enable custom configuration that supports your applications at a container level."
+  property_inputs:
+  - reference: .isolated_diego_cell.insecure_docker_registry_list
+    label: Private Docker Insecure Registry Whitelist
+    description: "If you use private Docker image registries that are secured with self-signed certificates, enter them here as a comma-delimited list. List each registry as either an IP:Port tuple or a Hostname:Port tuple."
+    placeholder: "10.10.10.10:8888,example.com:8888"
