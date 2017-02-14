@@ -75,11 +75,11 @@ manifest: |
     status:
       user: router_status
       password: (( ..cf.router.status_credentials.password ))
-    cipher_suites: (( ..cf.properties.networking_point_of_entry.external_ssl.ssl_ciphers.value ))
     route_services_secret: (( ..cf.properties.route_services.selected_option.parsed_manifest(secret) ))
-    enable_ssl: "(( ..cf.properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.value_present? ? 'true' : 'false' ))"
-    ssl_cert: (( ..cf.properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
-    ssl_key: (( ..cf.properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
+    cipher_suites: (( .properties.networking_point_of_entry.selected_option.parsed_manifest(ssl_ciphers) ))
+    enable_ssl: (( .properties.networking_point_of_entry.selected_option.parsed_manifest(enable_ssl) ))
+    ssl_cert: (( .properties.networking_point_of_entry.selected_option.parsed_manifest(cert_pem) ))
+    ssl_key: (( .properties.networking_point_of_entry.selected_option.parsed_manifest(private_key_pem) ))
     ssl_skip_validation: (( ..cf.ha_proxy.skip_cert_verify.value ))
     skip_oauth_tls_verification: true
     haproxy:

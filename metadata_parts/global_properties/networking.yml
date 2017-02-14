@@ -1,0 +1,42 @@
+---
+property_blueprints:
+  - name: networking_point_of_entry
+    type: selector
+    configurable: true
+    default: terminate_at_router
+    option_templates:
+      - name: terminate_at_router
+        select_value: terminate_at_router
+        property_blueprints:
+          - name: ssl_rsa_certificate
+            type: rsa_cert_credentials
+            configurable: true
+          - name: ssl_ciphers
+            type: text
+            configurable: true
+            optional: true
+        named_manifests:
+          - name: ssl_ciphers
+            manifest: (( .properties.networking_point_of_entry.terminate_at_router.ssl_ciphers.value ))
+          - name: enable_ssl
+            manifest: "true"
+          - name: cert_pem
+            manifest: (( .properties.networking_point_of_entry.terminate_at_router.ssl_rsa_certificate.cert_pem ))
+          - name: private_key_pem
+            manifest: (( .properties.networking_point_of_entry.terminate_at_router.ssl_rsa_certificate.private_key_pem ))
+      - name: terminate_at_router_ert_cert
+        select_value: terminate_at_router_ert_cert
+        named_manifests:
+          - name: ssl_ciphers
+            manifest: (( ..cf.properties.networking_point_of_entry.external_ssl.ssl_ciphers.value ))
+          - name: enable_ssl
+            manifest: "true"
+          - name: cert_pem
+            manifest: (( ..cf.properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
+          - name: private_key_pem
+            manifest: (( ..cf.properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
+      - name: terminate_before_router
+        select_value: terminate_before_router
+        named_manifests:
+          - name: enable_ssl
+            manifest: "false"
