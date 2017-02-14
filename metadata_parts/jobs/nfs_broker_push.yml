@@ -61,6 +61,7 @@ property_blueprints:
 manifest: |
   nfsbrokerpush:
     domain: (( .cloud_controller.system_domain.value ))
+    app_domain: (( .cloud_controller.system_domain.value ))
     cf:
       admin_user: (( .uaa.admin_credentials.identity ))
       admin_password: (( .uaa.admin_credentials.password ))
