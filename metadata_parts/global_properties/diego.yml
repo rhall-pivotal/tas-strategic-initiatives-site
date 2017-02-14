@@ -49,9 +49,11 @@ property_blueprints:
         select_value: enable
         named_manifests:
           - name: disable_nfsv3driver
-            manifest: false
+            manifest: |
+              false
       - name: disable
         select_value: disable
         named_manifests:
           - name: disable_nfsv3driver
-            manifest: true
+            manifest: |
+              true
