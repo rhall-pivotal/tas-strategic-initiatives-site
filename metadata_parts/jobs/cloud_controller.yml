@@ -153,9 +153,14 @@ property_blueprints:
     type: wildcard_domain
     configurable: true
 
-  - name: apps_domain
+  - name: primary_apps_domain
     type: wildcard_domain
     configurable: true
+
+  - name: additional_apps_domains
+    type: string_list
+    configurable: true
+    optional: true
 
   - name: default_quota_memory_limit_mb
     type: integer
@@ -197,7 +202,9 @@ manifest: |
   domain: (( .cloud_controller.system_domain.value ))
   system_domain: (( .cloud_controller.system_domain.value ))
   system_domain_organization: system
-  app_domains: ["(( .cloud_controller.apps_domain.value ))"]
+  app_domains:
+  - "(( .cloud_controller.primary_apps_domain.value ))"
+  - "(( .cloud_controller.additional_apps_domains.value ))"
   support_address: https://support.pivotal.io
   route_registrar:
     routes:

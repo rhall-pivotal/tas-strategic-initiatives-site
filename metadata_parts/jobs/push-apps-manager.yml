@@ -158,7 +158,7 @@ manifest: |
     admin_username: (( .uaa.push_apps_manager_credentials.identity ))
     admin_password: (( .uaa.push_apps_manager_credentials.password ))
     system_domain: (( .cloud_controller.system_domain.value ))
-    apps_domain: (( .cloud_controller.apps_domain.value ))
+    apps_domain: (( .cloud_controller.primary_apps_domain.value ))
   apps_manager:
     cf_dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
     display_plan_prices: (( display_plan_prices.value ))
