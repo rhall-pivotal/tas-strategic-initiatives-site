@@ -6,8 +6,6 @@ description: Monitors the MySQL Cluster
 templates:
 - name: replication-canary
   release: mysql-monitoring
-- name: mysql-diag-agent
-  release: mysql-monitoring
 - name: mysql-diag
   release: mysql-monitoring
 
@@ -75,9 +73,6 @@ property_blueprints:
   type: string
   configurable: true
 
-- name: diag_agent_credentials
-  type: simple_credentials
-
 manifest: |
   domain: (( .cloud_controller.system_domain.value ))
   cf_mysql:
@@ -101,9 +96,6 @@ manifest: |
       switchboard_count: (( .mysql_proxy.instances ))
       switchboard_username: (( .mysql_proxy.dashboard_credentials.identity ))
       switchboard_password: (( .mysql_proxy.dashboard_credentials.password ))
-    mysql-diag-agent:
-      username: (( diag_agent_credentials.identity ))
-      password: (( diag_agent_credentials.password ))
   syslog_aggregator:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))

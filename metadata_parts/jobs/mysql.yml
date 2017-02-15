@@ -10,6 +10,8 @@ templates:
     release: mysql-backup
   - name: send-email
     release: mysql-monitoring
+  - name: mysql-diag-agent
+    release: mysql-monitoring
 
 resource_definitions:
 - name: ram
@@ -104,6 +106,8 @@ property_blueprints:
   type: simple_credentials
 - name: nfs_volume_credentials
   type: simple_credentials
+- name: diag_agent_credentials
+  type: simple_credentials
 
 manifest: |
   domain: (( .cloud_controller.system_domain.value ))
@@ -116,6 +120,9 @@ manifest: |
     client:
       username: (( .uaa.notifications_client_credentials.identity ))
       secret: (( .uaa.notifications_client_credentials.password ))
+    mysql-diag-agent:
+      username: (( diag_agent_credentials.identity ))
+      password: (( diag_agent_credentials.password ))
   cf_mysql:
     mysql:
       admin_password: (( mysql_admin_credentials.password ))
