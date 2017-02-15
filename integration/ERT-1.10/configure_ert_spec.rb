@@ -30,7 +30,7 @@ RSpec.describe 'Configure Elastic Runtime 1.10.X', order: :defined do
       current_ops_manager.product(elastic_runtime_settings['name']).product_form('domains')
     domains_form.open_form
     domains_form.property('.cloud_controller.system_domain').set(elastic_runtime_settings['system_domain'])
-    domains_form.property('.cloud_controller.primary_apps_domain').set(elastic_runtime_settings['apps_domain'])
+    domains_form.property('.cloud_controller.apps_domain').set(elastic_runtime_settings['apps_domain'])
     domains_form.save_form
   end
 

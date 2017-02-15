@@ -16,7 +16,7 @@ property_blueprints:
           - name: smoke_tests
             manifest: |
               api: "https://api.(( .cloud_controller.system_domain.value ))"
-              apps_domain: (( .cloud_controller.primary_apps_domain.value ))
+              apps_domain: (( .cloud_controller.apps_domain.value ))
               user: (( .uaa.run_smoke_tests_credentials.identity ))
               password: (( .uaa.run_smoke_tests_credentials.password ))
               org: CF_SMOKE_TEST_ORG

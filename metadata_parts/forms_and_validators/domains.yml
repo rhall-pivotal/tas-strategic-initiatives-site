@@ -9,13 +9,13 @@ form:
         domain: .cloud_controller.system_domain
     - name: Verifiers::WildcardDomainVerifier
       properties:
-        domain: .cloud_controller.primary_apps_domain
+        domain: .cloud_controller.apps_domain
   property_inputs:
     - reference: .cloud_controller.system_domain
       label: System Domain
       description: "This domain is for system-level PCF components, such as Apps Manager, service brokers, etc. You must set up a wildcard DNS record for this domain that points to your entry point load balancer or HAProxy."
       placeholder: 'system.mydomain.com'
-    - reference: .cloud_controller.primary_apps_domain
+    - reference: .cloud_controller.apps_domain
       label: Apps Domain
       description: Default parent domain that pushed apps use for their hostnames. This domain also requires a wildcard DNS record. Use the Cloud Foundry command line interface (cf CLI) to add or delete subdomains assigned to individual apps.
       placeholder: 'apps.mydomain.com'
@@ -32,4 +32,4 @@ install_time_verifiers:
   - name: Verifiers::WildcardDomainVerifier
     ignorable: true
     properties:
-      domain: .cloud_controller.primary_apps_domain
+      domain: .cloud_controller.apps_domain
