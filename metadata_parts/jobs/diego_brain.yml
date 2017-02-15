@@ -83,6 +83,12 @@ property_blueprints:
     configurable: true
     optional: true
 
+  - name: starting_container_count_maximum
+    type: integer
+    configurable: true
+    optional: true
+    default: 200
+
 manifest: |
   capi:
     cc_uploader:
@@ -124,6 +130,7 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.rep_client_cert.cert_pem ))
         client_key: (( .properties.rep_client_cert.private_key_pem ))
+      starting_container_count_maximum: (( starting_container_count_maximum.value ))
     route_emitter:
       bbs:
         api_location: bbs.service.cf.internal:8889

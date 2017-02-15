@@ -30,3 +30,6 @@ form:
         - reference: .properties.garden_disk_cleanup.threshold.cleanup_threshold_in_mb
           label: Threshold of Disk-Used (MB)
           description: Disk cleanup will initiate whenever a Cell has exceeded this much disk-space for filesystem layers.
+  - reference: .diego_brain.starting_container_count_maximum
+    label: Max Inflight Container Starts
+    description: Maximum number of inflight container starts allowed globally. Value of 0 or less indicates no limit.
