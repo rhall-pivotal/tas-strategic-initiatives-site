@@ -301,10 +301,6 @@ manifest: |
     security_event_logging:
       enabled: (( security_event_logging_enabled.value ))
     volume_services_enabled: true
-    diego:
-      temporary_local_staging: true
-      temporary_local_tasks: true
-      temporary_local_tps: true
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
   consul:
     encrypt_keys:
