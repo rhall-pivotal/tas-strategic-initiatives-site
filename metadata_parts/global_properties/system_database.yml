@@ -48,7 +48,7 @@ property_blueprints:
   - name: nfs_volume_database
     type: string
     configurable: false
-    default: nfs_volume
+    default: nfsvolume
 
   - name: system_database
     type: selector
@@ -131,7 +131,7 @@ property_blueprints:
               host: (( .mysql_proxy.first_ip || .mysql.first_ip ))
               username: (( .mysql.nfs_volume_credentials.identity ))
               password: (( .mysql.nfs_volume_credentials.password ))
-              name: nfs_volume
+              name: nfsvolume
 
       - name: internal_mysql
         select_value: internal_mysql
@@ -209,7 +209,7 @@ property_blueprints:
             host: (( .mysql_proxy.first_ip || .mysql.first_ip ))
             username: (( .mysql.nfs_volume_credentials.identity ))
             password: (( .mysql.nfs_volume_credentials.password ))
-            name: nfs_volume
+            name: nfsvolume
 
       - name: external
         select_value: external
@@ -287,7 +287,7 @@ property_blueprints:
               port: (( .properties.system_database.external.port.value ))
               username: (( .properties.system_database.external.nfs_volume_username.value ))
               password: (( .properties.system_database.external.nfs_volume_password.value ))
-              name: nfs_volume
+              name: nfsvolume
 
         property_blueprints:
           - name: host
