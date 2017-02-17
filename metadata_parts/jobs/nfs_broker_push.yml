@@ -70,6 +70,6 @@ manifest: |
     space: nfs
     username: (( nfs_broker_push_credentials.identity ))
     password: (( nfs_broker_push_credentials.password ))
-    db: (( .properties.system_database.selected_option.parsed_manifest(nfs_volume) ))
+    db: (( .properties.system_database.selected_option.parsed_manifest(nfsvolume) ))
     syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))

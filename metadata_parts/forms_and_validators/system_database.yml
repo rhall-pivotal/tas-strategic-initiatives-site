@@ -50,9 +50,9 @@ form:
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
-        username: .properties.system_database.external.nfs_volume_username
-        password: .properties.system_database.external.nfs_volume_password
-        database: .properties.nfs_volume_database
+        username: .properties.system_database.external.nfsvolume_username
+        password: .properties.system_database.external.nfsvolume_password
+        database: .properties.nfsvolume_database
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
@@ -109,9 +109,9 @@ form:
           label: Network Policy Server database username
         - reference: .properties.system_database.external.networkpolicyserver_password
           label: Network Policy Server database password
-        - reference: .properties.system_database.external.nfs_volume_username
+        - reference: .properties.system_database.external.nfsvolume_username
           label: NFS Volume database username
-        - reference: .properties.system_database.external.nfs_volume_password
+        - reference: .properties.system_database.external.nfsvolume_password
           label: NFS Volume database password
         - reference: .properties.system_database.external.notifications_username
           label: Notifications Service database username
@@ -184,9 +184,9 @@ install_time_verifiers:
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
-      username: .properties.system_database.external.nfs_volume_username
-      password: .properties.system_database.external.nfs_volume_password
-      database: .properties.nfs_volume_database
+      username: .properties.system_database.external.nfsvolume_username
+      password: .properties.system_database.external.nfsvolume_password
+      database: .properties.nfsvolume_database
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:

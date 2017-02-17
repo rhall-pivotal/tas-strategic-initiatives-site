@@ -45,7 +45,7 @@ property_blueprints:
     configurable: false
     default: uaa
 
-  - name: nfs_volume_database
+  - name: nfsvolume_database
     type: string
     configurable: false
     default: nfsvolume
@@ -126,11 +126,11 @@ property_blueprints:
               url: jdbc:mysql://(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/account
               username: (( .mysql.pivotal_account_credentials.identity ))
               password: (( .mysql.pivotal_account_credentials.password ))
-          - name: nfs_volume
+          - name: nfsvolume
             manifest: |
               host: (( .mysql_proxy.first_ip || .mysql.first_ip ))
-              username: (( .mysql.nfs_volume_credentials.identity ))
-              password: (( .mysql.nfs_volume_credentials.password ))
+              username: (( .mysql.nfsvolume_credentials.identity ))
+              password: (( .mysql.nfsvolume_credentials.password ))
               name: nfsvolume
 
       - name: internal_mysql
@@ -204,11 +204,11 @@ property_blueprints:
             url: jdbc:mysql://(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/account
             username: (( .mysql.pivotal_account_credentials.identity ))
             password: (( .mysql.pivotal_account_credentials.password ))
-        - name: nfs_volume
+        - name: nfsvolume
           manifest: |
             host: (( .mysql_proxy.first_ip || .mysql.first_ip ))
-            username: (( .mysql.nfs_volume_credentials.identity ))
-            password: (( .mysql.nfs_volume_credentials.password ))
+            username: (( .mysql.nfsvolume_credentials.identity ))
+            password: (( .mysql.nfsvolume_credentials.password ))
             name: nfsvolume
 
       - name: external
@@ -281,12 +281,12 @@ property_blueprints:
               url: jdbc:mysql://(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/account
               username: (( .properties.system_database.external.account_username.value ))
               password: (( .properties.system_database.external.account_password.value ))
-          - name: nfs_volume
+          - name: nfsvolume
             manifest: |
               host: (( .properties.system_database.external.host.value ))
               port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.nfs_volume_username.value ))
-              password: (( .properties.system_database.external.nfs_volume_password.value ))
+              username: (( .properties.system_database.external.nfsvolume_username.value ))
+              password: (( .properties.system_database.external.nfsvolume_password.value ))
               name: nfsvolume
 
         property_blueprints:
@@ -332,10 +332,10 @@ property_blueprints:
           - name: networkpolicyserver_password
             type: secret
             configurable: true
-          - name: nfs_volume_username
+          - name: nfsvolume_username
             type: string
             configurable: true
-          - name: nfs_volume_password
+          - name: nfsvolume_password
             type: secret
             configurable: true
           - name: notifications_username

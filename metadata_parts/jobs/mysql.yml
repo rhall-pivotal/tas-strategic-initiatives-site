@@ -104,7 +104,7 @@ property_blueprints:
     identity: galera-healthcheck
 - name: pivotal_account_credentials
   type: simple_credentials
-- name: nfs_volume_credentials
+- name: nfsvolume_credentials
   type: simple_credentials
 - name: diag_agent_credentials
   type: simple_credentials
@@ -167,8 +167,8 @@ manifest: |
           username: (( pivotal_account_credentials.identity ))
           password: (( pivotal_account_credentials.password ))
         - name: nfsvolume
-          username: (( nfs_volume_credentials.identity ))
-          password: (( nfs_volume_credentials.password ))
+          username: (( nfsvolume_credentials.identity ))
+          password: (( nfsvolume_credentials.password ))
       disable_auto_sst: true
       server_audit_events: (( .properties.mysql_activity_logging.selected_option.parsed_manifest(mysql_audit_events) ))
       server_audit_excluded_users:
