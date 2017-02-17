@@ -217,6 +217,11 @@ manifest: |
       uris:
       - "api.(( .cloud_controller.system_domain.value ))/networking"
   cc:
+    diego:
+      temporary_local_staging: true
+      temporary_local_tasks: true
+      temporary_local_tps: true
+      insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
     allowed_cors_domains:
     - https://apm.(( .cloud_controller.system_domain.value ))
     - https://metrics.(( .cloud_controller.system_domain.value ))
