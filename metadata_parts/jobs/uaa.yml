@@ -473,6 +473,7 @@ manifest: |
         id: (( invitations_client_credentials.identity ))
         secret: (( invitations_client_credentials.password ))
         scope: uaa.none
+        redirect-uri: "https://apps.(( .cloud_controller.system_domain.value ))/**"
         authorized-grant-types: client_credentials
         authorities: emails.write,cloud_controller.read,cloud_controller.write,uaa.resource,scim.invite,notifications.write,cloud_controller.admin
       cf:
