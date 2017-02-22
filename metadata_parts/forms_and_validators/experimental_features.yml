@@ -18,7 +18,7 @@ form:
       label: CF CLI Connection Timeout
       description: "Max wait time to establish a connection, including name resolution, in seconds."
     - reference: .properties.container_networking
-      label: BETA: Enabling the Container-to-Container network will allow policy-driven, direct communication between containers on an overlay network occupying the 10.255.0.0/16 range.
+      label: "BETA: Enabling the Container-to-Container network will allow policy-driven, direct communication between containers on an overlay network occupying the 10.255.0.0/16 range."
       selector_property_inputs:
         - reference: .properties.container_networking.enable
           label: Enable
@@ -33,7 +33,7 @@ form:
         - reference: .properties.container_networking.disable
           label: Disable
     - reference: .properties.cc_api_rate_limit
-      label: BETA: Enabling CF API Rate Limiting will prevent API consumers from overwhelming the platform API servers. Limits are imposed on a per-user or per-client basis and reset on an hourly interval.
+      label: "BETA: Enabling CF API Rate Limiting will prevent API consumers from overwhelming the platform API servers. Limits are imposed on a per-user or per-client basis and reset on an hourly interval."
       selector_property_inputs:
         - reference: .properties.cc_api_rate_limit.enable
           label: Enable
@@ -47,7 +47,7 @@ form:
         - reference: .properties.cc_api_rate_limit.disable
           label: Disable
     - reference: .properties.nfs_volume_driver
-      label: BETA: Enabling NFSv3 volume services will allow application developers to bind existing NFS volumes to their applications for shared file access.
+      label: "BETA: Enabling NFSv3 volume services will allow application developers to bind existing NFS volumes to their applications for shared file access."
       selector_property_inputs:
         - reference: .properties.nfs_volume_driver.enable
           label: Enable
