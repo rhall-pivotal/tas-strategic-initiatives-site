@@ -67,6 +67,7 @@ manifest: |
     network: notifications
     sender: (( .properties.smtp_from.value ))
     encryption_key: (( encryption_credentials.password ))
+    buildpack_url: go_buildpack
     enable_diego: true
     instance_count: 3
     syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
