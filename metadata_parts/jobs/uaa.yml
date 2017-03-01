@@ -654,7 +654,7 @@ manifest: |
         id: (( cloudcache_broker_client_credentials.identity ))
         secret: (( cloudcache_broker_client_credentials.password ))
         scope: "uaa.none"
-        authorities: "cloud_controller.read"
+        authorities: "cloud_controller.admin"
         authorized-grant-types: "refresh_token,client_credentials"
     scim:
       user:
