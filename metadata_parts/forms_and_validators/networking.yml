@@ -81,7 +81,7 @@ form:
       description: "Specifies the amount of time, in seconds, to wait until declaring the router instance started. This allows an external load balancer time to register the instance as healthy."
     - reference: .router.max_idle_connections
       label: Router Max Idle Keepalive Connections
-      description: "Controls the max number of idle keepalive connections maintained by the Gorouter to all application instances and system components. A value of 0 (the default) indicates that support for idle keepalive connections is disabled. The maximum number of idle connections per backend (app or system component instance) is 100; this limit will take precedence if concurrent requests per backend is greater than 100 and total concurrent requests is less than Max Idle Keepalive Connections."
+      description: "Controls the max number of idle keepalive connections maintained by the Gorouter to all application instances and system components. A value of 0 (the default) will disable idle keepalive connections support. This limit will take precedence if concurrent requests per backend is greater than 100 (per backend max) and total concurrent requests is less than Max Idle Keepalive Connections."
     - reference: .properties.tcp_routing
       label: Enable TCP requests to your apps via specific ports on the TCP router. You will want to configure a load balancer to forward these TCP requests to the TCP routers. If you do not have a load balancer, then you can also send traffic directly to the TCP router.
       selector_property_inputs:
