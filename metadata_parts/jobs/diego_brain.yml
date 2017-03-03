@@ -129,6 +129,7 @@ manifest: |
         client_key: (( .properties.tps_client_cert.private_key_pem ))
   diego:
     auctioneer:
+      starting_container_count_maximum: (( starting_container_count_maximum.value ))
       ca_cert: (( $ops_manager.ca_certificate ))
       server_cert: (( .properties.auctioneer_server_cert.cert_pem ))
       server_key: (( .properties.auctioneer_server_cert.private_key_pem ))
@@ -142,7 +143,6 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.rep_client_cert.cert_pem ))
         client_key: (( .properties.rep_client_cert.private_key_pem ))
-      starting_container_count_maximum: (( starting_container_count_maximum.value ))
     route_emitter:
       bbs:
         api_location: bbs.service.cf.internal:8889
@@ -155,19 +155,19 @@ manifest: |
         port: 4222
         machines: (( .nats.ips ))
     ssh_proxy:
+      host_key: (( ssh_host_key.private_key_pem ))
+      enable_cf_auth: true
+      enable_diego_auth: false
+      diego_credentials: ""
+      uaa_token_url: "https://uaa.(( .cloud_controller.system_domain.value ))/oauth/token"
+      uaa_secret: (( .uaa.ssh_proxy_client_credentials.password ))
+      cc:
+        external_port: 9022
       bbs:
         api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
-      host_key: (( ssh_host_key.private_key_pem ))
-      enable_cf_auth: true
-      enable_diego_auth: false
-      diego_credentials: ""
-      cc:
-        external_port: 9022
-      uaa_token_url: "https://uaa.(( .cloud_controller.system_domain.value ))/oauth/token"
-      uaa_secret: (( .uaa.ssh_proxy_client_credentials.password ))
     ssl:
       skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
   consul:
