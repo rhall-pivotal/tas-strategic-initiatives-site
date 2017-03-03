@@ -24,6 +24,8 @@ templates:
     release: capi
   - name: metron_agent
     release: loggregator
+  - name: stager
+    release: capi
 
 resource_definitions:
   - name: ram
@@ -104,8 +106,18 @@ manifest: |
         base_url: http://cloud-controller-ng.service.cf.internal:9022
         basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
         basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
+    stager:
+      insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
+      bbs:
+        api_location: bbs.service.cf.internal:8889
+        ca_cert: (( $ops_manager.ca_certificate ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
+      cc:
+        basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+        basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
+        external_port: 9022
     tps:
-      listener_enabled: false
       bbs:
         api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))
