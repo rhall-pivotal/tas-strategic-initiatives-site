@@ -146,6 +146,11 @@ property_blueprints:
     configurable: true
     optional: true
 
+  - name: enable_invitations
+    type: boolean
+    configurable: true
+    default: true
+
   - name: display_plan_prices
     type: boolean
     configurable: true
@@ -167,6 +172,7 @@ manifest: |
     apps_domain: (( .cloud_controller.apps_domain.value ))
   apps_manager:
     cf_dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
+    enable_invitations: (( enable_invitations.value ))
     display_plan_prices: (( display_plan_prices.value ))
     currency_lookup: (( currency_lookup.value ))
     white_labeling:
