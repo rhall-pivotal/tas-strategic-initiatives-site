@@ -109,7 +109,7 @@ property_blueprints:
             manifest: |
               type: "mysql"
               schema: routing
-              host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+              host: mysql.service.cf.internal
               port: 3306
               username: (( .mysql.routingdb_credentials.identity ))
               password: (( .mysql.routingdb_credentials.password ))
@@ -117,7 +117,7 @@ property_blueprints:
             manifest: |
               type: "mysql"
               name: networkpolicyserver
-              host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+              host: mysql.service.cf.internal
               port: 3306
               username: (( .mysql.networkpolicyserverdb_credentials.identity ))
               password: (( .mysql.networkpolicyserverdb_credentials.password ))
@@ -138,7 +138,7 @@ property_blueprints:
         named_manifests:
         - name: ccdb
           manifest: |
-            address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            address: mysql.service.cf.internal
             port: 3306
             db_scheme: mysql
             roles:
@@ -151,7 +151,7 @@ property_blueprints:
               citext: true
         - name: uaadb
           manifest: |
-            address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            address: mysql.service.cf.internal
             port: 3306
             db_scheme: mysql
             roles:
@@ -187,7 +187,7 @@ property_blueprints:
           manifest: |
             type: "mysql"
             schema: routing
-            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            host: mysql.service.cf.internal
             port: 3306
             username: (( .mysql.routingdb_credentials.identity ))
             password: (( .mysql.routingdb_credentials.password ))
@@ -195,7 +195,7 @@ property_blueprints:
           manifest: |
             type: "mysql"
             name: networkpolicyserver
-            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
+            host: mysql.service.cf.internal
             port: 3306
             username: (( .mysql.networkpolicyserverdb_credentials.identity ))
             password: (( .mysql.networkpolicyserverdb_credentials.password ))
