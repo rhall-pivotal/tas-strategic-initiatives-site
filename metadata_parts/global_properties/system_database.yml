@@ -85,16 +85,16 @@ property_blueprints:
                 name: uaa
           - name: notifications
             manifest: |
-              url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
+              url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
               max_open_connections: 10
           - name: autoscaling
             manifest: |
-              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
+              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
           - name: push-app-usage-service
             manifest: |
               name: app_usage_service
               port: 3306
-              ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
+              ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
               username: (( .mysql.app_usage_credentials.identity ))
               password: (( .mysql.app_usage_credentials.password ))
           - name: diegodb
@@ -109,7 +109,7 @@ property_blueprints:
             manifest: |
               type: "mysql"
               schema: routing
-              host: mysql.service.cf.internal
+              host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
               port: 3306
               username: (( .mysql.routingdb_credentials.identity ))
               password: (( .mysql.routingdb_credentials.password ))
@@ -117,18 +117,18 @@ property_blueprints:
             manifest: |
               type: "mysql"
               name: networkpolicyserver
-              host: mysql.service.cf.internal
+              host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
               port: 3306
               username: (( .mysql.networkpolicyserverdb_credentials.identity ))
               password: (( .mysql.networkpolicyserverdb_credentials.password ))
           - name: pivotal_account
             manifest: |
-              url: jdbc:mysql://(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/account
+              url: jdbc:mysql://(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/account
               username: (( .mysql.pivotal_account_credentials.identity ))
               password: (( .mysql.pivotal_account_credentials.password ))
           - name: nfsvolume
             manifest: |
-              host: (( .mysql_proxy.first_ip || .mysql.first_ip ))
+              host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
               username: (( .mysql.nfsvolume_credentials.identity ))
               password: (( .mysql.nfsvolume_credentials.password ))
               name: nfsvolume
@@ -138,7 +138,7 @@ property_blueprints:
         named_manifests:
         - name: ccdb
           manifest: |
-            address: mysql.service.cf.internal
+            address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
             port: 3306
             db_scheme: mysql
             roles:
@@ -151,7 +151,7 @@ property_blueprints:
               citext: true
         - name: uaadb
           manifest: |
-            address: mysql.service.cf.internal
+            address: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
             port: 3306
             db_scheme: mysql
             roles:
@@ -163,16 +163,16 @@ property_blueprints:
               name: uaa
         - name: notifications
           manifest: |
-            url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
+            url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/notifications
             max_open_connections: 10
         - name: autoscaling
           manifest: |
-            url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
+            url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/autoscale
         - name: push-app-usage-service
           manifest: |
             name: app_usage_service
             port: 3306
-            ip: (( .mysql_proxy.first_ip || .mysql.first_ip ))
+            ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
             username: (( .mysql.app_usage_credentials.identity ))
             password: (( .mysql.app_usage_credentials.password ))
         - name: diegodb
@@ -187,7 +187,7 @@ property_blueprints:
           manifest: |
             type: "mysql"
             schema: routing
-            host: mysql.service.cf.internal
+            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
             port: 3306
             username: (( .mysql.routingdb_credentials.identity ))
             password: (( .mysql.routingdb_credentials.password ))
@@ -195,18 +195,18 @@ property_blueprints:
           manifest: |
             type: "mysql"
             name: networkpolicyserver
-            host: mysql.service.cf.internal
+            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
             port: 3306
             username: (( .mysql.networkpolicyserverdb_credentials.identity ))
             password: (( .mysql.networkpolicyserverdb_credentials.password ))
         - name: pivotal_account
           manifest: |
-            url: jdbc:mysql://(( .mysql_proxy.first_ip || .mysql.first_ip )):3306/account
+            url: jdbc:mysql://(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip )):3306/account
             username: (( .mysql.pivotal_account_credentials.identity ))
             password: (( .mysql.pivotal_account_credentials.password ))
         - name: nfsvolume
           manifest: |
-            host: (( .mysql_proxy.first_ip || .mysql.first_ip ))
+            host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip || .mysql.first_ip ))
             username: (( .mysql.nfsvolume_credentials.identity ))
             password: (( .mysql.nfsvolume_credentials.password ))
             name: nfsvolume
