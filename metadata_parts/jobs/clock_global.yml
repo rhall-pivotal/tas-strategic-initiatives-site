@@ -118,8 +118,6 @@ manifest: |
         lan: (( .consul_server.ips ))
 
   uaa:
-    ssl:
-      port: 8443
     url: "https://uaa.(( .cloud_controller.system_domain.value ))"
     clients:
       cc-service-dashboards:

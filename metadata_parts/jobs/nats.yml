@@ -68,7 +68,6 @@ manifest: |
     user: (( credentials.identity ))
     password: (( credentials.password ))
     machines: (( ips ))
-    port: 4222
   syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))

@@ -87,6 +87,7 @@ property_blueprints:
       domains: ["syslogdrainbinder"]
 
 manifest: |
+  system_domain: (( .cloud_controller.system_domain.value ))
   doppler:
     message_drain_buffer_size: (( message_drain_buffer_size.value ))
     etcd:
@@ -120,10 +121,7 @@ manifest: |
       syslogdrainbinder:
         cert: (( syslogdrainbinder_tls_cert.cert_pem ))
         key: (( syslogdrainbinder_tls_cert.private_key_pem ))
-  system_domain: (( .cloud_controller.system_domain.value ))
   cc:
-    bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
-    srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
     mutual_tls:
       ca_cert: (( $ops_manager.ca_certificate ))
   syslog_drain_binder:
@@ -131,11 +129,11 @@ manifest: |
       client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
       client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
   consul:
-    encrypt_keys:
-    - (( .properties.consul_encrypt_key.value ))
     ca_cert: (( $ops_manager.ca_certificate ))
     agent_cert: (( .properties.consul_agent_cert.cert_pem ))
     agent_key: (( .properties.consul_agent_cert.private_key_pem ))
+    encrypt_keys:
+    - (( .properties.consul_encrypt_key.value ))
     agent:
       domain: cf.internal
       services:

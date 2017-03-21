@@ -95,10 +95,8 @@ manifest: |
     cc_uploader:
       cc:
         job_polling_interval_in_seconds: 5
-        external_port: 9022
     nsync:
       bbs:
-        api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
@@ -109,17 +107,14 @@ manifest: |
     stager:
       insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
       bbs:
-        api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       cc:
         basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
         basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
-        external_port: 9022
     tps:
       bbs:
-        api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
@@ -134,7 +129,6 @@ manifest: |
       server_cert: (( .properties.auctioneer_server_cert.cert_pem ))
       server_key: (( .properties.auctioneer_server_cert.private_key_pem ))
       bbs:
-        api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
@@ -145,26 +139,20 @@ manifest: |
         client_key: (( .properties.rep_client_cert.private_key_pem ))
     route_emitter:
       bbs:
-        api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       nats:
         user: (( .nats.credentials.identity ))
         password: (( .nats.credentials.password ))
-        port: 4222
         machines: (( .nats.ips ))
     ssh_proxy:
       host_key: (( ssh_host_key.private_key_pem ))
       enable_cf_auth: true
-      enable_diego_auth: false
       diego_credentials: ""
       uaa_token_url: "https://uaa.(( .cloud_controller.system_domain.value ))/oauth/token"
       uaa_secret: (( .uaa.ssh_proxy_client_credentials.password ))
-      cc:
-        external_port: 9022
       bbs:
-        api_location: bbs.service.cf.internal:8889
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
