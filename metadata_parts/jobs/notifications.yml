@@ -6,6 +6,10 @@ description: Pushes the Pivotal Notifications application to your Elastic Runtim
 templates:
   - name: deploy-notifications
     release: notifications
+  - name: cflinuxfs2-rootfs-setup
+    release: cflinuxfs2-rootfs
+  - name: go-buildpack
+    release: go-buildpack
 errand: true
 
 resource_definitions:

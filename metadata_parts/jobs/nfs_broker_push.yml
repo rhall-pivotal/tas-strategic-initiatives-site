@@ -6,6 +6,10 @@ description: Pushes the NFS Broker application to your Elastic Runtime installat
 templates:
   - name: nfsbrokerpush
     release: nfs-volume
+  - name: cflinuxfs2-rootfs-setup
+    release: cflinuxfs2-rootfs
+  - name: binary-buildpack
+    release: binary-buildpack
 errand: true
 
 resource_definitions:

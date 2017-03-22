@@ -6,6 +6,10 @@ description: Pushes the Pivotal App Autoscaling application to your Elastic Runt
 templates:
   - name: deploy-autoscaling
     release: cf-autoscaling
+  - name: cflinuxfs2-rootfs-setup
+    release: cflinuxfs2-rootfs
+  - name: binary-buildpack
+    release: binary-buildpack
 errand: true
 
 resource_definitions:
