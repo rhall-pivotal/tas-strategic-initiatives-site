@@ -107,6 +107,11 @@ property_blueprints:
       min: 0
       max: 50000
 
+  - name: extra_headers_to_log
+    type: string_list
+    configurable: true
+    optional: true
+
 manifest: |
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   router:
@@ -125,6 +130,7 @@ manifest: |
     drain_wait: (( .router.drain_wait.value ))
     load_balancer_healthy_threshold: (( .router.lb_healthy_threshold.value ))
     max_idle_connections: (( max_idle_connections.value ))
+    extra_headers_to_log: (( .router.extra_headers_to_log.parsed_strings ))
   routing_api:
     enabled: true
   consul:
