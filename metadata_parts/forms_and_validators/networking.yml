@@ -4,7 +4,7 @@ form:
   label: Networking
   description: "Configure security and routing services for your isolation segment."
   property_inputs:
-  - reference: .router.static_ips
+  - reference: .isolated_router.static_ips
     label: Router IPs
     description: "Enter static IP address(es) for the Router(s), which must be within the subnet CIDR block that you defined in the Ops Manager network configuration. If you have a load balancer, configure it to point to these IPs."
   - reference: .isolated_diego_cell.garden_network_pool
