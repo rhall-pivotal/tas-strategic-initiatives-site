@@ -118,8 +118,8 @@ manifest: |
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
       metron:
-        cert: (( ..cf.doppler.metron_tls_cert.cert_pem ))
-        key: (( ..cf.doppler.metron_tls_cert.private_key_pem ))
+        cert: (( .properties.metron_tls_cert.cert_pem ))
+        key: (( .properties.metron_tls_cert.private_key_pem ))
   uaa:
     ca_cert: (( $ops_manager.ca_certificate ))
     ssl:
