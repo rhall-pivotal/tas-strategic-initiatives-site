@@ -732,11 +732,6 @@ manifest: |
           - doppler.firehose
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
   uaadb: (( .properties.system_database.selected_option.parsed_manifest(uaadb) ))
-  nats:
-    user: (( .nats.credentials.identity ))
-    password: (( .nats.credentials.password ))
-    port: 4222
-    machines: (( .nats.ips ))
   syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))

@@ -144,10 +144,6 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
-      nats:
-        user: (( .nats.credentials.identity ))
-        password: (( .nats.credentials.password ))
-        machines: (( .nats.ips ))
     ssh_proxy:
       host_key: (( ssh_host_key.private_key_pem ))
       enable_cf_auth: true

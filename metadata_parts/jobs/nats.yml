@@ -67,7 +67,6 @@ manifest: |
   nats:
     user: (( credentials.identity ))
     password: (( credentials.password ))
-    machines: (( ips ))
   syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
