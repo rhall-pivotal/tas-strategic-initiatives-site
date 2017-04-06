@@ -10,6 +10,8 @@ templates:
       consul: {from: consul_server, deployment: ((  ..cf.deployment_name  )) }
   - name: gorouter
     release: routing
+    consumes: |
+      nats: {from: nats, deployment: ((  ..cf.deployment_name  )) }
   - name: metron_agent
     release: loggregator
 
@@ -96,11 +98,6 @@ manifest: |
     load_balancer_healthy_threshold: (( ..cf.router.lb_healthy_threshold.value ))
   routing_api:
     enabled: true
-  nats:
-    user: (( ..cf.nats.credentials.identity ))
-    password: (( ..cf.nats.credentials.password ))
-    port: 4222
-    machines: (( ..cf.nats.ips ))
   syslog_daemon_config:
     address: (( ..cf.properties.syslog_host.value ))
     port: (( ..cf.properties.syslog_port.value ))
