@@ -6,6 +6,8 @@ description: Routers route Internet traffic to applications and between Pivotal 
 templates:
   - name: consul_agent
     release: consul
+    consumes: |
+      consul: {from: consul_server}
   - name: gorouter
     release: routing
   - name: metron_agent
@@ -133,16 +135,6 @@ manifest: |
     extra_headers_to_log: (( .router.extra_headers_to_log.parsed_strings ))
   routing_api:
     enabled: true
-  consul:
-    encrypt_keys:
-    - (( .properties.consul_encrypt_key.value ))
-    ca_cert: (( $ops_manager.ca_certificate ))
-    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
-    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
-    agent:
-      domain: cf.internal
-      servers:
-        lan: (( .consul_server.ips ))
   syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))

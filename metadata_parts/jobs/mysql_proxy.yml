@@ -6,6 +6,8 @@ description: MySQL Proxy
 templates:
   - name: consul_agent
     release: consul
+    consumes: |
+      consul: {from: consul_server}
   - name: proxy
     release: cf-mysql
 
@@ -106,13 +108,3 @@ manifest: |
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
     transport: (( .properties.syslog_protocol.value ))
-  consul:
-    encrypt_keys:
-    - (( .properties.consul_encrypt_key.value ))
-    ca_cert: (( $ops_manager.ca_certificate ))
-    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
-    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
-    agent:
-      domain: cf.internal
-      servers:
-        lan: (( .consul_server.ips ))

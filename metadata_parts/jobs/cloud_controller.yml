@@ -6,6 +6,8 @@ description: Coordinates Pivotal CF Elastic Runtime application lifecycles
 templates:
   - name: consul_agent
     release: consul
+    consumes: |
+      consul: {from: consul_server}
   - name: go-buildpack
     release: go-buildpack
   - name: binary-buildpack
@@ -300,13 +302,7 @@ manifest: |
     volume_services_enabled: true
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
   consul:
-    encrypt_keys:
-    - (( .properties.consul_encrypt_key.value ))
-    ca_cert: (( $ops_manager.ca_certificate ))
-    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
-    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
     agent:
-      domain: cf.internal
       services:
         cloud_controller_ng: {}
         routing-api: {}
@@ -315,8 +311,6 @@ manifest: |
           check:
             interval: 5s
             script: /bin/true
-      servers:
-        lan: (( .consul_server.ips ))
   uaa:
     tls_port: 8443
     ca_cert: (( $ops_manager.ca_certificate ))

@@ -6,6 +6,8 @@ description: Diego Brain
 templates:
   - name: consul_agent
     release: consul
+    consumes: |
+      consul: {from: consul_server}
   - name: auctioneer
     release: diego
   - name: cfdot
@@ -156,16 +158,6 @@ manifest: |
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
     ssl:
       skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-  consul:
-    encrypt_keys:
-    - (( .properties.consul_encrypt_key.value ))
-    ca_cert: (( $ops_manager.ca_certificate ))
-    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
-    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
-    agent:
-      domain: cf.internal
-      servers:
-        lan: (( .consul_server.ips ))
   syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))

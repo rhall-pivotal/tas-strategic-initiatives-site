@@ -6,6 +6,8 @@ description: Stores droplets and app packages on behalf of Cloud Controller
 templates:
   - name: consul_agent
     release: consul
+    consumes: |
+      consul: {from: consul_server}
   - name: metron_agent
     release: loggregator
   - name: blobstore
@@ -105,17 +107,9 @@ manifest: |
         cert: (( .doppler.metron_tls_cert.cert_pem ))
         key: (( .doppler.metron_tls_cert.private_key_pem ))
   consul:
-    encrypt_keys:
-    - (( .properties.consul_encrypt_key.value ))
-    ca_cert: (( $ops_manager.ca_certificate ))
-    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
-    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
     agent:
-      domain: cf.internal
       services:
         blobstore: {}
-      servers:
-        lan: (( .consul_server.ips ))
   route_registrar:
     routes:
       - name: blobstore

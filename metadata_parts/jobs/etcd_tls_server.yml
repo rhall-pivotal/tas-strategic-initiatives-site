@@ -6,6 +6,8 @@ description: An etcd TLS cluster node, which maintains the state of applications
 templates:
   - name: consul_agent
     release: consul
+    consumes: |
+      consul: {from: consul_server}
   - name: etcd
     release: etcd
   - name: etcd_metrics_server
@@ -101,15 +103,7 @@ manifest: |
       client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
       client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
   consul:
-    encrypt_keys:
-    - (( .properties.consul_encrypt_key.value ))
-    ca_cert: (( $ops_manager.ca_certificate ))
-    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
-    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
     agent:
-      domain: cf.internal
-      servers:
-        lan: (( .consul_server.ips ))
       services:
         etcd:
           name: cf-etcd
