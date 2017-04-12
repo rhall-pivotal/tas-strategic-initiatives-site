@@ -8,3 +8,10 @@ property_blueprints:
 - name: bbs_client_cert
   type: rsa_cert_credentials
   configurable: false
+- name: rep_server_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - cell.service.cf.internal
+    - "*.cell.service.cf.internal"
