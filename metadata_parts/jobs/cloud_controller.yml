@@ -368,6 +368,7 @@ manifest: |
     staging_disk_limit_mb: 6144
   cf_networking:
     policy_server:
+      uaa_ca: (( $ops_manager.ca_certificate ))
       ca_cert: (( $ops_manager.ca_certificate ))
       server_cert: (( .properties.network_policy_server_cert.cert_pem ))
       server_key: (( .properties.network_policy_server_cert.private_key_pem ))
