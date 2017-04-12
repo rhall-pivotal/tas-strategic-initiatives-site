@@ -96,16 +96,6 @@ manifest: |
     load_balancer_healthy_threshold: (( ..cf.router.lb_healthy_threshold.value ))
   routing_api:
     enabled: true
-  consul:
-    encrypt_keys:
-    - (( ..cf.properties.consul_encrypt_key.value ))
-    ca_cert: (( $ops_manager.ca_certificate ))
-    agent_cert: (( ..cf.properties.consul_agent_cert.cert_pem ))
-    agent_key: (( ..cf.properties.consul_agent_cert.private_key_pem ))
-    agent:
-      domain: cf.internal
-      servers:
-        lan: (( ..cf.consul_server.ips ))
   nats:
     user: (( ..cf.nats.credentials.identity ))
     password: (( ..cf.nats.credentials.password ))
