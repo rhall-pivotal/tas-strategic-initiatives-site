@@ -66,6 +66,11 @@ property_blueprints:
     configurable: true
     optional: true
 
+  - name: status_credentials
+    type: simple_credentials
+    default:
+      identity: router_status
+
 manifest: |
   request_timeout_in_seconds: (( ..cf.router.request_timeout_in_seconds.value ))
   networks:
@@ -76,7 +81,7 @@ manifest: |
     secure_cookies: (( ..cf.router.disable_insecure_cookies.value ))
     status:
       user: router_status
-      password: (( ..cf.router.status_credentials.password ))
+      password: (( .router.status_credentials.password ))
     route_services_secret: (( ..cf.properties.route_services.selected_option.parsed_manifest(secret) ))
     cipher_suites: (( .properties.networking_point_of_entry.selected_option.parsed_manifest(ssl_ciphers) ))
     enable_ssl: (( .properties.networking_point_of_entry.selected_option.parsed_manifest(enable_ssl) ))
