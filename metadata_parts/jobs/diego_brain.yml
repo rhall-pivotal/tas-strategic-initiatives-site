@@ -103,6 +103,7 @@ manifest: |
     cc_uploader:
       cc:
         job_polling_interval_in_seconds: 5
+        ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( cc_uploader_client_cert.cert_pem ))
         client_key: (( cc_uploader_client_cert.private_key_pem ))
     nsync:
