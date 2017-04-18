@@ -109,7 +109,8 @@ manifest: |
       machines: ['cf-etcd.service.cf.internal']
       ca_cert: (( $ops_manager.ca_certificate ))
     uaa:
-      client_secret: (( .uaa.loggregator_credentials.password ))
+      client: (( .uaa.doppler_client_credentials.identity ))
+      client_secret: (( .uaa.doppler_client_credentials.password ))
   uaa:
     clients:
       doppler:
