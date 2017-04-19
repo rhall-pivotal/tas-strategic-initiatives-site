@@ -99,11 +99,6 @@ manifest: |
       shutdown_delay: (( shutdown_delay.value ))
     mysql:
       cluster_ips: (( .mysql.ips ))
-  nats:
-    user: (( .nats.credentials.identity ))
-    password: (( .nats.credentials.password ))
-    machines: (( .nats.ips ))
-    port: 4222
   syslog_aggregator:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
