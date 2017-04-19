@@ -97,8 +97,6 @@ manifest: |
       consul_enabled: true
       startup_delay: (( startup_delay.value ))
       shutdown_delay: (( shutdown_delay.value ))
-    mysql:
-      cluster_ips: (( .mysql.ips ))
   nats:
     user: (( .nats.credentials.identity ))
     password: (( .nats.credentials.password ))

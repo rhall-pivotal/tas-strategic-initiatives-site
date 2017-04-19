@@ -127,7 +127,6 @@ manifest: |
     mysql:
       interrupt_notify_cmd: "/var/vcap/jobs/send-email/bin/run"
       admin_password: (( mysql_admin_credentials.password ))
-      cluster_ips: (( .mysql.ips ))
       innodb_buffer_pool_size: 2147483648
       max_open_files: 1048576
       galera_healthcheck:

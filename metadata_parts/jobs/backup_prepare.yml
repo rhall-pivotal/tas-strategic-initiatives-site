@@ -73,6 +73,3 @@ manifest: |
       username: (( .mysql.mysql_backup_server_credentials.identity ))
       password: (( .mysql.mysql_backup_server_credentials.password ))
     backup-all-masters: (( .properties.mysql_backups.selected_option.parsed_manifest(backup_all_masters) ))
-  cf_mysql:
-    mysql:
-      cluster_ips: (( .mysql.ips ))
