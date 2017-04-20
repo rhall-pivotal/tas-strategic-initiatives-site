@@ -5,6 +5,8 @@ resource_label: Diego Cell
 templates:
   - name: consul_agent
     release: consul
+    consumes: |
+      consul: {from: consul_server, deployment: ((  ..cf.deployment_name  )) }
   - name: rep
     release: diego
   - name: cfdot

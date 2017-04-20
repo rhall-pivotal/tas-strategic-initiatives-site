@@ -6,6 +6,8 @@ description: Routers route Internet traffic to applications placed in the isolat
 templates:
   - name: consul_agent
     release: consul
+    consumes: |
+      consul: {from: consul_server, deployment: ((  ..cf.deployment_name  )) }
   - name: gorouter
     release: routing
   - name: metron_agent
