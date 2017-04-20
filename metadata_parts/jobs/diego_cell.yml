@@ -30,6 +30,8 @@ templates:
     release: cf-networking
   - name: nfsv3driver
     release: nfs-volume
+  - name: grootfs
+    release: grootfs
 
 resource_definitions:
   - name: ram
@@ -128,7 +130,7 @@ manifest: |
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       preloaded_rootfses:
-      - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
+      - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar
     route_emitter:
       local_mode: true
       bbs:
@@ -170,7 +172,12 @@ manifest: |
     no_proxy: (( $ops_manager.no_proxy ))
     network_plugin: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin) ))
     network_plugin_extra_args: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin_extra_args) ))
-
+    image_plugin: "/var/vcap/packages/grootfs/bin/grootfs"
+    image_plugin_extra_args: ["--config=/var/vcap/jobs/grootfs/config/grootfs_config.yml"]
+  grootfs:
+    graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
+    insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
+    persistent_image_list: ["/var/vcap/packages/cflinuxfs2/rootfs.tar"]
   cf_networking:
     disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
     network: (( .properties.container_networking.enable.network_cidr.value ))
