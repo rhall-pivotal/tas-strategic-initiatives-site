@@ -18,8 +18,6 @@ templates:
     release: diego
   - name: nsync
     release: capi
-  - name: route_emitter
-    release: diego
   - name: tcp_emitter
     release: routing
   - name: ssh_proxy
@@ -155,12 +153,6 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.rep_client_cert.cert_pem ))
         client_key: (( .properties.rep_client_cert.private_key_pem ))
-    route_emitter:
-      healthcheck_address: "127.0.0.1:17021"
-      bbs:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.bbs_client_cert.cert_pem ))
-        client_key: (( .properties.bbs_client_cert.private_key_pem ))
     ssh_proxy:
       host_key: (( ssh_host_key.private_key_pem ))
       enable_cf_auth: true
