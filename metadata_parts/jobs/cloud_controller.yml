@@ -28,7 +28,7 @@ templates:
     release: dotnet-core-buildpack
   - name: cloud_controller_ng
     release: capi
-    provides:
+    provides: |
       cloud_controller: {as: cloud_controller, shared: true}
   - name: routing-api
     release: routing
