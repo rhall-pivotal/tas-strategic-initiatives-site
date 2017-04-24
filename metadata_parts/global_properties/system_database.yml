@@ -367,12 +367,13 @@ property_blueprints:
       named_manifests:
       - name: destination
         manifest: |
-          s3:
-            endpoint_url:
-            bucket_name:
-            bucket_path:
-            access_key_id:
-            secret_access_key:
+          - type: s3
+            config:
+              endpoint_url:
+              bucket_name:
+              bucket_path:
+              access_key_id:
+              secret_access_key:
       - name: cron_schedule
         manifest: |
 
@@ -384,12 +385,13 @@ property_blueprints:
       named_manifests:
       - name: destination
         manifest: |
-          s3:
-            endpoint_url: ((.properties.mysql_backups.s3.endpoint_url.value ))
-            bucket_name: (( .properties.mysql_backups.s3.bucket_name.value ))
-            bucket_path: (( .properties.mysql_backups.s3.bucket_path.value ))
-            access_key_id: (( .properties.mysql_backups.s3.access_key_id.value ))
-            secret_access_key: (( .properties.mysql_backups.s3.secret_access_key.value ))
+          - type: s3
+            config:
+              endpoint_url: ((.properties.mysql_backups.s3.endpoint_url.value ))
+              bucket_name: (( .properties.mysql_backups.s3.bucket_name.value ))
+              bucket_path: (( .properties.mysql_backups.s3.bucket_path.value ))
+              access_key_id: (( .properties.mysql_backups.s3.access_key_id.value ))
+              secret_access_key: (( .properties.mysql_backups.s3.secret_access_key.value ))
       - name: cron_schedule
         manifest: |
           (( .properties.mysql_backups.s3.cron_schedule.value ))
@@ -425,12 +427,13 @@ property_blueprints:
       named_manifests:
       - name: destination
         manifest: |
-          scp:
-            server: ((.properties.mysql_backups.scp.server.value ))
-            port: ((.properties.mysql_backups.scp.port.value ))
-            user: ((.properties.mysql_backups.scp.user.value ))
-            key: ((.properties.mysql_backups.scp.key.value ))
-            destination: ((.properties.mysql_backups.scp.destination.value ))
+          - type: scp
+            config:
+              server: ((.properties.mysql_backups.scp.server.value ))
+              port: ((.properties.mysql_backups.scp.port.value ))
+              user: ((.properties.mysql_backups.scp.user.value ))
+              key: ((.properties.mysql_backups.scp.key.value ))
+              destination: ((.properties.mysql_backups.scp.destination.value ))
       - name: cron_schedule
         manifest: |
           (( .properties.mysql_backups.scp.cron_schedule.value ))
