@@ -17,6 +17,9 @@ form:
     label: Private Docker Insecure Registry Whitelist
     description: If you use private Docker image registries that are secured with self-signed certificates, enter them here as a comma-delimited list. List each registry as either an IP:Port tuple or a Hostname:Port tuple.
     placeholder: "10.10.10.10:8888,example.com:8888"
+  - reference: .diego_cell.dns_servers
+    label: DNS Servers
+    description: Override DNS servers to be used in containers. Defaults to the same as the host. A comma-separated list of servers can be specified.
   - reference: .properties.garden_disk_cleanup
     label: Docker Images Disk-Cleanup Scheduling on Cell VMs
     selector_property_inputs:
