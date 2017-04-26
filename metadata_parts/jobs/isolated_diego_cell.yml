@@ -127,7 +127,7 @@ manifest: |
       - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
       placement_tags:
       - (( placement_tag.value ))
-    route-emitter:
+    route_emitter:
       local_mode: true
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
