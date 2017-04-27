@@ -12,6 +12,8 @@ templates:
     release: capi
   - name: metron_agent
     release: loggregator
+  - name: syslog_forwarder
+    release: syslog
 
 resource_definitions:
   - name: ram
@@ -123,7 +125,7 @@ manifest: |
     port: (( .properties.logger_endpoint_port.value ))
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-  syslog_daemon_config:
+  syslog:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
     transport: (( .properties.syslog_protocol.value ))

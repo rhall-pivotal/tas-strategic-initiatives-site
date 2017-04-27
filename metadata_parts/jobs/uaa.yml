@@ -12,6 +12,8 @@ templates:
     release: uaa
   - name: metron_agent
     release: loggregator
+  - name: syslog_forwarder
+    release: syslog
   - name: route_registrar
     release: routing
   - name: statsd_injector
@@ -742,7 +744,7 @@ manifest: |
           - doppler.firehose
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
   uaadb: (( .properties.system_database.selected_option.parsed_manifest(uaadb) ))
-  syslog_daemon_config:
+  syslog:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
     transport: (( .properties.syslog_protocol.value ))

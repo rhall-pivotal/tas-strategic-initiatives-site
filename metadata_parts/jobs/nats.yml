@@ -14,6 +14,8 @@ templates:
       nats: {as: nats, shared: true}
   - name: metron_agent
     release: loggregator
+  - name: syslog_forwarder
+    release: syslog
 
 resource_definitions:
   - name: ram
@@ -71,7 +73,7 @@ manifest: |
   nats:
     user: (( credentials.identity ))
     password: (( credentials.password ))
-  syslog_daemon_config:
+  syslog:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
     transport: (( .properties.syslog_protocol.value ))

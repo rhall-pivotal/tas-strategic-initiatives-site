@@ -12,6 +12,8 @@ templates:
     release: routing
   - name: metron_agent
     release: loggregator
+  - name: syslog_forwarder
+    release: syslog
 
 resource_definitions:
   - name: ram
@@ -135,7 +137,7 @@ manifest: |
     extra_headers_to_log: (( .router.extra_headers_to_log.parsed_strings ))
   routing_api:
     enabled: true
-  syslog_daemon_config:
+  syslog:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
     transport: (( .properties.syslog_protocol.value ))
