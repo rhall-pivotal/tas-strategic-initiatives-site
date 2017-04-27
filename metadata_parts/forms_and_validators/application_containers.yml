@@ -11,3 +11,6 @@ form:
   - reference: .isolated_diego_cell.placement_tag
     label: Segment Name
     description: This field is used as the placement tag for your Diego Cells. It should be unique. Use this name to configure an Isolation Segment with the Cloud Controller.
+  - reference: .isolated_diego_cell.dns_servers
+    label: DNS Servers
+    description:  Override DNS servers to be used in containers. Defaults to the same as the host. A comma-separated list of servers can be specified.
