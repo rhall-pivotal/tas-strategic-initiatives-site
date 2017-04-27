@@ -11,6 +11,8 @@ templates:
     release: diego
   - name: route_emitter
     release: diego
+    consumes: |
+      nats: {from: nats, deployment: ((  ..cf.deployment_name  )) }
   - name: cfdot
     release: diego
   - name: garden
@@ -133,10 +135,6 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( ..cf.properties.bbs_client_cert.cert_pem ))
         client_key: (( ..cf.properties.bbs_client_cert.private_key_pem ))
-      nats:
-        user: (( ..cf.nats.credentials.identity ))
-        password: (( ..cf.nats.credentials.password ))
-        machines: (( ..cf.nats.ips ))
     cfdot:
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
