@@ -14,6 +14,8 @@ templates:
       nats: {from: nats, deployment: ((  ..cf.deployment_name  )) }
   - name: metron_agent
     release: loggregator
+  - name: syslog_forwarder
+    release: syslog
 
 resource_definitions:
   - name: ram
@@ -98,7 +100,7 @@ manifest: |
     load_balancer_healthy_threshold: (( ..cf.router.lb_healthy_threshold.value ))
   routing_api:
     enabled: true
-  syslog_daemon_config:
+  syslog:
     address: (( ..cf.properties.syslog_host.value ))
     port: (( ..cf.properties.syslog_port.value ))
     transport: (( ..cf.properties.syslog_protocol.value ))
