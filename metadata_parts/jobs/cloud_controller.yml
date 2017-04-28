@@ -105,13 +105,10 @@ property_blueprints:
 
   - name: db_encryption_credentials
     type: simple_credentials
-    default:
-      identity: db_encryption
-
-  - name: encrypt_key
-    type: secret
     configurable: true
     optional: true
+    default:
+      identity: db_encryption
 
   - name: max_file_size
     type: integer
@@ -239,7 +236,7 @@ manifest: |
     maximum_app_disk_in_mb: (( max_disk_quota_app.value ))
     default_app_disk_in_mb: (( default_disk_quota_app.value ))
     default_app_memory: (( default_app_memory.value ))
-    db_encryption_key: (( encrypt_key.value || db_encryption_credentials.password ))
+    db_encryption_key: (( db_encryption_credentials.password ))
     default_running_security_groups:
       - default_security_group
     default_staging_security_groups:
