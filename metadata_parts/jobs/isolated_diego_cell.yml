@@ -21,8 +21,6 @@ templates:
     release: cflinuxfs2-rootfs
   - name: metron_agent
     release: loggregator
-  - name: syslog_forwarder
-    release: syslog
 
 resource_definitions:
   - name: ram
@@ -149,7 +147,7 @@ manifest: |
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
   cflinuxfs2-rootfs:
     trusted_certs: (( $ops_manager.trusted_certificates ))
-  syslog:
+  syslog_daemon_config:
     address: (( ..cf.properties.syslog_host.value ))
     port: (( ..cf.properties.syslog_port.value ))
     transport: (( ..cf.properties.syslog_protocol.value ))
