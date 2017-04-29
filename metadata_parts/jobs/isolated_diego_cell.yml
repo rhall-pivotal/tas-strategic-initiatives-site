@@ -138,8 +138,8 @@ manifest: |
       local_mode: true
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( ..cf.properties.bbs_client_cert.cert_pem ))
-        client_key: (( ..cf.properties.bbs_client_cert.private_key_pem ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
     cfdot:
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
