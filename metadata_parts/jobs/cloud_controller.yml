@@ -34,8 +34,6 @@ templates:
     release: routing
   - name: metron_agent
     release: loggregator
-  - name: syslog_forwarder
-    release: syslog
   - name: route_registrar
     release: routing
   - name: statsd_injector
@@ -332,7 +330,7 @@ manifest: |
     port: (( .properties.logger_endpoint_port.value ))
   doppler:
     port: (( .properties.logger_endpoint_port.value ))
-  syslog:
+  syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
     transport: (( .properties.syslog_protocol.value ))

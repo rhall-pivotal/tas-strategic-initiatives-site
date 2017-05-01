@@ -28,8 +28,6 @@ templates:
     release: capi
   - name: metron_agent
     release: loggregator
-  - name: syslog_forwarder
-    release: syslog
 
 resource_definitions:
   - name: ram
@@ -173,7 +171,7 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
-  syslog:
+  syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
     transport: (( .properties.syslog_protocol.value ))

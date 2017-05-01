@@ -14,8 +14,6 @@ templates:
     release: etcd
   - name: metron_agent
     release: loggregator
-  - name: syslog_forwarder
-    release: syslog
 
 resource_definitions:
   - name: ram
@@ -69,7 +67,7 @@ instance_definition:
 property_blueprints:
 
 manifest: |
-  syslog:
+  syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
     transport: (( .properties.syslog_protocol.value ))
