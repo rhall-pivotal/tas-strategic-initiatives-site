@@ -120,6 +120,12 @@ form:
               description: "Comma-separated list of domains, e.g. example.com. This is used for inviting external users to Apps Manager."
             - reference: .properties.uaa.ldap.ldap_referrals
               label: LDAP Referrals
+    - reference: .uaa.service_provider_key_credentials
+      label: Service Provider Credentials
+      description: Private key and certificate for the service provider.
+    - reference: .uaa.service_provider_key_password
+      label: Service Provider Password
+      description: Passphrase for the service provider private key.
     - reference: .uaa.apps_manager_access_token_lifetime
       label: Apps Manager Access Token Lifetime (in seconds)
       description: Set the lifetime of the access token for the Apps Manager login portal.
