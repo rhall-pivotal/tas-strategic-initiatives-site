@@ -113,6 +113,7 @@ manifest: |
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
 
   uaa:
+    ca_cert: (( $ops_manager.ca_certificate ))
     url: "https://uaa.(( .cloud_controller.system_domain.value ))"
     clients:
       cc-service-dashboards:
