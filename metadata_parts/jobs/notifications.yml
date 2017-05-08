@@ -6,6 +6,8 @@ description: Pushes the Pivotal Notifications application to your Elastic Runtim
 templates:
   - name: deploy-notifications
     release: notifications
+    consumes: |
+      (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
   - name: cflinuxfs2-rootfs-setup
     release: cflinuxfs2-rootfs
   - name: go-buildpack

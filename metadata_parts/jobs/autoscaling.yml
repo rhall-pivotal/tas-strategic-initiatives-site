@@ -6,6 +6,8 @@ description: Pushes the Pivotal App Autoscaling application to your Elastic Runt
 templates:
   - name: deploy-autoscaling
     release: cf-autoscaling
+    consumes: |
+      (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
   - name: cflinuxfs2-rootfs-setup
     release: cflinuxfs2-rootfs
   - name: binary-buildpack

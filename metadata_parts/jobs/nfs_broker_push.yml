@@ -6,6 +6,8 @@ description: Pushes the NFS Broker application to your Elastic Runtime installat
 templates:
   - name: nfsbrokerpush
     release: nfs-volume
+    consumes: |
+      (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
   - name: cflinuxfs2-rootfs-setup
     release: cflinuxfs2-rootfs
   - name: binary-buildpack

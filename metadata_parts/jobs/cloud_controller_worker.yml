@@ -10,6 +10,8 @@ templates:
       consul: {from: consul_server}
   - name: cloud_controller_worker
     release: capi
+    consumes: |
+      (( .properties.system_database.selected_option.parsed_manifest(ccdb_link) ))
   - name: metron_agent
     release: loggregator
 

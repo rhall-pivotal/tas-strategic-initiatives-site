@@ -60,7 +60,7 @@ property_blueprints:
         named_manifests:
           - name: proxy
             manifest: |
-            (( .mysql_proxy.service_hostname.value ? .properties.magic.selected_option.parsed_manifest(service_hostname) : .properties.magic.selected_option.parsed_manifest(proxy_link) ))
+              (( .mysql_proxy.service_hostname.value ? .properties.magic.selected_option.parsed_manifest(service_hostname) : .properties.magic.selected_option.parsed_manifest(proxy_link) ))
           - name: service_hostname
             manifest: |
               database:
@@ -78,6 +78,9 @@ property_blueprints:
       - name: internal
         select_value: internal
         named_manifests:
+          - name: mysql_db_link
+            manifest: |
+              (( .properties.magic.selected_option.parsed_manifest(proxy) ))
           - name: ccdb
             manifest: |
               port: 2544
@@ -109,23 +112,25 @@ property_blueprints:
               database: {from: uaadb}
           - name: notifications
             manifest: |
-              url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/notifications
+              port: 3306
+              username: (( .mysql.notifications_credentials.identity ))
+              password: (( .mysql.notifications_credentials.password ))
+              database: notifications
               max_open_connections: 10
           - name: autoscaling
             manifest: |
-              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/autoscale
+              port: 3306
+              username: (( .mysql.autoscale_credentials.identity ))
+              password: (( .mysql.autoscale_credentials.password ))
+              name: autoscale
           - name: push-app-usage-service
             manifest: |
               name: app_usage_service
               port: 3306
               username: (( .mysql.app_usage_credentials.identity ))
               password: (( .mysql.app_usage_credentials.password ))
-          - name: push_app_usage_service_db_link
-            manifest: |
-              (( .properties.magic.selected_option.parsed_manifest(proxy) ))
           - name: diegodb
             manifest: |
-              db_host: mysql.service.cf.internal
               db_port: 3306
               db_schema: diego
               db_username: (( .mysql.diegodb_credentials.identity ))
@@ -135,7 +140,6 @@ property_blueprints:
             manifest: |
               type: "mysql"
               schema: routing
-              host: mysql.service.cf.internal
               port: 3306
               username: (( .mysql.routingdb_credentials.identity ))
               password: (( .mysql.routingdb_credentials.password ))
@@ -149,12 +153,13 @@ property_blueprints:
               password: (( .mysql.networkpolicyserverdb_credentials.password ))
           - name: pivotal_account
             manifest: |
-              url: jdbc:mysql://(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/account
+              adapter: mysql
+              port: 3306
+              database: account
               username: (( .mysql.pivotal_account_credentials.identity ))
               password: (( .mysql.pivotal_account_credentials.password ))
           - name: nfsvolume
             manifest: |
-              host: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip ))
               username: (( .mysql.nfsvolume_credentials.identity ))
               password: (( .mysql.nfsvolume_credentials.password ))
               name: nfsvolume
@@ -162,9 +167,11 @@ property_blueprints:
       - name: internal_mysql
         select_value: internal_mysql
         named_manifests:
+        - name: mysql_db_link
+          manifest: |
+            (( .properties.magic.selected_option.parsed_manifest(proxy) ))
         - name: ccdb
           manifest: |
-            address: mysql.service.cf.internal
             port: 3306
             db_scheme: mysql
             roles:
@@ -175,9 +182,11 @@ property_blueprints:
             - tag: cc
               name: ccdb
               citext: true
+        - name: ccdb_link
+          manifest: |
+            (( .properties.magic.selected_option.parsed_manifest(proxy) ))
         - name: uaadb
           manifest: |
-            address: mysql.service.cf.internal
             port: 3306
             db_scheme: mysql
             roles:
@@ -187,9 +196,9 @@ property_blueprints:
             databases:
             - tag: uaa
               name: uaa
-        - name: ccdb_link
+        - name: uaadb_link
           manifest: |
-            database: {from: proxy-mysql}
+            (( .properties.magic.selected_option.parsed_manifest(proxy) ))
         - name: notifications
           manifest: |
             url: mysql://(( .mysql.notifications_credentials.identity )):(( .mysql.notifications_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/notifications
@@ -204,9 +213,6 @@ property_blueprints:
             ip: (( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip ))
             username: (( .mysql.app_usage_credentials.identity ))
             password: (( .mysql.app_usage_credentials.password ))
-        - name: push_app_usage_service_db_link
-          manifest: |
-            (( .mysql_proxy.service_hostname.value ? .properties.magic.selected_option.parsed_manifest(service_hostname) : .properties.magic.selected_option.parsed_manifest(proxy_link) ))
         - name: diegodb
           manifest: |
             db_host: mysql.service.cf.internal
