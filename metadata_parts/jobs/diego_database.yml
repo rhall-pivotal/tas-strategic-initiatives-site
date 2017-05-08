@@ -78,6 +78,7 @@ manifest: |
         - label: key1
           passphrase: (( bbs_encryption_passphrase.value ))
       auctioneer:
+        require_tls: true
         api_location: "auctioneer.service.cf.internal:9016"
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.auctioneer_client_cert.cert_pem ))
