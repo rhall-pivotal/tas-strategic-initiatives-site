@@ -60,7 +60,7 @@ property_blueprints:
         named_manifests:
           - name: proxy
             manifest: |
-              (( .mysql_proxy.service_hostname.value ? .properties.magic.selected_option.parsed_manifest(service_hostname) : .properties.magic.selected_option.parsed_manifest(proxy_link) ))
+              "(( .mysql_proxy.service_hostname.value ? .properties.magic.selected_option.parsed_manifest(service_hostname) : .properties.magic.selected_option.parsed_manifest(proxy_link) ))"
           - name: service_hostname
             manifest: |
               database:
