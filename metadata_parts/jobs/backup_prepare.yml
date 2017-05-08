@@ -8,8 +8,9 @@ templates:
   release: mysql-backup
 - name: service-backup
   release: service-backup
-max_in_flight: 1
-single_az_only: true
+- name: mysql-backup
+  release: cf-backup-and-restore
+
 resource_definitions:
 - name: ram
   type: integer
@@ -18,6 +19,7 @@ resource_definitions:
   default: 1024
   constraints:
     min: 1024
+
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
@@ -25,6 +27,7 @@ resource_definitions:
   default: 4000
   constraints:
     min: 2000
+
 - name: persistent_disk
   type: integer
   label: Persistent Disk
@@ -32,6 +35,7 @@ resource_definitions:
   default: 200000
   constraints:
     min: 10000
+
 - name: cpu
   type: integer
   label: CPU
@@ -40,8 +44,12 @@ resource_definitions:
   constraints:
     min: 1
     power_of_two: true
+
 static_ip: 1
 dynamic_ip: 0
+max_in_flight: 1
+single_az_only: true
+
 instance_definition:
   name: instances
   type: integer
@@ -55,10 +63,12 @@ instance_definition:
     property_reference: .properties.mysql_backups
     property_values:
     - disable
+
 property_blueprints:
 - name: backup_encryption_key
   type: secret
   label: Backup Symmetric Encryption Key
+
 manifest: |
   service-backup:
     destinations: (( .properties.mysql_backups.selected_option.parsed_manifest(destination) ))
