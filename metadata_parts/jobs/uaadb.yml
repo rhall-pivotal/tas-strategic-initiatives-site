@@ -10,6 +10,8 @@ templates:
       consul: {from: consul_server}
   - name: postgres
     release: postgres
+    provides: |
+      database: {as: uaadb}
   - name: metron_agent
     release: loggregator
 

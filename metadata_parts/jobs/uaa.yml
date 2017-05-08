@@ -10,6 +10,8 @@ templates:
       consul: {from: consul_server}
   - name: uaa
     release: uaa
+    consumes: |
+      (( .properties.system_database.selected_option.parsed_manifest(uaadb_link) ))
   - name: metron_agent
     release: loggregator
   - name: route_registrar

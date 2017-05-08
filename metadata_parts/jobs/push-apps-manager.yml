@@ -6,6 +6,8 @@ description: Pushes the Pivotal Apps Manager application to your Elastic Runtime
 templates:
   - name: push-apps-manager
     release: push-apps-manager-release
+    consumes: |
+      (( .properties.system_database.selected_option.parsed_manifest(push_app_usage_service_db_link) ))
   - name: cflinuxfs2-rootfs-setup
     release: cflinuxfs2-rootfs
   - name: nodejs-buildpack

@@ -10,6 +10,8 @@ templates:
       consul: {from: consul_server}
   - name: proxy
     release: cf-mysql
+    provides: |
+      mysql-database: {as: proxy-mysql}
 
 resource_definitions:
   - name: ram
