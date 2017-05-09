@@ -164,6 +164,7 @@ property_blueprints:
             manifest: |
               type: "mysql"
               schema: routing
+              host: mysql.service.cf.internal
               port: 3306
               username: (( .mysql.routingdb_credentials.identity ))
               password: (( .mysql.routingdb_credentials.password ))
