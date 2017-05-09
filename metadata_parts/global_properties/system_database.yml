@@ -70,6 +70,26 @@ property_blueprints:
             manifest: |
               database: {from: proxy-mysql}
 
+  - name: more_magic
+    type: selector
+    configurable: false
+    default: only-option
+    option_templates:
+      - name: doesnt-matter
+        select_value: only-option
+        named_manifests:
+          - name: app_usage_service_proxy
+            manifest: |
+              "(( .mysql_proxy.service_hostname.value ? .properties.more_magic.selected_option.parsed_manifest(service_hostname) : .properties.more_magic.selected_option.parsed_manifest(proxy_link) ))"
+          - name: service_hostname
+            manifest: |
+              app-usage-database:
+                instances:
+                - address: (( .mysql_proxy.service_hostname.value ))
+          - name: proxy_link
+            manifest: |
+              app-usage-database: {from: proxy-mysql}
+
   - name: system_database
     type: selector
     configurable: true
@@ -129,6 +149,9 @@ property_blueprints:
               port: 3306
               username: (( .mysql.app_usage_credentials.identity ))
               password: (( .mysql.app_usage_credentials.password ))
+          - name: push_app_usage_service_db_link
+            manifest: |
+              (( .properties.more_magic.selected_option.parsed_manifest(app_usage_service_proxy) ))
           - name: diegodb
             manifest: |
               db_host: mysql.service.cf.internal
