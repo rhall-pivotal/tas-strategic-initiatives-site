@@ -131,6 +131,7 @@ property_blueprints:
               password: (( .mysql.app_usage_credentials.password ))
           - name: diegodb
             manifest: |
+              db_host: mysql.service.cf.internal
               db_port: 3306
               db_schema: diego
               db_username: (( .mysql.diegodb_credentials.identity ))

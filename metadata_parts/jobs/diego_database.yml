@@ -10,8 +10,6 @@ templates:
       consul: {from: consul_server}
   - name: bbs
     release: diego
-    consumes: |
-      (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
   - name: cfdot
     release: diego
   - name: metron_agent
