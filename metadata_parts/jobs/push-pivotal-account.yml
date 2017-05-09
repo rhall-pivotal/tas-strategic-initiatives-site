@@ -7,6 +7,8 @@ description: Pushes the Pivotal Account application to your Elastic Runtime inst
 templates:
   - name: push-pivotal-account
     release: pivotal-account
+    consumes: |
+      database: nil
   - name: cflinuxfs2-rootfs-setup
     release: cflinuxfs2-rootfs
   - name: java-offline-buildpack

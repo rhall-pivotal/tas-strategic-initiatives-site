@@ -10,6 +10,8 @@ templates:
       consul: {from: consul_server}
   - name: cloud_controller_clock
     release: capi
+    consumes: |
+      database: nil
   - name: metron_agent
     release: loggregator
 
