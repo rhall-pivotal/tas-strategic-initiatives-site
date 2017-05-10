@@ -8,6 +8,8 @@ templates:
     release: consul
     consumes: |
       consul: {from: consul_server}
+  - name: route_registrar
+    release: routing
   - name: proxy
     release: cf-mysql
     provides: |
@@ -90,9 +92,19 @@ property_blueprints:
     default: 0
 
 manifest: |
+  route_registrar:
+    routes:
+    - name: cf-mysql-proxy
+      port: 8080
+      registration_interval: 20s
+      tags:
+        component: MySQLProxy
+      uris:
+      - "p-mysql-ert.(( .cloud_controller.system_domain.value ))"
+      prepend_instance_index: true
   cf_mysql:
-    external_host: "p-mysql-ert.(( .cloud_controller.system_domain.value ))"
     proxy:
+      api_uri: "p-mysql-ert.(( .cloud_controller.system_domain.value ))"
       api_password: (( dashboard_credentials.password ))
       api_username: (( dashboard_credentials.identity ))
       consul_enabled: true
