@@ -276,6 +276,9 @@ property_blueprints:
       - name: external
         select_value: external
         named_manifests:
+          - name: mysql_db_link
+            manifest: |
+              database: nil
           - name: ccdb
             manifest: |
               address: (( .properties.system_database.external.host.value ))
@@ -288,6 +291,9 @@ property_blueprints:
               databases:
               - tag: cc
                 name: ccdb
+          - name: ccdb_link
+            manifest: |
+              database: nil
           - name: uaadb
             manifest: |
               address: (( .properties.system_database.external.host.value ))
@@ -300,6 +306,9 @@ property_blueprints:
               databases:
               - tag: uaa
                 name: uaa
+          - name: uaadb_link
+            manifest: |
+              database: nil
           - name: notifications
             manifest: |
               url: mysql://(( .properties.system_database.external.notifications_username.value )):(( .properties.system_database.external.notifications_password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/notifications
@@ -314,6 +323,9 @@ property_blueprints:
               ip: (( .properties.system_database.external.host.value ))
               username: (( .properties.system_database.external.app_usage_service_username.value ))
               password: (( .properties.system_database.external.app_usage_service_password.value ))
+          - name: push_app_usage_service_db_link
+            manifest: |
+              app-usage-database: nil
           - name: diegodb
             manifest: |
               db_host: (( .properties.system_database.external.host.value ))
