@@ -139,10 +139,7 @@ property_blueprints:
               max_open_connections: 10
           - name: autoscaling
             manifest: |
-              port: 3306
-              username: (( .mysql.autoscale_credentials.identity ))
-              password: (( .mysql.autoscale_credentials.password ))
-              name: autoscale
+              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/autoscale
           - name: push-app-usage-service
             manifest: |
               name: app_usage_service
@@ -231,10 +228,7 @@ property_blueprints:
             max_open_connections: 10
         - name: autoscaling
           manifest: |
-            port: 3306
-            username: (( .mysql.autoscale_credentials.identity ))
-            password: (( .mysql.autoscale_credentials.password ))
-            name: autoscale
+            url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/autoscale
         - name: push-app-usage-service
           manifest: |
             name: app_usage_service
