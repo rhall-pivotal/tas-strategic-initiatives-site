@@ -10,8 +10,6 @@ templates:
       consul: {from: consul_server}
   - name: uaa
     release: uaa
-    consumes: |
-      database: nil
   - name: metron_agent
     release: loggregator
   - name: route_registrar
