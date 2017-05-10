@@ -100,11 +100,11 @@ manifest: |
       tags:
         component: MySQLProxy
       uris:
-      - "p-mysql-ert.(( .cloud_controller.system_domain.value ))"
+      - "proxy-p-mysql-ert.(( .cloud_controller.system_domain.value ))"
       prepend_instance_index: true
   cf_mysql:
     proxy:
-      api_uri: "p-mysql-ert.(( .cloud_controller.system_domain.value ))"
+      api_uri: "proxy-p-mysql-ert.(( .cloud_controller.system_domain.value ))"
       api_password: (( dashboard_credentials.password ))
       api_username: (( dashboard_credentials.identity ))
       consul_enabled: true
