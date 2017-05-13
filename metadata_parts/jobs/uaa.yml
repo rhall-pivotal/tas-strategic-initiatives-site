@@ -14,7 +14,7 @@ templates:
   - name: uaa
     release: uaa
     consumes: |
-      (( .properties.system_database.selected_option.parsed_manifest(uaadb_link) ))
+      (( .properties.uaa_database.selected_option.parsed_manifest(db_link) ))
   - name: metron_agent
     release: loggregator
   - name: route_registrar
@@ -759,7 +759,7 @@ manifest: |
           - cloud_controller.admin
           - doppler.firehose
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
-  uaadb: (( .properties.system_database.selected_option.parsed_manifest(uaadb) ))
+  uaadb: (( .properties.uaa_database.selected_option.parsed_manifest(db_config) ))
   syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))

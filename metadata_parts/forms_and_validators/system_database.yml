@@ -10,70 +10,63 @@ form:
         port: .properties.system_database.external.port
         username: .properties.system_database.external.account_username
         password: .properties.system_database.external.account_password
-        database: .properties.account_database
+        database: .properties.account_database_name
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
         username: .properties.system_database.external.app_usage_service_username
         password: .properties.system_database.external.app_usage_service_password
-        database: .properties.app_usage_service_database
+        database: .properties.app_usage_service_database_name
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
         username: .properties.system_database.external.autoscale_username
         password: .properties.system_database.external.autoscale_password
-        database: .properties.autoscale_database
+        database: .properties.autoscale_database_name
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
         username: .properties.system_database.external.ccdb_username
         password: .properties.system_database.external.ccdb_password
-        database: .properties.ccdb_database
+        database: .properties.ccdb_database_name
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
         username: .properties.system_database.external.diego_username
         password: .properties.system_database.external.diego_password
-        database: .properties.diego_database
+        database: .properties.diego_database_name
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
         username: .properties.system_database.external.networkpolicyserver_username
         password: .properties.system_database.external.networkpolicyserver_password
-        database: .properties.networkpolicyserver_database
+        database: .properties.networkpolicyserver_database_name
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
         username: .properties.system_database.external.nfsvolume_username
         password: .properties.system_database.external.nfsvolume_password
-        database: .properties.nfsvolume_database
+        database: .properties.nfsvolume_database_name
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
         username: .properties.system_database.external.notifications_username
         password: .properties.system_database.external.notifications_password
-        database: .properties.notifications_database
+        database: .properties.notifications_database_name
     - name: Verifiers::MysqlDatabaseVerifier
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
         username: .properties.system_database.external.routing_username
         password: .properties.system_database.external.routing_password
-        database: .properties.routing_database
-    - name: Verifiers::MysqlDatabaseVerifier
-      properties:
-        host: .properties.system_database.external.host
-        port: .properties.system_database.external.port
-        username: .properties.system_database.external.uaa_username
-        password: .properties.system_database.external.uaa_password
-        database: .properties.uaa_database
+        database: .properties.routing_database_name
   property_inputs:
   - reference: .properties.system_database
     label: "Choose the location of your system databases"
@@ -125,10 +118,6 @@ form:
           label: Routing database username
         - reference: .properties.system_database.external.routing_password
           label: Routing database password
-        - reference: .properties.system_database.external.uaa_username
-          label: User Account and Authentication database username
-        - reference: .properties.system_database.external.uaa_password
-          label: User Account and Authentication database password
 
 install_time_verifiers:
   - name: Verifiers::MysqlDatabaseVerifier
@@ -138,7 +127,7 @@ install_time_verifiers:
       port: .properties.system_database.external.port
       username: .properties.system_database.external.account_username
       password: .properties.system_database.external.account_password
-      database: .properties.account_database
+      database: .properties.account_database_name
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
@@ -146,7 +135,7 @@ install_time_verifiers:
       port: .properties.system_database.external.port
       username: .properties.system_database.external.app_usage_service_username
       password: .properties.system_database.external.app_usage_service_password
-      database: .properties.app_usage_service_database
+      database: .properties.app_usage_service_database_name
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
@@ -154,7 +143,7 @@ install_time_verifiers:
       port: .properties.system_database.external.port
       username: .properties.system_database.external.autoscale_username
       password: .properties.system_database.external.autoscale_password
-      database: .properties.autoscale_database
+      database: .properties.autoscale_database_name
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
@@ -162,7 +151,7 @@ install_time_verifiers:
       port: .properties.system_database.external.port
       username: .properties.system_database.external.ccdb_username
       password: .properties.system_database.external.ccdb_password
-      database: .properties.ccdb_database
+      database: .properties.ccdb_database_name
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
@@ -170,7 +159,7 @@ install_time_verifiers:
       port: .properties.system_database.external.port
       username: .properties.system_database.external.diego_username
       password: .properties.system_database.external.diego_password
-      database: .properties.diego_database
+      database: .properties.diego_database_name
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
@@ -178,7 +167,7 @@ install_time_verifiers:
       port: .properties.system_database.external.port
       username: .properties.system_database.external.networkpolicyserver_username
       password: .properties.system_database.external.networkpolicyserver_password
-      database: .properties.networkpolicyserver_database
+      database: .properties.networkpolicyserver_database_name
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
@@ -186,7 +175,7 @@ install_time_verifiers:
       port: .properties.system_database.external.port
       username: .properties.system_database.external.nfsvolume_username
       password: .properties.system_database.external.nfsvolume_password
-      database: .properties.nfsvolume_database
+      database: .properties.nfsvolume_database_name
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
@@ -194,7 +183,7 @@ install_time_verifiers:
       port: .properties.system_database.external.port
       username: .properties.system_database.external.notifications_username
       password: .properties.system_database.external.notifications_password
-      database: .properties.notifications_database
+      database: .properties.notifications_database_name
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:
@@ -202,12 +191,4 @@ install_time_verifiers:
       port: .properties.system_database.external.port
       username: .properties.system_database.external.routing_username
       password: .properties.system_database.external.routing_password
-      database: .properties.routing_database
-  - name: Verifiers::MysqlDatabaseVerifier
-    ignorable: true
-    properties:
-      host: .properties.system_database.external.host
-      port: .properties.system_database.external.port
-      username: .properties.system_database.external.uaa_username
-      password: .properties.system_database.external.uaa_password
-      database: .properties.uaa_database
+      database: .properties.routing_database_name

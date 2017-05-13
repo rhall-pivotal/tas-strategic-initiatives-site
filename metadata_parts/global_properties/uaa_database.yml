@@ -1,0 +1,80 @@
+---
+property_blueprints:
+  - name: uaa_database_name
+    type: string
+    configurable: false
+    default: uaa
+
+  - name: uaa_database
+    type: selector
+    configurable: true
+    default: internal_mysql
+    option_templates:
+      - name: internal
+        select_value: internal
+        named_manifests:
+        - name: db_config
+          manifest: |
+            port: 2544
+            db_scheme: postgresql
+            roles:
+            - tag: admin
+              name: (( .uaadb.credentials.identity ))
+              password: (( .uaadb.credentials.password ))
+            databases:
+            # The tag key is meant to identify the correct db to the uaa job, even if an unfamiliar name is used
+            - tag: uaa
+              name: (( .properties.uaa_database_name.value ))
+        - name: db_link
+          manifest: |
+            database: {from: uaadb}
+
+      - name: internal_mysql
+        select_value: internal_mysql
+        named_manifests:
+        - name: db_config
+          manifest: |
+            port: 3306
+            db_scheme: mysql
+            roles:
+            - tag: admin
+              name: (( .mysql.uaadb_credentials.identity ))
+              password: (( .mysql.uaadb_credentials.password ))
+            databases:
+            - tag: uaa
+              name: (( .properties.uaa_database_name.value ))
+        - name: db_link
+          manifest: |
+            (( .properties.magic.selected_option.parsed_manifest(proxy) ))
+
+      - name: external
+        select_value: external
+        property_blueprints:
+          - name: host
+            type: string
+            configurable: true
+          - name: port
+            type: port
+            configurable: true
+          - name: uaa_username
+            type: string
+            configurable: true
+          - name: uaa_password
+            type: secret
+            configurable: true
+        named_manifests:
+        - name: db_config
+          manifest: |
+            address: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
+            db_scheme: "mysql"
+            roles:
+            - tag: admin
+              name: (( .properties.uaa_database.external.uaa_username.value ))
+              password: (( .properties.uaa_database.external.uaa_password.value ))
+            databases:
+            - tag: uaa
+              name: (( .properties.uaa_database_name.value ))
+        - name: db_link
+          manifest: |
+            database: nil

@@ -3,7 +3,46 @@ form:
   name: uaa
   label: UAA
   description: "UAA Form"
+
+  verifiers:
+  - name: Verifiers::MysqlDatabaseVerifier
+    properties:
+      host: .properties.uaa_database.external.host
+      port: .properties.uaa_database.external.port
+      username: .properties.uaa_database.external.uaa_username
+      password: .properties.uaa_database.external.uaa_password
+      database: .properties.uaa_database_name
+
   property_inputs:
-    - reference: .uaa.issuer_uri
-      label: JWT Issuer URI
-      description: When generating tokens, UAA will use this URI as the issuer.
+  - reference: .uaa.issuer_uri
+    label: JWT Issuer URI
+    description: When generating tokens, UAA will use this URI as the issuer.
+
+  - reference: .properties.uaa_database
+    label: "Choose the location of your UAA databases"
+    selector_property_inputs:
+    - reference: .properties.uaa_database.internal
+      label: Internal Postgres (the Postgres DBs are not highly-available, but this selection is required if you want to keep your system data from a pre-1.6.0 Elastic Runtime that you upgraded)
+    - reference: .properties.uaa_database.internal_mysql
+      label: Internal MySQL (preferred for complete high-availability)
+    - reference: .properties.uaa_database.external
+      label: External (preferred if, for example, you use AWS RDS)
+      property_inputs:
+        - reference: .properties.uaa_database.external.host
+          label: Hostname
+        - reference: .properties.uaa_database.external.port
+          label: TCP Port
+        - reference: .properties.uaa_database.external.uaa_username
+          label: User Account and Authentication database username
+        - reference: .properties.uaa_database.external.uaa_password
+          label: User Account and Authentication database password
+
+install_time_verifiers:
+- name: Verifiers::MysqlDatabaseVerifier
+  ignorable: true
+  properties:
+    host: .properties.uaa_database.external.host
+    port: .properties.uaa_database.external.port
+    username: .properties.uaa_database.external.uaa_username
+    password: .properties.uaa_database.external.uaa_password
+    database: .properties.uaa_database_name

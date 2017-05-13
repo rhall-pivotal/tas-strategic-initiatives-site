@@ -1,51 +1,46 @@
 ---
 property_blueprints:
-  - name: account_database
+  - name: account_database_name
     type: string
     configurable: false
     default: account
 
-  - name: app_usage_service_database
+  - name: app_usage_service_database_name
     type: string
     configurable: false
     default: app_usage_service
 
-  - name: autoscale_database
+  - name: autoscale_database_name
     type: string
     configurable: false
     default: autoscale
 
-  - name: ccdb_database
+  - name: ccdb_database_name
     type: string
     configurable: false
     default: ccdb
 
-  - name: diego_database
+  - name: diego_database_name
     type: string
     configurable: false
     default: diego
 
-  - name: networkpolicyserver_database
+  - name: networkpolicyserver_database_name
     type: string
     configurable: false
     default: networkpolicyserver
 
-  - name: notifications_database
+  - name: notifications_database_name
     type: string
     configurable: false
     default: notifications
 
-  - name: routing_database
+  - name: routing_database_name
     type: string
     configurable: false
     default: routing
 
-  - name: uaa_database
-    type: string
-    configurable: false
-    default: uaa
-
-  - name: nfsvolume_database
+  - name: nfsvolume_database_name
     type: string
     configurable: false
     default: nfsvolume
@@ -110,39 +105,26 @@ property_blueprints:
                 name: (( .ccdb.credentials.identity ))
                 password: (( .ccdb.credentials.password ))
               databases:
+              # The tag key is meant to identify the correct db to the cc job, even if an unfamiliar name is used
               - tag: cc
-                name: ccdb
+                name: (( .properties.ccdb_database_name.value ))
                 citext: true
           - name: ccdb_link
             manifest: |
               database: {from: ccdb}
-          - name: uaadb
-            manifest: |
-              port: 2544
-              db_scheme: postgresql
-              roles:
-              - tag: admin
-                name: (( .uaadb.credentials.identity ))
-                password: (( .uaadb.credentials.password ))
-              databases:
-              - tag: uaa
-                name: uaa
-          - name: uaadb_link
-            manifest: |
-              database: {from: uaadb}
           - name: notifications
             manifest: |
               port: 3306
               username: (( .mysql.notifications_credentials.identity ))
               password: (( .mysql.notifications_credentials.password ))
-              database: notifications
+              database: (( .properties.notifications_database_name.value ))
               max_open_connections: 10
           - name: autoscaling
             manifest: |
-              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/autoscale
+              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/(( .properties.autoscale_database_name.value ))
           - name: push-app-usage-service
             manifest: |
-              name: app_usage_service
+              name: (( .properties.app_usage_service_database_name.value ))
               port: 3306
               username: (( .mysql.app_usage_credentials.identity ))
               password: (( .mysql.app_usage_credentials.password ))
@@ -153,14 +135,14 @@ property_blueprints:
             manifest: |
               db_host: mysql.service.cf.internal
               db_port: 3306
-              db_schema: diego
+              db_schema: (( .properties.diego_database_name.value ))
               db_username: (( .mysql.diegodb_credentials.identity ))
               db_password: (( .mysql.diegodb_credentials.password ))
               max_open_connections: 100
           - name: routingdb
             manifest: |
               type: "mysql"
-              schema: routing
+              schema: (( .properties.routing_database_name.value ))
               host: mysql.service.cf.internal
               port: 3306
               username: (( .mysql.routingdb_credentials.identity ))
@@ -168,21 +150,21 @@ property_blueprints:
           - name: networkpolicyserverdb
             manifest: |
               type: "mysql"
-              name: networkpolicyserver
+              name: (( .properties.networkpolicyserver_database_name.value ))
               host: mysql.service.cf.internal
               port: 3306
               username: (( .mysql.networkpolicyserverdb_credentials.identity ))
               password: (( .mysql.networkpolicyserverdb_credentials.password ))
           - name: pivotal_account
             manifest: |
-              url: jdbc:mysql://(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/account
+              url: jdbc:mysql://(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/(( .properties.account_database_name.value ))
               username: (( .mysql.pivotal_account_credentials.identity ))
               password: (( .mysql.pivotal_account_credentials.password ))
           - name: nfsvolume
             manifest: |
               username: (( .mysql.nfsvolume_credentials.identity ))
               password: (( .mysql.nfsvolume_credentials.password ))
-              name: nfsvolume
+              name: (( .properties.nfsvolume_database_name.value ))
 
       - name: internal_mysql
         select_value: internal_mysql
@@ -200,23 +182,9 @@ property_blueprints:
               password: (( .mysql.ccdb_credentials.password ))
             databases:
             - tag: cc
-              name: ccdb
+              name: (( .properties.ccdb_database_name.value ))
               citext: true
         - name: ccdb_link
-          manifest: |
-            (( .properties.magic.selected_option.parsed_manifest(proxy) ))
-        - name: uaadb
-          manifest: |
-            port: 3306
-            db_scheme: mysql
-            roles:
-            - tag: admin
-              name: (( .mysql.uaadb_credentials.identity ))
-              password: (( .mysql.uaadb_credentials.password ))
-            databases:
-            - tag: uaa
-              name: uaa
-        - name: uaadb_link
           manifest: |
             (( .properties.magic.selected_option.parsed_manifest(proxy) ))
         - name: notifications
@@ -224,14 +192,14 @@ property_blueprints:
             port: 3306
             username: (( .mysql.notifications_credentials.identity ))
             password: (( .mysql.notifications_credentials.password ))
-            database: notifications
+            database: (( .properties.notifications_database_name.value ))
             max_open_connections: 10
         - name: autoscaling
           manifest: |
-            url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/autoscale
+            url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/(( .properties.autoscale_database_name.value ))
         - name: push-app-usage-service
           manifest: |
-            name: app_usage_service
+            name: (( .properties.app_usage_service_database_name.value ))
             port: 3306
             username: (( .mysql.app_usage_credentials.identity ))
             password: (( .mysql.app_usage_credentials.password ))
@@ -242,14 +210,14 @@ property_blueprints:
           manifest: |
             db_host: mysql.service.cf.internal
             db_port: 3306
-            db_schema: diego
+            db_schema: (( .properties.diego_database_name.value ))
             db_username: (( .mysql.diegodb_credentials.identity ))
             db_password: (( .mysql.diegodb_credentials.password ))
             max_open_connections: 100
         - name: routingdb
           manifest: |
             type: "mysql"
-            schema: routing
+            schema: (( .properties.routing_database_name.value ))
             host: mysql.service.cf.internal
             port: 3306
             username: (( .mysql.routingdb_credentials.identity ))
@@ -257,112 +225,24 @@ property_blueprints:
         - name: networkpolicyserverdb
           manifest: |
             type: "mysql"
-            name: networkpolicyserver
+            name: (( .properties.networkpolicyserver_database_name.value ))
             host: mysql.service.cf.internal
             port: 3306
             username: (( .mysql.networkpolicyserverdb_credentials.identity ))
             password: (( .mysql.networkpolicyserverdb_credentials.password ))
         - name: pivotal_account
           manifest: |
-            url: jdbc:mysql://(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/account
+            url: jdbc:mysql://(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/(( .properties.account_database_name.value ))
             username: (( .mysql.pivotal_account_credentials.identity ))
             password: (( .mysql.pivotal_account_credentials.password ))
         - name: nfsvolume
           manifest: |
             username: (( .mysql.nfsvolume_credentials.identity ))
             password: (( .mysql.nfsvolume_credentials.password ))
-            name: nfsvolume
+            name: (( .properties.nfsvolume_database_name.value ))
 
       - name: external
         select_value: external
-        named_manifests:
-          - name: mysql_db_link
-            manifest: |
-              database: nil
-          - name: ccdb
-            manifest: |
-              address: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              db_scheme: "mysql"
-              roles:
-              - tag: admin
-                name: (( .properties.system_database.external.ccdb_username.value ))
-                password: (( .properties.system_database.external.ccdb_password.value ))
-              databases:
-              - tag: cc
-                name: ccdb
-          - name: ccdb_link
-            manifest: |
-              database: nil
-          - name: uaadb
-            manifest: |
-              address: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              db_scheme: "mysql"
-              roles:
-              - tag: admin
-                name: (( .properties.system_database.external.uaa_username.value ))
-                password: (( .properties.system_database.external.uaa_password.value ))
-              databases:
-              - tag: uaa
-                name: uaa
-          - name: uaadb_link
-            manifest: |
-              database: nil
-          - name: notifications
-            manifest: |
-              url: mysql://(( .properties.system_database.external.notifications_username.value )):(( .properties.system_database.external.notifications_password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/notifications
-              max_open_connections: 10
-          - name: autoscaling
-            manifest: |
-              url: mysql://(( .properties.system_database.external.autoscale_username.value )):(( .properties.system_database.external.autoscale_password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/autoscale
-          - name: push-app-usage-service
-            manifest: |
-              name: app_usage_service
-              port: (( .properties.system_database.external.port.value ))
-              ip: (( .properties.system_database.external.host.value ))
-              username: (( .properties.system_database.external.app_usage_service_username.value ))
-              password: (( .properties.system_database.external.app_usage_service_password.value ))
-          - name: push_app_usage_service_db_link
-            manifest: |
-              app-usage-database: nil
-          - name: diegodb
-            manifest: |
-              db_host: (( .properties.system_database.external.host.value ))
-              db_port: (( .properties.system_database.external.port.value ))
-              db_schema: diego
-              db_username: (( .properties.system_database.external.diego_username.value ))
-              db_password: (( .properties.system_database.external.diego_password.value ))
-              max_open_connections: 100
-          - name: routingdb
-            manifest: |
-              type: "mysql"
-              schema: routing
-              host: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.routing_username.value ))
-              password: (( .properties.system_database.external.routing_password.value ))
-          - name: networkpolicyserverdb
-            manifest: |
-              type: "mysql"
-              name: networkpolicyserver
-              host: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.networkpolicyserver_username.value ))
-              password: (( .properties.system_database.external.networkpolicyserver_password.value ))
-          - name: pivotal_account
-            manifest: |
-              url: jdbc:mysql://(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/account
-              username: (( .properties.system_database.external.account_username.value ))
-              password: (( .properties.system_database.external.account_password.value ))
-          - name: nfsvolume
-            manifest: |
-              host: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.nfsvolume_username.value ))
-              password: (( .properties.system_database.external.nfsvolume_password.value ))
-              name: nfsvolume
-
         property_blueprints:
           - name: host
             type: string
@@ -424,12 +304,78 @@ property_blueprints:
           - name: routing_password
             type: secret
             configurable: true
-          - name: uaa_username
-            type: string
-            configurable: true
-          - name: uaa_password
-            type: secret
-            configurable: true
+        named_manifests:
+          - name: mysql_db_link
+            manifest: |
+              database: nil
+          - name: ccdb
+            manifest: |
+              address: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              db_scheme: "mysql"
+              roles:
+              - tag: admin
+                name: (( .properties.system_database.external.ccdb_username.value ))
+                password: (( .properties.system_database.external.ccdb_password.value ))
+              databases:
+              - tag: cc
+                name: (( .properties.ccdb_database_name.value ))
+          - name: ccdb_link
+            manifest: |
+              database: nil
+          - name: notifications
+            manifest: |
+              url: mysql://(( .properties.system_database.external.notifications_username.value )):(( .properties.system_database.external.notifications_password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/(( .properties.notifications_database_name.value ))
+              max_open_connections: 10
+          - name: autoscaling
+            manifest: |
+              url: mysql://(( .properties.system_database.external.autoscale_username.value )):(( .properties.system_database.external.autoscale_password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/(( .properties.autoscale_database_name.value ))
+          - name: push-app-usage-service
+            manifest: |
+              name: (( .properties.app_usage_service_database_name.value ))
+              port: (( .properties.system_database.external.port.value ))
+              ip: (( .properties.system_database.external.host.value ))
+              username: (( .properties.system_database.external.app_usage_service_username.value ))
+              password: (( .properties.system_database.external.app_usage_service_password.value ))
+          - name: push_app_usage_service_db_link
+            manifest: |
+              app-usage-database: nil
+          - name: diegodb
+            manifest: |
+              db_host: (( .properties.system_database.external.host.value ))
+              db_port: (( .properties.system_database.external.port.value ))
+              db_schema: (( .properties.diego_database_name.value ))
+              db_username: (( .properties.system_database.external.diego_username.value ))
+              db_password: (( .properties.system_database.external.diego_password.value ))
+              max_open_connections: 100
+          - name: routingdb
+            manifest: |
+              type: "mysql"
+              schema: (( .properties.routing_database_name.value ))
+              host: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              username: (( .properties.system_database.external.routing_username.value ))
+              password: (( .properties.system_database.external.routing_password.value ))
+          - name: networkpolicyserverdb
+            manifest: |
+              type: "mysql"
+              name: (( .properties.networkpolicyserver_database_name.value ))
+              host: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              username: (( .properties.system_database.external.networkpolicyserver_username.value ))
+              password: (( .properties.system_database.external.networkpolicyserver_password.value ))
+          - name: pivotal_account
+            manifest: |
+              url: jdbc:mysql://(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/(( .properties.account_database_name.value ))
+              username: (( .properties.system_database.external.account_username.value ))
+              password: (( .properties.system_database.external.account_password.value ))
+          - name: nfsvolume
+            manifest: |
+              host: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              username: (( .properties.system_database.external.nfsvolume_username.value ))
+              password: (( .properties.system_database.external.nfsvolume_password.value ))
+              name: (( .properties.nfsvolume_database_name.value ))
 
   - name: mysql_backups
     type: selector

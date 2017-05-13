@@ -85,8 +85,7 @@ manifest: |
       name: (( credentials.identity ))
       password: (( credentials.password ))
     databases:
-    - tag: cc
-      name: ccdb
+    - name: (( .properties.ccdb_database_name.value ))
       citext: true
   syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
