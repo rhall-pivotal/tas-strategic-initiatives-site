@@ -53,3 +53,6 @@ form:
           label: Enable
         - reference: .properties.nfs_volume_driver.disable
           label: Disable
+    - reference: .diego_database.skip_consul_locks
+      label: Skip Consul Locks
+      description: Selecting this option will disable using Consul for distributed locking in Diego.

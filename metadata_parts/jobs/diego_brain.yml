@@ -144,6 +144,7 @@ manifest: |
       watcher:
         locket:
           api_location: "locket.service.cf.internal:8891"
+        skip_consul_lock: (( .diego_database.skip_consul_locks.value ))
   diego:
     auctioneer:
       starting_container_count_maximum: (( starting_container_count_maximum.value ))
@@ -161,6 +162,7 @@ manifest: |
         client_key: (( .properties.rep_client_cert.private_key_pem ))
       locket:
         api_location: "locket.service.cf.internal:8891"
+      skip_consul_lock: (( .diego_database.skip_consul_locks.value ))
     ssh_proxy:
       host_key: (( ssh_host_key.private_key_pem ))
       enable_cf_auth: true
