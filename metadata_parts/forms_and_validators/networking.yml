@@ -103,6 +103,9 @@ form:
               label: Network CIDR
               description: Defines the range of the overlay network. The CIDR must specify a RFC 1918 range. Defaults to 10.255.0.0/16.
               placeholder: 10.255.0.0/16
+            - reference: .properties.container_networking.enable.vtep_port
+              label: VXLAN Tunnel Endpoint Port
+              description: Host port used for receiving VXLAN packets. Defaults to 4789.
         - reference: .properties.container_networking.disable
           label: Disable
           property_inputs:
