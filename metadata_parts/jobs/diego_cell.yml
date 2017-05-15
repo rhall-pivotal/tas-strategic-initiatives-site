@@ -198,6 +198,11 @@ manifest: |
       ca_cert: (( $ops_manager.ca_certificate ))
       client_cert: (( .properties.network_policy_agent_cert.cert_pem ))
       client_key: (( .properties.network_policy_agent_cert.private_key_pem ))
-
   nfsv3driver:
     disable: (( .properties.nfs_volume_driver.selected_option.parsed_manifest(disable_nfsv3driver) ))
+  tcp:
+    enabled: true
+  uaa:
+    client_secret: (( .uaa.tcp_emitter_credentials.password ))
+    client_name: (( .uaa.tcp_emitter_credentials.identity ))
+    ca_cert: (( $ops_manager.ca_certificate ))
