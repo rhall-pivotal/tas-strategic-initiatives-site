@@ -141,6 +141,9 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.tps_client_cert.cert_pem ))
         client_key: (( .properties.tps_client_cert.private_key_pem ))
+      watcher:
+        locket:
+          api_location: "locket.service.cf.internal:8891"
   diego:
     auctioneer:
       starting_container_count_maximum: (( starting_container_count_maximum.value ))
@@ -156,6 +159,8 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.rep_client_cert.cert_pem ))
         client_key: (( .properties.rep_client_cert.private_key_pem ))
+      locket:
+        api_location: "locket.service.cf.internal:8891"
     ssh_proxy:
       host_key: (( ssh_host_key.private_key_pem ))
       enable_cf_auth: true
