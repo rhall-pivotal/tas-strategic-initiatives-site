@@ -168,7 +168,6 @@ property_blueprints:
             manifest: |
               type: "mysql"
               name: (( .properties.silk_database_name.value ))
-              host: mysql.service.cf.internal
               port: 3306
               username: (( .mysql.silkdb_credentials.identity ))
               password: (( .mysql.silkdb_credentials.password ))
@@ -259,7 +258,6 @@ property_blueprints:
             type: "mysql"
             name: (( .properties.silk_database_name.value ))
             port: 3306
-            host: mysql.service.cf.internal
             username: (( .mysql.silkdb_credentials.identity ))
             password: (( .mysql.silkdb_credentials.password ))
         - name: networkpolicyserverdb
