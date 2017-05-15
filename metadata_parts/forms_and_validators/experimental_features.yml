@@ -31,13 +31,6 @@ form:
               description: The number of requests an unauthenticated client is allowed to make over an hour interval.
         - reference: .properties.cc_api_rate_limit.disable
           label: Disable
-    - reference: .properties.nfs_volume_driver
-      label: "BETA: Enabling NFSv3 volume services will allow application developers to bind existing NFS volumes to their applications for shared file access."
-      selector_property_inputs:
-        - reference: .properties.nfs_volume_driver.enable
-          label: Enable
-        - reference: .properties.nfs_volume_driver.disable
-          label: Disable
     - reference: .diego_database.skip_consul_locks
       label: Skip Consul Locks
       description: Selecting this option will disable using Consul for distributed locking in Diego.
