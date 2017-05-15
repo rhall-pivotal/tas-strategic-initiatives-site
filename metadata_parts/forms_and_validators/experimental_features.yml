@@ -17,21 +17,6 @@ form:
     - reference: .properties.cf_dial_timeout_in_seconds
       label: CF CLI Connection Timeout
       description: "Max wait time to establish a connection, including name resolution, in seconds."
-    - reference: .properties.container_networking
-      label: "BETA: Enabling the Container-to-Container network will allow policy-driven, direct communication between containers on an overlay network occupying the 10.255.0.0/16 range."
-      selector_property_inputs:
-        - reference: .properties.container_networking.enable
-          label: Enable
-          property_inputs:
-            - reference: .properties.container_networking.enable.network_cidr
-              label: Network CIDR
-              description: Defines the range of the overlay network. The CIDR must specify a RFC 1918 range. Defaults to 10.255.0.0/16.
-              placeholder: 10.255.0.0/16
-            - reference: .properties.container_networking.enable.mtu
-              label: Network Maximum Transmission Unit (MTU) (in bytes)
-              description: Sets the MTU for the container networking driver. Leaving this unset will use the driver default value.
-        - reference: .properties.container_networking.disable
-          label: Disable
     - reference: .properties.cc_api_rate_limit
       label: "BETA: Enabling CF API Rate Limiting will prevent API consumers from overwhelming the platform API servers. Limits are imposed on a per-user or per-client basis and reset on an hourly interval."
       selector_property_inputs:

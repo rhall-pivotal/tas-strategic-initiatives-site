@@ -86,7 +86,7 @@ property_blueprints:
   - name: container_networking
     type: selector
     configurable: true
-    default: disable
+    default: enable
     option_templates:
       - name: enable
         select_value: enable
@@ -103,10 +103,6 @@ property_blueprints:
         property_blueprints:
           - name: network_cidr
             type: string
-            configurable: true
-            optional: true
-          - name: mtu
-            type: integer
             configurable: true
             optional: true
       - name: disable

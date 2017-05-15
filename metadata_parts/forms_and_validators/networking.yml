@@ -64,9 +64,6 @@ form:
     - reference: .properties.logger_endpoint_port
       label: Loggregator Port
       description: "Default is 443. Enter a new value to override the default, for instance if port 443 on your load balancer is used for other traffic."
-    - reference: .diego_cell.garden_network_pool
-      label: Applications Subnet (Only change this if you need to avoid address collision with a third-party service on the same subnet.)
-      description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
     - reference: .diego_cell.garden_network_mtu
       label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
       description: The default 1454 bytes is fine for most cases, but you might need less, such as for networks that use GRE tunnels.
@@ -96,3 +93,19 @@ form:
             - reference: .properties.tcp_routing.enable.reservable_ports
               label: TCP Routing Ports (one-time configuration, if you want to update this value you can via the CF CLI)
               description: Enter the range of ports reserved for TCP routes. These ports must be available on your load balancer. You can specify a list of ports with commas between each port number and specify ranges of ports with dashes between the first and last port number. This configuration only applies the first time you specify it here, if you later want to update the ports you must do so with the CF CLI.
+    - reference: .properties.container_networking
+      label: "Enabling the Container-to-Container network will allow policy-driven, direct communication between containers on an overlay network occupying the 10.255.0.0/16 range."
+      selector_property_inputs:
+        - reference: .properties.container_networking.enable
+          label: Enable
+          property_inputs:
+            - reference: .properties.container_networking.enable.network_cidr
+              label: Network CIDR
+              description: Defines the range of the overlay network. The CIDR must specify a RFC 1918 range. Defaults to 10.255.0.0/16.
+              placeholder: 10.255.0.0/16
+        - reference: .properties.container_networking.disable
+          label: Disable
+          property_inputs:
+            - reference: .diego_cell.garden_network_pool
+              label: Applications Subnet (Only change this if you need to avoid address collision with a third-party service on the same subnet.)
+              description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
