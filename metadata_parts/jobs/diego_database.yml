@@ -17,6 +17,8 @@ templates:
     release: diego
   - name: metron_agent
     release: loggregator
+  - name: locket
+    release: diego
 
 resource_definitions:
   - name: ram
@@ -69,6 +71,11 @@ property_blueprints:
   - name: bbs_encryption_passphrase
     type: secret
     configurable: false
+  - name: locket_tls_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains: ["locket"]
 
 manifest: |
   diego:
@@ -102,6 +109,8 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
+    locket:
+      sql: (( .properties.system_database.selected_option.parsed_manifest(locketdb) ))
   consul:
     agent:
       services:
@@ -120,3 +129,7 @@ manifest: |
       metron:
         cert: (( .doppler.metron_tls_cert.cert_pem ))
         key: (( .doppler.metron_tls_cert.private_key_pem ))
+  tls:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( locket_tls_cert.cert_pem ))
+    key: (( locket_tls_cert.private_key_pem ))

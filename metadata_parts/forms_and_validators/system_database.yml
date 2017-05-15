@@ -43,6 +43,13 @@ form:
       properties:
         host: .properties.system_database.external.host
         port: .properties.system_database.external.port
+        username: .properties.system_database.external.locket_username
+        password: .properties.system_database.external.locket_password
+        database: .properties.locket_database_name
+    - name: Verifiers::MysqlDatabaseVerifier
+      properties:
+        host: .properties.system_database.external.host
+        port: .properties.system_database.external.port
         username: .properties.system_database.external.networkpolicyserver_username
         password: .properties.system_database.external.networkpolicyserver_password
         database: .properties.networkpolicyserver_database_name
@@ -98,6 +105,10 @@ form:
           label: Diego database username
         - reference: .properties.system_database.external.diego_password
           label: Diego database password
+        - reference: .properties.system_database.external.locket_username
+          label: Locket database username
+        - reference: .properties.system_database.external.locket_password
+          label: Locket database password
         - reference: .properties.system_database.external.networkpolicyserver_username
           label: Network Policy Server database username
         - reference: .properties.system_database.external.networkpolicyserver_password
@@ -160,6 +171,14 @@ install_time_verifiers:
       username: .properties.system_database.external.diego_username
       password: .properties.system_database.external.diego_password
       database: .properties.diego_database_name
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.locket_username
+      password: .properties.system_database.external.locket_password
+      database: .properties.locket_database_name
   - name: Verifiers::MysqlDatabaseVerifier
     ignorable: true
     properties:

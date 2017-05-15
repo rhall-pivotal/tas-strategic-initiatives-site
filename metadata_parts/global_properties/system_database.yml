@@ -25,6 +25,11 @@ property_blueprints:
     configurable: false
     default: diego
 
+  - name: locket_database_name
+    type: string
+    configurable: false
+    default: locket
+
   - name: networkpolicyserver_database_name
     type: string
     configurable: false
@@ -139,6 +144,13 @@ property_blueprints:
               db_username: (( .mysql.diegodb_credentials.identity ))
               db_password: (( .mysql.diegodb_credentials.password ))
               max_open_connections: 100
+          - name: locketdb
+            manifest: |
+              db_host: mysql.service.cf.internal
+              db_port: 3306
+              db_schema: (( .properties.locket_database_name.value ))
+              db_username: (( .mysql.locketdb_credentials.identity ))
+              db_password: (( .mysql.locketdb_credentials.password ))
           - name: routingdb
             manifest: |
               type: "mysql"
@@ -214,6 +226,13 @@ property_blueprints:
             db_username: (( .mysql.diegodb_credentials.identity ))
             db_password: (( .mysql.diegodb_credentials.password ))
             max_open_connections: 100
+        - name: locketdb
+          manifest: |
+            db_host: mysql.service.cf.internal
+            db_port: 3306
+            db_schema: (( .properties.locket_database_name.value ))
+            db_username: (( .mysql.locketdb_credentials.identity ))
+            db_password: (( .mysql.locketdb_credentials.password ))
         - name: routingdb
           manifest: |
             type: "mysql"
@@ -278,6 +297,12 @@ property_blueprints:
             type: string
             configurable: true
           - name: diego_password
+            type: secret
+            configurable: true
+          - name: locket_username
+            type: string
+            configurable: true
+          - name: locket_password
             type: secret
             configurable: true
           - name: networkpolicyserver_username
@@ -352,6 +377,13 @@ property_blueprints:
               db_username: (( .properties.system_database.external.diego_username.value ))
               db_password: (( .properties.system_database.external.diego_password.value ))
               max_open_connections: 100
+          - name: locketdb
+            manifest: |
+              db_host: (( .properties.system_database.external.host.value ))
+              db_port: (( .properties.system_database.external.port.value ))
+              db_schema: (( .properties.locket_database_name.value ))
+              db_username: (( .properties.system_database.external.locket_username.value ))
+              db_password: (( .properties.system_database.external.locket_password.value ))
           - name: routingdb
             manifest: |
               type: "mysql"

@@ -94,6 +94,8 @@ property_blueprints:
   type: simple_credentials
 - name: diegodb_credentials
   type: simple_credentials
+- name: locketdb_credentials
+  type: simple_credentials
 - name: routingdb_credentials
   type: simple_credentials
 - name: networkpolicyserverdb_credentials
@@ -161,6 +163,9 @@ manifest: |
         - name: (( .properties.diego_database_name.value ))
           username: (( diegodb_credentials.identity ))
           password: (( diegodb_credentials.password ))
+        - name: (( .properties.locket_database_name.value ))
+          username: (( locketdb_credentials.identity ))
+          password: (( locketdb_credentials.password ))
         - name: (( .properties.routing_database_name.value ))
           username: (( routingdb_credentials.identity ))
           password: (( routingdb_credentials.password ))
