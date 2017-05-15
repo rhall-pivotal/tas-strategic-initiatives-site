@@ -74,6 +74,13 @@ form:
         username: .properties.system_database.external.routing_username
         password: .properties.system_database.external.routing_password
         database: .properties.routing_database_name
+    - name: Verifiers::MysqlDatabaseVerifier
+      properties:
+        host: .properties.system_database.external.host
+        port: .properties.system_database.external.port
+        username: .properties.system_database.external.silk_username
+        password: .properties.system_database.external.silk_password
+        database: .properties.silk_database_name
   property_inputs:
   - reference: .properties.system_database
     label: "Choose the location of your system databases"
@@ -129,6 +136,10 @@ form:
           label: Routing database username
         - reference: .properties.system_database.external.routing_password
           label: Routing database password
+        - reference: .properties.system_database.external.silk_username
+          label: Silk database username
+        - reference: .properties.system_database.external.silk_password
+          label: Silk database password
 
 install_time_verifiers:
   - name: Verifiers::MysqlDatabaseVerifier
@@ -211,3 +222,11 @@ install_time_verifiers:
       username: .properties.system_database.external.routing_username
       password: .properties.system_database.external.routing_password
       database: .properties.routing_database_name
+  - name: Verifiers::MysqlDatabaseVerifier
+    ignorable: true
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.silk_username
+      password: .properties.system_database.external.silk_password
+      database: .properties.silk_database_name

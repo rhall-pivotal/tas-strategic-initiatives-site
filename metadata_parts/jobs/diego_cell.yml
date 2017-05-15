@@ -23,7 +23,9 @@ templates:
     release: cflinuxfs2-rootfs
   - name: metron_agent
     release: loggregator
-  - name: cni-flannel
+  - name: silk-cni
+    release: cf-networking
+  - name: silk-daemon
     release: cf-networking
   - name: garden-cni
     release: cf-networking
@@ -185,14 +187,15 @@ manifest: |
     network_plugin_extra_args: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin_extra_args) ))
     dns_servers: (( dns_servers.parsed_strings ))
   cf_networking:
+    cni_config_dir: /var/vcap/jobs/silk-cni/config/cni
     disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
-    network: (( .properties.container_networking.enable.network_cidr.value ))
+    dns_servers: (( dns_servers.parsed_strings ))
     mtu: (( .properties.container_networking.enable.mtu.value ))
-    plugin:
-      etcd_endpoints: ['cf-etcd.service.cf.internal']
-      etcd_ca_cert: (( $ops_manager.ca_certificate ))
-      etcd_client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
-      etcd_client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
+    network: (( .properties.container_networking.enable.network_cidr.value ))
+    silk_daemon:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      client_cert: (( .diego_database.silk_daemon_client_cert.cert_pem ))
+      client_key: (( .diego_database.silk_daemon_client_cert.private_key_pem ))
     vxlan_policy_agent:
       policy_server_url: https://network-policy-server.service.cf.internal:4003
       ca_cert: (( $ops_manager.ca_certificate ))

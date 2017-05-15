@@ -45,6 +45,11 @@ property_blueprints:
     configurable: false
     default: routing
 
+  - name: silk_database_name
+    type: string
+    configurable: false
+    default: silk
+
   - name: nfsvolume_database_name
     type: string
     configurable: false
@@ -159,6 +164,14 @@ property_blueprints:
               port: 3306
               username: (( .mysql.routingdb_credentials.identity ))
               password: (( .mysql.routingdb_credentials.password ))
+          - name: silkdb
+            manifest: |
+              type: "mysql"
+              name: (( .properties.silk_database_name.value ))
+              host: mysql.service.cf.internal
+              port: 3306
+              username: (( .mysql.silkdb_credentials.identity ))
+              password: (( .mysql.silkdb_credentials.password ))
           - name: networkpolicyserverdb
             manifest: |
               type: "mysql"
@@ -241,6 +254,14 @@ property_blueprints:
             port: 3306
             username: (( .mysql.routingdb_credentials.identity ))
             password: (( .mysql.routingdb_credentials.password ))
+        - name: silkdb
+          manifest: |
+            type: "mysql"
+            name: (( .properties.silk_database_name.value ))
+            port: 3306
+            host: mysql.service.cf.internal
+            username: (( .mysql.silkdb_credentials.identity ))
+            password: (( .mysql.silkdb_credentials.password ))
         - name: networkpolicyserverdb
           manifest: |
             type: "mysql"
@@ -329,6 +350,12 @@ property_blueprints:
           - name: routing_password
             type: secret
             configurable: true
+          - name: silk_username
+            type: string
+            configurable: true
+          - name: silk_password
+            type: secret
+            configurable: true
         named_manifests:
           - name: mysql_db_link
             manifest: |
@@ -392,6 +419,14 @@ property_blueprints:
               port: (( .properties.system_database.external.port.value ))
               username: (( .properties.system_database.external.routing_username.value ))
               password: (( .properties.system_database.external.routing_password.value ))
+          - name: silkdb
+            manifest: |
+              type: "mysql"
+              name: (( .properties.silk_database_name.value ))
+              host: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              username: (( .properties.system_database.external.silk_username.value ))
+              password: (( .properties.system_database.external.silk_password.value ))
           - name: networkpolicyserverdb
             manifest: |
               type: "mysql"
