@@ -144,6 +144,12 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
+  tcp:
+    enabled: true
+  uaa:
+    client_secret: (( ..cf.uaa.tcp_emitter_credentials.password ))
+    client_name: (( ..cf.uaa.tcp_emitter_credentials.identity ))
+    ca_cert: (( $ops_manager.ca_certificate ))
   cflinuxfs2-rootfs:
     trusted_certs: (( $ops_manager.trusted_certificates ))
   syslog_daemon_config:
