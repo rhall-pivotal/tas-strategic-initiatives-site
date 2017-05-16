@@ -234,9 +234,6 @@ manifest: |
         component: NetworkPolicyServer
       uris:
       - "api.(( .cloud_controller.system_domain.value ))/networking"
-  capi:
-    tps:
-      listener_enabled: "(( secure_diego_communication.value ? 'false' : 'true' ))"
   cc:
     allowed_cors_domains:
     - https://apm.(( .cloud_controller.system_domain.value ))
