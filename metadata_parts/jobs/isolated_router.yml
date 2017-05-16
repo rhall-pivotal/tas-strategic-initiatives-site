@@ -83,7 +83,7 @@ manifest: |
     secure_cookies: (( ..cf.router.disable_insecure_cookies.value ))
     status:
       user: router_status
-      password: (( .isolated_router.status_credentials.password ))
+      password: (( status_credentials.password ))
     route_services_secret: (( ..cf.properties.route_services.selected_option.parsed_manifest(secret) ))
     cipher_suites: (( .properties.networking_point_of_entry.selected_option.parsed_manifest(ssl_ciphers) ))
     enable_ssl: (( .properties.networking_point_of_entry.selected_option.parsed_manifest(enable_ssl) ))
