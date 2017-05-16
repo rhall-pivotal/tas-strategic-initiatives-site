@@ -175,7 +175,6 @@ property_blueprints:
             manifest: |
               type: "mysql"
               name: (( .properties.networkpolicyserver_database_name.value ))
-              host: mysql.service.cf.internal
               port: 3306
               username: (( .mysql.networkpolicyserverdb_credentials.identity ))
               password: (( .mysql.networkpolicyserverdb_credentials.password ))
@@ -264,7 +263,6 @@ property_blueprints:
           manifest: |
             type: "mysql"
             name: (( .properties.networkpolicyserver_database_name.value ))
-            host: mysql.service.cf.internal
             port: 3306
             username: (( .mysql.networkpolicyserverdb_credentials.identity ))
             password: (( .mysql.networkpolicyserverdb_credentials.password ))
