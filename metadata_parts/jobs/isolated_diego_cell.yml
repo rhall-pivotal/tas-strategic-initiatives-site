@@ -112,6 +112,8 @@ property_blueprints:
     configurable: true
 
 manifest: |
+  cflinuxfs2-rootfs:
+    trusted_certs: (( $ops_manager.trusted_certificates ))
   diego:
     executor:
       disk_capacity_mb: (( executor_disk_capacity.value ))
@@ -144,28 +146,6 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
-  tcp:
-    enabled: true
-  uaa:
-    client_secret: (( ..cf.uaa.tcp_emitter_credentials.password ))
-    client_name: (( ..cf.uaa.tcp_emitter_credentials.identity ))
-    ca_cert: (( $ops_manager.ca_certificate ))
-  cflinuxfs2-rootfs:
-    trusted_certs: (( $ops_manager.trusted_certificates ))
-  syslog_daemon_config:
-    address: (( ..cf.properties.syslog_host.value ))
-    port: (( ..cf.properties.syslog_port.value ))
-    transport: (( ..cf.properties.syslog_protocol.value ))
-  metron_agent:
-    deployment: cf
-  metron_endpoint:
-    shared_secret: (( ..cf.doppler.shared_secret_credentials.password ))
-  loggregator:
-    tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      metron:
-        cert: (( .properties.metron_tls_cert.cert_pem ))
-        key: (( .properties.metron_tls_cert.private_key_pem ))
   garden:
     default_container_grace_time: 0
     persistent_image_list:
@@ -179,3 +159,25 @@ manifest: |
     https_proxy: (( $ops_manager.https_proxy ))
     no_proxy: (( $ops_manager.no_proxy ))
     dns_servers: (( dns_servers.parsed_strings ))
+  loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      metron:
+        cert: (( .properties.metron_tls_cert.cert_pem ))
+        key: (( .properties.metron_tls_cert.private_key_pem ))
+  metron_agent:
+    deployment: cf
+  metron_endpoint:
+    shared_secret: (( ..cf.doppler.shared_secret_credentials.password ))
+  nfsv3driver:
+    disable: (( .properties.nfs_volume_driver.selected_option.parsed_manifest(disable_nfsv3driver) ))
+  syslog_daemon_config:
+    address: (( ..cf.properties.syslog_host.value ))
+    port: (( ..cf.properties.syslog_port.value ))
+    transport: (( ..cf.properties.syslog_protocol.value ))
+  tcp:
+    enabled: true
+  uaa:
+    client_secret: (( ..cf.uaa.tcp_emitter_credentials.password ))
+    client_name: (( ..cf.uaa.tcp_emitter_credentials.identity ))
+    ca_cert: (( $ops_manager.ca_certificate ))
