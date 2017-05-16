@@ -119,6 +119,11 @@ property_blueprints:
           - name: garden_network_plugin_extra_args
             manifest: |
               []
+        property_blueprints:
+          - name: garden_network_pool
+            type: string
+            configurable: true
+            default: 10.254.0.0/22
 
   - name: network_policy_server_cert
     type: rsa_cert_credentials

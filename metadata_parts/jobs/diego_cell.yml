@@ -99,12 +99,6 @@ property_blueprints:
     constraints:
       min: 1
 
-  - name: garden_network_pool
-    type: string
-    default: 10.254.0.0/22
-    configurable: true
-    optional: false
-
   - name: insecure_docker_registry_list
     type: string_list
     configurable: true
@@ -176,7 +170,7 @@ manifest: |
     persistent_image_list:
       - "/var/vcap/packages/cflinuxfs2/rootfs"
     graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
-    network_pool: (( garden_network_pool.value ))
+    network_pool: (( .properties.container_networking.disable.garden_network_pool.value ))
     deny_networks: ["0.0.0.0/0"]
     network_mtu: (( garden_network_mtu.value ))
     insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
