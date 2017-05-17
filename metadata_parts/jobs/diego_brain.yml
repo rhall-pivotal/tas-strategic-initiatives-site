@@ -133,7 +133,7 @@ manifest: |
         basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
         basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
     tps:
-      listener_enabled: "(( secure_diego_communication.value ? 'false' : 'true' ))"
+      listener_enabled: "(( .cloud_controller.secure_diego_communication.value ? 'false' : 'true' ))"
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
