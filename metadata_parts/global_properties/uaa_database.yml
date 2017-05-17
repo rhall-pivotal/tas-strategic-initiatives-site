@@ -65,8 +65,8 @@ property_blueprints:
         named_manifests:
         - name: db_config
           manifest: |
-            address: (( .properties.system_database.external.host.value ))
-            port: (( .properties.system_database.external.port.value ))
+            address: (( .properties.uaa_database.external.host.value ))
+            port: (( .properties.uaa_database.external.port.value ))
             db_scheme: "mysql"
             roles:
             - tag: admin
