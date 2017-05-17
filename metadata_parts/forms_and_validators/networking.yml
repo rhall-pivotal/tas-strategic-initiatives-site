@@ -7,6 +7,9 @@ form:
   - reference: .isolated_router.static_ips
     label: Router IPs
     description: "Enter static IP address(es) for the Router(s), which must be within the subnet CIDR block that you defined in the Ops Manager network configuration. If you have a load balancer, configure it to point to these IPs."
+  - reference: .isolated_diego_cell.garden_network_pool
+    label: Applications Subnet (Only change this if you need to avoid address collision with a third-party service on the same subnet.)
+    description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
   - reference: .isolated_diego_cell.garden_network_mtu
     label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
     description: The default 1454 bytes is fine for most cases, but you might need less, such as for networks that use GRE tunnels.
@@ -26,25 +29,3 @@ form:
         label: "Forward SSL to Isolation Segment Router with ERT Router certificates. Assumes an external load balancer is configured to forward encrypted traffic. Will inherit the certificates provided to the Router in the Elastic Runtime Tile."
       - reference: .properties.networking_point_of_entry.terminate_before_router
         label: "Forward unencrypted traffic to Elastic Runtime Router. Assumes an external load balancer is configured to forward unencrypted traffic."
-  - reference: .properties.container_networking
-    label: "Enabling the Container-to-Container network will allow policy-driven, direct communication between containers on an overlay network occupying the 10.255.0.0/16 range."
-    selector_property_inputs:
-      - reference: .properties.container_networking.enable
-        label: Enable
-        property_inputs:
-          - reference: .properties.container_networking.enable.network_cidr
-            label: Network CIDR
-            description: Defines the range of the overlay network. The CIDR must specify a RFC 1918 range. Defaults to 10.255.0.0/16.
-            placeholder: 10.255.0.0/16
-          - reference: .properties.container_networking.enable.vtep_port
-            label: VXLAN Tunnel Endpoint Port
-            description: Host port used for receiving VXLAN packets. Defaults to 4789.
-      - reference: .properties.container_networking.disable
-        label: Disable
-        property_inputs:
-          - reference: .properties.container_networking.disable.garden_network_pool
-            label: Applications Subnet (Only change this if you need to avoid address collision with a third-party service on the same subnet.)
-            description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
-          - reference: .isolated_diego_cell.garden_network_pool
-            label: Applications Subnet (Only change this if you need to avoid address collision with a third-party service on the same subnet.)
-            description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
