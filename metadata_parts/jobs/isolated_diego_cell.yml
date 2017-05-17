@@ -6,7 +6,10 @@ templates:
   - name: consul_agent
     release: consul
     consumes: |
-      consul: {from: consul_server, deployment: ((  ..cf.deployment_name  )) }
+      consul: nil
+      consul_common: {from: consul_common_link, deployment: ((  ..cf.deployment_name  )) }
+      consul_client: {from: consul_client_link, deployment: ((  ..cf.deployment_name  )) }
+      consul_server: nil
   - name: rep
     release: diego
   - name: route_emitter
