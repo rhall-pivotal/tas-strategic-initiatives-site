@@ -96,8 +96,6 @@ manifest: |
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))
     transport: (( .properties.syslog_protocol.value ))
-  metron_agent:
-    deployment: cf
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   loggregator:

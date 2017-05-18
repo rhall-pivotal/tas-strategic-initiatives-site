@@ -80,8 +80,6 @@ manifest: |
     debug_address: null
     log_level: debug
     oauth_secret: (( .uaa.tcp_router_credentials.password ))
-  metron_agent:
-    deployment: cf
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   loggregator:
