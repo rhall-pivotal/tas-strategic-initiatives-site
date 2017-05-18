@@ -26,6 +26,16 @@ templates:
     release: loggregator
   - name: syslog_forwarder
     release: syslog-migration
+  - name: silk-cni
+    release: cf-networking
+  - name: silk-daemon
+    release: cf-networking
+  - name: garden-cni
+    release: cf-networking
+  - name: netmon
+    release: cf-networking
+  - name: vxlan-policy-agent
+    release: cf-networking
 
 resource_definitions:
   - name: ram
@@ -90,12 +100,6 @@ property_blueprints:
     constraints:
       min: 1
 
-  - name: garden_network_pool
-    type: string
-    default: 10.254.0.0/22
-    configurable: true
-    optional: false
-
   - name: insecure_docker_registry_list
     type: string_list
     configurable: true
@@ -156,7 +160,7 @@ manifest: |
     persistent_image_list:
       - "/var/vcap/packages/cflinuxfs2/rootfs"
     graph_cleanup_threshold_in_mb: (( ..cf.properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
-    network_pool: (( garden_network_pool.value ))
+    network_pool: (( .properties.container_networking.disable.garden_network_pool.value ))
     deny_networks: ["0.0.0.0/0"]
     network_mtu: (( garden_network_mtu.value ))
     insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
@@ -186,3 +190,19 @@ manifest: |
     client_secret: (( ..cf.uaa.tcp_emitter_credentials.password ))
     client_name: (( ..cf.uaa.tcp_emitter_credentials.identity ))
     ca_cert: (( $ops_manager.ca_certificate ))
+  cf_networking:
+    cni_config_dir: /var/vcap/jobs/silk-cni/config/cni
+    disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
+    dns_servers: (( dns_servers.parsed_strings ))
+    mtu: (( garden_network_mtu.value ))
+    network: (( .properties.container_networking.enable.network_cidr.value ))
+    vtep_port: (( .properties.container_networking.enable.vtep_port.value ))
+    silk_daemon:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      client_cert: (( .diego_database.silk_daemon_client_cert.cert_pem ))
+      client_key: (( .diego_database.silk_daemon_client_cert.private_key_pem ))
+    vxlan_policy_agent:
+      policy_server_url: https://network-policy-server.service.cf.internal:4003
+      ca_cert: (( $ops_manager.ca_certificate ))
+      client_cert: (( .properties.network_policy_agent_cert.cert_pem ))
+      client_key: (( .properties.network_policy_agent_cert.private_key_pem ))
