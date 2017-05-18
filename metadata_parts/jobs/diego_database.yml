@@ -100,6 +100,8 @@ property_blueprints:
     configurable: false
 
 manifest: |
+  syslog:
+    tls_enabled: (( .properties.syslog_tls_enabled.value ))
   diego:
     bbs:
       ca_cert: (( $ops_manager.ca_certificate ))

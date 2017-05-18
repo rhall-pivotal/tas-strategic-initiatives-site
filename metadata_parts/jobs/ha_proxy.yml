@@ -102,3 +102,5 @@ manifest: |
       metron:
         cert: (( .doppler.metron_tls_cert.cert_pem ))
         key: (( .doppler.metron_tls_cert.private_key_pem ))
+  syslog:
+    tls_enabled: (( .properties.syslog_tls_enabled.value ))

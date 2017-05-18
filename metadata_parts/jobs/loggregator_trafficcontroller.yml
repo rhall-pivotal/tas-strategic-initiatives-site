@@ -83,6 +83,8 @@ property_blueprints:
       domains: ["statsdinjector"]
 
 manifest: |
+  syslog:
+    tls_enabled: (( .properties.syslog_tls_enabled.value ))
   traffic_controller:
     etcd:
       client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))

@@ -220,6 +220,8 @@ manifest: |
   app_domains:
   - "(( .cloud_controller.apps_domain.value ))"
   support_address: https://support.pivotal.io
+  syslog:
+    tls_enabled: (( .properties.syslog_tls_enabled.value ))
   route_registrar:
     routes:
     - name: api

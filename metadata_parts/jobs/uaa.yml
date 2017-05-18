@@ -335,6 +335,8 @@ property_blueprints:
     optional: true
 
 manifest: |
+  syslog:
+    tls_enabled: (( .properties.syslog_tls_enabled.value ))
   consul:
     agent:
       services:

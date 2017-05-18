@@ -94,6 +94,8 @@ property_blueprints:
       domains: ["syslogdrainbinder"]
 
 manifest: |
+  syslog:
+    tls_enabled: (( .properties.syslog_tls_enabled.value ))
   system_domain: (( .cloud_controller.system_domain.value ))
   doppler:
     message_drain_buffer_size: (( message_drain_buffer_size.value ))

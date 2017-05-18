@@ -98,6 +98,8 @@ property_blueprints:
     default: "allow 10.0.0.0/8;,allow 172.16.0.0/12;,allow 192.168.0.0/16;"
 
 manifest: |
+  syslog:
+    tls_enabled: (( .properties.syslog_tls_enabled.value ))
   system_domain: (( .cloud_controller.system_domain.value ))
   syslog_daemon_config:
     address: (( .properties.syslog_host.value ))

@@ -69,6 +69,8 @@ instance_definition:
 property_blueprints:
 
 manifest: |
+  syslog:
+    tls_enabled: (( .properties.syslog_tls_enabled.value ))
   system_domain: (( .cloud_controller.system_domain.value ))
   system_domain_organization: system
   app_domains:
