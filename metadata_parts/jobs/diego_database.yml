@@ -23,6 +23,8 @@ templates:
     release: cf-networking
     consumes: |
       (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
+  - name: syslog_forwarder
+    release: syslog-migration
 
 resource_definitions:
   - name: ram
