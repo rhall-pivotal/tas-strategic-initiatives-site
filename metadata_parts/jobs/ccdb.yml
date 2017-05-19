@@ -79,8 +79,7 @@ property_blueprints:
       identity: admin
 
 manifest: |
-  syslog:
-    tls_enabled: (( .properties.syslog_tls_enabled.value ))
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   databases:
     port: 2544
     db_scheme: "postgres"

@@ -151,5 +151,4 @@ manifest: |
     enabled: true
   hm9000:
     port: 12345
-  syslog:
-    tls_enabled: (( .properties.syslog_tls_enabled.value ))
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))

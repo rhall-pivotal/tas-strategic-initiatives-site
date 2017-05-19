@@ -14,7 +14,6 @@ templates:
     release: nodejs-buildpack
   - name: ruby-buildpack
     release: ruby-buildpack
-errand: true
 
 resource_definitions:
   - name: ram
@@ -52,6 +51,7 @@ static_ip: 0
 dynamic_ip: 1
 max_in_flight: 1
 single_az_only: false
+errand: true
 
 instance_definition:
   name: instances

@@ -120,8 +120,7 @@ property_blueprints:
     optional: true
 
 manifest: |
-  syslog:
-    tls_enabled: (( .properties.syslog_tls_enabled.value ))
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   router:
     tracing:

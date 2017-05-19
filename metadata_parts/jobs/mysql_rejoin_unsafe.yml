@@ -3,10 +3,10 @@ name: mysql-rejoin-unsafe
 label: MySQL Rejoin Unsafe Errand
 resource_label: MySQL Rejoin Unsafe Errand
 description: MySQL Rejoin Unsafe Errand
+
 templates:
 - name: rejoin-unsafe
   release: cf-mysql
-errand: true
 
 resource_definitions:
   - name: ram
@@ -44,6 +44,7 @@ static_ip: 0
 dynamic_ip: 1
 max_in_flight: 1
 single_az_only: false
+errand: true
 
 instance_definition:
   name: instances
@@ -53,7 +54,6 @@ instance_definition:
   default: 1
 
 property_blueprints:
-
 manifest: |
   cf_mysql:
     mysql:

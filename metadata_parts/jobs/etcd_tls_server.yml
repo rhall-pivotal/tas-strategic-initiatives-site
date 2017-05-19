@@ -72,8 +72,7 @@ instance_definition:
 property_blueprints:
 
 manifest: |
-  syslog:
-    tls_enabled: (( .properties.syslog_tls_enabled.value ))
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   syslog_daemon_config:
     address: (( .properties.syslog_host.value ))
     port: (( .properties.syslog_port.value ))

@@ -73,8 +73,7 @@ property_blueprints:
       identity: nats
 
 manifest: |
-  syslog:
-    tls_enabled: (( .properties.syslog_tls_enabled.value ))
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   nats:
     user: (( credentials.identity ))
     password: (( credentials.password ))

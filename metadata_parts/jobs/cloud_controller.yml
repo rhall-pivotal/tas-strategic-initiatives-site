@@ -201,17 +201,13 @@ property_blueprints:
   - name: internal_api_user_credentials
     type: simple_credentials
 
-  - name: security_event_logging_enabled
-    type: boolean
-    configurable: true
-    default: true
-
   - name: secure_diego_communication
     type: boolean
     configurable: true
     default: true
 
 manifest: |
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   app_ssh:
     host_key_fingerprint: (( .diego_brain.ssh_host_key.public_key_fingerprint ))
   domain: (( .cloud_controller.system_domain.value ))
@@ -220,8 +216,6 @@ manifest: |
   app_domains:
   - "(( .cloud_controller.apps_domain.value ))"
   support_address: https://support.pivotal.io
-  syslog:
-    tls_enabled: (( .properties.syslog_tls_enabled.value ))
   route_registrar:
     routes:
     - name: api

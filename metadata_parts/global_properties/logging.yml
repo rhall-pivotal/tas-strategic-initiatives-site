@@ -1,34 +1,54 @@
 ---
 property_blueprints:
-  - name: logger_endpoint_port
-    type: port
-    configurable: true
-    optional: true
-
-  - name: syslog_host
-    type: network_address
-    configurable: true
-    optional: true
-
-  - name: syslog_port
-    type: port
-    configurable: true
-    optional: true
-
-  - name: syslog_protocol
-    type: dropdown_select
-    configurable: true
-    optional: true
-    options:
-      - name: tcp
-        label: TCP protocol
-      - name: relp
-        label: RELP protocol
-      - name: udp
-        label: UDP protocol
-
-  - name: syslog_tls_enabled
-    type: boolean
-    configurable: true
-    optional: true
-    default: true
+  - name: syslog
+    type: selector
+    configurable: false
+    default: disabled
+    option_templates:
+      - name: disabled
+        select_value: disabled
+        named_manifests:
+          - name: syslog
+            manifest: |
+              migration:
+                disabled: true
+      - name: enabled
+        select_value: enabled
+        property_inputs:
+          - name: logger_endpoint_port
+            type: port
+            configurable: true
+            optional: true
+          - name: host
+            type: network_address
+            configurable: true
+            optional: true
+          - name: port
+            type: port
+            configurable: true
+            optional: true
+          - name: protocol
+            type: dropdown_select
+            configurable: true
+            optional: true
+            options:
+              - name: tcp
+                label: TCP protocol
+              - name: relp
+                label: RELP protocol
+              - name: udp
+                label: UDP protocol
+          - name: tls_enabled
+            type: boolean
+            configurable: true
+            optional: true
+            default: true
+        named_manifests:
+          - name: syslog
+            manifest: |
+              migration:
+                disabled: false
+              address: (( .properties.syslog.enabled.host.value ))
+              port: (( .properties.syslog.enabled.port.value ))
+              transport: (( .properties.syslog.enabled.protocol.value ))
+              tls_enabled: (( .properties.syslog.enabled.tls_enabled.value ))
