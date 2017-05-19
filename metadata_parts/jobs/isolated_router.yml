@@ -107,8 +107,6 @@ manifest: |
     transport: (( ..cf.properties.syslog_protocol.value ))
   metron_agent:
     deployment: cf
-  metron_endpoint:
-    shared_secret: (( ..cf.doppler.shared_secret_credentials.password ))
   loggregator:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
