@@ -118,6 +118,13 @@ property_blueprints:
     type: string
     configurable: true
 
+  - name: silk_daemon_client_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: network_policy_agent_cert
+    type: rsa_cert_credentials
+
 manifest: |
   cflinuxfs2-rootfs:
     trusted_certs: (( $ops_manager.trusted_certificates ))
@@ -197,10 +204,10 @@ manifest: |
     vtep_port: (( .properties.container_networking.enable.vtep_port.value ))
     silk_daemon:
       ca_cert: (( $ops_manager.ca_certificate ))
-      client_cert: (( .diego_database.silk_daemon_client_cert.cert_pem ))
-      client_key: (( .diego_database.silk_daemon_client_cert.private_key_pem ))
+      client_cert: (( silk_daemon_client_cert.cert_pem ))
+      client_key: (( silk_daemon_client_cert.private_key_pem ))
     vxlan_policy_agent:
       policy_server_url: https://network-policy-server.service.cf.internal:4003
       ca_cert: (( $ops_manager.ca_certificate ))
-      client_cert: (( .properties.network_policy_agent_cert.cert_pem ))
-      client_key: (( .properties.network_policy_agent_cert.private_key_pem ))
+      client_cert: (( network_policy_agent_cert.cert_pem ))
+      client_key: (( network_policy_agent_cert.private_key_pem ))
