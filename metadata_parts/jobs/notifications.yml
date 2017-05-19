@@ -76,7 +76,7 @@ manifest: |
     buildpack_url: go_buildpack
     enable_diego: true
     instance_count: 3
-    syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
+    syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))
     organization: system
     space: notifications-with-ui
     error_on_misconfiguration: false

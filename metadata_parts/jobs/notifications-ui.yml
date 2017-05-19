@@ -68,7 +68,7 @@ manifest: |
     space: notifications-with-ui
     app_domain: (( .cloud_controller.system_domain.value ))
     network: notifications
-    syslog_url: (( .properties.syslog_protocol.value "://" .properties.syslog_host.value ":" .properties.syslog_port.value ))
+    syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))
     encryption_key: (( .notifications.encryption_credentials.password ))
     footer_text: (( .push-apps-manager.footer_text.value || "" ))
     footer_image: (( .push-apps-manager.logo.value ))

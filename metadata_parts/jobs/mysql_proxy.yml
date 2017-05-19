@@ -111,7 +111,4 @@ manifest: |
       consul_enabled: true
       startup_delay: (( startup_delay.value ))
       shutdown_delay: (( shutdown_delay.value ))
-  syslog_aggregator:
-    address: (( .properties.syslog_host.value ))
-    port: (( .properties.syslog_port.value ))
-    transport: (( .properties.syslog_protocol.value ))
+  syslog_aggregator: (( .properties.system_logging.selected_option.parsed_manifest(syslog_aggregator) ))

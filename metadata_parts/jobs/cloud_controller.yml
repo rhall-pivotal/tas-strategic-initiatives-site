@@ -201,6 +201,11 @@ property_blueprints:
   - name: internal_api_user_credentials
     type: simple_credentials
 
+  - name: security_event_logging_enabled
+    type: boolean
+    configurable: true
+    default: true
+
   - name: secure_diego_communication
     type: boolean
     configurable: true
@@ -353,10 +358,6 @@ manifest: |
     port: (( .properties.logger_endpoint_port.value ))
   doppler:
     port: (( .properties.logger_endpoint_port.value ))
-  syslog_daemon_config:
-    address: (( .properties.syslog_host.value ))
-    port: (( .properties.syslog_port.value ))
-    transport: (( .properties.syslog_protocol.value ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   loggregator:

@@ -186,10 +186,7 @@ manifest: |
       server_audit_events: (( .properties.mysql_activity_logging.selected_option.parsed_manifest(mysql_audit_events) ))
       server_audit_excluded_users:
         - (( monitordb_credentials.identity ))
-  syslog_aggregator:
-    address: (( ..cf.properties.syslog_host.value ))
-    port: (( ..cf.properties.syslog_port.value ))
-    transport: (( .properties.syslog_protocol.value ))
+  syslog_aggregator: (( .properties.system_logging.selected_option.parsed_manifest(syslog_aggregator) ))
   cf-mysql-backup:
     endpoint_credentials:
       username: (( mysql_backup_server_credentials.identity ))

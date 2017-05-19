@@ -767,10 +767,6 @@ manifest: |
           - doppler.firehose
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
   uaadb: (( .properties.uaa_database.selected_option.parsed_manifest(db_config) ))
-  syslog_daemon_config:
-    address: (( .properties.syslog_host.value ))
-    port: (( .properties.syslog_port.value ))
-    transport: (( .properties.syslog_protocol.value ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   loggregator:

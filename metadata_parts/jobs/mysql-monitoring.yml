@@ -95,7 +95,4 @@ manifest: |
       switchboard_count: (( .mysql_proxy.instances ))
       switchboard_username: (( .mysql_proxy.dashboard_credentials.identity ))
       switchboard_password: (( .mysql_proxy.dashboard_credentials.password ))
-  syslog_aggregator:
-    address: (( .properties.syslog_host.value ))
-    port: (( .properties.syslog_port.value ))
-    transport: (( .properties.syslog_protocol.value ))
+  syslog_aggregator: (( .properties.system_logging.selected_option.parsed_manifest(syslog_aggregator) ))

@@ -100,10 +100,6 @@ property_blueprints:
 manifest: |
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   system_domain: (( .cloud_controller.system_domain.value ))
-  syslog_daemon_config:
-    address: (( .properties.syslog_host.value ))
-    port: (( .properties.syslog_port.value ))
-    transport: (( .properties.syslog_protocol.value ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   loggregator:
