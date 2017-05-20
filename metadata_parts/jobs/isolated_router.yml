@@ -76,6 +76,11 @@ property_blueprints:
     default:
       identity: router_status
 
+  - name: enable_isolated_routing
+    type: boolean
+    default: true
+    configurable: true
+
 manifest: |
   request_timeout_in_seconds: (( ..cf.router.request_timeout_in_seconds.value ))
   networks:
