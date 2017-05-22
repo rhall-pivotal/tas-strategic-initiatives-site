@@ -7,5 +7,10 @@ form:
     - reference: .cloud_controller.encrypt_key
       label: Cloud Controller DB Encryption Key
       description: "Leave blank unless restoring a Cloud Controller Database exported from a previous installation."
-    - reference: .cloud_controller.secure_diego_communication
-      label: Secure Cloud Controller to Diego Communication
+    - reference: .properties.secure_diego_communication
+      label: Enable secure communication between Diego and Cloud Controller?
+      selector_property_inputs:
+        - reference: .properties.secure_diego_communication.enable
+          label: Enable
+        - reference: .properties.secure_diego_communication.disable
+          label: Disable
