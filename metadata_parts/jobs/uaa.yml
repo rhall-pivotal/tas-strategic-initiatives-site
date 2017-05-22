@@ -323,6 +323,13 @@ property_blueprints:
 
   - name: network_policy_server_client
     type: simple_credentials
+    default:
+      identity: network-policy-server
+
+  - name: cf_client
+    type: simple_credentials
+    default:
+      identity: cf
 
   - name: proxy_ips_regex
     type: string
@@ -362,6 +369,9 @@ manifest: |
     saml:
       entityid: "http://login.(( .cloud_controller.system_domain.value ))"
       activeKeyId: key1
+      serviceProviderKey: ""
+      serviceProviderKeyPassword: ""
+      serviceProviderCertificate: ""
       keys:
         key1:
           key: (( service_provider_key_credentials.private_key_pem ))
@@ -520,7 +530,8 @@ manifest: |
         authorized-grant-types: client_credentials
         authorities: emails.write,cloud_controller.read,cloud_controller.write,uaa.resource,scim.invite,notifications.write,cloud_controller.admin
       cf:
-        id: cf
+        id: (( cf_client.identity ))
+        secret: (( cf_client.password ))
         override: true
         authorities: "uaa.none"
         authorized-grant-types: "password,refresh_token"
@@ -532,6 +543,7 @@ manifest: |
         secret: (( network_policy_server_client.password ))
         authorities: "uaa.resource,cloud_controller.admin_read_only"
         authorized-grant-types: "client_credentials,refresh_token"
+        scope: "uaa.none"
       (( autoscale_client_credentials.identity )):
         id: (( autoscale_client_credentials.identity ))
         secret: (( autoscale_client_credentials.password ))
