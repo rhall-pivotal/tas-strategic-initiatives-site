@@ -521,7 +521,7 @@ manifest: |
         secret: (( usage_service_client_credentials.password ))
         override: true
         authorities: "cloud_controller.read,uaa.resource,cloud_controller.admin"
-        authorized-grant-types: "client_credentials"
+        authorized-grant-types: client_credentials
       invitations:
         id: (( invitations_client_credentials.identity ))
         secret: (( invitations_client_credentials.password ))
@@ -542,8 +542,7 @@ manifest: |
         id: (( network_policy_server_client.identity ))
         secret: (( network_policy_server_client.password ))
         authorities: "uaa.resource,cloud_controller.admin_read_only"
-        authorized-grant-types: "client_credentials,refresh_token"
-        scope: "uaa.none"
+        authorized-grant-types: client_credentials
       (( autoscale_client_credentials.identity )):
         id: (( autoscale_client_credentials.identity ))
         secret: (( autoscale_client_credentials.password ))
