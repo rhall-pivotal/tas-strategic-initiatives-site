@@ -326,11 +326,6 @@ property_blueprints:
     default:
       identity: network-policy-server
 
-  - name: cf_client
-    type: simple_credentials
-    default:
-      identity: cf
-
   - name: proxy_ips_regex
     type: string
     configurable: true
@@ -530,8 +525,8 @@ manifest: |
         authorized-grant-types: client_credentials
         authorities: emails.write,cloud_controller.read,cloud_controller.write,uaa.resource,scim.invite,notifications.write,cloud_controller.admin
       cf:
-        id: (( cf_client.identity ))
-        secret: (( cf_client.password ))
+        id: cf
+        secret: ""
         override: true
         authorities: "uaa.none"
         authorized-grant-types: "password,refresh_token"
