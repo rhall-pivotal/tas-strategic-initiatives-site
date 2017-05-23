@@ -606,7 +606,7 @@ manifest: |
         authorized-grant-types: authorization_code
         autoapprove: true
         override: true
-        redirect-uri: /login
+        redirect-uri: "https://uaa.(( .cloud_controller.system_domain.value ))/login"
         scope: openid,cloud_controller.read,cloud_controller.write,cloud_controller.admin
         secret: (( .uaa.ssh_proxy_client_credentials.password ))
       apps_metrics:
