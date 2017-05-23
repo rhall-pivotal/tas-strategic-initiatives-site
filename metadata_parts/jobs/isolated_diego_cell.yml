@@ -189,6 +189,10 @@ manifest: |
     transport: (( ..cf.properties.syslog_protocol.value ))
   tcp:
     enabled: true
+  tls:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.rep_server_cert.cert_pem ))
+    key: (( .properties.rep_server_cert.private_key_pem ))
   uaa:
     client_secret: (( ..cf.uaa.tcp_emitter_credentials.password ))
     client_name: (( ..cf.uaa.tcp_emitter_credentials.identity ))
