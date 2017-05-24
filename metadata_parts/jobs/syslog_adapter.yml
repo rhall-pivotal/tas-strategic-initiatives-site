@@ -11,6 +11,8 @@ templates:
       consul_common: {from: consul_common_link}
       consul_client: {from: consul_client_link}
       consul_server: nil
+  - name: metron_agent
+    release: loggregator
   - name: adapter
     release: scalablesyslog
 
@@ -73,10 +75,18 @@ property_blueprints:
       domains: ["reverselogproxy"]
 
 manifest: |
+  metron_endpoint:
+    shared_secret: (( .doppler.shared_secret_credentials.password ))
+  loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      metron:
+        cert: (( .doppler.metron_tls_cert.cert_pem ))
+        key: (( .doppler.metron_tls_cert.private_key_pem ))
   scalablesyslog:
     adapter:
       logs:
-        addr: reverse-log-proxy.service.cf.internal
+        addr: reverse-log-proxy.service.cf.internal:8082
       tls:
         ca: (( $ops_manager.ca_certificate ))
         cert: (( adapter_tls.cert_pem ))
