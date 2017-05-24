@@ -97,6 +97,7 @@ manifest: |
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   system_domain: (( .cloud_controller.system_domain.value ))
   doppler:
+    disable_announce: true
     message_drain_buffer_size: (( message_drain_buffer_size.value ))
     etcd:
       client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
@@ -108,6 +109,7 @@ manifest: |
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   loggregator:
+    disable_syslog_drains: true
     etcd:
       require_ssl: true
       machines: ['cf-etcd.service.cf.internal']

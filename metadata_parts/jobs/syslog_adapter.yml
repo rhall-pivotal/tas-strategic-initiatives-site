@@ -1,0 +1,90 @@
+---
+name: syslog_adapter
+label: Syslog Adapter
+resource_label: Syslog Adapter
+description: This component manages the connections to drains. It should be scaled with the number of drains.
+templates:
+  - name: consul_agent
+    release: consul
+    consumes: |
+      consul: nil
+      consul_common: {from: consul_common_link}
+      consul_client: {from: consul_client_link}
+      consul_server: nil
+  - name: adapter
+    release: scalablesyslog
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 2_048
+    constraints:
+      min: 2_048
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: false
+    default: 0
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 1
+    constraints:
+      min: 1
+
+static_ip: 0
+dynamic_ip: 1
+max_in_flight: 1
+single_az_only: false
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  default: 3
+  configurable: true
+  constraints:
+    min: 1
+
+property_blueprints:
+  - name: adapter_tls
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains: ["ss-adapter"]
+
+  - name: adapter_rlp_tls
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains: ["reverselogproxy"]
+
+manifest: |
+  scalablesyslog:
+    adapter:
+      logs:
+        addr: reverse-log-proxy.service.cf.internal
+      tls:
+        ca: (( $ops_manager.ca_certificate ))
+        cert: (( adapter_tls.cert_pem ))
+        key: (( adapter_tls.private_key_pem ))
+        cn: ss-adapter
+    adapter_rlp:
+      tls:
+        ca: (( $ops_manager.ca_certificate ))
+        cert: (( adapter_rlp_tls.cert_pem ))
+        key: (( adapter_rlp_tls.private_key_pem ))
+        cn: reverselogproxy

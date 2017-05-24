@@ -19,6 +19,8 @@ templates:
     release: routing
   - name: syslog_forwarder
     release: syslog-migration
+  - name: reverse_log_proxy
+    release: loggregator
 
 resource_definitions:
   - name: ram
@@ -104,6 +106,9 @@ manifest: |
       metron:
         cert: (( .doppler.metron_tls_cert.cert_pem ))
         key: (( .doppler.metron_tls_cert.private_key_pem ))
+      reverse_log_proxy:
+        cert: (( .syslog_adapter.adapter_rlp_tls.cert_pem ))
+        key: (( .syslog_adapter.adapter_rlp_tls.private_key_pem ))
     etcd:
       require_ssl: true
       machines: ['cf-etcd.service.cf.internal']
@@ -131,3 +136,4 @@ manifest: |
     agent:
       services:
         loggregator_trafficcontroller: {}
+        reverse_log_proxy: {}
