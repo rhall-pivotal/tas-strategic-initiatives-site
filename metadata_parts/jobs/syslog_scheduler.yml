@@ -85,7 +85,6 @@ manifest: |
         key: (( .doppler.metron_tls_cert.private_key_pem ))
   scalablesyslog:
     scheduler:
-      require_opt_in: true
       api:
         url: https://cloud-controller-ng.service.cf.internal:9023
       tls:
