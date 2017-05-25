@@ -68,12 +68,23 @@ instance_definition:
     may_only_be_odd_or_zero: true
 
 property_blueprints:
+  - name: heartbeat_interval_in_milliseconds
+    type: integer
+    configurable: true
+    default: 50
+
+  - name: election_timeout_in_milliseconds
+    type: integer
+    configurable: true
+    default: 1000
 
 manifest: |
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   etcd:
+    heartbeat_interval_in_milliseconds: (( etcd_tls_server.heartbeat_interval_in_milliseconds.value ))
+    election_timeout_in_milliseconds: (( etcd_tls_server.election_timeout_in_milliseconds.value ))
     advertise_urls_dns_suffix: cf-etcd.service.cf.internal
     machines: ['cf-etcd.service.cf.internal']
     cluster:
