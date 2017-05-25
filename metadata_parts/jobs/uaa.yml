@@ -432,8 +432,6 @@ manifest: |
             signingKey: (( jwt_signing_key_credentials.private_key_pem ))
     admin:
       client_secret: (( admin_client_credentials.password ))
-    proxy:
-      servers: (( .router.ips ))
     user:
       authorities:
       - openid
