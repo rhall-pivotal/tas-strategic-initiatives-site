@@ -9,7 +9,7 @@ templates:
     consumes: |
       (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
   - name: cflinuxfs2-rootfs-setup
-    release: cflinuxfs2-rootfs
+    release: cflinuxfs2
   - name: binary-buildpack
     release: binary-buildpack
 
