@@ -44,6 +44,9 @@ form:
           label: Bucket Path
           description: Specify a folder within the bucket to hold the MySQL backups. Do not include a trailing slash.
           placeholder: "my-backups-folder/elastic-runtime"
+        - reference: .properties.mysql_backups.s3.region
+          label: S3 Bucket Region
+          description: Choose the S3 Region for automated backups
         - reference: .properties.mysql_backups.s3.access_key_id
           label: AWS Access Key ID
         - reference: .properties.mysql_backups.s3.secret_access_key
