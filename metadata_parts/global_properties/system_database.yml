@@ -131,6 +131,7 @@ property_blueprints:
               max_open_connections: 10
           - name: autoscaling
             manifest: |
+              adapter: "mysql"
               port: 3306
               username: (( .mysql.autoscale_credentials.identity ))
               password: (( .mysql.autoscale_credentials.password ))
@@ -222,6 +223,7 @@ property_blueprints:
             max_open_connections: 10
         - name: autoscaling
           manifest: |
+            adapter: "mysql"
             port: 3306
             username: (( .mysql.autoscale_credentials.identity ))
             password: (( .mysql.autoscale_credentials.password ))
@@ -387,6 +389,7 @@ property_blueprints:
               max_open_connections: 10
           - name: autoscaling
             manifest: |
+              adapter: "mysql"
               port: (( .properties.system_database.external.port.value ))
               username: (( .properties.system_database.external.autoscale_username.value ))
               password: (( .properties.system_database.external.autoscale_password.value ))
