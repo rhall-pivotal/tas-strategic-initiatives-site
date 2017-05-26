@@ -116,8 +116,6 @@ manifest: |
   routing_api:
     enabled: true
   syslog: (( ..cf.properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  metron_agent:
-    deployment: cf
   loggregator:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))

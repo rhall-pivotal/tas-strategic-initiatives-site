@@ -181,8 +181,6 @@ manifest: |
       metron:
         cert: (( .properties.metron_tls_cert.cert_pem ))
         key: (( .properties.metron_tls_cert.private_key_pem ))
-  metron_agent:
-    deployment: cf
   nfsv3driver:
     disable: (( .properties.nfs_volume_driver.selected_option.parsed_manifest(disable_nfsv3driver) ))
   syslog: (( ..cf.properties.system_logging.selected_option.parsed_manifest(syslog) ))
