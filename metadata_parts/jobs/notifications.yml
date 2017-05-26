@@ -4,45 +4,45 @@ label: Notifications Errand
 resource_label: Notifications Errand
 description: Pushes the Pivotal Notifications application to your Elastic Runtime installation
 templates:
-  - name: deploy-notifications
-    release: notifications
-    consumes: |
-      (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
-  - name: cflinuxfs2-rootfs-setup
-    release: cflinuxfs2
-  - name: go-buildpack
-    release: go-buildpack
+- name: deploy-notifications
+  release: notifications
+  consumes: |
+    (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
+- name: cflinuxfs2-rootfs-setup
+  release: cflinuxfs2
+- name: go-buildpack
+  release: go-buildpack
 
 resource_definitions:
-  - name: ram
-    type: integer
-    label: RAM
-    configurable: true
-    default: 1_024
-    constraints:
-      min: 1_024
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 1_024
+  constraints:
+    min: 1_024
 
-  - name: ephemeral_disk
-    type: integer
-    label: Ephemeral Disk
-    configurable: true
-    default: 1_024
-    constraints:
-      min: 1_024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 1_024
+  constraints:
+    min: 1_024
 
-  - name: persistent_disk
-    type: integer
-    label: Persistent Disk
-    configurable: false
-    default: 0
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
 
-  - name: cpu
-    type: integer
-    label: CPU
-    configurable: true
-    default: 1
-    constraints:
-      min: 1
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
 
 static_ip: 0
 dynamic_ip: 1

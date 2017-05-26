@@ -4,47 +4,47 @@ label: TCP Router
 resource_label: TCP Router
 description: TCP Routers route TCP traffic.
 templates:
-  - name: consul_agent
-    release: consul
-    consumes: |
-      consul_common: {from: consul_common_link}
-      consul_client: {from: consul_client_link}
-      consul_server: nil
-  - name: tcp_router
-    release: routing
-  - name: metron_agent
-    release: loggregator
+- name: consul_agent
+  release: consul
+  consumes: |
+    consul_common: {from: consul_common_link}
+    consul_client: {from: consul_client_link}
+    consul_server: nil
+- name: tcp_router
+  release: routing
+- name: metron_agent
+  release: loggregator
 
 resource_definitions:
-  - name: ram
-    type: integer
-    label: RAM
-    configurable: true
-    default: 1_024
-    constraints:
-      min: 1_024
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 1_024
+  constraints:
+    min: 1_024
 
-  - name: ephemeral_disk
-    type: integer
-    label: Ephemeral Disk
-    configurable: false
-    default: 0
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: false
+  default: 0
 
-  - name: persistent_disk
-    type: integer
-    label: Persistent Disk
-    configurable: false
-    default: 1024
-    constraints:
-      min: 1024
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 1024
+  constraints:
+    min: 1024
 
-  - name: cpu
-    type: integer
-    label: CPU
-    configurable: true
-    default: 1
-    constraints:
-      min: 1
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
 
 static_ip: 1
 dynamic_ip: 0

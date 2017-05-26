@@ -4,53 +4,53 @@ label: etcd Server
 resource_label: etcd Server
 description: An etcd TLS cluster node, which maintains the state of applications, and its metrics server
 templates:
-  - name: consul_agent
-    release: consul
-    consumes: |
-      consul_common: {from: consul_common_link}
-      consul_client: {from: consul_client_link}
-      consul_server: nil
-  - name: etcd
-    release: etcd
-  - name: etcd_metrics_server
-    release: etcd
-  - name: metron_agent
-    release: loggregator
-  - name: syslog_forwarder
-    release: syslog-migration
+- name: consul_agent
+  release: consul
+  consumes: |
+    consul_common: {from: consul_common_link}
+    consul_client: {from: consul_client_link}
+    consul_server: nil
+- name: etcd
+  release: etcd
+- name: etcd_metrics_server
+  release: etcd
+- name: metron_agent
+  release: loggregator
+- name: syslog_forwarder
+  release: syslog-migration
 
 resource_definitions:
-  - name: ram
-    type: integer
-    label: RAM
-    configurable: true
-    default: 1_024
-    constraints:
-      min: 1_024
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 1_024
+  constraints:
+    min: 1_024
 
-  - name: ephemeral_disk
-    type: integer
-    label: Ephemeral Disk
-    configurable: true
-    default: 2_048
-    constraints:
-      min: 2_048
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 2_048
+  constraints:
+    min: 2_048
 
-  - name: persistent_disk
-    type: integer
-    label: Persistent Disk
-    configurable: true
-    default: 1_024
-    constraints:
-      min: 1_024
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: true
+  default: 1_024
+  constraints:
+    min: 1_024
 
-  - name: cpu
-    type: integer
-    label: CPU
-    configurable: true
-    default: 1
-    constraints:
-      min: 1
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
 
 static_ip: 1
 dynamic_ip: 0

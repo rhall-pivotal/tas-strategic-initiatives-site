@@ -4,18 +4,18 @@ label: MySQL Server
 resource_label: MySQL Server
 description: Multi-tenant MySQL server.
 templates:
-  - name: mysql
-    release: cf-mysql
-    provides: |
-      mysql-database: {as: direct-mysql}
-  - name: streaming-mysql-backup-tool
-    release: mysql-backup
-  - name: send-email
-    release: mysql-monitoring
-  - name: mysql-diag-agent
-    release: mysql-monitoring
-  - name: mysql-restore
-    release: cf-backup-and-restore
+- name: mysql
+  release: cf-mysql
+  provides: |
+    mysql-database: {as: direct-mysql}
+- name: streaming-mysql-backup-tool
+  release: mysql-backup
+- name: send-email
+  release: mysql-monitoring
+- name: mysql-diag-agent
+  release: mysql-monitoring
+- name: mysql-restore
+  release: cf-backup-and-restore
 
 resource_definitions:
 - name: ram
@@ -25,6 +25,7 @@ resource_definitions:
   default: 8192
   constraints:
     min: 4096
+
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
@@ -32,6 +33,7 @@ resource_definitions:
   default: 30000
   constraints:
     min: 10000
+
 - name: persistent_disk
   type: integer
   label: Persistent Disk
@@ -39,6 +41,7 @@ resource_definitions:
   default: 100000
   constraints:
     min: 10000
+
 - name: cpu
   type: integer
   label: CPU

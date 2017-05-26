@@ -4,51 +4,51 @@ label: Doppler Server
 resource_label: Doppler Server
 description: Doppler server collects application logs
 templates:
-  - name: consul_agent
-    release: consul
-    consumes: |
-      consul_common: {from: consul_common_link}
-      consul_client: {from: consul_client_link}
-      consul_server: nil
-  - name: doppler
-    release: loggregator
-  - name: metron_agent
-    release: loggregator
-  - name: syslog_drain_binder
-    release: loggregator
-  - name: syslog_forwarder
-    release: syslog-migration
+- name: consul_agent
+  release: consul
+  consumes: |
+    consul_common: {from: consul_common_link}
+    consul_client: {from: consul_client_link}
+    consul_server: nil
+- name: doppler
+  release: loggregator
+- name: metron_agent
+  release: loggregator
+- name: syslog_drain_binder
+  release: loggregator
+- name: syslog_forwarder
+  release: syslog-migration
 
 resource_definitions:
-  - name: ram
-    type: integer
-    label: RAM
-    configurable: true
-    default: 1_024
-    constraints:
-      min: 1_024
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 1_024
+  constraints:
+    min: 1_024
 
-  - name: ephemeral_disk
-    type: integer
-    label: Ephemeral Disk
-    configurable: true
-    default: 2_048
-    constraints:
-      min: 2_048
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 2_048
+  constraints:
+    min: 2_048
 
-  - name: persistent_disk
-    type: integer
-    label: Persistent Disk
-    configurable: false
-    default: 0
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
 
-  - name: cpu
-    type: integer
-    label: CPU
-    configurable: true
-    default: 1
-    constraints:
-      min: 1
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
 
 static_ip: 0
 dynamic_ip: 1

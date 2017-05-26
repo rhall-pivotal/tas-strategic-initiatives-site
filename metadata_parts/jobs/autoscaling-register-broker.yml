@@ -4,46 +4,46 @@ label: Autoscaling Registration Errand
 resource_label: Autoscaling Registration Errand
 description: Registers the Autoscaling Service Broker
 templates:
-  - name: register-broker
-    release: cf-autoscaling
-errand: true
+- name: register-broker
+  release: cf-autoscaling
 
 resource_definitions:
-  - name: ram
-    type: integer
-    label: RAM
-    configurable: true
-    default: 512
-    constraints:
-      min: 512
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 512
+  constraints:
+    min: 512
 
-  - name: ephemeral_disk
-    type: integer
-    label: Ephemeral Disk
-    configurable: true
-    default: 1_024
-    constraints:
-      min: 1_024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 1_024
+  constraints:
+    min: 1_024
 
-  - name: persistent_disk
-    type: integer
-    label: Persistent Disk
-    configurable: false
-    default: 0
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
 
-  - name: cpu
-    type: integer
-    label: CPU
-    configurable: true
-    default: 1
-    constraints:
-      min: 1
-      power_of_two: true
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+    power_of_two: true
 
 static_ip: 0
 dynamic_ip: 1
 max_in_flight: 1
 single_az_only: false
+errand: true
 
 instance_definition:
   name: instances
