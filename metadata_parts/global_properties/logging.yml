@@ -24,8 +24,6 @@ property_blueprints:
               permitted_peer: ""
           - name: syslog_url
             manifest: ""
-          - name: syslog_aggregator
-            manifest: {}
       - name: enabled
         select_value: enabled
         property_blueprints:
@@ -69,8 +67,3 @@ property_blueprints:
               permitted_peer: (( .properties.system_logging.enabled.tls_permitted_peer.value ))
           - name: syslog_url
             manifest: (( .properties.system_logging.enabled.protocol.value "://" .properties.system_logging.enabled.host.value ":" .properties.system_logging.enabled.port.value ))
-          - name: syslog_aggregator
-            manifest: |
-              address: (( .properties.system_logging.enabled.host.value ))
-              port: (( .properties.system_logging.enabled.port.value ))
-              transport: (( .properties.system_logging.enabled.protocol.value ))
