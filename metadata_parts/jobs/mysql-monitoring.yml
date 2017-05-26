@@ -8,6 +8,8 @@ templates:
   release: mysql-monitoring
 - name: mysql-diag
   release: mysql-monitoring
+- name: syslog_forwarder
+  release: syslog-migration
 
 resource_definitions:
 - name: ram
@@ -75,6 +77,7 @@ property_blueprints:
 
 manifest: |
   domain: (( .cloud_controller.system_domain.value ))
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   cf_mysql:
     external_host: "p-mysql-ert.(( .cloud_controller.system_domain.value ))"
   cf:
@@ -95,4 +98,3 @@ manifest: |
       switchboard_count: (( .mysql_proxy.instances ))
       switchboard_username: (( .mysql_proxy.dashboard_credentials.identity ))
       switchboard_password: (( .mysql_proxy.dashboard_credentials.password ))
-  syslog_aggregator: (( .properties.system_logging.selected_option.parsed_manifest(syslog_aggregator) ))
