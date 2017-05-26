@@ -16,6 +16,7 @@ resource_definitions:
   default: 2048
   constraints:
     min: 1024
+
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
@@ -23,11 +24,13 @@ resource_definitions:
   default: 2048
   constraints:
     min: 1024
+
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
+
 - name: cpu
   type: integer
   label: CPU
