@@ -14,6 +14,8 @@ templates:
   release: loggregator
 - name: adapter
   release: scalablesyslog
+- name: syslog_forwarder
+  release: syslog-migration
 
 resource_definitions:
 - name: ram
@@ -74,6 +76,7 @@ property_blueprints:
       domains: ["reverselogproxy"]
 
 manifest: |
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   loggregator:
