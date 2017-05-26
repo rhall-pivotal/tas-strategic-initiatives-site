@@ -6,7 +6,6 @@ description: Runs Smoke Tests against your Elastic Runtime installation
 templates:
   - name: smoke_tests
     release: cf-smoke-tests
-errand: true
 
 resource_definitions:
   - name: ram
@@ -43,6 +42,7 @@ static_ip: 0
 dynamic_ip: 1
 max_in_flight: 1
 single_az_only: false
+errand: true
 run_post_deploy_errand_default: true
 
 instance_definition:
