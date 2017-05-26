@@ -10,6 +10,8 @@ templates:
   release: service-backup
 - name: mysql-backup
   release: cf-backup-and-restore
+- name: syslog_forwarder
+  release: syslog-migration
 
 resource_definitions:
 - name: ram
@@ -69,6 +71,7 @@ property_blueprints:
   label: Backup Symmetric Encryption Key
 
 manifest: |
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   service-backup:
     destinations: (( .properties.mysql_backups.selected_option.parsed_manifest(destination) ))
     source_folder: /var/vcap/store/mysql-backups
