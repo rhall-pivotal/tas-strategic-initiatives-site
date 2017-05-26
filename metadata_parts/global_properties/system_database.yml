@@ -131,10 +131,7 @@ property_blueprints:
               max_open_connections: 10
           - name: autoscaling
             manifest: |
-              port: 3306
-              username: (( .mysql.autoscale_credentials.identity ))
-              password: (( .mysql.autoscale_credentials.password ))
-              name: (( .properties.autoscale_database_name.value ))
+              url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/(( .properties.autoscale_database_name.value ))
           - name: push-app-usage-service
             manifest: |
               name: (( .properties.app_usage_service_database_name.value ))
@@ -222,10 +219,7 @@ property_blueprints:
             max_open_connections: 10
         - name: autoscaling
           manifest: |
-            port: 3306
-            username: (( .mysql.autoscale_credentials.identity ))
-            password: (( .mysql.autoscale_credentials.password ))
-            name: (( .properties.autoscale_database_name.value ))
+            url: mysql://(( .mysql.autoscale_credentials.identity )):(( .mysql.autoscale_credentials.password ))@(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/(( .properties.autoscale_database_name.value ))
         - name: push-app-usage-service
           manifest: |
             name: (( .properties.app_usage_service_database_name.value ))
@@ -387,10 +381,7 @@ property_blueprints:
               max_open_connections: 10
           - name: autoscaling
             manifest: |
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.autoscale_username.value ))
-              password: (( .properties.system_database.external.autoscale_password.value ))
-              name: (( .properties.autoscale_database_name.value ))
+              url: mysql://(( .properties.system_database.external.autoscale_username.value )):(( .properties.system_database.external.autoscale_password.value ))@(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/(( .properties.autoscale_database_name.value ))
           - name: push-app-usage-service
             manifest: |
               name: (( .properties.app_usage_service_database_name.value ))
