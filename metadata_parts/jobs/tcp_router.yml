@@ -14,6 +14,8 @@ templates:
   release: routing
 - name: metron_agent
   release: loggregator
+- name: syslog_forwarder
+  release: syslog-migration
 
 resource_definitions:
 - name: ram
@@ -71,6 +73,7 @@ property_blueprints:
     optional: true
 
 manifest: |
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   uaa:
     tls_port: 8443
     ca_cert: (( $ops_manager.ca_certificate ))
