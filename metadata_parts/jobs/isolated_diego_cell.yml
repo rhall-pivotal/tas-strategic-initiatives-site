@@ -34,6 +34,8 @@ templates:
     release: cf-networking
   - name: vxlan-policy-agent
     release: cf-networking
+  - name: syslog_forwarder
+    release: syslog-migration
 
 resource_definitions:
   - name: ram
@@ -183,10 +185,7 @@ manifest: |
     deployment: cf
   nfsv3driver:
     disable: (( .properties.nfs_volume_driver.selected_option.parsed_manifest(disable_nfsv3driver) ))
-  syslog_daemon_config:
-    address: (( ..cf.properties.syslog_host.value ))
-    port: (( ..cf.properties.syslog_port.value ))
-    transport: (( ..cf.properties.syslog_protocol.value ))
+  syslog: (( ..cf.properties.system_logging.selected_option.parsed_manifest(syslog) ))
   tcp:
     enabled: true
   tls:

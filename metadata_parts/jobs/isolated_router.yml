@@ -17,6 +17,8 @@ templates:
       nats: {from: nats, deployment: ((  ..cf.deployment_name  )) }
   - name: metron_agent
     release: loggregator
+  - name: syslog_forwarder
+    release: syslog-migration
 
 resource_definitions:
   - name: ram
@@ -113,10 +115,7 @@ manifest: |
     isolation_segments: ['(( enable_isolated_routing.value ? .isolated_diego_cell.placement_tag.value : empty_list.value))']
   routing_api:
     enabled: true
-  syslog_daemon_config:
-    address: (( ..cf.properties.syslog_host.value ))
-    port: (( ..cf.properties.syslog_port.value ))
-    transport: (( ..cf.properties.syslog_protocol.value ))
+  syslog: (( ..cf.properties.system_logging.selected_option.parsed_manifest(syslog) ))
   metron_agent:
     deployment: cf
   loggregator:
