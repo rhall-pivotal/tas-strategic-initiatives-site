@@ -83,8 +83,8 @@ manifest: |
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   etcd:
-    heartbeat_interval_in_milliseconds: (( etcd_tls_server.heartbeat_interval_in_milliseconds.value ))
-    election_timeout_in_milliseconds: (( etcd_tls_server.election_timeout_in_milliseconds.value ))
+    heartbeat_interval_in_milliseconds: (( heartbeat_interval_in_milliseconds.value ))
+    election_timeout_in_milliseconds: (( election_timeout_in_milliseconds.value ))
     advertise_urls_dns_suffix: cf-etcd.service.cf.internal
     machines: ['cf-etcd.service.cf.internal']
     cluster:
