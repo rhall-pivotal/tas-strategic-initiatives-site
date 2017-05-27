@@ -11,23 +11,23 @@ templates:
     consul_client: {from: consul_client_link}
     consul_server: nil
 - name: go-buildpack
-  release: go-buildpack
+  release: go-offline-buildpack
 - name: binary-buildpack
-  release: binary-buildpack
+  release: binary-offline-buildpack
 - name: nodejs-buildpack
-  release: nodejs-buildpack
+  release: nodejs-offline-buildpack
 - name: ruby-buildpack
-  release: ruby-buildpack
+  release: ruby-offline-buildpack
 - name: php-buildpack
-  release: php-buildpack
+  release: php-offline-buildpack
 - name: python-buildpack
-  release: python-buildpack
+  release: python-offline-buildpack
 - name: java-offline-buildpack
   release: java-offline-buildpack
 - name: staticfile-buildpack
-  release: staticfile-buildpack
+  release: staticfile-offline-buildpack
 - name: dotnet-core-buildpack
-  release: dotnet-core-buildpack
+  release: dotnet-core-offline-buildpack
 - name: cloud_controller_ng
   release: capi
   consumes: |
