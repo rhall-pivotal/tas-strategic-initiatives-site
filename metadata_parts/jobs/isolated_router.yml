@@ -111,7 +111,7 @@ manifest: |
       request_timeout_in_seconds: 300
     drain_wait: (( ..cf.router.drain_wait.value ))
     load_balancer_healthy_threshold: (( ..cf.router.lb_healthy_threshold.value ))
-    routing_table_sharing_mode: '(( enable_isolated_routing.value ? "segments" : "shared-and-segments" ))'
+    routing_table_sharding_mode: '(( enable_isolated_routing.value ? "segments" : "shared-and-segments" ))'
     isolation_segments: ['(( enable_isolated_routing.value ? .isolated_diego_cell.placement_tag.value : empty_list.value))']
   routing_api:
     enabled: true
