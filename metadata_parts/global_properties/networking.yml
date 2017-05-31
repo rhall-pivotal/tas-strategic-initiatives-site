@@ -134,27 +134,3 @@ property_blueprints:
 
   - name: network_policy_agent_cert
     type: rsa_cert_credentials
-
-  - name: routing_table_sharding
-    type: selector
-    configurable: true
-    default: disable
-    option_templates:
-      - name: disable
-        select_value: disable
-        named_manifests:
-        - name: sharding_mode
-          manifest: |
-            all
-        - name: iso_seg
-          manifest: |
-            []
-      - name: enable
-        select_value: enable
-        named_manifests:
-        - name: sharding_mode
-          manifest: |
-            shared-and-segments
-        - name: iso_seg
-          manifest: |
-            []

@@ -112,10 +112,6 @@ form:
             - reference: .properties.container_networking.disable.garden_network_pool
               label: Applications Subnet (Only change this if you need to avoid address collision with a third-party service on the same subnet.)
               description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
-    - reference: .properties.routing_table_sharding
-      label: "When disabled, routers of Elastic Runtime support applications deployed to Isolation Segments. When enabled, routers will reject requests for Isolation Segments, isolating the network for those applications. Do not enable this option without deploying routers for each Isolation Segment first."
-      selector_property_inputs:
-        - reference: .properties.routing_table_sharding.enable
-          label: Enable
-        - reference: .properties.routing_table_sharding.disable
-          label: Disable
+    - reference: .router.enable_isolated_routing
+      label: "Routers reject requests for Isolation Segments"
+      description: "When disabled, routers of Elastic Runtime support applications deployed to Isolation Segments. When enabled, routers will reject requests for Isolation Segments, isolating the network for those applications. Do not enable this option without deploying routers for each Isolation Segment first."
