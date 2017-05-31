@@ -203,12 +203,13 @@ manifest: |
     mtu: (( garden_network_mtu.value ))
     network: (( .properties.container_networking.enable.network_cidr.value ))
     vtep_port: (( .properties.container_networking.enable.vtep_port.value ))
+    policy_server:
+      hostname: network-policy-server.service.cf.internal
     silk_daemon:
       ca_cert: (( $ops_manager.ca_certificate ))
       client_cert: (( silk_daemon_client_cert.cert_pem ))
       client_key: (( silk_daemon_client_cert.private_key_pem ))
     vxlan_policy_agent:
-      policy_server_url: https://network-policy-server.service.cf.internal:4003
       ca_cert: (( $ops_manager.ca_certificate ))
       client_cert: (( network_policy_agent_cert.cert_pem ))
       client_key: (( network_policy_agent_cert.private_key_pem ))
