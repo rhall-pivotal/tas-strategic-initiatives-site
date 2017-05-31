@@ -137,8 +137,8 @@ manifest: |
     load_balancer_healthy_threshold: (( .router.lb_healthy_threshold.value ))
     max_idle_connections: (( max_idle_connections.value ))
     extra_headers_to_log: (( .router.extra_headers_to_log.parsed_strings ))
-    routing_table_sharing_mode: (( .properties.route_table_sharing.selected_option.parsed_manifest(sharing_mode) ))
-    isolation_segments: (( .properties.route_table_sharing.selected_option.parsed_manifest(iso_seg) ))
+    routing_table_sharding_mode: (( .properties.routing_table_sharding.selected_option.parsed_manifest(sharding_mode) ))
+    isolation_segments: (( .properties.routing_table_sharding.selected_option.parsed_manifest(iso_seg) ))
   routing_api:
     enabled: true
   metron_endpoint:
