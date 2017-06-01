@@ -115,7 +115,7 @@ manifest: |
     isolation_segments: ['(( enable_isolated_routing.value ? .isolated_diego_cell.placement_tag.value : empty_list.value))']
   routing_api:
     enabled: true
-  syslog: (( ..cf.properties.system_logging.selected_option.parsed_manifest(syslog) ))
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   loggregator:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))

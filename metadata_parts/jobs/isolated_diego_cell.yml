@@ -185,7 +185,7 @@ manifest: |
         key: (( .properties.metron_tls_cert.private_key_pem ))
   nfsv3driver:
     disable: (( .properties.nfs_volume_driver.selected_option.parsed_manifest(disable_nfsv3driver) ))
-  syslog: (( ..cf.properties.system_logging.selected_option.parsed_manifest(syslog) ))
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   tcp:
     enabled: true
   tls:
