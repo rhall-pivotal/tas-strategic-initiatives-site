@@ -16,8 +16,6 @@ templates:
   release: cf-mysql
   provides: |
     mysql-database: {as: proxy-mysql}
-- name: syslog_forwarder
-  release: syslog-migration
 
 resource_definitions:
 - name: ram
@@ -93,7 +91,6 @@ property_blueprints:
     default: 0
 
 manifest: |
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   route_registrar:
     routes:
     - name: cf-mysql-proxy
@@ -112,3 +109,4 @@ manifest: |
       consul_enabled: true
       startup_delay: (( startup_delay.value ))
       shutdown_delay: (( shutdown_delay.value ))
+  syslog_aggregator: (( .properties.system_logging.selected_option.parsed_manifest(syslog_aggregator) ))
