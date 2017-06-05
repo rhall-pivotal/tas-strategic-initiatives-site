@@ -78,16 +78,6 @@ property_blueprints:
     default:
       identity: router_status
 
-  - name: enable_isolated_routing
-    type: boolean
-    default: true
-    configurable: true
-
-  - name: empty_list
-    type: string_list
-    value: []
-    configurable: false
-
 manifest: |
   request_timeout_in_seconds: (( ..cf.router.request_timeout_in_seconds.value ))
   networks:
@@ -111,8 +101,8 @@ manifest: |
       request_timeout_in_seconds: 300
     drain_wait: (( ..cf.router.drain_wait.value ))
     load_balancer_healthy_threshold: (( ..cf.router.lb_healthy_threshold.value ))
-    routing_table_sharding_mode: '(( enable_isolated_routing.value ? "segments" : "shared-and-segments" ))'
-    isolation_segments: ['(( enable_isolated_routing.value ? .isolated_diego_cell.placement_tag.value : empty_list.value))']
+    routing_table_sharding_mode: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(sharding_mode) ))
+    isolation_segments: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(isolation_segments) ))
   routing_api:
     enabled: true
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
