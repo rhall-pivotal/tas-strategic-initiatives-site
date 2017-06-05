@@ -118,6 +118,8 @@ manifest: |
     clients:
       doppler:
         secret: (( .uaa.doppler_client_credentials.password ))
+  router:
+    cipher_suites: (( .properties.networking_point_of_entry.external_ssl.ssl_ciphers.value ))
   route_registrar:
     routes:
     - name: doppler
