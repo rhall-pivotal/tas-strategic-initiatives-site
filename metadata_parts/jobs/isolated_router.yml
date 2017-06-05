@@ -104,7 +104,7 @@ manifest: |
     routing_table_sharding_mode: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(sharding_mode) ))
     isolation_segments: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(isolation_segments) ))
   routing_api:
-    enabled: true
+    enabled: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(routing_api) ))
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   loggregator:
     tls:

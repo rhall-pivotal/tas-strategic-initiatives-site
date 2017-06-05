@@ -14,6 +14,9 @@ property_blueprints:
       - name: isolation_segments
         manifest: |
           ['(( .isolated_diego_cell.placement_tag.value ))']
+      - name: routing_api
+        manifest: |
+          false
     - name: no_isolation_segment
       select_value: no_isolation_segment
       named_manifests:
@@ -23,6 +26,9 @@ property_blueprints:
       - name: isolation_segments
         manifest: |
           []
+      - name: routing_api
+        manifest: |
+          true
 
   - name: networking_point_of_entry
     type: selector
