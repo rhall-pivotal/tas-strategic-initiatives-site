@@ -395,5 +395,3 @@ manifest: |
       uaa_client_secret: (( .uaa.network_policy_server_client.password ))
       skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
       database: (( .properties.system_database.selected_option.parsed_manifest(networkpolicyserverdb) ))
-  statsd_injector:
-    deployment: cf
