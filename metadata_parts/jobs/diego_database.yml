@@ -76,7 +76,7 @@ property_blueprints:
     type: secret
     configurable: false
 
-  - name: locket_tls_cert
+  - name: locket_server_cert
     type: rsa_cert_credentials
     configurable: false
     default:
@@ -149,8 +149,8 @@ manifest: |
         key: (( .doppler.metron_tls_cert.private_key_pem ))
   tls:
     ca_cert: (( $ops_manager.ca_certificate ))
-    cert: (( locket_tls_cert.cert_pem ))
-    key: (( locket_tls_cert.private_key_pem ))
+    cert: (( locket_server_cert.cert_pem ))
+    key: (( locket_server_cert.private_key_pem ))
   cf_networking:
     disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
     network: (( .properties.container_networking.enable.network_cidr.value ))
