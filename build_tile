@@ -1,6 +1,32 @@
 #!/bin/bash -exu
 
 function main() {
+  local OPTIND version get_releases stub_releases o
+  stub_releases=""
+
+  while getopts rsv: o; do
+    echo "o is ${o}"
+    case $o in
+      r)
+        get_releases=true
+        ;;
+      s)
+        stub_releases="--stub-releases"
+        ;;
+      v)
+        version="${OPTARG}"
+        ;;
+    esac
+  done
+
+  shift $((OPTIND-1))
+
+  if [[ -z "${version}" ]]; then
+    echo "ERROR: Missing required version parameter"
+    echo "You must pass -v <version>"
+    exit 1
+  fi
+
   local pcf_releng_ci_path
   pcf_releng_ci_path="${GOPATH}/src/github.com/pivotal-cf/pcf-releng-ci"
 
@@ -10,6 +36,28 @@ function main() {
   local releases_dir
   releases_dir="${PWD}/releases"
   mkdir -p "${releases_dir}"
+
+  local bucket
+  bucket="compiled-releases"
+
+  if [[ -n ${get_releases} ]]; then
+    echo "Downloading releases"
+    echo "To skip pass -r to script"
+    local releases
+    # releases="$(aws s3 ls "${bucket}/${version}/" | awk '{print $2}' | tr -d '/')"
+    releases="cf-networking cflinuxfs2 consul diego garden-runc loggregator nfs-volume routing syslog"
+
+    for release in $releases; do
+      local release_tarball
+      release_tarball="$(aws s3 ls "${bucket}/${version}/${release}/" | sort | tail -1 | awk '{print $4}')"
+
+      if [[ ! -e "${releases_dir}/${release_tarball}" ]]; then
+        aws s3 cp "s3://${bucket}/${version}/${release}/${release_tarball}" "${releases_dir}/"
+      else
+        echo "Skipping ${release_tarball}, already exists"
+      fi
+    done
+  fi
 
   local stemcell_dir
   stemcell_dir="${PWD}/stemcell"
@@ -31,6 +79,10 @@ function main() {
     --output-path "${PWD}/metadata.yml"
 
   version="$(cat ${tile_repo_path}/version)"
+
+  local migrations
+  migrations="$(find "${p_runtime_path}/migrations/v1" -name "*.js" | sort | xargs -n 1 -I {} echo "--migration {}")"
+
   go run "${pcf_releng_ci_path}/tasks/future/create-ert/main.go" \
     $(release_tarball_args "${releases_dir}") \
     --stemcell-tarball "${stemcell_dir}/stemcell.tgz" \
@@ -38,7 +90,9 @@ function main() {
     --final-version "${version}" \
     --version "${version}" \
     --name "p-isolation-segment" \
-    --output-dir "${PWD}"
+    --output-dir "${PWD}" \
+    ${migrations} \
+    "${stub_releases}"
 }
 
 function release_tarball_args() {
@@ -51,4 +105,4 @@ function release_tarball_args() {
   printf "%s" "${args}"
 }
 
-main
+main "$@"
