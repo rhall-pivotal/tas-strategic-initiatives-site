@@ -209,6 +209,10 @@ property_blueprints:
     configurable: true
     default: true
 
+  - name: locket_client_cert
+    type: rsa_cert_credentials
+    configurable: false
+
 manifest: |
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   app_ssh:
@@ -371,16 +375,22 @@ manifest: |
     route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
   routing_api:
     enabled: true
-    sqldb: (( .properties.system_database.selected_option.parsed_manifest(routingdb) ))
-    system_domain: (( .cloud_controller.system_domain.value ))
     log_level: debug
     router_groups: (( .properties.tcp_routing.selected_option.parsed_manifest(default_router_group) ))
+    skip_consul_lock: (( .diego_database.skip_consul_locks.value ))
+    sqldb: (( .properties.system_database.selected_option.parsed_manifest(routingdb) ))
+    system_domain: (( .cloud_controller.system_domain.value ))
     etcd:
       require_ssl: true
       servers: ['cf-etcd.service.cf.internal']
       ca_cert: (( $ops_manager.ca_certificate ))
       client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
       client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
+    locket:
+      api_location: "locket.service.cf.internal:8891"
+      ca_cert: (( $ops_manager.ca_certificate ))
+      client_cert: (( locket_client_cert.cert_pem ))
+      client_key: (( locket_client_cert.private_key_pem ))
   hm9000:
     port: 12345
   dea_next:
