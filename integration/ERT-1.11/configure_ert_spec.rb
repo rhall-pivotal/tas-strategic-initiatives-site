@@ -175,17 +175,17 @@ RSpec.describe 'Configure Elastic Runtime 1.11.X', order: :defined do
     mysql_form.save_form
   end
 
-  it 'configures SSO' do
-    sso_form =
-      current_ops_manager.product(elastic_runtime_settings['name']).product_form('sso')
-    sso_form.open_form
+  it 'configures UAA' do
+    uaa_form =
+      current_ops_manager.product(elastic_runtime_settings['name']).product_form('uaa')
+    uaa_form.open_form
     domain = elastic_runtime_settings['system_domain']
     apps_domain = elastic_runtime_settings['apps_domain']
-    sso_form.generate_self_signed_cert(
+    uaa_form.generate_self_signed_cert(
       "*.#{domain},*.login.#{domain},*.uaa.#{domain},*.#{apps_domain}",
       '.uaa.service_provider_key_credentials'
     )
-    sso_form.save_form
+    uaa_form.save_form
   end
 
   private
