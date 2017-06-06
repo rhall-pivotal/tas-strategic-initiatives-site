@@ -2,7 +2,16 @@
 form:
   name: application_security_groups
   label: Application Security Groups
-  description: Setting appropriate Application Security Groups that control application network policy is the responsibility of the Elastic Runtime administration team. Please refer to the Application Security Groups topic in the Pivotal Cloud Foundry documentation for more detail on completing this activity after the Elastic Runtime deployment completes.
+  description: |
+    Application Security Groups Acknowledgement
+  markdown: |
+    Setting appropriate Application Security Groups that control application
+    network policy is the responsibility of the Elastic Runtime administration
+    team. Please refer to the Application Security Groups topic in the Pivotal
+    Cloud Foundry documentation for more detail on completing this activity
+    after the Elastic Runtime deployment completes.
+
   property_inputs:
     - reference: .properties.security_acknowledgement
-      label: Type X to acknowledge that you understand this message
+      label: |
+        Type "X" to acknowledge that you understand this message

@@ -2,41 +2,55 @@
 form:
   name: experimental_features
   label: Advanced Features
-  description: These are several features that may require a greater understanding of Cloud Foundry system components and their more recently introduced capabilities.
+  description: |
+    These are several features that may require a greater understanding of
+    Cloud Foundry system components and their more recently introduced
+    capabilities.
   markdown: |
-    ## You can specify how much memory or disk you want to set as the Diego Cells' available capacity. You can overcommit these resources with values that exceed the Diego Cell VM sizes configured in the Resource Config section.
+    You can specify how much memory or disk you want to set as the Diego Cells'
+    available capacity. You can overcommit these resources with values that
+    exceed the Diego Cell VM sizes configured in the Resource Config section.
+
   property_inputs:
     - reference: .diego_cell.executor_memory_capacity
       label: Cell Memory Capacity (MB)
+
     - reference: .diego_cell.executor_disk_capacity
       label: Cell Disk Capacity (MB)
+
     - reference: .nfs_server.blobstore_internal_access_rules
       label: Whitelist for non-RFC-1918 Private Networks
-      description: 'If your Elastic Runtime deployment is using a private network that is not RFC 1918 (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16), then you must type in "allow <your-network>;" here. It is important to include the word "allow" and the semi-colon at the end. Multiple rules should be separated by a comma. For example, "allow 172.99.0.0/24;,allow 172.55.0.0/24;"'
-      placeholder: "e.g.: allow 172.99.0.0/24;,allow 172.55.0.0/24;"
+      description: |
+        If your Elastic Runtime deployment is using a private network that is
+        not RFC 1918 (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16), then you must
+        type in "allow <your-network>;" here. It is important to include the
+        word "allow" and the semi-colon at the end. Multiple rules should be
+        separated by a comma. For example, "allow 172.99.0.0/24;,allow
+        172.55.0.0/24;"
+      placeholder: |
+        e.g.: allow 172.99.0.0/24;,allow 172.55.0.0/24;
+
     - reference: .properties.cf_dial_timeout_in_seconds
       label: CF CLI Connection Timeout
-      description: "Max wait time to establish a connection, including name resolution, in seconds."
-    - reference: .properties.cc_api_rate_limit
-      label: "BETA: Enabling CF API Rate Limiting will prevent API consumers from overwhelming the platform API servers. Limits are imposed on a per-user or per-client basis and reset on an hourly interval."
-      selector_property_inputs:
-        - reference: .properties.cc_api_rate_limit.enable
-          label: Enable
-          property_inputs:
-            - reference: .properties.cc_api_rate_limit.enable.general_limit
-              label: General Limit
-              description: The number of requests a user or client is allowed to make for all endpoints that do not have a custom limit over an hour interval.
-            - reference: .properties.cc_api_rate_limit.enable.unauthenticated_limit
-              label: Unauthenticated Limit
-              description: The number of requests an unauthenticated client is allowed to make over an hour interval.
-        - reference: .properties.cc_api_rate_limit.disable
-          label: Disable
+      description: |
+        Max wait time to establish a connection, including name resolution, in
+        seconds.
+
     - reference: .diego_database.skip_consul_locks
       label: Skip Consul Locks
-      description: Selecting this option will disable using Consul for distributed locking in Diego.
+      description: |
+        Selecting this option will disable using Consul for distributed locking
+        in Diego.
+
     - reference: .etcd_tls_server.heartbeat_interval_in_milliseconds
       label: etcd Heartbeat Interval
-      description: "Interval between heartbeats in milliseconds. See https://coreos.com/etcd/docs/2.2.5/tuning.html for more details."
+      description: |
+        Interval between heartbeats in milliseconds. See
+        https://coreos.com/etcd/docs/2.2.5/tuning.html for more details.
+
     - reference: .etcd_tls_server.election_timeout_in_milliseconds
       label: etcd Election Timeout
-      description: "Time without receiving a heartbeat before peer should attempt to become leader in milliseconds. See https://coreos.com/etcd/docs/2.2.5/tuning.html for more details."
+      description: |
+        Time without receiving a heartbeat before peer should attempt to become
+        leader in milliseconds. See
+        https://coreos.com/etcd/docs/2.2.5/tuning.html for more details.

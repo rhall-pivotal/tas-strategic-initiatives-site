@@ -2,7 +2,10 @@
 form:
   name: system_blobstore
   label: File Storage
-  description: "This section determines where you would like to place your Elastic Runtime Cloud Controller's file storage."
+  description: |
+    This section determines where you would like to place your Elastic Runtime
+    Cloud Controller's file storage.
+
   verifiers:
     - name: Verifiers::BlobstoreVerifier
       properties:
@@ -12,6 +15,7 @@ form:
         bucket_name: .properties.system_blobstore.external.buildpacks_bucket
         region: .properties.system_blobstore.external.region
         signature_version: .properties.system_blobstore.external.signature_version
+
     - name: Verifiers::BlobstoreVerifier
       properties:
         endpoint: .properties.system_blobstore.external.endpoint
@@ -20,6 +24,7 @@ form:
         bucket_name: .properties.system_blobstore.external.droplets_bucket
         region: .properties.system_blobstore.external.region
         signature_version: .properties.system_blobstore.external.signature_version
+
     - name: Verifiers::BlobstoreVerifier
       properties:
         endpoint: .properties.system_blobstore.external.endpoint
@@ -28,6 +33,7 @@ form:
         bucket_name: .properties.system_blobstore.external.packages_bucket
         region: .properties.system_blobstore.external.region
         signature_version: .properties.system_blobstore.external.signature_version
+
     - name: Verifiers::BlobstoreVerifier
       properties:
         endpoint: .properties.system_blobstore.external.endpoint
@@ -36,82 +42,132 @@ form:
         bucket_name: .properties.system_blobstore.external.resources_bucket
         region: .properties.system_blobstore.external.region
         signature_version: .properties.system_blobstore.external.signature_version
+
   property_inputs:
   - reference: .properties.system_blobstore
-    label: "Configure your Cloud Controller's filesystem"
+    label: Configure your Cloud Controller's filesystem
     selector_property_inputs:
     - reference: .properties.system_blobstore.internal
       label: Internal WebDAV (provided by Elastic Runtime)
-      description:
+
     - reference: .properties.system_blobstore.external
-      label: External S3-Compatible File Store (if you want to use a service like S3 or Ceph)
-      description:
+      label: |
+        External S3-Compatible File Store (if you want to use a service like S3
+        or Ceph)
       property_inputs:
         - reference: .properties.system_blobstore.external.endpoint
           label: URL Endpoint
           description: URL endpoint of your S3-compatible file store
+
         - reference: .properties.system_blobstore.external.access_key
           label: Access Key
+
         - reference: .properties.system_blobstore.external.secret_key
           label: Secret Key
+
         - reference: .properties.system_blobstore.external.signature_version
           label: S3 Signature Version
+
         - reference: .properties.system_blobstore.external.region
           label: Region
+
         - reference: .properties.system_blobstore.external.encryption
           label: Server-side Encryption (available for AWS S3 only)
+
         - reference: .properties.system_blobstore.external.buildpacks_bucket
           label: Buildpacks Bucket Name
           description: S3 bucket for storing app buildpacks.
+
         - reference: .properties.system_blobstore.external.droplets_bucket
           label: Droplets Bucket Name
-          description: S3 bucket for storing app droplets. Pivotal recommends that you use a unique bucket name for droplets, but you can also use the same name as above.
+          description: |
+            S3 bucket for storing app droplets. Pivotal recommends that you use
+            a unique bucket name for droplets, but you can also use the same
+            name as above.
+
         - reference: .properties.system_blobstore.external.packages_bucket
           label: Packages Bucket Name
-          description: S3 bucket for storing app packages. Pivotal recommends that you use a unique bucket name for packages, but you can also use the same name as above.
+          description: |
+            S3 bucket for storing app packages. Pivotal recommends that you use
+            a unique bucket name for packages, but you can also use the same
+            name as above.
+
         - reference: .properties.system_blobstore.external.resources_bucket
           label: Resources Bucket Name
-          description: S3 bucket for storing app resources. Pivotal recommends that you use a unique bucket name for app resources, but you can also use the same name as above.
+          description: |
+            S3 bucket for storing app resources. Pivotal recommends that you
+            use a unique bucket name for app resources, but you can also use
+            the same name as above.
+
     - reference: .properties.system_blobstore.external_gcs
       label: External Google Cloud Storage
       description:
       property_inputs:
         - reference: .properties.system_blobstore.external_gcs.access_key
           label: Access Key
+
         - reference: .properties.system_blobstore.external_gcs.secret_key
           label: Secret Key
+
         - reference: .properties.system_blobstore.external_gcs.buildpacks_bucket
           label: Buildpacks Bucket Name
           description: Bucket for storing app buildpacks.
+
         - reference: .properties.system_blobstore.external_gcs.droplets_bucket
           label: Droplets Bucket Name
-          description: Bucket for storing app droplets. Pivotal recommends that you use a unique bucket name for droplets, but you can also use the same name as above.
+          description: |
+            Bucket for storing app droplets. Pivotal recommends that you use a
+            unique bucket name for droplets, but you can also use the same name
+            as above.
+
         - reference: .properties.system_blobstore.external_gcs.packages_bucket
           label: Packages Bucket Name
-          description: Bucket for storing app packages. Pivotal recommends that you use a unique bucket name for packages, but you can also use the same name as above.
+          description: |
+            Bucket for storing app packages. Pivotal recommends that you use a
+            unique bucket name for packages, but you can also use the same name
+            as above.
+
         - reference: .properties.system_blobstore.external_gcs.resources_bucket
           label: Resources Bucket Name
-          description: Bucket for storing app resources. Pivotal recommends that you use a unique bucket name for app resources, but you can also use the same name as above.
+          description: |
+            Bucket for storing app resources. Pivotal recommends that you use a
+            unique bucket name for app resources, but you can also use the same
+            name as above.
+
     - reference: .properties.system_blobstore.external_azure
       label: External Azure Storage
       description:
       property_inputs:
         - reference: .properties.system_blobstore.external_azure.account_name
           label: Account Name
+
         - reference: .properties.system_blobstore.external_azure.access_key
           label: Access Key
+
         - reference: .properties.system_blobstore.external_azure.buildpacks_container
           label: Buildpacks Container Name
           description: Container for storing app buildpacks.
+
         - reference: .properties.system_blobstore.external_azure.droplets_container
           label: Droplets Container Name
-          description: Container for storing app droplets. Pivotal recommends that you use a unique container name for droplets, but you can also use the same name as above.
+          description: |
+            Container for storing app droplets. Pivotal recommends that you use
+            a unique container name for droplets, but you can also use the same
+            name as above.
+
         - reference: .properties.system_blobstore.external_azure.packages_container
           label: Packages Container Name
-          description: Container for storing app packages. Pivotal recommends that you use a unique container name for packages, but you can also use the same name as above.
+          description: |
+            Container for storing app packages. Pivotal recommends that you use
+            a unique container name for packages, but you can also use the same
+            name as above.
+
         - reference: .properties.system_blobstore.external_azure.resources_container
           label: Resources Container Name
-          description: Container for storing app resources. Pivotal recommends that you use a unique container name for app resources, but you can also use the same name as above.
+          description: |
+            Container for storing app resources. Pivotal recommends that you
+            use a unique container name for app resources, but you can also use
+            the same name as above.
 
 install_time_verifiers:
   - name: Verifiers::BlobstoreVerifier
@@ -123,6 +179,7 @@ install_time_verifiers:
       bucket_name: .properties.system_blobstore.external.buildpacks_bucket
       region: .properties.system_blobstore.external.region
       signature_version: .properties.system_blobstore.external.signature_version
+
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
@@ -132,6 +189,7 @@ install_time_verifiers:
       bucket_name: .properties.system_blobstore.external.droplets_bucket
       region: .properties.system_blobstore.external.region
       signature_version: .properties.system_blobstore.external.signature_version
+
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:
@@ -141,6 +199,7 @@ install_time_verifiers:
       bucket_name: .properties.system_blobstore.external.packages_bucket
       region: .properties.system_blobstore.external.region
       signature_version: .properties.system_blobstore.external.signature_version
+
   - name: Verifiers::BlobstoreVerifier
     ignorable: true
     properties:

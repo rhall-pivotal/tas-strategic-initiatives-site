@@ -2,116 +2,255 @@
 form:
   name: networking
   label: Networking
-  description: Configure security and routing services for your platform. It is usually preferable to use your own load balancer instead of an HAProxy instance as your point-of-entry to the platform.
+  description: |
+    Configure security and routing services for your platform. It is usually
+    preferable to use your own load balancer instead of an HAProxy instance as
+    your point-of-entry to the platform.
+
   property_inputs:
     - reference: .router.static_ips
       label: Router IPs
-      description: "If you are not using HAProxy, enter static IP address(es) for the Router(s), which must be within the subnet CIDR block  that you defined in the Ops Manager network configuration. If you have a load balancer, configure it to point to these IPs. If deploying PCF to AWS with an ELB, do not enter IP addresses here. Instead, add the name of your ELB in the Resource Config section, in the ELB Name column for Router."
+      description: |
+        If you are not using HAProxy, enter static IP address(es) for the
+        Router(s), which must be within the subnet CIDR block  that you defined
+        in the Ops Manager network configuration. If you have a load balancer,
+        configure it to point to these IPs. If deploying PCF to AWS with an
+        ELB, do not enter IP addresses here. Instead, add the name of your ELB
+        in the Resource Config section, in the ELB Name column for Router.
+
     - reference: .diego_brain.static_ips
       label: SSH Proxy IPs
-      description: "Enter static IPs for the Diego Brain(s), which will accept requests to SSH into application containers on port 2222, and register a load balancer with these IPs. If deploying PCF to AWS with an ELB, do not enter IP addresses here. Instead, add the name of your ELB in the Resource Config section, in the ELB Name column for Diego Brain."
+      description: |
+        Enter static IPs for the Diego Brain(s), which will accept requests to
+        SSH into application containers on port 2222, and register a load
+        balancer with these IPs. If deploying PCF to AWS with an ELB, do not
+        enter IP addresses here. Instead, add the name of your ELB in the
+        Resource Config section, in the ELB Name column for Diego Brain.
+
     - reference: .ha_proxy.static_ips
       label: HAProxy IPs
-      description: "If you are using HAProxy, enter its IP address(es). The addresses must be within your subnet CIDR block. Point your DNS to this IP address unless you are using your own load balancer."
+      description: |
+        If you are using HAProxy, enter its IP address(es). The addresses must
+        be within your subnet CIDR block. Point your DNS to this IP address
+        unless you are using your own load balancer.
+
     - reference: .tcp_router.static_ips
       label: TCP Router IPs
-      description: "Enter the IP address(es) you would like to designate for the TCP Routers, and point your load balancer to these addresses. If deploying to AWS with an ELB, do not enter IP addresses here. Instead, in the Resource Config section, add your ELB by name to the ELB Name column for TCP Router."
+      description: |
+        Enter the IP address(es) you would like to designate for the TCP
+        Routers, and point your load balancer to these addresses. If deploying
+        to AWS with an ELB, do not enter IP addresses here. Instead, in the
+        Resource Config section, add your ELB by name to the ELB Name column
+        for TCP Router.
+
     - reference: .properties.networking_point_of_entry
       label: "Select one of the following point-of-entry options:"
       selector_property_inputs:
         - reference: .properties.networking_point_of_entry.external_ssl
-          label: "Forward SSL to Elastic Runtime Router. Assumes an external load balancer is configured to forward encrypted traffic."
+          label: |
+            Forward SSL to Elastic Runtime Router. Assumes an external load
+            balancer is configured to forward encrypted traffic.
           property_inputs:
             - reference: .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate
               label: Router SSL Termination Certificate and Private Key
-              description: "Required for SSL encryption between the load balancer and router(s)."
+              description: |
+                Required for SSL encryption between the load balancer and
+                router(s).
+
             - reference: .properties.networking_point_of_entry.external_ssl.ssl_ciphers
               label: Router SSL Ciphers
-              description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
+              description: |
+                Router ciphers are read in Golang and should use underscores
+                instead of dashes in their names e.g.
+                TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
+
         - reference: .properties.networking_point_of_entry.external_non_ssl
-          label: "Forward unencrypted traffic to Elastic Runtime Router. Assumes an external load balancer is configured to forward unencrypted traffic."
+          label: |
+            Forward unencrypted traffic to Elastic Runtime Router. Assumes an
+            external load balancer is configured to forward unencrypted
+            traffic to the router(s).
+
         - reference: .properties.networking_point_of_entry.haproxy
-          label: "Forward SSL to HA Proxy. Like first option - Assumes an external load balancer is configured to forward encrypted traffic."
+          label: |
+            Forward SSL to HAProxy. Like first option - Assumes an external
+            load balancer is configured to forward encrypted traffic to the
+            HAProxy instance(s).
           property_inputs:
             - reference: .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate
               label: SSL Certificate and Private Key
-              description: "This certificate and key are used to terminate SSL traffic at HAProxy. The certificate can have multiple domains attributed to it, for example if you have separate system and application domains. You can also generate a self-signed certificate here with your wildcard system domain."
+              description: |
+                This certificate and key are used to terminate SSL traffic at
+                HAProxy. The certificate can have multiple domains attributed
+                to it, for example if you have separate system and application
+                domains. You can also generate a self-signed certificate here
+                with your wildcard system domain.
+
             - reference: .properties.networking_point_of_entry.haproxy.disable_http
               label: Disable HTTP traffic to HAProxy
-              description: "If checked, HAProxy will only allow HTTPS traffic."
+              description: If checked, HAProxy will only allow HTTPS traffic.
+
             - reference: .properties.networking_point_of_entry.haproxy.ssl_ciphers
               label: HAProxy SSL Ciphers
-              description: "These ciphers should use dashes in their names, e.g. `ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384`"
+              description: |
+                These ciphers should use dashes in their names, e.g.
+                `ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384`
+
             - reference: .properties.networking_point_of_entry.haproxy.max_buffer_size
               label: Request Max Buffer Size
-              description: "Buffer size (in bytes) to use for requests, any requests larger than this (large cookies or query strings) will result in a gateway error. The default value is 16384."
+              description: |
+                Buffer size (in bytes) to use for requests, any requests larger
+                than this (large cookies or query strings) will result in a
+                gateway error. The default value is 16384.
+
     - reference: .ha_proxy.skip_cert_verify
       label: Disable SSL certificate verification for this environment
-      description: You can disable SSL verification if you are using your own self-signed certificates that are not from a trusted CA.
+      description: |
+        You can disable SSL verification if you are using your own self-signed
+        certificates that are not from a trusted CA.
+
     - reference: .router.disable_insecure_cookies
       label: Disable insecure cookies on the Router
-      description: If checked, this turns on the secure flag for cookies generated by router.
+      description: |
+        If checked, this turns on the secure flag for cookies generated by
+        router.
+
     - reference: .router.enable_zipkin
       label: Enable Zipkin tracing headers on the router
-      description: If checked, the router will include Zipkin tracing headers on all incoming requests.
+      description: |
+        If checked, the router will include Zipkin tracing headers on all
+        incoming requests.
+
     - reference: .properties.route_services
-      label: Choose whether to enable route services. Route services enable you to proxy requests to your app over TLS to arbitrary URLs before hitting your app.
+      label: |
+        Choose whether to enable route services. Route services enable you to
+        proxy requests to your app over TLS to arbitrary URLs before hitting
+        your app.
       selector_property_inputs:
         - reference: .properties.route_services.enable
           label: Enable route services
         - reference: .properties.route_services.disable
           label: Disable route services
+
     - reference: .properties.logger_endpoint_port
       label: Loggregator Port
-      description: "Default is 443. Enter a new value to override the default, for instance if port 443 on your load balancer is used for other traffic."
+      description: |
+        Default is 443. Enter a new value to override the default, for instance
+        if port 443 on your load balancer is used for other traffic.
+
     - reference: .diego_cell.garden_network_mtu
       label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
-      description: The default 1454 bytes is fine for most cases, but you might need less, such as for networks that use GRE tunnels.
+      description: |
+        The default 1454 bytes is fine for most cases, but you might need less,
+        such as for networks that use GRE tunnels.
+
     - reference: .router.request_timeout_in_seconds
       label: Router Timeout to Backends (in seconds)
-      description: "Timeout for connections from Router (and HAProxy, if you use it) to applications and system components. Increase this to accommodate larger uploads over connections with high latency."
+      description: |
+        Timeout for connections from Router (and HAProxy, if you use it) to
+        applications and system components. Increase this to accommodate larger
+        uploads over connections with high latency.
+
     - reference: .router.drain_wait
       label: Load Balancer Unhealthy Threshold
-      description: "Specifies the amount of time, in seconds, that the Router will continue to accept connections before shutting down. During this period the healthcheck will report unhealthy to cause load balancers to fail over to other Routers. This value should be greater than or equal to the max time it could take your load balancer to consider a Router instance unhealthy, given contiguous failed healthchecks."
+      description: |
+        Specifies the amount of time, in seconds, that the Router will continue
+        to accept connections before shutting down. During this period the
+        healthcheck will report unhealthy to cause load balancers to fail over
+        to other Routers. This value should be greater than or equal to the max
+        time it could take your load balancer to consider a Router instance
+        unhealthy, given contiguous failed healthchecks.
+
     - reference: .router.lb_healthy_threshold
       label: Load Balancer Healthy Threshold
-      description: "Specifies the amount of time, in seconds, to wait until declaring the router instance started. This allows an external load balancer time to register the instance as healthy."
+      description: |
+        Specifies the amount of time, in seconds, to wait until declaring the
+        router instance started. This allows an external load balancer time to
+        register the instance as healthy.
+
     - reference: .router.max_idle_connections
       label: Router Max Idle Keepalive Connections
-      description: "Max number of idle keepalive connections maintained by Gorouter to all backends. The default value of 0 disables keepalive support. The max number of idle connections per backend is 100; this limit takes precedent if concurrent requests per backend is greater than 100 and total concurrent requests is less than Max Idle Keepalive Connections."
+      description: |
+        Max number of idle keepalive connections maintained by Gorouter to all
+        backends. The default value of 0 disables keepalive support. The max
+        number of idle connections per backend is 100; this limit takes
+        precedent if concurrent requests per backend is greater than 100 and
+        total concurrent requests is less than Max Idle Keepalive Connections.
+
     - reference: .router.extra_headers_to_log
       label: HTTP Headers to Log
-      description: "A comma-separated list of HTTP headers that will annotate access log events on the GoRouter."
+      description: |
+        A comma-separated list of HTTP headers that will annotate access log
+        events on the GoRouter.
+
     - reference: .properties.tcp_routing
-      label: Enable TCP requests to your apps via specific ports on the TCP router. You will want to configure a load balancer to forward these TCP requests to the TCP routers. If you do not have a load balancer, then you can also send traffic directly to the TCP router.
+      label: |
+        Enable TCP requests to your apps via specific ports on the TCP router.
+        You will want to configure a load balancer to forward these TCP
+        requests to the TCP routers. If you do not have a load balancer, then
+        you can also send traffic directly to the TCP router.
       selector_property_inputs:
         - reference: .properties.tcp_routing.disable
-          label: Select this option if you prefer to enable TCP Routing at a later time
+          label: |
+            Select this option if you prefer to enable TCP Routing at a later
+            time
+
         - reference: .properties.tcp_routing.enable
           label: Enable TCP Routing
           property_inputs:
             - reference: .properties.tcp_routing.enable.reservable_ports
-              label: TCP Routing Ports (one-time configuration, if you want to update this value you can via the CF CLI)
-              description: Enter the range of ports reserved for TCP routes. These ports must be available on your load balancer. You can specify a list of ports with commas between each port number and specify ranges of ports with dashes between the first and last port number. This configuration only applies the first time you specify it here, if you later want to update the ports you must do so with the CF CLI.
+              label: |
+                TCP Routing Ports (one-time configuration, if you want to
+                update this value you can via the CF CLI)
+              description: |
+                Enter the range of ports reserved for TCP routes. These ports
+                must be available on your load balancer. You can specify a list
+                of ports with commas between each port number and specify
+                ranges of ports with dashes between the first and last port
+                number. This configuration only applies the first time you
+                specify it here, if you later want to update the ports you must
+                do so with the CF CLI.
+
     - reference: .properties.container_networking
-      label: "Enabling the Container-to-Container network will allow policy-driven, direct communication between containers on an overlay network occupying the 10.255.0.0/16 range."
+      label: |
+        Container-to-Container networking places all containers on an overlay
+        network to support direct, app-to-app communication. Set a network
+        policy using `cf allow-access` to govern the communication.
       selector_property_inputs:
         - reference: .properties.container_networking.enable
           label: Enable
           property_inputs:
             - reference: .properties.container_networking.enable.network_cidr
-              label: Network CIDR
-              description: Defines the range of the overlay network. The CIDR must specify a RFC 1918 range. Defaults to 10.255.0.0/16.
+              label: |
+                Overlay Subnet (Only change this is you need to avoid address
+                collision with a third-party service on the same subnet.)
+              description: |
+                Defines the range of the overlay network and must specify a RFC
+                1918 range. Defaults to 10.255.0.0/16.
               placeholder: 10.255.0.0/16
+
             - reference: .properties.container_networking.enable.vtep_port
               label: VXLAN Tunnel Endpoint Port
-              description: Host port used for receiving VXLAN packets. Defaults to 4789.
+              description: |
+                Host port used for receiving VXLAN packets. Defaults to 4789.
+
         - reference: .properties.container_networking.disable
           label: Disable
           property_inputs:
             - reference: .properties.container_networking.disable.garden_network_pool
-              label: Applications Subnet (Only change this if you need to avoid address collision with a third-party service on the same subnet.)
-              description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
+              label: |
+                Applications Subnet (Only change this if you need to avoid
+                address collision with a third-party service on the same
+                subnet.)
+              description: |
+                Enter a CIDR subnet mask specifying the range of available IP
+                addresses to be assigned to your app containers. This must be
+                different from the network used by the system VMs.
+
     - reference: .router.enable_isolated_routing
-      label: "Routers reject requests for Isolation Segments"
-      description: "When disabled, routers of Elastic Runtime support applications deployed to Isolation Segments. When enabled, routers will reject requests for Isolation Segments, isolating the network for those applications. Do not enable this option without deploying routers for each Isolation Segment first."
+      label: Routers reject requests for Isolation Segments
+      description: |
+        When disabled, routers of Elastic Runtime support applications deployed
+        to Isolation Segments. When enabled, routers will reject requests for
+        Isolation Segments, isolating the network for those applications. Do
+        not enable this option without deploying routers for each Isolation
+        Segment first.
