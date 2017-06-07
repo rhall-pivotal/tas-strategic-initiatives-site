@@ -142,6 +142,7 @@ manifest: |
       admin_password: (( mysql_admin_credentials.password ))
       innodb_buffer_pool_size: 2147483648
       max_open_files: 1048576
+      startup_timeout: 120
       galera_healthcheck:
         db_password: (( galera_sidecar_user.password ))
         endpoint_username: (( mysql_bootstrap_credentials.identity ))
