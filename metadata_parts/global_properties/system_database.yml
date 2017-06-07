@@ -55,7 +55,7 @@ property_blueprints:
     configurable: false
     default: nfsvolume
 
-  - name: magic
+  - name: system_db_link
     type: selector
     configurable: false
     default: only-option
@@ -65,8 +65,8 @@ property_blueprints:
         named_manifests:
           - name: proxy
             manifest: |
-              "(( .mysql_proxy.service_hostname.value ? .properties.magic.selected_option.parsed_manifest(service_hostname) : .properties.magic.selected_option.parsed_manifest(proxy_link) ))"
-          - name: service_hostname
+              "(( .mysql_proxy.service_hostname.value ? .properties.system_db_link.selected_option.parsed_manifest(proxy_service_hostname) : .properties.system_db_link.selected_option.parsed_manifest(proxy_link) ))"
+          - name: proxy_service_hostname
             manifest: |
               database:
                 instances:
@@ -74,24 +74,15 @@ property_blueprints:
           - name: proxy_link
             manifest: |
               database: {from: proxy-mysql}
-
-  - name: more_magic
-    type: selector
-    configurable: false
-    default: only-option
-    option_templates:
-      - name: doesnt-matter
-        select_value: only-option
-        named_manifests:
-          - name: app_usage_service_proxy
+          - name: app_usage_database_proxy
             manifest: |
-              "(( .mysql_proxy.service_hostname.value ? .properties.more_magic.selected_option.parsed_manifest(service_hostname) : .properties.more_magic.selected_option.parsed_manifest(proxy_link) ))"
-          - name: service_hostname
+              "(( .mysql_proxy.service_hostname.value ? .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy_service_hostname) : .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy_link) ))"
+          - name: app_usage_database_proxy_service_hostname
             manifest: |
               app-usage-database:
                 instances:
                 - address: (( .mysql_proxy.service_hostname.value ))
-          - name: proxy_link
+          - name: app_usage_database_proxy_link
             manifest: |
               app-usage-database: {from: proxy-mysql}
 
@@ -105,7 +96,7 @@ property_blueprints:
         named_manifests:
           - name: mysql_db_link
             manifest: |
-              (( .properties.magic.selected_option.parsed_manifest(proxy) ))
+              (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
           - name: ccdb
             manifest: |
               port: 2544
@@ -144,7 +135,7 @@ property_blueprints:
               password: (( .mysql.app_usage_credentials.password ))
           - name: push_app_usage_service_db_link
             manifest: |
-              (( .properties.more_magic.selected_option.parsed_manifest(app_usage_service_proxy) ))
+              (( .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy) ))
           - name: diegodb
             manifest: |
               db_host: mysql.service.cf.internal
@@ -202,7 +193,7 @@ property_blueprints:
         named_manifests:
         - name: mysql_db_link
           manifest: |
-            (( .properties.magic.selected_option.parsed_manifest(proxy) ))
+            (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
         - name: ccdb
           manifest: |
             address: mysql.service.cf.internal
@@ -218,7 +209,7 @@ property_blueprints:
               citext: true
         - name: ccdb_link
           manifest: |
-            (( .properties.magic.selected_option.parsed_manifest(proxy) ))
+            (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
         - name: notifications
           manifest: |
             port: 3306
@@ -241,7 +232,7 @@ property_blueprints:
             password: (( .mysql.app_usage_credentials.password ))
         - name: push_app_usage_service_db_link
           manifest: |
-            (( .properties.more_magic.selected_option.parsed_manifest(app_usage_service_proxy) ))
+            (( .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy) ))
         - name: diegodb
           manifest: |
             db_host: mysql.service.cf.internal

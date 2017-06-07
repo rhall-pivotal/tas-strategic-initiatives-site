@@ -46,7 +46,7 @@ property_blueprints:
               name: (( .properties.uaa_database_name.value ))
         - name: db_link
           manifest: |
-            (( .properties.magic.selected_option.parsed_manifest(proxy) ))
+            (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
 
       - name: external
         select_value: external
