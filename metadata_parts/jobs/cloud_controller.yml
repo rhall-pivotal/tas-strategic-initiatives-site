@@ -324,11 +324,6 @@ manifest: |
       services:
         cloud_controller_ng: {}
         routing-api: {}
-        policy-server:
-          name: network-policy-server
-          check:
-            interval: 5s
-            script: /bin/true
   uaa:
     tls_port: 8443
     ca_cert: (( $ops_manager.ca_certificate ))

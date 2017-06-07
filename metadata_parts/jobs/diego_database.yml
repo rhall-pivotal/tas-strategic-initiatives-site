@@ -145,6 +145,11 @@ manifest: |
     agent:
       services:
         silk-controller: {}
+        policy-server:
+          name: network-policy-server
+          check:
+            interval: 5s
+            script: /bin/true
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   loggregator:
