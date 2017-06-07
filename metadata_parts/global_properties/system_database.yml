@@ -446,9 +446,12 @@ property_blueprints:
               password: (( .properties.system_database.external.networkpolicyserver_password.value ))
           - name: pivotal_account
             manifest: |
-              url: jdbc:mysql://(( .properties.system_database.external.host.value )):(( .properties.system_database.external.port.value ))/(( .properties.account_database_name.value ))
+              adapter: mysql
+              host: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
               username: (( .properties.system_database.external.account_username.value ))
               password: (( .properties.system_database.external.account_password.value ))
+              database: (( .properties.account_database_name.value ))
           - name: nfsvolume
             manifest: |
               host: (( .properties.system_database.external.host.value ))
