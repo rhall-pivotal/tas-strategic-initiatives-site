@@ -18,6 +18,12 @@ templates:
   release: loggregator
 - name: locket
   release: diego
+- name: route_registrar
+  release: routing
+- name: policy-server
+  release: cf-networking
+  consumes: |
+    (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
 - name: silk-controller
   release: cf-networking
   consumes: |
@@ -151,9 +157,27 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( locket_server_cert.cert_pem ))
     key: (( locket_server_cert.private_key_pem ))
+  route_registrar:
+    routes:
+    - name: network-policy-server
+      port: 4002
+      registration_interval: 20s
+      tags:
+        component: NetworkPolicyServer
+      uris:
+      - "api.(( .cloud_controller.system_domain.value ))/networking"
   cf_networking:
     disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
     network: (( .properties.container_networking.enable.network_cidr.value ))
+    policy_server:
+      uaa_ca: (( $ops_manager.ca_certificate ))
+      ca_cert: (( $ops_manager.ca_certificate ))
+      server_cert: (( .properties.network_policy_server_cert.cert_pem ))
+      server_key: (( .properties.network_policy_server_cert.private_key_pem ))
+      uaa_client: (( .uaa.network_policy_server_client.identity ))
+      uaa_client_secret: (( .uaa.network_policy_server_client.password ))
+      skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+      database: (( .properties.system_database.selected_option.parsed_manifest(networkpolicyserverdb) ))
     silk_controller:
       ca_cert: (( $ops_manager.ca_certificate ))
       server_cert: (( silk_controller_server_cert.cert_pem ))
