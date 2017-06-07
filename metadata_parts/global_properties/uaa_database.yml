@@ -15,8 +15,8 @@ property_blueprints:
         named_manifests:
         - name: db_config
           manifest: |
-            port: 2544
             db_scheme: postgresql
+            port: 2544
             roles:
             - tag: admin
               name: (( .uaadb.credentials.identity ))
@@ -34,9 +34,9 @@ property_blueprints:
         named_manifests:
         - name: db_config
           manifest: |
+            db_scheme: mysql
             address: mysql.service.cf.internal
             port: 3306
-            db_scheme: mysql
             roles:
             - tag: admin
               name: (( .mysql.uaadb_credentials.identity ))
@@ -66,9 +66,9 @@ property_blueprints:
         named_manifests:
         - name: db_config
           manifest: |
+            db_scheme: mysql
             address: (( .properties.uaa_database.external.host.value ))
             port: (( .properties.uaa_database.external.port.value ))
-            db_scheme: "mysql"
             roles:
             - tag: admin
               name: (( .properties.uaa_database.external.uaa_username.value ))

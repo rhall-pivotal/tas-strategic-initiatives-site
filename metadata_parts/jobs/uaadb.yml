@@ -61,11 +61,11 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
+  default: 0
   configurable: true
   constraints:
     max: 1
     min: 0
-  default: 0
   zero_if:
     property_reference: .properties.uaa_database
     property_values:
