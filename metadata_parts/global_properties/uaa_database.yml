@@ -34,6 +34,7 @@ property_blueprints:
         named_manifests:
         - name: db_config
           manifest: |
+            address: mysql.service.cf.internal
             port: 3306
             db_scheme: mysql
             roles:

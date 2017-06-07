@@ -172,6 +172,7 @@ property_blueprints:
             manifest: |
               type: "mysql"
               name: (( .properties.silk_database_name.value ))
+              host: mysql.service.cf.internal
               port: 3306
               username: (( .mysql.silkdb_credentials.identity ))
               password: (( .mysql.silkdb_credentials.password ))
@@ -179,12 +180,15 @@ property_blueprints:
             manifest: |
               type: "mysql"
               name: (( .properties.networkpolicyserver_database_name.value ))
+              host: mysql.service.cf.internal
               port: 3306
               username: (( .mysql.networkpolicyserverdb_credentials.identity ))
               password: (( .mysql.networkpolicyserverdb_credentials.password ))
           - name: pivotal_account
             manifest: |
-              url: jdbc:mysql://(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/(( .properties.account_database_name.value ))
+              adapter: mysql
+              database: (( .properties.account_database_name.value ))
+              port: 3306
               username: (( .mysql.pivotal_account_credentials.identity ))
               password: (( .mysql.pivotal_account_credentials.password ))
           - name: nfsvolume
@@ -201,6 +205,7 @@ property_blueprints:
             (( .properties.magic.selected_option.parsed_manifest(proxy) ))
         - name: ccdb
           manifest: |
+            address: mysql.service.cf.internal
             port: 3306
             db_scheme: mysql
             roles:
@@ -264,6 +269,7 @@ property_blueprints:
           manifest: |
             type: "mysql"
             name: (( .properties.silk_database_name.value ))
+            host: mysql.service.cf.internal
             port: 3306
             username: (( .mysql.silkdb_credentials.identity ))
             password: (( .mysql.silkdb_credentials.password ))
@@ -271,12 +277,15 @@ property_blueprints:
           manifest: |
             type: "mysql"
             name: (( .properties.networkpolicyserver_database_name.value ))
+            host: mysql.service.cf.internal
             port: 3306
             username: (( .mysql.networkpolicyserverdb_credentials.identity ))
             password: (( .mysql.networkpolicyserverdb_credentials.password ))
         - name: pivotal_account
           manifest: |
-            url: jdbc:mysql://(( .mysql_proxy.service_hostname.value || .mysql_proxy.first_ip )):3306/(( .properties.account_database_name.value ))
+            adapter: mysql
+            database: (( .properties.account_database_name.value ))
+            port: 3306
             username: (( .mysql.pivotal_account_credentials.identity ))
             password: (( .mysql.pivotal_account_credentials.password ))
         - name: nfsvolume
