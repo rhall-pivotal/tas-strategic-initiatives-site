@@ -183,6 +183,7 @@ manifest: |
       uaa_client_secret: (( .uaa.network_policy_server_client.password ))
       skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
       database: (( .properties.system_database.selected_option.parsed_manifest(networkpolicyserverdb) ))
+      debug_port: 22223
     silk_controller:
       ca_cert: (( $ops_manager.ca_certificate ))
       server_cert: (( silk_controller_server_cert.cert_pem ))
