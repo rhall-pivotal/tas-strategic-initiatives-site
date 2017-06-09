@@ -100,6 +100,8 @@ manifest: |
   system_domain: (( .cloud_controller.system_domain.value ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
+  metron_agent:
+    deployment: cf
   loggregator:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))

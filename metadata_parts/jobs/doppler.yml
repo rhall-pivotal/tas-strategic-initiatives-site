@@ -95,6 +95,7 @@ manifest: |
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   system_domain: (( .cloud_controller.system_domain.value ))
   doppler:
+    deployment: cf
     disable_announce: true
     message_drain_buffer_size: (( message_drain_buffer_size.value ))
     etcd:
@@ -106,6 +107,8 @@ manifest: |
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
+  metron_agent:
+    deployment: cf
   loggregator:
     disable_syslog_drains: true
     etcd:

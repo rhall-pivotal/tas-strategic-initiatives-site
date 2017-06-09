@@ -82,6 +82,8 @@ manifest: |
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
+  metron_agent:
+    deployment: cf
   etcd:
     heartbeat_interval_in_milliseconds: (( heartbeat_interval_in_milliseconds.value ))
     election_timeout_in_milliseconds: (( election_timeout_in_milliseconds.value ))

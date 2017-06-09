@@ -346,6 +346,10 @@ manifest: |
     port: (( .properties.logger_endpoint_port.value ))
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
+  metron_agent:
+    deployment: cf
+  statsd_injector:
+    deployment: cf
   loggregator:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
