@@ -45,10 +45,3 @@ form:
           - reference: .properties.container_networking.disable.garden_network_pool
             label: Applications Subnet (Only change this if you need to avoid address collision with a third-party service on the same subnet.)
             description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
-  - reference: .properties.routing_table_sharding_mode
-    label: "Router Sharding Mode: When 'Isolation Segment Only' is selected, the routers of this tile will only have knowledge of applications deployed to the Cells of this tile; all other requests will receive a 404 response. When 'No Isolation Segments' is selected, the routers of this tile will reject requests for any isolation segment. Choose 'No Isolation Segments' to add a group of routers for the Elastic Runtime tile, as when a private point of entry for the system domain is desired."
-    selector_property_inputs:
-    - reference: .properties.routing_table_sharding_mode.isolation_segment_only
-      label: Isolation Segment Only
-    - reference: .properties.routing_table_sharding_mode.no_isolation_segment
-      label: No Isolation Segment
