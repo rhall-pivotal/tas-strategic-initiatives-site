@@ -182,6 +182,7 @@ manifest: |
     cni_config_dir: /var/vcap/jobs/silk-cni/config/cni
     disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
     dns_servers: (( dns_servers.parsed_strings ))
+    iptables_logging: true
     mtu: (( garden_network_mtu.value ))
     network: (( .properties.container_networking.enable.network_cidr.value ))
     vtep_port: (( .properties.container_networking.enable.vtep_port.value ))
