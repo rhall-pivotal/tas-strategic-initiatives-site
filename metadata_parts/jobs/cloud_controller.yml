@@ -64,6 +64,14 @@ resource_definitions:
   constraints:
     min: 20_480
 
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 1024
+  constraints:
+    min: 1024
+
 - name: cpu
   type: integer
   label: CPU
