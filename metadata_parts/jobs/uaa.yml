@@ -274,6 +274,11 @@ property_blueprints:
     default:
       identity: splunk-firehose
 
+  - name: stackdriver_nozzle_credentials
+    type: simple_credentials
+    default:
+      identity: stackdriver-nozzle
+
   - name: solace_router_client_credentials
     type: simple_credentials
     default:
@@ -777,6 +782,11 @@ manifest: |
         password: (( splunk_firehose_credentials.password ))
         groups:
           - cloud_controller.admin
+          - doppler.firehose
+      - name: (( stackdriver_nozzle_credentials.identity ))
+        password: (( stackdriver_nozzle_credentials.password ))
+        groups:
+          - cloud_controller.admin_read_only
           - doppler.firehose
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
   uaadb: (( .properties.uaa_database.selected_option.parsed_manifest(db_config) ))
