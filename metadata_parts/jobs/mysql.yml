@@ -141,6 +141,7 @@ manifest: |
       interrupt_notify_cmd: "/var/vcap/jobs/send-email/bin/run"
       admin_password: (( mysql_admin_credentials.password ))
       innodb_buffer_pool_size: 2147483648
+      innodb_strict_mode: true
       max_open_files: 1048576
       startup_timeout: 120
       galera_healthcheck:
