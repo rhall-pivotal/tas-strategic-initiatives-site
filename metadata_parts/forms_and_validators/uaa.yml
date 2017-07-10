@@ -19,12 +19,6 @@ form:
     label: |
       Choose the location of your UAA database
     selector_property_inputs:
-    - reference: .properties.uaa_database.internal
-      label: |
-        Internal Postgres (the Postgres DBs are not highly-available, but this
-        selection is required if you want to keep your system data from a
-        pre-1.6.0 Elastic Runtime that you upgraded)
-
     - reference: .properties.uaa_database.internal_mysql
       label: |
         Internal MySQL (preferred for complete high-availability)

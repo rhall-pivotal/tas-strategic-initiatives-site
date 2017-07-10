@@ -10,25 +10,6 @@ property_blueprints:
     configurable: true
     default: internal_mysql
     option_templates:
-      - name: internal
-        select_value: internal
-        named_manifests:
-        - name: db_config
-          manifest: |
-            db_scheme: postgresql
-            port: 2544
-            roles:
-            - tag: admin
-              name: (( .uaadb.credentials.identity ))
-              password: (( .uaadb.credentials.password ))
-            databases:
-            # The tag key is meant to identify the correct db to the uaa job, even if an unfamiliar name is used
-            - tag: uaa
-              name: (( .properties.uaa_database_name.value ))
-        - name: db_link
-          manifest: |
-            database: {from: uaadb}
-
       - name: internal_mysql
         select_value: internal_mysql
         named_manifests:
