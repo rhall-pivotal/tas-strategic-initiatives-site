@@ -98,9 +98,6 @@ manifest: |
     deployment: cf
     disable_announce: true
     message_drain_buffer_size: (( message_drain_buffer_size.value ))
-    etcd:
-      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
-      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
   doppler_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   ssl:
@@ -111,10 +108,6 @@ manifest: |
     deployment: cf
   loggregator:
     disable_syslog_drains: true
-    etcd:
-      require_ssl: true
-      machines: ['cf-etcd.service.cf.internal']
-      ca_cert: (( $ops_manager.ca_certificate ))
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
       doppler:
@@ -129,10 +122,6 @@ manifest: |
   cc:
     mutual_tls:
       ca_cert: (( $ops_manager.ca_certificate ))
-  syslog_drain_binder:
-    etcd:
-      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
-      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
   consul:
     agent:
       services:

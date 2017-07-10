@@ -41,16 +41,3 @@ form:
       description: |
         Selecting this option will disable using Consul for distributed locking
         in Diego.
-
-    - reference: .etcd_tls_server.heartbeat_interval_in_milliseconds
-      label: etcd Heartbeat Interval
-      description: |
-        Interval between heartbeats in milliseconds. See
-        https://coreos.com/etcd/docs/2.2.5/tuning.html for more details.
-
-    - reference: .etcd_tls_server.election_timeout_in_milliseconds
-      label: etcd Election Timeout
-      description: |
-        Time without receiving a heartbeat before peer should attempt to become
-        leader in milliseconds. See
-        https://coreos.com/etcd/docs/2.2.5/tuning.html for more details.

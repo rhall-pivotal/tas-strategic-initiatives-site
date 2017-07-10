@@ -84,10 +84,6 @@ property_blueprints:
 
 manifest: |
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  traffic_controller:
-    etcd:
-      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
-      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
   cc:
     srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
   system_domain: (( .cloud_controller.system_domain.value ))
@@ -109,10 +105,6 @@ manifest: |
       reverse_log_proxy:
         cert: (( .syslog_adapter.adapter_rlp_tls.cert_pem ))
         key: (( .syslog_adapter.adapter_rlp_tls.private_key_pem ))
-    etcd:
-      require_ssl: true
-      machines: ['cf-etcd.service.cf.internal']
-      ca_cert: (( $ops_manager.ca_certificate ))
     uaa:
       client: (( .uaa.doppler_client_credentials.identity ))
       client_secret: (( .uaa.doppler_client_credentials.password ))

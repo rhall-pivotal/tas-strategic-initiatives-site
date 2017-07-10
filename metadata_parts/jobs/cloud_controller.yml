@@ -353,12 +353,6 @@ manifest: |
     skip_consul_lock: (( .diego_database.skip_consul_locks.value ))
     sqldb: (( .properties.system_database.selected_option.parsed_manifest(routingdb) ))
     system_domain: (( .cloud_controller.system_domain.value ))
-    etcd:
-      require_ssl: true
-      servers: ['cf-etcd.service.cf.internal']
-      ca_cert: (( $ops_manager.ca_certificate ))
-      client_cert: (( .properties.cf_etcd_client_cert.cert_pem ))
-      client_key: (( .properties.cf_etcd_client_cert.private_key_pem ))
     locket:
       api_location: "locket.service.cf.internal:8891"
       ca_cert: (( $ops_manager.ca_certificate ))
