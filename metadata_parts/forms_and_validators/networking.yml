@@ -11,12 +11,14 @@ form:
     - reference: .router.static_ips
       label: Router IPs
       description: |
-        If you are not using HAProxy, enter static IP address(es) for the
-        Router(s), which must be within the subnet CIDR block  that you defined
-        in the Ops Manager network configuration. If you have a load balancer,
-        configure it to point to these IPs. If deploying PCF to AWS with an
-        ELB, do not enter IP addresses here. Instead, add the name of your ELB
-        in the Resource Config section, in the ELB Name column for Router.
+        If you are deploying onto an infrastructure that does not support
+        automated assignment of routers to load balancers (vSphere), or you are
+        intending to manually configure your load balancer with the IP
+        addresses of the routers, you should enter static IP addresses here
+        that will be used by the routers. On infrastructures where automated
+        load balancer assignment is supported (AWS, GCP, Azure), this field can
+        be left blank and the "Load Balancers" field on the "Resource Config"
+        tab can be filled out with the correct load balancer assignment.
 
     - reference: .diego_brain.static_ips
       label: SSH Proxy IPs
