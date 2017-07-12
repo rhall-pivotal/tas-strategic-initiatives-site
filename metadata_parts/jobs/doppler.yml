@@ -108,6 +108,8 @@ manifest: |
     deployment: cf
   loggregator:
     disable_syslog_drains: true
+    etcd:
+      machines: []
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
       doppler:
