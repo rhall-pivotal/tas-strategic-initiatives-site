@@ -84,7 +84,7 @@ manifest: |
     skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
   mysql-monitoring:
     recipient_email: (( recipient_email.value ))
-    cluster_identifier: "pcf-mysql"
+    cluster_identifier: cf
     replication-canary:
       canary_database: monitor
       canary_username: (( .mysql.monitordb_credentials.identity ))
