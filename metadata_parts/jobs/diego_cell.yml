@@ -116,6 +116,7 @@ property_blueprints:
     optional: true
 
 manifest: |
+  enable_declarative_healthcheck: true
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   diego:
     executor:
