@@ -7,7 +7,7 @@ templates:
 - name: mysql
   release: cf-mysql
   provides: |
-    mysql-database: {as: direct-mysql}
+    internal-mysql-database: {as: direct-mysql}
 - name: streaming-mysql-backup-tool
   release: mysql-backup
 - name: send-email
