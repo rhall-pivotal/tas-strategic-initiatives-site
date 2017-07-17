@@ -11,7 +11,7 @@ templates:
     consul_client: {from: consul_client_link}
     consul_server: nil
 - name: haproxy
-  release: cf
+  release: haproxy
 - name: metron_agent
   release: loggregator
 - name: syslog_forwarder
@@ -78,14 +78,14 @@ property_blueprints:
     configurable: true
 
 manifest: |
-  request_timeout_in_seconds: (( .router.request_timeout_in_seconds.value ))
   ha_proxy:
+    server_timeout: (( .router.request_timeout_in_seconds.value ))
+    client_timeout: (( .router.request_timeout_in_seconds.value ))
     disable_http: (( .properties.networking_point_of_entry.haproxy.disable_http.value ))
     ssl_ciphers: (( .properties.networking_point_of_entry.haproxy.ssl_ciphers.value ))
     ssl_pem: (( .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate.cert_and_private_key_pems ))
     buffer_size_bytes: (( .properties.networking_point_of_entry.haproxy.max_buffer_size.value ))
-  cc:
-    allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
+    tcp_link_port: 2222
   metron_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   metron_agent:
