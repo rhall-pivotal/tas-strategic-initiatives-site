@@ -4,49 +4,23 @@ label: Cloud Controller
 resource_label: Cloud Controller
 description: Coordinates Pivotal CF Elastic Runtime application lifecycles
 templates:
-- name: consul_agent
-  release: consul
-  consumes: |
-    consul_common: {from: consul_common_link}
-    consul_client: {from: consul_client_link}
-    consul_server: nil
-- name: go-buildpack
-  release: go-offline-buildpack
-- name: binary-buildpack
-  release: binary-offline-buildpack
-- name: nodejs-buildpack
-  release: nodejs-offline-buildpack
-- name: ruby-buildpack
-  release: ruby-offline-buildpack
-- name: php-buildpack
-  release: php-offline-buildpack
-- name: python-buildpack
-  release: python-offline-buildpack
-- name: java-buildpack
-  release: java-offline-buildpack
-- name: staticfile-buildpack
-  release: staticfile-offline-buildpack
-- name: dotnet-core-buildpack
-  release: dotnet-core-offline-buildpack
-- name: cloud_controller_ng
-  release: capi
-  consumes: |
-    (( .properties.system_database.selected_option.parsed_manifest(ccdb_link) ))
-  provides: |
-    cloud_controller: {as: cloud_controller, shared: true}
-- name: routing-api
-  release: routing
-- name: metron_agent
-  release: loggregator
-- name: route_registrar
-  release: routing
-- name: statsd_injector
-  release: statsd-injector
-- name: cloud-controller-backup
-  release: cf-backup-and-restore
-- name: syslog_forwarder
-  release: syslog-migration
-
+- consul_agent
+- go-buildpack
+- binary-buildpack
+- nodejs-buildpack
+- ruby-buildpack
+- php-buildpack
+- python-buildpack
+- java-buildpack
+- staticfile-buildpack
+- dotnet-core-buildpack
+- cloud_controller_ng
+- routing-api
+- metron_agent
+- route_registrar
+- statsd_injector
+- cloud-controller-backup
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer

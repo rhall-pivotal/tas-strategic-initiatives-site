@@ -4,17 +4,10 @@ label: Apps Manager Errand
 resource_label: Apps Manager Errand
 description: Pushes the Pivotal Apps Manager application to your Elastic Runtime installation
 templates:
-- name: push-apps-manager
-  release: push-apps-manager-release
-  consumes: |
-    (( .properties.system_database.selected_option.parsed_manifest(push_app_usage_service_db_link) ))
-- name: cflinuxfs2-rootfs-setup
-  release: cflinuxfs2
-- name: nodejs-buildpack
-  release: nodejs-offline-buildpack
-- name: ruby-buildpack
-  release: ruby-offline-buildpack
-
+- push-apps-manager
+- cflinuxfs2-rootfs-setup
+- nodejs-buildpack
+- ruby-buildpack
 resource_definitions:
 - name: ram
   type: integer

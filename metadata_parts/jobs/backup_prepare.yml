@@ -4,15 +4,10 @@ label: Backup Prepare Node
 resource_label: Backup Prepare Node
 description: Streams backups from MySQL Cluster
 templates:
-- name: streaming-mysql-backup-client
-  release: mysql-backup
-- name: service-backup
-  release: service-backup
-- name: mysql-backup
-  release: cf-backup-and-restore
-- name: syslog_forwarder
-  release: syslog-migration
-
+- streaming-mysql-backup-client
+- service-backup
+- mysql-backup
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer

@@ -5,15 +5,9 @@ resource_label: Pivotal Account Errand
 description: Pushes the Pivotal Account application to your Elastic Runtime installation
 
 templates:
-- name: push-pivotal-account
-  release: pivotal-account
-  consumes: |
-    (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
-- name: cflinuxfs2-rootfs-setup
-  release: cflinuxfs2
-- name: java-buildpack
-  release: java-offline-buildpack
-
+- push-pivotal-account
+- cflinuxfs2-rootfs-setup
+- java-buildpack
 resource_definitions:
 - name: ram
   type: integer

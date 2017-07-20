@@ -4,19 +4,10 @@ label: Syslog Scheduler
 resource_label: Syslog Scheduler
 description: This component handles communication with the Cloud Controller to receive new bindings. It should not be scaled beyond a single instance.
 templates:
-- name: consul_agent
-  release: consul
-  consumes: |
-    consul_common: {from: consul_common_link}
-    consul_client: {from: consul_client_link}
-    consul_server: nil
-- name: metron_agent
-  release: loggregator
-- name: scheduler
-  release: scalablesyslog
-- name: syslog_forwarder
-  release: syslog-migration
-
+- consul_agent
+- metron_agent
+- scheduler
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer

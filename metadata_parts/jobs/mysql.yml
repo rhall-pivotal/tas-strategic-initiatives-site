@@ -4,21 +4,12 @@ label: MySQL Server
 resource_label: MySQL Server
 description: Multi-tenant MySQL server.
 templates:
-- name: mysql
-  release: cf-mysql
-  provides: |
-    internal-mysql-database: {as: direct-mysql}
-- name: streaming-mysql-backup-tool
-  release: mysql-backup
-- name: send-email
-  release: mysql-monitoring
-- name: mysql-diag-agent
-  release: mysql-monitoring
-- name: mysql-restore
-  release: cf-backup-and-restore
-- name: syslog_forwarder
-  release: syslog-migration
-
+- mysql
+- streaming-mysql-backup-tool
+- send-email
+- mysql-diag-agent
+- mysql-restore
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer

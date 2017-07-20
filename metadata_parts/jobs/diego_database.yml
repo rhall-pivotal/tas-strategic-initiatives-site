@@ -4,33 +4,15 @@ label: Diego BBS
 resource_label: Diego BBS
 description: An datastore node for Diego
 templates:
-- name: consul_agent
-  release: consul
-  consumes: |
-    consul_common: {from: consul_common_link}
-    consul_client: {from: consul_client_link}
-    consul_server: nil
-- name: bbs
-  release: diego
-- name: cfdot
-  release: diego
-- name: metron_agent
-  release: loggregator
-- name: locket
-  release: diego
-- name: route_registrar
-  release: routing
-- name: policy-server
-  release: cf-networking
-  consumes: |
-    (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
-- name: silk-controller
-  release: cf-networking
-  consumes: |
-    (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
-- name: syslog_forwarder
-  release: syslog-migration
-
+- consul_agent
+- bbs
+- cfdot
+- metron_agent
+- locket
+- route_registrar
+- policy-server
+- silk-controller
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer

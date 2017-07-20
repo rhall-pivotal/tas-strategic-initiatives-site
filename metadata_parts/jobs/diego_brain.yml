@@ -4,35 +4,18 @@ label: Diego Brain
 resource_label: Diego Brain
 description: Diego Brain
 templates:
-- name: consul_agent
-  release: consul
-  consumes: |
-    consul_common: {from: consul_common_link}
-    consul_client: {from: consul_client_link}
-    consul_server: nil
-- name: auctioneer
-  release: diego
-- name: cfdot
-  release: diego
-- name: cc_uploader
-  release: capi
-- name: file_server
-  release: diego
-- name: nsync
-  release: capi
-- name: tcp_emitter
-  release: routing
-- name: ssh_proxy
-  release: diego
-- name: tps
-  release: capi
-- name: stager
-  release: capi
-- name: metron_agent
-  release: loggregator
-- name: syslog_forwarder
-  release: syslog-migration
-
+- consul_agent
+- auctioneer
+- cfdot
+- cc_uploader
+- file_server
+- nsync
+- tcp_emitter
+- ssh_proxy
+- tps
+- stager
+- metron_agent
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer

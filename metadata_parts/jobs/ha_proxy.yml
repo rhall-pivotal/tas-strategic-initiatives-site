@@ -4,19 +4,10 @@ label: HAProxy
 resource_label: HAProxy
 description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal CF Elastic Runtime router IP. Self signed certificates will function properly.
 templates:
-- name: consul_agent
-  release: consul
-  consumes: |
-    consul_common: {from: consul_common_link}
-    consul_client: {from: consul_client_link}
-    consul_server: nil
-- name: haproxy
-  release: haproxy
-- name: metron_agent
-  release: loggregator
-- name: syslog_forwarder
-  release: syslog-migration
-
+- consul_agent
+- haproxy
+- metron_agent
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer

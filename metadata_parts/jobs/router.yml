@@ -4,19 +4,10 @@ label: Router
 resource_label: Router
 description: Routers route Internet traffic to applications and between Pivotal CF Elastic Runtime components.
 templates:
-- name: consul_agent
-  release: consul
-  consumes: |
-    consul_common: {from: consul_common_link}
-    consul_client: {from: consul_client_link}
-    consul_server: nil
-- name: gorouter
-  release: routing
-- name: metron_agent
-  release: loggregator
-- name: syslog_forwarder
-  release: syslog-migration
-
+- consul_agent
+- gorouter
+- metron_agent
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer

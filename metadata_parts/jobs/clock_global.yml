@@ -4,21 +4,10 @@ label: Clock Global
 resource_label: Clock Global
 description: Schedules asynchronous tasks for cloud controller
 templates:
-- name: consul_agent
-  release: consul
-  consumes: |
-    consul_common: {from: consul_common_link}
-    consul_client: {from: consul_client_link}
-    consul_server: nil
-- name: cloud_controller_clock
-  release: capi
-  consumes: |
-    (( .properties.system_database.selected_option.parsed_manifest(ccdb_link) ))
-- name: metron_agent
-  release: loggregator
-- name: syslog_forwarder
-  release: syslog-migration
-
+- consul_agent
+- cloud_controller_clock
+- metron_agent
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer

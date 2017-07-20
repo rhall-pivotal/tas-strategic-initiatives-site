@@ -4,13 +4,9 @@ label: Notifications UI Errand
 resource_label: Notifications UI Errand
 description: Pushes the Notifications UI component to your Elastic Runtime installation
 templates:
-- name: deploy-notifications-ui
-  release: notifications-ui
-- name: cflinuxfs2-rootfs-setup
-  release: cflinuxfs2
-- name: binary-buildpack
-  release: binary-offline-buildpack
-
+- deploy-notifications-ui
+- cflinuxfs2-rootfs-setup
+- binary-buildpack
 resource_definitions:
 - name: ram
   type: integer

@@ -4,23 +4,12 @@ label: Loggregator Trafficcontroller
 resource_label: Loggregator Trafficcontroller
 description: Loggregator trafficcontroller distributes requests to Loggregator servers
 templates:
-- name: consul_agent
-  release: consul
-  consumes: |
-    consul_common: {from: consul_common_link}
-    consul_client: {from: consul_client_link}
-    consul_server: nil
-- name: loggregator_trafficcontroller
-  release: loggregator
-- name: metron_agent
-  release: loggregator
-- name: route_registrar
-  release: routing
-- name: syslog_forwarder
-  release: syslog-migration
-- name: reverse_log_proxy
-  release: loggregator
-
+- consul_agent
+- loggregator_trafficcontroller
+- metron_agent
+- route_registrar
+- syslog_forwarder
+- reverse_log_proxy
 resource_definitions:
 - name: ram
   type: integer

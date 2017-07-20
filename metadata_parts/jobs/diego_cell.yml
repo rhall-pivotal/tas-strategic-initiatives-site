@@ -4,39 +4,20 @@ label: Diego Cell
 resource_label: Diego Cell
 description: Diego Cell
 templates:
-- name: consul_agent
-  release: consul
-  consumes: |
-    consul_common: {from: consul_common_link}
-    consul_client: {from: consul_client_link}
-    consul_server: nil
-- name: rep
-  release: diego
-- name: route_emitter
-  release: diego
-- name: cfdot
-  release: diego
-- name: garden
-  release: garden-runc
-- name: cflinuxfs2-rootfs-setup
-  release: cflinuxfs2
-- name: metron_agent
-  release: loggregator
-- name: silk-cni
-  release: cf-networking
-- name: silk-daemon
-  release: cf-networking
-- name: garden-cni
-  release: cf-networking
-- name: netmon
-  release: cf-networking
-- name: vxlan-policy-agent
-  release: cf-networking
-- name: nfsv3driver
-  release: nfs-volume
-- name: syslog_forwarder
-  release: syslog-migration
-
+- consul_agent
+- rep
+- route_emitter
+- cfdot
+- garden
+- cflinuxfs2-rootfs-setup
+- metron_agent
+- silk-cni
+- silk-daemon
+- garden-cni
+- netmon
+- vxlan-policy-agent
+- nfsv3driver
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer

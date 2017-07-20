@@ -1,0 +1,5 @@
+---
+name: deploy-autoscaling
+release: cf-autoscaling
+consumes: "(( .properties.system_database.selected_option.parsed_manifest(mysql_db_link)
+  ))\n"

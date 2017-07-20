@@ -4,23 +4,12 @@ label: File Storage
 resource_label: File Storage
 description: Stores droplets and app packages on behalf of Cloud Controller
 templates:
-- name: consul_agent
-  release: consul
-  consumes: |
-    consul_common: {from: consul_common_link}
-    consul_client: {from: consul_client_link}
-    consul_server: nil
-- name: metron_agent
-  release: loggregator
-- name: blobstore
-  release: capi
-- name: route_registrar
-  release: routing
-- name: blobstore-backup
-  release: cf-backup-and-restore
-- name: syslog_forwarder
-  release: syslog-migration
-
+- consul_agent
+- metron_agent
+- blobstore
+- route_registrar
+- blobstore-backup
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer

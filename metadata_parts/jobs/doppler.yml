@@ -4,21 +4,11 @@ label: Doppler Server
 resource_label: Doppler Server
 description: Doppler server collects application logs
 templates:
-- name: consul_agent
-  release: consul
-  consumes: |
-    consul_common: {from: consul_common_link}
-    consul_client: {from: consul_client_link}
-    consul_server: nil
-- name: doppler
-  release: loggregator
-- name: metron_agent
-  release: loggregator
-- name: syslog_drain_binder
-  release: loggregator
-- name: syslog_forwarder
-  release: syslog-migration
-
+- consul_agent
+- doppler
+- metron_agent
+- syslog_drain_binder
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer
