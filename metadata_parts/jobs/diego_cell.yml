@@ -18,6 +18,7 @@ templates:
 - vxlan-policy-agent
 - nfsv3driver
 - syslog_forwarder
+- grootfs
 resource_definitions:
 - name: ram
   type: integer
@@ -148,7 +149,7 @@ manifest: |
     cleanup_process_dirs_on_wait: true
     default_container_grace_time: 0
     persistent_image_list:
-      - "/var/vcap/packages/cflinuxfs2/rootfs"
+      - "/var/vcap/packages/cflinuxfs2/rootfs.tar"
     graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
     network_pool: (( .properties.container_networking.disable.garden_network_pool.value ))
     deny_networks: ["0.0.0.0/0"]
@@ -160,6 +161,12 @@ manifest: |
     network_plugin: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin) ))
     network_plugin_extra_args: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin_extra_args) ))
     dns_servers: (( dns_servers.parsed_strings ))
+    image_plugin: "/var/vcap/packages/grootfs/bin/grootfs"
+    image_plugin_extra_args: ["--config=/var/vcap/jobs/grootfs/config/grootfs_config.yml"]
+  grootfs:
+    graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
+    insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
+    persistent_image_list: ["/var/vcap/packages/cflinuxfs2/rootfs.tar"]
   cf_networking:
     cni_config_dir: /var/vcap/jobs/silk-cni/config/cni
     disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
