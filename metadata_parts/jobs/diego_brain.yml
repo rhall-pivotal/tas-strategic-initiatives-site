@@ -128,6 +128,7 @@ manifest: |
         locket:
           api_location: "locket.service.cf.internal:8891"
         skip_consul_lock: (( .diego_database.skip_consul_locks.value ))
+      listener_enabled: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_tps_listener) ))
   diego:
     auctioneer:
       starting_container_count_maximum: (( starting_container_count_maximum.value ))

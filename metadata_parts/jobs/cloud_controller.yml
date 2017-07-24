@@ -21,6 +21,7 @@ templates:
 - statsd_injector
 - cloud-controller-backup
 - syslog_forwarder
+
 resource_definitions:
 - name: ram
   type: integer
@@ -217,6 +218,14 @@ manifest: |
       - default_security_group
     default_staging_security_groups:
       - default_security_group
+    diego:
+      temporary_local_staging: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      temporary_local_tasks: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      temporary_local_apps: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      temporary_local_tps: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      temporary_local_sync: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      temporary_cc_uploader_mtls: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      temporary_droplet_download_mtls: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
     disable_custom_buildpacks: "(( enable_custom_buildpacks.value ? 'false' : 'true' ))"
     install_buildpacks:
       - name: staticfile_buildpack
