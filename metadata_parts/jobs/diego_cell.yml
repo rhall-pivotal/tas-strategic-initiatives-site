@@ -119,7 +119,7 @@ manifest: |
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       preloaded_rootfses:
-      - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
+      - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar
       locket:
         api_location: "locket.service.cf.internal:8891"
     route_emitter:
@@ -149,7 +149,7 @@ manifest: |
     cleanup_process_dirs_on_wait: true
     default_container_grace_time: 0
     persistent_image_list:
-      - "/var/vcap/packages/cflinuxfs2/rootfs.tar"
+      - "/var/vcap/packages/cflinuxfs2/rootfs"
     graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
     network_pool: (( .properties.container_networking.disable.garden_network_pool.value ))
     deny_networks: ["0.0.0.0/0"]
