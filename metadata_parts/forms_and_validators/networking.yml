@@ -2,46 +2,93 @@
 form:
   name: networking
   label: Networking
-  description: "Configure security and routing services for your isolation segment."
+  description: |
+    Configure security and routing services for your isolation segment.
+
   property_inputs:
   - reference: .isolated_router.static_ips
     label: Router IPs
-    description: "Enter static IP address(es) for the Router(s), which must be within the subnet CIDR block that you defined in the Ops Manager network configuration. If you have a load balancer, configure it to point to these IPs."
+    description: |
+      If you are deploying onto an infrastructure that does not support
+      automated assignment of routers to load balancers (vSphere), or you are
+      intending to manually configure your load balancer with the IP
+      addresses of the routers, you should enter static IP addresses here
+      that will be used by the routers. On infrastructures where automated
+      load balancer assignment is supported (AWS, GCP, Azure), this field can
+      be left blank and the "Load Balancers" field on the "Resource Config"
+      tab can be filled out with the correct load balancer assignment.
+
   - reference: .isolated_diego_cell.garden_network_mtu
-    label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
-    description: The default 1454 bytes is fine for most cases, but you might need less, such as for networks that use GRE tunnels.
+    label: |
+      Applications Network Maximum Transmission Unit (MTU) (in bytes)
+    description: |
+      The default 1454 bytes is fine for most cases, but you might need less,
+      such as for networks that use GRE tunnels.
+
   - reference: .properties.networking_point_of_entry
     label: TLS Termination Certificates
     selector_property_inputs:
       - reference: .properties.networking_point_of_entry.terminate_at_router
-        label: "Forward SSL to Isolation Segment Router with provided certificates. Assumes an external load balancer is configured to forward encrypted traffic."
+        label: |
+          Forward SSL to Isolation Segment Router with provided certificates.
+          Assumes an external load balancer is configured to forward encrypted
+          traffic.
         property_inputs:
           - reference: .properties.networking_point_of_entry.terminate_at_router.ssl_rsa_certificate
             label: Router SSL Termination Certificate and Private Key
-            description: "Required for SSL encryption between the load balancer and router(s)."
+            description: |
+              Required for SSL encryption between the load balancer and
+              router(s).
+
           - reference: .properties.networking_point_of_entry.terminate_at_router.ssl_ciphers
             label: Router SSL Ciphers
-            description: Router ciphers are read in Golang and should use underscores instead of dashes in their names e.g. TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
+            description: |
+              Router ciphers are read in Golang and should use underscores
+              instead of dashes in their names e.g.
+              TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
+
       - reference: .properties.networking_point_of_entry.terminate_at_router_ert_cert
-        label: "Forward SSL to Isolation Segment Router with ERT Router certificates. Assumes an external load balancer is configured to forward encrypted traffic. Will inherit the certificates provided to the Router in the Elastic Runtime Tile."
+        label: |
+          Forward SSL to Isolation Segment Router with ERT Router certificates.
+          Assumes an external load balancer is configured to forward encrypted
+          traffic. Will inherit the certificates provided to the Router in the
+          Elastic Runtime Tile.
+
       - reference: .properties.networking_point_of_entry.terminate_before_router
-        label: "Forward unencrypted traffic to Elastic Runtime Router. Assumes an external load balancer is configured to forward unencrypted traffic."
+        label: |
+          Forward unencrypted traffic to Elastic Runtime Router. Assumes an
+          external load balancer is configured to forward unencrypted traffic.
+
   - reference: .properties.container_networking
-    label: "Enabling the Container-to-Container network will allow policy-driven, direct communication between containers on an overlay network occupying the 10.255.0.0/16 range."
+    label: |
+      Enabling the Container-to-Container network will allow policy-driven,
+      direct communication between containers on an overlay network occupying
+      the 10.255.0.0/16 range.
+
     selector_property_inputs:
       - reference: .properties.container_networking.enable
         label: Enable
         property_inputs:
           - reference: .properties.container_networking.enable.network_cidr
             label: Network CIDR
-            description: Defines the range of the overlay network. The CIDR must specify a RFC 1918 range. Defaults to 10.255.0.0/16.
+            description: |
+              Defines the range of the overlay network. The CIDR must specify a
+              RFC 1918 range. Defaults to 10.255.0.0/16.
             placeholder: 10.255.0.0/16
+
           - reference: .properties.container_networking.enable.vtep_port
             label: VXLAN Tunnel Endpoint Port
-            description: Host port used for receiving VXLAN packets. Defaults to 4789.
+            description: |
+              Host port used for receiving VXLAN packets. Defaults to 4789.
+
       - reference: .properties.container_networking.disable
         label: Disable
         property_inputs:
           - reference: .properties.container_networking.disable.garden_network_pool
-            label: Applications Subnet (Only change this if you need to avoid address collision with a third-party service on the same subnet.)
-            description: Enter a CIDR subnet mask specifying the range of available IP addresses to be assigned to your app containers. This must be different from the network used by the system VMs.
+            label: |
+              Applications Subnet (Only change this if you need to avoid
+              address collision with a third-party service on the same subnet.)
+            description: |
+              Enter a CIDR subnet mask specifying the range of available IP
+              addresses to be assigned to your app containers. This must be
+              different from the network used by the system VMs.

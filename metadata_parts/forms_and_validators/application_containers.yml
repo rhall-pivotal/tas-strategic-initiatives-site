@@ -2,22 +2,40 @@
 form:
   name: application_containers
   label: Application Containers
-  description: "Enable custom configuration that supports your applications at a container level."
+  description: |
+    Enable custom configuration that supports your applications at a container
+    level.
+
   property_inputs:
   - reference: .isolated_diego_cell.insecure_docker_registry_list
     label: Private Docker Insecure Registry Whitelist
-    description: "If you use private Docker image registries that are secured with self-signed certificates, enter them here as a comma-delimited list. List each registry as either an IP:Port tuple or a Hostname:Port tuple."
-    placeholder: "10.10.10.10:8888,example.com:8888"
+    description: |
+      If you use private Docker image registries that are secured with
+      self-signed certificates, enter them here as a comma-delimited list. List
+      each registry as either an IP:Port tuple or a Hostname:Port tuple.
+    placeholder: |
+      10.10.10.10:8888,example.com:8888
+
   - reference: .isolated_diego_cell.placement_tag
     label: Segment Name
-    description: This field is used as the placement tag for your Diego Cells. It should be unique. Use this name to configure an Isolation Segment with the Cloud Controller.
+    description: |
+      This field is used as the placement tag for your Diego Cells. It should
+      be unique. Use this name to configure an Isolation Segment with the Cloud
+      Controller.
+
   - reference: .isolated_diego_cell.dns_servers
     label: DNS Servers
-    description:  Override DNS servers to be used in containers. Defaults to the same as the host. A comma-separated list of servers can be specified.
+    description: |
+      Override DNS servers to be used in containers. Defaults to the same as
+      the host. A comma-separated list of servers can be specified.
+
   - reference: .properties.nfs_volume_driver
-    label: "Enabling NFSv3 volume services will allow application developers to bind existing NFS volumes to their applications for shared file access."
+    label: |
+      Enabling NFSv3 volume services will allow application developers to bind
+      existing NFS volumes to their applications for shared file access.
     selector_property_inputs:
       - reference: .properties.nfs_volume_driver.enable
         label: Enable
+
       - reference: .properties.nfs_volume_driver.disable
         label: Disable
