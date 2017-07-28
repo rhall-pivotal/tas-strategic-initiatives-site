@@ -55,6 +55,11 @@ instance_definition:
   constraints:
     min: 0
 
+property_blueprints:
+  - name: secret_token
+    type: secret
+    configurable: false
+
 manifest: |
   cf:
     api_url: "https://api.(( .cloud_controller.system_domain.value ))"
