@@ -102,6 +102,18 @@ manifest: |
     volume_services_enabled: true
     default_staging_security_groups:
     - default_security_group
+    quota_definitions:
+      default:
+        memory_limit: (( default_quota_memory_limit_mb.value ))
+        total_services: (( default_quota_max_number_services.value ))
+        non_basic_services_allowed: true
+        total_routes: 1000
+        trial_db_allowed: true
+      runaway:
+        memory_limit: 102400
+        total_services: -1
+        total_routes: 1000
+        non_basic_services_allowed: true
   support_address: https://support.pivotal.io
   routing_api:
     enabled: true

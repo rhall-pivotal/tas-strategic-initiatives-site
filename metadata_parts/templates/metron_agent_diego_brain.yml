@@ -1,0 +1,13 @@
+---
+name: metron_agent
+release: loggregator
+manifest: |
+  loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      metron:
+        cert: (( .doppler.metron_tls_cert.cert_pem ))
+        key: (( .doppler.metron_tls_cert.private_key_pem ))
+  metron_agent:
+    deployment: cf
+    health_port: 22222

@@ -43,6 +43,18 @@ manifest: |
         destination: 169.255.0.0-255.255.255.255
     staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
     bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
+    quota_definitions:
+      default:
+        memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
+        total_services: (( .cloud_controller.default_quota_max_number_services.value ))
+        non_basic_services_allowed: true
+        total_routes: 1000
+        trial_db_allowed: true
+      runaway:
+        memory_limit: 102400
+        total_services: -1
+        total_routes: 1000
+        non_basic_services_allowed: true
   login:
     url: https://login.(( .cloud_controller.system_domain.value ))
   ssl:

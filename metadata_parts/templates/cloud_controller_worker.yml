@@ -35,6 +35,18 @@ manifest: |
     logging_level: debug
     staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
     internal_api_password: (( .cloud_controller.internal_api_user_credentials.password ))
+    quota_definitions:
+      default:
+        memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
+        total_services: (( .cloud_controller.default_quota_max_number_services.value ))
+        non_basic_services_allowed: true
+        total_routes: 1000
+        trial_db_allowed: true
+      runaway:
+        memory_limit: 102400
+        total_services: -1
+        total_routes: 1000
+        non_basic_services_allowed: true
   uaa:
     url: https://uaa.(( .cloud_controller.system_domain.value ))
     clients:
