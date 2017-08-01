@@ -1,3 +1,32 @@
 ---
 name: gorouter
 release: routing
+manifest: |
+  uaa:
+    clients:
+      gorouter:
+        secret: (( .uaa.gorouter_client_credentials.password ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    ssl:
+      port: 8443
+  request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
+  router:
+    max_idle_connections: (( max_idle_connections.value ))
+    route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
+    ssl_skip_validation: (( .ha_proxy.skip_cert_verify.value ))
+    drain_wait: (( .router.drain_wait.value ))
+    ssl_key: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
+    tracing:
+      enable_zipkin: (( enable_zipkin.value ))
+    secure_cookies: (( .router.disable_insecure_cookies.value ))
+    ssl_cert: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
+    load_balancer_healthy_threshold: (( .router.lb_healthy_threshold.value ))
+    extra_headers_to_log: (( .router.extra_headers_to_log.parsed_strings ))
+    routing_table_sharding_mode: '(( enable_isolated_routing.value ? "shared-and-segments" : "all" ))'
+    status:
+      user: router_status
+      password: (( status_credentials.password ))
+    cipher_suites: (( .properties.networking_point_of_entry.external_ssl.ssl_ciphers.value ))
+    enable_ssl: "(( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.value_present?  ? 'true' : 'false' ))"
+  routing_api:
+    enabled: true

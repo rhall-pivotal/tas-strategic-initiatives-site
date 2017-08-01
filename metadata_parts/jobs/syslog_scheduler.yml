@@ -2,7 +2,8 @@
 name: syslog_scheduler
 label: Syslog Scheduler
 resource_label: Syslog Scheduler
-description: This component handles communication with the Cloud Controller to receive new bindings. It should not be scaled beyond a single instance.
+description: This component handles communication with the Cloud Controller to receive
+  new bindings. It should not be scaled beyond a single instance.
 templates:
 - consul_agent
 - metron_agent
@@ -13,24 +14,21 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 1_024
+  default: 1024
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 2_048
+  default: 2048
   constraints:
-    min: 2_048
-
+    min: 2048
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
-
 - name: cpu
   type: integer
   label: CPU
@@ -38,55 +36,25 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 0
 dynamic_ip: 1
 max_in_flight: 1
 single_az_only: false
-
 instance_definition:
   name: instances
   type: integer
   label: Instances
   default: 1
-
 property_blueprints:
-  - name: scheduler_api_tls
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains: ["cloud-controller-ng.service.cf.internal"]
-
-  - name: scheduler_client_tls
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains: ["ss-adapter"]
-
-manifest: |
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  metron_endpoint:
-    shared_secret: (( .doppler.shared_secret_credentials.password ))
-  metron_agent:
-    deployment: cf
-  loggregator:
-    tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      metron:
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-  scalablesyslog:
-    scheduler:
-      api:
-        url: https://cloud-controller-ng.service.cf.internal:9023
-      tls:
-        client:
-          ca: (( $ops_manager.ca_certificate ))
-          cert: (( scheduler_client_tls.cert_pem ))
-          key: (( scheduler_client_tls.private_key_pem ))
-          adapter_cn: ss-adapter
-        api:
-          ca: (( $ops_manager.ca_certificate ))
-          cert: (( scheduler_api_tls.cert_pem ))
-          key: (( scheduler_api_tls.private_key_pem ))
-          cn: cloud-controller-ng.service.cf.internal
+- name: scheduler_api_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - cloud-controller-ng.service.cf.internal
+- name: scheduler_client_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - ss-adapter

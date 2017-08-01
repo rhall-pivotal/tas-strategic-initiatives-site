@@ -18,7 +18,6 @@ resource_definitions:
   default: 8192
   constraints:
     min: 4096
-
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
@@ -26,7 +25,6 @@ resource_definitions:
   default: 30000
   constraints:
     min: 10000
-
 - name: persistent_disk
   type: integer
   label: Persistent Disk
@@ -34,7 +32,6 @@ resource_definitions:
   default: 100000
   constraints:
     min: 10000
-
 - name: cpu
   type: integer
   label: CPU
@@ -42,12 +39,10 @@ resource_definitions:
   default: 2
   constraints:
     min: 1
-
 static_ip: 1
 dynamic_ip: 0
 max_in_flight: 1
 single_az_only: false
-
 instance_definition:
   name: instances
   type: integer
@@ -58,10 +53,9 @@ instance_definition:
     may_only_be_odd_or_zero: true
     min: 0
   zero_if:
-    property_reference: .properties.system_database
+    property_reference: ".properties.system_database"
     property_values:
     - external
-
 property_blueprints:
 - name: mysql_admin_credentials
   type: simple_credentials
@@ -111,80 +105,3 @@ property_blueprints:
   type: simple_credentials
 - name: diag_agent_credentials
   type: simple_credentials
-
-manifest: |
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  domain: (( .cloud_controller.system_domain.value ))
-  mysql-monitoring:
-    recipient_email: (( .mysql_monitor.recipient_email.value ))
-    cluster_identifier: cf
-    admin_client:
-      username: (( .uaa.admin_client_credentials.identity ))
-      secret: (( .uaa.admin_client_credentials.password ))
-    client:
-      username: (( .uaa.notifications_client_credentials.identity ))
-      secret: (( .uaa.notifications_client_credentials.password ))
-    mysql-diag-agent:
-      username: (( diag_agent_credentials.identity ))
-      password: (( diag_agent_credentials.password ))
-  cf_mysql:
-    mysql:
-      interrupt_notify_cmd: "/var/vcap/jobs/send-email/bin/run"
-      admin_password: (( mysql_admin_credentials.password ))
-      innodb_buffer_pool_size: 2147483648
-      innodb_strict_mode: true
-      max_open_files: 1048576
-      startup_timeout: 120
-      galera_healthcheck:
-        db_password: (( galera_sidecar_user.password ))
-        endpoint_username: (( mysql_bootstrap_credentials.identity ))
-        endpoint_password: (( mysql_bootstrap_credentials.password ))
-      cluster_health:
-        password: (( cluster_health_user.password ))
-      seeded_databases:
-        - name: (( .properties.ccdb_database_name.value ))
-          username: (( ccdb_credentials.identity ))
-          password: (( ccdb_credentials.password ))
-        - name: (( .properties.uaa_database_name.value ))
-          username: (( uaadb_credentials.identity ))
-          password: (( uaadb_credentials.password ))
-        - name: (( .properties.app_usage_service_database_name.value ))
-          username: (( app_usage_credentials.identity ))
-          password: (( app_usage_credentials.password ))
-        - name: (( .properties.notifications_database_name.value ))
-          username: (( notifications_credentials.identity ))
-          password: (( notifications_credentials.password ))
-        - name: (( .properties.autoscale_database_name.value ))
-          username: (( autoscale_credentials.identity ))
-          password: (( autoscale_credentials.password ))
-        - name: monitor
-          username: (( monitordb_credentials.identity ))
-          password: (( monitordb_credentials.password ))
-        - name: (( .properties.diego_database_name.value ))
-          username: (( diegodb_credentials.identity ))
-          password: (( diegodb_credentials.password ))
-        - name: (( .properties.locket_database_name.value ))
-          username: (( locketdb_credentials.identity ))
-          password: (( locketdb_credentials.password ))
-        - name: (( .properties.routing_database_name.value ))
-          username: (( routingdb_credentials.identity ))
-          password: (( routingdb_credentials.password ))
-        - name: (( .properties.silk_database_name.value ))
-          username: (( silkdb_credentials.identity ))
-          password: (( silkdb_credentials.password ))
-        - name: (( .properties.networkpolicyserver_database_name.value ))
-          username: (( networkpolicyserverdb_credentials.identity ))
-          password: (( networkpolicyserverdb_credentials.password ))
-        - name: (( .properties.account_database_name.value ))
-          username: (( pivotal_account_credentials.identity ))
-          password: (( pivotal_account_credentials.password ))
-        - name: (( .properties.nfsvolume_database_name.value ))
-          username: (( nfsvolume_credentials.identity ))
-          password: (( nfsvolume_credentials.password ))
-      server_audit_events: (( .properties.mysql_activity_logging.selected_option.parsed_manifest(mysql_audit_events) ))
-      server_audit_excluded_users:
-        - (( monitordb_credentials.identity ))
-  cf-mysql-backup:
-    endpoint_credentials:
-      username: (( mysql_backup_server_credentials.identity ))
-      password: (( mysql_backup_server_credentials.password ))

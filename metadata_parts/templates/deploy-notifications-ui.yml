@@ -1,3 +1,25 @@
 ---
 name: deploy-notifications-ui
 release: notifications-ui
+manifest: |
+  domain: (( .cloud_controller.system_domain.value ))
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  notifications_ui:
+    organization: system
+    space: notifications-with-ui
+    syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))
+    instance_count: 2
+    cf:
+      dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
+      admin_user: (( .uaa.admin_credentials.identity ))
+      admin_password: (( .uaa.admin_credentials.password ))
+    app_domain: (( .cloud_controller.system_domain.value ))
+    network: notifications
+    encryption_key: (( .notifications.encryption_credentials.password ))
+    footer_text: (( .push-apps-manager.footer_text.value || "" ))
+    footer_image: (( .push-apps-manager.logo.value ))
+    enable_diego: true
+    uaa:
+      client_id: (( .uaa.notifications_ui_client_credentials.identity ))
+      client_secret: (( .uaa.notifications_ui_client_credentials.password ))

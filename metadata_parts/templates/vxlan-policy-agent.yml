@@ -1,3 +1,13 @@
 ---
 name: vxlan-policy-agent
 release: cf-networking
+manifest: |
+  cf_networking:
+    iptables_logging: true
+    policy_server:
+      hostname: network-policy-server.service.cf.internal
+    disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
+    vxlan_policy_agent:
+      client_cert: (( .properties.network_policy_agent_cert.cert_pem ))
+      client_key: (( .properties.network_policy_agent_cert.private_key_pem ))
+      ca_cert: (( $ops_manager.ca_certificate ))

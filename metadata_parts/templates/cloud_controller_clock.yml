@@ -1,5 +1,51 @@
 ---
 name: cloud_controller_clock
 release: capi
-consumes: "(( .properties.system_database.selected_option.parsed_manifest(ccdb_link)
-  ))\n"
+consumes: |
+  (( .properties.system_database.selected_option.parsed_manifest(ccdb_link) ))
+manifest: |
+  ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
+  system_domain_organization: system
+  app_domains:
+  - (( .cloud_controller.apps_domain.value ))
+  uaa:
+    url: https://uaa.(( .cloud_controller.system_domain.value ))
+    clients:
+      cc-service-dashboards:
+        secret: (( .uaa.cc_service_dashboards_credentials.password ))
+  system_domain: (( .cloud_controller.system_domain.value ))
+  cc:
+    buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
+    droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
+    packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
+    resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
+    default_running_security_groups:
+    - default_security_group
+    db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
+    internal_api_password: (( .cloud_controller.internal_api_user_credentials.password ))
+    mutual_tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      public_cert: (( .properties.cloud_controller_mutual_cert.cert_pem ))
+      private_key: (( .properties.cloud_controller_mutual_cert.private_key_pem ))
+    internal_api_user: (( .cloud_controller.internal_api_user_credentials.identity ))
+    default_staging_security_groups:
+    - default_security_group
+    allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
+    logging_level: debug
+    maximum_health_check_timeout: 600
+    staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
+    security_group_definitions:
+    - name: default_security_group
+      rules:
+      - protocol: all
+        destination: 0.0.0.0-169.253.255.255
+      - protocol: all
+        destination: 169.255.0.0-255.255.255.255
+    staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
+    bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
+  login:
+    url: https://login.(( .cloud_controller.system_domain.value ))
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  hm9000:
+    port: 12345

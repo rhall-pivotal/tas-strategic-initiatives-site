@@ -2,7 +2,8 @@
 name: notifications
 label: Notifications Errand
 resource_label: Notifications Errand
-description: Pushes the Pivotal Notifications application to your Elastic Runtime installation
+description: Pushes the Pivotal Notifications application to your Elastic Runtime
+  installation
 templates:
 - deploy-notifications
 - cflinuxfs2-rootfs-setup
@@ -12,24 +13,21 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 1_024
+  default: 1024
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 1_024
+  default: 1024
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
-
 - name: cpu
   type: integer
   label: CPU
@@ -37,14 +35,12 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 0
 dynamic_ip: 1
 max_in_flight: 1
 single_az_only: false
 errand: true
 run_post_deploy_errand_default: when-changed
-
 instance_definition:
   name: instances
   type: integer
@@ -53,50 +49,6 @@ instance_definition:
   default: 1
   constraints:
     min: 0
-
 property_blueprints:
-  - name: encryption_credentials
-    type: simple_credentials
-
-manifest: |
-  domain: (( .cloud_controller.system_domain.value ))
-  ssl:
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-  notifications:
-    app_domain: (( .cloud_controller.system_domain.value ))
-    network: notifications
-    sender: (( .properties.smtp_from.value ))
-    encryption_key: (( encryption_credentials.password ))
-    buildpack_url: go_buildpack
-    enable_diego: true
-    instance_count: 3
-    syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))
-    organization: system
-    space: notifications-with-ui
-    error_on_misconfiguration: false
-    cf:
-      admin_user: (( .uaa.admin_credentials.identity ))
-      admin_password: (( .uaa.admin_credentials.password ))
-      dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
-    smtp:
-      host: (( .properties.smtp_address.value ))
-      pass: (( .properties.smtp_credentials.password ))
-      port: (( .properties.smtp_port.value ))
-      user: (( .properties.smtp_credentials.identity ))
-      tls: (( .properties.smtp_enable_starttls_auto.value ))
-      auth_mechanism: (( .properties.smtp_auth_mechanism.value ))
-      crammd5_secret: (( .properties.smtp_crammd5_secret.value ))
-    uaa:
-      admin_client_id: (( .uaa.admin_client_credentials.identity ))
-      admin_client_secret: (( .uaa.admin_client_credentials.password ))
-      client_id: (( .uaa.notifications_client_credentials.identity ))
-      client_secret: (( .uaa.notifications_client_credentials.password ))
-    database: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
-    default_template: |
-      {
-        "name": "Default Template",
-        "subject": "CF Notification: {{.Subject}}",
-        "html": "\u003ctable width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;font-family: Helvetica, Arial,sans-serif\"\u003e\n    \u003ctbody\u003e\n        \u003ctr\u003e\n            \u003ctd width=\"100%\" align=\"center\" bgcolor=\"#F8f8f8\" style=\"padding-right:10px;padding-left:10px\"\u003e\n                \u003ctable width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\"\u003e\n                    \u003ctbody\u003e\n                        \u003ctr\u003e\n                            \u003ctd align=\"left\" valign=\"top\" style=\"padding-bottom:30px;padding-top:30px\"\u003e\n                              \u003cimg src=\"http://notifications-ui.{{.Domain}}/assets/pivotal_logo.png\"\n                                alt=\"Pivotal CF\" border=\"0\" style=\"display:block\" class=\"CToWUd\"\n                                width=\"166px\" height=\"35px\"\u003e\n                            \u003c/td\u003e\n                        \u003c/tr\u003e\n                    \u003c/tbody\u003e\n                \u003c/table\u003e\n                \u003ctable width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\"\u003e\n                    \u003ctbody\u003e\n                        \u003ctr\u003e\n                            \u003ctd align=\"left\" valign=\"top\" bgcolor=\"#FFFFFF\"\u003e\n                                \u003ctable width=\"600\" cellpadding=\"40\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;border:1px solid #e0e4e5\"\u003e\n                                    \u003ctbody\u003e\n                                        \u003ctr\u003e\n                                            \u003ctd style=\"color:#666666;font-size:16px;line-height:22px\"\u003e\n                                                \u003cdiv\u003e\n                                                    {{.HTML}}\n                                                \u003c/div\u003e\n                                            \u003c/td\u003e\n                                        \u003c/tr\u003e\n                                    \u003c/tbody\u003e\n                                \u003c/table\u003e\n                            \u003c/td\u003e\n                        \u003c/tr\u003e\n                    \u003c/tbody\u003e\n                \u003c/table\u003e\n                \u003ctable width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;font-size:12px;color:#b4b4b4\"\u003e\n                    \u003ctbody\u003e\n                        \u003ctr\u003e\n                          \u003ctd align=\"left\" valign=\"middle\" style=\"padding-top:20px;padding-bottom:20px\"\u003eManage your \u003ca href=\"https://notifications-ui.{{.Domain}}/preferences\"\n                                target=\"_blank\"\u003enotification preferences\u003c/a\u003e or\n                              \u003ca href=\"https://notifications-ui.{{.Domain}}/unsubscribe/{{.UnsubscribeID}}\"\n                                target=\"_blank\"\u003eunsubscribe\u003c/a\u003e\n                            \u003c/td\u003e\n                        \u003c/tr\u003e\n                        \u003ctr\u003e\n                            \u003ctd align=\"left\" valign=\"middle\" style=\"padding-bottom:20px\"\u003ePivotal Cloud Foundry, and the Pivotal Cloud Foundry logo are registered\n                                trademarks or trademarks of Pivotal Software, Inc.\n                                in the United States and other countries. All other\n                                trademarks used herein are the property of their\n                                respective owners.\n                                \u003ca\u003e\n                            \u003c/td\u003e\n                        \u003c/tr\u003e\n                        \u003ctr\u003e\n                            \u003ctd align=\"left\" valign=\"middle\" style=\"padding-bottom:20px\"\u003e\u00A9 2015 Pivotal Software, Inc. All rights reserved.\n                                Published in the USA.\n                                \u003ca\u003e\n                            \u003c/td\u003e\n                        \u003c/tr\u003e\n                    \u003c/tbody\u003e\n                \u003c/table\u003e\n            \u003c/td\u003e\n        \u003c/tr\u003e\n    \u003c/tbody\u003e\n\u003c/table\u003e\n",
-        "text": "_____\n\n\nPivotal CF\n\n{{.Text}}\n\nManage your notification preferences:\nhttps://notifications-ui.{{.Domain}}/preferences\n\nUnsubscribe from Pivotal emails:\nhttps://notifications-ui.{{.Domain}}/unsubscribe/{{.UnsubscribeID}}\n\nPivotal Cloud Foundry, and the Pivotal Cloud Foundry logo are registered trademarks or trademarks of Pivotal Software, Inc. in the United States and other countries. All other trademarks used herein are the property of their respective owners.\n\n\u00A9 2015 Pivotal Software, Inc. All rights reserved. Published in the USA.\n\n______\n",
-        "metadata": {}
-      }
+- name: encryption_credentials
+  type: simple_credentials

@@ -1,3 +1,17 @@
 ---
 name: route_emitter
 release: diego
+manifest: |
+  tcp:
+    enabled: true
+  uaa:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    client_secret: (( .uaa.tcp_emitter_credentials.password ))
+    client_name: (( .uaa.tcp_emitter_credentials.identity ))
+  diego:
+    route_emitter:
+      local_mode: true
+      bbs:
+        ca_cert: (( $ops_manager.ca_certificate ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))

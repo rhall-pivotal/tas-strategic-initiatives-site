@@ -1,3 +1,10 @@
 ---
 name: streaming-mysql-backup-client
 release: mysql-backup
+manifest: |
+  cf-mysql-backup:
+    symmetric_key: (( backup_encryption_key.value ))
+    backup-all-masters: (( .properties.mysql_backups.selected_option.parsed_manifest(backup_all_masters) ))
+    endpoint_credentials:
+      password: (( .mysql.mysql_backup_server_credentials.password ))
+      username: (( .mysql.mysql_backup_server_credentials.identity ))

@@ -2,7 +2,9 @@
 name: ha_proxy
 label: HAProxy
 resource_label: HAProxy
-description: HAProxy is the default load balancer for SSL termination. Alternatively, you can use your own load balancer and forward traffic to the Pivotal CF Elastic Runtime router IP. Self signed certificates will function properly.
+description: HAProxy is the default load balancer for SSL termination. Alternatively,
+  you can use your own load balancer and forward traffic to the Pivotal CF Elastic
+  Runtime router IP. Self signed certificates will function properly.
 templates:
 - consul_agent
 - haproxy
@@ -13,24 +15,21 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 1_024
+  default: 1024
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 2_048
+  default: 2048
   constraints:
-    min: 2_048
-
+    min: 2048
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
-
 - name: cpu
   type: integer
   label: CPU
@@ -38,12 +37,10 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 1
 dynamic_ip: 0
 max_in_flight: 1
 single_az_only: false
-
 instance_definition:
   name: instances
   type: integer
@@ -53,38 +50,15 @@ instance_definition:
   constraints:
     min: 0
   zero_if:
-    property_reference: .properties.networking_point_of_entry
+    property_reference: ".properties.networking_point_of_entry"
     property_values:
     - external_ssl
     - external_non_ssl
-
 property_blueprints:
-  - name: static_ips
-    type: ip_ranges
-    configurable: true
-    optional: true
-
-  - name: skip_cert_verify
-    type: boolean
-    configurable: true
-
-manifest: |
-  ha_proxy:
-    server_timeout: (( .router.request_timeout_in_seconds.value ))
-    client_timeout: (( .router.request_timeout_in_seconds.value ))
-    disable_http: (( .properties.networking_point_of_entry.haproxy.disable_http.value ))
-    ssl_ciphers: (( .properties.networking_point_of_entry.haproxy.ssl_ciphers.value ))
-    ssl_pem: (( .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate.cert_and_private_key_pems ))
-    buffer_size_bytes: (( .properties.networking_point_of_entry.haproxy.max_buffer_size.value ))
-    tcp_link_port: 2222
-  metron_endpoint:
-    shared_secret: (( .doppler.shared_secret_credentials.password ))
-  metron_agent:
-    deployment: cf
-  loggregator:
-    tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      metron:
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
+- name: static_ips
+  type: ip_ranges
+  configurable: true
+  optional: true
+- name: skip_cert_verify
+  type: boolean
+  configurable: true

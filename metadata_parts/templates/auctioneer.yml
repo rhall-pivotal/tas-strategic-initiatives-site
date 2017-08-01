@@ -1,3 +1,22 @@
 ---
 name: auctioneer
 release: diego
+manifest: |
+  diego:
+    auctioneer:
+      skip_consul_lock: (( .diego_database.skip_consul_locks.value ))
+      starting_container_count_maximum: (( starting_container_count_maximum.value ))
+      ca_cert: (( $ops_manager.ca_certificate ))
+      server_cert: (( .properties.auctioneer_server_cert.cert_pem ))
+      server_key: (( .properties.auctioneer_server_cert.private_key_pem ))
+      bbs:
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+      rep:
+        client_cert: (( .properties.rep_client_cert.cert_pem ))
+        client_key: (( .properties.rep_client_cert.private_key_pem ))
+        require_tls: true
+        ca_cert: (( $ops_manager.ca_certificate ))
+      locket:
+        api_location: locket.service.cf.internal:8891

@@ -1,3 +1,25 @@
 ---
 name: replication-canary
 release: mysql-monitoring
+manifest: |
+  cf_mysql:
+    external_host: p-mysql-ert.(( .cloud_controller.system_domain.value ))
+  cf:
+    skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+  mysql-monitoring:
+    recipient_email: (( recipient_email.value ))
+    cluster_identifier: cf
+    replication-canary:
+      switchboard_password: (( .mysql_proxy.dashboard_credentials.password ))
+      canary_database: monitor
+      canary_password: (( .mysql.monitordb_credentials.password ))
+      uaa_admin_client_username: (( .uaa.admin_client_credentials.identity ))
+      switchboard_username: (( .mysql_proxy.dashboard_credentials.identity ))
+      notifications_client_username: (( .uaa.notifications_client_credentials.identity ))
+      notifications_client_secret: (( .uaa.notifications_client_credentials.password ))
+      switchboard_count: (( .mysql_proxy.instances ))
+      canary_username: (( .mysql.monitordb_credentials.identity ))
+      write_read_delay: (( write_read_delay.value ))
+      poll_frequency: (( poll_frequency.value ))
+      uaa_admin_client_secret: (( .uaa.admin_client_credentials.password ))
+  domain: (( .cloud_controller.system_domain.value ))

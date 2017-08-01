@@ -1,3 +1,12 @@
 ---
 name: silk-daemon
 release: cf-networking
+manifest: |
+  cf_networking:
+    disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
+    silk_daemon:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      client_cert: (( .diego_database.silk_daemon_client_cert.cert_pem ))
+      client_key: (( .diego_database.silk_daemon_client_cert.private_key_pem ))
+    network: (( .properties.container_networking.enable.network_cidr.value ))
+    vtep_port: (( .properties.container_networking.enable.vtep_port.value ))

@@ -13,24 +13,21 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 1_024
+  default: 1024
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 2_048
+  default: 2048
   constraints:
-    min: 2_048
-
+    min: 2048
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
-
 - name: cpu
   type: integer
   label: CPU
@@ -38,14 +35,12 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 0
 dynamic_ip: 1
 max_in_flight: 1
 single_az_only: false
 errand: true
 run_post_deploy_errand_default: when-changed
-
 instance_definition:
   name: instances
   type: integer
@@ -54,7 +49,6 @@ instance_definition:
   default: 1
   constraints:
     min: 0
-
 property_blueprints:
   - name: company_name
     type: string
@@ -98,56 +92,15 @@ property_blueprints:
 
   - name: footer_text
     type: string
-    configurable: true
-    optional: true
-
-  - name: footer_links
-    type: collection
-    configurable: true
-    optional: true
-    property_blueprints:
-      - name: name
-        type: string
-      - name: href
-        type: string
-
-  - name: nav_links
-    type: collection
-    configurable: true
-    property_blueprints:
-      - name: name
-        type: string
-      - name: href
-        type: string
-    default:
-      - name: Marketplace
-        href: /marketplace
-      - name: Docs
-        href: http://docs.pivotal.io/pivotalcf/getstarted/pcf-docs.html
-      - name: Tools
-        href: /tools
-
-  - name: product_name
+  - name: href
     type: string
-    configurable: true
-    optional: true
-
-  - name: marketplace_name
+- name: nav_links
+  type: collection
+  configurable: true
+  property_blueprints:
+  - name: name
     type: string
-    configurable: true
-    optional: true
-
-  - name: enable_invitations
-    type: boolean
-    configurable: true
-    default: true
-
-  - name: display_plan_prices
-    type: boolean
-    configurable: true
-    default: false
-
-  - name: currency_lookup
+  - name: href
     type: string
     configurable: true
     default: "{ \"usd\": \"$\", \"eur\": \"€\" }"

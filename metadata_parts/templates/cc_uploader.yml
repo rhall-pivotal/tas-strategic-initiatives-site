@@ -1,3 +1,15 @@
 ---
 name: cc_uploader
 release: capi
+manifest: |
+  capi:
+    cc_uploader:
+      mutual_tls:
+        ca_cert: (( $ops_manager.ca_certificate ))
+        server_cert: (( cc_uploader_server_cert.cert_pem ))
+        server_key: (( cc_uploader_server_cert.private_key_pem ))
+      cc:
+        job_polling_interval_in_seconds: 5
+        ca_cert: (( $ops_manager.ca_certificate ))
+        client_cert: (( .properties.cloud_controller_client_cert.cert_pem ))
+        client_key: (( .properties.cloud_controller_client_cert.private_key_pem ))

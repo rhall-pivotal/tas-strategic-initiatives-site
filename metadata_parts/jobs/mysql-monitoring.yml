@@ -15,7 +15,6 @@ resource_definitions:
   default: 1024
   constraints:
     min: 256
-
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
@@ -23,13 +22,11 @@ resource_definitions:
   default: 1024
   contraints:
     min: 1024
-
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
-
 - name: cpu
   type: integer
   label: CPU
@@ -37,12 +34,10 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 1
 dynamic_ip: 0
 max_in_flight: 1
 single_az_only: true
-
 instance_definition:
   name: instances
   type: integer
@@ -52,45 +47,18 @@ instance_definition:
   constraints:
     max: 1
   zero_if:
-    property_reference: .properties.system_database
+    property_reference: ".properties.system_database"
     property_values:
     - external
-
 property_blueprints:
 - name: poll_frequency
   type: integer
   configurable: true
   default: 30
-
 - name: write_read_delay
   type: integer
   configurable: true
   default: 20
-
 - name: recipient_email
   type: string
   configurable: true
-
-manifest: |
-  domain: (( .cloud_controller.system_domain.value ))
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  cf_mysql:
-    external_host: "p-mysql-ert.(( .cloud_controller.system_domain.value ))"
-  cf:
-    skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
-  mysql-monitoring:
-    recipient_email: (( recipient_email.value ))
-    cluster_identifier: cf
-    replication-canary:
-      canary_database: monitor
-      canary_username: (( .mysql.monitordb_credentials.identity ))
-      canary_password: (( .mysql.monitordb_credentials.password ))
-      write_read_delay: (( write_read_delay.value ))
-      poll_frequency: (( poll_frequency.value ))
-      uaa_admin_client_username: (( .uaa.admin_client_credentials.identity ))
-      uaa_admin_client_secret: (( .uaa.admin_client_credentials.password ))
-      notifications_client_username: (( .uaa.notifications_client_credentials.identity ))
-      notifications_client_secret: (( .uaa.notifications_client_credentials.password ))
-      switchboard_count: (( .mysql_proxy.instances ))
-      switchboard_username: (( .mysql_proxy.dashboard_credentials.identity ))
-      switchboard_password: (( .mysql_proxy.dashboard_credentials.password ))
