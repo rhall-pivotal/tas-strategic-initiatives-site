@@ -112,6 +112,11 @@ property_blueprints:
 - name: diag_agent_credentials
   type: simple_credentials
 
+- name: cluster_probe_timeout
+  type: integer
+  configurable: true
+  optional: true
+
 manifest: |
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   domain: (( .cloud_controller.system_domain.value ))
@@ -139,6 +144,7 @@ manifest: |
         db_password: (( galera_sidecar_user.password ))
         endpoint_username: (( mysql_bootstrap_credentials.identity ))
         endpoint_password: (( mysql_bootstrap_credentials.password ))
+      cluster_probe_timeout: (( cluster_probe_timeout.value ))
       cluster_health:
         password: (( cluster_health_user.password ))
       seeded_databases:
