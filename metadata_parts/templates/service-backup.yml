@@ -3,9 +3,9 @@ name: service-backup
 release: service-backup
 manifest: |
   service-backup:
-    source_executable: "/var/vcap/jobs/streaming-mysql-backup-client/bin/client"
     cleanup_executable: "/bin/bash -c /var/vcap/jobs/streaming-mysql-backup-client/bin/cleanup-directories"
     cron_schedule: (( .properties.mysql_backups.selected_option.parsed_manifest(cron_schedule) ))
-    exit_if_in_progress: true
     destinations: (( .properties.mysql_backups.selected_option.parsed_manifest(destination) ))
+    exit_if_in_progress: true
+    source_executable: "/var/vcap/jobs/streaming-mysql-backup-client/bin/client"
     source_folder: "/var/vcap/store/mysql-backups"

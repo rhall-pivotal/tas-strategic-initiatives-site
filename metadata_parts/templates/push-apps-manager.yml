@@ -4,8 +4,6 @@ release: push-apps-manager-release
 consumes: |
   (( .properties.system_database.selected_option.parsed_manifest(push_app_usage_service_db_link) ))
 manifest: |
-  databases:
-    app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
   apps_manager:
     generic_white_labeling:
       global_wrapper_footer_content: (( global_wrapper_footer_content.value ))
@@ -30,11 +28,6 @@ manifest: |
     url: https://app-usage.(( .cloud_controller.system_domain.value ))
     uaa_client_id: (( .uaa.usage_service_client_credentials.identity ))
     uaa_client_secret: (( .uaa.usage_service_client_credentials.password ))
-  invitations:
-    uaa_client_secret: (( .uaa.invitations_client_credentials.password ))
-  ssl:
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-    disable_http_for_links: (( .properties.networking_point_of_entry.haproxy.disable_http.value ))
   cf:
     api_url: https://api.(( .cloud_controller.system_domain.value ))
     uaa_url: https://login.(( .cloud_controller.system_domain.value ))
@@ -43,3 +36,10 @@ manifest: |
     admin_password: (( .uaa.push_apps_manager_credentials.password ))
     system_domain: (( .cloud_controller.system_domain.value ))
     apps_domain: (( .cloud_controller.apps_domain.value ))
+  databases:
+    app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
+  invitations:
+    uaa_client_secret: (( .uaa.invitations_client_credentials.password ))
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+    disable_http_for_links: (( .properties.networking_point_of_entry.haproxy.disable_http.value ))

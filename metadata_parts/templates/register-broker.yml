@@ -2,8 +2,6 @@
 name: register-broker
 release: cf-autoscaling
 manifest: |
-  ssl:
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
   app_domains:
   - (( .cloud_controller.system_domain.value ))
   autoscale:
@@ -17,3 +15,5 @@ manifest: |
     organization: system
     space: autoscaling
   domain: (( .cloud_controller.system_domain.value ))
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
