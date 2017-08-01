@@ -18,6 +18,7 @@ property_blueprints:
                 ca_cert: (( $ops_manager.ca_certificate ))
           - name: ccdroplet
             manifest: |
+              max_staged_droplets_stored: 2
               blobstore_type: webdav
               webdav_config:
                 username: (( .nfs_server.blobstore_credentials.identity ))
@@ -64,6 +65,7 @@ property_blueprints:
               fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
           - name: ccdroplet
             manifest: |
+              max_staged_droplets_stored: 2
               blobstore_type: fog
               droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
               fog_connection:
@@ -185,6 +187,7 @@ property_blueprints:
                 google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
           - name: ccdroplet
             manifest: |
+              max_staged_droplets_stored: 2
               blobstore_type: fog
               droplet_directory_key: (( .properties.system_blobstore.external_gcs.droplets_bucket.value ))
               fog_connection:
@@ -241,6 +244,7 @@ property_blueprints:
                 azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
           - name: ccdroplet
             manifest: |
+              max_staged_droplets_stored: 2
               blobstore_type: fog
               droplet_directory_key: (( .properties.system_blobstore.external_azure.droplets_container.value ))
               fog_connection:
