@@ -11,7 +11,7 @@ manifest: |
       server_key: (( .properties.network_policy_server_cert.private_key_pem ))
       uaa_client: (( .uaa.network_policy_server_client.identity ))
       skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
-      debug_port: 2222
+      debug_port: 22223
       uaa_ca: (( $ops_manager.ca_certificate ))
       server_cert: (( .properties.network_policy_server_cert.cert_pem ))
       uaa_client_secret: (( .uaa.network_policy_server_client.password ))
