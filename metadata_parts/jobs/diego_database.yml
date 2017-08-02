@@ -157,7 +157,7 @@ manifest: |
       - "api.(( .cloud_controller.system_domain.value ))/networking"
   cf_networking:
     disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
-    network: (( .properties.container_networking.enable.network_cidr.value ))
+    network: (( .properties.container_networking.enable.network_cidr.value || "10.255.0.0/16" ))
     policy_server:
       uaa_ca: (( $ops_manager.ca_certificate ))
       ca_cert: (( $ops_manager.ca_certificate ))
