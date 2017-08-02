@@ -1,3 +1,13 @@
 ---
 name: haproxy
 release: haproxy
+manifest: |
+  ha_proxy:
+    ssl_pem: (( .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate.cert_and_private_key_pems ))
+    buffer_size_bytes: (( .properties.networking_point_of_entry.haproxy.max_buffer_size.value ))
+    tcp_link_port: 2222
+    server_timeout: (( .router.request_timeout_in_seconds.value ))
+    client_timeout: (( .router.request_timeout_in_seconds.value ))
+    disable_http: (( .properties.networking_point_of_entry.haproxy.disable_http.value ))
+    enable_health_check_http: true
+    ssl_ciphers: (( .properties.networking_point_of_entry.haproxy.ssl_ciphers.value ))

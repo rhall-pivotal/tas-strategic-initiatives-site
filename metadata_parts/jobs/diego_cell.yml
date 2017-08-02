@@ -9,7 +9,7 @@ templates:
 - route_emitter
 - cfdot
 - garden
-- cflinuxfs2-rootfs-setup
+- cflinuxfs2-rootfs-setup_diego_cell
 - metron_agent
 - silk-cni
 - silk-daemon
@@ -24,24 +24,21 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 16_384
+  default: 16384
   constraints:
-    min: 2_048
-
+    min: 2048
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 65_536
+  default: 65536
   constraints:
-    min: 4_096
-
+    min: 4096
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
-
 - name: cpu
   type: integer
   label: CPU
@@ -49,12 +46,10 @@ resource_definitions:
   default: 2
   constraints:
     min: 1
-
 static_ip: 0
 dynamic_ip: 1
-max_in_flight: "4%"
+max_in_flight: 4%
 single_az_only: false
-
 instance_definition:
   name: instances
   type: integer
@@ -63,7 +58,6 @@ instance_definition:
   default: 3
   constraints:
     min: 1
-
 property_blueprints:
   - name: executor_disk_capacity
     type: integer
@@ -96,103 +90,3 @@ property_blueprints:
     type: string_list
     configurable: true
     optional: true
-
-manifest: |
-  enable_declarative_healthcheck: true
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  diego:
-    executor:
-      disk_capacity_mb: (( executor_disk_capacity.value ))
-      memory_capacity_mb: (( executor_memory_capacity.value ))
-      post_setup_hook: sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"
-      post_setup_user: "root"
-      ca_certs_for_downloads: (( $ops_manager.ca_certificate ))
-    rep:
-      require_tls: true
-      enable_legacy_api_endpoints: false
-      ca_cert: (( $ops_manager.ca_certificate ))
-      server_cert: (( .properties.rep_server_cert.cert_pem ))
-      server_key: (( .properties.rep_server_cert.private_key_pem ))
-      use_azure_fault_domains: true
-      bbs:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.bbs_client_cert.cert_pem ))
-        client_key: (( .properties.bbs_client_cert.private_key_pem ))
-      preloaded_rootfses:
-      - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar
-      locket:
-        api_location: "locket.service.cf.internal:8891"
-    route_emitter:
-      local_mode: true
-      bbs:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.bbs_client_cert.cert_pem ))
-        client_key: (( .properties.bbs_client_cert.private_key_pem ))
-    cfdot:
-      bbs:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.bbs_client_cert.cert_pem ))
-        client_key: (( .properties.bbs_client_cert.private_key_pem ))
-  cflinuxfs2-rootfs:
-    trusted_certs: (( $ops_manager.trusted_certificates ))
-  metron_endpoint:
-    shared_secret: (( .doppler.shared_secret_credentials.password ))
-  metron_agent:
-    deployment: cf
-  loggregator:
-    tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      metron:
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-  garden:
-    cleanup_process_dirs_on_wait: true
-    default_container_grace_time: 0
-    persistent_image_list:
-      - "/var/vcap/packages/cflinuxfs2/rootfs"
-    graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
-    network_pool: (( .properties.container_networking.disable.garden_network_pool.value ))
-    deny_networks: ["0.0.0.0/0"]
-    network_mtu: (( garden_network_mtu.value ))
-    insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
-    http_proxy: (( $ops_manager.http_proxy ))
-    https_proxy: (( $ops_manager.https_proxy ))
-    no_proxy: (( $ops_manager.no_proxy ))
-    network_plugin: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin) ))
-    network_plugin_extra_args: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin_extra_args) ))
-    dns_servers: (( dns_servers.parsed_strings ))
-    image_plugin: "/var/vcap/packages/grootfs/bin/grootfs"
-    image_plugin_extra_args: ["--config=/var/vcap/jobs/grootfs/config/grootfs_config.yml"]
-  grootfs:
-    graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
-    insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
-    persistent_image_list: ["/var/vcap/packages/cflinuxfs2/rootfs.tar"]
-  cf_networking:
-    cni_config_dir: /var/vcap/jobs/silk-cni/config/cni
-    disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
-    dns_servers: (( dns_servers.parsed_strings ))
-    iptables_logging: true
-    mtu: (( garden_network_mtu.value ))
-    vtep_port: (( .properties.container_networking.enable.vtep_port.value ))
-    silk_daemon:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      client_cert: (( .diego_database.silk_daemon_client_cert.cert_pem ))
-      client_key: (( .diego_database.silk_daemon_client_cert.private_key_pem ))
-    policy_server:
-      hostname: network-policy-server.service.cf.internal
-    vxlan_policy_agent:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      client_cert: (( .properties.network_policy_agent_cert.cert_pem ))
-      client_key: (( .properties.network_policy_agent_cert.private_key_pem ))
-  nfsv3driver:
-    disable: (( .properties.nfs_volume_driver.selected_option.parsed_manifest(disable_nfsv3driver) ))
-  tcp:
-    enabled: true
-  tls:
-    ca_cert: (( $ops_manager.ca_certificate ))
-    cert: (( .properties.rep_server_cert.cert_pem ))
-    key: (( .properties.rep_server_cert.private_key_pem ))
-  uaa:
-    client_secret: (( .uaa.tcp_emitter_credentials.password ))
-    client_name: (( .uaa.tcp_emitter_credentials.identity ))
-    ca_cert: (( $ops_manager.ca_certificate ))

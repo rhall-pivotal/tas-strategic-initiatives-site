@@ -1,0 +1,13 @@
+---
+name: route_registrar
+release: routing
+manifest: |
+  route_registrar:
+    routes:
+    - name: api
+      port: 9022
+      registration_interval: 20s
+      tags:
+        component: CloudController
+      uris:
+      - "api.(( .cloud_controller.system_domain.value ))"

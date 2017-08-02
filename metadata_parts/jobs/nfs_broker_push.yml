@@ -12,24 +12,21 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 1_024
+  default: 1024
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 1_024
+  default: 1024
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
-
 - name: cpu
   type: integer
   label: CPU
@@ -37,14 +34,12 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 0
 dynamic_ip: 1
 max_in_flight: 1
 single_az_only: false
 errand: true
 run_post_deploy_errand_default: when-changed
-
 instance_definition:
   name: instances
   type: integer
@@ -53,23 +48,6 @@ instance_definition:
   default: 1
   constraints:
     min: 0
-
 property_blueprints:
-  - name: nfs_broker_push_credentials
-    type: simple_credentials
-
-manifest: |
-  nfsbrokerpush:
-    domain: (( .cloud_controller.system_domain.value ))
-    app_domain: (( .cloud_controller.system_domain.value ))
-    cf:
-      admin_user: (( .uaa.admin_credentials.identity ))
-      admin_password: (( .uaa.admin_credentials.password ))
-      dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
-    organization: system
-    space: nfs
-    username: (( nfs_broker_push_credentials.identity ))
-    password: (( nfs_broker_push_credentials.password ))
-    db: (( .properties.system_database.selected_option.parsed_manifest(nfsvolume) ))
-    syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+- name: nfs_broker_push_credentials
+  type: simple_credentials

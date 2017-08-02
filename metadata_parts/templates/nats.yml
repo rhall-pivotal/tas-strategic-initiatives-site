@@ -1,6 +1,10 @@
 ---
 name: nats
 release: nats
-provides: 'nats: {as: nats, shared: true}
+provides: |
+  nats: {as: nats, shared: true}
 
-'
+manifest: |
+  nats:
+    user: (( credentials.identity ))
+    password: (( credentials.password ))

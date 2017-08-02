@@ -16,7 +16,6 @@ resource_definitions:
   default: 1024
   constraints:
     min: 1024
-
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
@@ -24,7 +23,6 @@ resource_definitions:
   default: 4000
   constraints:
     min: 2000
-
 - name: persistent_disk
   type: integer
   label: Persistent Disk
@@ -32,7 +30,6 @@ resource_definitions:
   default: 200000
   constraints:
     min: 10000
-
 - name: cpu
   type: integer
   label: CPU
@@ -40,12 +37,10 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 1
 dynamic_ip: 0
 max_in_flight: 1
 single_az_only: true
-
 instance_definition:
   name: instances
   type: integer
@@ -56,27 +51,10 @@ instance_definition:
     min: 0
     max: 1
   zero_if:
-    property_reference: .properties.mysql_backups
+    property_reference: ".properties.mysql_backups"
     property_values:
     - disable
-
 property_blueprints:
 - name: backup_encryption_key
   type: secret
   label: Backup Symmetric Encryption Key
-
-manifest: |
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  service-backup:
-    destinations: (( .properties.mysql_backups.selected_option.parsed_manifest(destination) ))
-    source_folder: /var/vcap/store/mysql-backups
-    source_executable: /var/vcap/jobs/streaming-mysql-backup-client/bin/client
-    cleanup_executable: /bin/bash -c /var/vcap/jobs/streaming-mysql-backup-client/bin/cleanup-directories
-    cron_schedule: (( .properties.mysql_backups.selected_option.parsed_manifest(cron_schedule) ))
-    exit_if_in_progress: true
-  cf-mysql-backup:
-    symmetric_key: (( backup_encryption_key.value ))
-    endpoint_credentials:
-      username: (( .mysql.mysql_backup_server_credentials.identity ))
-      password: (( .mysql.mysql_backup_server_credentials.password ))
-    backup-all-masters: (( .properties.mysql_backups.selected_option.parsed_manifest(backup_all_masters) ))

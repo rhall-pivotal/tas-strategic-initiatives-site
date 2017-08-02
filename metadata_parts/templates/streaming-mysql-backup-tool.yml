@@ -1,3 +1,11 @@
 ---
 name: streaming-mysql-backup-tool
 release: mysql-backup
+manifest: |
+  cf_mysql:
+    mysql:
+      admin_password: (( mysql_admin_credentials.password ))
+  cf-mysql-backup:
+    endpoint_credentials:
+      username: (( mysql_backup_server_credentials.identity ))
+      password: (( mysql_backup_server_credentials.password ))

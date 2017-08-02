@@ -4,7 +4,7 @@ label: Doppler Server
 resource_label: Doppler Server
 description: Doppler server collects application logs
 templates:
-- consul_agent
+- consul_agent_doppler
 - doppler
 - metron_agent
 - syslog_drain_binder
@@ -14,24 +14,21 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 1_024
+  default: 1024
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 2_048
+  default: 2048
   constraints:
-    min: 2_048
-
+    min: 2048
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
-
 - name: cpu
   type: integer
   label: CPU
@@ -39,12 +36,10 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 0
 dynamic_ip: 1
 max_in_flight: 1
 single_az_only: false
-
 instance_definition:
   name: instances
   type: integer
@@ -53,68 +48,28 @@ instance_definition:
   default: 3
   constraints:
     min: 1
-
 property_blueprints:
-  - name: shared_secret_credentials
-    type: simple_credentials
-
-  - name: message_drain_buffer_size
-    type: integer
-    default: 10000
-    configurable: true
-
-  - name: doppler_tls_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains: ["doppler"]
-
-  - name: metron_tls_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains: ["metron"]
-
-  - name: syslogdrainbinder_tls_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains: ["syslogdrainbinder"]
-
-manifest: |
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  system_domain: (( .cloud_controller.system_domain.value ))
-  doppler:
-    deployment: cf
-    disable_announce: true
-    message_drain_buffer_size: (( message_drain_buffer_size.value ))
-  doppler_endpoint:
-    shared_secret: (( .doppler.shared_secret_credentials.password ))
-  ssl:
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-  metron_endpoint:
-    shared_secret: (( .doppler.shared_secret_credentials.password ))
-  metron_agent:
-    deployment: cf
-  loggregator:
-    disable_syslog_drains: true
-    etcd:
-      machines: []
-    tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      doppler:
-        cert: (( doppler_tls_cert.cert_pem ))
-        key: (( doppler_tls_cert.private_key_pem ))
-      metron:
-        cert: (( metron_tls_cert.cert_pem ))
-        key: (( metron_tls_cert.private_key_pem ))
-      syslogdrainbinder:
-        cert: (( syslogdrainbinder_tls_cert.cert_pem ))
-        key: (( syslogdrainbinder_tls_cert.private_key_pem ))
-  cc:
-    mutual_tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-  consul:
-    agent:
-      services:
-        doppler: {}
+- name: shared_secret_credentials
+  type: simple_credentials
+- name: message_drain_buffer_size
+  type: integer
+  default: 10000
+  configurable: true
+- name: doppler_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - doppler
+- name: metron_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - metron
+- name: syslogdrainbinder_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - syslogdrainbinder

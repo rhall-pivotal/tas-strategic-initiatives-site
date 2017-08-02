@@ -12,18 +12,16 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 1_024
+  default: 1024
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 2_048
+  default: 2048
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: persistent_disk
   type: integer
   label: Persistent Disk
@@ -31,7 +29,6 @@ resource_definitions:
   default: 1024
   constraints:
     min: 1024
-
 - name: cpu
   type: integer
   label: CPU
@@ -39,13 +36,11 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 1
 dynamic_ip: 0
 max_in_flight: 1
 single_az_only: false
 serial: true
-
 instance_definition:
   name: instances
   type: integer
@@ -55,29 +50,3 @@ instance_definition:
   constraints:
     min: 1
     may_only_be_odd_or_zero: true
-
-property_blueprints:
-
-manifest: |
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  metron_endpoint:
-    shared_secret: (( .doppler.shared_secret_credentials.password ))
-  metron_agent:
-    deployment: cf
-  loggregator:
-    tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      metron:
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-  consul:
-    encrypt_keys:
-    - (( .properties.consul_encrypt_key.value ))
-    ca_cert: (( $ops_manager.ca_certificate ))
-    server_cert: (( .properties.consul_server_cert.cert_pem ))
-    server_key: (( .properties.consul_server_cert.private_key_pem ))
-    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
-    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
-    agent:
-      domain: cf.internal
-      mode: server

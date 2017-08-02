@@ -1,5 +1,14 @@
 ---
 name: silk-controller
 release: cf-networking
-consumes: "(( .properties.system_database.selected_option.parsed_manifest(mysql_db_link)
-  ))\n"
+consumes: |
+  (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
+manifest: |
+  cf_networking:
+    disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
+    network: (( .properties.container_networking.enable.network_cidr.value || "10.255.0.0/16" ))
+    silk_controller:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      server_cert: (( silk_controller_server_cert.cert_pem ))
+      server_key: (( silk_controller_server_cert.private_key_pem ))
+      database: (( .properties.system_database.selected_option.parsed_manifest(silkdb) ))

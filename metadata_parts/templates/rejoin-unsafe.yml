@@ -1,3 +1,9 @@
 ---
 name: rejoin-unsafe
 release: cf-mysql
+manifest: |
+  cf_mysql:
+    mysql:
+      galera_healthcheck:
+        endpoint_username: (( .mysql.mysql_bootstrap_credentials.identity ))
+        endpoint_password: (( .mysql.mysql_bootstrap_credentials.password ))

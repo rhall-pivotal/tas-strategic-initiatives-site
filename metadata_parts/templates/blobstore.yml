@@ -1,3 +1,15 @@
 ---
 name: blobstore
 release: capi
+manifest: |
+  blobstore:
+    admin_users:
+    - username: (( blobstore_credentials.identity ))
+      password: (( blobstore_credentials.password ))
+    secure_link:
+      secret: (( blobstore_secret.value ))
+    tls:
+      cert: (( blobstore_cert.cert_pem ))
+      private_key: (( blobstore_cert.private_key_pem ))
+    internal_access_rules: (( blobstore_internal_access_rules.parsed_strings ))
+  system_domain: (( .cloud_controller.system_domain.value ))

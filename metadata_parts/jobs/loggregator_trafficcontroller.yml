@@ -4,10 +4,10 @@ label: Loggregator Trafficcontroller
 resource_label: Loggregator Trafficcontroller
 description: Loggregator trafficcontroller distributes requests to Loggregator servers
 templates:
-- consul_agent
+- consul_agent_loggregator_trafficcontroller
 - loggregator_trafficcontroller
 - metron_agent
-- route_registrar
+- route_registrar_loggregator_trafficcontroller
 - syslog_forwarder
 - reverse_log_proxy
 resource_definitions:
@@ -15,24 +15,21 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 1_024
+  default: 1024
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 2_048
+  default: 2048
   constraints:
-    min: 2_048
-
+    min: 2048
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
-
 - name: cpu
   type: integer
   label: CPU
@@ -40,12 +37,10 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 0
 dynamic_ip: 1
 max_in_flight: 1
 single_az_only: false
-
 instance_definition:
   name: instances
   type: integer
@@ -54,69 +49,18 @@ instance_definition:
   configurable: true
   constraints:
     min: 1
-
 property_blueprints:
-  - name: status_credentials
-    type: simple_credentials
-
-  - name: trafficcontroller_tls_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains: ["trafficcontroller"]
-
-  - name: statsdinjector_tls_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains: ["statsdinjector"]
-
-manifest: |
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  cc:
-    srv_api_uri: "https://api.(( .cloud_controller.system_domain.value ))"
-  system_domain: (( .cloud_controller.system_domain.value ))
-  ssl:
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-  metron_endpoint:
-    shared_secret: (( .doppler.shared_secret_credentials.password ))
-  metron_agent:
-    deployment: cf
-  loggregator:
-    tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      trafficcontroller:
-        cert: (( trafficcontroller_tls_cert.cert_pem ))
-        key: (( trafficcontroller_tls_cert.private_key_pem ))
-      metron:
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-      reverse_log_proxy:
-        cert: (( .syslog_adapter.adapter_rlp_tls.cert_pem ))
-        key: (( .syslog_adapter.adapter_rlp_tls.private_key_pem ))
-    uaa:
-      client: (( .uaa.doppler_client_credentials.identity ))
-      client_secret: (( .uaa.doppler_client_credentials.password ))
-  uaa:
-    clients:
-      doppler:
-        secret: (( .uaa.doppler_client_credentials.password ))
-  router:
-    cipher_suites: (( .properties.networking_point_of_entry.external_ssl.ssl_ciphers.value ))
-  route_registrar:
-    routes:
-    - name: doppler
-      port: 8081
-      registration_interval: 20s
-      uris:
-      - "doppler.(( .cloud_controller.system_domain.value ))"
-    - name: loggregator
-      port: 8080
-      registration_interval: 20s
-      uris:
-      - "loggregator.(( .cloud_controller.system_domain.value ))"
-  consul:
-    agent:
-      services:
-        loggregator_trafficcontroller: {}
-        reverse_log_proxy: {}
+- name: status_credentials
+  type: simple_credentials
+- name: trafficcontroller_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - trafficcontroller
+- name: statsdinjector_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - statsdinjector

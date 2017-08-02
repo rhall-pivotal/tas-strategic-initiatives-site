@@ -1,3 +1,18 @@
 ---
 name: routing-api
 release: routing
+manifest: |
+  uaa:
+    tls_port: 8443
+    ca_cert: (( $ops_manager.ca_certificate ))
+  routing_api:
+    log_level: debug
+    router_groups: (( .properties.tcp_routing.selected_option.parsed_manifest(default_router_group) ))
+    skip_consul_lock: (( .diego_database.skip_consul_locks.value ))
+    system_domain: (( .cloud_controller.system_domain.value ))
+    sqldb: (( .properties.system_database.selected_option.parsed_manifest(routingdb) ))
+    locket:
+      api_location: locket.service.cf.internal:8891
+      ca_cert: (( $ops_manager.ca_certificate ))
+      client_cert: (( locket_client_cert.cert_pem ))
+      client_key: (( locket_client_cert.private_key_pem ))

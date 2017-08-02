@@ -1,8 +1,131 @@
 ---
 name: cloud_controller_ng
 release: capi
-consumes: "(( .properties.system_database.selected_option.parsed_manifest(ccdb_link)
-  ))\n"
-provides: 'cloud_controller: {as: cloud_controller, shared: true}
-
-'
+consumes: |
+  (( .properties.system_database.selected_option.parsed_manifest(ccdb_link) ))
+provides: |
+  cloud_controller: {as: cloud_controller, shared: true}
+manifest: |
+  uaa:
+    url: https://uaa.(( .cloud_controller.system_domain.value ))
+    clients:
+      cc-service-dashboards:
+        scope: cloud_controller.write,openid,cloud_controller.read,cloud_controller_service_permissions.read
+        secret: (( .uaa.cc_service_dashboards_credentials.password ))
+      cloud_controller_username_lookup:
+        secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
+      cc_routing:
+        secret: (( .uaa.cc_routing_credentials.password ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+  dea_next:
+    staging_disk_limit_mb: 6144
+  app_domains:
+  - (( .cloud_controller.apps_domain.value ))
+  login:
+    url: https://login.(( .cloud_controller.system_domain.value ))
+  domain: (( .cloud_controller.system_domain.value ))
+  ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
+  cc:
+    buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
+    droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
+    packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
+    resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
+    rate_limiter: (( .properties.cc_api_rate_limit.selected_option.parsed_manifest(rate_limiter) ))
+    disable_custom_buildpacks: "(( enable_custom_buildpacks.value ? 'false' : 'true' ))"
+    mutual_tls:
+      private_key: (( .properties.cloud_controller_mutual_cert.private_key_pem ))
+      ca_cert: (( $ops_manager.ca_certificate ))
+      public_cert: (( .properties.cloud_controller_mutual_cert.cert_pem ))
+    stacks:
+    - name: cflinuxfs2
+      description: Cloud Foundry Linux-based filesystem
+    - name: windows2012R2
+      description: Microsoft Windows / .Net 64 bit
+    min_cli_version: 6.23.0
+    bulk_api_password: (( bulk_api_credentials.password ))
+    default_running_security_groups:
+    - default_security_group
+    allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
+    default_app_disk_in_mb: (( default_disk_quota_app.value ))
+    internal_api_password: (( internal_api_user_credentials.password ))
+    app_bits_max_body_size: "(( max_file_size.value ))M"
+    db_encryption_key: (( encrypt_key.value || db_encryption_credentials.password ))
+    maximum_health_check_timeout: 600
+    security_group_definitions:
+    - name: default_security_group
+      rules:
+      - protocol: all
+        destination: 0.0.0.0-169.253.255.255
+      - protocol: all
+        destination: 169.255.0.0-255.255.255.255
+    staging_upload_user: (( staging_upload_credentials.identity ))
+    default_app_ssh_access: (( default_app_ssh_access.value ))
+    min_recommended_cli_version: 6.23.0
+    security_event_logging:
+      enabled: (( security_event_logging_enabled.value ))
+    install_buildpacks:
+    - name: staticfile_buildpack
+      package: staticfile-buildpack
+    - name: java_buildpack_offline
+      package: java-buildpack
+    - name: ruby_buildpack
+      package: ruby-buildpack
+    - name: nodejs_buildpack
+      package: nodejs-buildpack
+    - name: go_buildpack
+      package: go-buildpack
+    - name: python_buildpack
+      package: python-buildpack
+    - name: php_buildpack
+      package: php-buildpack
+    - name: dotnet_core_buildpack
+      package: dotnet-core-buildpack
+    - name: binary_buildpack
+      package: binary-buildpack
+    broker_client_default_async_poll_interval_seconds: 10
+    diego:
+      temporary_local_staging: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      temporary_local_tasks: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      temporary_local_apps: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      temporary_local_tps: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      temporary_local_sync: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      temporary_cc_uploader_mtls: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      temporary_droplet_download_mtls: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+    allowed_cors_domains:
+    - https://apm.(( .cloud_controller.system_domain.value ))
+    - https://metrics.(( .cloud_controller.system_domain.value ))
+    maximum_app_disk_in_mb: (( max_disk_quota_app.value ))
+    default_app_memory: (( default_app_memory.value ))
+    internal_api_user: (( internal_api_user_credentials.identity ))
+    logging_level: debug
+    staging_upload_password: (( staging_upload_credentials.password ))
+    volume_services_enabled: true
+    default_staging_security_groups:
+    - default_security_group
+    quota_definitions:
+      default:
+        memory_limit: (( default_quota_memory_limit_mb.value ))
+        total_services: (( default_quota_max_number_services.value ))
+        non_basic_services_allowed: true
+        total_routes: 1000
+        trial_db_allowed: true
+      runaway:
+        memory_limit: 102400
+        total_services: -1
+        total_routes: 1000
+        non_basic_services_allowed: true
+  support_address: https://support.pivotal.io
+  routing_api:
+    enabled: true
+  hm9000:
+    port: 12345
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  doppler:
+    port: (( .properties.logger_endpoint_port.value ))
+  router:
+    route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
+  app_ssh:
+    host_key_fingerprint: (( .diego_brain.ssh_host_key.public_key_fingerprint ))
+  system_domain: (( .cloud_controller.system_domain.value ))
+  system_domain_organization: system

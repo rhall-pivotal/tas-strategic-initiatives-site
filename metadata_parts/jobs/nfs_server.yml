@@ -4,10 +4,10 @@ label: File Storage
 resource_label: File Storage
 description: Stores droplets and app packages on behalf of Cloud Controller
 templates:
-- consul_agent
+- consul_agent_nfs_server
 - metron_agent
 - blobstore
-- route_registrar
+- route_registrar_nfs_server
 - blobstore-backup
 - syslog_forwarder
 resource_definitions:
@@ -15,26 +15,23 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 4_096
+  default: 4096
   constraints:
-    min: 4_096
-
+    min: 4096
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 8_192
+  default: 8192
   constraints:
-    min: 8_192
-
+    min: 8192
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: true
-  default: 102_400
+  default: 102400
   constraints:
-    min: 10_240
-
+    min: 10240
 - name: cpu
   type: integer
   label: CPU
@@ -42,13 +39,11 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 1
 dynamic_ip: 0
 max_in_flight: 1
 serial: true
 single_az_only: true
-
 instance_definition:
   name: instances
   type: integer
@@ -59,64 +54,26 @@ instance_definition:
     max: 1
     min: 0
   zero_if:
-    property_reference: .properties.system_blobstore
+    property_reference: ".properties.system_blobstore"
     property_values:
     - external
     - external_gcs
     - external_azure
-
 property_blueprints:
-  - name: blobstore_credentials
-    type: simple_credentials
-    default:
-      identity: blobstore
-  - name: blobstore_secret
-    type: secret
-    configurable: false
-  - name: blobstore_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains:
-      - blobstore.service.cf.internal
-  - name: blobstore_internal_access_rules
-    type: string_list
-    configurable: true
-    default: "allow 10.0.0.0/8;,allow 172.16.0.0/12;,allow 192.168.0.0/16;"
-
-manifest: |
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  system_domain: (( .cloud_controller.system_domain.value ))
-  metron_endpoint:
-    shared_secret: (( .doppler.shared_secret_credentials.password ))
-  metron_agent:
-    deployment: cf
-  loggregator:
-    tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      metron:
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-  consul:
-    agent:
-      services:
-        blobstore: {}
-  route_registrar:
-    routes:
-      - name: blobstore
-        port: 8080
-        registration_interval: 20s
-        tags:
-          component: blobstore
-        uris:
-        - blobstore.(( .cloud_controller.system_domain.value ))
-  blobstore:
-    admin_users:
-    - username: (( blobstore_credentials.identity ))
-      password: (( blobstore_credentials.password ))
-    secure_link:
-      secret: (( blobstore_secret.value ))
-    tls:
-      cert: (( blobstore_cert.cert_pem ))
-      private_key: (( blobstore_cert.private_key_pem ))
-    internal_access_rules: (( blobstore_internal_access_rules.parsed_strings ))
+- name: blobstore_credentials
+  type: simple_credentials
+  default:
+    identity: blobstore
+- name: blobstore_secret
+  type: secret
+  configurable: false
+- name: blobstore_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - blobstore.service.cf.internal
+- name: blobstore_internal_access_rules
+  type: string_list
+  configurable: true
+  default: allow 10.0.0.0/8;,allow 172.16.0.0/12;,allow 192.168.0.0/16;

@@ -5,7 +5,7 @@ resource_label: MySQL Proxy
 description: MySQL Proxy
 templates:
 - consul_agent
-- route_registrar
+- route_registrar_mysql_proxy
 - proxy
 - syslog_forwarder
 resource_definitions:
@@ -13,24 +13,21 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 1_024
+  default: 1024
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 4_096
+  default: 4096
   constraints:
-    min: 4_096
-
+    min: 4096
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
-
 - name: cpu
   type: integer
   label: CPU
@@ -38,12 +35,10 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 1
 dynamic_ip: 0
 max_in_flight: 1
 single_az_only: false
-
 instance_definition:
   name: instances
   type: integer
@@ -51,53 +46,27 @@ instance_definition:
   configurable: true
   default: 2
   zero_if:
-    property_reference: .properties.system_database
+    property_reference: ".properties.system_database"
     property_values:
     - external
-
 property_blueprints:
-  - name: static_ips
-    type: ip_ranges
-    configurable: true
-    optional: true
-
-  - name: service_hostname
-    type: network_address
-    configurable: true
-    optional: true
-
-  - name: dashboard_credentials
-    type: simple_credentials
-    default:
-      identity: admin
-
-  - name: startup_delay
-    type: integer
-    configurable: true
-    default: 0
-
-  - name: shutdown_delay
-    type: integer
-    configurable: true
-    default: 0
-
-manifest: |
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  route_registrar:
-    routes:
-    - name: cf-mysql-proxy
-      port: 8080
-      registration_interval: 20s
-      tags:
-        component: MySQLProxy
-      uris:
-      - "proxy-p-mysql-ert.(( .cloud_controller.system_domain.value ))"
-      prepend_instance_index: true
-  cf_mysql:
-    proxy:
-      api_uri: "proxy-p-mysql-ert.(( .cloud_controller.system_domain.value ))"
-      api_password: (( dashboard_credentials.password ))
-      api_username: (( dashboard_credentials.identity ))
-      consul_enabled: true
-      startup_delay: (( startup_delay.value ))
-      shutdown_delay: (( shutdown_delay.value ))
+- name: static_ips
+  type: ip_ranges
+  configurable: true
+  optional: true
+- name: service_hostname
+  type: network_address
+  configurable: true
+  optional: true
+- name: dashboard_credentials
+  type: simple_credentials
+  default:
+    identity: admin
+- name: startup_delay
+  type: integer
+  configurable: true
+  default: 0
+- name: shutdown_delay
+  type: integer
+  configurable: true
+  default: 0

@@ -1,3 +1,6 @@
 ---
 name: nfsv3driver
 release: nfs-volume
+manifest: |
+  nfsv3driver:
+    disable: (( .properties.nfs_volume_driver.selected_option.parsed_manifest(disable_nfsv3driver) ))

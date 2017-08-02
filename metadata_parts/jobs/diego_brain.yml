@@ -14,33 +14,30 @@ templates:
 - ssh_proxy
 - tps
 - stager
-- metron_agent
+- metron_agent_diego_brain
 - syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer
   label: RAM
   configurable: true
-  default: 2_048
+  default: 2048
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 4_096
+  default: 4096
   constraints:
-    min: 4_096
-
+    min: 4096
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: true
-  default: 1_024
+  default: 1024
   constraints:
-    min: 1_024
-
+    min: 1024
 - name: cpu
   type: integer
   label: CPU
@@ -48,12 +45,10 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 1
 dynamic_ip: 0
 max_in_flight: 1
 single_az_only: false
-
 instance_definition:
   name: instances
   type: integer
@@ -62,128 +57,21 @@ instance_definition:
   default: 3
   constraints:
     min: 1
-
 property_blueprints:
-  - name: ssh_host_key
-    type: rsa_pkey_credentials
-    configurable: false
-
-  - name: static_ips
-    type: ip_ranges
-    configurable: true
-    optional: true
-
-  - name: starting_container_count_maximum
-    type: integer
-    configurable: true
-    default: 200
-
-  - name: cc_uploader_server_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains:
-      - cc-uploader.service.cf.internal
-
-manifest: |
-  capi:
-    cc_uploader:
-      mutual_tls:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        server_cert: (( cc_uploader_server_cert.cert_pem ))
-        server_key: (( cc_uploader_server_cert.private_key_pem ))
-      cc:
-        job_polling_interval_in_seconds: 5
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.cloud_controller_client_cert.cert_pem ))
-        client_key: (( .properties.cloud_controller_client_cert.private_key_pem ))
-    nsync:
-      bbs:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.bbs_client_cert.cert_pem ))
-        client_key: (( .properties.bbs_client_cert.private_key_pem ))
-      cc:
-        base_url: http://cloud-controller-ng.service.cf.internal:9022
-        basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
-        basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
-    stager:
-      insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
-      bbs:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.bbs_client_cert.cert_pem ))
-        client_key: (( .properties.bbs_client_cert.private_key_pem ))
-      cc:
-        basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
-        basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
-    tps:
-      bbs:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.bbs_client_cert.cert_pem ))
-        client_key: (( .properties.bbs_client_cert.private_key_pem ))
-      cc:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.tps_client_cert.cert_pem ))
-        client_key: (( .properties.tps_client_cert.private_key_pem ))
-      watcher:
-        locket:
-          api_location: "locket.service.cf.internal:8891"
-        skip_consul_lock: (( .diego_database.skip_consul_locks.value ))
-      listener_enabled: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_tps_listener) ))
-  diego:
-    auctioneer:
-      starting_container_count_maximum: (( starting_container_count_maximum.value ))
-      ca_cert: (( $ops_manager.ca_certificate ))
-      server_cert: (( .properties.auctioneer_server_cert.cert_pem ))
-      server_key: (( .properties.auctioneer_server_cert.private_key_pem ))
-      bbs:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.bbs_client_cert.cert_pem ))
-        client_key: (( .properties.bbs_client_cert.private_key_pem ))
-      rep:
-        require_tls: true
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.rep_client_cert.cert_pem ))
-        client_key: (( .properties.rep_client_cert.private_key_pem ))
-      locket:
-        api_location: "locket.service.cf.internal:8891"
-      skip_consul_lock: (( .diego_database.skip_consul_locks.value ))
-    ssh_proxy:
-      host_key: (( ssh_host_key.private_key_pem ))
-      enable_cf_auth: true
-      diego_credentials: ""
-      uaa_token_url: "https://uaa.(( .cloud_controller.system_domain.value ))/oauth/token"
-      uaa_secret: (( .uaa.ssh_proxy_client_credentials.password ))
-      bbs:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.bbs_client_cert.cert_pem ))
-        client_key: (( .properties.bbs_client_cert.private_key_pem ))
-    ssl:
-      skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-    cfdot:
-      bbs:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.bbs_client_cert.cert_pem ))
-        client_key: (( .properties.bbs_client_cert.private_key_pem ))
-  metron_endpoint:
-    shared_secret: (( .doppler.shared_secret_credentials.password ))
-  metron_agent:
-    deployment: cf
-    health_port: 22222
-  loggregator:
-    tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      metron:
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  tcp_emitter:
-    bbs:
-      client_cert: (( .properties.bbs_client_cert.cert_pem ))
-      client_key: (( .properties.bbs_client_cert.private_key_pem ))
-    oauth_secret: (( .uaa.tcp_emitter_credentials.password ))
-  uaa:
-    tls_port: 8443
-    ca_cert: (( $ops_manager.ca_certificate ))
-  bbs:
-    api_location: bbs.service.cf.internal:8889
-    ca_cert: (( $ops_manager.ca_certificate ))
+- name: ssh_host_key
+  type: rsa_pkey_credentials
+  configurable: false
+- name: static_ips
+  type: ip_ranges
+  configurable: true
+  optional: true
+- name: starting_container_count_maximum
+  type: integer
+  configurable: true
+  default: 200
+- name: cc_uploader_server_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - cc-uploader.service.cf.internal

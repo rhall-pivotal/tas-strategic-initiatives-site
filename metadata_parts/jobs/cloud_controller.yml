@@ -4,7 +4,7 @@ label: Cloud Controller
 resource_label: Cloud Controller
 description: Coordinates Pivotal CF Elastic Runtime application lifecycles
 templates:
-- consul_agent
+- consul_agent_cloud_controller
 - go-buildpack
 - binary-buildpack
 - nodejs-buildpack
@@ -17,34 +17,30 @@ templates:
 - cloud_controller_ng
 - routing-api
 - metron_agent
-- route_registrar
+- route_registrar_cloud_controller
 - statsd_injector
 - cloud-controller-backup
 - syslog_forwarder
-
 resource_definitions:
 - name: ram
   type: integer
   label: RAM
   configurable: true
-  default: 4_096
+  default: 4096
   constraints:
-    min: 4_096
-
+    min: 4096
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 20_480
+  default: 20480
   constraints:
-    min: 20_480
-
+    min: 20480
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
-
 - name: cpu
   type: integer
   label: CPU
@@ -52,13 +48,11 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
-
 static_ip: 0
 dynamic_ip: 1
 max_in_flight: 1
 single_az_only: false
 serial: true
-
 instance_definition:
   name: instances
   type: integer
@@ -67,281 +61,94 @@ instance_definition:
   default: 2
   constraints:
     min: 1
-
 property_blueprints:
-  - name: staging_upload_credentials
-    type: simple_credentials
-    default:
-      identity: staging_upload_user
-
-  - name: bulk_api_credentials
-    type: simple_credentials
-    default:
-      identity: bulk_api
-
-  - name: db_encryption_credentials
-    type: simple_credentials
-    default:
-      identity: db_encryption
-
-  - name: encrypt_key
-    type: secret
-    configurable: true
-    optional: true
-
-  - name: max_file_size
-    type: integer
-    configurable: true
-    optional: false
-    default: 1024
-    constraints:
-      min: 1024
-      max: 2048
-
-  - name: default_app_memory
-    type: integer
-    configurable: true
-    optional: false
-    default: 1024
-    constraints:
-      min: 64
-      max: 2048
-
-  - name: max_disk_quota_app
-    type: integer
-    configurable: true
-    optional: false
-    default: 2048
-    constraints:
-      min: 512
-      max: 20480
-
-  - name: default_disk_quota_app
-    type: integer
-    configurable: true
-    optional: false
-    default: 1024
-    constraints:
-      min: 512
-      max: 20480
-
-  - name: enable_custom_buildpacks
-    type: boolean
-    configurable: true
-    optional: false
-    default: true
-
-  - name: system_domain
-    type: wildcard_domain
-    configurable: true
-
-  - name: apps_domain
-    type: wildcard_domain
-    configurable: true
-
-  - name: default_quota_memory_limit_mb
-    type: integer
-    configurable: true
-    default: 10240
-    constraints:
-      min: 10240
-      max: 102400
-
-  - name: default_quota_max_number_services
-    type: integer
-    configurable: true
-    default: 100
-    constraints:
-      min: 0
-      max: 1000
-
-  - name: allow_app_ssh_access
-    type: boolean
-    configurable: true
-    default: true
-
-  - name: default_app_ssh_access
-    type: boolean
-    configurable: true
-    default: true
-
-  - name: internal_api_user_credentials
-    type: simple_credentials
-
-  - name: security_event_logging_enabled
-    type: boolean
-    configurable: true
-    default: true
-
-  - name: locket_client_cert
-    type: rsa_cert_credentials
-    configurable: false
-
-manifest: |
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  app_ssh:
-    host_key_fingerprint: (( .diego_brain.ssh_host_key.public_key_fingerprint ))
-  domain: (( .cloud_controller.system_domain.value ))
-  system_domain: (( .cloud_controller.system_domain.value ))
-  system_domain_organization: system
-  app_domains:
-  - "(( .cloud_controller.apps_domain.value ))"
-  support_address: https://support.pivotal.io
-  route_registrar:
-    routes:
-    - name: api
-      port: 9022
-      registration_interval: 20s
-      tags:
-        component: CloudController
-      uris:
-      - "api.(( .cloud_controller.system_domain.value ))"
-  cc:
-    allowed_cors_domains:
-    - https://apm.(( .cloud_controller.system_domain.value ))
-    - https://metrics.(( .cloud_controller.system_domain.value ))
-    allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
-    default_app_ssh_access: (( default_app_ssh_access.value ))
-    default_to_diego_backend: true
-    broker_client_default_async_poll_interval_seconds: 10
-    buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
-    droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
-    packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
-    resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
-    bulk_api_password: (( bulk_api_credentials.password ))
-    app_bits_max_body_size: (( max_file_size.value ))M
-    maximum_app_disk_in_mb: (( max_disk_quota_app.value ))
-    default_app_disk_in_mb: (( default_disk_quota_app.value ))
-    default_app_memory: (( default_app_memory.value ))
-    db_encryption_key: (( encrypt_key.value || db_encryption_credentials.password ))
-    default_running_security_groups:
-      - default_security_group
-    default_staging_security_groups:
-      - default_security_group
-    diego:
-      temporary_local_staging: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
-      temporary_local_tasks: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
-      temporary_local_apps: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
-      temporary_local_tps: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
-      temporary_local_sync: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
-      temporary_cc_uploader_mtls: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
-      temporary_droplet_download_mtls: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
-    disable_custom_buildpacks: "(( enable_custom_buildpacks.value ? 'false' : 'true' ))"
-    install_buildpacks:
-      - name: staticfile_buildpack
-        package: staticfile-buildpack
-      - name: java_buildpack_offline
-        package: java-buildpack
-      - name: ruby_buildpack
-        package: ruby-buildpack
-      - name: nodejs_buildpack
-        package: nodejs-buildpack
-      - name: go_buildpack
-        package: go-buildpack
-      - name: python_buildpack
-        package: python-buildpack
-      - name: php_buildpack
-        package: php-buildpack
-      - name: dotnet_core_buildpack
-        package: dotnet-core-buildpack
-      - name: binary_buildpack
-        package: binary-buildpack
-    internal_api_user: (( internal_api_user_credentials.identity ))
-    internal_api_password: (( internal_api_user_credentials.password ))
-    logging_level: debug
-    maximum_health_check_timeout: 600
-    mutual_tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      public_cert: (( .properties.cloud_controller_mutual_cert.cert_pem ))
-      private_key: (( .properties.cloud_controller_mutual_cert.private_key_pem ))
-    quota_definitions:
-      default:
-        memory_limit: (( default_quota_memory_limit_mb.value ))
-        total_services: (( default_quota_max_number_services.value ))
-        non_basic_services_allowed: true
-        total_routes: 1000
-        trial_db_allowed: true
-      runaway:
-        memory_limit: 102400
-        total_services: -1
-        total_routes: 1000
-        non_basic_services_allowed: true
-    rate_limiter: (( .properties.cc_api_rate_limit.selected_option.parsed_manifest(rate_limiter) ))
-    security_group_definitions:
-      - name: default_security_group
-        rules:
-          - protocol: all
-            destination: 0.0.0.0-169.253.255.255
-          - protocol: all
-            destination: 169.255.0.0-255.255.255.255
-    stacks:
-      - name: cflinuxfs2
-        description: Cloud Foundry Linux-based filesystem
-      - name: windows2012R2
-        description: "Microsoft Windows / .Net 64 bit"
-    staging_upload_user: (( staging_upload_credentials.identity ))
-    staging_upload_password: (( staging_upload_credentials.password ))
-    min_cli_version: 6.23.0
-    min_recommended_cli_version: 6.23.0
-    security_event_logging:
-      enabled: (( security_event_logging_enabled.value ))
-    volume_services_enabled: true
-  ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
-  consul:
-    agent:
-      services:
-        cloud_controller_ng: {}
-        routing-api: {}
-  uaa:
-    tls_port: 8443
-    ca_cert: (( $ops_manager.ca_certificate ))
-    url: "https://uaa.(( .cloud_controller.system_domain.value ))"
-    clients:
-      cc-service-dashboards:
-        scope: cloud_controller.write,openid,cloud_controller.read,cloud_controller_service_permissions.read
-        secret: (( .uaa.cc_service_dashboards_credentials.password ))
-      cloud_controller_username_lookup:
-        secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
-      cc_routing:
-        secret: (( .uaa.cc_routing_credentials.password ))
-  login:
-    url: "https://login.(( .cloud_controller.system_domain.value ))"
-  ssl:
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-  logger_endpoint:
-    port: (( .properties.logger_endpoint_port.value ))
-  doppler:
-    port: (( .properties.logger_endpoint_port.value ))
-  metron_endpoint:
-    shared_secret: (( .doppler.shared_secret_credentials.password ))
-  metron_agent:
-    deployment: cf
-  statsd_injector:
-    deployment: cf
-  loggregator:
-    tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      metron:
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-      statsd_injector:
-        cert: (( .loggregator_trafficcontroller.statsdinjector_tls_cert.cert_pem ))
-        key: (( .loggregator_trafficcontroller.statsdinjector_tls_cert.private_key_pem ))
-  router:
-    route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
-  routing_api:
-    enabled: true
-    log_level: debug
-    router_groups: (( .properties.tcp_routing.selected_option.parsed_manifest(default_router_group) ))
-    skip_consul_lock: (( .diego_database.skip_consul_locks.value ))
-    sqldb: (( .properties.system_database.selected_option.parsed_manifest(routingdb) ))
-    system_domain: (( .cloud_controller.system_domain.value ))
-    locket:
-      api_location: "locket.service.cf.internal:8891"
-      ca_cert: (( $ops_manager.ca_certificate ))
-      client_cert: (( locket_client_cert.cert_pem ))
-      client_key: (( locket_client_cert.private_key_pem ))
-  hm9000:
-    port: 12345
-  dea_next:
-    staging_disk_limit_mb: 6144
+- name: staging_upload_credentials
+  type: simple_credentials
+  default:
+    identity: staging_upload_user
+- name: bulk_api_credentials
+  type: simple_credentials
+  default:
+    identity: bulk_api
+- name: db_encryption_credentials
+  type: simple_credentials
+  default:
+    identity: db_encryption
+- name: encrypt_key
+  type: secret
+  configurable: true
+  optional: true
+- name: max_file_size
+  type: integer
+  configurable: true
+  optional: false
+  default: 1024
+  constraints:
+    min: 1024
+    max: 2048
+- name: default_app_memory
+  type: integer
+  configurable: true
+  optional: false
+  default: 1024
+  constraints:
+    min: 64
+    max: 2048
+- name: max_disk_quota_app
+  type: integer
+  configurable: true
+  optional: false
+  default: 2048
+  constraints:
+    min: 512
+    max: 20480
+- name: default_disk_quota_app
+  type: integer
+  configurable: true
+  optional: false
+  default: 1024
+  constraints:
+    min: 512
+    max: 20480
+- name: enable_custom_buildpacks
+  type: boolean
+  configurable: true
+  optional: false
+  default: true
+- name: system_domain
+  type: wildcard_domain
+  configurable: true
+- name: apps_domain
+  type: wildcard_domain
+  configurable: true
+- name: default_quota_memory_limit_mb
+  type: integer
+  configurable: true
+  default: 10240
+  constraints:
+    min: 10240
+    max: 102400
+- name: default_quota_max_number_services
+  type: integer
+  configurable: true
+  default: 100
+  constraints:
+    min: 0
+    max: 1000
+- name: allow_app_ssh_access
+  type: boolean
+  configurable: true
+  default: true
+- name: default_app_ssh_access
+  type: boolean
+  configurable: true
+  default: true
+- name: internal_api_user_credentials
+  type: simple_credentials
+- name: security_event_logging_enabled
+  type: boolean
+  configurable: true
+  default: true
+- name: locket_client_cert
+  type: rsa_cert_credentials
+  configurable: false

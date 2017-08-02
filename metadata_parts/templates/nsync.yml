@@ -1,3 +1,17 @@
 ---
 name: nsync
 release: capi
+manifest: |
+  capi:
+    nsync:
+      bbs:
+        ca_cert: (( $ops_manager.ca_certificate ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
+      cc:
+        base_url: http://cloud-controller-ng.service.cf.internal:9022
+        basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
+        basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
+  diego:
+    ssl:
+      skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
