@@ -92,8 +92,18 @@ property_blueprints:
 
   - name: footer_text
     type: string
-  - name: href
-    type: string
+    configurable: true
+    optional: true
+
+  - name: footer_links
+    type: collection
+    configurable: true
+    optional: true
+    property_blueprints:
+      - name: name
+        type: string
+      - name: href
+        type: string
 
   - name: nav_links
     type: collection
@@ -111,15 +121,15 @@ property_blueprints:
     - name: Tools
       href: /tools
 
-  - name: footer_links
-    type: collection
+  - name: product_name
+    type: string
     configurable: true
     optional: true
-    property_blueprints:
-      - name: name
-        type: string
-      - name: href
-        type: string
+
+  - name: marketplace_name
+    type: string
+    configurable: true
+    optional: true
 
   - name: enable_invitations
     type: boolean
@@ -135,13 +145,3 @@ property_blueprints:
     type: string
     configurable: true
     default: "{ \"usd\": \"$\", \"eur\": \"€\" }"
-
-  - name: product_name
-    type: string
-    configurable: true
-    optional: true
-
-  - name: marketplace_name
-    type: string
-    configurable: true
-    optional: true
