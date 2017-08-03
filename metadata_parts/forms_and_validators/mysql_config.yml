@@ -63,7 +63,10 @@ form:
       selector_property_inputs:
       - reference: .properties.mysql_backups.disable
         label: Disable automated backups of MySQL
-        description: Disable automated backups of MySQL
+        description: |
+          Disable automated backups of MySQL. The Backup Prepare VM can still be
+          deployed in the case that you are using bbr for manual backup of your
+          database.
 
       - reference: .properties.mysql_backups.s3
         label: |
