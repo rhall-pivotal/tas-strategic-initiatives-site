@@ -117,6 +117,7 @@ manifest: |
         - console.admin
         - console.support
         - doppler.firehose
+        - healthwatch.read
         - notification_preferences.read
         - notification_preferences.write
         - notifications.manage
@@ -356,6 +357,24 @@ manifest: |
         scope: openid,oauth.approvals,doppler.firehose,cloud_controller.admin
         access-token-validity: 1209600
         redirect-uri: "https://metrics.(( .cloud_controller.system_domain.value ))"
+      healthwatch_ui:
+        id: "(( healthwatch_ui_credentials.identity ))"
+        secret: "(( healthwatch_ui_credentials.password ))"
+        override: true
+        authorized-grant-types: authorization_code,password,implicit,refresh_token
+        authorities: uaa.resource
+        scope: healthwatch.read
+        access-token-validity: 900
+        redirect-uri: "https://healthwatch.(( .cloud_controller.system_domain.value ))"
+        autoapprove: true
+        refresh-token-validity: 2628000
+      healthwatch_firehose:
+        id: "(( healthwatch_firehose_credentials.identity ))"
+        secret: "(( healthwatch_firehose_credentials.password ))"
+        authorized-grant-types: client_credentials,refresh_token
+        authorities: oauth.login,doppler.firehose,cloud_controller.read,uaa.resource,cloud_controller.admin
+        scope: openid,oauth.approvals,doppler.firehose,cloud_controller.admin
+        access-token-validity: 3600
       tcp_router:
         id: (( tcp_router_credentials.identity ))
         secret: (( tcp_router_credentials.password ))
