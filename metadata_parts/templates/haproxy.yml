@@ -3,7 +3,7 @@ name: haproxy
 release: haproxy
 manifest: |
   ha_proxy:
-    ssl_pem: (( .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate.cert_and_private_key_pems ))
+    ssl_pem: (( .properties.networking_poe_ssl_cert.cert_and_private_key_pems ))
     buffer_size_bytes: (( .properties.networking_point_of_entry.haproxy.max_buffer_size.value ))
     tcp_link_port: 2222
     server_timeout: (( .router.request_timeout_in_seconds.value ))

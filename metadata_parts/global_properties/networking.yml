@@ -8,9 +8,6 @@ property_blueprints:
       - name: external_ssl
         select_value: external_ssl
         property_blueprints:
-          - name: ssl_rsa_certificate
-            type: rsa_cert_credentials
-            configurable: true
           - name: ssl_ciphers
             type: text
             configurable: true
@@ -20,9 +17,6 @@ property_blueprints:
       - name: haproxy
         select_value: haproxy
         property_blueprints:
-          - name: ssl_rsa_certificate
-            type: rsa_cert_credentials
-            configurable: true
           - name: disable_http
             type: boolean
             configurable: true
@@ -35,6 +29,10 @@ property_blueprints:
             type: integer
             configurable: true
             default: 16384
+
+  - name: networking_poe_ssl_cert
+    type: rsa_cert_credentials
+    configurable: true
 
   - name: tcp_routing
     type: selector

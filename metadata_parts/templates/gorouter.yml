@@ -15,11 +15,9 @@ manifest: |
     route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
     ssl_skip_validation: (( .ha_proxy.skip_cert_verify.value ))
     drain_wait: (( .router.drain_wait.value ))
-    ssl_key: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.private_key_pem ))
     tracing:
       enable_zipkin: (( enable_zipkin.value ))
     secure_cookies: (( .router.disable_insecure_cookies.value ))
-    ssl_cert: (( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.cert_pem ))
     load_balancer_healthy_threshold: (( .router.lb_healthy_threshold.value ))
     extra_headers_to_log: (( .router.extra_headers_to_log.parsed_strings ))
     routing_table_sharding_mode: '(( enable_isolated_routing.value ? "shared-and-segments" : "all" ))'
@@ -27,6 +25,7 @@ manifest: |
       user: router_status
       password: (( status_credentials.password ))
     cipher_suites: (( .properties.networking_point_of_entry.external_ssl.ssl_ciphers.value ))
-    enable_ssl: "(( .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate.value_present?  ? 'true' : 'false' ))"
+    enable_ssl: true
+    tls_pem: (( .properties.networking_poe_ssl_cert.cert_and_private_key_pems ))
   routing_api:
     enabled: true

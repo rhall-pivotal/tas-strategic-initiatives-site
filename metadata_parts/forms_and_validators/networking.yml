@@ -45,6 +45,15 @@ form:
         Resource Config section, add your ELB by name to the ELB Name column
         for TCP Router.
 
+    - reference: .properties.networking_poe_ssl_cert
+      label: Certificate and Private Key for HAProxy and Router
+      description: |
+        This certificate and key are used to terminate SSL traffic at either the
+        HAProxy or Router. The certificate can have multiple domains attributed
+        to it, for example if you have separate system and application
+        domains. You can also generate a self-signed certificate here
+        with your wildcard system domain.
+
     - reference: .properties.networking_point_of_entry
       label: "Select one of the following point-of-entry options:"
       selector_property_inputs:
@@ -53,12 +62,6 @@ form:
             Forward SSL to Elastic Runtime Router. Assumes an external load
             balancer is configured to forward encrypted traffic.
           property_inputs:
-            - reference: .properties.networking_point_of_entry.external_ssl.ssl_rsa_certificate
-              label: Router SSL Termination Certificate and Private Key
-              description: |
-                Required for SSL encryption between the load balancer and
-                router(s).
-
             - reference: .properties.networking_point_of_entry.external_ssl.ssl_ciphers
               label: Router SSL Ciphers
               description: |
@@ -78,15 +81,6 @@ form:
             load balancer is configured to forward encrypted traffic to the
             HAProxy instance(s).
           property_inputs:
-            - reference: .properties.networking_point_of_entry.haproxy.ssl_rsa_certificate
-              label: SSL Certificate and Private Key
-              description: |
-                This certificate and key are used to terminate SSL traffic at
-                HAProxy. The certificate can have multiple domains attributed
-                to it, for example if you have separate system and application
-                domains. You can also generate a self-signed certificate here
-                with your wildcard system domain.
-
             - reference: .properties.networking_point_of_entry.haproxy.disable_http
               label: Disable HTTP traffic to HAProxy
               description: If checked, HAProxy will only allow HTTPS traffic.
