@@ -6,6 +6,13 @@ form:
     Configure security and routing services for your isolation segment.
 
   property_inputs:
+  - reference: .isolated_diego_cell.garden_network_mtu
+    label: |
+      Applications Network Maximum Transmission Unit (MTU) (in bytes)
+    description: |
+      The default 1454 bytes is fine for most cases, but you might need less,
+      such as for networks that use GRE tunnels.
+
   - reference: .isolated_router.static_ips
     label: Router IPs
     description: |
@@ -17,13 +24,6 @@ form:
       load balancer assignment is supported (AWS, GCP, Azure), this field can
       be left blank and the "Load Balancers" field on the "Resource Config"
       tab can be filled out with the correct load balancer assignment.
-
-  - reference: .isolated_diego_cell.garden_network_mtu
-    label: |
-      Applications Network Maximum Transmission Unit (MTU) (in bytes)
-    description: |
-      The default 1454 bytes is fine for most cases, but you might need less,
-      such as for networks that use GRE tunnels.
 
   - reference: .properties.networking_point_of_entry
     label: TLS Termination Certificates
