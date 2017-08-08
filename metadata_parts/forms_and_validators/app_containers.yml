@@ -72,6 +72,40 @@ form:
     selector_property_inputs:
       - reference: .properties.nfs_volume_driver.enable
         label: Enable
+        property_inputs:
+          - reference: .properties.nfs_volume_driver.enable.ldap_service_account_user
+            label: LDAP Service Account User
+            description : |
+              Service Account User name (required for LDAP integration only)
+
+          - reference: .properties.nfs_volume_driver.enable.ldap_service_account_password
+            label: LDAP Service Account Password
+            description: |
+              Service Account Password (required for LDAP integration only)
+
+          - reference: .properties.nfs_volume_driver.enable.ldap_server_host
+            label: LDAP Server Host
+            description: |
+              Server hostname or IP address (required for LDAP integration only)
+
+          - reference: .properties.nfs_volume_driver.enable.ldap_server_port
+            label: LDAP Server Port
+            description: |
+              Server port (required for LDAP integration only). Defaults to 389.
+
+          - reference: .properties.nfs_volume_driver.enable.ldap_server_protocol
+            label: LDAP Server Protocol
+            description: |
+              Server protocol (required for LDAP integration only). Defaults to "tcp".
+
+          - reference: .properties.nfs_volume_driver.enable.ldap_user_fqdn
+            label: LDAP User Fully-Qualified Domain Name
+            description: |
+              FQDN for user records searched during user uid resolution
+              (required for LDAP integration only). For example, the FQDN
+              value can be specified as "cn=Users,dc=corp,dc=test,dc=com".
+            placeholder: "cn=Users,dc=corp,dc=test,dc=com"
+
       - reference: .properties.nfs_volume_driver.disable
         label: Disable
 
