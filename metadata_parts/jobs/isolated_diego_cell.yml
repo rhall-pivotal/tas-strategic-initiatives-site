@@ -20,6 +20,8 @@ templates:
     release: diego
   - name: garden
     release: garden-runc
+  - name: grootfs
+    release: grootfs
   - name: cflinuxfs2-rootfs-setup
     release: cflinuxfs2
   - name: metron_agent
@@ -148,7 +150,7 @@ manifest: |
       server_cert: (( .properties.rep_server_cert.cert_pem ))
       server_key: (( .properties.rep_server_cert.private_key_pem ))
       use_azure_fault_domains: true
-      preloaded_rootfses: [ "cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs" ]
+      preloaded_rootfses: [ "cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar" ]
       placement_tags: [ (( placement_tag.value )) ]
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -182,6 +184,12 @@ manifest: |
     network_plugin: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin) ))
     network_plugin_extra_args: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin_extra_args) ))
     dns_servers: (( dns_servers.parsed_strings ))
+    image_plugin: "/var/vcap/packages/grootfs/bin/grootfs"
+    image_plugin_extra_args: ["--config=/var/vcap/jobs/grootfs/config/grootfs_config.yml"]
+  grootfs:
+    graph_cleanup_threshold_in_mb: (( ..cf.properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
+    insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
+    persistent_image_list: ["/var/vcap/packages/cflinuxfs2/rootfs.tar"]
   loggregator:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
