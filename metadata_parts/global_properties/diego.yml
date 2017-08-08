@@ -59,7 +59,6 @@ property_blueprints:
               ldap_svc_password: (( .properties.nfs_volume_driver.enable.ldap_service_account_password.value ))
               ldap_host: (( .properties.nfs_volume_driver.enable.ldap_server_host.value ))
               ldap_port: (( .properties.nfs_volume_driver.enable.ldap_server_port.value ))
-              ldap_proto: (( .properties.nfs_volume_driver.enable.ldap_server_protocol.value ))
               ldap_user_fqdn: (( .properties.nfs_volume_driver.enable.ldap_user_fqdn.value ))
 
         property_blueprints:
@@ -80,11 +79,6 @@ property_blueprints:
 
           - name: ldap_server_port
             type: integer
-            configurable: true
-            optional: true
-
-          - name: ldap_server_protocol
-            type: string
             configurable: true
             optional: true
 
