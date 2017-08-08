@@ -26,6 +26,7 @@ manifest: |
       password: (( status_credentials.password ))
     cipher_suites: (( .properties.networking_point_of_entry.external_ssl.ssl_ciphers.value ))
     enable_ssl: true
-    tls_pem: (( .properties.networking_poe_ssl_cert.cert_and_private_key_pems ))
+    ssl_cert: (( .properties.networking_poe_ssl_cert.cert_pem ))
+    ssl_key: (( .properties.networking_poe_ssl_cert.private_key_pem ))
   routing_api:
     enabled: true
