@@ -8,7 +8,7 @@ manifest: |
   routing_api:
     log_level: debug
     router_groups: (( .properties.tcp_routing.selected_option.parsed_manifest(default_router_group) ))
-    skip_consul_lock: (( .diego_database.skip_consul_locks.value ))
+    skip_consul_lock: true
     system_domain: (( .cloud_controller.system_domain.value ))
     sqldb: (( .properties.system_database.selected_option.parsed_manifest(routingdb) ))
     locket:

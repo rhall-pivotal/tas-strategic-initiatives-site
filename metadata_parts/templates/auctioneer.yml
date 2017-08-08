@@ -4,7 +4,7 @@ release: diego
 manifest: |
   diego:
     auctioneer:
-      skip_consul_lock: (( .diego_database.skip_consul_locks.value ))
+      skip_consul_lock: true
       starting_container_count_maximum: (( starting_container_count_maximum.value ))
       ca_cert: (( $ops_manager.ca_certificate ))
       server_cert: (( .properties.auctioneer_server_cert.cert_pem ))
