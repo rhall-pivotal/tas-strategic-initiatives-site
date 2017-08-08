@@ -97,6 +97,8 @@ property_blueprints:
       - name: isolation_segments
         manifest: |
           ['(( .isolated_diego_cell.placement_tag.value ))']
+      - name: routing_api_enabled
+        manifest: false
     - name: no_isolation_segment
       select_value: no_isolation_segment
       named_manifests:
@@ -106,3 +108,5 @@ property_blueprints:
       - name: isolation_segments
         manifest: |
           []
+      - name: routing_api_enabled
+        manifest: true
