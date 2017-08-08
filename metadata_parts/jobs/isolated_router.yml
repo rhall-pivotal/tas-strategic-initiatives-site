@@ -101,6 +101,8 @@ manifest: |
       request_timeout_in_seconds: 300
     drain_wait: (( ..cf.router.drain_wait.value ))
     load_balancer_healthy_threshold: (( ..cf.router.lb_healthy_threshold.value ))
+    routing_table_sharding_mode: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(sharding_mode) ))
+    isolation_segments: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(isolation_segments) ))
   routing_api:
     enabled: true
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))

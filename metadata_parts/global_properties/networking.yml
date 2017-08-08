@@ -83,3 +83,26 @@ property_blueprints:
             type: string
             configurable: true
             default: 10.254.0.0/22
+  - name: routing_table_sharding_mode
+    type: selector
+    configurable: true
+    default: isolation_segment_only
+    option_templates:
+    - name: isolation_segment_only
+      select_value: isolation_segment_only
+      named_manifests:
+      - name: sharding_mode
+        manifest: |
+          segments
+      - name: isolation_segments
+        manifest: |
+          ['(( .isolated_diego_cell.placement_tag.value ))']
+    - name: no_isolation_segment
+      select_value: no_isolation_segment
+      named_manifests:
+      - name: sharding_mode
+        manifest: |
+          shared-and-segments
+      - name: isolation_segments
+        manifest: |
+          []
