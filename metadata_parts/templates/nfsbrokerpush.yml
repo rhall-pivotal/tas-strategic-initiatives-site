@@ -17,3 +17,4 @@ manifest: |
     username: (( nfs_broker_push_credentials.identity ))
     password: (( nfs_broker_push_credentials.password ))
     syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))
+    ldap_enabled: (( .properties.nfs_volume_driver.enable.ldap_server_host.value_present? ))
