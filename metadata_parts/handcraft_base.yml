@@ -23,12 +23,12 @@ post_deploy_errands:
   - name: nfsbrokerpush
 
 variables:
-- name: diego-instance-identity-root-ca
+- name: /cf/diego-instance-identity-root-ca
   type: certificate
   options:
     common_name: 'Diego Instance Identity Root CA'
     is_ca: true
-- name: diego-instance-identity-intermediate-ca
+- name: /cf/diego-instance-identity-intermediate-ca
   type: certificate
   options:
     common_name: 'Diego Instance Identity Intermediate CA'
