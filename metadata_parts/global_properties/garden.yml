@@ -41,9 +41,9 @@ property_blueprints:
     default: "/var/vcap/packages/grootfs/bin/grootfs"
 
   - name: garden_image_plugin_empty
-    type: boolean
+    type: string
     configurable: false
-    default: false
+    default: null
 
   - name: garden_image_plugin_extra_args
     type: string_list
@@ -54,3 +54,13 @@ property_blueprints:
     type: string_list
     configurable: false
     default: []
+
+  - name: rep_preloaded_rootfses_garden
+    type: string_list
+    configurable: false
+    default: ["cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs"]
+
+  - name: rep_preloaded_rootfses_grootfs
+    type: string_list
+    configurable: false
+    default: ["cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"]
