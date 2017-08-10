@@ -59,6 +59,18 @@ property_blueprints:
           configurable: true
           placeholder: "e.g: 1024-10000,65535"
 
+  - name: router_forward_client_cert
+    type: selector
+    configurable: true
+    default: always_forward
+    option_templates:
+      - name: always_forward
+        select_value: always_forward
+      - name: forward
+        select_value: forward
+      - name: sanitize_set
+        select_value: sanitize_set
+
   - name: route_services
     type: selector
     configurable: true
