@@ -63,3 +63,13 @@ property_blueprints:
   - name: skip_cert_verify
     type: boolean
     configurable: true
+
+  - name: internal_only_domains
+    type: string_list
+    configurable: true
+    optional: true
+
+  - name: trusted_domain_cidrs
+    type: string
+    configurable: true
+    optional: true

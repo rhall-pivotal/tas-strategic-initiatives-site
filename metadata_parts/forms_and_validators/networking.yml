@@ -251,3 +251,11 @@ form:
         Isolation Segments, isolating the network for those applications.
         Do not enable this option without deploying routers for each
         Isolation Segment first.
+
+    - reference: .ha_proxy.internal_only_domains
+      label: Protected Domains
+      description: 'A comma-separated list of domains to protect from requests from unknown sources. Use this property in conjunction with "Trusted CIDRs" to protect these domains from requests from unknown sources.'
+
+    - reference: .ha_proxy.trusted_domain_cidrs
+      label: Trusted CIDRs
+      description: 'A space-separated list of CIDRs allowed to make requests to the domains listed in the "Protected Domains" field. For example, specifying 10.0.1.0/24 would allow any requests originating at a host IP in that range to reach applications or services hosted on the "Protected Domains" list.'
