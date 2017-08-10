@@ -140,7 +140,7 @@ manifest: |
   cflinuxfs2-rootfs:
     trusted_certs: |
       (( $ops_manager.trusted_certificates ))
-      ((( diego-instance-identity-root-ca.certificate )))
+      ((( /cf/diego-instance-identity-root-ca.certificate )))
   diego:
     executor:
       disk_capacity_mb: (( executor_disk_capacity.value ))
@@ -148,8 +148,8 @@ manifest: |
       post_setup_hook: sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"
       post_setup_user: "root"
       ca_certs_for_downloads: (( $ops_manager.ca_certificate ))
-      instance_identity_ca_cert: ((( diego-instance-identity-intermediate-ca.certificate )))
-      instance_identity_key: ((( diego-instance-identity-intermediate-ca.private_key )))
+      instance_identity_ca_cert: ((( /cf/diego-instance-identity-intermediate-ca.certificate )))
+      instance_identity_key: ((( /cf/diego-instance-identity-intermediate-ca.private_key )))
     rep:
       require_tls: true
       ca_cert: (( $ops_manager.ca_certificate ))
@@ -164,7 +164,7 @@ manifest: |
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       locket:
         api_location: locket.service.cf.internal:8891
-      trusted_certs: ((( diego-instance-identity-root-ca.certificate )))
+      trusted_certs: ((( /cf/diego-instance-identity-root-ca.certificate )))
     route_emitter:
       local_mode: true
       bbs:

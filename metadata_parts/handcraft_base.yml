@@ -15,16 +15,17 @@ rank: 89
 serial: false
 
 variables:
-- name: diego-instance-identity-root-ca
+- name: /cf/diego-instance-identity-root-ca
   type: certificate
   options:
     common_name: 'Diego Instance Identity Root CA'
     is_ca: true
-- name: diego-instance-identity-intermediate-ca
+
+- name: /cf/diego-instance-identity-intermediate-ca
   type: certificate
   options:
     common_name: 'Diego Instance Identity Intermediate CA'
     is_ca: true
-    ca: diego-instance-identity-root-ca
+    ca: /cf/diego-instance-identity-root-ca
     key_usage:
     - key_cert_sign
