@@ -52,6 +52,12 @@ form:
         replication issue or a node is not allowed to auto-rejoin the cluster.
       placeholder: Fill in your desired email address
 
+    - reference: .mysql.allow_command_history
+      label: Allow Command History
+      description: |
+        When disabled, prohibits the creation of command line history files on
+        the MySQL nodes.
+
     - reference: .mysql.cluster_probe_timeout
       label: Cluster Probe Timeout
       description: |
