@@ -93,3 +93,24 @@ form:
       label: Isolation Segment Only
     - reference: .properties.routing_table_sharding_mode.no_isolation_segment
       label: No Isolation Segment
+
+  - reference: .properties.c2c_iptables_logging
+    label: Log traffic for all accepted/denied application packets.
+    selector_property_inputs:
+      - reference: .properties.c2c_iptables_logging.enabled
+        label: Enable (will increase log volume)
+        property_inputs:
+          - reference: .properties.c2c_iptables_logging.enabled.denied_logging_interval
+            label: Denied logging interval (packets/second)
+            description: |
+               Denied traffic logging is rate limited. Override the
+               default of 1 packet/second.
+
+          - reference: .properties.c2c_iptables_logging.enabled.udp_logging_interval
+            label: UDP logging interval (packets/second)
+            description: |
+              UDP traffic logging is rate limited. Override the
+              default of 100 packets/second.
+
+      - reference: .properties.c2c_iptables_logging.disabled
+        label: Disable
