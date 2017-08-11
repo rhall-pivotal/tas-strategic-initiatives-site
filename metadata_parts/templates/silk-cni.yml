@@ -6,3 +6,6 @@ manifest: |
     dns_servers: (( dns_servers.parsed_strings ))
     iptables_logging: true
     mtu: (( garden_network_mtu.value ))
+    iptables_logging: true
+    iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_log_traffic.enable.iptables_accepted_udp_logs_per_sec.value ))
+    iptables_denied_logs_per_sec: (( .properties.container_networking_log_traffic.enable.iptables_denied_logs_per_sec.value ))

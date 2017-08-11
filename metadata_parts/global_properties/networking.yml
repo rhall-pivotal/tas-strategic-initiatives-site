@@ -103,6 +103,26 @@ property_blueprints:
     configurable: true
     default: 4789
 
+  - name: container_networking_log_traffic
+    type: selector
+    configurable: true
+    default: disable
+    option_templates:
+    - name: enable
+      select_value: enable
+      property_blueprints:
+      - name: iptables_denied_logs_per_sec
+        type: string
+        configurable: true
+        default: 1
+      - name: accepted_udp_logs_per_sec
+        type: string
+        configurable: true
+        default: 100
+
+    - name: disable
+      select_value: disable
+
   - name: network_policy_server_cert
     type: rsa_cert_credentials
     default:

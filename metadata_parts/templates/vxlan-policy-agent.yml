@@ -4,6 +4,7 @@ release: cf-networking
 manifest: |
   cf_networking:
     iptables_logging: true
+    iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_log_traffic.enable.iptables_accepted_udp_logs_per_sec.value ))
     policy_server:
       hostname: network-policy-server.service.cf.internal
     vxlan_policy_agent:

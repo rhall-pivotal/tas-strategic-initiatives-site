@@ -252,3 +252,21 @@ form:
     - reference: .ha_proxy.trusted_domain_cidrs
       label: Trusted CIDRs
       description: 'A space-separated list of CIDRs allowed to make requests to the domains listed in the "Protected Domains" field. For example, specifying 10.0.1.0/24 would allow any requests originating at a host IP in that range to reach applications or services hosted on the "Protected Domains" list.'
+
+    - reference: .properties.container_networking_log_traffic
+      label: "Log traffic for all accepted/denied application packets."
+      selector_property_inputs:
+        - reference: .properties.container_networking_log_traffic.enable
+          label: Enable (will increase log volume)
+          property_inputs:
+            - reference: .properties.container_networking_log_traffic.enable.iptables_denied_logs_per_sec
+              label: Denied logging interval (packets/second)
+              description: |
+                Denied traffic logging is rate limited. Override the default of 1 packet/second.
+            - reference: .properties.container_networking_log_traffic.enable.iptables_accepted_udp_logs_per_sec
+              label: UDP logging interval (packets/second)
+              description: |
+                UDP traffic logging is rate limited. Override the default of 100 packets/second.
+
+        - reference: .properties.container_networking_log_traffic.disable
+          label: Disable
