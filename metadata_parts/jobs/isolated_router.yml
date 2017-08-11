@@ -102,6 +102,7 @@ manifest: |
     load_balancer_healthy_threshold: (( ..cf.router.lb_healthy_threshold.value ))
     routing_table_sharding_mode: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(sharding_mode) ))
     isolation_segments: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(isolation_segments) ))
+    forwarded_client_cert: (( .properties.router_forward_client_cert.value ))
   routing_api:
     enabled: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(routing_api_enabled) ))
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))

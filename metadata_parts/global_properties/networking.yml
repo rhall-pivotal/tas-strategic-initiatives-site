@@ -148,3 +148,14 @@ property_blueprints:
       - name: cf_networking_iptables_denied_logging_interval
         manifest: |
           null
+  - name: router_forward_client_cert
+    type: selector
+    configurable: true
+    default: always_forward
+    option_templates:
+      - name: always_forward
+        select_value: always_forward
+      - name: forward
+        select_value: forward
+      - name: sanitize_set
+        select_value: sanitize_set
