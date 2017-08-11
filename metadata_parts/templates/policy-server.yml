@@ -5,7 +5,6 @@ consumes: |
   (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
 manifest: |
   cf_networking:
-    disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
     policy_server:
       database: (( .properties.system_database.selected_option.parsed_manifest(networkpolicyserverdb) ))
       server_key: (( .properties.network_policy_server_cert.private_key_pem ))

@@ -221,41 +221,19 @@ form:
                 specify it here, if you later want to update the ports you must
                 do so with the CF CLI.
 
-    - reference: .properties.container_networking
+    - reference: .properties.container_networking_network_cidr
       label: |
-        Container-to-Container networking places all containers on an overlay
-        network to support direct, app-to-app communication. Set a network
-        policy using `cf allow-access` to govern the communication.
-      selector_property_inputs:
-        - reference: .properties.container_networking.enable
-          label: Enable
-          property_inputs:
-            - reference: .properties.container_networking.enable.network_cidr
-              label: |
-                Overlay Subnet (Only change this is you need to avoid address
-                collision with a third-party service on the same subnet.)
-              description: |
-                Defines the range of the overlay network and must specify a RFC
-                1918 range. Defaults to 10.255.0.0/16.
-              placeholder: 10.255.0.0/16
+        Overlay Subnet (Only change this is you need to avoid address
+        collision with a third-party service on the same subnet.)
+      description: |
+        Defines the range of the overlay network and must specify a RFC
+        1918 range. Defaults to 10.255.0.0/16.
+      placeholder: 10.255.0.0/16
 
-            - reference: .properties.container_networking.enable.vtep_port
-              label: VXLAN Tunnel Endpoint Port
-              description: |
-                Host port used for receiving VXLAN packets. Defaults to 4789.
-
-        - reference: .properties.container_networking.disable
-          label: Disable
-          property_inputs:
-            - reference: .properties.container_networking.disable.garden_network_pool
-              label: |
-                Applications Subnet (Only change this if you need to avoid
-                address collision with a third-party service on the same
-                subnet.)
-              description: |
-                Enter a CIDR subnet mask specifying the range of available IP
-                addresses to be assigned to your app containers. This must be
-                different from the network used by the system VMs.
+    - reference: .properties.container_networking_vtep_port
+      label: VXLAN Tunnel Endpoint Port
+      description: |
+        Host port used for receiving VXLAN packets. Defaults to 4789.
 
     - reference: .router.enable_isolated_routing
       label: |

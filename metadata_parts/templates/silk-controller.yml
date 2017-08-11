@@ -7,7 +7,6 @@ consumes: |
   (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
 manifest: |
   cf_networking:
-    disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
     network: (( .properties.container_networking.enable.network_cidr.value || "10.255.0.0/16" ))
     silk_controller:
       ca_cert: (( $ops_manager.ca_certificate ))

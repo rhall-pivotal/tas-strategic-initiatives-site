@@ -93,47 +93,15 @@ property_blueprints:
           - name: secret
             manifest: |
 
-  - name: container_networking
-    type: selector
+  - name: container_networking_network_cidr
+    type: string
     configurable: true
-    default: enable
-    option_templates:
-      - name: enable
-        select_value: enable
-        named_manifests:
-          - name: cf_networking_disabled
-            manifest: |
-              false
-          - name: garden_network_plugin
-            manifest: |
-              "/var/vcap/packages/runc-cni/bin/garden-external-networker"
-          - name: garden_network_plugin_extra_args
-            manifest: |
-              - "--configFile=/var/vcap/jobs/garden-cni/config/adapter.json"
-        property_blueprints:
-          - name: network_cidr
-            type: string
-            configurable: true
-            optional: true
-          - name: vtep_port
-            type: integer
-            configurable: true
-            default: 4789
-      - name: disable
-        select_value: disable
-        named_manifests:
-          - name: cf_networking_disabled
-            manifest: |
-              true
-          - name: garden_network_plugin
-          - name: garden_network_plugin_extra_args
-            manifest: |
-              []
-        property_blueprints:
-          - name: garden_network_pool
-            type: string
-            configurable: true
-            default: 10.254.0.0/22
+    optional: true
+
+  - name: container_networking_vtep_port
+    type: integer
+    configurable: true
+    default: 4789
 
   - name: network_policy_server_cert
     type: rsa_cert_credentials
