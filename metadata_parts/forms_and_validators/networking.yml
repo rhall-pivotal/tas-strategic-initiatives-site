@@ -59,32 +59,10 @@ form:
           Forward unencrypted traffic to Elastic Runtime Router. Assumes an
           external load balancer is configured to forward unencrypted traffic.
 
-  - reference: .properties.container_networking
-    label: |
-      Enabling the Container-to-Container network will allow policy-driven,
-      direct communication between containers on an overlay network occupying
-      the 10.255.0.0/16 range.
-
-    selector_property_inputs:
-      - reference: .properties.container_networking.enable
-        label: Enable
-        property_inputs:
-          - reference: .properties.container_networking.enable.vtep_port
-            label: VXLAN Tunnel Endpoint Port
-            description: |
-              Host port used for receiving VXLAN packets. Defaults to 4789.
-
-      - reference: .properties.container_networking.disable
-        label: Disable
-        property_inputs:
-          - reference: .properties.container_networking.disable.garden_network_pool
-            label: |
-              Applications Subnet (Only change this if you need to avoid
-              address collision with a third-party service on the same subnet.)
-            description: |
-              Enter a CIDR subnet mask specifying the range of available IP
-              addresses to be assigned to your app containers. This must be
-              different from the network used by the system VMs.
+  - reference: .isolated_diego_cell.container_networking_vtep_port
+    label: VXLAN Tunnel Endpoint Port
+    description: |
+      Host port used for receiving VXLAN packets. Defaults to 4789.
 
   - reference: .properties.routing_table_sharding_mode
     label: "Router Sharding Mode: When 'Isolation Segment Only' is selected, the routers of this tile will only have knowledge of applications deployed to the Cells of this tile; all other requests will receive a 404 response. When 'No Isolation Segments' is selected, the routers of this tile will reject requests for any isolation segment. Choose 'No Isolation Segments' to add a group of routers for the Elastic Runtime tile, as when a private point of entry for the system domain is desired."

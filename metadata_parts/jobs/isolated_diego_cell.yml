@@ -135,6 +135,11 @@ property_blueprints:
   - name: network_policy_agent_cert
     type: rsa_cert_credentials
 
+  - name: container_networking_vtep_port
+    type: integer
+    configurable: true
+    default: 4789
+
 manifest: |
   enable_declarative_healthcheck: true
   cflinuxfs2-rootfs:
@@ -181,15 +186,14 @@ manifest: |
     persistent_image_list:
       - "/var/vcap/packages/cflinuxfs2/rootfs"
     graph_cleanup_threshold_in_mb: (( ..cf.properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
-    network_pool: (( .properties.container_networking.disable.garden_network_pool.value ))
     deny_networks: ["0.0.0.0/0"]
     network_mtu: (( garden_network_mtu.value ))
     insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
     http_proxy: (( $ops_manager.http_proxy ))
     https_proxy: (( $ops_manager.https_proxy ))
     no_proxy: (( $ops_manager.no_proxy ))
-    network_plugin: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin) ))
-    network_plugin_extra_args: (( .properties.container_networking.selected_option.parsed_manifest(garden_network_plugin_extra_args) ))
+    network_plugin: "/var/vcap/packages/runc-cni/bin/garden-external-networker"
+    network_plugin_extra_args: [ "--configFile=/var/vcap/jobs/garden-cni/config/adapter.json" ]
     dns_servers: (( dns_servers.parsed_strings ))
     image_plugin: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin.value : .properties.garden_image_plugin_empty.value ))'
     image_plugin_extra_args: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin_extra_args.value : .properties.garden_image_plugin_empty_args.value ))'
@@ -221,10 +225,10 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
   cf_networking:
     cni_config_dir: /var/vcap/jobs/silk-cni/config/cni
-    disable: (( .properties.container_networking.selected_option.parsed_manifest(cf_networking_disabled) ))
+    disable: false
     dns_servers: (( dns_servers.parsed_strings ))
     mtu: (( garden_network_mtu.value ))
-    vtep_port: (( .properties.container_networking.enable.vtep_port.value ))
+    vtep_port: (( container_networking_vtep_port.value ))
     iptables_logging: (( .properties.c2c_iptables_logging.selected_option.parsed_manifest(cf_networking_iptables_logging) ))
     iptables_accepted_udp_logs_per_sec: (( .properties.c2c_iptables_logging.selected_option.parsed_manifest(cf_networking_iptables_udp_logging_interval) ))
     iptables_denied_logs_per_sec: (( .properties.c2c_iptables_logging.selected_option.parsed_manifest(cf_networking_iptables_denied_logging_interval) ))
