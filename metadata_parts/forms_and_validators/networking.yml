@@ -47,13 +47,6 @@ form:
               instead of dashes in their names e.g.
               TLS_RSA_WITH_RC4_128_SHA:TLS_RSA_WITH_AES_128_CBC_SHA
 
-      - reference: .properties.networking_point_of_entry.terminate_at_router_ert_cert
-        label: |
-          Forward SSL to Isolation Segment Router with ERT Router certificates.
-          Assumes an external load balancer is configured to forward encrypted
-          traffic. Will inherit the certificates provided to the Router in the
-          Elastic Runtime Tile.
-
       - reference: .properties.networking_point_of_entry.terminate_before_router
         label: |
           Forward unencrypted traffic to Elastic Runtime Router. Assumes an
