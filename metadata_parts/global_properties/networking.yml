@@ -4,11 +4,6 @@ property_blueprints:
     type: rsa_cert_credentials
     configurable: true
 
-  - name: haproxy_backend_ca
-    type: text
-    configurable: true
-    optional: true
-
   - name: ssl_ciphers
     type: text
     configurable: true
@@ -23,6 +18,26 @@ property_blueprints:
     type: integer
     configurable: true
     default: 16384
+
+  - name: haproxy_backend_ca
+    type: text
+    configurable: true
+    optional: true
+
+  - name: haproxy_forward_tls
+    type: boolean
+    configurable: true
+    default: true
+
+  - name: haproxy_backend_port_http
+    type: integer
+    configurable: false
+    default: 80
+
+  - name: haproxy_backend_port_https
+    type: integer
+    configurable: false
+    default: 443
 
   - name: tcp_routing
     type: selector

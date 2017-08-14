@@ -54,6 +54,14 @@ form:
         domains. You can also generate a self-signed certificate here
         with your wildcard system domain.
 
+    - reference: .properties.haproxy_forward_tls
+      label: HAProxy forwards requests to Router over TLS
+      description: |
+        When enabled, HAProxy will forward all requests to the Router over TLS.
+        HAProxy will use the CA provided in the "Certificate Authority for HAProxy
+        Backend" field to verify the certificates provided by the Router. You must
+        provide a CA if this feature is enabled.
+
     - reference: .properties.haproxy_backend_ca
       label: Certificate Authority for HAProxy Backend
       description: |

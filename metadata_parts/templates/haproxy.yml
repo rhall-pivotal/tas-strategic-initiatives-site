@@ -4,6 +4,8 @@ release: haproxy
 manifest: |
   ha_proxy:
     backend_ca_file: (( .properties.haproxy_backend_ca.value ))
+    backend_port: "(( .properties.haproxy_forward_tls.value ? .properties.haproxy_backend_port_https.value : .properties.haproxy_backend_port_http.value ))"
+    backend_ssl: "(( .properties.haproxy_forward_tls.value ? 'verify' : 'off' ))"
     buffer_size_bytes: (( .properties.haproxy_max_buffer_size.value ))
     client_timeout: (( .router.request_timeout_in_seconds.value ))
     disable_http: (( .properties.routing_disable_http.value ))
