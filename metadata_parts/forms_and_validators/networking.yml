@@ -54,6 +54,18 @@ form:
         domains. You can also generate a self-signed certificate here
         with your wildcard system domain.
 
+    - reference: .properties.haproxy_backend_ca
+      label: Certificate Authority for HAProxy Backend
+      description: |
+        If you have checked the option to forward requests from HAProxy to Router
+        over TLS, then you will need to provide a certificate authority for the
+        certificate and key provided in the "Certificate and Private Key for
+        HAProxy and Router". HAProxy will verify those certificates using the CA
+        when establishing a connection. If you generated that certificate and key
+        using the "Generate RSA Certificate" feature, then your CA is the Ops
+        Manager CA, and can be found by visiting the "/api/v0/certificate_authorities"
+        API endpoint.
+
     - reference: .properties.ssl_ciphers
       label: TLS Cipher Suites for HAProxy and Router
       description: |
