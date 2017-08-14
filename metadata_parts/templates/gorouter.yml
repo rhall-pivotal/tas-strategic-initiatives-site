@@ -25,7 +25,7 @@ manifest: |
     status:
       user: router_status
       password: (( status_credentials.password ))
-    cipher_suites: (( .properties.ssl_ciphers.value ))
+    cipher_suites: (( .properties.gorouter_ssl_ciphers.value ))
     enable_ssl: true
     tls_pem:
     - "(( .properties.networking_poe_ssl_cert.cert_and_private_key_pems ))"

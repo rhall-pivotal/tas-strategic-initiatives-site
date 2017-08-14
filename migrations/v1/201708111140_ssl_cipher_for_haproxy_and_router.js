@@ -25,11 +25,11 @@ exports.migrate = function(input) {
 
   if( properties['.properties.networking_point_of_entry'] ) {
     if( properties['.properties.networking_point_of_entry']['value'] == 'external_ssl' ) {
-      properties['.properties.ssl_ciphers'] = {
+      properties['.properties.gorouter_ssl_ciphers'] = {
         value: cipherMap.get(properties['.properties.networking_point_of_entry.external_ssl.ssl_ciphers.value'])
       }
     } else if ( properties['.properties.networking_point_of_entry']['value'] == 'haproxy' ) {
-      properties['.properties.ssl_ciphers'] = properties['.properties.networking_point_of_entry.haproxy.ssl_ciphers'];
+      properties['.properties.haproxy_ssl_ciphers'] = properties['.properties.networking_point_of_entry.haproxy.ssl_ciphers'];
     }
   }
 
