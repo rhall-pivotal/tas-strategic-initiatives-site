@@ -78,13 +78,6 @@ form:
             Forward SSL to HAProxy. Like first option - Assumes an external
             load balancer is configured to forward encrypted traffic to the
             HAProxy instance(s).
-          property_inputs:
-            - reference: .properties.networking_point_of_entry.haproxy.max_buffer_size
-              label: Request Max Buffer Size
-              description: |
-                Buffer size (in bytes) to use for requests, any requests larger
-                than this (large cookies or query strings) will result in a
-                gateway error. The default value is 16384.
 
     - reference: .ha_proxy.skip_cert_verify
       label: Disable SSL certificate verification for this environment
@@ -95,6 +88,13 @@ form:
     - reference: .properties.routing_disable_http
       label: Disable HTTP on HAProxy
       description: When checked, HAProxy will not listen on port 80.
+
+    - reference: .properties.haproxy_max_buffer_size
+      label: HAProxy Request Max Buffer Size
+      description: |
+        Buffer size (in bytes) to use for requests, any requests larger
+        than this (large cookies or query strings) will result in a
+        gateway error. The default value is 16384.
 
     - reference: .router.disable_insecure_cookies
       label: Disable insecure cookies on the Router

@@ -9,11 +9,6 @@ property_blueprints:
         select_value: external_non_ssl
       - name: haproxy
         select_value: haproxy
-        property_blueprints:
-          - name: max_buffer_size
-            type: integer
-            configurable: true
-            default: 16384
 
   - name: networking_poe_ssl_cert
     type: rsa_cert_credentials
@@ -28,6 +23,11 @@ property_blueprints:
     type: boolean
     configurable: true
     default: false
+
+  - name: haproxy_max_buffer_size
+    type: integer
+    configurable: true
+    default: 16384
 
   - name: tcp_routing
     type: selector
