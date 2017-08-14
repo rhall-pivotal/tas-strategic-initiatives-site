@@ -64,21 +64,6 @@ form:
         DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-
         SHA256:ECDHE-RSA-AES256-GCM-SHA384
 
-    - reference: .properties.networking_point_of_entry
-      label: "Select one of the following point-of-entry options:"
-      selector_property_inputs:
-        - reference: .properties.networking_point_of_entry.external_non_ssl
-          label: |
-            Forward unencrypted traffic to Elastic Runtime Router. Assumes an
-            external load balancer is configured to forward unencrypted
-            traffic to the router(s).
-
-        - reference: .properties.networking_point_of_entry.haproxy
-          label: |
-            Forward SSL to HAProxy. Like first option - Assumes an external
-            load balancer is configured to forward encrypted traffic to the
-            HAProxy instance(s).
-
     - reference: .ha_proxy.skip_cert_verify
       label: Disable SSL certificate verification for this environment
       description: |

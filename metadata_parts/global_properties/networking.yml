@@ -1,15 +1,5 @@
 ---
 property_blueprints:
-  - name: networking_point_of_entry
-    type: selector
-    configurable: true
-    default: haproxy
-    option_templates:
-      - name: external_non_ssl
-        select_value: external_non_ssl
-      - name: haproxy
-        select_value: haproxy
-
   - name: networking_poe_ssl_cert
     type: rsa_cert_credentials
     configurable: true
