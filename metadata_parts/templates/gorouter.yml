@@ -29,5 +29,6 @@ manifest: |
     enable_ssl: true
     tls_pem:
     - "(( .properties.networking_poe_ssl_cert.cert_and_private_key_pems ))"
+    min_tls_version: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(min_tls_version) ))
   routing_api:
     enabled: true

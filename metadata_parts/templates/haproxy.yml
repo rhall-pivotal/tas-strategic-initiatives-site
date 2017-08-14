@@ -9,6 +9,8 @@ manifest: |
     buffer_size_bytes: (( .properties.haproxy_max_buffer_size.value ))
     client_timeout: (( .router.request_timeout_in_seconds.value ))
     disable_http: (( .properties.routing_disable_http.value ))
+    disable_tls_10: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_10) ))
+    disable_tls_11: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_11) ))
     enable_health_check_http: true
     internal_only_domains: (( .ha_proxy.internal_only_domains.parsed_strings ))
     server_timeout: (( .router.request_timeout_in_seconds.value ))

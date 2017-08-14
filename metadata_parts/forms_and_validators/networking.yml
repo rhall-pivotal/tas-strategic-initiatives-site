@@ -54,6 +54,16 @@ form:
         domains. You can also generate a self-signed certificate here
         with your wildcard system domain.
 
+    - reference: .properties.routing_minimum_tls_version
+      label: Minimum version of TLS supported by HAProxy and Router
+      selector_property_inputs:
+        - reference: .properties.routing_minimum_tls_version.tls_v1_0
+          label: TLSv1.0
+        - reference: .properties.routing_minimum_tls_version.tls_v1_1
+          label: TLSv1.1
+        - reference: .properties.routing_minimum_tls_version.tls_v1_2
+          label: TLSv1.2
+
     - reference: .properties.haproxy_forward_tls
       label: HAProxy forwards requests to Router over TLS
       description: |
