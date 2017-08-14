@@ -79,10 +79,6 @@ form:
             load balancer is configured to forward encrypted traffic to the
             HAProxy instance(s).
           property_inputs:
-            - reference: .properties.networking_point_of_entry.haproxy.disable_http
-              label: Disable HTTP traffic to HAProxy
-              description: If checked, HAProxy will only allow HTTPS traffic.
-
             - reference: .properties.networking_point_of_entry.haproxy.max_buffer_size
               label: Request Max Buffer Size
               description: |
@@ -95,6 +91,10 @@ form:
       description: |
         You can disable SSL verification if you are using your own self-signed
         certificates that are not from a trusted CA.
+
+    - reference: .properties.routing_disable_http
+      label: Disable HTTP on HAProxy
+      description: When checked, HAProxy will not listen on port 80.
 
     - reference: .router.disable_insecure_cookies
       label: Disable insecure cookies on the Router

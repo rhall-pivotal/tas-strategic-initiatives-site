@@ -42,4 +42,4 @@ manifest: |
     uaa_client_secret: (( .uaa.invitations_client_credentials.password ))
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
-    disable_http_for_links: (( .properties.networking_point_of_entry.haproxy.disable_http.value ))
+    disable_http_for_links: (( .properties.routing_disable_http.value ))
