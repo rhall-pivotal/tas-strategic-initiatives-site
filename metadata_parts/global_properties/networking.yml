@@ -5,13 +5,6 @@ property_blueprints:
     configurable: true
     default: haproxy
     option_templates:
-      - name: external_ssl
-        select_value: external_ssl
-        property_blueprints:
-          - name: ssl_ciphers
-            type: text
-            configurable: true
-            optional: true
       - name: external_non_ssl
         select_value: external_non_ssl
       - name: haproxy
@@ -21,10 +14,6 @@ property_blueprints:
             type: boolean
             configurable: true
             default: false
-          - name: ssl_ciphers
-            type: text
-            configurable: true
-            optional: true
           - name: max_buffer_size
             type: integer
             configurable: true
@@ -33,6 +22,11 @@ property_blueprints:
   - name: networking_poe_ssl_cert
     type: rsa_cert_credentials
     configurable: true
+
+  - name: ssl_ciphers
+    type: text
+    configurable: true
+    default: DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
 
   - name: tcp_routing
     type: selector

@@ -17,4 +17,4 @@ manifest: |
       client: (( .uaa.doppler_client_credentials.identity ))
       client_secret: (( .uaa.doppler_client_credentials.password ))
   router:
-    cipher_suites: (( .properties.networking_point_of_entry.external_ssl.ssl_ciphers.value ))
+    cipher_suites: (( .properties.ssl_ciphers.value ))
