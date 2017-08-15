@@ -104,3 +104,13 @@ property_blueprints:
     type: text
     configurable: true
     default: ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
+
+  - name: container_networking
+    type: selector
+    configurable: true
+    default: enable
+    option_templates:
+    - name: enable
+      select_value: enable
+    - name: disable
+      select_value: disable
