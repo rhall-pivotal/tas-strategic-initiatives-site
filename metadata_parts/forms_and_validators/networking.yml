@@ -25,6 +25,15 @@ form:
       be left blank and the "Load Balancers" field on the "Resource Config"
       tab can be filled out with the correct load balancer assignment.
 
+  - reference: .properties.networking_poe_ssl_cert
+    label: Certificate and Private Key for HAProxy and Router
+    description: |
+      This certificate and key are used to terminate SSL traffic at either the
+      HAProxy or Router. The certificate can have multiple domains attributed
+      to it, for example if you have separate system and application
+      domains. You can also generate a self-signed certificate here
+      with your wildcard system domain.
+
   - reference: .properties.networking_point_of_entry
     label: TLS Termination Certificates
     selector_property_inputs:
@@ -34,12 +43,6 @@ form:
           Assumes an external load balancer is configured to forward encrypted
           traffic.
         property_inputs:
-          - reference: .properties.networking_point_of_entry.terminate_at_router.ssl_rsa_certificate
-            label: Router SSL Termination Certificate and Private Key
-            description: |
-              Required for SSL encryption between the load balancer and
-              router(s).
-
           - reference: .properties.networking_point_of_entry.terminate_at_router.ssl_ciphers
             label: Router SSL Ciphers
             description: |

@@ -91,8 +91,8 @@ manifest: |
       password: (( status_credentials.password ))
     route_services_secret: (( ..cf.properties.route_services.selected_option.parsed_manifest(secret) ))
     cipher_suites: (( .properties.networking_point_of_entry.selected_option.parsed_manifest(ssl_ciphers) ))
-    enable_ssl: (( .properties.networking_point_of_entry.selected_option.parsed_manifest(enable_ssl) ))
-    tls_pem: ["(( .properties.networking_point_of_entry.selected_option.parsed_manifest(cert_pem) ))\n(( .properties.networking_point_of_entry.selected_option.parsed_manifest(private_key_pem) ))"]
+    enable_ssl: true
+    tls_pem: [ (( .properties.networking_poe_ssl_cert.cert_and_private_key_pems )) ]
     ssl_skip_validation: (( ..cf.ha_proxy.skip_cert_verify.value ))
     skip_oauth_tls_verification: true
     haproxy:

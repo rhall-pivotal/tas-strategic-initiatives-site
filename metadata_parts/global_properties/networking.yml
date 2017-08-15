@@ -8,9 +8,6 @@ property_blueprints:
       - name: terminate_at_router
         select_value: terminate_at_router
         property_blueprints:
-          - name: ssl_rsa_certificate
-            type: rsa_cert_credentials
-            configurable: true
           - name: ssl_ciphers
             type: text
             configurable: true
@@ -20,20 +17,12 @@ property_blueprints:
             manifest: (( .properties.networking_point_of_entry.terminate_at_router.ssl_ciphers.value ))
           - name: enable_ssl
             manifest: "true"
-          - name: cert_pem
-            manifest: (( .properties.networking_point_of_entry.terminate_at_router.ssl_rsa_certificate.cert_pem ))
-          - name: private_key_pem
-            manifest: (( .properties.networking_point_of_entry.terminate_at_router.ssl_rsa_certificate.private_key_pem ))
       - name: terminate_before_router
         select_value: terminate_before_router
         named_manifests:
           - name: enable_ssl
             manifest: "false"
           - name: ssl_ciphers
-            manifest: ""
-          - name: cert_pem
-            manifest: ""
-          - name: private_key_pem
             manifest: ""
   - name: routing_table_sharding_mode
     type: selector
@@ -104,6 +93,10 @@ property_blueprints:
       - name: cf_networking_iptables_denied_logging_interval
         manifest: |
           null
+  - name: networking_poe_ssl_cert
+    type: rsa_cert_credentials
+    configurable: true
+
   - name: router_forward_client_cert
     type: selector
     configurable: true
