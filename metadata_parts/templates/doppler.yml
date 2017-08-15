@@ -11,6 +11,7 @@ manifest: |
         cert: (( doppler_tls_cert.cert_pem ))
         key: (( doppler_tls_cert.private_key_pem ))
       ca_cert: (( $ops_manager.ca_certificate ))
+      cipher_suites: (( .properties.doppler_ssl_ciphers.value ))
   doppler_endpoint:
     shared_secret: (( .doppler.shared_secret_credentials.password ))
   doppler:

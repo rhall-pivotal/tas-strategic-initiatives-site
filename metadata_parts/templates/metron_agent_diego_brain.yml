@@ -5,6 +5,7 @@ manifest: |
   loggregator:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
+      cipher_suites: (( .properties.metron_ssl_ciphers.value ))
       metron:
         cert: (( .doppler.metron_tls_cert.cert_pem ))
         key: (( .doppler.metron_tls_cert.private_key_pem ))

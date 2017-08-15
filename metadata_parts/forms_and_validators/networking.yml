@@ -100,6 +100,22 @@ form:
       placeholder: |
         DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
 
+    - reference: .properties.doppler_ssl_ciphers
+      label: TLS Cipher Suites for Doppler
+      description: |
+        An ordered, colon-delimited list of Golang supported TLS cipher suites in RFC format, e.g.
+        "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+      placeholder: |
+        TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+
+    - reference: .properties.metron_ssl_ciphers
+      label: TLS Cipher Suites for Metron
+      description: |
+        An ordered, colon-delimited list of Golang supported TLS cipher suites in RFC format, e.g.
+        "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+      placeholder: |
+        TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+
     - reference: .ha_proxy.skip_cert_verify
       label: Disable SSL certificate verification for this environment
       description: |
