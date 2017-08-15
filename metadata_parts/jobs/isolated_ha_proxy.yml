@@ -1,5 +1,5 @@
 ---
-name: ha_proxy
+name: isolated_ha_proxy
 label: HAProxy
 resource_label: HAProxy
 description: HAProxy is the default load balancer for SSL termination. Alternatively,
@@ -15,16 +15,6 @@ templates:
       consul_server: nil
   - name: haproxy
     release: haproxy
-    manifest: |
-      ha_proxy:
-        disable_tls_10: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_10) ))
-        disable_tls_11: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_11) ))
-        enable_health_check_http: true
-        internal_only_domains: (( .ha_proxy.internal_only_domains.parsed_strings ))
-        ssl_ciphers: (( .properties.haproxy_ssl_ciphers.value ))
-        ssl_pem: (( .properties.networking_poe_ssl_cert.cert_and_private_key_pems ))
-        tcp_link_port: 2222
-        trusted_domain_cidrs: (( .ha_proxy.trusted_domain_cidrs.value ))
   - name: metron_agent
     release: loggregator
   - name: syslog_forwarder
@@ -87,3 +77,21 @@ property_blueprints:
     type: string
     configurable: true
     optional: true
+
+manifest: |
+  ha_proxy:
+    disable_tls_10: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_10) ))
+    disable_tls_11: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_11) ))
+    enable_health_check_http: true
+    internal_only_domains: (( .isolated_ha_proxy.internal_only_domains.parsed_strings ))
+    ssl_ciphers: (( .properties.haproxy_ssl_ciphers.value ))
+    ssl_pem: (( .properties.networking_poe_ssl_cert.cert_and_private_key_pems ))
+    tcp_link_port: 2222
+    trusted_domain_cidrs: (( .isolated_ha_proxy.trusted_domain_cidrs.value ))
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
+  loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      metron:
+        cert: (( .properties.metron_tls_cert.cert_pem ))
+        key: (( .properties.metron_tls_cert.private_key_pem ))
