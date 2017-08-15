@@ -43,19 +43,6 @@ form:
     placeholder: |
       ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
 
-  - reference: .properties.networking_point_of_entry
-    label: TLS Termination Certificates
-    selector_property_inputs:
-      - reference: .properties.networking_point_of_entry.terminate_at_router		
-        label: |		
-          Forward SSL to Isolation Segment Router with provided certificates.		
-          Assumes an external load balancer is configured to forward encrypted		
-          traffic.
-      - reference: .properties.networking_point_of_entry.terminate_before_router
-        label: |
-          Forward unencrypted traffic to Elastic Runtime Router. Assumes an
-          external load balancer is configured to forward unencrypted traffic.
-
   - reference: .properties.container_networking_vtep_port
     label: VXLAN Tunnel Endpoint Port
     description: |
