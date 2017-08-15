@@ -423,39 +423,9 @@ property_blueprints:
         configurable: true
         default: true
       - name: region
-        type: dropdown_select
+        type: string
         configurable: true
         optional: true
-        default: "us-east-1"
-        options:
-        - name: "''"
-          label: "V2 Signature - N/A"
-        - name: "us-east-1"
-          label: "US East (N. Virginia)"
-        - name: "us-east-2"
-          label: "US East (Ohio)"
-        - name: "us-west-1"
-          label: "US West (N. California)"
-        - name: "us-west-2"
-          label: "US West (Oregon)"
-        - name: "eu-west-1"
-          label: "EU (Ireland)"
-        - name: "ap-southeast-1"
-          label: "Asia Pacific (Singapore)"
-        - name: "ap-northeast-1"
-          label: "Asia Pacific (Tokyo)"
-        - name: "ap-southeast-2"
-          label: "Asia Pacific (Sydney)"
-        - name: "sa-east-1"
-          label: "South America (São Paulo)"
-        - name: "us-gov-west-1"
-          label: "V4 Signature Only - GovCloud Region (US)"
-        - name: "cn-north-1"
-          label: "V4 Signature Only - China Region (Beijing)"
-        - name: "eu-central-1"
-          label: "V4 Signature Only - EU Region (Frankfurt)"
-        - name: "ap-northeast-2"
-          label: "V4 Signature Only - Asia Pacific (Seoul)"
     - name: scp
       select_value: scp
       named_manifests:
