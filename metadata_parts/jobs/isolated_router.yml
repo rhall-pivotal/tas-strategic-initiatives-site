@@ -90,7 +90,7 @@ manifest: |
       user: router_status
       password: (( status_credentials.password ))
     route_services_secret: (( ..cf.properties.route_services.selected_option.parsed_manifest(secret) ))
-    cipher_suites: (( .properties.networking_point_of_entry.selected_option.parsed_manifest(ssl_ciphers) ))
+    cipher_suites: (( .properties.gorouter_ssl_ciphers.value ))
     enable_ssl: true
     tls_pem: [ (( .properties.networking_poe_ssl_cert.cert_and_private_key_pems )) ]
     ssl_skip_validation: (( ..cf.ha_proxy.skip_cert_verify.value ))

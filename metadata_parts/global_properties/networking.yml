@@ -7,14 +7,7 @@ property_blueprints:
     option_templates:
       - name: terminate_at_router
         select_value: terminate_at_router
-        property_blueprints:
-          - name: ssl_ciphers
-            type: text
-            configurable: true
-            optional: true
         named_manifests:
-          - name: ssl_ciphers
-            manifest: (( .properties.networking_point_of_entry.terminate_at_router.ssl_ciphers.value ))
           - name: enable_ssl
             manifest: "true"
       - name: terminate_before_router
@@ -22,8 +15,6 @@ property_blueprints:
         named_manifests:
           - name: enable_ssl
             manifest: "false"
-          - name: ssl_ciphers
-            manifest: ""
   - name: routing_table_sharding_mode
     type: selector
     configurable: true
@@ -108,3 +99,8 @@ property_blueprints:
         select_value: forward
       - name: sanitize_set
         select_value: sanitize_set
+
+  - name: gorouter_ssl_ciphers
+    type: text
+    configurable: true
+    default: ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
