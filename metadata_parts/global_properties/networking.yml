@@ -73,6 +73,48 @@ property_blueprints:
     type: rsa_cert_credentials
     configurable: true
 
+  - name: routing_minimum_tls_version
+    type: selector
+    configurable: true
+    default: tls_v1_2
+    option_templates:
+      - name: tls_v1_0
+        select_value: tls_v1_0
+        named_manifests:
+          - name: min_tls_version
+            manifest: |
+              TLSv1.0
+          - name: disable_tls_10
+            manifest: |
+              false
+          - name: disable_tls_11
+            manifest: |
+              false
+      - name: tls_v1_1
+        select_value: tls_v1_1
+        named_manifests:
+          - name: min_tls_version
+            manifest: |
+              TLSv1.1
+          - name: disable_tls_10
+            manifest: |
+              true
+          - name: disable_tls_11
+            manifest: |
+              false
+      - name: tls_v1_2
+        select_value: tls_v1_2
+        named_manifests:
+          - name: min_tls_version
+            manifest: |
+              TLSv1.2
+          - name: disable_tls_10
+            manifest: |
+              true
+          - name: disable_tls_11
+            manifest: |
+              true
+
   - name: router_forward_client_cert
     type: selector
     configurable: true
