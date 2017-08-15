@@ -1,0 +1,85 @@
+---
+name: ha_proxy
+label: HAProxy
+resource_label: HAProxy
+description: HAProxy is the default load balancer for SSL termination. Alternatively,
+  you can use your own load balancer and forward traffic to the Pivotal CF Elastic
+  Runtime router IP. Self signed certificates will function properly.
+templates:
+  - name: consul_agent
+    release: consul
+    consumes: |
+      consul: nil
+      consul_common: {from: consul_common_link, deployment: ((  ..cf.deployment_name  )) }
+      consul_client: {from: consul_client_link, deployment: ((  ..cf.deployment_name  )) }
+      consul_server: nil
+  - name: haproxy
+    release: haproxy
+    manifest: |
+      ha_proxy:
+        ssl_ciphers: (( .properties.haproxy_ssl_ciphers.value ))
+        ssl_pem: (( .properties.networking_poe_ssl_cert.cert_and_private_key_pems ))
+        tcp_link_port: 2222
+        enable_health_check_http: true
+  - name: metron_agent
+    release: loggregator
+  - name: syslog_forwarder
+    release: syslog-migration
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 1024
+  constraints:
+    min: 1024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 2048
+  constraints:
+    min: 2048
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+static_ip: 1
+dynamic_ip: 0
+max_in_flight: 1
+single_az_only: false
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 3
+  constraints:
+    min: 0
+property_blueprints:
+  - name: static_ips
+    type: ip_ranges
+    configurable: true
+    optional: true
+
+  - name: skip_cert_verify
+    type: boolean
+    configurable: true
+
+  - name: internal_only_domains
+    type: string_list
+    configurable: true
+    optional: true
+
+  - name: trusted_domain_cidrs
+    type: string
+    configurable: true
+    optional: true
