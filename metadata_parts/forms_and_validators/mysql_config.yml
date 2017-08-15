@@ -167,6 +167,36 @@ form:
             Each node is a duplicate master. This option makes unique backups
             from each master, rather than from a single instance.
 
+      - reference: .properties.mysql_backups.gcs
+        label: Enable automated backups from MySQL to Google Cloud Storage
+        description: |
+          Enable automated backups from MySQL to Google Cloud Storage
+        property_inputs:
+        - reference: .properties.mysql_backups.gcs.service_account_json
+          label: GCP Service Account Key JSON
+          description: Your Google Cloud Platform Service Account Key with access to the specified project and bucket in JSON format.
+
+        - reference: .properties.mysql_backups.gcs.project_id
+          label: GCP Project ID
+          description: Your Google Cloud Platform Project ID. The Project ID can be found on the Dashboard of the GCP Console.
+
+        - reference: .properties.mysql_backups.gcs.bucket_name
+          label: GCP Storage Bucket Name
+          description: The name of a bucket in Google Cloud Storage where backups will be uploaded.
+
+        - reference: .properties.mysql_backups.gcs.cron_schedule
+          label: Cron Schedule
+          description: |
+            Schedule MySQL backups as a cron expression (see
+            http://godoc.org/github.com/robfig/cron). Schedule uses the machine
+            local time zone.
+
+        - reference: .properties.mysql_backups.gcs.backup_all_masters
+          label: Backup All Nodes
+          description: |
+            Each node is a duplicate master. This option makes unique backups
+            from each master, rather than from a single instance.
+
     - reference: .properties.mysql_activity_logging
       label: Server Activity Logging
       selector_property_inputs:
