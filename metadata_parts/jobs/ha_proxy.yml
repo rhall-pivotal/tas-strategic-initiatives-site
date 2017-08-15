@@ -17,10 +17,12 @@ templates:
     release: haproxy
     manifest: |
       ha_proxy:
+        enable_health_check_http: true
+        internal_only_domains: (( .ha_proxy.internal_only_domains.parsed_strings ))
         ssl_ciphers: (( .properties.haproxy_ssl_ciphers.value ))
         ssl_pem: (( .properties.networking_poe_ssl_cert.cert_and_private_key_pems ))
         tcp_link_port: 2222
-        enable_health_check_http: true
+        trusted_domain_cidrs: (( .ha_proxy.trusted_domain_cidrs.value ))
   - name: metron_agent
     release: loggregator
   - name: syslog_forwarder

@@ -38,8 +38,7 @@ form:
     label: TLS Cipher Suites for Router
     description: |
       An ordered, colon-delimited list of Golang supported TLS cipher suites in
-      OpenSSL format, e.g. "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-
-      SHA384"
+      OpenSSL format, e.g. "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384"
     placeholder: |
       ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
 
@@ -50,6 +49,23 @@ form:
       e.g. "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384"
     placeholder: |
       DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
+
+  - reference: .ha_proxy.internal_only_domains
+    label: Protected Domains
+    description: |
+      A comma-separated list of domains to protect from requests from
+      unknown sources.  Use this property in conjunction with
+      "Trusted CIDRs" to protect these domains from requests from
+      unknown sources.
+
+  - reference: .ha_proxy.trusted_domain_cidrs
+    label: Trusted CIDRs
+    description: |
+      A space-separated list of CIDRs allowed to make requests
+      to the domains listed in the "Protected Domains" field. For example,
+      specifying 10.0.1.0/24 would allow any requests originating at a host IP
+      in that range to reach applications or services hosted on the
+      "Protected Domains" list.
 
   - reference: .properties.container_networking_vtep_port
     label: VXLAN Tunnel Endpoint Port
