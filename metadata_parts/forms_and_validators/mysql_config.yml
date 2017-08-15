@@ -197,6 +197,40 @@ form:
             Each node is a duplicate master. This option makes unique backups
             from each master, rather than from a single instance.
 
+      - reference: .properties.mysql_backups.azure
+        label: Enable automated backups from MySQL to Azure
+        description: |
+          Enable automated backups from MySQL to Azure
+        property_inputs:
+        - reference: .properties.mysql_backups.azure.storage_account
+          label: Azure Storage Account
+          description: The name of your Azure Storage Account where backups will be uploaded.
+
+        - reference: .properties.mysql_backups.azure.storage_access_key
+          label: Azure Storage Access Key
+          description: The Azure Storage Access Key used for authentication when the Storage Account is accessed.
+
+        - reference: .properties.mysql_backups.azure.container
+          label: Azure Storage Container
+          description: The name of the Azure Storage Container that will store the uploaded backups.
+
+        - reference: .properties.mysql_backups.azure.path
+          label: Backup Path
+          description: A path within the Azure Storage Container where backups will be uploaded.
+
+        - reference: .properties.mysql_backups.azure.cron_schedule
+          label: Cron Schedule
+          description: |
+            Schedule MySQL backups as a cron expression (see
+            http://godoc.org/github.com/robfig/cron). Schedule uses the machine
+            local time zone.
+
+        - reference: .properties.mysql_backups.azure.backup_all_masters
+          label: Backup All Nodes
+          description: |
+            Each node is a duplicate master. This option makes unique backups
+            from each master, rather than from a single instance.
+
     - reference: .properties.mysql_activity_logging
       label: Server Activity Logging
       selector_property_inputs:
