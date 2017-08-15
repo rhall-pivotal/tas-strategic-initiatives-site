@@ -85,6 +85,11 @@ property_blueprints:
       - name: sanitize_set
         select_value: sanitize_set
 
+  - name: router_backend_max_conn
+    type: integer
+    configurable: true
+    default: 0
+
   - name: gorouter_ssl_ciphers
     type: text
     configurable: true
