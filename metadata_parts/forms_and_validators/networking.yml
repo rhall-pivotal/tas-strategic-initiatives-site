@@ -105,6 +105,10 @@ form:
     placeholder: |
       DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
 
+  - reference: .properties.routing_disable_http
+    label: Disable HTTP on HAProxy
+    description: When checked, HAProxy will not listen on port 80.
+
   - reference: .isolated_ha_proxy.internal_only_domains
     label: Protected Domains
     description: |

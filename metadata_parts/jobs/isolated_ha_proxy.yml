@@ -83,6 +83,7 @@ manifest: |
     backend_ca_file: (( .properties.haproxy_forward_tls.enable.backend_ca.value ))
     backend_port: (( .properties.haproxy_forward_tls.selected_option.parsed_manifest(backend_port) ))
     backend_ssl: (( .properties.haproxy_forward_tls.selected_option.parsed_manifest(backend_ssl) ))
+    disable_http: (( .properties.routing_disable_http.value ))
     disable_tls_10: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_10) ))
     disable_tls_11: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_11) ))
     enable_health_check_http: true
