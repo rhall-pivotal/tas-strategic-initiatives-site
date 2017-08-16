@@ -1,7 +1,12 @@
 exports.migrate = function(input) {
   var properties = input.properties;
 
-  properties['.autoscaling.encryption_key']['value'] = properties['.autoscaling.encryption_key']['password'];
+  var key = properties['.autoscaling.encryption_key']['password'];
+  properties['.autoscaling.encryption_key'] = {
+    value: {
+      secret: key
+    }
+  };
 
   return input;
 };
