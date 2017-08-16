@@ -15,3 +15,8 @@ manifest: |
       cc:
         basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
         basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
+      lifecycle_bundles:
+      - "buildpack/cflinuxfs2:buildpack_app_lifecycle/buildpack_app_lifecycle.tgz"
+      - "buildpack/windows2012R2:windows_app_lifecycle/windows_app_lifecycle.tgz"
+      - "buildpack/windows2016:buildpack_app_lifecycle/buildpack_app_lifecycle.tgz"
+      - "docker:docker_app_lifecycle/docker_app_lifecycle.tgz"
