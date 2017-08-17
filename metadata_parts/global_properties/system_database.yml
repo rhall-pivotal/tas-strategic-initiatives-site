@@ -466,10 +466,10 @@ property_blueprints:
         manifest: |
           - type: azure
             config:
-              storage_account: ((.properties.mysql_backups.azure.storage_account.value))
-              storage_access_key: ((.properties.mysql_backups.azure.storage_access_key.value))
-              container: ((.properties.mysql_backups.azure.container.value))
-              path: ((.properties.mysql_backups.azure.path.value))
+              storage_account: (( .properties.mysql_backups.azure.storage_account.value ))
+              storage_access_key: (( .properties.mysql_backups.azure.storage_access_key.value ))
+              container: (( .properties.mysql_backups.azure.container.value ))
+              path: (( .properties.mysql_backups.azure.path.value ))
       - name: cron_schedule
         manifest: |
           (( .properties.mysql_backups.azure.cron_schedule.value ))
