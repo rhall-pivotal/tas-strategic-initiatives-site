@@ -1,0 +1,65 @@
+---
+name: install-hwc-buildpack
+label: Install HWC Buildpack Errand
+resource_label: Install HWC Buildpack Errand
+description: Install the HWC builidpack to your Elastic Runtime for Windows installation
+templates:
+  - name: install-hwc-buildpack
+    release: hwc-offline-buildpack
+  - name: event_log_forwarder
+    release: event_log
+errand: true
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 65_536
+    constraints:
+      min: 1_024
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: false
+    default: 0
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 1
+    constraints:
+      min: 1
+      power_of_two: true
+
+static_ip: 0
+dynamic_ip: 1
+max_in_flight: 1
+single_az_only: false
+
+instance_definition:
+    name: instances
+    type: integer
+    label: Instances
+    configurable: false
+    default: 1
+
+manifest: |
+  cf:
+    api_url: "https://api.(( ..cf.cloud_controller.system_domain.value ))"
+    admin_username: (( ..cf.uaa.admin_credentials.identity ))
+    admin_password: (( ..cf.uaa.admin_credentials.password ))
+    system_domain: (( ..cf.cloud_controller.system_domain.value ))
+  ssl:
+    skip_cert_verify: (( ..cf.ha_proxy.skip_cert_verify.value ))
+  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
