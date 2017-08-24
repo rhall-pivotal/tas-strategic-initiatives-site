@@ -1,5 +1,35 @@
 ---
 property_blueprints:
+  - name: garden_disk_cleanup
+    type: selector
+    configurable: true
+    default: threshold
+    option_templates:
+      - name: never
+        named_manifests:
+        - name: graph_cleanup_threshold_in_mb
+          manifest: |
+            -1
+        select_value: never
+      - name: routine
+        named_manifests:
+        - name: graph_cleanup_threshold_in_mb
+          manifest: |
+            0
+        select_value: routine
+      - name: threshold
+        named_manifests:
+        - name: graph_cleanup_threshold_in_mb
+          manifest: |
+            (( .properties.garden_disk_cleanup.threshold.cleanup_threshold_in_mb.value ))
+        select_value: threshold
+        property_blueprints:
+          - name: cleanup_threshold_in_mb
+            type: integer
+            default: 10_240
+            constraints:
+              min: 1
+
   - name: enable_grootfs
     type: boolean
     configurable: true

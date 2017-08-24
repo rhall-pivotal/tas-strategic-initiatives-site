@@ -29,6 +29,24 @@ form:
       Override DNS servers to be used in containers. Defaults to the same as
       the host. A comma-separated list of servers can be specified.
 
+  - reference: .properties.garden_disk_cleanup
+    label: Docker Images Disk-Cleanup Scheduling on Cell VMs
+    selector_property_inputs:
+    - reference: .properties.garden_disk_cleanup.never
+      label: Never clean up Cell disk-space
+
+    - reference: .properties.garden_disk_cleanup.routine
+      label: Routinely clean up Cell disk-space
+
+    - reference: .properties.garden_disk_cleanup.threshold
+      label: Clean up disk-space once threshold is reached
+      property_inputs:
+        - reference: .properties.garden_disk_cleanup.threshold.cleanup_threshold_in_mb
+          label: Threshold of Disk-Used (MB)
+          description: |
+            Disk cleanup will initiate whenever a Cell has exceeded this much
+            disk-space for filesystem layers.
+
   - reference: .properties.nfs_volume_driver
     label: |
       Enabling NFSv3 volume services will allow application developers to bind
