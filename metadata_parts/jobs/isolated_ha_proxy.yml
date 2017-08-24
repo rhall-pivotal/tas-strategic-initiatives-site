@@ -89,7 +89,7 @@ manifest: |
     enable_health_check_http: true
     internal_only_domains: (( .isolated_ha_proxy.internal_only_domains.parsed_strings ))
     ssl_ciphers: (( .properties.haproxy_ssl_ciphers.value ))
-    ssl_pem: (( .properties.networking_poe_ssl_cert.cert_and_private_key_pems ))
+    ssl_pem: (( .properties.networking_poe_ssl_cert.value ))
     tcp_link_port: 2222
     trusted_domain_cidrs: (( .isolated_ha_proxy.trusted_domain_cidrs.value ))
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
