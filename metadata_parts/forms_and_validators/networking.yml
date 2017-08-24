@@ -54,6 +54,11 @@ form:
         domains. You can also generate a self-signed certificate here
         with your wildcard system domain.
       property_inputs:
+        - reference: name
+          label: Name
+          description: |
+            A human-readable name describing the use of this certificate.
+
         - reference: cert_chain
           label: Certificate for HAProxy and Router
           description: |
