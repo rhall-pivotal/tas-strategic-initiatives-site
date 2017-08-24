@@ -25,6 +25,13 @@ form:
       be left blank and the "Load Balancers" field on the "Resource Config"
       tab can be filled out with the correct load balancer assignment.
 
+  - reference: .isolated_ha_proxy.static_ips
+    label: HAProxy IPs
+    description: |
+      If you are using HAProxy, enter its IP address(es). The addresses must
+      be within your subnet CIDR block. Point your DNS to this IP address
+      unless you are using your own load balancer.
+
   - reference: .properties.networking_poe_ssl_cert
     label: Certificate and Private Key for HAProxy and Router
     description: |
