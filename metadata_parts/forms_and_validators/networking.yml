@@ -108,6 +108,12 @@ form:
     placeholder: |
       DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
 
+  - reference: .properties.skip_cert_verify
+    label: Disable SSL certificate verification for this environment
+    description: |
+      You can disable SSL verification if you are using your own self-signed
+      certificates that are not from a trusted CA.
+
   - reference: .properties.routing_disable_http
     label: Disable HTTP on HAProxy and Gorouter
     description: When checked, HAProxy and Gorouter will not listen on port 80.

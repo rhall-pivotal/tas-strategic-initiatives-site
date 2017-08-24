@@ -95,7 +95,7 @@ manifest: |
     enable_ssl: true
     tls_pem: (( .properties.networking_poe_ssl_cert.value ))
     min_tls_version: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(min_tls_version) ))
-    ssl_skip_validation: (( ..cf.ha_proxy.skip_cert_verify.value ))
+    ssl_skip_validation: (( .properties.skip_cert_verify.value ))
     skip_oauth_tls_verification: true
     haproxy:
       health_check_port: 80
