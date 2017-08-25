@@ -73,6 +73,11 @@ property_blueprints:
     configurable: true
     optional: true
 
+  - name: disable_insecure_cookies
+    type: boolean
+    configurable: true
+    default: false
+
   - name: status_credentials
     type: simple_credentials
     default:
@@ -85,7 +90,7 @@ manifest: |
   router:
     tracing:
       enable_zipkin: (( ..cf.router.enable_zipkin.value ))
-    secure_cookies: (( ..cf.router.disable_insecure_cookies.value ))
+    secure_cookies: (( disable_insecure_cookies.value ))
     status:
       user: router_status
       password: (( status_credentials.password ))
