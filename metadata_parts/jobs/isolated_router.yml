@@ -83,13 +83,18 @@ property_blueprints:
     default:
       identity: router_status
 
+  - name: enable_zipkin
+    type: boolean
+    configurable: true
+    default: true
+
 manifest: |
   request_timeout_in_seconds: (( ..cf.router.request_timeout_in_seconds.value ))
   networks:
     apps: default
   router:
     tracing:
-      enable_zipkin: (( ..cf.router.enable_zipkin.value ))
+      enable_zipkin: (( enable_zipkin.value ))
     secure_cookies: (( disable_insecure_cookies.value ))
     status:
       user: router_status
