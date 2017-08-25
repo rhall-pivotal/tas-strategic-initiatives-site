@@ -8,5 +8,7 @@ exports.migrate = function(input) {
     }
   };
 
+  delete properties['.notifications.encryption_credentials']
+
   return input;
 };
