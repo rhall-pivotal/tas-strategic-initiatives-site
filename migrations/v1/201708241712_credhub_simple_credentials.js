@@ -63,9 +63,5 @@ exports.migrate = function(input) {
     from: input.properties['.nfsbrokerpush.nfs_broker_push_credentials'],
     to_variable: 'nfs-broker-push-credentials'
   });
-  input.variable_migrations.push({
-    from: input.properties['.notifications.encryption_credentials'],
-    to_variable: 'notifications-encryption-credentials'
-  });
   return input;
 };
