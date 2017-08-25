@@ -108,6 +108,11 @@ property_blueprints:
     configurable: true
     default: 20
 
+  - name: lb_healthy_threshold
+    type: integer
+    configurable: true
+    default: 20
+
 manifest: |
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   networks:
@@ -132,7 +137,7 @@ manifest: |
       health_check_port: 80
       request_timeout_in_seconds: 300
     drain_wait: (( drain_wait.value ))
-    load_balancer_healthy_threshold: (( ..cf.router.lb_healthy_threshold.value ))
+    load_balancer_healthy_threshold: (( lb_healthy_threshold.value ))
     routing_table_sharding_mode: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(sharding_mode) ))
     isolation_segments: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(isolation_segments) ))
     forwarded_client_cert: (( .properties.router_forward_client_cert.value ))
