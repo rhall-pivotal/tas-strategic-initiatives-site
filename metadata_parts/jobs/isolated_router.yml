@@ -95,6 +95,14 @@ property_blueprints:
     constraints:
       min: 1
 
+  - name: max_idle_connections
+    type: integer
+    configurable: true
+    default: 0
+    constraints:
+      min: 0
+      max: 50_000
+
 manifest: |
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   networks:
@@ -111,6 +119,7 @@ manifest: |
     cipher_suites: (( .properties.gorouter_ssl_ciphers.value ))
     enable_ssl: true
     tls_pem: (( .properties.networking_poe_ssl_cert.value ))
+    max_idle_connections: (( max_idle_connections.value ))
     min_tls_version: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(min_tls_version) ))
     ssl_skip_validation: (( .properties.skip_cert_verify.value ))
     skip_oauth_tls_verification: true

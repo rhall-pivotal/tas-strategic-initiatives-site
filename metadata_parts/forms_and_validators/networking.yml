@@ -32,6 +32,15 @@ form:
       applications and system components. Increase this to accommodate larger
       uploads over connections with high latency.
 
+  - reference: .isolated_router.max_idle_connections
+    label: Router Max Idle Keepalive Connections
+    description: |
+      Max number of idle keepalive connections maintained by Gorouter to all
+      backends. The default value of 0 disables keepalive support. The max
+      number of idle connections per backend is 100; this limit takes precedent
+      if concurrent requests per backend is greater than 100 and total
+      concurrent requests is less than Max Idle Keepalive Connections.
+
   - reference: .isolated_ha_proxy.static_ips
     label: HAProxy IPs
     description: |
