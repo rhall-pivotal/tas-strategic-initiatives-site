@@ -41,6 +41,12 @@ form:
       if concurrent requests per backend is greater than 100 and total
       concurrent requests is less than Max Idle Keepalive Connections.
 
+  - reference: .isolated_router.extra_headers_to_log
+    label: HTTP Headers to Log
+    description: |
+      A comma-separated list of HTTP headers that will annotate access log
+      events on the GoRouter.
+
   - reference: .isolated_router.drain_wait
     label: Load Balancer Unhealthy Threshold
     description: |

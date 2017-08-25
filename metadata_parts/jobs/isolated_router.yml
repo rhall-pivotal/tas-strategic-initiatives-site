@@ -103,6 +103,11 @@ property_blueprints:
       min: 0
       max: 50_000
 
+  - name: extra_headers_to_log
+    type: string_list
+    configurable: true
+    optional: true
+
   - name: drain_wait
     type: integer
     configurable: true
@@ -138,6 +143,7 @@ manifest: |
       request_timeout_in_seconds: 300
     drain_wait: (( drain_wait.value ))
     load_balancer_healthy_threshold: (( lb_healthy_threshold.value ))
+    extra_headers_to_log: (( extra_headers_to_log.parsed_strings ))
     routing_table_sharding_mode: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(sharding_mode) ))
     isolation_segments: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(isolation_segments) ))
     forwarded_client_cert: (( .properties.router_forward_client_cert.value ))
