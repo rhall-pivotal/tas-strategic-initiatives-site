@@ -118,6 +118,13 @@ form:
     label: Disable HTTP on HAProxy and Gorouter
     description: When checked, HAProxy and Gorouter will not listen on port 80.
 
+  - reference: .properties.haproxy_max_buffer_size
+    label: HAProxy Request Max Buffer Size
+    description: |
+      Buffer size (in bytes) to use for requests, any requests larger
+      than this (large cookies or query strings) will result in a
+      gateway error. The default value is 16384.
+
   - reference: .isolated_ha_proxy.internal_only_domains
     label: Protected Domains
     description: |
