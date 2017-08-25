@@ -9,12 +9,12 @@ form:
   property_inputs:
     - reference: .properties.smoke_tests
       label: |
-        Choose whether to create a new org and space on demand for smoke tests
+        Choose where to deploy applications when running the smoke tests
       selector_property_inputs:
       - reference: .properties.smoke_tests.on_demand
         label: |
-          Temporary org and space (This org and space are deleted after smoke
-          tests finish.)
+          Temporary space within the system organization (This is deleted after
+          smoke tests finish.)
 
       - reference: .properties.smoke_tests.specified
         label: |
