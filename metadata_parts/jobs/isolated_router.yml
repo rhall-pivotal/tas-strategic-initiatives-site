@@ -88,8 +88,15 @@ property_blueprints:
     configurable: true
     default: true
 
+  - name: request_timeout_in_seconds
+    type: integer
+    configurable: true
+    default: 900
+    constraints:
+      min: 1
+
 manifest: |
-  request_timeout_in_seconds: (( ..cf.router.request_timeout_in_seconds.value ))
+  request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   networks:
     apps: default
   router:

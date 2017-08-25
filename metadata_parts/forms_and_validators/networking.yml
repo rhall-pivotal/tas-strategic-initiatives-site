@@ -25,6 +25,13 @@ form:
       be left blank and the "Load Balancers" field on the "Resource Config"
       tab can be filled out with the correct load balancer assignment.
 
+  - reference: .isolated_router.request_timeout_in_seconds
+    label: Router Timeout to Backends (in seconds)
+    description: |
+      Timeout for connections from Router (and HAProxy, if you use it) to
+      applications and system components. Increase this to accommodate larger
+      uploads over connections with high latency.
+
   - reference: .isolated_ha_proxy.static_ips
     label: HAProxy IPs
     description: |
