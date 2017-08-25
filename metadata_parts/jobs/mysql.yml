@@ -61,36 +61,10 @@ property_blueprints:
   type: simple_credentials
   default:
     identity: root
-- name: mysql_bootstrap_credentials
-  type: simple_credentials
-  label: Bootstrap Endpoint Credentials
-- name: mysql_backup_server_credentials
-  type: simple_credentials
-  label: Backup Endpoint Credentials
 - name: app_usage_credentials
   type: simple_credentials
   default:
     identity: app_usage
-- name: notifications_credentials
-  type: simple_credentials
-- name: autoscale_credentials
-  type: simple_credentials
-- name: ccdb_credentials
-  type: simple_credentials
-- name: uaadb_credentials
-  type: simple_credentials
-- name: monitordb_credentials
-  type: simple_credentials
-- name: diegodb_credentials
-  type: simple_credentials
-- name: locketdb_credentials
-  type: simple_credentials
-- name: routingdb_credentials
-  type: simple_credentials
-- name: silkdb_credentials
-  type: simple_credentials
-- name: networkpolicyserverdb_credentials
-  type: simple_credentials
 - name: cluster_health_user
   type: simple_credentials
   default:
@@ -99,12 +73,6 @@ property_blueprints:
   type: simple_credentials
   default:
     identity: galera-healthcheck
-- name: pivotal_account_credentials
-  type: simple_credentials
-- name: nfsvolume_credentials
-  type: simple_credentials
-- name: diag_agent_credentials
-  type: simple_credentials
 - name: cluster_probe_timeout
   type: integer
   configurable: true

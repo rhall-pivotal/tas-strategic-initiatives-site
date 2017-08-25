@@ -7,5 +7,5 @@ manifest: |
       admin_password: (( mysql_admin_credentials.password ))
   cf-mysql-backup:
     endpoint_credentials:
-      username: (( mysql_backup_server_credentials.identity ))
-      password: (( mysql_backup_server_credentials.password ))
+      username: ((( mysql-backup-server-credentials.username )))
+      password: ((( mysql-backup-server-credentials.password )))

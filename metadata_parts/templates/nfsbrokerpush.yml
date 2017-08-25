@@ -14,7 +14,7 @@ manifest: |
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
     app_domain: (( .cloud_controller.system_domain.value ))
     space: nfs
-    username: (( nfs_broker_push_credentials.identity ))
-    password: (( nfs_broker_push_credentials.password ))
+    username: ((( nfs-broker-push-credentials.username )))
+    password: ((( nfs-broker-push-credentials.password )))
     syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))
     ldap_enabled: (( .properties.nfs_volume_driver.enable.ldap_server_host.value_present? ))

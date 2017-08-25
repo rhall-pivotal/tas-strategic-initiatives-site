@@ -12,8 +12,8 @@ manifest: |
     recipient_email: (( recipient_email.value ))
     replication-canary:
       canary_database: monitor
-      canary_username: (( .mysql.monitordb_credentials.identity ))
-      canary_password: (( .mysql.monitordb_credentials.password ))
+      canary_username: ((( mysql-monitor-db-credentials.username )))
+      canary_password: ((( mysql-monitor-db-credentials.password )))
       notifications_client_username: (( .uaa.notifications_client_credentials.identity ))
       notifications_client_secret: (( .uaa.notifications_client_credentials.password ))
       poll_frequency: (( poll_frequency.value ))

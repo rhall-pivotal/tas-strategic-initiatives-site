@@ -4,5 +4,5 @@ release: mysql-monitoring
 manifest: |
   mysql-monitoring:
     mysql-diag-agent:
-      username: (( diag_agent_credentials.identity ))
-      password: (( diag_agent_credentials.password ))
+      username: ((( mysql-diag-agent-credentials.username )))
+      password: ((( mysql-diag-agent-credentials.password )))
