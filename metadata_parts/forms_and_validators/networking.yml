@@ -134,16 +134,23 @@ form:
   - reference: .properties.gorouter_ssl_ciphers
     label: TLS Cipher Suites for Router
     description: |
-      An ordered, colon-delimited list of Golang supported TLS cipher suites in
-      OpenSSL format, e.g. "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384"
+      An ordered, colon-delimited list of Golang supported TLS cipher suites
+      in OpenSSL format, e.g. "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384".
+      The recommended setting is
+      "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384".
+      Operators should verify that these are supported by any clients or
+      downstream components that will initiate TLS handshakes with the Router.
     placeholder: |
       ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
 
   - reference: .properties.haproxy_ssl_ciphers
     label: TLS Cipher Suites for HAProxy
     description: |
-      An ordered, colon-delimited list of TLS cipher suites in OpenSSL format,
-      e.g. "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384"
+      An ordered, colon-delimited list of TLS cipher suites in OpenSSL format, e.g.
+      "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384". The recommended setting is
+      "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256:TLS_DHE_RSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384".
+      Operators should verify that these are supported by any clients or downstream
+      components that will initiate TLS handshakes with the HAProxy.
     placeholder: |
       DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
 
