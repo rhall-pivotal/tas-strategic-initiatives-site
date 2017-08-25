@@ -41,6 +41,16 @@ form:
       if concurrent requests per backend is greater than 100 and total
       concurrent requests is less than Max Idle Keepalive Connections.
 
+  - reference: .isolated_router.drain_wait
+    label: Load Balancer Unhealthy Threshold
+    description: |
+      Specifies the amount of time, in seconds, that the Router will continue
+      to accept connections before shutting down. During this period the
+      healthcheck will report unhealthy to cause load balancers to fail over
+      to other Routers. This value should be greater than or equal to the max
+      time it could take your load balancer to consider a Router instance
+      unhealthy, given contiguous failed healthchecks.
+
   - reference: .isolated_ha_proxy.static_ips
     label: HAProxy IPs
     description: |
