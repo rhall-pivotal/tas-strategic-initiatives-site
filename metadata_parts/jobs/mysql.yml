@@ -57,27 +57,27 @@ instance_definition:
     property_values:
     - external
 property_blueprints:
-- name: mysql_admin_credentials
-  type: simple_credentials
-  default:
-    identity: root
 - name: app_usage_credentials
   type: simple_credentials
   default:
     identity: app_usage
-- name: cluster_health_user
-  type: simple_credentials
-  default:
-    identity: cluster-health-logger
-- name: galera_sidecar_user
-  type: simple_credentials
-  default:
-    identity: galera-healthcheck
-- name: cluster_probe_timeout
-  type: integer
-  configurable: true
-  optional: true
 - name: cli_history
   type: boolean
   configurable: true
   default: true
+- name: cluster_health_user
+  type: simple_credentials
+  default:
+    identity: cluster-health-logger
+- name: cluster_probe_timeout
+  type: integer
+  configurable: true
+  optional: true
+- name: galera_sidecar_user
+  type: simple_credentials
+  default:
+    identity: galera-healthcheck
+- name: mysql_admin_credentials
+  type: simple_credentials
+  default:
+    identity: root
