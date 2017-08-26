@@ -4,7 +4,10 @@ label: MySQL Server
 resource_label: MySQL Server
 description: Multi-tenant MySQL server.
 templates:
+- consul_agent
+- metron_agent
 - mysql
+- mysql-metrics
 - streaming-mysql-backup-tool
 - send-email
 - mysql-diag-agent
