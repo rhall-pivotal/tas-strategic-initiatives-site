@@ -56,7 +56,11 @@ manifest: |
       - name: (( .properties.nfsvolume_database_name.value ))
         username: ((( mysql-nfs-volume-credentials.username )))
         password: ((( mysql-nfs-volume-credentials.password )))
+      - name: metrics_db
+        username: (( mysql_metrics_credentials.identity ))
+        password: (( mysql_metrics_credentials.password ))
       server_audit_excluded_users:
+      - (( mysql_metrics_credentials.identity ))
       - ((( mysql-monitor-db-credentials.username )))
       admin_password: (( mysql_admin_credentials.password ))
       galera_healthcheck:
