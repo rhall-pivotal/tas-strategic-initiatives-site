@@ -4,4 +4,5 @@ release: mysql-monitoring
 manifest: |
   mysql-metrics:
     origin: cf
-    password: (( .mysql.mysql_metrics_credentials.password ))
+    username: ((( mysql-metrics-db-credentials.username )))
+    password: ((( mysql-metrics-db-credentials.password )))
