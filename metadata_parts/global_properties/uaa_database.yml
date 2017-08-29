@@ -20,8 +20,8 @@ property_blueprints:
             port: 3306
             roles:
             - tag: admin
-              name: ((( mysql-uaa-db-credentials.username )))
-              password: ((( mysql-uaa-db-credentials.password )))
+              name: ((( uaa-db-credentials.username )))
+              password: ((( uaa-db-credentials.password )))
             databases:
             - tag: uaa
               name: (( .properties.uaa_database_name.value ))
