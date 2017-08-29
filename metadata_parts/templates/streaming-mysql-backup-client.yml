@@ -6,5 +6,5 @@ manifest: |
     symmetric_key: (( backup_encryption_key.value ))
     backup-all-masters: (( .properties.mysql_backups.selected_option.parsed_manifest(backup_all_masters) ))
     endpoint_credentials:
-      username: ((( backup-server-db-credentials.username )))
-      password: ((( backup-server-db-credentials.password )))
+      username: ((( mysql-backup-server-db-credentials.username )))
+      password: ((( mysql-backup-server-db-credentials.password )))

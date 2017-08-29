@@ -5,5 +5,5 @@ manifest: |
   cf_mysql:
     mysql:
       galera_healthcheck:
-        endpoint_username: ((( bootstrap-db-credentials.username )))
-        endpoint_password: ((( bootstrap-db-credentials.password )))
+        endpoint_username: ((( mysql-bootstrap-db-credentials.username )))
+        endpoint_password: ((( mysql-bootstrap-db-credentials.password )))
