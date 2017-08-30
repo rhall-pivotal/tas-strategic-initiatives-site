@@ -4,7 +4,7 @@ release: mysql-backup
 manifest: |
   cf_mysql:
     mysql:
-      admin_password: (( mysql_admin_credentials.password ))
+      admin_password: (( .mysql.mysql_admin_credentials.password ))
   cf-mysql-backup:
     endpoint_credentials:
       username: ((( mysql-backup-server-db-credentials.username )))

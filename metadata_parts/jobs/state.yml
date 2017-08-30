@@ -66,29 +66,3 @@ instance_definition:
   constraints:
     min: 1
     may_only_be_odd_or_zero: true
-
-property_blueprints:
-- name: app_usage_credentials
-  type: simple_credentials
-  default:
-    identity: app_usage
-- name: cli_history
-  type: boolean
-  configurable: true
-  default: true
-- name: cluster_health_user
-  type: simple_credentials
-  default:
-    identity: cluster-health-logger
-- name: cluster_probe_timeout
-  type: integer
-  configurable: true
-  optional: true
-- name: galera_sidecar_user
-  type: simple_credentials
-  default:
-    identity: galera-healthcheck
-- name: mysql_admin_credentials
-  type: simple_credentials
-  default:
-    identity: root

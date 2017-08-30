@@ -8,15 +8,15 @@ manifest: |
   cf_mysql:
     mysql:
       port: {{ tile | ert "3306" | srt "33306" }}
-      cli_history: (( cli_history.value ))
+      cli_history: (( .mysql.cli_history.value ))
       interrupt_notify_cmd: "/var/vcap/jobs/send-email/bin/run"
       innodb_buffer_pool_size: 2147483648
       innodb_strict_mode: true
       max_open_files: 1048576
       startup_timeout: 120
-      cluster_probe_timeout: (( cluster_probe_timeout.value ))
+      cluster_probe_timeout: (( .mysql.cluster_probe_timeout.value ))
       cluster_health:
-        password: (( cluster_health_user.password ))
+        password: (( .mysql.cluster_health_user.password ))
       seeded_databases:
       - name: (( .properties.ccdb_database_name.value ))
         username: ((( cc-db-credentials.username )))
@@ -25,8 +25,8 @@ manifest: |
         username: ((( uaa-db-credentials.username )))
         password: ((( uaa-db-credentials.password )))
       - name: (( .properties.app_usage_service_database_name.value ))
-        username: (( app_usage_credentials.identity ))
-        password: (( app_usage_credentials.password ))
+        username: (( .mysql.app_usage_credentials.identity ))
+        password: (( .mysql.app_usage_credentials.password ))
       - name: (( .properties.notifications_database_name.value ))
         username: ((( notifications-db-credentials.username )))
         password: ((( notifications-db-credentials.password )))
@@ -63,9 +63,9 @@ manifest: |
       server_audit_excluded_users:
       - ((( mysql-metrics-db-credentials.username )))
       - ((( mysql-monitor-db-credentials.username )))
-      admin_password: (( mysql_admin_credentials.password ))
+      admin_password: (( .mysql.mysql_admin_credentials.password ))
       galera_healthcheck:
-        db_password: (( galera_sidecar_user.password ))
+        db_password: (( .mysql.galera_sidecar_user.password ))
         endpoint_username: ((( mysql-bootstrap-db-credentials.username )))
         endpoint_password: ((( mysql-bootstrap-db-credentials.password )))
       server_audit_events: (( .properties.mysql_activity_logging.selected_option.parsed_manifest(mysql_audit_events) ))
