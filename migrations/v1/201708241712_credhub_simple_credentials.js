@@ -35,10 +35,12 @@ exports.migrate = function(input) {
     to_variable: 'mysql-diag-agent-db-credentials'
   });
 
-  input.variable_migrations.push({
-    from: input.properties['.mysql.mysqlmetricsdb_credentials'],
-    to_variable: 'mysql-metrics-db-credentials'
-  });
+  if (input.properties['.mysql.mysqlmetricsdb_credentials'] != null) {
+    input.variable_migrations.push({
+      from: input.properties['.mysql.mysqlmetricsdb_credentials'],
+      to_variable: 'mysql-metrics-db-credentials'
+    });
+  }
 
   input.variable_migrations.push({
     from: input.properties['.mysql.monitordb_credentials'],
