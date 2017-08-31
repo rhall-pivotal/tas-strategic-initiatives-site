@@ -10,6 +10,6 @@ manifest: |
     network: (( .properties.container_networking_network_cidr.value || "10.255.0.0/16" ))
     silk_controller:
       ca_cert: (( $ops_manager.ca_certificate ))
-      server_cert: (( silk_controller_server_cert.cert_pem ))
-      server_key: (( silk_controller_server_cert.private_key_pem ))
+      server_cert: (( .diego_database.silk_controller_server_cert.cert_pem ))
+      server_key: (( .diego_database.silk_controller_server_cert.private_key_pem ))
       database: (( .properties.system_database.selected_option.parsed_manifest(silkdb) ))

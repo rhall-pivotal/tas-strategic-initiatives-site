@@ -1,0 +1,55 @@
+---
+name: control
+label: Control
+resource_label: Control
+description:
+templates:
+- consul_agent_diego_database
+- bbs
+- cfdot
+- metron_agent
+- locket
+- route_registrar_diego_database
+- policy-server
+- silk-controller
+- syslog_forwarder
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 1024
+  constraints:
+    min: 1024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 2048
+  constraints:
+    min: 1024
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+static_ip: 0
+dynamic_ip: 1
+serial: true
+max_in_flight: 1
+single_az_only: false
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 1
+  constraints:
+    min: 1

@@ -3,9 +3,9 @@ name: locket
 release: diego
 manifest: |
   tls:
-    key: (( locket_server_cert.private_key_pem ))
+    key: (( .diego_database.locket_server_cert.private_key_pem ))
     ca_cert: (( $ops_manager.ca_certificate ))
-    cert: (( locket_server_cert.cert_pem ))
+    cert: (( .diego_database.locket_server_cert.cert_pem ))
   diego:
     locket:
       sql: (( .properties.system_database.selected_option.parsed_manifest(locketdb) ))
