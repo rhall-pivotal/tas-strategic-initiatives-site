@@ -26,9 +26,9 @@ manifest: |
       wantAssertionSigned: (( .properties.uaa.saml.require_signed_assertions.value ))
       keys:
         key1:
-          key: (( service_provider_key_credentials.private_key_pem ))
-          passphrase: (( service_provider_key_password.value || "" ))
-          certificate: (( service_provider_key_credentials.cert_pem ))
+          key: (( .uaa.service_provider_key_credentials.private_key_pem ))
+          passphrase: (( .uaa.service_provider_key_password.value || "" ))
+          certificate: (( .uaa.service_provider_key_credentials.cert_pem ))
     logout:
       redirect:
         parameter:
@@ -48,7 +48,7 @@ manifest: |
       username:
         text: (( .uaa.customize_username_label.value ))
   uaa:
-    sslCertificate: (( ssl_credentials.cert_pem ))
+    sslCertificate: (( .uaa.ssl_credentials.cert_pem ))
     password:
       policy:
         requireUpperCaseCharacter: (( .properties.uaa.internal.password_min_uppercase.value ))
@@ -62,7 +62,7 @@ manifest: |
         active_key_id: key-1
         keys:
           key-1:
-            signingKey: (( jwt_signing_key_credentials.private_key_pem ))
+            signingKey: (( .uaa.jwt_signing_key_credentials.private_key_pem ))
     user:
       authorities:
       - openid
@@ -101,13 +101,13 @@ manifest: |
       userPassword: (( .properties.uaa.ldap.credentials.password ))
       sslCertificateAlias: (( .properties.uaa.ldap.server_ssl_cert_alias.value ))
     admin:
-      client_secret: (( admin_client_credentials.password ))
+      client_secret: (( .uaa.admin_client_credentials.password ))
     scim:
       groups:
         cloud_controller.admin_read_only: "Group that grants global read permissions for the Cloud Controller API"
       users:
-      - name: (( admin_credentials.identity ))
-        password: (( admin_credentials.password ))
+      - name: (( .uaa.admin_credentials.identity ))
+        password: (( .uaa.admin_credentials.password ))
         groups:
         - scim.write
         - scim.read
@@ -131,20 +131,20 @@ manifest: |
         - routing.router_groups.write
         - network.write
         - network.admin
-      - name: (( push_apps_manager_credentials.identity ))
-        password: (( push_apps_manager_credentials.password ))
+      - name: (( .uaa.push_apps_manager_credentials.identity ))
+        password: (( .uaa.push_apps_manager_credentials.password ))
         groups:
         - cloud_controller.admin
-      - name: (( run_smoke_tests_credentials.identity ))
-        password: (( run_smoke_tests_credentials.password ))
+      - name: (( .uaa.run_smoke_tests_credentials.identity ))
+        password: (( .uaa.run_smoke_tests_credentials.password ))
         groups:
         - cloud_controller.admin
-      - name: (( system_services_credentials.identity ))
-        password: (( system_services_credentials.password ))
+      - name: (( .uaa.system_services_credentials.identity ))
+        password: (( .uaa.system_services_credentials.password ))
         groups:
         - cloud_controller.admin
-      - name: (( system_verification_credentials.identity ))
-        password: (( system_verification_credentials.password ))
+      - name: (( .uaa.system_verification_credentials.identity ))
+        password: (( .uaa.system_verification_credentials.password ))
         groups:
         - scim.write
         - scim.read
@@ -153,24 +153,24 @@ manifest: |
         - dashboard.user
         - console.admin
         - console.support
-      - name: (( logsearch_firehose_credentials.identity ))
-        password: (( logsearch_firehose_credentials.password ))
+      - name: (( .uaa.logsearch_firehose_credentials.identity ))
+        password: (( .uaa.logsearch_firehose_credentials.password ))
         groups:
         - cloud_controller.admin
         - doppler.firehose
-      - name: (( splunk_firehose_credentials.identity ))
-        password: (( splunk_firehose_credentials.password ))
+      - name: (( .uaa.splunk_firehose_credentials.identity ))
+        password: (( .uaa.splunk_firehose_credentials.password ))
         groups:
         - cloud_controller.admin
         - doppler.firehose
-      - name: (( stackdriver_nozzle_credentials.identity ))
-        password: (( stackdriver_nozzle_credentials.password ))
+      - name: (( .uaa.stackdriver_nozzle_credentials.identity ))
+        password: (( .uaa.stackdriver_nozzle_credentials.password ))
         groups:
         - cloud_controller.admin_read_only
         - doppler.firehose
     proxy_ips_regex: (( .uaa.proxy_ips_regex.value ))
-    sslPrivateKey: (( ssl_credentials.private_key_pem ))
-    issuer: (( issuer_uri.value ))
+    sslPrivateKey: (( .uaa.ssl_credentials.private_key_pem ))
+    issuer: (( .uaa.issuer_uri.value ))
     zones:
       internal:
         hostnames:
@@ -183,13 +183,13 @@ manifest: |
         access-token-validity: 1209600
         authorized-grant-types: authorization_code,client_credentials,refresh_token
         override: true
-        secret: (( opentsdb_nozzle_credentials.password ))
+        secret: (( .uaa.opentsdb_nozzle_credentials.password ))
         scope: openid,oauth.approvals,doppler.firehose
         authorities: oauth.login,doppler.firehose
         redirect-uri: "https://apps.(( .cloud_controller.system_domain.value ))"
       identity:
-        id: (( identity_client_credentials.identity ))
-        secret: (( identity_client_credentials.password ))
+        id: (( .uaa.identity_client_credentials.identity ))
+        secret: (( .uaa.identity_client_credentials.password ))
         scope: "cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,zones.*.*,zones.*.*.*,zones.read,zones.write,scim.read"
         resource_ids: none
         override: true
@@ -198,23 +198,23 @@ manifest: |
         authorities: "scim.zones,zones.read,uaa.resource,zones.write,cloud_controller.admin,uaa.admin"
         redirect-uri: "https://p-identity.(( .cloud_controller.system_domain.value ))/dashboard/,https://p-identity.(( .cloud_controller.system_domain.value ))/dashboard/**"
       login:
-        id: (( login_client_credentials.identity ))
-        secret: (( login_client_credentials.password ))
+        id: (( .uaa.login_client_credentials.identity ))
+        secret: (( .uaa.login_client_credentials.password ))
         override: true
         autoapprove: true
         authorities: "oauth.login,scim.write,clients.read,notifications.write,critical_notifications.write,emails.write,scim.userids,password.write"
         authorized-grant-types: "client_credentials,refresh_token"
         scope: "openid,oauth.approvals"
-      (( apps_manager_client_credentials.identity )):
-        id: (( apps_manager_client_credentials.identity ))
-        secret: (( apps_manager_client_credentials.password ))
+      (( .uaa.apps_manager_client_credentials.identity )):
+        id: (( .uaa.apps_manager_client_credentials.identity ))
+        secret: (( .uaa.apps_manager_client_credentials.password ))
         override: true
         autoapprove: true
         authorities: "scim.write,scim.read,cloud_controller.read,cloud_controller.write,password.write,uaa.admin,uaa.resource,cloud_controller.admin,emails.write,notifications.write"
         authorized-grant-types: "authorization_code,client_credentials,password,implicit"
         scope: "openid,cloud_controller.read,cloud_controller.write,password.write,console.admin,console.support,cloud_controller.admin"
-        access-token-validity: (( apps_manager_access_token_lifetime.value ))
-        refresh-token-validity: (( apps_manager_refresh_token_lifetime.value ))
+        access-token-validity: (( .uaa.apps_manager_access_token_lifetime.value ))
+        refresh-token-validity: (( .uaa.apps_manager_refresh_token_lifetime.value ))
         name: Pivotal Apps Manager
         app-launch-url: "https://apps.(( .cloud_controller.system_domain.value ))"
         show-on-homepage: false
@@ -236,18 +236,18 @@ manifest: |
         authorized-grant-types: implicit
         show-on-homepage: true
         app-launch-url: "https://apps.(( .cloud_controller.system_domain.value ))"
-        access-token-validity: (( apps_manager_access_token_lifetime.value ))
+        access-token-validity: (( .uaa.apps_manager_access_token_lifetime.value ))
         redirect-uri: "https://apps.(( .cloud_controller.system_domain.value ))/**"
         app-icon: (( .push-apps-manager.square_logo.value || "iVBORw0KGgoAAAANSUhEUgAAAGwAAABsCAYAAACPZlfNAAAAAXNSR0IArs4c6QAABYtJREFUeAHtnVtsFFUYx7/d3ruWotUKVIkNaCw02YgJGBRTMd4CokUejD4QH4gxQcIDeHnBmPjkhSghUYLGe3ywPtAHNCo0QgkWwi2tXG2V1kIpLXTbLt1tS9dzlmzSJssZhv32zDk7/2km2znn7Pd9+/vt2Z2dmW0D9Obat4gCiwiLBQQSLflSViAQeN6Can1fYiJBFPQ9BcsAQBiEWUbAsnIxwyDMMgKWlYsZBmGWEbCsXMwwCLOMgGXlYoZBmGUELCsXMwzCLCNgWbmYYRBmGQHLysUMgzDLCFhWLmYYhFlGwLJyMcMgzDIClpWLGQZhlhGwrFzMMAizjIBl5WKGQZhlBCwrV1xbb96y59V1VFJQmLawQNrWa43x8XEaHo1fW+Oj1H8lSqf6eulEbw+dvNhLvcNDinvb0WWksAdm3UWhwiJ2gt2RAWo80UY7jrdSU8cZGrt6lT1HtgMaKSxbD7qqfDq99tAjyTUSG6FP9v1BH+3dTUPxeLZSssf17U5HeXEJbXr8aerY+A6tf7iOxFeu2OFmI6BvhaVgVoRCtHl5PTW8/AoV5xekmo299b2wlJn6+WFqWrOWKkpDqSYjbyFskpZFs++hL1e9NKnFvF+t3OmQOwzdkcgUmnnBABXm5Ys1j8qKisVadFPvS8tramn1goX09eEDU+KbsmGlsMbjbbT6x++UDOVORGXoFppXOYMerLqbVsyrpcWzqykYdH5R+fjZlcnd/8sjV5Q5vOh0rt6LqhhyJsQ3uC+ID8ry89aHYtf90W1bKLzlffr19EnH6HIP8oXasOM4LwbkrLB0MP+6cJ6e+eoz+vTP5nTdU9peDC+Ysm3Khq+ESehy5r3e2ECHu7uUDuqq59Id4iXVtMV3wqSACSHt3V2/KF3I97qayjuVY7zo9KUwCfq3M6coNjamZD6zrFzZ70Wnb4XFxseoK3JZyXzWtGnKfi86fStMwu6LRpXMZ5RBmBKQ7k75XqZa8gLmPZ/Nq0hFkLnvttJSZUT5Oc60xbfC5CGs6lsrlD56hgaV/V50+lbYkuo5VFygPp3SMwxhXjwp0+bcsGRp2vZU48TEBB09153aNObWlzNMHo1/6r4apYTmsx10MTqsHONFp5VH6zMBtWbhYtq6YpVjiJ/ajjmO8WKAL4QFxamWZffPT1678dicex05D4jTKj8cO+Q4zosBOSXs7bonktci5ovjgPIUye3ieo3wzKrk+TC5faPLGz83On6ovtFY3ONySth7Ty67qbPMk6Hu+edv+vzg/slNRv3uy52O6xk40HWW6r/94nrdRrTn1AzLhOju9tP03DfbKTo6mkmYrN/X98L6xQHgTb/vpG0t+5LnybJOPMMEvhXWOXCJvj9yiD7Yu4sGRkYyxKjv7r4RJi+Na+05Rwf/66SG1qO0v/NffZQZM+WUsI07d1BC/MTE144GYzHxJYcYDYq1vb/f8WQlI9OshsopYZubm7IKy4Tg2K03wYKLGiDMBSwThkKYCRZc1ABhLmCZMBTCTLDgogYIcwHLhKEQZoIFFzVAmAtYJgyFMBMsuKgBwlzAMmEohJlgwUUNEOYClglDIcwECy5qgDAXsEwYCmEmWHBRA4S5gGXCUAgzwYKLGow84yyvuyhR/GW19kt9Lh5ibg01UtjS7VtzizLjo8FLIiNMHaEgTAdlxhwQxghTRygI00GZMQeEMcLUEQrCdFBmzAFhjDB1hIIwHZQZc0AYI0wdoSBMB2XGHBDGCFNHKAjTQZkxB4QxwtQRCsJ0UGbMAWGMMHWEgjAdlBlzQBgjTB2hIEwHZcYcEMYIU0coCNNBmTEHhDHC1BEKwnRQZswBYYwwdYSCMB2UGXNAGCNMHaEgTAdlxhziUu1Ei8M/+WFMh1CZEUi0/A+j7hNSB5Wo2wAAAABJRU5ErkJggg==" ))
-      (( usage_service_client_credentials.identity )):
-        id: (( usage_service_client_credentials.identity ))
-        secret: (( usage_service_client_credentials.password ))
+      (( .uaa.usage_service_client_credentials.identity )):
+        id: (( .uaa.usage_service_client_credentials.identity ))
+        secret: (( .uaa.usage_service_client_credentials.password ))
         override: true
         authorities: "cloud_controller.read,uaa.resource,cloud_controller.admin"
         authorized-grant-types: client_credentials
       invitations:
-        id: (( invitations_client_credentials.identity ))
-        secret: (( invitations_client_credentials.password ))
+        id: (( .uaa.invitations_client_credentials.identity ))
+        secret: (( .uaa.invitations_client_credentials.password ))
         scope: uaa.none
         redirect-uri: "https://apps.(( .cloud_controller.system_domain.value ))/**"
         authorized-grant-types: client_credentials
@@ -259,16 +259,16 @@ manifest: |
         authorities: "uaa.none"
         authorized-grant-types: "password,refresh_token"
         scope: "cloud_controller.read,cloud_controller.write,cloud_controller.global_auditor,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user,routing.router_groups.read,routing.router_groups.write,cloud_controller.admin_read_only,network.admin,network.write"
-        access-token-validity: (( cf_cli_access_token_lifetime.value ))
-        refresh-token-validity: (( cf_cli_refresh_token_lifetime.value ))
-      (( network_policy_server_client.identity )):
-        id: (( network_policy_server_client.identity ))
-        secret: (( network_policy_server_client.password ))
+        access-token-validity: (( .uaa.cf_cli_access_token_lifetime.value ))
+        refresh-token-validity: (( .uaa.cf_cli_refresh_token_lifetime.value ))
+      (( .uaa.network_policy_server_client.identity )):
+        id: (( .uaa.network_policy_server_client.identity ))
+        secret: (( .uaa.network_policy_server_client.password ))
         authorities: "uaa.resource,cloud_controller.admin_read_only"
         authorized-grant-types: client_credentials
-      (( autoscale_client_credentials.identity )):
-        id: (( autoscale_client_credentials.identity ))
-        secret: (( autoscale_client_credentials.password ))
+      (( .uaa.autoscale_client_credentials.identity )):
+        id: (( .uaa.autoscale_client_credentials.identity ))
+        secret: (( .uaa.autoscale_client_credentials.password ))
         override: true
         autoapprove: true
         authorities: "uaa.resource,cloud_controller.write,cloud_controller.read,cloud_controller.admin,notifications.write,critical_notifications.write,emails.write,doppler.firehose"
@@ -277,27 +277,27 @@ manifest: |
         access-token-validity: 3600
         redirect-uri: "https://autoscale.(( .cloud_controller.system_domain.value ))/sessions/create"
       system_passwords:
-        id: (( system_passwords_client_credentials.identity ))
-        secret: (( system_passwords_client_credentials.password ))
+        id: (( .uaa.system_passwords_client_credentials.identity ))
+        secret: (( .uaa.system_passwords_client_credentials.password ))
         override: true
         autoapprove: true
         authorities: "uaa.admin,scim.read,scim.write,password.write"
         authorized-grant-types: "client_credentials"
       cc-service-dashboards:
-        id: (( cc_service_dashboards_credentials.identity ))
-        secret: (( cc_service_dashboards_credentials.password ))
+        id: (( .uaa.cc_service_dashboards_credentials.identity ))
+        secret: (( .uaa.cc_service_dashboards_credentials.password ))
         override: true
         authorities: clients.read,clients.write,clients.admin
         authorized-grant-types: client_credentials
         scope: cloud_controller.write,openid,cloud_controller.read,cloud_controller_service_permissions.read
       doppler:
-        id: (( doppler_client_credentials.identity ))
-        secret: (( doppler_client_credentials.password ))
+        id: (( .uaa.doppler_client_credentials.identity ))
+        secret: (( .uaa.doppler_client_credentials.password ))
         authorities: uaa.resource
         authorized-grant-types: client_credentials
       gorouter:
-        id: (( gorouter_client_credentials.identity ))
-        secret: (( gorouter_client_credentials.password ))
+        id: (( .uaa.gorouter_client_credentials.identity ))
+        secret: (( .uaa.gorouter_client_credentials.password ))
         authorities: clients.read,clients.write,clients.admin,routing.routes.write,routing.routes.read
         authorized-grant-types: client_credentials,refresh_token
         scope: openid,cloud_controller_service_permissions.read
@@ -326,10 +326,10 @@ manifest: |
         secret: (( .uaa.cloud_controller_username_lookup_credentials.password ))
         authorized-grant-types: client_credentials
         authorities: scim.userids
-      (( cc_routing_credentials.identity )):
+      (( .uaa.cc_routing_credentials.identity )):
         authorities: routing.router_groups.read
         authorized-grant-types: client_credentials
-        secret: (( cc_routing_credentials.password ))
+        secret: (( .uaa.cc_routing_credentials.password ))
       ssh-proxy:
         authorized-grant-types: authorization_code
         autoapprove: true
@@ -338,8 +338,8 @@ manifest: |
         scope: openid,cloud_controller.read,cloud_controller.write,cloud_controller.admin
         secret: (( .uaa.ssh_proxy_client_credentials.password ))
       apps_metrics:
-        id: (( apps_metrics_credentials.identity ))
-        secret: (( apps_metrics_credentials.password ))
+        id: (( .uaa.apps_metrics_credentials.identity ))
+        secret: (( .uaa.apps_metrics_credentials.password ))
         override: true
         autoapprove: true
         authorized-grant-types: authorization_code,refresh_token,client_credentials,password
@@ -349,8 +349,8 @@ manifest: |
         access-token-validity: 900
         refresh-token-validity: 2628000
       apps_metrics_processing:
-        id: (( apps_metrics_processing_credentials.identity ))
-        secret: (( apps_metrics_processing_credentials.password ))
+        id: (( .uaa.apps_metrics_processing_credentials.identity ))
+        secret: (( .uaa.apps_metrics_processing_credentials.password ))
         override: true
         authorized-grant-types: authorization_code,client_credentials,refresh_token
         authorities: oauth.login,doppler.firehose,cloud_controller.admin,uaa.resource
@@ -358,8 +358,8 @@ manifest: |
         access-token-validity: 1209600
         redirect-uri: "https://metrics.(( .cloud_controller.system_domain.value ))"
       healthwatch_ui:
-        id: "(( healthwatch_ui_credentials.identity ))"
-        secret: "(( healthwatch_ui_credentials.password ))"
+        id: "(( .uaa.healthwatch_ui_credentials.identity ))"
+        secret: "(( .uaa.healthwatch_ui_credentials.password ))"
         override: true
         authorized-grant-types: authorization_code,password,implicit,refresh_token
         authorities: uaa.resource
@@ -369,31 +369,31 @@ manifest: |
         autoapprove: true
         refresh-token-validity: 2628000
       healthwatch_firehose:
-        id: "(( healthwatch_firehose_credentials.identity ))"
-        secret: "(( healthwatch_firehose_credentials.password ))"
+        id: "(( .uaa.healthwatch_firehose_credentials.identity ))"
+        secret: "(( .uaa.healthwatch_firehose_credentials.password ))"
         authorized-grant-types: client_credentials,refresh_token
         authorities: oauth.login,doppler.firehose,cloud_controller.read,uaa.resource,cloud_controller.admin
         scope: openid,oauth.approvals,doppler.firehose,cloud_controller.admin
         access-token-validity: 3600
       tcp_router:
-        id: (( tcp_router_credentials.identity ))
-        secret: (( tcp_router_credentials.password ))
+        id: (( .uaa.tcp_router_credentials.identity ))
+        secret: (( .uaa.tcp_router_credentials.password ))
         override: true
         authorized-grant-types: client_credentials,refresh_token
         authorities: routing.routes.read,routing.router_groups.read
         scope: routing.routes.read,routing.router_groups.read
         access-token-validity: 1209600
       tcp_emitter:
-        id: (( tcp_emitter_credentials.identity ))
-        secret: (( tcp_emitter_credentials.password ))
+        id: (( .uaa.tcp_emitter_credentials.identity ))
+        secret: (( .uaa.tcp_emitter_credentials.password ))
         override: true
         authorized-grant-types: client_credentials,refresh_token
         authorities: routing.routes.write,routing.routes.read,routing.router_groups.read
         scope: routing.routes.write,routing.routes.read,routing.router_groups.read
         access-token-validity: 1209600
       pivotal_account:
-        id: (( pivotal_account_client_credentials.identity ))
-        secret: (( pivotal_account_client_credentials.password ))
+        id: (( .uaa.pivotal_account_client_credentials.identity ))
+        secret: (( .uaa.pivotal_account_client_credentials.password ))
         scope: openid,password.write,oauth.approvals
         authorities: uaa.resource,idps.read,clients.read,scim.read,scim.create,scim.write,emails.write,oauth.login,notification_templates.write,notifications.manage,notification_templates.read,uaa.admin
         authorized-grant-types: client_credentials,authorization_code
@@ -403,8 +403,8 @@ manifest: |
         override: true
         redirect-uri: https://account.(( .cloud_controller.system_domain.value ))/**
       concourse_atc:
-        id: (( concourse_atc_client_credentials.identity ))
-        secret: (( concourse_atc_client_credentials.password ))
+        id: (( .uaa.concourse_atc_client_credentials.identity ))
+        secret: (( .uaa.concourse_atc_client_credentials.password ))
         scope: cloud_controller.read
         authorities: cloud_controller.admin
         authorized-grant-types: "authorization_code,client_credentials,refresh_token"
@@ -414,8 +414,8 @@ manifest: |
         override: true
         redirect-uri: "https://p-concourse.(( .cloud_controller.system_domain.value ))/auth/uaa/callback"
       push-notifications-dashboard:
-        id: (( push_notifications_dashboard_client.identity ))
-        secret: (( push_notifications_dashboard_client.password ))
+        id: (( .uaa.push_notifications_dashboard_client.identity ))
+        secret: (( .uaa.push_notifications_dashboard_client.password ))
         scope: cloud_controller.read,cloud_controller.write,openid
         authorities: scim.read
         authorized-grant-types: "refresh_token,client_credentials,authorization_code"
@@ -423,44 +423,44 @@ manifest: |
         autoapprove: true
         redirect-uri: "https://push.(( .cloud_controller.system_domain.value ))/auth/cloudfoundry/callback"
       push-api:
-        id: (( push_api_client.identity ))
-        secret: (( push_api_client.password ))
+        id: (( .uaa.push_api_client.identity ))
+        secret: (( .uaa.push_api_client.password ))
         scope: uaa.none
         authorities: uaa.resource
         authorized-grant-types: client_credentials
       solace_router:
-        id: (( solace_router_client_credentials.identity ))
-        secret: (( solace_router_client_credentials.password ))
+        id: (( .uaa.solace_router_client_credentials.identity ))
+        secret: (( .uaa.solace_router_client_credentials.password ))
         scope: "uaa.none"
         authorities: "routing.routes.read,routing.routes.write,routing.router_groups.read,cloud_controller.read,cloud_controller.write,cloud_controller.admin"
         authorized-grant-types: "refresh_token,client_credentials"
       greenplum_broker:
-        id: (( greenplum_broker_client_credentials.identity ))
-        secret: (( greenplum_broker_client_credentials.password ))
+        id: (( .uaa.greenplum_broker_client_credentials.identity ))
+        secret: (( .uaa.greenplum_broker_client_credentials.password ))
         scope: "uaa.none"
         authorities: "cloud_controller.read"
         authorized-grant-types: "refresh_token,client_credentials"
       greenplum_router_admin:
-        id: (( greenplum_router_admin_client_credentials.identity ))
-        secret: (( greenplum_router_admin_client_credentials.password ))
+        id: (( .uaa.greenplum_router_admin_client_credentials.identity ))
+        secret: (( .uaa.greenplum_router_admin_client_credentials.password ))
         scope: "uaa.none"
         authorities: "cloud_controller.admin,routing.router_groups.read"
         authorized-grant-types: "refresh_token,client_credentials"
       greenplum_router:
-        id: (( greenplum_router_client_credentials.identity ))
-        secret: (( greenplum_router_client_credentials.password ))
+        id: (( .uaa.greenplum_router_client_credentials.identity ))
+        secret: (( .uaa.greenplum_router_client_credentials.password ))
         scope: "uaa.none"
         authorities: "routing.routes.write"
         authorized-grant-types: "refresh_token,client_credentials"
       cloudcache_broker:
-        id: (( cloudcache_broker_client_credentials.identity ))
-        secret: (( cloudcache_broker_client_credentials.password ))
+        id: (( .uaa.cloudcache_broker_client_credentials.identity ))
+        secret: (( .uaa.cloudcache_broker_client_credentials.password ))
         scope: "uaa.none"
         authorities: "cloud_controller.admin"
         authorized-grant-types: "refresh_token,client_credentials"
       dedicated-mysql-notifications:
-        id: (( dedicated_mysql_notifications_client_credentials.identity ))
-        secret: (( dedicated_mysql_notifications_client_credentials.password ))
+        id: (( .uaa.dedicated_mysql_notifications_client_credentials.identity ))
+        secret: (( .uaa.dedicated_mysql_notifications_client_credentials.password ))
         scope: "uaa.none"
         authorities: "notifications.write"
         authorized-grant-types: "client_credentials"

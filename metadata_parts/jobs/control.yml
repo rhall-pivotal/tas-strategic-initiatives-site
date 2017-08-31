@@ -13,21 +13,25 @@ templates:
 - policy-server
 - silk-controller
 - syslog_forwarder
+- consul_agent_uaa
+- uaa
+- route_registrar_uaa
+- statsd_injector
 resource_definitions:
 - name: ram
   type: integer
   label: RAM
   configurable: true
-  default: 1024
+  default: 4096
   constraints:
     min: 1024
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 2048
+  default: 32768
   constraints:
-    min: 1024
+    min: 2048
 - name: persistent_disk
   type: integer
   label: Persistent Disk
@@ -37,7 +41,7 @@ resource_definitions:
   type: integer
   label: CPU
   configurable: true
-  default: 1
+  default: 2
   constraints:
     min: 1
 static_ip: 0
