@@ -1,0 +1,24 @@
+---
+name: route_registrar
+release: routing
+manifest: |
+  route_registrar:
+    routes:
+    - name: uaa
+      port: 8080
+      registration_interval: 4s
+      uris:
+      - "uaa.(( .cloud_controller.system_domain.value ))"
+      - "*.uaa.(( .cloud_controller.system_domain.value ))"
+      - "login.(( .cloud_controller.system_domain.value ))"
+      - "*.login.(( .cloud_controller.system_domain.value ))"
+      health_check:
+        name: uaa-healthcheck
+        script_path: /var/vcap/jobs/uaa/bin/health_check
+    - name: network-policy-server
+      port: 4002
+      registration_interval: 20s
+      tags:
+        component: NetworkPolicyServer
+      uris:
+      - "api.(( .cloud_controller.system_domain.value ))/networking"
