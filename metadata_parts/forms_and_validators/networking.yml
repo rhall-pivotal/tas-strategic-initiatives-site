@@ -83,6 +83,24 @@ form:
         - reference: .properties.routing_minimum_tls_version.tls_v1_2
           label: TLSv1.2
 
+    - reference: .properties.gorouter_ssl_ciphers
+      label: TLS Cipher Suites for Router
+      description: |
+        An ordered, colon-delimited list of Golang supported TLS cipher suites
+        in OpenSSL format. The recommended setting is
+        "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384".
+        Operators should verify that these are supported by any clients or
+        downstream components that will initiate TLS handshakes with the Router.
+
+    - reference: .properties.haproxy_ssl_ciphers
+      label: TLS Cipher Suites for HAProxy
+      description: |
+        An ordered, colon-delimited list of TLS cipher suites in OpenSSL format.
+        The recommended setting is
+        "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384".
+        Operators should verify that these are supported by any clients or downstream
+        components that will initiate TLS handshakes with the HAProxy.
+
     - reference: .properties.haproxy_forward_tls
       label: |
         HAProxy forwards requests to Router over TLS. When enabled, HAProxy
@@ -105,24 +123,6 @@ form:
         - reference: .properties.haproxy_forward_tls.disable
           label: Disable
 
-    - reference: .properties.gorouter_ssl_ciphers
-      label: TLS Cipher Suites for Router
-      description: |
-        An ordered, colon-delimited list of Golang supported TLS cipher suites
-        in OpenSSL format. The recommended setting is
-        "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384".
-        Operators should verify that these are supported by any clients or
-        downstream components that will initiate TLS handshakes with the Router.
-
-    - reference: .properties.haproxy_ssl_ciphers
-      label: TLS Cipher Suites for HAProxy
-      description: |
-        An ordered, colon-delimited list of TLS cipher suites in OpenSSL format.
-        The recommended setting is
-        "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384".
-        Operators should verify that these are supported by any clients or downstream
-        components that will initiate TLS handshakes with the HAProxy.
-
     - reference: .ha_proxy.skip_cert_verify
       label: Disable SSL certificate verification for this environment
       description: |
@@ -132,13 +132,6 @@ form:
     - reference: .properties.routing_disable_http
       label: Disable HTTP on HAProxy and Gorouter
       description: When checked, HAProxy and Gorouter will not listen on port 80.
-
-    - reference: .properties.haproxy_max_buffer_size
-      label: HAProxy Request Max Buffer Size
-      description: |
-        Buffer size (in bytes) to use for requests, any requests larger
-        than this (large cookies or query strings) will result in a
-        gateway error. The default value is 16384.
 
     - reference: .router.disable_insecure_cookies
       label: Disable insecure cookies on the Router
@@ -152,6 +145,16 @@ form:
         If checked, the router will include Zipkin tracing headers on all
         incoming requests.
 
+    - reference: .router.enable_isolated_routing
+      label: |
+        Routers reject requests for Isolation Segments
+      description: |
+        When disabled, routers of Elastic Runtime support applications deployed
+        to Isolation Segments. When enabled, routers will reject requests for
+        Isolation Segments, isolating the network for those applications.
+        Do not enable this option without deploying routers for each
+        Isolation Segment first.
+
     - reference: .properties.router_forward_client_cert
       label: |
         Configure the CF Router support for the X-Forwarded-Client-Cert header.
@@ -161,17 +164,17 @@ form:
         by applications to verify the requester via mutual TLS.
       selector_property_inputs:
         - reference: .properties.router_forward_client_cert.always_forward
-          label: Always forward the XFCC header in the request, regardless of whether the client connection is mTLS
+          label: |
+            Always forward the XFCC header in the request, regardless of
+            whether the client connection is mTLS
         - reference: .properties.router_forward_client_cert.forward
-          label: Forward the XFCC header received from the client only when the client connection is mTLS
+          label: |
+            Forward the XFCC header received from the client only when the
+            client connection is mTLS
         - reference: .properties.router_forward_client_cert.sanitize_set
-          label: Strip the XFCC header when present and set it to the client certificate from the mTLS handshake
-
-    - reference: .properties.router_backend_max_conn
-      label: Max Connections Per Backend
-      description: |
-        Maximum concurrent TCP connections per backend for each instance of
-        the Router. A value of 0 means unlimited.
+          label: |
+            Strip the XFCC header when present and set it to the client
+            certificate from the mTLS handshake
 
     - reference: .properties.route_services
       label: |
@@ -184,17 +187,20 @@ form:
         - reference: .properties.route_services.disable
           label: Disable route services
 
-    - reference: .properties.logger_endpoint_port
-      label: Loggregator Port
+    - reference: .properties.router_backend_max_conn
+      label: Max Connections Per Backend
       description: |
-        Default is 443. Enter a new value to override the default, for instance
-        if port 443 on your load balancer is used for other traffic.
+        Maximum concurrent TCP connections per backend for each instance of
+        the Router. A value of 0 means unlimited.
 
-    - reference: .diego_cell.garden_network_mtu
-      label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
+    - reference: .router.max_idle_connections
+      label: Router Max Idle Keepalive Connections
       description: |
-        The default 1454 bytes is fine for most cases, but you might need less,
-        such as for networks that use GRE tunnels.
+        Max number of idle keepalive connections maintained by Gorouter to all
+        backends. The default value of 0 disables keepalive support. The max
+        number of idle connections per backend is 100; this limit takes
+        precedent if concurrent requests per backend is greater than 100 and
+        total concurrent requests is less than Max Idle Keepalive Connections.
 
     - reference: .router.request_timeout_in_seconds
       label: Router Timeout to Backends (in seconds)
@@ -220,20 +226,78 @@ form:
         router instance started. This allows an external load balancer time to
         register the instance as healthy.
 
-    - reference: .router.max_idle_connections
-      label: Router Max Idle Keepalive Connections
-      description: |
-        Max number of idle keepalive connections maintained by Gorouter to all
-        backends. The default value of 0 disables keepalive support. The max
-        number of idle connections per backend is 100; this limit takes
-        precedent if concurrent requests per backend is greater than 100 and
-        total concurrent requests is less than Max Idle Keepalive Connections.
-
     - reference: .router.extra_headers_to_log
       label: HTTP Headers to Log
       description: |
         A comma-separated list of HTTP headers that will annotate access log
         events on the GoRouter.
+
+    - reference: .properties.haproxy_max_buffer_size
+      label: HAProxy Request Max Buffer Size
+      description: |
+        Buffer size (in bytes) to use for requests, any requests larger
+        than this (large cookies or query strings) will result in a
+        gateway error. The default value is 16384.
+
+    - reference: .ha_proxy.internal_only_domains
+      label: HAProxy Protected Domains
+      description: |
+        A comma-separated list of domains to protect from requests from unknown
+        sources. Use this property in conjunction with "Trusted CIDRs" to
+        protect these domains from requests from unknown sources.
+
+    - reference: .ha_proxy.trusted_domain_cidrs
+      label: HAProxy Trusted CIDRs
+      description: |
+        A space-separated list of CIDRs allowed to make requests to the domains
+        listed in the "Protected Domains" field. For example, specifying
+        10.0.1.0/24 would allow any requests originating at a host IP in that
+        range to reach applications or services hosted on the "Protected
+        Domains" list.
+
+    - reference: .diego_cell.garden_network_mtu
+      label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
+      description: |
+        The default 1454 bytes is fine for most cases, but you might need less,
+        such as for networks that use GRE tunnels.
+
+    - reference: .properties.logger_endpoint_port
+      label: Loggregator Port
+      description: |
+        Default is 443. Enter a new value to override the default, for instance
+        if port 443 on your load balancer is used for other traffic.
+
+    - reference: .properties.container_networking_network_cidr
+      label: |
+        Overlay Subnet (Only change this is you need to avoid address
+        collision with a third-party service on the same subnet.)
+      description: |
+        Defines the range of the overlay network and must specify a RFC
+        1918 range. Defaults to 10.255.0.0/16.
+      placeholder: 10.255.0.0/16
+
+    - reference: .properties.container_networking_vtep_port
+      label: VXLAN Tunnel Endpoint Port
+      description: |
+        Host port used for receiving VXLAN packets. Defaults to 4789.
+
+    - reference: .properties.container_networking_log_traffic
+      label: "Log traffic for all accepted/denied application packets."
+      selector_property_inputs:
+        - reference: .properties.container_networking_log_traffic.enable
+          label: Enable (will increase log volume)
+          property_inputs:
+            - reference: .properties.container_networking_log_traffic.enable.iptables_denied_logs_per_sec
+              label: Denied logging interval (packets/second)
+              description: |
+                Denied traffic logging is rate limited. Override the default of 1 packet/second.
+            - reference: .properties.container_networking_log_traffic.enable.iptables_accepted_udp_logs_per_sec
+              label: UDP logging interval (packets/second)
+              description: |
+                UDP traffic logging is rate limited. Override the default of 100 packets/second.
+
+        - reference: .properties.container_networking_log_traffic.disable
+          label: Disable
 
     - reference: .properties.tcp_routing
       label: |
@@ -262,53 +326,3 @@ form:
                 number. This configuration only applies the first time you
                 specify it here, if you later want to update the ports you must
                 do so with the CF CLI.
-
-    - reference: .properties.container_networking_network_cidr
-      label: |
-        Overlay Subnet (Only change this is you need to avoid address
-        collision with a third-party service on the same subnet.)
-      description: |
-        Defines the range of the overlay network and must specify a RFC
-        1918 range. Defaults to 10.255.0.0/16.
-      placeholder: 10.255.0.0/16
-
-    - reference: .properties.container_networking_vtep_port
-      label: VXLAN Tunnel Endpoint Port
-      description: |
-        Host port used for receiving VXLAN packets. Defaults to 4789.
-
-    - reference: .router.enable_isolated_routing
-      label: |
-        Routers reject requests for Isolation Segments
-      description: |
-        When disabled, routers of Elastic Runtime support applications deployed
-        to Isolation Segments. When enabled, routers will reject requests for
-        Isolation Segments, isolating the network for those applications.
-        Do not enable this option without deploying routers for each
-        Isolation Segment first.
-
-    - reference: .ha_proxy.internal_only_domains
-      label: Protected Domains
-      description: 'A comma-separated list of domains to protect from requests from unknown sources. Use this property in conjunction with "Trusted CIDRs" to protect these domains from requests from unknown sources.'
-
-    - reference: .ha_proxy.trusted_domain_cidrs
-      label: Trusted CIDRs
-      description: 'A space-separated list of CIDRs allowed to make requests to the domains listed in the "Protected Domains" field. For example, specifying 10.0.1.0/24 would allow any requests originating at a host IP in that range to reach applications or services hosted on the "Protected Domains" list.'
-
-    - reference: .properties.container_networking_log_traffic
-      label: "Log traffic for all accepted/denied application packets."
-      selector_property_inputs:
-        - reference: .properties.container_networking_log_traffic.enable
-          label: Enable (will increase log volume)
-          property_inputs:
-            - reference: .properties.container_networking_log_traffic.enable.iptables_denied_logs_per_sec
-              label: Denied logging interval (packets/second)
-              description: |
-                Denied traffic logging is rate limited. Override the default of 1 packet/second.
-            - reference: .properties.container_networking_log_traffic.enable.iptables_accepted_udp_logs_per_sec
-              label: UDP logging interval (packets/second)
-              description: |
-                UDP traffic logging is rate limited. Override the default of 100 packets/second.
-
-        - reference: .properties.container_networking_log_traffic.disable
-          label: Disable
