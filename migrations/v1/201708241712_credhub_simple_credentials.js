@@ -1,6 +1,11 @@
 exports.migrate = function(input) {
 
   input.variable_migrations.push({
+    from: input.properties['.mysql.app_usage_credentials'],
+    to_variable: 'app-usage-db-credentials'
+  });
+
+  input.variable_migrations.push({
     from: input.properties['.mysql.autoscale_credentials'],
     to_variable: 'autoscale-db-credentials'
   });
@@ -85,6 +90,51 @@ exports.migrate = function(input) {
   input.variable_migrations.push({
     from: input.properties['.mysql.uaadb_credentials'],
     to_variable: 'uaa-db-credentials'
+  });
+
+  input.variable_migrations.push({
+    from: input.properties['.cloud_controller.bulk_api_credentials'],
+    to_variable: 'cloud-controller-bulk-api-credentials'
+  });
+
+  input.variable_migrations.push({
+    from: input.properties['.cloud_controller.internal_api_user_credentials'],
+    to_variable: 'cloud-controller-internal-api-user-credentials'
+  });
+
+  input.variable_migrations.push({
+    from: input.properties['.cloud_controller.staging_upload_credentials'],
+    to_variable: 'cloud-controller-staging-upload-credentials'
+  });
+
+  input.variable_migrations.push({
+    from: input.properties['.mysql.mysql_admin_credentials'],
+    to_variable: 'mysql-admin-credentials'
+  });
+
+  input.variable_migrations.push({
+    from: input.properties['.mysql.cluster_health_user'],
+    to_variable: 'mysql-cluster-health-credentials'
+  });
+
+  input.variable_migrations.push({
+    from: input.properties['.mysql.galera_sidecar_user'],
+    to_variable: 'mysql-galera-sidecar-credentials'
+  });
+
+  input.variable_migrations.push({
+    from: input.properties['.mysql_proxy.dashboard_credentials'],
+    to_variable: 'mysql-proxy-dashboard-credentials'
+  });
+
+  input.variable_migrations.push({
+    from: input.properties['.router.status_credentials'],
+    to_variable: 'router-status-credentials'
+  });
+
+  input.variable_migrations.push({
+    from: input.properties['.nfs_server.blobstore_credentials'],
+    to_variable: 'webdav-blobstore-credentials'
   });
 
   return input;

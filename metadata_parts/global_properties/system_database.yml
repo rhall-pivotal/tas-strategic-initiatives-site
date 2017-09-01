@@ -130,8 +130,8 @@ property_blueprints:
         - name: push-app-usage-service
           manifest: |
             port: 3306
-            username: (( .mysql.app_usage_credentials.identity ))
-            password: (( .mysql.app_usage_credentials.password ))
+            username: ((( app-usage-db-credentials.username )))
+            password: ((( app-usage-db-credentials.password )))
             name: (( .properties.app_usage_service_database_name.value ))
         - name: push_app_usage_service_db_link
           manifest: |

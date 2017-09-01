@@ -23,8 +23,8 @@ manifest: |
     extra_headers_to_log: (( .router.extra_headers_to_log.parsed_strings ))
     routing_table_sharding_mode: '(( enable_isolated_routing.value ? "shared-and-segments" : "all" ))'
     status:
-      user: router_status
-      password: (( status_credentials.password ))
+      user: ((( router-status-credentials.username )))
+      password: ((( router-status-credentials.password )))
     cipher_suites: (( .properties.gorouter_ssl_ciphers.value ))
     disable_http: (( .properties.routing_disable_http.value ))
     enable_ssl: true

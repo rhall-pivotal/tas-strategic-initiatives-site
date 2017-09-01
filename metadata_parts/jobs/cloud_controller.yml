@@ -62,14 +62,6 @@ instance_definition:
   constraints:
     min: 1
 property_blueprints:
-- name: staging_upload_credentials
-  type: simple_credentials
-  default:
-    identity: staging_upload_user
-- name: bulk_api_credentials
-  type: simple_credentials
-  default:
-    identity: bulk_api
 - name: db_encryption_credentials
   type: simple_credentials
   default:
@@ -147,8 +139,6 @@ property_blueprints:
   type: boolean
   configurable: true
   default: true
-- name: internal_api_user_credentials
-  type: simple_credentials
 - name: security_event_logging_enabled
   type: boolean
   configurable: true

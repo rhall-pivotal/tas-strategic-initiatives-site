@@ -12,8 +12,8 @@ property_blueprints:
             manifest: |
               blobstore_type: webdav
               webdav_config:
-                username: (( .nfs_server.blobstore_credentials.identity ))
-                password: (( .nfs_server.blobstore_credentials.password ))
+                username: ((( webdav-blobstore-credentials.username )))
+                password: ((( webdav-blobstore-credentials.password )))
                 public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
                 ca_cert: (( $ops_manager.ca_certificate ))
           - name: ccdroplet
@@ -21,8 +21,8 @@ property_blueprints:
               max_staged_droplets_stored: 2
               blobstore_type: webdav
               webdav_config:
-                username: (( .nfs_server.blobstore_credentials.identity ))
-                password: (( .nfs_server.blobstore_credentials.password ))
+                username: ((( webdav-blobstore-credentials.username )))
+                password: ((( webdav-blobstore-credentials.password )))
                 public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
                 ca_cert: (( $ops_manager.ca_certificate ))
           - name: ccpackage
@@ -30,16 +30,16 @@ property_blueprints:
               max_package_size: 2147483648
               blobstore_type: webdav
               webdav_config:
-                username: (( .nfs_server.blobstore_credentials.identity ))
-                password: (( .nfs_server.blobstore_credentials.password ))
+                username: ((( webdav-blobstore-credentials.username )))
+                password: ((( webdav-blobstore-credentials.password )))
                 public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
                 ca_cert: (( $ops_manager.ca_certificate ))
           - name: ccresource
             manifest: |
               blobstore_type: webdav
               webdav_config:
-                username: (( .nfs_server.blobstore_credentials.identity ))
-                password: (( .nfs_server.blobstore_credentials.password ))
+                username: ((( webdav-blobstore-credentials.username )))
+                password: ((( webdav-blobstore-credentials.password )))
                 public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
                 ca_cert: (( $ops_manager.ca_certificate ))
       - name: external

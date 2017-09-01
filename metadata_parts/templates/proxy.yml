@@ -8,8 +8,8 @@ manifest: |
   cf_mysql:
     proxy:
       api_uri: proxy-p-mysql-ert.(( .cloud_controller.system_domain.value ))
-      api_password: (( .mysql_proxy.dashboard_credentials.password ))
-      api_username: (( .mysql_proxy.dashboard_credentials.identity ))
+      api_password: ((( mysql-proxy-dashboard-credentials.password )))
+      api_username: ((( mysql-proxy-dashboard-credentials.username )))
       consul_enabled: true
       startup_delay: (( .mysql_proxy.startup_delay.value ))
       shutdown_delay: (( .mysql_proxy.shutdown_delay.value ))

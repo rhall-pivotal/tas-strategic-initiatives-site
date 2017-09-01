@@ -10,11 +10,13 @@ manifest: |
     droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
     packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
     resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
-    bulk_api_password: (( .cloud_controller.bulk_api_credentials.password ))
+    bulk_api_password: ((( cloud-controller-bulk-api-credentials.password )))
     db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
     allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
-    staging_upload_password: (( .cloud_controller.staging_upload_credentials.password ))
-    internal_api_user: (( .cloud_controller.internal_api_user_credentials.identity ))
+    internal_api_user: ((( cloud-controller-internal-api-user-credentials.username )))
+    internal_api_password: ((( cloud-controller-internal-api-user-credentials.password )))
+    staging_upload_user: ((( cloud-controller-staging-upload-credentials.username )))
+    staging_upload_password: ((( cloud-controller-staging-upload-credentials.password )))
     perform_blob_cleanup: true
     default_running_security_groups:
     - default_security_group
@@ -34,8 +36,6 @@ manifest: |
     - default_security_group
     default_app_ssh_access: (( .cloud_controller.default_app_ssh_access.value ))
     logging_level: debug
-    staging_upload_user: (( .cloud_controller.staging_upload_credentials.identity ))
-    internal_api_password: (( .cloud_controller.internal_api_user_credentials.password ))
     quota_definitions:
       default:
         memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))

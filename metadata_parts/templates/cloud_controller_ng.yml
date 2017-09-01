@@ -44,12 +44,11 @@ manifest: |
     - name: windows2016
       description: Microsoft Windows 2016
     min_cli_version: 6.23.0
-    bulk_api_password: (( bulk_api_credentials.password ))
+    bulk_api_password: ((( cloud-controller-bulk-api-credentials.password )))
     default_running_security_groups:
     - default_security_group
     allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
     default_app_disk_in_mb: (( default_disk_quota_app.value ))
-    internal_api_password: (( internal_api_user_credentials.password ))
     app_bits_max_body_size: "(( max_file_size.value ))M"
     db_encryption_key: (( encrypt_key.value || db_encryption_credentials.password ))
     maximum_health_check_timeout: 600
@@ -60,7 +59,6 @@ manifest: |
         destination: 0.0.0.0-169.253.255.255
       - protocol: all
         destination: 169.255.0.0-255.255.255.255
-    staging_upload_user: (( staging_upload_credentials.identity ))
     default_app_ssh_access: (( default_app_ssh_access.value ))
     min_recommended_cli_version: 6.23.0
     security_event_logging:
@@ -103,9 +101,11 @@ manifest: |
     - https://metrics.(( .cloud_controller.system_domain.value ))
     maximum_app_disk_in_mb: (( max_disk_quota_app.value ))
     default_app_memory: (( default_app_memory.value ))
-    internal_api_user: (( internal_api_user_credentials.identity ))
+    internal_api_user: ((( cloud-controller-internal-api-user-credentials.username )))
+    internal_api_password: ((( cloud-controller-internal-api-user-credentials.password )))
+    staging_upload_user: ((( cloud-controller-staging-upload-credentials.username )))
+    staging_upload_password: ((( cloud-controller-staging-upload-credentials.password )))
     logging_level: debug
-    staging_upload_password: (( staging_upload_credentials.password ))
     volume_services_enabled: true
     default_staging_security_groups:
     - default_security_group

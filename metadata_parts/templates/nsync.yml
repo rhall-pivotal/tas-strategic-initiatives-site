@@ -10,8 +10,8 @@ manifest: |
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       cc:
         base_url: http://cloud-controller-ng.service.cf.internal:9022
-        basic_auth_username: (( .cloud_controller.internal_api_user_credentials.identity ))
-        basic_auth_password: (( .cloud_controller.internal_api_user_credentials.password ))
+        basic_auth_username: ((( cloud-controller-internal-api-user-credentials.username )))
+        basic_auth_password: ((( cloud-controller-internal-api-user-credentials.password )))
       lifecycle_bundles:
       - "buildpack/cflinuxfs2:buildpack_app_lifecycle/buildpack_app_lifecycle.tgz"
       - "buildpack/windows2012R2:windows_app_lifecycle/windows_app_lifecycle.tgz"
