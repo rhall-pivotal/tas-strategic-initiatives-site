@@ -6,13 +6,6 @@ form:
     Configure security and routing services for your isolation segment.
 
   property_inputs:
-  - reference: .isolated_diego_cell.garden_network_mtu
-    label: |
-      Applications Network Maximum Transmission Unit (MTU) (in bytes)
-    description: |
-      The default 1454 bytes is fine for most cases, but you might need less,
-      such as for networks that use GRE tunnels.
-
   - reference: .isolated_router.static_ips
     label: Router IPs
     description: |
@@ -24,45 +17,6 @@ form:
       load balancer assignment is supported (AWS, GCP, Azure), this field can
       be left blank and the "Load Balancers" field on the "Resource Config"
       tab can be filled out with the correct load balancer assignment.
-
-  - reference: .isolated_router.request_timeout_in_seconds
-    label: Router Timeout to Backends (in seconds)
-    description: |
-      Timeout for connections from Router (and HAProxy, if you use it) to
-      applications and system components. Increase this to accommodate larger
-      uploads over connections with high latency.
-
-  - reference: .isolated_router.max_idle_connections
-    label: Router Max Idle Keepalive Connections
-    description: |
-      Max number of idle keepalive connections maintained by Gorouter to all
-      backends. The default value of 0 disables keepalive support. The max
-      number of idle connections per backend is 100; this limit takes precedent
-      if concurrent requests per backend is greater than 100 and total
-      concurrent requests is less than Max Idle Keepalive Connections.
-
-  - reference: .isolated_router.extra_headers_to_log
-    label: HTTP Headers to Log
-    description: |
-      A comma-separated list of HTTP headers that will annotate access log
-      events on the GoRouter.
-
-  - reference: .isolated_router.drain_wait
-    label: Load Balancer Unhealthy Threshold
-    description: |
-      Specifies the amount of time, in seconds, that the Router will continue
-      to accept connections before shutting down. During this period the
-      healthcheck will report unhealthy to cause load balancers to fail over
-      to other Routers. This value should be greater than or equal to the max
-      time it could take your load balancer to consider a Router instance
-      unhealthy, given contiguous failed healthchecks.
-
-  - reference: .isolated_router.lb_healthy_threshold
-    label: Load Balancer Healthy Threshold
-    description: |
-      Specifies the amount of time, in seconds, to wait until declaring the
-      router instance started. This allows an external load balancer time to
-      register the instance as healthy.
 
   - reference: .isolated_ha_proxy.static_ips
     label: HAProxy IPs
@@ -109,6 +63,24 @@ form:
       - reference: .properties.routing_minimum_tls_version.tls_v1_2
         label: TLSv1.2
 
+  - reference: .properties.gorouter_ssl_ciphers
+    label: TLS Cipher Suites for Router
+    description: |
+      An ordered, colon-delimited list of Golang supported TLS cipher suites
+      in OpenSSL format. The recommended setting is
+      "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384".
+      Operators should verify that these are supported by any clients or
+      downstream components that will initiate TLS handshakes with the Router.
+
+  - reference: .properties.haproxy_ssl_ciphers
+    label: TLS Cipher Suites for HAProxy
+    description: |
+      An ordered, colon-delimited list of TLS cipher suites in OpenSSL format.
+      The recommended setting is
+      "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384".
+      Operators should verify that these are supported by any clients or downstream
+      components that will initiate TLS handshakes with the HAProxy.
+
   - reference: .properties.haproxy_forward_tls
     label: |
       HAProxy forwards requests to Router over TLS. When enabled, HAProxy
@@ -131,24 +103,6 @@ form:
       - reference: .properties.haproxy_forward_tls.disable
         label: Disable
 
-  - reference: .properties.gorouter_ssl_ciphers
-    label: TLS Cipher Suites for Router
-    description: |
-      An ordered, colon-delimited list of Golang supported TLS cipher suites
-      in OpenSSL format. The recommended setting is
-      "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384".
-      Operators should verify that these are supported by any clients or
-      downstream components that will initiate TLS handshakes with the Router.
-
-  - reference: .properties.haproxy_ssl_ciphers
-    label: TLS Cipher Suites for HAProxy
-    description: |
-      An ordered, colon-delimited list of TLS cipher suites in OpenSSL format.
-      The recommended setting is
-      "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384".
-      Operators should verify that these are supported by any clients or downstream
-      components that will initiate TLS handshakes with the HAProxy.
-
   - reference: .properties.skip_cert_verify
     label: Disable SSL certificate verification for this environment
     description: |
@@ -158,13 +112,6 @@ form:
   - reference: .properties.routing_disable_http
     label: Disable HTTP on HAProxy and Gorouter
     description: When checked, HAProxy and Gorouter will not listen on port 80.
-
-  - reference: .properties.haproxy_max_buffer_size
-    label: HAProxy Request Max Buffer Size
-    description: |
-      Buffer size (in bytes) to use for requests, any requests larger
-      than this (large cookies or query strings) will result in a
-      gateway error. The default value is 16384.
 
   - reference: .isolated_router.disable_insecure_cookies
     label: Disable insecure cookies on the Router
@@ -178,8 +125,81 @@ form:
       If checked, the router will include Zipkin tracing headers on all
       incoming requests.
 
+  - reference: .properties.router_forward_client_cert
+    label: |
+      Configure the CF Router support for the X-Forwarded-Client-Cert header.
+      Setting this field to an option other than "Always forward" will
+      change the behavior for how the Router handles the
+      x-forwarded-client-cert (XFCC) HTTP header. This header can be used
+      by applications to verify the requester via mutual TLS.
+    selector_property_inputs:
+      - reference: .properties.router_forward_client_cert.always_forward
+        label: |
+          Always forward the XFCC header in the request, regardless of whether
+          the client connection is mTLS
+      - reference: .properties.router_forward_client_cert.forward
+        label: |
+          Forward the XFCC header received from the client only when the client
+          connection is mTLS
+      - reference: .properties.router_forward_client_cert.sanitize_set
+        label: |
+          Strip the XFCC header when present and set it to the client
+          certificate from the mTLS handshake
+
+  - reference: .properties.router_backend_max_conn
+    label: Max Connections Per Backend
+    description: |
+      Maximum concurrent TCP connections per backend for each instance of
+      the Router. A value of 0 means unlimited.
+
+  - reference: .isolated_router.max_idle_connections
+    label: Router Max Idle Keepalive Connections
+    description: |
+      Max number of idle keepalive connections maintained by Gorouter to all
+      backends. The default value of 0 disables keepalive support. The max
+      number of idle connections per backend is 100; this limit takes precedent
+      if concurrent requests per backend is greater than 100 and total
+      concurrent requests is less than Max Idle Keepalive Connections.
+
+  - reference: .isolated_router.request_timeout_in_seconds
+    label: Router Timeout to Backends (in seconds)
+    description: |
+      Timeout for connections from Router (and HAProxy, if you use it) to
+      applications and system components. Increase this to accommodate larger
+      uploads over connections with high latency.
+
+  - reference: .isolated_router.drain_wait
+    label: Load Balancer Unhealthy Threshold
+    description: |
+      Specifies the amount of time, in seconds, that the Router will continue
+      to accept connections before shutting down. During this period the
+      healthcheck will report unhealthy to cause load balancers to fail over
+      to other Routers. This value should be greater than or equal to the max
+      time it could take your load balancer to consider a Router instance
+      unhealthy, given contiguous failed healthchecks.
+
+  - reference: .isolated_router.lb_healthy_threshold
+    label: Load Balancer Healthy Threshold
+    description: |
+      Specifies the amount of time, in seconds, to wait until declaring the
+      router instance started. This allows an external load balancer time to
+      register the instance as healthy.
+
+  - reference: .isolated_router.extra_headers_to_log
+    label: HTTP Headers to Log
+    description: |
+      A comma-separated list of HTTP headers that will annotate access log
+      events on the GoRouter.
+
+  - reference: .properties.haproxy_max_buffer_size
+    label: HAProxy Request Max Buffer Size
+    description: |
+      Buffer size (in bytes) to use for requests, any requests larger
+      than this (large cookies or query strings) will result in a
+      gateway error. The default value is 16384.
+
   - reference: .isolated_ha_proxy.internal_only_domains
-    label: Protected Domains
+    label: HAProxy Protected Domains
     description: |
       A comma-separated list of domains to protect from requests from
       unknown sources.  Use this property in conjunction with
@@ -187,7 +207,7 @@ form:
       unknown sources.
 
   - reference: .isolated_ha_proxy.trusted_domain_cidrs
-    label: Trusted CIDRs
+    label: HAProxy Trusted CIDRs
     description: |
       A space-separated list of CIDRs allowed to make requests
       to the domains listed in the "Protected Domains" field. For example,
@@ -195,18 +215,17 @@ form:
       in that range to reach applications or services hosted on the
       "Protected Domains" list.
 
+  - reference: .isolated_diego_cell.garden_network_mtu
+    label: |
+      Applications Network Maximum Transmission Unit (MTU) (in bytes)
+    description: |
+      The default 1454 bytes is fine for most cases, but you might need less,
+      such as for networks that use GRE tunnels.
+
   - reference: .properties.container_networking_vtep_port
     label: VXLAN Tunnel Endpoint Port
     description: |
       Host port used for receiving VXLAN packets. Defaults to 4789.
-
-  - reference: .properties.routing_table_sharding_mode
-    label: "Router Sharding Mode: When 'Isolation Segment Only' is selected, the routers of this tile will only have knowledge of applications deployed to the Cells of this tile; all other requests will receive a 404 response. When 'No Isolation Segments' is selected, the routers of this tile will reject requests for any isolation segment. Choose 'No Isolation Segments' to add a group of routers for the Elastic Runtime tile, as when a private point of entry for the system domain is desired."
-    selector_property_inputs:
-    - reference: .properties.routing_table_sharding_mode.isolation_segment_only
-      label: Isolation Segment Only
-    - reference: .properties.routing_table_sharding_mode.no_isolation_segment
-      label: No Isolation Segment
 
   - reference: .properties.c2c_iptables_logging
     label: Log traffic for all accepted/denied application packets.
@@ -229,23 +248,17 @@ form:
       - reference: .properties.c2c_iptables_logging.disabled
         label: Disable
 
-  - reference: .properties.router_forward_client_cert
+  - reference: .properties.routing_table_sharding_mode
     label: |
-      Configure the CF Router support for the X-Forwarded-Client-Cert header.
-      Setting this field to an option other than "Always forward" will
-      change the behavior for how the Router handles the
-      x-forwarded-client-cert (XFCC) HTTP header. This header can be used
-      by applications to verify the requester via mutual TLS.
+      Router Sharding Mode: When "Isolation Segment Only" is selected, the
+      routers of this tile will only have knowledge of applications deployed to
+      the Cells of this tile; all other requests will receive a 404 response.
+      When "No Isolation Segments" is selected, the routers of this tile will
+      reject requests for any isolation segment. Choose "No Isolation Segments"
+      to add a group of routers for the Elastic Runtime tile, as when a private
+      point of entry for the system domain is desired."
     selector_property_inputs:
-      - reference: .properties.router_forward_client_cert.always_forward
-        label: Always forward the XFCC header in the request, regardless of whether the client connection is mTLS
-      - reference: .properties.router_forward_client_cert.forward
-        label: Forward the XFCC header received from the client only when the client connection is mTLS
-      - reference: .properties.router_forward_client_cert.sanitize_set
-        label: Strip the XFCC header when present and set it to the client certificate from the mTLS handshake
-
-  - reference: .properties.router_backend_max_conn
-    label: Max Connections Per Backend
-    description: |
-      Maximum concurrent TCP connections per backend for each instance of
-      the Router. A value of 0 means unlimited.
+    - reference: .properties.routing_table_sharding_mode.isolation_segment_only
+      label: Isolation Segment Only
+    - reference: .properties.routing_table_sharding_mode.no_isolation_segment
+      label: No Isolation Segment
