@@ -173,6 +173,10 @@ property_blueprints:
     option_templates:
     - name: enable
       select_value: enable
+      named_manifests:
+        - name: iptables_logging_enabled
+          manifest: |
+            true
       property_blueprints:
       - name: iptables_denied_logs_per_sec
         type: integer
@@ -185,6 +189,10 @@ property_blueprints:
 
     - name: disable
       select_value: disable
+      named_manifests:
+        - name: iptables_logging_enabled
+          manifest: |
+            false
 
   - name: network_policy_server_cert
     type: rsa_cert_credentials
