@@ -1,15 +1,8 @@
 ---
 property_blueprints:
   - name: networking_poe_ssl_cert
-    type: collection
+    type: rsa_cert_credentials
     configurable: true
-    property_blueprints:
-      - name: cert_chain
-        type: text
-        optional: false
-      - name: private_key
-        type: text
-        optional: false
 
   - name: routing_disable_http
     type: boolean
