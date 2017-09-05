@@ -11,8 +11,9 @@ manifest: |
     skip_consul_lock: true
     system_domain: (( .cloud_controller.system_domain.value ))
     sqldb: (( .properties.system_database.selected_option.parsed_manifest(routingdb) ))
+    debug_address: {{ tile | ert "127.0.0.1:17002" | srt "127.0.0.1:17003" }}
     locket:
       api_location: locket.service.cf.internal:8891
       ca_cert: (( $ops_manager.ca_certificate ))
-      client_cert: (( locket_client_cert.cert_pem ))
-      client_key: (( locket_client_cert.private_key_pem ))
+      client_cert: (( .cloud_controller.locket_client_cert.cert_pem ))
+      client_key: (( .cloud_controller.locket_client_cert.private_key_pem ))

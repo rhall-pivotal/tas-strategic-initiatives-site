@@ -15,6 +15,18 @@ templates:
 - syslog_forwarder
 - uaa
 - statsd_injector
+- go-buildpack
+- binary-buildpack
+- nodejs-buildpack
+- ruby-buildpack
+- php-buildpack
+- python-buildpack
+- java-buildpack
+- staticfile-buildpack
+- dotnet-core-buildpack
+- cloud_controller_ng
+- routing-api
+- cloud-controller-backup
 resource_definitions:
 - name: ram
   type: integer
@@ -22,14 +34,14 @@ resource_definitions:
   configurable: true
   default: 4096
   constraints:
-    min: 1024
+    min: 4096
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
   default: 32768
   constraints:
-    min: 2048
+    min: 20480
 - name: persistent_disk
   type: integer
   label: Persistent Disk

@@ -31,7 +31,7 @@ manifest: |
     packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
     resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
     rate_limiter: (( .properties.cc_api_rate_limit.selected_option.parsed_manifest(rate_limiter) ))
-    disable_custom_buildpacks: "(( enable_custom_buildpacks.value ? 'false' : 'true' ))"
+    disable_custom_buildpacks: "(( .cloud_controller.enable_custom_buildpacks.value ? 'false' : 'true' ))"
     mutual_tls:
       private_key: (( .properties.cloud_controller_mutual_cert.private_key_pem ))
       ca_cert: (( $ops_manager.ca_certificate ))
@@ -48,9 +48,9 @@ manifest: |
     default_running_security_groups:
     - default_security_group
     allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
-    default_app_disk_in_mb: (( default_disk_quota_app.value ))
-    app_bits_max_body_size: "(( max_file_size.value ))M"
-    db_encryption_key: (( encrypt_key.value || db_encryption_credentials.password ))
+    default_app_disk_in_mb: (( .cloud_controller.default_disk_quota_app.value ))
+    app_bits_max_body_size: "(( .cloud_controller.max_file_size.value ))M"
+    db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
     maximum_health_check_timeout: 600
     security_group_definitions:
     - name: default_security_group
@@ -59,10 +59,10 @@ manifest: |
         destination: 0.0.0.0-169.253.255.255
       - protocol: all
         destination: 169.255.0.0-255.255.255.255
-    default_app_ssh_access: (( default_app_ssh_access.value ))
+    default_app_ssh_access: (( .cloud_controller.default_app_ssh_access.value ))
     min_recommended_cli_version: 6.23.0
     security_event_logging:
-      enabled: (( security_event_logging_enabled.value ))
+      enabled: (( .cloud_controller.security_event_logging_enabled.value ))
     install_buildpacks:
     - name: staticfile_buildpack
       package: staticfile-buildpack
@@ -99,8 +99,8 @@ manifest: |
     allowed_cors_domains:
     - https://apm.(( .cloud_controller.system_domain.value ))
     - https://metrics.(( .cloud_controller.system_domain.value ))
-    maximum_app_disk_in_mb: (( max_disk_quota_app.value ))
-    default_app_memory: (( default_app_memory.value ))
+    maximum_app_disk_in_mb: (( .cloud_controller.max_disk_quota_app.value ))
+    default_app_memory: (( .cloud_controller.default_app_memory.value ))
     internal_api_user: ((( cloud-controller-internal-api-user-credentials.username )))
     internal_api_password: ((( cloud-controller-internal-api-user-credentials.password )))
     staging_upload_user: ((( cloud-controller-staging-upload-credentials.username )))
@@ -111,8 +111,8 @@ manifest: |
     - default_security_group
     quota_definitions:
       default:
-        memory_limit: (( default_quota_memory_limit_mb.value ))
-        total_services: (( default_quota_max_number_services.value ))
+        memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
+        total_services: (( .cloud_controller.default_quota_max_number_services.value ))
         non_basic_services_allowed: true
         total_routes: 1000
         trial_db_allowed: true
@@ -122,7 +122,7 @@ manifest: |
         total_routes: 1000
         non_basic_services_allowed: true
     server_keepalive_timeout: 0
-    staging_timeout_in_seconds: (( staging_timeout_in_seconds.value ))
+    staging_timeout_in_seconds: (( .cloud_controller.staging_timeout_in_seconds.value ))
   support_address: https://support.pivotal.io
   routing_api:
     enabled: true

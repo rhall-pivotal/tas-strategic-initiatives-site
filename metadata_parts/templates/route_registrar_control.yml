@@ -22,3 +22,10 @@ manifest: |
         component: NetworkPolicyServer
       uris:
       - "api.(( .cloud_controller.system_domain.value ))/networking"
+    - name: api
+      port: 9022
+      registration_interval: 20s
+      tags:
+        component: CloudController
+      uris:
+      - "api.(( .cloud_controller.system_domain.value ))"
