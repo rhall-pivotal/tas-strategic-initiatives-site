@@ -133,7 +133,7 @@ manifest: |
     disable_http: (( .properties.routing_disable_http.value ))
     cipher_suites: (( .properties.gorouter_ssl_ciphers.value ))
     enable_ssl: true
-    tls_pem: (( .properties.networking_poe_ssl_certs.value ))
+    tls_pem: (( .properties.networking_poe_ssl_cert.value ))
     max_idle_connections: (( max_idle_connections.value ))
     min_tls_version: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(min_tls_version) ))
     ssl_skip_validation: (( .properties.skip_cert_verify.value ))
