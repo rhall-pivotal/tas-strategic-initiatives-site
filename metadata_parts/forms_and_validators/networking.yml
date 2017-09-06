@@ -26,32 +26,13 @@ form:
       unless you are using your own load balancer.
 
   - reference: .properties.networking_poe_ssl_cert
-    label: Certificate and Private Key for HAProxy and Router
+    label: Certificate and Private Key for Router
     description: |
-      This certificate and key are used to terminate SSL traffic at either the
-      HAProxy or Router. The certificate can have multiple domains attributed
+      This certificate and key are used to terminate SSL traffic at the
+      Router. The certificate can have multiple domains attributed
       to it, for example if you have separate system and application
       domains. You can also generate a self-signed certificate here
       with your wildcard system domain.
-    property_inputs:
-      - reference: name
-        label: Name
-        description: |
-          A human-readable name describing the use of this certificate.
-
-      - reference: cert_chain
-        label: Certificate for HAProxy and Router
-        description: |
-          This certificate is used to terminate SSL traffic at either the
-          HAProxy or Router. The certificate can have multiple domains
-          attributed to it, for example if you have separate system and
-          application domains.
-
-      - reference: private_key
-        label: Private Key for HAProxy and Router
-        description: |
-          This key is used to terminate SSL traffic at either the HAProxy or
-          Router.
 
   - reference: .properties.routing_minimum_tls_version
     label: Minimum version of TLS supported by HAProxy and Router
