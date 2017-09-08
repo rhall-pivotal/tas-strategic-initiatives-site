@@ -179,7 +179,6 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     client_name: (( ..cf.uaa.tcp_emitter_credentials.identity ))
     client_secret: (( ..cf.uaa.tcp_emitter_credentials.password ))
-  enable_declarative_healthcheck: true
   randomize_password: (( .properties.windows_admin_password.selected_option.parsed_manifest(randomize_password) ))
   set_password: (( .properties.windows_admin_password.selected_option.parsed_manifest(set_password) ))
   winc_network:
