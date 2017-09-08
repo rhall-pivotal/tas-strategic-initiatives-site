@@ -11,8 +11,8 @@ manifest: |
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
       trafficcontroller:
-        cert: (( trafficcontroller_tls_cert.cert_pem ))
-        key: (( trafficcontroller_tls_cert.private_key_pem ))
+        cert: (( .loggregator_trafficcontroller.trafficcontroller_tls_cert.cert_pem ))
+        key: (( .loggregator_trafficcontroller.trafficcontroller_tls_cert.private_key_pem ))
     uaa:
       client: (( .uaa.doppler_client_credentials.identity ))
       client_secret: (( .uaa.doppler_client_credentials.password ))
