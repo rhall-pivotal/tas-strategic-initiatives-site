@@ -4,7 +4,7 @@ release: diego
 manifest: |
   diego:
     ssh_proxy:
-      host_key: (( ssh_host_key.private_key_pem ))
+      host_key: (( .diego_brain.ssh_host_key.private_key_pem ))
       enable_cf_auth: true
       diego_credentials: ''
       uaa_token_url: https://uaa.(( .cloud_controller.system_domain.value ))/oauth/token
