@@ -23,3 +23,10 @@ form:
 
       - reference: .properties.windows_admin_password.generate_random
         label: Generate random passwords for each VM
+
+  - reference: .properties.bosh_ssh_enabled
+    label: "BETA: Enable BOSH-native SSH support on all VMs."
+    description: |
+      When this checkbox is checked, all VMs will start the Microsoft beta port
+      of the OpenSSH daemon on port 22, allowing access via the BOSH ssh
+      command. This feature is not considered production-ready.
