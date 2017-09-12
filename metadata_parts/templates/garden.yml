@@ -4,18 +4,18 @@ release: garden-runc
 manifest: |
   garden:
     graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
-    network_mtu: (( garden_network_mtu.value ))
+    network_mtu: (( .diego_cell.garden_network_mtu.value ))
     network_plugin: "/var/vcap/packages/runc-cni/bin/garden-external-networker"
     network_plugin_extra_args:
     - "--configFile=/var/vcap/jobs/garden-cni/config/adapter.json"
     image_plugin: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin.value : .properties.garden_image_plugin_empty.value ))'
     image_plugin_extra_args: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin_extra_args.value : .properties.garden_image_plugin_empty_args.value ))'
     http_proxy: (( $ops_manager.http_proxy ))
-    dns_servers: (( dns_servers.parsed_strings ))
+    dns_servers: (( .diego_cell.dns_servers.parsed_strings ))
     cleanup_process_dirs_on_wait: true
     deny_networks:
     - 0.0.0.0/0
-    insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
+    insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
     https_proxy: (( $ops_manager.https_proxy ))
     no_proxy: (( $ops_manager.no_proxy ))
     default_container_grace_time: 0
