@@ -7,6 +7,7 @@ manifest: |
       skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
   capi:
     stager:
+      file_server_url: {{ tile | ert "http://file-server.service.cf.internal:8080" | srt "http://file-server.service.cf.internal:8084" }}
       insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))

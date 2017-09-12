@@ -1,3 +1,7 @@
 ---
 name: file_server
 release: diego
+manifest: |
+  diego:
+    file_server:
+      listen_addr: {{ tile | ert "0.0.0.0:8080" | srt "0.0.0.0:8084" }}

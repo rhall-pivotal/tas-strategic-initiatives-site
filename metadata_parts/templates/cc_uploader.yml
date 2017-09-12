@@ -4,6 +4,7 @@ release: capi
 manifest: |
   capi:
     cc_uploader:
+      debug_port: 17019
       mutual_tls:
         ca_cert: (( $ops_manager.ca_certificate ))
         server_cert: (( .diego_brain.cc_uploader_server_cert.cert_pem ))

@@ -4,6 +4,7 @@ release: capi
 manifest: |
   capi:
     nsync:
+      file_server_url: {{ tile | ert "http://file-server.service.cf.internal:8080" | srt "http://file-server.service.cf.internal:8084" }}
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
