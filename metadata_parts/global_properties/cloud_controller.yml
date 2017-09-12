@@ -54,6 +54,9 @@ property_blueprints:
           - name: enable_local_bridge
             manifest: |
               true
+          - name: enable_bulker
+            manifest: |
+              false
       - name: disable
         select_value: disable
         named_manifests:
@@ -63,3 +66,6 @@ property_blueprints:
           - name: enable_local_bridge
             manifest: |
               false
+          - name: enable_bulker
+            manifest: |
+              true
