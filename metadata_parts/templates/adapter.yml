@@ -6,7 +6,7 @@ manifest: |
     adapter:
       health: {{ tile | ert "8080" | srt "8083" }}
       logs:
-        addr: reverse-log-proxy.service.cf.internal:8082
+        addr: reverse-log-proxy.service.cf.internal:{{ tile | ert "8082" | srt "8086" }}
       tls:
         ca: (( $ops_manager.ca_certificate ))
         cert: (( .syslog_adapter.adapter_tls.cert_pem ))

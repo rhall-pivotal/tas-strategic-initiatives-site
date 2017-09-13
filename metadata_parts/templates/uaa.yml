@@ -48,6 +48,7 @@ manifest: |
       username:
         text: (( .uaa.customize_username_label.value ))
   uaa:
+    port: {{ tile | ert "8080" | srt "8085" }}
     sslCertificate: (( .uaa.ssl_credentials.cert_pem ))
     password:
       policy:

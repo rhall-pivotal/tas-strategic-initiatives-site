@@ -2,7 +2,7 @@
 name: control
 label: Control
 resource_label: Control
-description:
+description: Control
 templates:
 - consul_agent_control
 - bbs
@@ -39,6 +39,8 @@ templates:
 - loggregator_trafficcontroller
 - reverse_log_proxy
 - adapter
+- doppler
+- syslog_drain_binder
 resource_definitions:
 - name: ram
   type: integer

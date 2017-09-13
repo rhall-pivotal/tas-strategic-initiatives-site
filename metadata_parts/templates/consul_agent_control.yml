@@ -9,14 +9,15 @@ manifest: |
   consul:
     agent:
       services:
-        loggregator_trafficcontroller: {}
-        reverse_log_proxy: {}
-        uaa: {}
-        silk-controller: {}
         cloud_controller_ng: {}
-        routing-api: {}
+        doppler: {}
+        loggregator_trafficcontroller: {}
         policy-server:
           name: network-policy-server
           check:
             interval: 5s
             script: /bin/true
+        reverse_log_proxy: {}
+        routing-api: {}
+        silk-controller: {}
+        uaa: {}

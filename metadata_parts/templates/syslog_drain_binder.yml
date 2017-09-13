@@ -8,8 +8,8 @@ manifest: |
       machines: []
     tls:
       syslogdrainbinder:
-        cert: (( syslogdrainbinder_tls_cert.cert_pem ))
-        key: (( syslogdrainbinder_tls_cert.private_key_pem ))
+        cert: (( .doppler.syslogdrainbinder_tls_cert.cert_pem ))
+        key: (( .doppler.syslogdrainbinder_tls_cert.private_key_pem ))
   cc:
     mutual_tls:
       ca_cert: (( $ops_manager.ca_certificate ))
