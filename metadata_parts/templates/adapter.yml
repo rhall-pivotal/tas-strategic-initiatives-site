@@ -4,13 +4,14 @@ release: scalablesyslog
 manifest: |
   scalablesyslog:
     adapter:
+      health: {{ tile | ert "8080" | srt "8083" }}
+      logs:
+        addr: reverse-log-proxy.service.cf.internal:8082
       tls:
         ca: (( $ops_manager.ca_certificate ))
         cert: (( .syslog_adapter.adapter_tls.cert_pem ))
         key: (( .syslog_adapter.adapter_tls.private_key_pem ))
         cn: ss-adapter
-      logs:
-        addr: reverse-log-proxy.service.cf.internal:8082
     adapter_rlp:
       tls:
         ca: (( $ops_manager.ca_certificate ))
