@@ -96,6 +96,7 @@ manifest: |
       temporary_local_sync: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
       temporary_local_tasks: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
       temporary_local_tps: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_local_bridge) ))
+      file_server_url: http://file-server.service.cf.internal:{{ tile | ert 8080 | srt 8084 }}
     allowed_cors_domains:
     - https://apm.(( .cloud_controller.system_domain.value ))
     - https://metrics.(( .cloud_controller.system_domain.value ))
