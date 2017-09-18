@@ -42,7 +42,7 @@ property_blueprints:
 
   - name: secure_diego_communication
     type: selector
-    configurable: true
+    configurable: {{ tile | ert "true" | srt "false" }}
     default: enable
     option_templates:
       - name: enable
