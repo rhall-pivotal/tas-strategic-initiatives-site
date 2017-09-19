@@ -46,7 +46,7 @@ instance_definition:
   type: integer
   label: Instances
   configurable: true
-  default: 1
+  default: {{ tile | ert "1" | srt "0" }}
   constraints:
     min: 0
 property_blueprints:
