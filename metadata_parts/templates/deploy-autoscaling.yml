@@ -23,9 +23,8 @@ manifest: |
       ))
     organization: system
   uaa:
-    clients:
-      autoscaling_service:
-        secret: (( .uaa.autoscale_client_credentials.password ))
+    client: (( .uaa.autoscale_client_credentials.identity ))
+    client_secret: (( .uaa.autoscale_client_credentials.password ))
   app_domains:
   - (( .cloud_controller.system_domain.value ))
   domain: (( .cloud_controller.system_domain.value ))
