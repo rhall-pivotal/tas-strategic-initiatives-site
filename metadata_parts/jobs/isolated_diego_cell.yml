@@ -26,7 +26,7 @@ templates:
     release: cflinuxfs2
   - name: metron_agent
     release: loggregator
-  - name: silk-cni
+  - name: cni
     release: cf-networking
   - name: silk-daemon
     release: cf-networking
@@ -218,7 +218,7 @@ manifest: |
     client_name: (( ..cf.uaa.tcp_emitter_credentials.identity ))
     ca_cert: (( $ops_manager.ca_certificate ))
   cf_networking:
-    cni_config_dir: /var/vcap/jobs/silk-cni/config/cni
+    cni_config_dir: /var/vcap/jobs/cni/config/cni
     dns_servers: (( dns_servers.parsed_strings ))
     mtu: (( garden_network_mtu.value ))
     vtep_port: (( .properties.container_networking_vtep_port.value ))
