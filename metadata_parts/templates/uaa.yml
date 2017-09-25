@@ -464,3 +464,8 @@ manifest: |
         scope: "uaa.none"
         authorities: "notifications.write"
         authorized-grant-types: "client_credentials"
+      container-networking-interface:
+        id: (( .uaa.container_networking_interface_client_credentials.identity ))
+        secret: (( .uaa.container_networking_interface_client_credentials.password ))
+        authorities: uaa.resource,cloud_controller.global_auditor
+        authorized-grant-types: client_credentials
