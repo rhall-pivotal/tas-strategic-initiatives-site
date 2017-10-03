@@ -290,6 +290,12 @@ manifest: |
         authorities: clients.read,clients.write,clients.admin
         authorized-grant-types: client_credentials
         scope: cloud_controller.write,openid,cloud_controller.read,cloud_controller_service_permissions.read
+      cc_service_key_client:
+        id: (( .uaa.cc_service_key_credentials.identity ))
+        secret: (( .uaa.cc_service_key_credentials.password ))
+        override: true
+        authorities: credhub.read,credhub.write
+        authorized-grant-types: client_credentials
       doppler:
         id: (( .uaa.doppler_client_credentials.identity ))
         secret: (( .uaa.doppler_client_credentials.password ))
