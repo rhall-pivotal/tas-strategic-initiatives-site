@@ -43,7 +43,7 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  default: 1
+  default: {{ tile | ert "1" | srt "0" }}
 property_blueprints:
 - name: scheduler_api_tls
   type: rsa_cert_credentials

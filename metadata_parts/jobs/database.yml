@@ -60,8 +60,8 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: true
-  default: 1
+  configurable: {{ tile | ert "false" | srt "true" }}
+  default: {{ tile | ert "0" | srt "1" }}
   constraints:
-    min: 1
+    min: {{ tile | ert "0" | srt "1" }}
     may_only_be_odd_or_zero: true

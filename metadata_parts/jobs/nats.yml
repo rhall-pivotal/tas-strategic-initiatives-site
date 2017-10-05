@@ -42,10 +42,10 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: true
-  default: 2
+  configurable: {{ tile | ert "true" | srt "false" }}
+  default: {{ tile | ert "2" | srt "0" }}
   constraints:
-    min: 1
+    min: {{ tile | ert "1" | srt "0" }}
 property_blueprints:
 - name: credentials
   type: simple_credentials
