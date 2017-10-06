@@ -4,9 +4,16 @@ label: Cloud Controller Worker
 resource_label: Cloud Controller Worker
 description: Worker for cloud controller asynchronous tasks
 templates:
+{{ define "ert-cloud-controller-worker-templates" }}
 - consul_agent
 - cloud_controller_worker
 - metron_agent
+{{ end }}
+{{ define "srt-cloud-controller-worker-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-cloud-controller-worker-templates" | srt_template "srt-cloud-controller-worker-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

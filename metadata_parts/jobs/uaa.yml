@@ -4,11 +4,18 @@ label: UAA
 resource_label: UAA
 description: Pivotal CF Elastic Runtime's Authentication and Authorization server
 templates:
+{{ define "ert-uaa-templates" }}
 - consul_agent_uaa
 - uaa
 - metron_agent
 - route_registrar_uaa
 - statsd_injector
+{{ end }}
+{{ define "srt-uaa-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-uaa-templates" | srt_template "srt-uaa-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

@@ -4,6 +4,10 @@ label: Compute
 resource_label: Compute
 description: Compute
 templates:
+{{ define "ert-compute-templates" }}
+- placeholder
+{{ end }}
+{{ define "srt-compute-templates" }}
 - consul_agent
 - rep
 - route_emitter
@@ -19,6 +23,9 @@ templates:
 - nfsv3driver
 - grootfs
 - iptables-logger
+{{ end }}
+{{ tile | ert_template "ert-compute-templates" | srt_template "srt-compute-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

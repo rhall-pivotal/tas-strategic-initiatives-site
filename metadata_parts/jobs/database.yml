@@ -5,6 +5,10 @@ resource_label: Database
 description: Database
 
 templates:
+{{ define "ert-database-templates" }}
+- placeholder
+{{ end }}
+{{ define "srt-database-templates" }}
 - consul_server
 - metron_agent
 - nats
@@ -16,6 +20,8 @@ templates:
 - send-email
 - mysql-diag-agent
 - mysql-restore
+{{ end }}
+{{ tile | ert_template "ert-database-templates" | srt_template "srt-database-templates" }}
 
 resource_definitions:
 - name: cpu

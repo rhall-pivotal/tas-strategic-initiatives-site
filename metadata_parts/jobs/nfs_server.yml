@@ -4,11 +4,18 @@ label: File Storage
 resource_label: File Storage
 description: Stores droplets and app packages on behalf of Cloud Controller
 templates:
+{{ define "ert-nfs-server-templates" }}
 - consul_agent_nfs_server
 - metron_agent
 - blobstore
 - route_registrar_nfs_server
 - blobstore-backup
+{{ end }}
+{{ define "srt-nfs-server-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-nfs-server-templates" | srt_template "srt-nfs-server-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

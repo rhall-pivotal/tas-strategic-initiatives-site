@@ -4,6 +4,7 @@ label: Diego Cell
 resource_label: Diego Cell
 description: Diego Cell
 templates:
+{{ define "ert-diego-cell-templates" }}
 - consul_agent
 - rep
 - route_emitter
@@ -19,6 +20,12 @@ templates:
 - nfsv3driver
 - grootfs
 - iptables-logger
+{{ end }}
+{{ define "srt-diego-cell-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-diego-cell-templates" | srt_template "srt-diego-cell-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

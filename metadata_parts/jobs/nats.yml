@@ -4,9 +4,16 @@ label: NATS
 resource_label: NATS
 description: Acts as the Pivotal CF Elastic Runtime message bus
 templates:
+{{ define "ert-nats-templates" }}
 - consul_agent
 - nats
 - metron_agent
+{{ end }}
+{{ define "srt-nats-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-nats-templates" | srt_template "srt-nats-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

@@ -4,8 +4,15 @@ label: Consul
 resource_label: Consul
 description:
 templates:
+{{ define "ert-consul-server-templates" }}
 - consul_server
 - metron_agent
+{{ end }}
+{{ define "srt-consul-server-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-consul-server-templates" | srt_template "srt-consul-server-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

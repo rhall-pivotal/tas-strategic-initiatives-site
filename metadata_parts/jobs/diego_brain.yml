@@ -4,6 +4,7 @@ label: Diego Brain
 resource_label: Diego Brain
 description: Diego Brain
 templates:
+{{ define "ert-diego-brain-templates" }}
 - consul_agent
 - auctioneer
 - cfdot
@@ -14,6 +15,12 @@ templates:
 - tps
 - stager
 - metron_agent_diego_brain
+{{ end }}
+{{ define "srt-diego-brain-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-diego-brain-templates" | srt_template "srt-diego-brain-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

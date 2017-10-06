@@ -4,9 +4,16 @@ label: Clock Global
 resource_label: Clock Global
 description: Schedules asynchronous tasks for cloud controller
 templates:
+{{ define "ert-clock-global-templates" }}
 - consul_agent
 - cloud_controller_clock
 - metron_agent
+{{ end }}
+{{ define "srt-clock-global-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-clock-global-templates" | srt_template "srt-clock-global-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

@@ -4,10 +4,17 @@ label: Doppler Server
 resource_label: Doppler Server
 description: Doppler server collects application logs
 templates:
+{{ define "ert-doppler-templates" }}
 - consul_agent_doppler
 - doppler
 - metron_agent
 - syslog_drain_binder
+{{ end }}
+{{ define "srt-doppler-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-doppler-templates" | srt_template "srt-doppler-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

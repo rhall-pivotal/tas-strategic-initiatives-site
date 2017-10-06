@@ -5,9 +5,16 @@ resource_label: Syslog Scheduler
 description: This component handles communication with the Cloud Controller to receive
   new bindings. It should not be scaled beyond a single instance.
 templates:
+{{ define "ert-syslog-scheduler-templates" }}
 - consul_agent
 - metron_agent
 - scheduler
+{{ end }}
+{{ define "srt-syslog-scheduler-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-syslog-scheduler-templates" | srt_template "srt-syslog-scheduler-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

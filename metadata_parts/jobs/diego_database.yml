@@ -4,6 +4,7 @@ label: Diego BBS
 resource_label: Diego BBS
 description: An datastore node for Diego
 templates:
+{{ define "ert-diego-database-templates" }}
 - consul_agent_diego_database
 - bbs
 - cfdot
@@ -13,6 +14,12 @@ templates:
 - policy-server
 - policy-server-internal
 - silk-controller
+{{ end }}
+{{ define "srt-diego-database-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-diego-database-templates" | srt_template "srt-diego-database-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

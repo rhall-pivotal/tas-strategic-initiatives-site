@@ -4,35 +4,35 @@ jobs:
 - blobstore # SRT only
 - control # SRT only
 - compute # SRT only
-- consul_server
-- nats
-- nfs_server
-- mysql_proxy
-- mysql
+- consul_server # ERT only
+- nats # ERT only
+- nfs_server # ERT only
+- mysql_proxy # ERT only
+- mysql # ERT only
 - backup_prepare # ERT & SRT
-- diego_database
-- uaa
-- cloud_controller
+- diego_database # ERT only
+- uaa # ERT only
+- cloud_controller # ERT only
 - ha_proxy # ERT & SRT
 - router # ERT & SRT
 - mysql-monitoring # ERT & SRT
-- clock_global
-- cloud_controller_worker
-- diego_brain
-- diego_cell
-- loggregator_trafficcontroller
-- syslog_adapter
-- syslog_scheduler
-- doppler
+- clock_global # ERT only
+- cloud_controller_worker # ERT only
+- diego_brain # ERT only
+- diego_cell # ERT only
+- loggregator_trafficcontroller # ERT only
+- syslog_adapter # ERT only
+- syslog_scheduler # ERT only
+- doppler # ERT only
 - tcp_router # ERT & SRT
-- smoke-tests
-- push-apps-manager
-- push-usage-service
-- notifications
-- notifications-ui
-- push-pivotal-account
-- autoscaling
-- autoscaling-register-broker
-- nfs_broker_push
-- bootstrap
-- mysql_rejoin_unsafe
+- smoke-tests # ERT & SRT (errand)
+- push-apps-manager # ERT & SRT (errand)
+- push-usage-service # ERT & SRT (errand)
+- notifications # ERT & SRT (errand)
+- notifications-ui # ERT & SRT (errand)
+- push-pivotal-account # ERT & SRT (errand)
+- autoscaling # ERT & SRT (errand)
+- autoscaling-register-broker # ERT & SRT (errand)
+- nfs_broker_push # ERT & SRT (errand)
+- bootstrap # ERT & SRT (errand)
+- mysql_rejoin_unsafe # ERT & SRT (errand)

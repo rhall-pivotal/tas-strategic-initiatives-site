@@ -5,11 +5,17 @@ resource_label: File Storage
 description: Stores droplets and app packages on behalf of Cloud Controller
 
 templates:
+{{ define "ert-blobstore-templates" }}
+- placeholder
+{{ end }}
+{{ define "srt-blobstore-templates" }}
 - consul_agent_nfs_server
 - metron_agent
 - blobstore
 - route_registrar_nfs_server
 - blobstore-backup
+{{ end }}
+{{ tile | ert_template "ert-blobstore-templates" | srt_template "srt-blobstore-templates" }}
 
 resource_definitions:
 - name: cpu

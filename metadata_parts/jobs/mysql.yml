@@ -4,6 +4,7 @@ label: MySQL Server
 resource_label: MySQL Server
 description: Multi-tenant MySQL server.
 templates:
+{{ define "ert-mysql-templates" }}
 - consul_agent
 - metron_agent
 - mysql
@@ -12,6 +13,12 @@ templates:
 - send-email
 - mysql-diag-agent
 - mysql-restore
+{{ end }}
+{{ define "srt-mysql-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-mysql-templates" | srt_template "srt-mysql-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

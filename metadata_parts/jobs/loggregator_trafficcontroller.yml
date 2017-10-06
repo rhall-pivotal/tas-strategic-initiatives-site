@@ -4,11 +4,18 @@ label: Loggregator Trafficcontroller
 resource_label: Loggregator Trafficcontroller
 description: Loggregator trafficcontroller distributes requests to Loggregator servers
 templates:
+{{ define "ert-loggregator-trafficcontroller-templates" }}
 - consul_agent_loggregator_trafficcontroller
 - loggregator_trafficcontroller
 - metron_agent
 - reverse_log_proxy
 - route_registrar_loggregator_trafficcontroller
+{{ end }}
+{{ define "srt-loggregator-trafficcontroller-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-loggregator-trafficcontroller-templates" | srt_template "srt-loggregator-trafficcontroller-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

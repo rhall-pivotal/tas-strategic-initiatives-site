@@ -5,9 +5,16 @@ resource_label: Syslog Adapter
 description: This component manages the connections to drains. It should be scaled
   with the number of drains.
 templates:
+{{ define "ert-syslog-adapter-templates" }}
 - consul_agent
 - metron_agent
 - adapter
+{{ end }}
+{{ define "srt-syslog-adapter-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-syslog-adapter-templates" | srt_template "srt-syslog-adapter-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

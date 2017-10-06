@@ -4,6 +4,10 @@ label: Control
 resource_label: Control
 description: Control
 templates:
+{{ define "ert-control-templates" }}
+- placeholder
+{{ end }}
+{{ define "srt-control-templates" }}
 - consul_agent_control
 - bbs
 - cfdot
@@ -40,6 +44,9 @@ templates:
 - scheduler
 - doppler
 - syslog_drain_binder
+{{ end }}
+{{ tile | ert_template "ert-control-templates" | srt_template "srt-control-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer

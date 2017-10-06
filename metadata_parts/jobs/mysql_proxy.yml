@@ -4,9 +4,16 @@ label: MySQL Proxy
 resource_label: MySQL Proxy
 description: MySQL Proxy
 templates:
+{{ define "ert-mysql-proxy-templates" }}
 - consul_agent
 - route_registrar_mysql_proxy
 - proxy
+{{ end }}
+{{ define "srt-mysql-proxy-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-mysql-proxy-templates" | srt_template "srt-mysql-proxy-templates" }}
+
 resource_definitions:
 - name: ram
   type: integer
