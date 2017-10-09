@@ -33,6 +33,8 @@ runtime_configs:
       jobs:
       - name: syslog_forwarder
         release: syslog-migration
+      include:
+        deployments: [(( .deployment_name ))]
       properties:
         syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
 
