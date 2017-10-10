@@ -10,7 +10,7 @@ manifest: |
       uaa:
         ca_certs:
         - (( $ops_manager.ca_certificate ))
-        url: https://uaa.(( .cloud_controller.system_domain.value ))
+        url: https://uaa.service.cf.internal:8443
         verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
     authorization:
       acls:
