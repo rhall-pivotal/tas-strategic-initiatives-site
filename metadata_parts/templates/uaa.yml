@@ -475,3 +475,12 @@ manifest: |
         secret: (( .uaa.container_networking_interface_client_credentials.password ))
         authorities: uaa.resource,cloud_controller.global_auditor
         authorized-grant-types: client_credentials
+      credhub_cli:
+        id: credhub_cli
+        secret: ""
+        scope: credhub.read,credhub.write
+        authorities: uaa.resource
+        authorized-grant-types: password,refresh_token
+        access-token-validity: 120
+        override: true
+        refresh-token-validity: 3600
