@@ -131,6 +131,8 @@ manifest: |
         - routing.router_groups.write
         - network.write
         - network.admin
+        - credhub.read
+        - credhub.write
       - name: (( .uaa.push_apps_manager_credentials.identity ))
         password: (( .uaa.push_apps_manager_credentials.password ))
         groups:
