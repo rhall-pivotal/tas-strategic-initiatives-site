@@ -1,0 +1,13 @@
+---
+property_blueprints:
+  - name: credhub_key_encryption_password
+    type: secret
+    configurable: true
+
+  - name: credhub_tls
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains:
+      - credhub.(( .cloud_controller.system_domain.value ))
+      - credhub.service.cf.internal

@@ -1,0 +1,47 @@
+---
+form:
+  name: credhub
+  label: Credhub
+  description: |
+    Configure the CredHub Server
+
+  verifiers:
+  - name: Verifiers::MysqlDatabaseVerifier
+    properties:
+      host: .properties.credhub_database.external.host
+      port: .properties.credhub_database.external.port
+      username: .properties.credhub_database.external.username
+      password: .properties.credhub_database.external.password
+      database: .properties.credhub_database_name
+
+  property_inputs:
+  - reference: .properties.credhub_database
+    label: |
+      Choose the location of your CredHub database
+    selector_property_inputs:
+    - reference: .properties.credhub_database.internal_mysql
+      label: |
+        Internal MySQL (preferred for complete high-availability)
+
+    - reference: .properties.credhub_database.external
+      label: |
+        External (preferred if, for example, you use AWS RDS)
+      property_inputs:
+        - reference: .properties.credhub_database.external.host
+          label: Hostname
+
+        - reference: .properties.credhub_database.external.port
+          label: TCP Port
+
+        - reference: .properties.credhub_database.external.username
+          label: Username
+
+        - reference: .properties.credhub_database.external.password
+          label: Password
+
+        - reference: .properties.credhub_database.external.tls_ca
+          label: Database CA Certificate
+
+  - reference: .properties.credhub_key_encryption_password
+    label: Active Encryption Password Value
+    description: The active encryption password will be used to encrypt all data.

@@ -1,0 +1,29 @@
+---
+name: credhub
+release: credhub
+manifest: |
+  credhub:
+    authentication:
+      mutual_tls:
+        trusted_cas:
+        - ((( /cf/diego-instance-identity-intermediate-ca.certificate )))
+      uaa:
+        ca_certs:
+        - (( $ops_manager.ca_certificate ))
+        url: https://uaa.(( .cloud_controller.system_domain.value ))
+        verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
+    authorization:
+      acls:
+        enabled: true
+    data_storage: (( .properties.credhub_database.selected_option.parsed_manifest(db_config) ))
+    encryption:
+      keys:
+      - active: true
+        encryption_password: (( .properties.credhub_key_encryption_password.value ))
+        provider_name: internal-provider
+      providers:
+      - name: internal-provider
+        type: internal
+    tls:
+      certificate: (( .properties.credhub_tls.cert_pem ))
+      private_key: (( .properties.credhub_tls.private_key_pem ))
