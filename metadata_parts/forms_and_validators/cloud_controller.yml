@@ -36,13 +36,3 @@ form:
         - reference: .properties.cc_api_rate_limit.disable
           label: Disable
 
-{{ define "ert-secure-diego-comm" }}
-    - reference: .properties.secure_diego_communication
-      label: Enable secure communication between Diego and Cloud Controller?
-      selector_property_inputs:
-        - reference: .properties.secure_diego_communication.enable
-          label: Enable
-        - reference: .properties.secure_diego_communication.disable
-          label: Disable
-{{ end }}
-{{ tile | ert_template "ert-secure-diego-comm" | srt "" }}

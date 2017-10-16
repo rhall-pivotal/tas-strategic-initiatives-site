@@ -16,7 +16,7 @@ manifest: |
         locket:
           api_location: locket.service.cf.internal:8891
         skip_consul_lock: true
-      listener_enabled: (( .properties.secure_diego_communication.selected_option.parsed_manifest(enable_tps_listener) ))
+      listener_enabled: false
   diego:
     ssl:
       skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
