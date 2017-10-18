@@ -6,7 +6,7 @@ manifest: |
     url: https://(( $director.hostname || $director.deployment_ip )):25555
     root_ca_cert: "(( $director.ca_public_key ))"
   metrics_server:
-    addr: https://(( $director.hostname || $director.deployment_ip )):25595
+    addr: (( $director.hostname || $director.deployment_ip )):25595
   metrics_forwarder:
     tls:
       ca_cert: "(( $director.ca_public_key ))"
