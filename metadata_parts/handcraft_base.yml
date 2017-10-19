@@ -37,7 +37,7 @@ runtime_configs:
         deployments: [(( .deployment_name ))]
       properties:
         syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-- name: c2c-diego-cell
+- name: silk-cni
   runtime_config: |
     releases:
     - name: cf-networking
