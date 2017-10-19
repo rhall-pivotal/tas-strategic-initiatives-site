@@ -37,6 +37,7 @@ runtime_configs:
         deployments: [(( .deployment_name ))]
       properties:
         syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
+
 - name: silk-cni
   runtime_config: |
     releases:
@@ -58,11 +59,6 @@ runtime_configs:
             iptables_logging: (( .properties.container_networking_log_traffic.selected_option.parsed_manifest(iptables_logging_enabled) ))
             iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_log_traffic.enable.iptables_accepted_udp_logs_per_sec.value ))
             iptables_denied_logs_per_sec: (( .properties.container_networking_log_traffic.enable.iptables_denied_logs_per_sec.value ))
-      - name: garden-cni
-        release: cf-networking
-        properties:
-          cf_networking:
-            cni_config_dir: "/var/vcap/jobs/cni/config/cni"
       - name: iptables-logger
         release: cf-networking
       - name: netmon
@@ -95,27 +91,6 @@ runtime_configs:
         - name: bbs
           release: diego
       jobs:
-      - name: policy-server
-        release: cf-networking
-        consumes:
-          (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
-        properties:
-          cf_networking:
-            policy_server:
-              database: (( .properties.system_database.selected_option.parsed_manifest(networkpolicyserverdb) ))
-              uaa_client: (( .uaa.network_policy_server_client.identity ))
-              skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
-              debug_port: 22223
-              uaa_ca: (( $ops_manager.ca_certificate ))
-              uaa_client_secret: (( .uaa.network_policy_server_client.password ))
-      - name: policy-server-internal
-        release: cf-networking
-        properties:
-          cf_networking:
-            policy_server_internal:
-              ca_cert: (( $ops_manager.ca_certificate ))
-              server_cert: (( .properties.network_policy_server_cert.cert_pem ))
-              server_key: (( .properties.network_policy_server_cert.private_key_pem ))
       - name: silk-controller
         release: cf-networking
         provides:
