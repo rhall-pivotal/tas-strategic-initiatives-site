@@ -11,3 +11,8 @@ property_blueprints:
       domains:
       - credhub.(( .cloud_controller.system_domain.value ))
       - credhub.service.cf.internal
+
+  - name: secure_service_instance_credentials
+    type: boolean
+    configurable: true
+    default: false
