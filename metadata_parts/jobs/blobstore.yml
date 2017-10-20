@@ -14,6 +14,7 @@ templates:
 - blobstore
 - route_registrar_nfs_server
 - blobstore-backup
+- syslog_forwarder
 {{ end }}
 {{ tile | ert_template "ert-blobstore-templates" | srt_template "srt-blobstore-templates" }}
 
