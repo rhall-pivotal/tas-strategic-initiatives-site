@@ -298,6 +298,12 @@ manifest: |
         override: true
         authorities: credhub.read,credhub.write
         authorized-grant-types: client_credentials
+      services_credhub_client:
+        id: (( .uaa.services_credhub_credentials.identity ))
+        secret: (( .uaa.services_credhub_credentials.password ))
+        override: true
+        authorities: credhub.read,credhub.write
+        authorized-grant-types: client_credentials
       doppler:
         id: (( .uaa.doppler_client_credentials.identity ))
         secret: (( .uaa.doppler_client_credentials.password ))
