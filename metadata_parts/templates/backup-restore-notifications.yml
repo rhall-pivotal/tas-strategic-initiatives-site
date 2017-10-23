@@ -1,0 +1,16 @@
+---
+name: backup-restore-notifications
+release: notifications
+manifest: |
+  domain: (( .cloud_controller.system_domain.value ))
+  notifications:
+    app_domain: (( .cloud_controller.system_domain.value ))
+    cf:
+      admin_password: (( .uaa.admin_credentials.password ))
+      admin_user: (( .uaa.admin_credentials.identity ))
+    database: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
+    organization: system
+    space: notifications-with-ui
+  release_level_backup: true
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))

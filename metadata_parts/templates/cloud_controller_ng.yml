@@ -139,5 +139,6 @@ manifest: |
     route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
   app_ssh:
     host_key_fingerprint: (( .diego_brain.ssh_host_key.public_key_fingerprint ))
+  release_level_backup: true
   system_domain: (( .cloud_controller.system_domain.value ))
   system_domain_organization: system

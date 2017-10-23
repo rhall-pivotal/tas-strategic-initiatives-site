@@ -187,6 +187,15 @@ property_blueprints:
             username: ((( nfs-volume-db-credentials.username )))
             password: ((( nfs-volume-db-credentials.password )))
             name: (( .properties.nfsvolume_database_name.value ))
+        - name: nfsvolume_bbr
+          manifest: |
+            db_username: ((( nfs-volume-db-credentials.username )))
+            db_password: ((( nfs-volume-db-credentials.password )))
+            db_name: (( .properties.nfsvolume_database_name.value ))
+            db_hostname: mysql.service.cf.internal
+            db_port: 3306
+            db_driver: mysql
+            release_level_backup: true
 
       - name: external
         select_value: external
@@ -362,6 +371,14 @@ property_blueprints:
               username: (( .properties.system_database.external.nfsvolume_username.value ))
               password: (( .properties.system_database.external.nfsvolume_password.value ))
               name: (( .properties.nfsvolume_database_name.value ))
+          - name: nfsvolume_bbr
+            manifest: |
+              db_host: (( .properties.system_database.external.host.value ))
+              db_port: (( .properties.system_database.external.port.value ))
+              db_username: (( .properties.system_database.external.nfsvolume_username.value ))
+              db_password: (( .properties.system_database.external.nfsvolume_password.value ))
+              db_name: (( .properties.nfsvolume_database_name.value ))
+              db_driver: mysql
 
   - name: mysql_backups
     type: selector

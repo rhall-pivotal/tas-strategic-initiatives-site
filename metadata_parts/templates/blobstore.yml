@@ -12,4 +12,5 @@ manifest: |
       cert: (( .nfs_server.blobstore_cert.cert_pem ))
       private_key: (( .nfs_server.blobstore_cert.private_key_pem ))
     internal_access_rules: (( .nfs_server.blobstore_internal_access_rules.parsed_strings ))
+  release_level_backup: true
   system_domain: (( .cloud_controller.system_domain.value ))

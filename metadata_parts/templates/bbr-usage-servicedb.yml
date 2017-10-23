@@ -1,0 +1,10 @@
+---
+name: bbr-usage-servicedb
+release: usage-service
+manifest: |
+  cf:
+    admin_password: (( .uaa.push_apps_manager_credentials.password ))
+    admin_username: (( .uaa.push_apps_manager_credentials.identity ))
+    api_url: "https://api.(( .cloud_controller.system_domain.value ))"
+  database: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
+  release_level_backup: true
