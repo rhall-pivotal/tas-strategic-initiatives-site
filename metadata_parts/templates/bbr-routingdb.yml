@@ -1,5 +1,5 @@
 ---
-name: bbr-routingdb
+name: bbr_routing
 release: routing
 manifest: |
-  release_level_backup: true
+  (( .properties.system_database.selected_option.parsed_manifest(routingdb_bbr) ))

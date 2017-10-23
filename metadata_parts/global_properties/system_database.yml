@@ -158,7 +158,14 @@ property_blueprints:
             port: 3306
             username: ((( routing-db-credentials.username )))
             password: ((( routing-db-credentials.password )))
-            schema: (( .properties.routing_database_name.value ))
+        - name: routingdb_bbr
+          manifest: |
+            adapter: mysql
+            database_name: (( .properties.routing_database_name.value ))
+            host: mysql.service.cf.internal
+            port: 3306
+            username: ((( routing-db-credentials.username )))
+            password: ((( routing-db-credentials.password )))
         - name: silkdb
           manifest: |
             type: mysql
@@ -340,6 +347,15 @@ property_blueprints:
               username: (( .properties.system_database.external.routing_username.value ))
               password: (( .properties.system_database.external.routing_password.value ))
               schema: (( .properties.routing_database_name.value ))
+          - name: routingdb_bbr
+            manifest: |
+              adapter: mysql
+              database_name: (( .properties.routing_database_name.value ))
+              host: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              username: (( .properties.system_database.external.routing_username.value ))
+              password: (( .properties.system_database.external.routing_password.value ))
+              release_level_backup: false
           - name: silkdb
             manifest: |
               type: mysql
