@@ -26,24 +26,12 @@ templates:
     release: cflinuxfs2
   - name: metron_agent
     release: loggregator
-  - name: cni
-    release: cf-networking
-  - name: silk-daemon
-    release: cf-networking
-    consumes: |
-      cf_network: {from: cf_network, deployment: ((  ..cf.deployment_name  )) }
   - name: garden-cni
-    release: cf-networking
-  - name: netmon
-    release: cf-networking
-  - name: vxlan-policy-agent
     release: cf-networking
   - name: nfsv3driver
     release: nfs-volume
   - name: syslog_forwarder
     release: syslog-migration
-  - name: iptables-logger
-    release: cf-networking
 
 resource_definitions:
   - name: ram
@@ -214,19 +202,3 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
   cf_networking:
     cni_config_dir: /var/vcap/jobs/cni/config/cni
-    dns_servers: ["169.254.0.2"]
-    mtu: (( garden_network_mtu.value ))
-    vtep_port: (( .properties.container_networking_vtep_port.value ))
-    iptables_logging: (( .properties.c2c_iptables_logging.selected_option.parsed_manifest(cf_networking_iptables_logging) ))
-    iptables_accepted_udp_logs_per_sec: (( .properties.c2c_iptables_logging.selected_option.parsed_manifest(cf_networking_iptables_udp_logging_interval) ))
-    iptables_denied_logs_per_sec: (( .properties.c2c_iptables_logging.selected_option.parsed_manifest(cf_networking_iptables_denied_logging_interval) ))
-    policy_server:
-      hostname: network-policy-server.service.cf.internal
-    silk_daemon:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      client_cert: (( silk_daemon_client_cert.cert_pem ))
-      client_key: (( silk_daemon_client_cert.private_key_pem ))
-    vxlan_policy_agent:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      client_cert: (( network_policy_agent_cert.cert_pem ))
-      client_key: (( network_policy_agent_cert.private_key_pem ))
