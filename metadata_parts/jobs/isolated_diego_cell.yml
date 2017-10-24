@@ -119,11 +119,6 @@ property_blueprints:
     optional: false
     default: 1454
 
-  - name: dns_servers
-    type: string_list
-    configurable: true
-    optional: true
-
   - name: placement_tag
     type: string
     configurable: true
@@ -188,7 +183,7 @@ manifest: |
     no_proxy: (( $ops_manager.no_proxy ))
     network_plugin: "/var/vcap/packages/runc-cni/bin/garden-external-networker"
     network_plugin_extra_args: [ "--configFile=/var/vcap/jobs/garden-cni/config/adapter.json" ]
-    dns_servers: (( dns_servers.parsed_strings ))
+    dns_servers: ["169.254.0.2"]
     image_plugin: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin.value : .properties.garden_image_plugin_empty.value ))'
     image_plugin_extra_args: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin_extra_args.value : .properties.garden_image_plugin_empty_args.value ))'
   grootfs:
@@ -219,7 +214,7 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
   cf_networking:
     cni_config_dir: /var/vcap/jobs/cni/config/cni
-    dns_servers: (( dns_servers.parsed_strings ))
+    dns_servers: ["169.254.0.2"]
     mtu: (( garden_network_mtu.value ))
     vtep_port: (( .properties.container_networking_vtep_port.value ))
     iptables_logging: (( .properties.c2c_iptables_logging.selected_option.parsed_manifest(cf_networking_iptables_logging) ))
