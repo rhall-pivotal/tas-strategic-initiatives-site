@@ -50,6 +50,8 @@ runtime_configs:
         release: cf-networking
       - name: silk-daemon
         release: cf-networking
+        consumes:
+          cf_network: {from: cf_network, deployment: (( .deployment_name )) }
         properties:
           cf_networking:
             silk_daemon:
