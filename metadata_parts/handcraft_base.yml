@@ -30,7 +30,7 @@ runtime_configs:
     addons:
     - name: c2c-diego-cell-cf
       include:
-        deployments: [(( .deployment_name ))]
+        # this intentionally matches the IST as well as the ERT
         jobs:
         - name: rep
           release: diego
