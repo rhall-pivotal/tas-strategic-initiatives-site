@@ -158,6 +158,7 @@ property_blueprints:
             port: 3306
             username: ((( routing-db-credentials.username )))
             password: ((( routing-db-credentials.password )))
+            schema: (( .properties.routing_database_name.value ))
         - name: routingdb_bbr
           manifest: |
             adapter: mysql
