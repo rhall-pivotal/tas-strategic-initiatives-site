@@ -25,14 +25,19 @@ form:
       be within your subnet CIDR block. Point your DNS to this IP address
       unless you are using your own load balancer.
 
-  - reference: .properties.networking_poe_ssl_cert
-    label: Certificate and Private Key for HAProxy and Router
-    description: |
-      This certificate and key are used to terminate SSL traffic at either
-      the HAProxy or Router. The certificate can have multiple domains
-      attributed to it, for example if you have separate system and application
-      domains. You can also generate a self-signed certificate here
-      with your wildcard system domain.
+  - reference: .properties.networking_poe_ssl_certs
+    label: Certificates and Private Keys for HAProxy and Router
+    property_inputs:
+    - reference: name
+      label: Name
+      description: A human-readable name describing the use of this certificate.
+    - reference: certificate
+      label: Certificate and Private Key for HAProxy and Router
+      description: |
+        This certificate is used to terminate SSL traffic at either the
+        HAProxy or Router. The certificate can have multiple domains
+        attributed to it, for example if you have separate system and
+        application domains.
 
   - reference: .properties.routing_minimum_tls_version
     label: Minimum version of TLS supported by HAProxy and Router
