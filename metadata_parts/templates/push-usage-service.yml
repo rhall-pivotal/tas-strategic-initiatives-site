@@ -1,6 +1,8 @@
 ---
 name: push-usage-service
 release: push-usage-service-release
+consumes: |
+  (( .properties.system_database.selected_option.parsed_manifest(push_app_usage_service_db_link) ))
 manifest: |
   cf:
     api_url: "https://api.(( .cloud_controller.system_domain.value ))"
