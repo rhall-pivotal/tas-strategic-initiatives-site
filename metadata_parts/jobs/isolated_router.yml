@@ -121,6 +121,7 @@ property_blueprints:
 manifest: |
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   router:
+    ca_certs: (( .properties.routing_custom_ca_certificates.value ))
     tracing:
       enable_zipkin: (( enable_zipkin.value ))
     secure_cookies: (( disable_insecure_cookies.value ))

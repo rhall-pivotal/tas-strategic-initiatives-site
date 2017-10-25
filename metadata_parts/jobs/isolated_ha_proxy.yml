@@ -80,6 +80,7 @@ manifest: |
     backend_port: (( .properties.haproxy_forward_tls.selected_option.parsed_manifest(backend_port) ))
     backend_ssl: (( .properties.haproxy_forward_tls.selected_option.parsed_manifest(backend_ssl) ))
     buffer_size_bytes: (( .properties.haproxy_max_buffer_size.value ))
+    client_ca_file: (( .properties.routing_custom_ca_certificates.value ))
     client_timeout: (( .isolated_router.request_timeout_in_seconds.value ))
     disable_http: (( .properties.routing_disable_http.value ))
     disable_tls_10: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_10) ))
