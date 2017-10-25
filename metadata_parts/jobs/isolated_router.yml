@@ -120,6 +120,8 @@ property_blueprints:
 
 manifest: |
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
+  networks:
+    apps: default
   router:
     ca_certs: (( .properties.routing_custom_ca_certificates.value ))
     tracing:
@@ -136,6 +138,10 @@ manifest: |
     tls_pem: (( .properties.networking_poe_ssl_certs.parsed_manifest(routing_certificates) ))
     min_tls_version: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(min_tls_version) ))
     ssl_skip_validation: (( .properties.skip_cert_verify.value ))
+    skip_oauth_tls_verification: true
+    haproxy:
+      health_check_port: 80
+      request_timeout_in_seconds: 300
     drain_wait: (( drain_wait.value ))
     load_balancer_healthy_threshold: (( lb_healthy_threshold.value ))
     extra_headers_to_log: (( extra_headers_to_log.parsed_strings ))
@@ -157,6 +163,8 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     ssl:
       port: 8443
+    sslCertificate: (( ..cf.uaa.ssl_credentials.cert_pem ))
+    sslPrivateKey: (( ..cf.uaa.ssl_credentials.private_key_pem ))
     clients:
       gorouter:
         secret: (( ..cf.uaa.gorouter_client_credentials.password ))
