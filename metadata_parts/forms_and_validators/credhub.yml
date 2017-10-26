@@ -25,7 +25,7 @@ form:
 
     - reference: .properties.credhub_database.external
       label: |
-        External (preferred if, for example, you use AWS RDS)
+        External (preferred if, for example, you use Google Cloud SQL)
       property_inputs:
         - reference: .properties.credhub_database.external.host
           label: Hostname
@@ -44,7 +44,9 @@ form:
 
   - reference: .properties.credhub_key_encryption_password
     label: Active Encryption Password Value
-    description: The active encryption password will be used to encrypt all data.
+    description: |
+      The active encryption password will be used to encrypt all data. The
+      password must be at least 20 characters long.
 
   - reference: .properties.secure_service_instance_credentials
     label: Secure Service Instance Credentials
