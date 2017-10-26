@@ -133,6 +133,12 @@ property_blueprints:
             username: ((( app-usage-db-credentials.username )))
             password: ((( app-usage-db-credentials.password )))
             name: (( .properties.app_usage_service_database_name.value ))
+        - name: bbr-usage-servicedb
+          manifest: |
+            port: 3306
+            user: ((( app-usage-db-credentials.username )))
+            password: ((( app-usage-db-credentials.password )))
+            name: (( .properties.app_usage_service_database_name.value ))
         - name: push_app_usage_service_db_link
           manifest: |
             (( .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy) ))
@@ -318,6 +324,13 @@ property_blueprints:
               ip: (( .properties.system_database.external.host.value ))
               port: (( .properties.system_database.external.port.value ))
               username: (( .properties.system_database.external.app_usage_service_username.value ))
+              password: (( .properties.system_database.external.app_usage_service_password.value ))
+              name: (( .properties.app_usage_service_database_name.value ))
+          - name: bbr-usage-servicedb
+            manifest: |
+              host: (( .properties.system_database.external.host.value ))
+              port: (( .properties.system_database.external.port.value ))
+              user: (( .properties.system_database.external.app_usage_service_username.value ))
               password: (( .properties.system_database.external.app_usage_service_password.value ))
               name: (( .properties.app_usage_service_database_name.value ))
           - name: push_app_usage_service_db_link
