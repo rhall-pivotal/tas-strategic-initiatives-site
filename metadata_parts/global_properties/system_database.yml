@@ -153,6 +153,7 @@ property_blueprints:
             db_schema: (( .properties.locket_database_name.value ))
         - name: routingdb
           manifest: |
+            type: mysql
             host: mysql.service.cf.internal
             port: 3306
             username: ((( routing-db-credentials.username )))
@@ -161,7 +162,6 @@ property_blueprints:
         - name: routingdb_bbr
           manifest: |
             host: mysql.service.cf.internal
-            port: 3306
             username: ((( routing-db-credentials.username )))
             password: ((( routing-db-credentials.password )))
             database_name: (( .properties.routing_database_name.value ))
@@ -340,6 +340,7 @@ property_blueprints:
               db_schema: (( .properties.locket_database_name.value ))
           - name: routingdb
             manifest: |
+              type: mysql
               host: (( .properties.system_database.external.host.value ))
               port: (( .properties.system_database.external.port.value ))
               username: (( .properties.system_database.external.routing_username.value ))
