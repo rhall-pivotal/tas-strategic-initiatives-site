@@ -183,7 +183,6 @@ manifest: |
     no_proxy: (( $ops_manager.no_proxy ))
     network_plugin: "/var/vcap/packages/runc-cni/bin/garden-external-networker"
     network_plugin_extra_args: [ "--configFile=/var/vcap/jobs/garden-cni/config/adapter.json" ]
-    dns_servers: ["169.254.0.2"]
     image_plugin: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin.value : .properties.garden_image_plugin_empty.value ))'
     image_plugin_extra_args: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin_extra_args.value : .properties.garden_image_plugin_empty_args.value ))'
   grootfs:
