@@ -139,6 +139,7 @@ manifest: |
       server_cert: (( .properties.rep_server_cert.cert_pem ))
       server_key: (( .properties.rep_server_cert.private_key_pem ))
       use_azure_fault_domains: true
+      open_bindmounts_acl: true
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
