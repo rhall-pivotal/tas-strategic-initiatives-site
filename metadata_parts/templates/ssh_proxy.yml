@@ -2,6 +2,7 @@
 name: ssh_proxy
 release: diego
 manifest: |
+  connect_to_instance_address: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(use_container_address) ))
   diego:
     ssh_proxy:
       host_key: (( .diego_brain.ssh_host_key.private_key_pem ))

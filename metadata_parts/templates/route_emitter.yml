@@ -2,16 +2,17 @@
 name: route_emitter
 release: diego
 manifest: |
-  tcp:
-    enabled: true
-  uaa:
-    ca_cert: (( $ops_manager.ca_certificate ))
-    client_secret: (( .uaa.tcp_emitter_credentials.password ))
-    client_name: (( .uaa.tcp_emitter_credentials.identity ))
   diego:
     route_emitter:
-      local_mode: true
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
+      local_mode: true
+  register_direct_isntance_routes: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(use_container_address) ))
+  tcp:
+    enabled: true
+  uaa:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    client_name: (( .uaa.tcp_emitter_credentials.identity ))
+    client_secret: (( .uaa.tcp_emitter_credentials.password ))

@@ -302,6 +302,9 @@ property_blueprints:
                       server_cert: (( .diego_database.silk_controller_server_cert.cert_pem ))
                       server_key: (( .diego_database.silk_controller_server_cert.private_key_pem ))
                       database: (( .properties.system_database.selected_option.parsed_manifest(silkdb) ))
+        - name: use_container_address
+          manifest: |
+            false
 
     - name: external
       select_value: external
@@ -310,3 +313,6 @@ property_blueprints:
           manifest: |
             releases: []
             addons: []
+        - name: use_container_address
+          manifest: |
+            true
