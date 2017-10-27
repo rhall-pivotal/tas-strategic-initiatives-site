@@ -23,6 +23,30 @@ post_deploy_errands:
   - name: nfsbrokerpush
 
 runtime_configs:
+- name: bosh-dns-aliases
+  runtime_config: |
+    releases:
+    - name: bosh-dns-aliases
+      version: 0.0.1
+    addons:
+    - name: bosh-dns-aliases
+      include:
+        # this intentionally matches the IST as well as the ERT
+        jobs:
+        - name: rep
+          release: diego
+      jobs:
+      - name: bosh-dns-aliases
+        release: bosh-dns-aliases
+        properties:
+          aliases:
+          - domain: credhub.services.cf.internal
+            targets:
+            - query: "*"
+              instance_group: credhub
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
 - name: silk-cni
   runtime_config: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(runtime_config) ))
 
