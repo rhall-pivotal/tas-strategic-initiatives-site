@@ -248,6 +248,15 @@ form:
         Default is 443. Enter a new value to override the default, for instance
         if port 443 on your load balancer is used for other traffic.
 
+    - reference: .properties.container_networking_interface_plugin
+      label: Container Network Interface Plugin
+      selector_property_inputs:
+        - reference: .properties.container_networking_interface_plugin.silk
+          label: Silk
+
+        - reference: .properties.container_networking_interface_plugin.external
+          label: External
+
     - reference: .properties.container_networking_network_cidr
       label: |
         Overlay Subnet (Only change this is you need to avoid address

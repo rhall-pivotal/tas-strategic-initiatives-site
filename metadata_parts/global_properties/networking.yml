@@ -223,3 +223,13 @@ property_blueprints:
       select_value: enable
     - name: disable
       select_value: disable
+
+  - name: container_networking_interface_plugin
+    type: selector
+    configurable: true
+    default: silk
+    option_templates:
+    - name: silk
+      select_value: silk
+    - name: external
+      select_value: external
