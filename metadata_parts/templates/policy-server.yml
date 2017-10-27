@@ -5,6 +5,7 @@ consumes: |
   (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
 manifest: |
   cf_networking:
+    enable_space_developer_self_service: (( .properties.cf_networking_enable_space_developer_self_service.value ))
     policy_server:
       database: (( .properties.system_database.selected_option.parsed_manifest(networkpolicyserverdb) ))
       uaa_client: (( .uaa.network_policy_server_client.identity ))
