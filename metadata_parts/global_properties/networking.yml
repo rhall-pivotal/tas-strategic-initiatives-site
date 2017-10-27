@@ -231,5 +231,81 @@ property_blueprints:
     option_templates:
     - name: silk
       select_value: silk
+      named_manifests:
+        - name: runtime_config
+          manifest: |
+            releases:
+            - name: cf-networking
+            addons:
+            - name: c2c-diego-cell-cf
+              include:
+                # this intentionally matches the IST as well as the ERT
+                jobs:
+                - name: rep
+                  release: diego
+              jobs:
+              - name: cni
+                release: cf-networking
+                properties:
+                  cf_networking:
+                    dns_servers: ["169.254.0.2"]
+                    mtu: (( .diego_cell.garden_network_mtu.value ))
+                    iptables_logging: (( .properties.container_networking_log_traffic.selected_option.parsed_manifest(iptables_logging_enabled) ))
+                    iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_log_traffic.enable.iptables_accepted_udp_logs_per_sec.value ))
+                    iptables_denied_logs_per_sec: (( .properties.container_networking_log_traffic.enable.iptables_denied_logs_per_sec.value ))
+              - name: iptables-logger
+                release: cf-networking
+              - name: netmon
+                release: cf-networking
+              - name: silk-daemon
+                release: cf-networking
+                consumes:
+                  cf_network: {from: cf_network, deployment: (( .deployment_name )) }
+                properties:
+                  cf_networking:
+                    silk_daemon:
+                      ca_cert: (( $ops_manager.ca_certificate ))
+                      client_cert: (( .diego_database.silk_daemon_client_cert.cert_pem ))
+                      client_key: (( .diego_database.silk_daemon_client_cert.private_key_pem ))
+                    vtep_port: (( .properties.container_networking_vtep_port.value ))
+              - name: vxlan-policy-agent
+                release: cf-networking
+                properties:
+                  cf_networking:
+                    iptables_logging: (( .properties.container_networking_log_traffic.selected_option.parsed_manifest(iptables_logging_enabled) ))
+                    iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_log_traffic.enable.iptables_accepted_udp_logs_per_sec.value ))
+                    policy_server:
+                      hostname: network-policy-server.service.cf.internal
+                    vxlan_policy_agent:
+                      client_cert: (( .properties.network_policy_agent_cert.cert_pem ))
+                      client_key: (( .properties.network_policy_agent_cert.private_key_pem ))
+                      ca_cert: (( $ops_manager.ca_certificate ))
+            - name: c2c-diego-database-cf
+              include:
+                deployments: [(( .deployment_name ))]
+                jobs:
+                - name: bbs
+                  release: diego
+              jobs:
+              - name: silk-controller
+                release: cf-networking
+                provides:
+                  cf_network: {as: cf_network, shared: true}
+                consumes:
+                  (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
+                properties:
+                  cf_networking:
+                    network: (( .properties.container_networking_network_cidr.value || "10.255.0.0/16" ))
+                    silk_controller:
+                      ca_cert: (( $ops_manager.ca_certificate ))
+                      server_cert: (( .diego_database.silk_controller_server_cert.cert_pem ))
+                      server_key: (( .diego_database.silk_controller_server_cert.private_key_pem ))
+                      database: (( .properties.system_database.selected_option.parsed_manifest(silkdb) ))
+
     - name: external
       select_value: external
+      named_manifests:
+        - name: runtime_config
+          manifest: |
+            releases: []
+            addons: []
