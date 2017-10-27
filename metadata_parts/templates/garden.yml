@@ -11,7 +11,6 @@ manifest: |
     image_plugin: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin.value : .properties.garden_image_plugin_empty.value ))'
     image_plugin_extra_args: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin_extra_args.value : .properties.garden_image_plugin_empty_args.value ))'
     http_proxy: (( $ops_manager.http_proxy ))
-    dns_servers: ["169.254.0.2"]
     cleanup_process_dirs_on_wait: true
     deny_networks:
     - 0.0.0.0/0
