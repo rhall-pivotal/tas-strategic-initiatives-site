@@ -77,6 +77,7 @@ property_blueprints:
 manifest: |
   ha_proxy:
     backend_ca_file: (( .properties.haproxy_forward_tls.enable.backend_ca.value ))
+    backend_crt: (( .properties.haproxy_client_certificate.cert_pem ))
     backend_port: (( .properties.haproxy_forward_tls.selected_option.parsed_manifest(backend_port) ))
     backend_ssl: (( .properties.haproxy_forward_tls.selected_option.parsed_manifest(backend_ssl) ))
     buffer_size_bytes: (( .properties.haproxy_max_buffer_size.value ))
