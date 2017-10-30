@@ -15,6 +15,6 @@ manifest: |
     internal_only_domains: (( .ha_proxy.internal_only_domains.parsed_strings ))
     server_timeout: (( .router.request_timeout_in_seconds.value ))
     ssl_ciphers: (( .properties.haproxy_ssl_ciphers.value ))
-    ssl_pem: (( .properties.networking_poe_ssl_cert.cert_and_private_key_pems ))
+    ssl_pem: (( .properties.networking_poe_ssl_certs.parsed_manifest(routing_certificates) ))
     tcp_link_port: 2222
     trusted_domain_cidrs: (( .ha_proxy.trusted_domain_cidrs.value ))

@@ -1,8 +1,20 @@
 ---
 property_blueprints:
-  - name: networking_poe_ssl_cert
-    type: rsa_cert_credentials
+  - name: networking_poe_ssl_certs
+    type: collection
     configurable: true
+    property_blueprints:
+    - name: name
+      type: string
+      configurable: true
+    - name: certificate
+      type: rsa_cert_credentials
+      configurable: true
+    named_manifests:
+    - name: routing_certificates
+      manifest: |
+        cert_chain: (( current_record.certificate.cert_pem ))
+        private_key: (( current_record.certificate.private_key_pem ))
 
   - name: routing_disable_http
     type: boolean
