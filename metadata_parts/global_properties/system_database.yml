@@ -122,11 +122,11 @@ property_blueprints:
             max_open_connections: 10
         - name: autoscaling
           manifest: |
-              adapter: mysql
-              port: 3306
-              username: ((( autoscale-db-credentials.username )))
-              password: ((( autoscale-db-credentials.password )))
-              name: (( .properties.autoscale_database_name.value ))
+            adapter: mysql
+            port: 3306
+            username: ((( autoscale-db-credentials.username )))
+            password: ((( autoscale-db-credentials.password )))
+            name: (( .properties.autoscale_database_name.value ))
         - name: push-app-usage-service
           manifest: |
             port: 3306
