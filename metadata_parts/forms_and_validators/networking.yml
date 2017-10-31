@@ -195,6 +195,11 @@ form:
         applications and system components. Increase this to accommodate larger
         uploads over connections with high latency.
 
+    - reference: .router.frontend_idle_timeout
+      label: Frontend Idle Timeout for Gorouter and HAProxy
+      description: |
+        Duration in seconds to maintain an open connection when client supports keep-alive.
+
     - reference: .router.drain_wait
       label: Load Balancer Unhealthy Threshold
       description: |
