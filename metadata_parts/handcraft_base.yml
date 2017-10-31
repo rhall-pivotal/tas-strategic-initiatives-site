@@ -40,10 +40,10 @@ runtime_configs:
         release: bosh-dns-aliases
         properties:
           aliases:
-          - domain: credhub.services.cf.internal
+          - domain: credhub.service.cf.internal
             targets:
             - query: "*"
-              instance_group: credhub
+              instance_group: {{ tile | ert "credhub" | srt "control" }}
               deployment: (( ..cf.deployment_name ))
               network: (( ..cf.network_name ))
               domain: bosh
