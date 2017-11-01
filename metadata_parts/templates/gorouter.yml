@@ -11,6 +11,7 @@ manifest: |
       port: 8443
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   router:
+    ca_certs: (( .properties.routing_custom_ca_certificates.value ))
     forwarded_client_cert: (( .properties.router_forward_client_cert.value ))
     max_idle_connections: (( max_idle_connections.value ))
     route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))

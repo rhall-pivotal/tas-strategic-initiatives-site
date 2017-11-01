@@ -59,6 +59,15 @@ form:
           attributed to it, for example if you have separate system and
           application domains.
 
+    - reference: .properties.routing_custom_ca_certificates
+      label: Certificate Authorities Trusted by Router and HAProxy
+      description: |
+        In addition to well-known, public CAs, and those trusted via the BOSH
+        trusted certificates collection, these certificates can be used to
+        validate the certificates from incoming client requests. All CA
+        certificates should be appended together into a single collection of
+        PEM-encoded entries.
+
     - reference: .properties.routing_minimum_tls_version
       label: Minimum version of TLS supported by HAProxy and Router
       selector_property_inputs:

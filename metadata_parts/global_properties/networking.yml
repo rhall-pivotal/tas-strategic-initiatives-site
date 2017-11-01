@@ -16,6 +16,11 @@ property_blueprints:
         cert_chain: (( current_record.certificate.cert_pem ))
         private_key: (( current_record.certificate.private_key_pem ))
 
+  - name: routing_custom_ca_certificates
+    type: text
+    configurable: true
+    optional: true
+
   - name: routing_disable_http
     type: boolean
     configurable: true
