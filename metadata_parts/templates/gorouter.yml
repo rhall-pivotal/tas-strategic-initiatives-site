@@ -9,23 +9,23 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     ssl:
       port: 8443
-  request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
+  request_timeout_in_seconds: (( .router.request_timeout_in_seconds.value ))
   router:
     ca_certs: |
       (( .properties.routing_custom_ca_certificates.value ))
       (( $ops_manager.ca_certificate ))
       ((( /cf/diego-instance-identity-intermediate-ca.certificate )))
     forwarded_client_cert: (( .properties.router_forward_client_cert.value ))
-    max_idle_connections: (( max_idle_connections.value ))
+    max_idle_connections: (( .router.max_idle_connections.value ))
     route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
     ssl_skip_validation: (( .ha_proxy.skip_cert_verify.value ))
     drain_wait: (( .router.drain_wait.value ))
     tracing:
-      enable_zipkin: (( enable_zipkin.value ))
+      enable_zipkin: (( .router.enable_zipkin.value ))
     secure_cookies: (( .router.disable_insecure_cookies.value ))
     load_balancer_healthy_threshold: (( .router.lb_healthy_threshold.value ))
     extra_headers_to_log: (( .router.extra_headers_to_log.parsed_strings ))
-    routing_table_sharding_mode: '(( enable_isolated_routing.value ? "shared-and-segments" : "all" ))'
+    routing_table_sharding_mode: '(( .router.enable_isolated_routing.value ? "shared-and-segments" : "all" ))'
     status:
       user: ((( router-status-credentials.username )))
       password: ((( router-status-credentials.password )))

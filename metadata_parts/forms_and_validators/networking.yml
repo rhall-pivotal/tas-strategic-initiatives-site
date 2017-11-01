@@ -20,6 +20,18 @@ form:
         be left blank and the "Load Balancers" field on the "Resource Config"
         tab can be filled out with the correct load balancer assignment.
 
+    - reference: .router_system.static_ips
+      label: System Router IPs
+      description: |
+        If you are deploying onto an infrastructure that does not support
+        automated assignment of routers to load balancers (vSphere), or you are
+        intending to manually configure your load balancer with the IP
+        addresses of the routers, you should enter static IP addresses here
+        that will be used by the routers. On infrastructures where automated
+        load balancer assignment is supported (AWS, GCP, Azure), this field can
+        be left blank and the "Load Balancers" field on the "Resource Config"
+        tab can be filled out with the correct load balancer assignment.
+
     - reference: .diego_brain.static_ips
       label: SSH Proxy IPs
       description: |
@@ -33,6 +45,13 @@ form:
       label: HAProxy IPs
       description: |
         If you are using HAProxy, enter its IP address(es). The addresses must
+        be within your subnet CIDR block. Point your DNS to this IP address
+        unless you are using your own load balancer.
+
+    - reference: .ha_proxy_system.static_ips
+      label: System HAProxy IPs
+      description: |
+        If you are using the System HAProxy, enter its IP address(es). The addresses must
         be within your subnet CIDR block. Point your DNS to this IP address
         unless you are using your own load balancer.
 
@@ -248,6 +267,22 @@ form:
 
     - reference: .ha_proxy.trusted_domain_cidrs
       label: HAProxy Trusted CIDRs
+      description: |
+        A space-separated list of CIDRs allowed to make requests to the domains
+        listed in the "Protected Domains" field. For example, specifying
+        10.0.1.0/24 would allow any requests originating at a host IP in that
+        range to reach applications or services hosted on the "Protected
+        Domains" list.
+
+    - reference: .ha_proxy_system.internal_only_domains
+      label: System HAProxy Protected Domains
+      description: |
+        A comma-separated list of domains to protect from requests from unknown
+        sources. Use this property in conjunction with "Trusted CIDRs" to
+        protect these domains from requests from unknown sources.
+
+    - reference: .ha_proxy_system.trusted_domain_cidrs
+      label: System HAProxy Trusted CIDRs
       description: |
         A space-separated list of CIDRs allowed to make requests to the domains
         listed in the "Protected Domains" field. For example, specifying

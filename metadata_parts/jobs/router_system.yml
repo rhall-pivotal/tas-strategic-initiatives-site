@@ -1,0 +1,56 @@
+---
+name: router_system
+label: System Router
+resource_label: System Router
+description: Routers route Internet traffic to applications and between Pivotal CF
+  Elastic Runtime components.
+templates:
+- consul_agent
+- gorouter
+- metron_agent
+- syslog_forwarder
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 1024
+  constraints:
+    min: 1024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 2048
+  constraints:
+    min: 2048
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+static_ip: 1
+dynamic_ip: 0
+max_in_flight: 1
+single_az_only: false
+serial: true
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 0
+  constraints:
+    min: 0
+property_blueprints:
+- name: static_ips
+  type: ip_ranges
+  configurable: true
+  optional: true
