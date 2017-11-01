@@ -76,15 +76,6 @@ property_blueprints:
     type: rsa_cert_credentials
     configurable: false
 
-  - name: haproxy_ssl_ciphers
-    type: text
-    configurable: true
-
-  - name: haproxy_max_buffer_size
-    type: integer
-    configurable: true
-    default: 16384
-
   - name: haproxy_forward_tls
     type: selector
     configurable: true
@@ -112,6 +103,15 @@ property_blueprints:
         - name: backend_ssl
           manifest: |
             "off"
+
+  - name: haproxy_max_buffer_size
+    type: integer
+    configurable: true
+    default: 16384
+
+  - name: haproxy_ssl_ciphers
+    type: text
+    configurable: true
 
   - name: tcp_routing
     type: selector
