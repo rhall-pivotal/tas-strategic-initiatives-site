@@ -124,6 +124,7 @@ manifest: |
     ca_certs: |
       (( .properties.routing_custom_ca_certificates.value ))
       (( $ops_manager.ca_certificate ))
+      ((( /cf/diego-instance-identity-intermediate-ca.certificate )))
     tracing:
       enable_zipkin: (( enable_zipkin.value ))
     secure_cookies: (( disable_insecure_cookies.value ))
