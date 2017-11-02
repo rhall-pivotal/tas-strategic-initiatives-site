@@ -186,6 +186,7 @@ manifest: |
         cert: (( .properties.metron_tls_cert.cert_pem ))
         key: (( .properties.metron_tls_cert.private_key_pem ))
   nfsv3driver: (( .properties.nfs_volume_driver.selected_option.parsed_manifest(nfsv3driver_properties) ))
+  register_direct_instance_routes: (( ..cf.properties.container_networking_interface_plugin.selected_option.parsed_manifest(use_container_address) ))
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
   tcp:
     enabled: true
