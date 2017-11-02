@@ -4,18 +4,18 @@ label: Backup Prepare Node
 resource_label: Backup Prepare Node
 description: Streams backups from MySQL Cluster
 templates:
-- streaming-mysql-backup-client
-- service-backup
-- mysql-backup
-- syslog_forwarder
-- bbr-usage-servicedb
-- lock-unlock-pcf-autoscaling
+- backup-restore-notifications
 - backup-restore-pcf-autoscaling
-- bbr-cloudcontrollerdb
 - bbr-cfnetworkingdb
+- bbr-cloudcontrollerdb
 - bbr-routingdb
 - bbr-uaadb
-- backup-restore-notifications
+- bbr-usage-servicedb
+- lock-unlock-pcf-autoscaling
+- mysql-backup
+- service-backup
+- streaming-mysql-backup-client
+- syslog_forwarder
 resource_definitions:
 - name: ram
   type: integer
