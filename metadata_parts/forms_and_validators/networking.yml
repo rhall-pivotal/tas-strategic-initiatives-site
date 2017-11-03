@@ -255,22 +255,6 @@ form:
         range to reach applications or services hosted on the "Protected
         Domains" list.
 
-    - reference: .ha_proxy_system.internal_only_domains
-      label: System HAProxy Protected Domains
-      description: |
-        A comma-separated list of domains to protect from requests from unknown
-        sources. Use this property in conjunction with "Trusted CIDRs" to
-        protect these domains from requests from unknown sources.
-
-    - reference: .ha_proxy_system.trusted_domain_cidrs
-      label: System HAProxy Trusted CIDRs
-      description: |
-        A space-separated list of CIDRs allowed to make requests to the domains
-        listed in the "Protected Domains" field. For example, specifying
-        10.0.1.0/24 would allow any requests originating at a host IP in that
-        range to reach applications or services hosted on the "Protected
-        Domains" list.
-
     - reference: .diego_cell.garden_network_mtu
       label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
       description: |
