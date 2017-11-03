@@ -20,18 +20,6 @@ form:
         be left blank and the "Load Balancers" field on the "Resource Config"
         tab can be filled out with the correct load balancer assignment.
 
-    - reference: .router_system.static_ips
-      label: System Router IPs
-      description: |
-        If you are deploying onto an infrastructure that does not support
-        automated assignment of routers to load balancers (vSphere), or you are
-        intending to manually configure your load balancer with the IP
-        addresses of the routers, you should enter static IP addresses here
-        that will be used by the routers. On infrastructures where automated
-        load balancer assignment is supported (AWS, GCP, Azure), this field can
-        be left blank and the "Load Balancers" field on the "Resource Config"
-        tab can be filled out with the correct load balancer assignment.
-
     - reference: .diego_brain.static_ips
       label: SSH Proxy IPs
       description: |
@@ -45,13 +33,6 @@ form:
       label: HAProxy IPs
       description: |
         If you are using HAProxy, enter its IP address(es). The addresses must
-        be within your subnet CIDR block. Point your DNS to this IP address
-        unless you are using your own load balancer.
-
-    - reference: .ha_proxy_system.static_ips
-      label: System HAProxy IPs
-      description: |
-        If you are using the System HAProxy, enter its IP address(es). The addresses must
         be within your subnet CIDR block. Point your DNS to this IP address
         unless you are using your own load balancer.
 
