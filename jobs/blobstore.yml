@@ -1,74 +1,16 @@
 ---
 name: blobstore
-label: File Storage
-resource_label: File Storage
-description: Stores droplets and app packages on behalf of Cloud Controller
-
-templates:
-{{ define "ert-blobstore-templates" }}
-- placeholder
-{{ end }}
-{{ define "srt-blobstore-templates" }}
-- consul_agent_nfs_server
-- metron_agent
-- blobstore
-- route_registrar_nfs_server
-- blobstore-backup
-- syslog_forwarder
-{{ end }}
-{{ tile | ert_template "ert-blobstore-templates" | srt_template "srt-blobstore-templates" }}
-
-resource_definitions:
-- name: cpu
-  type: integer
-  label: CPU
-  configurable: true
-  default: 1
-  constraints:
-    min: 1
-
-- name: ram
-  type: integer
-  label: RAM
-  configurable: true
-  default: 4096
-  constraints:
-    min: 4096
-
-- name: ephemeral_disk
-  type: integer
-  label: Ephemeral Disk
-  configurable: true
-  default: 8192
-  constraints:
-    min: 8192
-
-- name: persistent_disk
-  type: integer
-  label: Persistent Disk
-  configurable: true
-  default: 102400
-  constraints:
-    min: 10240
-
-static_ip: 1
-dynamic_ip: 0
-max_in_flight: 1
-serial: true
-single_az_only: true
-
-instance_definition:
-  name: instances
-  type: integer
-  label: Instances
-  configurable: {{ tile | ert "false" | srt "true" }}
-  default: {{ tile | ert "0" | srt "1" }}
-  constraints:
-    max: {{ tile | ert "0" | srt "1" }}
-    min: 0
-  zero_if:
-    property_reference: ".properties.system_blobstore"
-    property_values:
-    - external
-    - external_gcs
-    - external_azure
+release: capi
+manifest: |
+  blobstore:
+    admin_users:
+    - username: ((( webdav-blobstore-credentials.username )))
+      password: ((( webdav-blobstore-credentials.password )))
+    secure_link:
+      secret: (( .nfs_server.blobstore_secret.value ))
+    tls:
+      cert: (( .nfs_server.blobstore_cert.cert_pem ))
+      private_key: (( .nfs_server.blobstore_cert.private_key_pem ))
+    internal_access_rules: (( .nfs_server.blobstore_internal_access_rules.parsed_strings ))
+  release_level_backup: true
+  system_domain: (( .cloud_controller.system_domain.value ))

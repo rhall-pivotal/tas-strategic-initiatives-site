@@ -1,82 +1,20 @@
 ---
 name: doppler
-label: Doppler Server
-resource_label: Doppler Server
-description: Doppler server collects application logs
-templates:
-{{ define "ert-doppler-templates" }}
-- consul_agent_doppler
-- doppler
-- metron_agent
-- syslog_drain_binder
-- syslog_forwarder
-{{ end }}
-{{ define "srt-doppler-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-doppler-templates" | srt_template "srt-doppler-templates" }}
-
-resource_definitions:
-- name: ram
-  type: integer
-  label: RAM
-  configurable: true
-  default: 1024
-  constraints:
-    min: 1024
-- name: ephemeral_disk
-  type: integer
-  label: Ephemeral Disk
-  configurable: true
-  default: 2048
-  constraints:
-    min: 2048
-- name: persistent_disk
-  type: integer
-  label: Persistent Disk
-  configurable: false
-  default: 0
-- name: cpu
-  type: integer
-  label: CPU
-  configurable: true
-  default: 1
-  constraints:
-    min: 1
-static_ip: 0
-dynamic_ip: 1
-max_in_flight: 1
-single_az_only: false
-instance_definition:
-  name: instances
-  type: integer
-  label: Instances
-  configurable: {{ tile | ert "true" | srt "false" }}
-  default: {{ tile | ert "3" | srt "0" }}
-  constraints:
-    min: {{ tile | ert "1" | srt "0" }}
-property_blueprints:
-- name: shared_secret_credentials
-  type: simple_credentials
-- name: message_drain_buffer_size
-  type: integer
-  default: 10000
-  configurable: true
-- name: doppler_tls_cert
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-    - doppler
-- name: metron_tls_cert
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-    - metron
-- name: syslogdrainbinder_tls_cert
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-    - syslogdrainbinder
+release: loggregator
+manifest: |
+  loggregator:
+    disable_syslog_drains: true
+    etcd:
+      machines: []
+    tls:
+      doppler:
+        cert: (( .doppler.doppler_tls_cert.cert_pem ))
+        key: (( .doppler.doppler_tls_cert.private_key_pem ))
+      ca_cert: (( $ops_manager.ca_certificate ))
+  doppler_endpoint:
+    shared_secret: (( .doppler.shared_secret_credentials.password ))
+  doppler:
+    disable_announce: true
+    message_drain_buffer_size: (( .doppler.message_drain_buffer_size.value ))
+    outgoing_port: 65123 # This is a random port as nothing cares about what doppler listens on
+    health_addr: localhost:14826

@@ -1,61 +1,24 @@
 ---
 name: push-usage-service
-label: Usage Service Errand
-resource_label: Usage Service Errand
-description: Pushes the Pivotal Usage Service application to your Elastic Runtime installation. Pivotal Apps Manager depends on this application.
-templates:
-- push-usage-service
-- cflinuxfs2-rootfs-setup
-- nodejs-buildpack
-- ruby-buildpack
-resource_definitions:
-- name: ram
-  type: integer
-  label: RAM
-  configurable: true
-  default: 1_024
-  constraints:
-    min: 1_024
-
-- name: ephemeral_disk
-  type: integer
-  label: Ephemeral Disk
-  configurable: true
-  default: 2_048
-  constraints:
-    min: 2_048
-
-- name: persistent_disk
-  type: integer
-  label: Persistent Disk
-  configurable: false
-  default: 0
-
-- name: cpu
-  type: integer
-  label: CPU
-  configurable: true
-  default: 1
-  constraints:
-    min: 1
-
-static_ip: 0
-dynamic_ip: 1
-max_in_flight: 1
-single_az_only: false
-errand: true
-run_post_deploy_errand_default: when-changed
-
-instance_definition:
-  name: instances
-  type: integer
-  label: Instances
-  configurable: false
-  default: 1
-  constraints:
-    min: 0
-
-property_blueprints:
-  - name: secret_token
-    type: secret
-    configurable: false
+release: push-usage-service-release
+consumes: |
+  (( .properties.system_database.selected_option.parsed_manifest(push_app_usage_service_db_link) ))
+manifest: |
+  cf:
+    api_url: "https://api.(( .cloud_controller.system_domain.value ))"
+    uaa_url: "https://login.(( .cloud_controller.system_domain.value ))"
+    notifications_service_url: "https://notifications.(( .cloud_controller.system_domain.value ))"
+    admin_username: (( .uaa.push_apps_manager_credentials.identity ))
+    admin_password: (( .uaa.push_apps_manager_credentials.password ))
+    system_domain: (( .cloud_controller.system_domain.value ))
+    apps_domain: (( .cloud_controller.apps_domain.value ))
+  app_usage_service:
+    url: "https://app-usage.(( .cloud_controller.system_domain.value ))"
+    uaa_client_id: (( .uaa.usage_service_client_credentials.identity ))
+    uaa_client_secret: (( .uaa.usage_service_client_credentials.password ))
+    rails_secret_token: (( secret_token.value ))
+  databases:
+    app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+    disable_http_for_links: (( .properties.routing_disable_http.value ))

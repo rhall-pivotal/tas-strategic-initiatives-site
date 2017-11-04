@@ -1,0 +1,299 @@
+---
+name: uaa
+label: UAA
+resource_label: UAA
+description: Pivotal CF Elastic Runtime's Authentication and Authorization server
+templates:
+{{ define "ert-uaa-templates" }}
+- consul_agent_uaa
+- uaa
+- metron_agent
+- route_registrar_uaa
+- statsd_injector
+- syslog_forwarder
+{{ end }}
+{{ define "srt-uaa-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-uaa-templates" | srt_template "srt-uaa-templates" }}
+
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 4096
+  constraints:
+    min: 1024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 32768
+  constraints:
+    min: 2048
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 2
+  constraints:
+    min: 1
+static_ip: 0
+dynamic_ip: 1
+max_in_flight: 1
+single_az_only: false
+serial: true
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  default: {{ tile | ert "2" | srt "0" }}
+  configurable: {{ tile | ert "true" | srt "false" }}
+  constraints:
+    min: {{ tile | ert "1" | srt "0" }}
+property_blueprints:
+- name: admin_credentials
+  type: simple_credentials
+  default:
+    identity: admin
+- name: push_apps_manager_credentials
+  type: simple_credentials
+  default:
+    identity: push_apps_manager
+- name: run_smoke_tests_credentials
+  type: simple_credentials
+  default:
+    identity: smoke_tests
+- name: system_services_credentials
+  type: simple_credentials
+  default:
+    identity: system_services
+- name: system_verification_credentials
+  type: simple_credentials
+  default:
+    identity: system_verification
+- name: system_passwords_client_credentials
+  type: simple_credentials
+  default:
+    identity: system_passwords
+- name: login_client_credentials
+  type: simple_credentials
+  default:
+    identity: login
+- name: identity_client_credentials
+  type: simple_credentials
+  label: Identity client credentials
+  default:
+    identity: identity
+- name: gorouter_client_credentials
+  type: simple_credentials
+  default:
+    identity: gorouter
+- name: doppler_client_credentials
+  type: simple_credentials
+  default:
+    identity: doppler
+- name: opentsdb_nozzle_credentials
+  type: simple_credentials
+  default:
+    identity: opentsdb-firehose-nozzle
+- name: apps_manager_client_credentials
+  type: simple_credentials
+  default:
+    identity: portal
+- name: usage_service_client_credentials
+  type: simple_credentials
+  default:
+    identity: usage_service
+- name: invitations_client_credentials
+  type: simple_credentials
+  default:
+    identity: invitations
+- name: autoscale_client_credentials
+  type: simple_credentials
+  default:
+    identity: autoscaling_service
+- name: cc_service_dashboards_credentials
+  type: simple_credentials
+  default:
+    identity: cc-service-dashboards
+- name: cc_service_key_credentials
+  type: simple_credentials
+  default:
+    identity: cc_service_key_client
+- name: services_credhub_credentials
+  type: simple_credentials
+  default:
+    identity: services_credhub_client
+- name: cc_client_credentials
+  type: simple_credentials
+  default:
+    identity: cloud_controller
+- name: admin_client_credentials
+  type: simple_credentials
+  default:
+    identity: admin
+- name: jwt_signing_key_credentials
+  type: rsa_pkey_credentials
+- name: notifications_client_credentials
+  type: simple_credentials
+  default:
+    identity: notifications
+- name: notifications_template_client_credentials
+  type: simple_credentials
+  default:
+    identity: notifications_template
+- name: ssh_proxy_client_credentials
+  type: simple_credentials
+  default:
+    identity: ssh_proxy
+- name: notifications_ui_client_credentials
+  type: simple_credentials
+  default:
+    identity: notifications_ui_client
+- name: cloud_controller_username_lookup_credentials
+  type: simple_credentials
+  default:
+    identity: cloud_controller_username_lookup
+- name: cc_routing_credentials
+  type: simple_credentials
+  default:
+    identity: cc_routing
+- name: apps_metrics_credentials
+  type: simple_credentials
+  default:
+    identity: apps_metrics
+- name: apps_metrics_processing_credentials
+  type: simple_credentials
+  default:
+    identity: apps_metrics_processing
+- name: healthwatch_ui_credentials
+  type: simple_credentials
+  default:
+    identity: healthwatch_ui
+- name: healthwatch_firehose_credentials
+  type: simple_credentials
+  default:
+    identity: healthwatch_firehose
+- name: tcp_router_credentials
+  type: simple_credentials
+  default:
+    identity: tcp_router
+- name: tcp_emitter_credentials
+  type: simple_credentials
+  default:
+    identity: tcp_emitter
+- name: loggregator_credentials
+  type: simple_credentials
+  default:
+    identity: loggregator
+- name: service_provider_key_credentials
+  type: rsa_cert_credentials
+  configurable: true
+- name: service_provider_key_password
+  type: secret
+  configurable: true
+  optional: true
+- name: apps_manager_access_token_lifetime
+  type: integer
+  configurable: true
+  default: 1209600
+- name: apps_manager_refresh_token_lifetime
+  type: integer
+  configurable: true
+  default: 1209600
+- name: cf_cli_access_token_lifetime
+  type: integer
+  configurable: true
+  default: 7200
+- name: cf_cli_refresh_token_lifetime
+  type: integer
+  configurable: true
+  default: 1209600
+- name: ssl_credentials
+  type: rsa_cert_credentials
+  default:
+    domains:
+    - uaa.service.cf.internal
+- name: pivotal_account_client_credentials
+  type: simple_credentials
+  default:
+    identity: pivotal_account
+- name: concourse_atc_client_credentials
+  type: simple_credentials
+  default:
+    identity: concourse_atc
+- name: logsearch_firehose_credentials
+  type: simple_credentials
+  default:
+    identity: logsearch-firehose
+- name: splunk_firehose_credentials
+  type: simple_credentials
+  default:
+    identity: splunk-firehose
+- name: stackdriver_nozzle_credentials
+  type: simple_credentials
+  default:
+    identity: stackdriver-nozzle
+- name: solace_router_client_credentials
+  type: simple_credentials
+  default:
+    identity: solace_router
+- name: greenplum_broker_client_credentials
+  type: simple_credentials
+  default:
+    identity: greenplum_broker
+- name: greenplum_router_admin_client_credentials
+  type: simple_credentials
+  default:
+    identity: greenplum_router_admin
+- name: greenplum_router_client_credentials
+  type: simple_credentials
+  default:
+    identity: greenplum_router
+- name: cloudcache_broker_client_credentials
+  type: simple_credentials
+  default:
+    identity: cloudcache_broker
+- name: dedicated_mysql_notifications_client_credentials
+  type: simple_credentials
+  default:
+    identity: dedicated-mysql-notifications
+- name: customize_username_label
+  type: string
+  configurable: true
+  default: Email
+- name: customize_password_label
+  type: string
+  configurable: true
+  default: Password
+- name: push_notifications_dashboard_client
+  type: simple_credentials
+  default:
+    identity: push-notifications-dashboard
+- name: push_api_client
+  type: simple_credentials
+  default:
+    identity: push-api-client
+- name: network_policy_server_client
+  type: simple_credentials
+  default:
+    identity: network-policy-server
+- name: container_networking_interface_client_credentials
+  type: simple_credentials
+  default:
+    identity: container-networking-interface
+- name: proxy_ips_regex
+  type: string
+  configurable: true
+  default: 10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3}
+- name: issuer_uri
+  type: string
+  configurable: true
+  optional: true

@@ -1,77 +1,74 @@
 ---
 name: mysql
-label: MySQL Server
-resource_label: MySQL Server
-description: Multi-tenant MySQL server.
-templates:
-{{ define "ert-mysql-templates" }}
-- consul_agent
-- metron_agent
-- mysql
-- mysql-metrics
-- streaming-mysql-backup-tool
-- send-email
-- mysql-diag-agent
-- mysql-restore
-- syslog_forwarder
-{{ end }}
-{{ define "srt-mysql-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-mysql-templates" | srt_template "srt-mysql-templates" }}
+release: cf-mysql
+provides: |
+  internal-mysql-database: {as: direct-mysql}
 
-resource_definitions:
-- name: ram
-  type: integer
-  label: RAM
-  configurable: true
-  default: 8192
-  constraints:
-    min: 4096
-- name: ephemeral_disk
-  type: integer
-  label: Ephemeral Disk
-  configurable: true
-  default: 30000
-  constraints:
-    min: 10000
-- name: persistent_disk
-  type: integer
-  label: Persistent Disk
-  configurable: true
-  default: 100000
-  constraints:
-    min: 10000
-- name: cpu
-  type: integer
-  label: CPU
-  configurable: true
-  default: 2
-  constraints:
-    min: 1
-static_ip: 1
-dynamic_ip: 0
-max_in_flight: 1
-single_az_only: false
-instance_definition:
-  name: instances
-  type: integer
-  label: Instances
-  configurable: {{ tile | ert "true" | srt "false" }}
-  default: {{ tile | ert "3" | srt "0" }}
-  constraints:
-    may_only_be_odd_or_zero: true
-    min: 0
-  zero_if:
-    property_reference: ".properties.system_database"
-    property_values:
-    - external
-property_blueprints:
-- name: cli_history
-  type: boolean
-  configurable: true
-  default: true
-- name: cluster_probe_timeout
-  type: integer
-  configurable: true
-  optional: true
+manifest: |
+  cf_mysql:
+    mysql:
+      port: {{ tile | ert "3306" | srt "33306" }}
+      cli_history: (( .mysql.cli_history.value ))
+      interrupt_notify_cmd: "/var/vcap/jobs/send-email/bin/run"
+      innodb_buffer_pool_size: 2147483648
+      innodb_strict_mode: true
+      max_open_files: 1048576
+      startup_timeout: 120
+      cluster_probe_timeout: (( .mysql.cluster_probe_timeout.value ))
+      cluster_health:
+        password: ((( mysql-cluster-health-credentials.password )))
+      seeded_databases:
+      - name: (( .properties.account_database_name.value ))
+        username: ((( pivotal-account-db-credentials.username )))
+        password: ((( pivotal-account-db-credentials.password )))
+      - name: (( .properties.app_usage_service_database_name.value ))
+        username: ((( app-usage-db-credentials.username )))
+        password: ((( app-usage-db-credentials.password )))
+      - name: (( .properties.autoscale_database_name.value ))
+        username: ((( autoscale-db-credentials.username )))
+        password: ((( autoscale-db-credentials.password )))
+      - name: (( .properties.ccdb_database_name.value ))
+        username: ((( cc-db-credentials.username )))
+        password: ((( cc-db-credentials.password )))
+      - name: (( .properties.credhub_database_name.value ))
+        username: ((( credhub-db-credentials.username )))
+        password: ((( credhub-db-credentials.password )))
+      - name: (( .properties.diego_database_name.value ))
+        username: ((( diego-db-credentials.username )))
+        password: ((( diego-db-credentials.password )))
+      - name: (( .properties.locket_database_name.value ))
+        username: ((( locket-db-credentials.username )))
+        password: ((( locket-db-credentials.password )))
+      - name: (( .properties.networkpolicyserver_database_name.value ))
+        username: ((( network-policy-server-db-credentials.username )))
+        password: ((( network-policy-server-db-credentials.password )))
+      - name: (( .properties.nfsvolume_database_name.value ))
+        username: ((( nfs-volume-db-credentials.username )))
+        password: ((( nfs-volume-db-credentials.password )))
+      - name: (( .properties.notifications_database_name.value ))
+        username: ((( notifications-db-credentials.username )))
+        password: ((( notifications-db-credentials.password )))
+      - name: (( .properties.routing_database_name.value ))
+        username: ((( routing-db-credentials.username )))
+        password: ((( routing-db-credentials.password )))
+      - name: (( .properties.silk_database_name.value ))
+        username: ((( silk-db-credentials.username )))
+        password: ((( silk-db-credentials.password )))
+      - name: (( .properties.uaa_database_name.value ))
+        username: ((( uaa-db-credentials.username )))
+        password: ((( uaa-db-credentials.password )))
+      - name: monitor
+        username: ((( mysql-monitor-db-credentials.username )))
+        password: ((( mysql-monitor-db-credentials.password )))
+      - name: metrics_db
+        username: ((( mysql-metrics-db-credentials.username )))
+        password: ((( mysql-metrics-db-credentials.password )))
+      server_audit_excluded_users:
+      - ((( mysql-metrics-db-credentials.username )))
+      - ((( mysql-monitor-db-credentials.username )))
+      admin_password: ((( mysql-admin-credentials.password )))
+      galera_healthcheck:
+        db_password: ((( mysql-galera-sidecar-credentials.password )))
+        endpoint_username: ((( mysql-bootstrap-db-credentials.username )))
+        endpoint_password: ((( mysql-bootstrap-db-credentials.password )))
+      server_audit_events: (( .properties.mysql_activity_logging.selected_option.parsed_manifest(mysql_audit_events) ))

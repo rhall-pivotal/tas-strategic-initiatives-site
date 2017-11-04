@@ -1,0 +1,147 @@
+---
+name: push-apps-manager
+label: Apps Manager Errand
+resource_label: Apps Manager Errand
+description: Pushes the Pivotal Apps Manager application to your Elastic Runtime installation
+templates:
+- push-apps-manager
+- cflinuxfs2-rootfs-setup
+- nodejs-buildpack
+- ruby-buildpack
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 1024
+  constraints:
+    min: 1024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 2048
+  constraints:
+    min: 2048
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+static_ip: 0
+dynamic_ip: 1
+max_in_flight: 1
+single_az_only: false
+errand: true
+run_post_deploy_errand_default: when-changed
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: false
+  default: 1
+  constraints:
+    min: 0
+property_blueprints:
+  - name: company_name
+    type: string
+    configurable: true
+    optional: true
+
+  - name: accent_color
+    type: string
+    configurable: true
+    optional: true
+
+  - name: global_wrapper_bg_color
+    type: string
+    configurable: true
+    optional: true
+
+  - name: global_wrapper_text_color
+    type: string
+    configurable: true
+    optional: true
+
+  - name: global_wrapper_header_content
+    type: text
+    configurable: true
+    optional: true
+
+  - name: global_wrapper_footer_content
+    type: text
+    configurable: true
+    optional: true
+
+  - name: logo
+    type: text
+    configurable: true
+    optional: true
+
+  - name: square_logo
+    type: text
+    configurable: true
+    optional: true
+
+  - name: footer_text
+    type: string
+    configurable: true
+    optional: true
+
+  - name: footer_links
+    type: collection
+    configurable: true
+    optional: true
+    property_blueprints:
+      - name: name
+        type: string
+      - name: href
+        type: string
+
+  - name: nav_links
+    type: collection
+    configurable: true
+    property_blueprints:
+    - name: name
+      type: string
+    - name: href
+      type: string
+    default:
+    - name: Marketplace
+      href: /marketplace
+    - name: Docs
+      href: http://docs.pivotal.io/pivotalcf/getstarted/pcf-docs.html
+    - name: Tools
+      href: /tools
+
+  - name: product_name
+    type: string
+    configurable: true
+    optional: true
+
+  - name: marketplace_name
+    type: string
+    configurable: true
+    optional: true
+
+  - name: enable_invitations
+    type: boolean
+    configurable: true
+    default: true
+
+  - name: display_plan_prices
+    type: boolean
+    configurable: true
+    default: false
+
+  - name: currency_lookup
+    type: string
+    configurable: true
+    default: "{ \"usd\": \"$\", \"eur\": \"€\" }"

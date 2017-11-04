@@ -1,0 +1,78 @@
+---
+name: loggregator_trafficcontroller
+label: Loggregator Trafficcontroller
+resource_label: Loggregator Trafficcontroller
+description: Loggregator trafficcontroller distributes requests to Loggregator servers
+templates:
+{{ define "ert-loggregator-trafficcontroller-templates" }}
+- consul_agent_loggregator_trafficcontroller
+- loggregator_trafficcontroller
+- metron_agent
+- reverse_log_proxy
+- route_registrar_loggregator_trafficcontroller
+- bosh_system_metrics_forwarder
+- syslog_forwarder
+{{ end }}
+{{ define "srt-loggregator-trafficcontroller-templates" }}
+- placeholder
+{{ end }}
+{{ tile | ert_template "ert-loggregator-trafficcontroller-templates" | srt_template "srt-loggregator-trafficcontroller-templates" }}
+
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 1024
+  constraints:
+    min: 1024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 2048
+  constraints:
+    min: 2048
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+static_ip: 0
+dynamic_ip: 1
+max_in_flight: 1
+single_az_only: false
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  default: {{ tile | ert "3" | srt "0" }}
+  configurable: {{ tile | ert "true" | srt "false" }}
+  constraints:
+    min: {{ tile | ert "1" | srt "0" }}
+property_blueprints:
+- name: cc_trafficcontroller_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - cc_trafficcontroller
+- name: trafficcontroller_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - trafficcontroller
+- name: statsdinjector_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - statsdinjector

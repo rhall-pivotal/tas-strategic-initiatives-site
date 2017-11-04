@@ -1,0 +1,48 @@
+---
+name: bootstrap
+label: MySQL Bootstrap Errand
+resource_label: MySQL Bootstrap Errand
+description: Errand for bootstrapping the MySQL cluster
+templates:
+- bootstrap
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 2048
+  constraints:
+    min: 1024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 2048
+  constraints:
+    min: 1024
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+static_ip: 0
+dynamic_ip: 1
+single_az_only: false
+errand: true
+run_post_deploy_errand_default: when-changed
+max_in_flight: 1
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: false
+  default: 1
+  constraints:
+    min: 0

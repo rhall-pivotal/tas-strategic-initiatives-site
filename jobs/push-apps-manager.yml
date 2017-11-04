@@ -1,147 +1,45 @@
 ---
 name: push-apps-manager
-label: Apps Manager Errand
-resource_label: Apps Manager Errand
-description: Pushes the Pivotal Apps Manager application to your Elastic Runtime installation
-templates:
-- push-apps-manager
-- cflinuxfs2-rootfs-setup
-- nodejs-buildpack
-- ruby-buildpack
-resource_definitions:
-- name: ram
-  type: integer
-  label: RAM
-  configurable: true
-  default: 1024
-  constraints:
-    min: 1024
-- name: ephemeral_disk
-  type: integer
-  label: Ephemeral Disk
-  configurable: true
-  default: 2048
-  constraints:
-    min: 2048
-- name: persistent_disk
-  type: integer
-  label: Persistent Disk
-  configurable: false
-  default: 0
-- name: cpu
-  type: integer
-  label: CPU
-  configurable: true
-  default: 1
-  constraints:
-    min: 1
-static_ip: 0
-dynamic_ip: 1
-max_in_flight: 1
-single_az_only: false
-errand: true
-run_post_deploy_errand_default: when-changed
-instance_definition:
-  name: instances
-  type: integer
-  label: Instances
-  configurable: false
-  default: 1
-  constraints:
-    min: 0
-property_blueprints:
-  - name: company_name
-    type: string
-    configurable: true
-    optional: true
-
-  - name: accent_color
-    type: string
-    configurable: true
-    optional: true
-
-  - name: global_wrapper_bg_color
-    type: string
-    configurable: true
-    optional: true
-
-  - name: global_wrapper_text_color
-    type: string
-    configurable: true
-    optional: true
-
-  - name: global_wrapper_header_content
-    type: text
-    configurable: true
-    optional: true
-
-  - name: global_wrapper_footer_content
-    type: text
-    configurable: true
-    optional: true
-
-  - name: logo
-    type: text
-    configurable: true
-    optional: true
-
-  - name: square_logo
-    type: text
-    configurable: true
-    optional: true
-
-  - name: footer_text
-    type: string
-    configurable: true
-    optional: true
-
-  - name: footer_links
-    type: collection
-    configurable: true
-    optional: true
-    property_blueprints:
-      - name: name
-        type: string
-      - name: href
-        type: string
-
-  - name: nav_links
-    type: collection
-    configurable: true
-    property_blueprints:
-    - name: name
-      type: string
-    - name: href
-      type: string
-    default:
-    - name: Marketplace
-      href: /marketplace
-    - name: Docs
-      href: http://docs.pivotal.io/pivotalcf/getstarted/pcf-docs.html
-    - name: Tools
-      href: /tools
-
-  - name: product_name
-    type: string
-    configurable: true
-    optional: true
-
-  - name: marketplace_name
-    type: string
-    configurable: true
-    optional: true
-
-  - name: enable_invitations
-    type: boolean
-    configurable: true
-    default: true
-
-  - name: display_plan_prices
-    type: boolean
-    configurable: true
-    default: false
-
-  - name: currency_lookup
-    type: string
-    configurable: true
-    default: "{ \"usd\": \"$\", \"eur\": \"€\" }"
+release: push-apps-manager-release
+consumes: |
+  (( .properties.system_database.selected_option.parsed_manifest(push_app_usage_service_db_link) ))
+manifest: |
+  apps_manager:
+    generic_white_labeling:
+      global_wrapper_footer_content: (( global_wrapper_footer_content.value ))
+      accent_color: (( accent_color.value ))
+      footer_links: (( footer_links.value ))
+      footer_text: (( footer_text.value || "©2017 Pivotal Software, Inc. All Rights Reserved." ))
+      global_wrapper_bg_color: (( global_wrapper_bg_color.value ))
+      global_wrapper_text_color: (( global_wrapper_text_color.value ))
+      global_wrapper_header_content: (( global_wrapper_header_content.value ))
+      company_name: (( company_name.value || "Pivotal" ))
+      square_logo: (( square_logo.value || "iVBORw0KGgoAAAANSUhEUgAAAGwAAABsCAYAAACPZlfNAAAAAXNSR0IArs4c6QAABYtJREFUeAHtnVtsFFUYx7/d3ruWotUKVIkNaCw02YgJGBRTMd4CokUejD4QH4gxQcIDeHnBmPjkhSghUYLGe3ywPtAHNCo0QgkWwi2tXG2V1kIpLXTbLt1tS9dzlmzSJssZhv32zDk7/2km2znn7Pd9+/vt2Z2dmW0D9Obat4gCiwiLBQQSLflSViAQeN6Can1fYiJBFPQ9BcsAQBiEWUbAsnIxwyDMMgKWlYsZBmGWEbCsXMwwCLOMgGXlYoZBmGUELCsXMwzCLCNgWbmYYRBmGQHLysUMgzDLCFhWLmYYhFlGwLJyMcMgzDIClpWLGQZhlhGwrFzMMAizjIBl5WKGQZhlBCwrV1xbb96y59V1VFJQmLawQNrWa43x8XEaHo1fW+Oj1H8lSqf6eulEbw+dvNhLvcNDinvb0WWksAdm3UWhwiJ2gt2RAWo80UY7jrdSU8cZGrt6lT1HtgMaKSxbD7qqfDq99tAjyTUSG6FP9v1BH+3dTUPxeLZSssf17U5HeXEJbXr8aerY+A6tf7iOxFeu2OFmI6BvhaVgVoRCtHl5PTW8/AoV5xekmo299b2wlJn6+WFqWrOWKkpDqSYjbyFskpZFs++hL1e9NKnFvF+t3OmQOwzdkcgUmnnBABXm5Ys1j8qKisVadFPvS8tramn1goX09eEDU+KbsmGlsMbjbbT6x++UDOVORGXoFppXOYMerLqbVsyrpcWzqykYdH5R+fjZlcnd/8sjV5Q5vOh0rt6LqhhyJsQ3uC+ID8ry89aHYtf90W1bKLzlffr19EnH6HIP8oXasOM4LwbkrLB0MP+6cJ6e+eoz+vTP5nTdU9peDC+Ysm3Khq+ESehy5r3e2ECHu7uUDuqq59Id4iXVtMV3wqSACSHt3V2/KF3I97qayjuVY7zo9KUwCfq3M6coNjamZD6zrFzZ70Wnb4XFxseoK3JZyXzWtGnKfi86fStMwu6LRpXMZ5RBmBKQ7k75XqZa8gLmPZ/Nq0hFkLnvttJSZUT5Oc60xbfC5CGs6lsrlD56hgaV/V50+lbYkuo5VFygPp3SMwxhXjwp0+bcsGRp2vZU48TEBB09153aNObWlzNMHo1/6r4apYTmsx10MTqsHONFp5VH6zMBtWbhYtq6YpVjiJ/ajjmO8WKAL4QFxamWZffPT1678dicex05D4jTKj8cO+Q4zosBOSXs7bonktci5ovjgPIUye3ieo3wzKrk+TC5faPLGz83On6ovtFY3ONySth7Ty67qbPMk6Hu+edv+vzg/slNRv3uy52O6xk40HWW6r/94nrdRrTn1AzLhOju9tP03DfbKTo6mkmYrN/X98L6xQHgTb/vpG0t+5LnybJOPMMEvhXWOXCJvj9yiD7Yu4sGRkYyxKjv7r4RJi+Na+05Rwf/66SG1qO0v/NffZQZM+WUsI07d1BC/MTE144GYzHxJYcYDYq1vb/f8WQlI9OshsopYZubm7IKy4Tg2K03wYKLGiDMBSwThkKYCRZc1ABhLmCZMBTCTLDgogYIcwHLhKEQZoIFFzVAmAtYJgyFMBMsuKgBwlzAMmEohJlgwUUNEOYClglDIcwECy5qgDAXsEwYCmEmWHBRA4S5gGXCUAgzwYKLGow84yyvuyhR/GW19kt9Lh5ibg01UtjS7VtzizLjo8FLIiNMHaEgTAdlxhwQxghTRygI00GZMQeEMcLUEQrCdFBmzAFhjDB1hIIwHZQZc0AYI0wdoSBMB2XGHBDGCFNHKAjTQZkxB4QxwtQRCsJ0UGbMAWGMMHWEgjAdlBlzQBgjTB2hIEwHZcYcEMYIU0coCNNBmTEHhDHC1BEKwnRQZswBYYwwdYSCMB2UGXNAGCNMHaEgTAdlxhziUu1Ei8M/+WFMh1CZEUi0/A+j7hNSB5Wo2wAAAABJRU5ErkJggg==" ))
+    cf_dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
+    enable_invitations: (( enable_invitations.value ))
+    display_plan_prices: (( display_plan_prices.value ))
+    currency_lookup: (( currency_lookup.value ))
+    white_labeling:
+      marketplace_name: (( marketplace_name.value ))
+      nav_links: (( nav_links.value ))
+      product_name: (( product_name.value ))
+  app_usage_service:
+    rails_secret_token: (( .push-usage-service.secret_token.value ))
+    url: https://app-usage.(( .cloud_controller.system_domain.value ))
+    uaa_client_id: (( .uaa.usage_service_client_credentials.identity ))
+    uaa_client_secret: (( .uaa.usage_service_client_credentials.password ))
+  cf:
+    api_url: https://api.(( .cloud_controller.system_domain.value ))
+    uaa_url: https://login.(( .cloud_controller.system_domain.value ))
+    notifications_service_url: https://notifications.(( .cloud_controller.system_domain.value ))
+    admin_username: (( .uaa.push_apps_manager_credentials.identity ))
+    admin_password: (( .uaa.push_apps_manager_credentials.password ))
+    system_domain: (( .cloud_controller.system_domain.value ))
+    apps_domain: (( .cloud_controller.apps_domain.value ))
+  databases:
+    app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
+  invitations:
+    uaa_client_secret: (( .uaa.invitations_client_credentials.password ))
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+    disable_http_for_links: (( .properties.routing_disable_http.value ))
