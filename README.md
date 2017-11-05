@@ -1,15 +1,33 @@
 # p-runtime
 
-This repository is used to generate a .pivotal file for Pivotal's Elastic Runtime (see [Creating a Pivotal Cloud Foundry Product Tile](https://docs.pivotal.io/partners/creating.html)), to be consumed by Ops Manager&trade;.
+This repository is used to generate a .pivotal file for Pivotal's Elastic
+Runtime (see [Creating a Pivotal Cloud Foundry Product
+Tile](https://docs.pivotal.io/partners/creating.html)), to be consumed by
+Operations Manager&trade;.
 
-## Updating a Job
+## Updating an Instance Group
 
-Runtime definition for a job can be found in `metadata_parts/jobs/<job_name>.yml`, and configuration (forms and validations) can be found in `metadata_parts/forms_and_validators/<job_name>.yml`. See the [Product Template Reference](https://docs.pivotal.io/partners/product-template-reference.html) for details on the formats.
+Runtime definition for an instance group can be found in
+`instance_groups/<instance_group_name>.yml`, and configuration (forms and
+validations) can be found in `forms/<job_name>.yml`. See the [Product Template
+Reference](https://docs.pivotal.io/partners/product-template-reference.html)
+for details on the formats.
 
-### Changing Job Order
+### Changing Instance Group Order
 
-Job order is defined by `_order.yml` files. To change the order jobs appear in the Ops Manager UI, edit `metadata_parts/forms_and_validators/_order.yml`. To change the order in which the jobs are deployed, edit `metadata_parts/jobs/_order.yml`
+Instance group order is defined by `_order.yml` files. To change the order
+instance groups appear in the Ops Manager UI, edit `forms/_order.yml`. To
+change the order in which the instance groups are deployed, edit
+`instance_groups/_order.yml`
 
 ## Contributing
 
-p-runtime is used to build .pivotal files for all supported versions of PCF, as well as future versions. At the time of writing, this is PCF [1.6.x](https://github.com/pivotal-cf/p-runtime/tree/rel/1.6), [1.7.x](https://github.com/pivotal-cf/p-runtime/tree/rel/1.7), [1.8.x](https://github.com/pivotal-cf/p-runtime/tree/rel/1.8), and [1.9.x](https://github.com/pivotal-cf/p-runtime/tree/rel/1.9). Each version is represented as a branch and must be updated independently. If a change is required in more than one version, separate PRs for each branch will be required.
+p-runtime is used to build .pivotal files for all supported versions of PCF,
+as well as future versions. At the time of writing, this is PCF
+[1.10.x](https://github.com/pivotal-cf/p-runtime/tree/rel/1.10),
+[1.11.x](https://github.com/pivotal-cf/p-runtime/tree/rel/1.11),
+[1.12.x](https://github.com/pivotal-cf/p-runtime/tree/rel/1.12),
+and [2.0.x](https://github.com/pivotal-cf/p-runtime/tree/rel/2.0).
+Each version is represented as a branch and must be updated independently.
+If a change is required in more than one version, separate PRs for each
+branch will be required.
