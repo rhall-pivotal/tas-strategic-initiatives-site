@@ -8,11 +8,11 @@ manifest: |
     admin_username: (( .uaa.admin_credentials.identity ))
     admin_password: (( .uaa.admin_credentials.password ))
   generic_white_label_config_json:
-    companyName: (( .push-apps-manager.company_name.value ))
-    logo: (( .push-apps-manager.logo.value ))
-    smallSquare: (( .push-apps-manager.square_logo.value ))
-    legalText: (( .push-apps-manager.footer_text.value ))
-    legalLinks: (( .push-apps-manager.footer_links.value ))
+    company_name: (( .properties.push_apps_manager_company_name.value || "Pivotal" ))
+    logo: (( .properties.push_apps_manager_logo.value ))
+    smallSquare: (( .properties.push_apps_manager_square_logo.value ))
+    legalText: (( .properties.push_apps_manager_footer_text.value ))
+    legalLinks: (( .properties.push_apps_manager_footer_links.value ))
   pivotal_account:
     db: (( .properties.system_database.selected_option.parsed_manifest(pivotal_account) ))
     buildpack: java_buildpack_offline

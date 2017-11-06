@@ -27,6 +27,12 @@ post_deploy_errands:
     label: Usage Service Errand
     description: Pushes the Pivotal Usage Service application to your Elastic Runtime installation. Pivotal Apps Manager depends on this application.
   - name: push-apps-manager
+    colocated: true
+    run_default: when-changed
+    instances:
+      - {{ tile | ert "clock_global" | srt "control" }}/first
+    label: Apps Manager Errand
+    description: Pushes the Pivotal Apps Manager application to your Elastic Runtime installation
   - name: notifications
   - name: notifications-ui
   - name: push-pivotal-account

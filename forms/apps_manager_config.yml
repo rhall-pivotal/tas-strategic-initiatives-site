@@ -5,29 +5,29 @@ form:
   description: Configure Apps Manager
 
   property_inputs:
-    - reference: .push-apps-manager.enable_invitations
+    - reference: .properties.push_apps_manager_enable_invitations
       label: Enable Invitations
 
-    - reference: .push-apps-manager.display_plan_prices
+    - reference: .properties.push_apps_manager_display_plan_prices
       label: Display Marketplace Service Plan Prices
 
-    - reference: .push-apps-manager.currency_lookup
+    - reference: .properties.push_apps_manager_currency_lookup
       label: Supported currencies as JSON
       description: |
         Define the currency codes and associated symbols (defaults to \"{
         \"usd\": \"$\", \"eur\": \"€\" }\" if blank)
 
-    - reference: .push-apps-manager.product_name
+    - reference: .properties.push_apps_manager_product_name
       label: Product Name
       description: |
         Replace "Apps Manager" in the header with a custom product name
         (defaults to "Apps Manager" if blank)
 
-    - reference: .push-apps-manager.marketplace_name
+    - reference: .properties.push_apps_manager_marketplace_name
       label: Marketplace Name
       description: Replaces "Marketplace" on the Apps Manager Marketplace Pages.
 
-    - reference: .push-apps-manager.nav_links
+    - reference: .properties.push_apps_manager_nav_links
       label: Customize Sidebar Links
       description: |
         You may configure up to 10 links in the Apps Manager sidebar.

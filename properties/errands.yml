@@ -3,3 +3,99 @@ property_blueprints:
 - name: push_usage_service_secret_token
   type: secret
   configurable: false
+
+- name: push_apps_manager_company_name
+  type: string
+  configurable: true
+  optional: true
+
+- name: push_apps_manager_accent_color
+  type: string
+  configurable: true
+  optional: true
+
+- name: push_apps_manager_global_wrapper_bg_color
+  type: string
+  configurable: true
+  optional: true
+
+- name: push_apps_manager_global_wrapper_text_color
+  type: string
+  configurable: true
+  optional: true
+
+- name: push_apps_manager_global_wrapper_header_content
+  type: text
+  configurable: true
+  optional: true
+
+- name: push_apps_manager_global_wrapper_footer_content
+  type: text
+  configurable: true
+  optional: true
+
+- name: push_apps_manager_logo
+  type: text
+  configurable: true
+  optional: true
+
+- name: push_apps_manager_square_logo
+  type: text
+  configurable: true
+  optional: true
+
+- name: push_apps_manager_footer_text
+  type: string
+  configurable: true
+  optional: true
+
+- name: push_apps_manager_footer_links
+  type: collection
+  configurable: true
+  optional: true
+  property_blueprints:
+    - name: name
+      type: string
+    - name: href
+      type: string
+
+- name: push_apps_manager_nav_links
+  type: collection
+  configurable: true
+  property_blueprints:
+  - name: name
+    type: string
+  - name: href
+    type: string
+  default:
+  - name: Marketplace
+    href: /marketplace
+  - name: Docs
+    href: http://docs.pivotal.io/pivotalcf/getstarted/pcf-docs.html
+  - name: Tools
+    href: /tools
+
+- name: push_apps_manager_product_name
+  type: string
+  configurable: true
+  optional: true
+
+- name: push_apps_manager_marketplace_name
+  type: string
+  configurable: true
+  optional: true
+
+- name: push_apps_manager_enable_invitations
+  type: boolean
+  configurable: true
+  default: true
+
+- name: push_apps_manager_display_plan_prices
+  type: boolean
+  configurable: true
+  default: false
+
+- name: push_apps_manager_currency_lookup
+  type: string
+  configurable: true
+  default: "{ \"usd\": \"$\", \"eur\": \"€\" }"
