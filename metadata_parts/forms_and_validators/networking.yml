@@ -76,28 +76,6 @@ form:
       Operators should verify that these are supported by any clients or downstream
       components that will initiate TLS handshakes with the HAProxy.
 
-  - reference: .properties.haproxy_forward_tls
-    label: |
-      HAProxy forwards requests to Router over TLS. When enabled, HAProxy
-      will forward all requests to the Router over TLS. HAProxy will use
-      the CA provided  to verify the certificates provided by the Router.
-    selector_property_inputs:
-      - reference: .properties.haproxy_forward_tls.enable
-        label: Enable
-        property_inputs:
-        - reference: .properties.haproxy_forward_tls.enable.backend_ca
-          label: Certificate Authority for HAProxy Backend
-          description: |
-            You need to provide a certificate authority for the certificate
-            and key provided in the "Certificate and Private Key for HAProxy
-            and Router" field. HAProxy will verify those certificates using
-            this CA when establishing a connection. If you generated that
-            certificate and key using the "Generate RSA Certificate" feature,
-            then your CA is the Ops Manager CA, and can be found by visiting
-            the "/api/v0/certificate_authorities" API endpoint.
-      - reference: .properties.haproxy_forward_tls.disable
-        label: Disable
-
   - reference: .properties.skip_cert_verify
     label: Disable SSL certificate verification for this environment
     description: |
