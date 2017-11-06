@@ -12,7 +12,13 @@ icon_image: iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABGdBTUEAALGPC/xhBQAA
 rank: 90
 serial: false
 post_deploy_errands:
-  - name: smoke-tests
+  - name: smoke_tests
+    colocated: true
+    run_default: true
+    instances:
+      - {{ tile | ert "clock_global" | srt "control" }}/first
+    label: Smoke Test Errand
+    description: Runs Smoke Tests against your Elastic Runtime installation
   - name: push-usage-service
   - name: push-apps-manager
   - name: notifications
