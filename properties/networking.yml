@@ -225,16 +225,6 @@ property_blueprints:
   - name: network_policy_agent_cert
     type: rsa_cert_credentials
 
-  - name: networking_point_of_entry
-    type: selector
-    configurable: true
-    default: haproxy
-    option_templates:
-    - name: haproxy
-      select_value: haproxy
-    - name: external_ssl
-      select_value: external_ssl
-
   - name: container_networking
     type: selector
     configurable: true
