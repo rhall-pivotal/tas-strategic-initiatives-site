@@ -24,5 +24,8 @@ exports.migrate = function(input) {
 
   properties['.properties.push_pivotal_account_encryption_key'] = properties['.push-pivotal-account.encryption_key'];
 
+  properties['.properties.deploy_autoscaling_broker_credentials'] = properties['.autoscaling.broker_credentials'];
+  properties['.properties.deploy_autoscaling_encryption_key'] = properties['.autoscaling.encryption_key'];
+
   return input;
 };

@@ -6,8 +6,8 @@ manifest: |
   - (( .cloud_controller.system_domain.value ))
   autoscale:
     broker:
-      user: (( .autoscaling.broker_credentials.identity ))
-      password: (( .autoscaling.broker_credentials.password ))
+      user: (( .properties.deploy_autoscaling_broker_credentials.identity ))
+      password: (( .properties.deploy_autoscaling_broker_credentials.password ))
     cf:
       admin_user: (( .uaa.admin_credentials.identity ))
       admin_password: (( .uaa.admin_credentials.password ))

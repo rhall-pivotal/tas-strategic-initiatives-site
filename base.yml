@@ -55,8 +55,20 @@ post_deploy_errands:
       - {{ tile | ert "clock_global" | srt "control" }}/first
     label: Pivotal Account Errand
     description: Pushes the Pivotal Account application to your Elastic Runtime installation
-  - name: autoscaling
-  - name: autoscaling-register-broker
+  - name: deploy-autoscaling
+    colocated: true
+    run_default: when-changed
+    instances:
+      - {{ tile | ert "clock_global" | srt "control" }}/first
+    label: Autoscaling Errand
+    description: Pushes the Pivotal App Autoscaling application to your Elastic Runtime installation
+  - name: register-broker
+    colocated: true
+    run_default: when-changed
+    instances:
+      - {{ tile | ert "clock_global" | srt "control" }}/first
+    label: Autoscaling Registration Errand
+    description: Registers the Autoscaling Service Broker
   - name: nfsbrokerpush
 
 runtime_configs:
