@@ -12,7 +12,7 @@ Yup, it is located [here](https://releng.ci.cf-app.com/teams/main/pipelines/wrt-
 
 ## What you need to deploy it
 
-- Elastic Runtime
+- Pivotal Application Service
 - Windows Specific Stemcell
 
 ## How we test it
