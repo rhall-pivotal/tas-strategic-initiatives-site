@@ -9,11 +9,6 @@ manifest: |
       registration_interval: 20s
       uris:
       - "doppler.(( .cloud_controller.system_domain.value ))"
-    - name: loggregator
-      port: 8080
-      registration_interval: 20s
-      uris:
-      - "loggregator.(( .cloud_controller.system_domain.value ))"
     - name: uaa
       port: 8080
       registration_interval: 4s
