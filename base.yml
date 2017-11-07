@@ -49,6 +49,12 @@ post_deploy_errands:
     label: Notifications UI Errand
     description: Pushes the Notifications UI component to your Elastic Runtime installation
   - name: push-pivotal-account
+    colocated: true
+    run_default: when-changed
+    instances:
+      - {{ tile | ert "clock_global" | srt "control" }}/first
+    label: Pivotal Account Errand
+    description: Pushes the Pivotal Account application to your Elastic Runtime installation
   - name: autoscaling
   - name: autoscaling-register-broker
   - name: nfsbrokerpush

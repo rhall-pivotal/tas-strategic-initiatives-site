@@ -22,5 +22,7 @@ exports.migrate = function(input) {
 
   properties['.properties.deploy_notifications_ui_encryption_key'] = properties['.notifications.encryption_key'];
 
+  properties['.properties.push_pivotal_account_encryption_key'] = properties['.push-pivotal-account.encryption_key'];
+
   return input;
 };

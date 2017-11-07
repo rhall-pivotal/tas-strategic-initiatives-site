@@ -22,7 +22,7 @@ manifest: |
     uaa_location: https://login.(( .cloud_controller.system_domain.value ))
     notifications_location: https://notifications.(( .cloud_controller.system_domain.value ))
     notifications_ui_location: https://notifications-ui.(( .cloud_controller.system_domain.value ))
-    encryption_key: (( encryption_key.value ))
+    encryption_key: (( .properties.push_pivotal_account_encryption_key.value ))
     app_push:
       instance_number: 2
       memory: 1024
