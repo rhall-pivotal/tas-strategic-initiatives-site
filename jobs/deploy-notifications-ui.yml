@@ -16,7 +16,7 @@ manifest: |
       admin_password: (( .uaa.admin_credentials.password ))
     app_domain: (( .cloud_controller.system_domain.value ))
     network: notifications
-    encryption_key: (( .properties.deploy_notifications_ui_encryption_key.value ))
+    encryption_key: (( .properties.deploy_notifications_encryption_key.value ))
     footer_text: (( .properties.push_apps_manager_footer_text.value || "" ))
     footer_image: (( .properties.push_apps_manager_logo.value ))
     enable_diego: true

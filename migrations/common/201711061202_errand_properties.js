@@ -20,7 +20,7 @@ exports.migrate = function(input) {
   properties['.properties.push_apps_manager_display_plan_prices'] = properties['.push-apps-manager.display_plan_prices'];
   properties['.properties.push_apps_manager_currency_lookup'] = properties['.push-apps-manager.currency_lookup'];
 
-  properties['.properties.deploy_notifications_ui_encryption_key'] = properties['.notifications.encryption_key'];
+  properties['.properties.deploy_notifications_encryption_key'] = properties['.notifications.encryption_key'];
 
   properties['.properties.push_pivotal_account_encryption_key'] = properties['.push-pivotal-account.encryption_key'];
 

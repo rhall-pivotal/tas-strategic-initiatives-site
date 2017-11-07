@@ -16,7 +16,7 @@ manifest: |
       client_id: (( .uaa.notifications_client_credentials.identity ))
       client_secret: (( .uaa.notifications_client_credentials.password ))
     app_domain: (( .cloud_controller.system_domain.value ))
-    encryption_key: (( encryption_key.value ))
+    encryption_key: (( .properties.deploy_notifications_encryption_key.value ))
     enable_diego: true
     syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))
     organization: system
