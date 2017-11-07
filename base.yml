@@ -33,8 +33,21 @@ post_deploy_errands:
       - {{ tile | ert "clock_global" | srt "control" }}/first
     label: Apps Manager Errand
     description: Pushes the Pivotal Apps Manager application to your Elastic Runtime installation
-  - name: notifications
-  - name: notifications-ui
+  - name: deploy-notifications
+    colocated: true
+    run_default: when-changed
+    instances:
+      - {{ tile | ert "clock_global" | srt "control" }}/first
+    label: Notifications Errand
+    description: |
+      Pushes the Pivotal Notifications application to your Elastic Runtime installation
+  - name: deploy-notifications-ui
+    colocated: true
+    run_default: when-changed
+    instances:
+      - {{ tile | ert "clock_global" | srt "control" }}/first
+    label: Notifications UI Errand
+    description: Pushes the Notifications UI component to your Elastic Runtime installation
   - name: push-pivotal-account
   - name: autoscaling
   - name: autoscaling-register-broker
