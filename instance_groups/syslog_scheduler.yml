@@ -3,7 +3,7 @@ name: syslog_scheduler
 label: Syslog Scheduler
 resource_label: Syslog Scheduler
 description: This component handles communication with the Cloud Controller to receive
-  new bindings. It should not be scaled beyond a single instance.
+  new bindings.
 templates:
 {{ define "ert-syslog-scheduler-templates" }}
 - consul_agent
@@ -51,7 +51,7 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  default: {{ tile | ert "1" | srt "0" }}
+  default: {{ tile | ert "2" | srt "0" }}
 property_blueprints:
 - name: scheduler_api_tls
   type: rsa_cert_credentials
