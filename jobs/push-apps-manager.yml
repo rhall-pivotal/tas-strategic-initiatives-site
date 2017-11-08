@@ -24,7 +24,7 @@ manifest: |
       nav_links: (( .properties.push_apps_manager_nav_links.value ))
       product_name: (( .properties.push_apps_manager_product_name.value ))
   app_usage_service:
-    rails_secret_token: (( .properties.push_usage_service_secret_token.value ))
+    rails_secret_token: ((( push-usage-service-secret-token )))
     url: https://app-usage.(( .cloud_controller.system_domain.value ))
     uaa_client_id: (( .uaa.usage_service_client_credentials.identity ))
     uaa_client_secret: (( .uaa.usage_service_client_credentials.password ))

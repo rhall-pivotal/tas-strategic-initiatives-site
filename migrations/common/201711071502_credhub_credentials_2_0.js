@@ -35,5 +35,10 @@ exports.migrate = function(input) {
     to_variable: 'push-pivotal-account-encryption-key'
   });
 
+  input.variable_migrations.push({
+    from: input.properties['.properties.push_usage_service_secret_token'],
+    to_variable: 'push-usage-service-secret-token'
+  });
+
   return input;
 };
