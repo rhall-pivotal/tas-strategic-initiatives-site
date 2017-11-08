@@ -165,7 +165,7 @@ property_blueprints:
         named_manifests:
           - name: secret
             manifest: |
-              (( .router.route_services_secret.value ))
+              ((( router-route-services-secret )))
         property_blueprints:
           - name: ignore_ssl_cert_verification
             type: boolean

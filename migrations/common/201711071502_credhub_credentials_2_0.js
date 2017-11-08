@@ -40,5 +40,10 @@ exports.migrate = function(input) {
     to_variable: 'push-usage-service-secret-token'
   });
 
+  input.variable_migrations.push({
+    from: input.properties['.router.route_services_secret'],
+    to_variable: 'router-route-services-secret'
+  });
+
   return input;
 };
