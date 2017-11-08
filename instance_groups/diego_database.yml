@@ -61,10 +61,6 @@ instance_definition:
   constraints:
     min: {{ tile | ert "1" | srt "0" }}
 property_blueprints:
-  - name: bbs_encryption_passphrase
-    type: secret
-    configurable: false
-
   - name: locket_server_cert
     type: rsa_cert_credentials
     configurable: false

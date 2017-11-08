@@ -15,5 +15,10 @@ exports.migrate = function(input) {
     to_variable: 'deploy-autoscaling-encryption-key'
   });
 
+  input.variable_migrations.push({
+    from: input.properties['.diego_database.bbs_encryption_passphrase'],
+    to_variable: 'diego-db-bbs-encryption-passphrase'
+  });
+
   return input;
 };
