@@ -25,5 +25,10 @@ exports.migrate = function(input) {
     to_variable: 'nfs-server-blobstore-secret'
   });
 
+  input.variable_migrations.push({
+    from: input.properties['.properties.deploy_notifications_encryption_key'],
+    to_variable: 'deploy-notifications-encryption-key'
+  });
+
   return input;
 };
