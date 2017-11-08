@@ -6,6 +6,8 @@ description: Install the HWC builidpack to your Elastic Runtime for Windows inst
 templates:
   - name: install-hwc-buildpack
     release: hwc-offline-buildpack
+  - name: enable_rdp
+    release: windows-utilities
   - name: enable_ssh
     release: windows-utilities
   - name: event_log_forwarder
@@ -62,6 +64,8 @@ manifest: |
     admin_username: (( ..cf.uaa.admin_credentials.identity ))
     admin_password: (( ..cf.uaa.admin_credentials.password ))
     system_domain: (( ..cf.cloud_controller.system_domain.value ))
+  enable_rdp:
+    enabled: (( .properties.rdp_enabled.value ))
   enable_ssh:
     enabled: (( .properties.bosh_ssh_enabled.value ))
   ssl:

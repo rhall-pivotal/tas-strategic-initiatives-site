@@ -27,6 +27,8 @@ templates:
     release: winc
   - name: metron_agent_windows
     release: loggregator
+  - name: enable_rdp
+    release: windows-utilities
   - name: enable_ssh
     release: windows-utilities
   - name: set_password
@@ -165,6 +167,8 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     client_name: (( ..cf.uaa.tcp_emitter_credentials.identity ))
     client_secret: (( ..cf.uaa.tcp_emitter_credentials.password ))
+  enable_rdp:
+    enabled: (( .properties.rdp_enabled.value ))
   enable_ssh:
     enabled: (( .properties.bosh_ssh_enabled.value ))
   randomize_password: (( .properties.windows_admin_password.selected_option.parsed_manifest(randomize_password) ))
