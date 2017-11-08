@@ -7,7 +7,7 @@ manifest: |
     - username: ((( webdav-blobstore-credentials.username )))
       password: ((( webdav-blobstore-credentials.password )))
     secure_link:
-      secret: (( .nfs_server.blobstore_secret.value ))
+      secret: ((( nfs-server-blobstore-secret )))
     tls:
       cert: (( .nfs_server.blobstore_cert.cert_pem ))
       private_key: (( .nfs_server.blobstore_cert.private_key_pem ))

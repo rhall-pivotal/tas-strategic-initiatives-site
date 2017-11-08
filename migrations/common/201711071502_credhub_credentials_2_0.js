@@ -20,5 +20,10 @@ exports.migrate = function(input) {
     to_variable: 'diego-db-bbs-encryption-passphrase'
   });
 
+  input.variable_migrations.push({
+    from: input.properties['.nfs_server.blobstore_secret'],
+    to_variable: 'nfs-server-blobstore-secret'
+  });
+
   return input;
 };
