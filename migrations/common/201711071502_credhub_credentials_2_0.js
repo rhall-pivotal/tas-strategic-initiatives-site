@@ -30,5 +30,10 @@ exports.migrate = function(input) {
     to_variable: 'deploy-notifications-encryption-key'
   });
 
+  input.variable_migrations.push({
+    from: input.properties['.properties.push_pivotal_account_encryption_key'],
+    to_variable: 'push-pivotal-account-encryption-key'
+  });
+
   return input;
 };
