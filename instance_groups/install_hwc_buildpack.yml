@@ -12,6 +12,8 @@ templates:
     release: windows-utilities
   - name: event_log_forwarder
     release: event_log
+  - name: set_kms_host
+    release: windows-utilities
 errand: true
 
 resource_definitions:
@@ -68,6 +70,7 @@ manifest: |
     enabled: (( .properties.rdp_enabled.value ))
   enable_ssh:
     enabled: (( .properties.bosh_ssh_enabled.value ))
+  set_kms_host: (( .properties.kms.selected_option.parsed_manifest(set_kms_host) ))
   ssl:
     skip_cert_verify: (( ..cf.ha_proxy.skip_cert_verify.value ))
   syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))

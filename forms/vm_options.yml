@@ -36,3 +36,18 @@ form:
     description: |
       When this checkbox is checked, all VMs will support connection via Remote
       Desktop Protocol.
+
+  - reference: .properties.kms
+    label: Key Management Service
+    selector_property_inputs:
+      - reference: .properties.kms.enable
+        label: Enable
+        property_inputs:
+          - reference: .properties.kms.enable.host
+            label: Host
+            description: Hostname of the KMS server
+          - reference: .properties.kms.enable.port
+            label: Port
+            description: Port of the KMS server. Defaults to 1688.
+      - reference: .properties.kms.disable
+        label: Disable

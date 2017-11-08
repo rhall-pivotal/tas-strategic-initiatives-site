@@ -31,6 +31,8 @@ templates:
     release: windows-utilities
   - name: enable_ssh
     release: windows-utilities
+  - name: set_kms_host
+    release: windows-utilities
   - name: set_password
     release: windows-utilities
   - name: randomize_password
@@ -172,6 +174,7 @@ manifest: |
   enable_ssh:
     enabled: (( .properties.bosh_ssh_enabled.value ))
   randomize_password: (( .properties.windows_admin_password.selected_option.parsed_manifest(randomize_password) ))
+  set_kms_host: (( .properties.kms.selected_option.parsed_manifest(set_kms_host) ))
   set_password: (( .properties.windows_admin_password.selected_option.parsed_manifest(set_password) ))
   winc_network:
     mtu: 1460
