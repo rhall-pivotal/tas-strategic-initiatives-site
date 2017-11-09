@@ -11,8 +11,6 @@ manifest: |
         cert: (( .doppler.doppler_tls_cert.cert_pem ))
         key: (( .doppler.doppler_tls_cert.private_key_pem ))
       ca_cert: (( $ops_manager.ca_certificate ))
-  doppler_endpoint:
-    shared_secret: (( .doppler.shared_secret_credentials.password ))
   doppler:
     disable_announce: true
     message_drain_buffer_size: (( .doppler.message_drain_buffer_size.value ))

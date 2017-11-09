@@ -56,8 +56,6 @@ instance_definition:
   constraints:
     min: {{ tile | ert "1" | srt "0" }}
 property_blueprints:
-- name: shared_secret_credentials
-  type: simple_credentials
 - name: message_drain_buffer_size
   type: integer
   default: 10000
