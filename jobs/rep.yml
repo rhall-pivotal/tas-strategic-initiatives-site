@@ -16,7 +16,10 @@ manifest: |
       require_tls: true
       server_cert: (( .properties.rep_server_cert.cert_pem ))
       server_key: (( .properties.rep_server_cert.private_key_pem ))
-      trusted_certs: ((( /cf/diego-instance-identity-root-ca.certificate )))
+      trusted_certs: |
+        ((( /cf/diego-instance-identity-root-ca.certificate )))
+        (( $ops_manager.ca_certificate ))
+        (( $ops_manager.trusted_certificates ))
       use_azure_fault_domains: true
     executor:
       ca_certs_for_downloads: (( $ops_manager.ca_certificate ))
