@@ -17,7 +17,7 @@ manifest: |
     authorization:
       acls:
         enabled: true
-        ca_certificate: (( $ops_manager.ca_certificate ))
+    ca_certificate: (( $ops_manager.ca_certificate ))
     data_storage: (( .properties.credhub_database.selected_option.parsed_manifest(db_config) ))
     encryption:
       keys:
