@@ -17,6 +17,7 @@ manifest: |
       cluster_probe_timeout: (( .mysql.cluster_probe_timeout.value ))
       cluster_health:
         password: ((( mysql-cluster-health-credentials.password )))
+      disable_auto_sst: (( .mysql.prevent_node_auto_rejoin.value ))
       seeded_databases:
       - name: (( .properties.account_database_name.value ))
         username: ((( pivotal-account-db-credentials.username )))

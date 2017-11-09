@@ -3,6 +3,7 @@ name: mysql
 label: MySQL Server
 resource_label: MySQL Server
 description: Multi-tenant MySQL server.
+
 templates:
 {{ define "ert-mysql-templates" }}
 - consul_agent
@@ -28,6 +29,7 @@ resource_definitions:
   default: 8192
   constraints:
     min: 4096
+
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
@@ -35,6 +37,7 @@ resource_definitions:
   default: 30000
   constraints:
     min: 10000
+
 - name: persistent_disk
   type: integer
   label: Persistent Disk
@@ -42,6 +45,7 @@ resource_definitions:
   default: 100000
   constraints:
     min: 10000
+
 - name: cpu
   type: integer
   label: CPU
@@ -49,29 +53,40 @@ resource_definitions:
   default: 2
   constraints:
     min: 1
+
 static_ip: 1
 dynamic_ip: 0
 max_in_flight: 1
 single_az_only: false
+
 instance_definition:
   name: instances
   type: integer
   label: Instances
   configurable: {{ tile | ert "true" | srt "false" }}
   default: {{ tile | ert "3" | srt "0" }}
+
   constraints:
     may_only_be_odd_or_zero: true
     min: 0
+
   zero_if:
     property_reference: ".properties.system_database"
     property_values:
     - external
+
 property_blueprints:
 - name: cli_history
   type: boolean
   configurable: true
   default: true
+
 - name: cluster_probe_timeout
   type: integer
   configurable: true
   optional: true
+
+- name: prevent_node_auto_rejoin
+  type: boolean
+  configurable: true
+  default: false

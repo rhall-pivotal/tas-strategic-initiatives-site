@@ -269,3 +269,9 @@ form:
         to fail over to other Proxies. This value should be greater than or
         equal to the max time it could take your load balancer to consider a
         Proxy instance unhealthy, given contiguous failed healthchecks.
+
+    - reference: .mysql.prevent_node_auto_rejoin
+      label: Prevent node auto re-join
+      description: |
+        When checked, nodes unable to IST will be prevented from automatically
+        deleting their data and performing an SST.
