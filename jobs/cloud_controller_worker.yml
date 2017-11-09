@@ -35,7 +35,6 @@ manifest: |
     default_staging_security_groups:
     - default_security_group
     default_app_ssh_access: (( .cloud_controller.default_app_ssh_access.value ))
-    logging_level: debug
     quota_definitions:
       default:
         memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
