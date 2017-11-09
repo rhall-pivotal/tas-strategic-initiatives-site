@@ -18,6 +18,7 @@ manifest: |
       cluster_health:
         password: ((( mysql-cluster-health-credentials.password )))
       disable_auto_sst: (( .mysql.prevent_node_auto_rejoin.value ))
+      remote_admin_access: (( .mysql.remote_admin_access.value ))
       seeded_databases:
       - name: (( .properties.account_database_name.value ))
         username: ((( pivotal-account-db-credentials.username )))
