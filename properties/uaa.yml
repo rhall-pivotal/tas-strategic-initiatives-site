@@ -117,18 +117,6 @@ property_blueprints:
             type: string
             configurable: true
             optional: true
-          - name: signature_algorithm
-            type: dropdown_select
-            configurable: true
-            optional: false
-            default: "SHA1"
-            options:
-            - name: "SHA1"
-              label: SHA1
-            - name: "SHA256"
-              label: SHA256
-            - name: "SHA512"
-              label: SHA512
       - name: ldap
         select_value: ldap
         named_manifests:
@@ -196,3 +184,15 @@ property_blueprints:
               label: Ignore referrals and return partial result
             - name: "throw"
               label: Throw exception for each referral and abort authentication
+  - name: saml_signature_algorithm
+    type: dropdown_select
+    configurable: true
+    optional: false
+    default: "SHA1"
+    options:
+    - name: "SHA1"
+      label: SHA1
+    - name: "SHA256"
+      label: SHA256
+    - name: "SHA512"
+      label: SHA512

@@ -51,6 +51,11 @@ form:
     label: SAML Service Provider Key Password
     description: Passphrase for the service provider private key.
 
+  - reference: .properties.saml_signature_algorithm
+    label: Signature Algorithm
+    description: |
+      The supported algorithm for signed requests and assertions.
+
   - reference: .uaa.apps_manager_access_token_lifetime
     label: Apps Manager Access Token Lifetime (in seconds)
     description: Set the lifetime of the access token for Apps Manager.
