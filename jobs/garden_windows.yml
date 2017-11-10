@@ -1,0 +1,13 @@
+---
+name: garden-windows
+release: garden-runc
+manifest: |
+  garden:
+    listen_address: "127.0.0.1:9241"
+    image_plugin: "/var/vcap/packages/winc-image/winc-image.exe"
+    network_plugin: "/var/vcap/packages/winc-network/winc-network.exe"
+    network_plugin_extra_args:
+    - "--configFile=/var/vcap/jobs/winc-network/config/interface.json"
+    runtime_plugin: "/var/vcap/packages/winc/winc.exe"
+    nstar_bin: "/var/vcap/packages/nstar/nstar.exe"
+    destroy_containers_on_start: true

@@ -3,40 +3,20 @@ name: windows_diego_cell
 label: Windows Diego Cell
 resource_label: Windows Diego Cell
 templates:
-  - name: consul_agent_windows
-    release: consul
-    consumes: |
-      consul_common: {from: consul_common_link, deployment: (( ..cf.deployment_name ))}
-      consul_client: nil
-      consul_server: nil
-  - name: rep_windows
-    release: diego
-  - name: route_emitter_windows
-    release: diego
-    consumes: |
-      nats: {from: nats, deployment: ((  ..cf.deployment_name  )) }
-  - name: event_log_forwarder
-    release: event_log
-  - name: garden-windows
-    release: garden-runc
-  - name: winc
-    release: winc
-  - name: winc-image
-    release: winc
-  - name: winc-network
-    release: winc
-  - name: metron_agent_windows
-    release: loggregator
-  - name: enable_rdp
-    release: windows-utilities
-  - name: enable_ssh
-    release: windows-utilities
-  - name: set_kms_host
-    release: windows-utilities
-  - name: set_password
-    release: windows-utilities
-  - name: randomize_password
-    release: windows-utilities
+  - consul_agent_windows
+  - rep_windows
+  - route_emitter_windows
+  - event_log_forwarder
+  - garden_windows
+  - winc
+  - winc_image
+  - winc_network
+  - metron_agent_windows
+  - enable_rdp
+  - enable_ssh
+  - set_kms_host
+  - set_password
+  - randomize_password
 
 resource_definitions:
   - name: ram

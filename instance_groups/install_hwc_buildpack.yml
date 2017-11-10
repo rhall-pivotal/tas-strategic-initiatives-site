@@ -2,18 +2,14 @@
 name: install-hwc-buildpack
 label: Install HWC Buildpack Errand
 resource_label: Install HWC Buildpack Errand
-description: Install the HWC builidpack to your Elastic Runtime for Windows installation
+description: Install the HWC buildpack to your Elastic Runtime for Windows installation
 templates:
-  - name: install-hwc-buildpack
-    release: hwc-offline-buildpack
-  - name: enable_rdp
-    release: windows-utilities
-  - name: enable_ssh
-    release: windows-utilities
-  - name: event_log_forwarder
-    release: event_log
-  - name: set_kms_host
-    release: windows-utilities
+  - install_hwc_buildpack
+  - enable_rdp
+  - enable_ssh
+  - event_log_forwarder
+  - set_kms_host
+
 errand: true
 
 resource_definitions:
