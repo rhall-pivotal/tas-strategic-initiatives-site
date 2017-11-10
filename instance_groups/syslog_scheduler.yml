@@ -52,6 +52,10 @@ instance_definition:
   type: integer
   label: Instances
   default: {{ tile | ert "2" | srt "0" }}
+  configurable: true
+  constraints:
+    min: 1
+    max: 2
 property_blueprints:
 - name: scheduler_api_tls
   type: rsa_cert_credentials
