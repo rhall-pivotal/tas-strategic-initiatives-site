@@ -15,7 +15,7 @@ manifest: |
       (( .properties.routing_custom_ca_certificates.value ))
       (( $ops_manager.ca_certificate ))
       ((( /cf/diego-instance-identity-intermediate-ca.certificate )))
-    forwarded_client_cert: (( .properties.router_forward_client_cert.value ))
+    forwarded_client_cert: (( .properties.routing_tls_termination.selected_option.parsed_manifest(gorouter_forwarded_client_cert) ))
     max_idle_connections: (( .router.max_idle_connections.value ))
     route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
     ssl_skip_validation: (( .ha_proxy.skip_cert_verify.value ))

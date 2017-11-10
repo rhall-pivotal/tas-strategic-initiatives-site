@@ -78,6 +78,23 @@ form:
         - reference: .properties.routing_minimum_tls_version.tls_v1_2
           label: TLSv1.2
 
+    - reference: .properties.routing_tls_termination
+      label: |
+        Configure support for the X-Forwarded-Client-Cert header. This header
+        can be used by applications to verify the requester via mutual TLS.
+        The option you should select depends upon where you will be terminating
+        the TLS connection for the first time.
+      selector_property_inputs:
+        - reference: .properties.routing_tls_termination.load_balancer
+          label: |
+            TLS terminated for the first time at infrastructure load balancer
+        - reference: .properties.routing_tls_termination.ha_proxy
+          label: |
+            TLS terminated for the first time at HAProxy
+        - reference: .properties.routing_tls_termination.router
+          label: |
+            TLS terminated for the first time at the Router
+
     - reference: .properties.gorouter_ssl_ciphers
       label: TLS Cipher Suites for Router
       description: |
@@ -149,27 +166,6 @@ form:
         Isolation Segments, isolating the network for those applications.
         Do not enable this option without deploying routers for each
         Isolation Segment first.
-
-    - reference: .properties.router_forward_client_cert
-      label: |
-        Configure the CF Router support for the X-Forwarded-Client-Cert header.
-        Setting this field to an option other than "Always forward" will
-        change the behavior for how the Router handles the
-        x-forwarded-client-cert (XFCC) HTTP header. This header can be used
-        by applications to verify the requester via mutual TLS.
-      selector_property_inputs:
-        - reference: .properties.router_forward_client_cert.always_forward
-          label: |
-            Always forward the XFCC header in the request, regardless of
-            whether the client connection is mTLS
-        - reference: .properties.router_forward_client_cert.forward
-          label: |
-            Forward the XFCC header received from the client only when the
-            client connection is mTLS
-        - reference: .properties.router_forward_client_cert.sanitize_set
-          label: |
-            Strip the XFCC header when present and set it to the client
-            certificate from the mTLS handshake
 
     - reference: .properties.route_services
       label: |

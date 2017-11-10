@@ -68,6 +68,39 @@ property_blueprints:
             manifest: |
               true
 
+  - name: routing_tls_termination
+    type: selector
+    default: load_balancer
+    configurable: true
+    option_templates:
+      - name: load_balancer
+        select_value: load_balancer
+        named_manifests:
+          - name: gorouter_forwarded_client_cert
+            manifest: |
+              always_forward
+          - name: haproxy_client_cert
+            manifest: |
+              false
+      - name: ha_proxy
+        select_value: ha_proxy
+        named_manifests:
+          - name: gorouter_forwarded_client_cert
+            manifest: |
+              forward
+          - name: haproxy_client_cert
+            manifest: |
+              true
+      - name: router
+        select_value: router
+        named_manifests:
+          - name: gorouter_forwarded_client_cert
+            manifest: |
+              sanitize_set
+          - name: haproxy_client_cert
+            manifest: |
+              false
+
   - name: gorouter_ssl_ciphers
     type: text
     configurable: true
@@ -137,18 +170,6 @@ property_blueprints:
           type: string
           configurable: true
           placeholder: "e.g: 1024-10000,65535"
-
-  - name: router_forward_client_cert
-    type: selector
-    configurable: true
-    default: always_forward
-    option_templates:
-      - name: always_forward
-        select_value: always_forward
-      - name: forward
-        select_value: forward
-      - name: sanitize_set
-        select_value: sanitize_set
 
   - name: router_backend_max_conn
     type: integer
