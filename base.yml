@@ -135,11 +135,21 @@ variables:
 - name: backup-prepare-backup-encryption-key
   type: password
 
-- name: nfs-server-blobstore-secret
-  type: password
-
 - name: cc-db-credentials
   type: user
+
+- name: cloud-controller-bulk-api-credentials
+  type: user
+  options:
+    username: bulk_api
+
+- name: cloud-controller-internal-api-user-credentials
+  type: user
+
+- name: cloud-controller-staging-upload-credentials
+  type: user
+  options:
+    username: staging_upload_user
 
 - name: credhub-db-credentials
   type: user
@@ -162,14 +172,29 @@ variables:
 - name: locket-db-credentials
   type: user
 
+- name: mysql-admin-credentials
+  type: user
+  options:
+    username: root
+
 - name: mysql-backup-server-db-credentials
   type: user
 
 - name: mysql-bootstrap-db-credentials
   type: user
 
+- name: mysql-cluster-health-credentials
+  type: user
+  options:
+    username: cluster-health-logger
+
 - name: mysql-diag-agent-db-credentials
   type: user
+
+- name: mysql-galera-sidecar-credentials
+  type: user
+  options:
+    username: galera-healthcheck
 
 - name: mysql-metrics-db-credentials
   type: user
@@ -177,16 +202,27 @@ variables:
 - name: mysql-monitor-db-credentials
   type: user
 
+- name: mysql-proxy-dashboard-credentials
+  type: user
+  options:
+    username: admin
+
 - name: network-policy-server-db-credentials
   type: user
 
 - name: nfs-broker-push-db-credentials
   type: user
 
+- name: nfs-server-blobstore-secret
+  type: password
+
 - name: nfs-volume-db-credentials
   type: user
 
 - name: notifications-db-credentials
+  type: user
+
+- name: pivotal-account-db-credentials
   type: user
 
 - name: push-pivotal-account-encryption-key
@@ -195,11 +231,13 @@ variables:
 - name: push-usage-service-secret-token
   type: password
 
-- name: pivotal-account-db-credentials
-  type: user
-
 - name: router-route-services-secret
   type: password
+
+- name: router-status-credentials
+  type: user
+  options:
+    username: router_status
 
 - name: routing-db-credentials
   type: user
@@ -209,44 +247,6 @@ variables:
 
 - name: uaa-db-credentials
   type: user
-
-- name: cloud-controller-bulk-api-credentials
-  type: user
-  options:
-    username: bulk_api
-
-- name: cloud-controller-internal-api-user-credentials
-  type: user
-
-- name: cloud-controller-staging-upload-credentials
-  type: user
-  options:
-    username: staging_upload_user
-
-- name: mysql-admin-credentials
-  type: user
-  options:
-    username: root
-
-- name: mysql-cluster-health-credentials
-  type: user
-  options:
-    username: cluster-health-logger
-
-- name: mysql-galera-sidecar-credentials
-  type: user
-  options:
-    username: galera-healthcheck
-
-- name: mysql-proxy-dashboard-credentials
-  type: user
-  options:
-    username: admin
-
-- name: router-status-credentials
-  type: user
-  options:
-    username: router_status
 
 - name: webdav-blobstore-credentials
   type: user
