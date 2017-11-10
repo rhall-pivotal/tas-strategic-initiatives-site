@@ -21,6 +21,11 @@ exports.migrate = function(input) {
   });
 
   input.variable_migrations.push({
+    from: input.properties['.nats.credentials'],
+    to_variable: 'nats-credentials'
+  });
+
+  input.variable_migrations.push({
     from: input.properties['.nfs_server.blobstore_secret'],
     to_variable: 'nfs-server-blobstore-secret'
   });

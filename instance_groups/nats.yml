@@ -3,6 +3,7 @@ name: nats
 label: NATS
 resource_label: NATS
 description: Acts as the Pivotal CF Elastic Runtime message bus
+
 templates:
 {{ define "ert-nats-templates" }}
 - consul_agent
@@ -23,6 +24,7 @@ resource_definitions:
   default: 1024
   constraints:
     min: 1024
+
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
@@ -30,11 +32,13 @@ resource_definitions:
   default: 2048
   constraints:
     min: 1024
+
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
+
 - name: cpu
   type: integer
   label: CPU
@@ -42,10 +46,12 @@ resource_definitions:
   default: 1
   constraints:
     min: 1
+
 static_ip: 1
 dynamic_ip: 0
 max_in_flight: 1
 single_az_only: false
+
 instance_definition:
   name: instances
   type: integer
@@ -54,8 +60,3 @@ instance_definition:
   default: {{ tile | ert "2" | srt "0" }}
   constraints:
     min: {{ tile | ert "1" | srt "0" }}
-property_blueprints:
-- name: credentials
-  type: simple_credentials
-  default:
-    identity: nats
