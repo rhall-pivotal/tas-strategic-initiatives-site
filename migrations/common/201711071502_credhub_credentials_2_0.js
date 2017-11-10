@@ -16,6 +16,11 @@ exports.migrate = function(input) {
   });
 
   input.variable_migrations.push({
+    from: input.properties['.properties.consul_encrypt_key'],
+    to_variable: 'consul-encryption-key'
+  });
+
+  input.variable_migrations.push({
     from: input.properties['.diego_database.bbs_encryption_passphrase'],
     to_variable: 'diego-db-bbs-encryption-passphrase'
   });
