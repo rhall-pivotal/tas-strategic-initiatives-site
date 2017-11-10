@@ -15,6 +15,7 @@ exports.migrate = function(input) {
         value: 'router'
       };
     }
+    delete properties['.properties.router_forward_client_cert'];
   }
 
   return input;
