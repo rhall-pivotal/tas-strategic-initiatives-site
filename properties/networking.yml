@@ -172,6 +172,34 @@ property_blueprints:
     type: rsa_cert_credentials
     configurable: false
 
+  - name: haproxy_forward_tls
+    type: selector
+    configurable: true
+    default: enable
+    option_templates:
+    - name: enable
+      select_value: enable
+      named_manifests:
+        - name: backend_port
+          manifest: |
+            443
+        - name: backend_ssl
+          manifest: |
+            "verify"
+      property_blueprints:
+      - name: backend_ca
+        type: text
+        configurable: true
+    - name: disable
+      select_value: disable
+      named_manifests:
+        - name: backend_port
+          manifest: |
+            80
+        - name: backend_ssl
+          manifest: |
+            "off"
+
   - name: container_networking
     type: selector
     configurable: true
