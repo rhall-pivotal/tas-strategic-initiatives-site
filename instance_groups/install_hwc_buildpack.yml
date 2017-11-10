@@ -55,18 +55,3 @@ instance_definition:
     label: Instances
     configurable: false
     default: 1
-
-manifest: |
-  cf:
-    api_url: "https://api.(( ..cf.cloud_controller.system_domain.value ))"
-    admin_username: (( ..cf.uaa.admin_credentials.identity ))
-    admin_password: (( ..cf.uaa.admin_credentials.password ))
-    system_domain: (( ..cf.cloud_controller.system_domain.value ))
-  enable_rdp:
-    enabled: (( .properties.rdp_enabled.value ))
-  enable_ssh:
-    enabled: (( .properties.bosh_ssh_enabled.value ))
-  set_kms_host: (( .properties.kms.selected_option.parsed_manifest(set_kms_host) ))
-  ssl:
-    skip_cert_verify: (( ..cf.ha_proxy.skip_cert_verify.value ))
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
