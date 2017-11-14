@@ -68,6 +68,8 @@ manifest: |
       temporary_local_tasks: true
       temporary_local_tps: true
       file_server_url: http://file-server.service.cf.internal:{{ tile | ert 8080 | srt 8084 }}
+  credhub_api:
+    ca_cert: (( $ops_manager.ca_certificate ))
   login:
     url: https://login.(( .cloud_controller.system_domain.value ))
   ssl:

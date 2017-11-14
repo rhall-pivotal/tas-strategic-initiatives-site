@@ -125,6 +125,8 @@ manifest: |
         non_basic_services_allowed: true
     server_keepalive_timeout: 0
     staging_timeout_in_seconds: (( .cloud_controller.staging_timeout_in_seconds.value ))
+  credhub_api:
+    ca_cert: (( $ops_manager.ca_certificate ))
   support_address: https://support.pivotal.io
   routing_api:
     enabled: true
