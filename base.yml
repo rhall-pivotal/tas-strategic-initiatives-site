@@ -22,21 +22,21 @@ post_deploy_errands:
     description: Runs Smoke Tests against your Elastic Runtime installation
   - name: push-usage-service
     colocated: true
-    run_default: when-changed
+    run_default: true
     instances:
       - {{ tile | ert "clock_global" | srt "control" }}/first
     label: Usage Service Errand
     description: Pushes the Pivotal Usage Service application to your Elastic Runtime installation. Pivotal Apps Manager depends on this application.
   - name: push-apps-manager
     colocated: true
-    run_default: when-changed
+    run_default: true
     instances:
       - {{ tile | ert "clock_global" | srt "control" }}/first
     label: Apps Manager Errand
     description: Pushes the Pivotal Apps Manager application to your Elastic Runtime installation
   - name: deploy-notifications
     colocated: true
-    run_default: when-changed
+    run_default: true
     instances:
       - {{ tile | ert "clock_global" | srt "control" }}/first
     label: Notifications Errand
@@ -44,35 +44,35 @@ post_deploy_errands:
       Pushes the Pivotal Notifications application to your Elastic Runtime installation
   - name: deploy-notifications-ui
     colocated: true
-    run_default: when-changed
+    run_default: true
     instances:
       - {{ tile | ert "clock_global" | srt "control" }}/first
     label: Notifications UI Errand
     description: Pushes the Notifications UI component to your Elastic Runtime installation
   - name: push-pivotal-account
     colocated: true
-    run_default: when-changed
+    run_default: true
     instances:
       - {{ tile | ert "clock_global" | srt "control" }}/first
     label: Pivotal Account Errand
     description: Pushes the Pivotal Account application to your Elastic Runtime installation
   - name: deploy-autoscaling
     colocated: true
-    run_default: when-changed
+    run_default: true
     instances:
       - {{ tile | ert "clock_global" | srt "control" }}/first
     label: Autoscaling Errand
     description: Pushes the Pivotal App Autoscaling application to your Elastic Runtime installation
   - name: register-broker
     colocated: true
-    run_default: when-changed
+    run_default: true
     instances:
       - {{ tile | ert "clock_global" | srt "control" }}/first
     label: Autoscaling Registration Errand
     description: Registers the Autoscaling Service Broker
   - name: nfsbrokerpush
     colocated: true
-    run_default: when-changed
+    run_default: true
     instances:
       - {{ tile | ert "clock_global" | srt "control" }}/first
     label: NFS Broker Errand
