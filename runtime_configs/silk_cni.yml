@@ -1,0 +1,4 @@
+---
+runtime_configs:
+- name: silk-cni
+  runtime_config: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(runtime_config) ))

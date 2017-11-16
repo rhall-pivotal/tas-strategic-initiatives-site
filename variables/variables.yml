@@ -1,0 +1,155 @@
+---
+variables:
+- name: /cf/diego-instance-identity-root-ca
+  type: certificate
+  options:
+    common_name: 'Diego Instance Identity Root CA'
+    is_ca: true
+    duration: 1095
+
+- name: /cf/diego-instance-identity-intermediate-ca
+  type: certificate
+  options:
+    common_name: 'Diego Instance Identity Intermediate CA'
+    is_ca: true
+    duration: 730
+    ca: /cf/diego-instance-identity-root-ca
+    key_usage:
+    - key_cert_sign
+
+- name: app-usage-db-credentials
+  type: user
+  options:
+    username: app_usage
+
+- name: autoscale-db-credentials
+  type: user
+
+- name: backup-prepare-backup-encryption-key
+  type: password
+
+- name: cc-db-credentials
+  type: user
+
+- name: cloud-controller-bulk-api-credentials
+  type: user
+  options:
+    username: bulk_api
+
+- name: cloud-controller-internal-api-user-credentials
+  type: user
+
+- name: cloud-controller-staging-upload-credentials
+  type: user
+  options:
+    username: staging_upload_user
+
+- name: consul-encryption-key
+  type: password
+
+- name: credhub-db-credentials
+  type: user
+
+- name: deploy-autoscaling-broker-credentials
+  type: user
+
+- name: deploy-autoscaling-encryption-key
+  type: password
+
+- name: deploy-notifications-encryption-key
+  type: password
+
+- name: diego-db-bbs-encryption-passphrase
+  type: password
+
+- name: diego-db-credentials
+  type: user
+
+- name: locket-db-credentials
+  type: user
+
+- name: mysql-admin-credentials
+  type: user
+  options:
+    username: root
+
+- name: mysql-backup-server-db-credentials
+  type: user
+
+- name: mysql-bootstrap-db-credentials
+  type: user
+
+- name: mysql-cluster-health-credentials
+  type: user
+  options:
+    username: cluster-health-logger
+
+- name: mysql-diag-agent-db-credentials
+  type: user
+
+- name: mysql-galera-sidecar-credentials
+  type: user
+  options:
+    username: galera-healthcheck
+
+- name: mysql-metrics-db-credentials
+  type: user
+
+- name: mysql-monitor-db-credentials
+  type: user
+
+- name: mysql-proxy-dashboard-credentials
+  type: user
+  options:
+    username: admin
+
+- name: nats-credentials
+  type: user
+  options:
+    username: nats
+
+- name: network-policy-server-db-credentials
+  type: user
+
+- name: nfs-broker-push-db-credentials
+  type: user
+
+- name: nfs-server-blobstore-secret
+  type: password
+
+- name: nfs-volume-db-credentials
+  type: user
+
+- name: notifications-db-credentials
+  type: user
+
+- name: pivotal-account-db-credentials
+  type: user
+
+- name: push-pivotal-account-encryption-key
+  type: password
+
+- name: push-usage-service-secret-token
+  type: password
+
+- name: router-route-services-secret
+  type: password
+
+- name: router-status-credentials
+  type: user
+  options:
+    username: router_status
+
+- name: routing-db-credentials
+  type: user
+
+- name: silk-db-credentials
+  type: user
+
+- name: uaa-db-credentials
+  type: user
+
+- name: webdav-blobstore-credentials
+  type: user
+  options:
+    username: blobstore
