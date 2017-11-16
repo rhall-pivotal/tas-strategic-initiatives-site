@@ -4,7 +4,6 @@ release: garden-runc
 manifest: |
   garden:
     graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
-    network_mtu: (( .diego_cell.garden_network_mtu.value ))
     network_plugin: "/var/vcap/packages/runc-cni/bin/garden-external-networker"
     network_plugin_extra_args:
     - "--configFile=/var/vcap/jobs/garden-cni/config/adapter.json"
