@@ -7,6 +7,12 @@ exports.migrate = function(input) {
         value: "SHA256"
       };
     }
+  } else if( properties['.properties.saml_signature_algorithm'] ) {
+    if( properties['.properties.saml_signature_algorithm']['value'] == "SHA1" ) {
+      properties['.properties.saml_signature_algorithm'] = {
+        value: "SHA256"
+      };
+    }
   }
 
   return input;
