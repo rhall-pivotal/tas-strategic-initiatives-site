@@ -16,6 +16,7 @@ manifest: |
       admin_user: (( .uaa.admin_credentials.identity ))
       admin_password: (( .uaa.admin_credentials.password ))
       dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
+    instance_memory: '256M'
     space: autoscaling
     marketplace_documentation_url: https://docs.pivotal.io/pivotalcf/1-11/appsman-services/autoscaler/using-autoscaler.html
     notifications_host: https://notifications.(( .cloud_controller.system_domain.value
