@@ -198,11 +198,6 @@ property_blueprints:
           - name: secret
             manifest: |
 
-  - name: container_networking_vtep_port
-    type: integer
-    configurable: true
-    default: 4789
-
   - name: container_networking_log_traffic
     type: selector
     configurable: true
@@ -267,6 +262,10 @@ property_blueprints:
         type: string
         configurable: true
         optional: true
+      - name: vtep_port
+        type: integer
+        configurable: true
+        default: 4789
       named_manifests:
         - name: runtime_config
           manifest: |
@@ -304,7 +303,7 @@ property_blueprints:
                       ca_cert: (( $ops_manager.ca_certificate ))
                       client_cert: (( .diego_database.silk_daemon_client_cert.cert_pem ))
                       client_key: (( .diego_database.silk_daemon_client_cert.private_key_pem ))
-                    vtep_port: (( .properties.container_networking_vtep_port.value ))
+                    vtep_port: (( .properties.container_networking_interface_plugin.silk.vtep_port.value ))
               - name: vxlan-policy-agent
                 release: cf-networking
                 properties:
