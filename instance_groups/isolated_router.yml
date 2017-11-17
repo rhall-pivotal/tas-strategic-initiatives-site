@@ -4,21 +4,10 @@ label: Router
 resource_label: Router
 description: Routers route Internet traffic to applications placed in the isolation segment.
 templates:
-  - name: consul_agent
-    release: consul
-    consumes: |
-      consul: nil
-      consul_common: {from: consul_common_link, deployment: ((  ..cf.deployment_name  )) }
-      consul_client: {from: consul_client_link, deployment: ((  ..cf.deployment_name  )) }
-      consul_server: nil
-  - name: gorouter
-    release: routing
-    consumes: |
-      nats: {from: nats, deployment: ((  ..cf.deployment_name  )) }
-  - name: metron_agent
-    release: loggregator
-  - name: syslog_forwarder
-    release: syslog-migration
+  - consul_agent
+  - gorouter
+  - metron_agent
+  - syslog_forwarder
 
 resource_definitions:
   - name: ram
@@ -117,49 +106,3 @@ property_blueprints:
     type: integer
     configurable: true
     default: 20
-
-manifest: |
-  request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
-  router:
-    ca_certs: |
-      (( .properties.routing_custom_ca_certificates.value ))
-      (( $ops_manager.ca_certificate ))
-      ((( /cf/diego-instance-identity-intermediate-ca.certificate )))
-    tracing:
-      enable_zipkin: (( enable_zipkin.value ))
-    secure_cookies: (( disable_insecure_cookies.value ))
-    status:
-      user: router_status
-      password: (( status_credentials.password ))
-    route_services_secret: (( ..cf.properties.route_services.selected_option.parsed_manifest(secret) ))
-    disable_http: (( .properties.routing_disable_http.value ))
-    cipher_suites: (( .properties.gorouter_ssl_ciphers.value ))
-    enable_ssl: true
-    max_idle_connections: (( max_idle_connections.value ))
-    tls_pem: (( .properties.networking_poe_ssl_certs.parsed_manifest(routing_certificates) ))
-    min_tls_version: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(min_tls_version) ))
-    ssl_skip_validation: (( .properties.skip_cert_verify.value ))
-    drain_wait: (( drain_wait.value ))
-    load_balancer_healthy_threshold: (( lb_healthy_threshold.value ))
-    extra_headers_to_log: (( extra_headers_to_log.parsed_strings ))
-    routing_table_sharding_mode: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(sharding_mode) ))
-    isolation_segments: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(isolation_segments) ))
-    forwarded_client_cert: (( .properties.routing_tls_termination.selected_option.parsed_manifest(gorouter_forwarded_client_cert) ))
-    backends:
-      max_conns: (( .properties.router_backend_max_conn.value ))
-  routing_api:
-    enabled: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(routing_api_enabled) ))
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-  loggregator:
-    tls:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      metron:
-        cert: (( .properties.metron_tls_cert.cert_pem ))
-        key: (( .properties.metron_tls_cert.private_key_pem ))
-  uaa:
-    ca_cert: (( $ops_manager.ca_certificate ))
-    ssl:
-      port: 8443
-    clients:
-      gorouter:
-        secret: (( ..cf.uaa.gorouter_client_credentials.password ))
