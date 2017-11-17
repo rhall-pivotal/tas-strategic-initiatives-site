@@ -210,10 +210,6 @@ property_blueprints:
           manifest: |
             true
       property_blueprints:
-      - name: iptables_denied_logs_per_sec
-        type: integer
-        configurable: true
-        default: 1
       - name: iptables_accepted_udp_logs_per_sec
         type: integer
         configurable: true
@@ -266,6 +262,10 @@ property_blueprints:
         type: integer
         configurable: true
         default: 4789
+      - name: iptables_denied_logs_per_sec
+        type: integer
+        configurable: true
+        default: 1
       named_manifests:
         - name: runtime_config
           manifest: |
@@ -288,7 +288,7 @@ property_blueprints:
                     mtu: (( .properties.container_networking_interface_plugin.silk.network_mtu.value ))
                     iptables_logging: (( .properties.container_networking_log_traffic.selected_option.parsed_manifest(iptables_logging_enabled) ))
                     iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_log_traffic.enable.iptables_accepted_udp_logs_per_sec.value ))
-                    iptables_denied_logs_per_sec: (( .properties.container_networking_log_traffic.enable.iptables_denied_logs_per_sec.value ))
+                    iptables_denied_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_denied_logs_per_sec.value ))
               - name: iptables-logger
                 release: cf-networking
               - name: netmon

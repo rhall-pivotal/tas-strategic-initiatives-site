@@ -280,6 +280,10 @@ form:
               label: VXLAN Tunnel Endpoint Port
               description: |
                 Host port used for receiving VXLAN packets. Defaults to 4789.
+            - reference: .properties.container_networking_interface_plugin.silk.iptables_denied_logs_per_sec
+              label: Denied logging interval (packets/second)
+              description: |
+                Denied traffic logging is rate limited. Override the default of 1 packet/second.
 
         - reference: .properties.container_networking_interface_plugin.external
           label: External
@@ -290,10 +294,6 @@ form:
         - reference: .properties.container_networking_log_traffic.enable
           label: Enable (will increase log volume)
           property_inputs:
-            - reference: .properties.container_networking_log_traffic.enable.iptables_denied_logs_per_sec
-              label: Denied logging interval (packets/second)
-              description: |
-                Denied traffic logging is rate limited. Override the default of 1 packet/second.
             - reference: .properties.container_networking_log_traffic.enable.iptables_accepted_udp_logs_per_sec
               label: UDP logging interval (packets/second)
               description: |
