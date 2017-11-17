@@ -198,25 +198,6 @@ property_blueprints:
           - name: secret
             manifest: |
 
-  - name: container_networking_log_traffic
-    type: selector
-    configurable: true
-    default: disable
-    option_templates:
-    - name: enable
-      select_value: enable
-      named_manifests:
-        - name: iptables_logging_enabled
-          manifest: |
-            true
-
-    - name: disable
-      select_value: disable
-      named_manifests:
-        - name: iptables_logging_enabled
-          manifest: |
-            false
-
   - name: network_policy_server_cert
     type: rsa_cert_credentials
     default:
@@ -265,6 +246,10 @@ property_blueprints:
         type: integer
         configurable: true
         default: 100
+      - name: enable_log_traffic
+        type: boolean
+        configurable: true
+        default: false
       named_manifests:
         - name: runtime_config
           manifest: |
@@ -285,7 +270,7 @@ property_blueprints:
                   cf_networking:
                     dns_servers: ["169.254.0.2"]
                     mtu: (( .properties.container_networking_interface_plugin.silk.network_mtu.value ))
-                    iptables_logging: (( .properties.container_networking_log_traffic.selected_option.parsed_manifest(iptables_logging_enabled) ))
+                    iptables_logging: (( .properties.container_networking_interface_plugin.silk.enable_log_traffic ))
                     iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
                     iptables_denied_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_denied_logs_per_sec.value ))
               - name: iptables-logger
@@ -307,7 +292,7 @@ property_blueprints:
                 release: cf-networking
                 properties:
                   cf_networking:
-                    iptables_logging: (( .properties.container_networking_log_traffic.selected_option.parsed_manifest(iptables_logging_enabled) ))
+                    iptables_logging: (( .properties.container_networking_interface_plugin.silk.enable_log_traffic ))
                     iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
                     policy_server:
                       hostname: network-policy-server.service.cf.internal

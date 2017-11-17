@@ -288,17 +288,13 @@ form:
               label: UDP logging interval (packets/second)
               description: |
                 UDP traffic logging is rate limited. Override the default of 100 packets/second.
+            - reference: .properties.container_networking_interface_plugin.silk.enable_log_traffic
+              label: Log traffic for all accepted/denied application packets
+              description: |
+                Enabling this feature will increase log volume.
 
         - reference: .properties.container_networking_interface_plugin.external
           label: External
-
-    - reference: .properties.container_networking_log_traffic
-      label: "Log traffic for all accepted/denied application packets."
-      selector_property_inputs:
-        - reference: .properties.container_networking_log_traffic.enable
-          label: Enable (will increase log volume)
-        - reference: .properties.container_networking_log_traffic.disable
-          label: Disable
 
     - reference: .properties.tcp_routing
       label: |
