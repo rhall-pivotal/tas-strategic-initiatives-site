@@ -268,18 +268,17 @@ form:
               description: |
                 The default 1454 bytes is fine for most cases, but you might need less,
                 such as for networks that use GRE tunnels.
+            - reference: .properties.container_networking_interface_plugin.silk.network_cidr
+              label: |
+                Overlay Subnet (Only change this is you need to avoid address
+                collision with a third-party service on the same subnet.)
+              description: |
+                Defines the range of the overlay network and must specify a RFC
+                1918 range. Defaults to 10.255.0.0/16.
+              placeholder: 10.255.0.0/16
 
         - reference: .properties.container_networking_interface_plugin.external
           label: External
-
-    - reference: .properties.container_networking_network_cidr
-      label: |
-        Overlay Subnet (Only change this is you need to avoid address
-        collision with a third-party service on the same subnet.)
-      description: |
-        Defines the range of the overlay network and must specify a RFC
-        1918 range. Defaults to 10.255.0.0/16.
-      placeholder: 10.255.0.0/16
 
     - reference: .properties.container_networking_vtep_port
       label: VXLAN Tunnel Endpoint Port
