@@ -263,6 +263,11 @@ property_blueprints:
     option_templates:
     - name: silk
       select_value: silk
+      property_blueprints:
+      - name: network_mtu
+        type: integer
+        configurable: true
+        default: 1454
       named_manifests:
         - name: runtime_config
           manifest: |
@@ -282,7 +287,7 @@ property_blueprints:
                 properties:
                   cf_networking:
                     dns_servers: ["169.254.0.2"]
-                    mtu: (( .diego_cell.garden_network_mtu.value ))
+                    mtu: (( .properties.container_networking_interface_plugin.silk.network_mtu.value ))
                     iptables_logging: (( .properties.container_networking_log_traffic.selected_option.parsed_manifest(iptables_logging_enabled) ))
                     iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_log_traffic.enable.iptables_accepted_udp_logs_per_sec.value ))
                     iptables_denied_logs_per_sec: (( .properties.container_networking_log_traffic.enable.iptables_denied_logs_per_sec.value ))

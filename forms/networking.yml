@@ -251,12 +251,6 @@ form:
         range to reach applications or services hosted on the "Protected
         Domains" list.
 
-    - reference: .diego_cell.garden_network_mtu
-      label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
-      description: |
-        The default 1454 bytes is fine for most cases, but you might need less,
-        such as for networks that use GRE tunnels.
-
     - reference: .properties.logger_endpoint_port
       label: Loggregator Port
       description: |
@@ -268,6 +262,12 @@ form:
       selector_property_inputs:
         - reference: .properties.container_networking_interface_plugin.silk
           label: Silk
+          property_inputs:
+            - reference: .properties.container_networking_interface_plugin.silk.network_mtu
+              label: Applications Network Maximum Transmission Unit (MTU) (in bytes)
+              description: |
+                The default 1454 bytes is fine for most cases, but you might need less,
+                such as for networks that use GRE tunnels.
 
         - reference: .properties.container_networking_interface_plugin.external
           label: External
