@@ -270,7 +270,7 @@ property_blueprints:
                   cf_networking:
                     dns_servers: ["169.254.0.2"]
                     mtu: (( .properties.container_networking_interface_plugin.silk.network_mtu.value ))
-                    iptables_logging: (( .properties.container_networking_interface_plugin.silk.enable_log_traffic ))
+                    iptables_logging: (( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ))
                     iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
                     iptables_denied_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_denied_logs_per_sec.value ))
               - name: iptables-logger
@@ -292,7 +292,7 @@ property_blueprints:
                 release: cf-networking
                 properties:
                   cf_networking:
-                    iptables_logging: (( .properties.container_networking_interface_plugin.silk.enable_log_traffic ))
+                    iptables_logging: (( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ))
                     iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
                     policy_server:
                       hostname: network-policy-server.service.cf.internal
