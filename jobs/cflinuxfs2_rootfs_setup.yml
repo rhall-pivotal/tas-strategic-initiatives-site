@@ -4,4 +4,5 @@ manifest: |
   cflinuxfs2-rootfs:
     trusted_certs: |
       (( $ops_manager.trusted_certificates ))
+      (( $ops_manager.ca_certificate ))
       ((( /cf/diego-instance-identity-root-ca.certificate )))
