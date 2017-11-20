@@ -24,7 +24,10 @@ manifest: |
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       locket:
         api_location: locket.service.cf.internal:8891
-      trusted_certs: ((( /cf/diego-instance-identity-root-ca.certificate )))
+      trusted_certs: |
+        ((( /cf/diego-instance-identity-root-ca.certificate )))
+        (( $ops_manager.ca_certificate ))
+        (( $ops_manager.trusted_certificates ))
   loggregator:
     use_v2_api: true
     ca_cert: (( $ops_manager.ca_certificate ))
