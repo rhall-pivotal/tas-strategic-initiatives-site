@@ -16,3 +16,9 @@ rank: 88
 serial: false
 post_deploy_errands:
   - name: install-hwc-buildpack
+    colocated: true
+    run_default: true
+    instances:
+      - windows_diego_cell/first
+    label: Install HWC Buildpack Errand
+    description: Install the HWC buildpack to your Elastic Runtime for Windows installation
