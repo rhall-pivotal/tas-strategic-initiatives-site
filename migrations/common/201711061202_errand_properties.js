@@ -11,6 +11,11 @@ exports.migrate = function(input) {
   properties['.properties.push_apps_manager_global_wrapper_footer_content'] = properties['.push-apps-manager.global_wrapper_footer_content'];
   properties['.properties.push_apps_manager_logo'] = properties['.push-apps-manager.logo'];
   properties['.properties.push_apps_manager_square_logo'] = properties['.push-apps-manager.square_logo'];
+
+  if( properties['.push-apps-manager.favicon'] ) {
+    properties['.properties.push_apps_manager_favicon'] = properties['.push-apps-manager.favicon'];
+  }
+
   properties['.properties.push_apps_manager_footer_text'] = properties['.push-apps-manager.footer_text'];
   properties['.properties.push_apps_manager_footer_links'] = properties['.push-apps-manager.footer_links'];
   properties['.properties.push_apps_manager_nav_links'] = properties['.push-apps-manager.nav_links'];
