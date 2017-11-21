@@ -1,6 +1,6 @@
 exports.migrate = function(input) {
   var properties = input.properties;
-  var errorMessage  = "Elastic Runtime cannot be upgraded to Small Footprint Elastic Runtime";
+  var errorMessage  = "Pivotal Application Service cannot be upgraded to PCF Small Footprint";
 
   if( properties['.properties.tile_name'] ) {
     if( properties['.properties.tile_name']['value'] == "ERT" ) {
