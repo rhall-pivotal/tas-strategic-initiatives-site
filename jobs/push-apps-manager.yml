@@ -20,6 +20,7 @@ manifest: |
     enable_invitations: (( .properties.push_apps_manager_enable_invitations.value ))
     display_plan_prices: (( .properties.push_apps_manager_display_plan_prices.value ))
     currency_lookup: (( .properties.push_apps_manager_currency_lookup.value ))
+    instances: {{ tile | ert "6" | srt "2" }}
     white_labeling:
       marketplace_name: (( .properties.push_apps_manager_marketplace_name.value ))
       nav_links: (( .properties.push_apps_manager_nav_links.value ))
