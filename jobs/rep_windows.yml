@@ -28,6 +28,10 @@ manifest: |
       preloaded_rootfses:
       - windows2016:/var/vcap/packages/windows2016fs/rootfs
       placement_tags: (( placement_tags.parsed_strings ))
+      trusted_certs: |
+        ((( /cf/diego-instance-identity-root-ca.certificate )))
+        (( $ops_manager.ca_certificate ))
+        (( $ops_manager.trusted_certificates ))
   loggregator:
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( .properties.loggregator_client_cert.cert_pem ))
