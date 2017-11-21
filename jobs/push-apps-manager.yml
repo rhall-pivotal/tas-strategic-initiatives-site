@@ -41,6 +41,7 @@ manifest: |
   databases:
     app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
   invitations:
+    instances: {{ tile | ert "2" | srt "1" }}
     uaa_client_secret: (( .uaa.invitations_client_credentials.password ))
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
