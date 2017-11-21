@@ -25,6 +25,6 @@ manifest: |
     encryption_key: ((( push-pivotal-account-encryption-key )))
     app_push:
       instance_number: {{ tile | ert "2" | srt "1" }}
-      memory: 1024
+      memory: {{ tile | ert "1024" | srt "768" }}
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
