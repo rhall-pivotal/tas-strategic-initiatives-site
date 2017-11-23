@@ -29,42 +29,6 @@ property_blueprints:
       - name: routing_api_enabled
         manifest: |
           true
-  - name: c2c_iptables_logging
-    type: selector
-    configurable: true
-    default: disabled
-    option_templates:
-    - name: enabled
-      select_value: enabled
-      named_manifests:
-      - name: cf_networking_iptables_logging
-        manifest: |
-          true
-      - name: cf_networking_iptables_udp_logging_interval
-        manifest: (( .properties.c2c_iptables_logging.enabled.udp_logging_interval.value ))
-      - name: cf_networking_iptables_denied_logging_interval
-        manifest: (( .properties.c2c_iptables_logging.enabled.denied_logging_interval.value ))
-      property_blueprints:
-        - name: denied_logging_interval
-          type: integer
-          configurable: true
-          default: 1
-        - name: udp_logging_interval
-          type: integer
-          configurable: true
-          default: 100
-    - name: disabled
-      select_value: disabled
-      named_manifests:
-      - name: cf_networking_iptables_logging
-        manifest: |
-          false
-      - name: cf_networking_iptables_udp_logging_interval
-        manifest: |
-          null
-      - name: cf_networking_iptables_denied_logging_interval
-        manifest: |
-          null
 
   - name: networking_poe_ssl_certs
     type: collection
