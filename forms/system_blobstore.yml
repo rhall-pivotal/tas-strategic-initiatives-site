@@ -3,7 +3,7 @@ form:
   name: system_blobstore
   label: File Storage
   description: |
-    This section determines where you would like to place your Elastic Runtime
+    This section determines where you would like to place your Application Service
     Cloud Controller's file storage.
 
   verifiers:
@@ -48,7 +48,7 @@ form:
     label: Configure your Cloud Controller's filesystem
     selector_property_inputs:
     - reference: .properties.system_blobstore.internal
-      label: Internal WebDAV (provided by Elastic Runtime)
+      label: Internal WebDAV (provided by Application Service)
 
     - reference: .properties.system_blobstore.external
       label: |

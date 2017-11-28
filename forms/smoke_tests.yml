@@ -4,7 +4,7 @@ form:
   label: Smoke Tests
   description: |
     Specify a Cloud Foundry organization and space where smoke tests can run if
-    in the future you delete your Elastic Runtime deployment domains.
+    in the future you delete your Application Service deployment domains.
 
   property_inputs:
     - reference: .properties.smoke_tests
@@ -24,11 +24,11 @@ form:
           - reference: .properties.smoke_tests.specified.org_name
             label: Organization
             description: |
-              The Elastic Runtime organization to use when running tests
+              The Application Service organization to use when running tests
 
           - reference: .properties.smoke_tests.specified.space_name
             label: Space
-            description: The Elastic Runtime space to use when running tests
+            description: The Application Service space to use when running tests
 
           - reference: .properties.smoke_tests.specified.apps_domain
             label: Domain

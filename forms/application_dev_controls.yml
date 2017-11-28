@@ -4,7 +4,7 @@ form:
   label: Application Developer Controls
   description: |
     Configure restrictions and default settings for applications pushed to
-    Elastic Runtime.
+    Application Service.
 
   property_inputs:
     - reference: .cloud_controller.max_file_size
@@ -22,7 +22,7 @@ form:
       label: Default App Memory Quota per Org (MB)
       description: |
         Default memory limit for all apps in an org. This default only applies
-        for the first installation of Elastic Runtime. After initial
+        for the first installation of Application Service. After initial
         installation, use the CLI to manage quotas.
 
     - reference: .cloud_controller.max_disk_quota_app
@@ -43,7 +43,7 @@ form:
       label: Default Service Instances Quota per Org
       description: |
         Default maximum number of service instances in an org. This default
-        only applies for the first installation of Elastic Runtime, otherwise
+        only applies for the first installation of Application Service, otherwise
         use the CLI to manage quotas
 
     - reference: .cloud_controller.staging_timeout_in_seconds
