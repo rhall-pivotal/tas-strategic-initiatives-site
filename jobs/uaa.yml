@@ -21,7 +21,7 @@ manifest: |
       providers: (( .properties.uaa.selected_option.parsed_manifest(saml_provider) ))
       signRequest: (( .properties.uaa.saml.sign_auth_requests.value ))
       signatureAlgorithm: (( .properties.saml_signature_algorithm.value ))
-      entityid: https://login.(( .cloud_controller.system_domain.value ))
+      entityid: http://login.(( .cloud_controller.system_domain.value ))
       serviceProviderCertificate: ''
       wantAssertionSigned: (( .properties.uaa.saml.require_signed_assertions.value ))
       keys:
