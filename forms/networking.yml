@@ -157,6 +157,14 @@ form:
         If checked, the router will include Zipkin tracing headers on all
         incoming requests.
 
+    - reference: .router.enable_write_access_logs
+      label: Enable Router to write access logs locally
+      description: |
+        When enabled, the Router will write access logs to the local disk.
+        Under some circumstances, it is advisable to disable this feature
+        to prevent Router from filling the local disk entirely with the
+        contents of access logs.
+
     - reference: .router.enable_isolated_routing
       label: |
         Routers reject requests for Isolation Segments

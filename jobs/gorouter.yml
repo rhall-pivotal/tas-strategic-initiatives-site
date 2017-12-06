@@ -22,6 +22,7 @@ manifest: |
     drain_wait: (( .router.drain_wait.value ))
     tracing:
       enable_zipkin: (( .router.enable_zipkin.value ))
+    write_access_logs_locally: (( .router.enable_write_access_logs.value ))
     secure_cookies: (( .router.disable_insecure_cookies.value ))
     load_balancer_healthy_threshold: (( .router.lb_healthy_threshold.value ))
     extra_headers_to_log: (( .router.extra_headers_to_log.parsed_strings ))
