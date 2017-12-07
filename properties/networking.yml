@@ -136,6 +136,30 @@ property_blueprints:
             manifest: |
               false
 
+  - name: router_client_cert_validation
+    type: selector
+    configurable: true
+    default: request
+    option_templates:
+      - name: none
+        select_value: none
+        named_manifests:
+          - name: client_cert_validation
+            manifest: |
+              none
+      - name: request
+        select_value: request
+        named_manifests:
+          - name: client_cert_validation
+            manifest: |
+              request
+      - name: require
+        select_value: require
+        named_manifests:
+          - name: client_cert_validation
+            manifest: |
+              require
+
   - name: gorouter_ssl_ciphers
     type: text
     configurable: true

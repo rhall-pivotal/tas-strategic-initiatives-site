@@ -75,6 +75,25 @@ form:
         label: |
           TLS terminated for the first time at the Router
 
+  - reference: .properties.router_client_cert_validation
+    label: Router behavior for Client Certificate Validation
+    selector_property_inputs:
+      - reference: .properties.router_client_cert_validation.none
+        label: |
+          Ignore Client Certificates. Router will not request client certificates
+          and will ignore them if presented. This option is incompatible with
+          XFCC options "Forward the XFCC header received from the client only
+          when the client connection is mTLS" and "Strip the XFCC header when
+          present and set it to the client certificate from the mTLS handshake".
+      - reference: .properties.router_client_cert_validation.request
+        label: |
+          Validate. Router will request client certificates in TLS handshakes,
+          and will validate them when presented, but will not require them.
+      - reference: .properties.router_client_cert_validation.require
+        label: |
+          Require. Router will fail a TLS handshake if the client does not
+          provide a certificate signed by a CA that it trusts.
+
   - reference: .properties.gorouter_ssl_ciphers
     label: TLS Cipher Suites for Router
     description: |
