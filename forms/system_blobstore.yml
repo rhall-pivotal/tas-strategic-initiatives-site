@@ -148,6 +148,13 @@ form:
         - reference: .properties.system_blobstore.external_azure.access_key
           label: Access Key
 
+        - reference: .properties.system_blobstore.external_azure.environment
+          label: Environment
+          description: |
+            This is the canonical name for the Azure Cloud environment where
+            your storage resides. The default value is AzureCloud, but other options
+            include AzureChinaCloud, AzureUSGovernment, and AzureGermanCloud.
+
         - reference: .properties.system_blobstore.external_azure.buildpacks_container
           label: Buildpacks Container Name
           description: Container for storing app buildpacks.

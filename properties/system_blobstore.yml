@@ -211,7 +211,7 @@ property_blueprints:
               buildpack_directory_key: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
               fog_connection:
                 provider: AzureRM
-                environment: AzureCloud
+                environment: (( .properties.system_blobstore.external_azure.environment.value ))
                 azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
                 azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
           - name: ccdroplet
@@ -221,7 +221,7 @@ property_blueprints:
               droplet_directory_key: (( .properties.system_blobstore.external_azure.droplets_container.value ))
               fog_connection:
                 provider: AzureRM
-                environment: AzureCloud
+                environment: (( .properties.system_blobstore.external_azure.environment.value ))
                 azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
                 azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
           - name: ccpackage
@@ -231,7 +231,7 @@ property_blueprints:
               app_package_directory_key: (( .properties.system_blobstore.external_azure.packages_container.value ))
               fog_connection:
                 provider: AzureRM
-                environment: AzureCloud
+                environment: (( .properties.system_blobstore.external_azure.environment.value ))
                 azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
                 azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
           - name: ccresource
@@ -240,7 +240,7 @@ property_blueprints:
               resource_directory_key: (( .properties.system_blobstore.external_azure.resources_container.value ))
               fog_connection:
                 provider: AzureRM
-                environment: AzureCloud
+                environment: (( .properties.system_blobstore.external_azure.environment.value ))
                 azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
                 azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
         property_blueprints:
@@ -262,3 +262,8 @@ property_blueprints:
           - name: access_key
             type: secret
             configurable: true
+          - name: environment
+            type: string
+            configurable: true
+            optional: false
+            default: AzureCloud
