@@ -117,6 +117,13 @@ form:
                 If enabled, the SAML identity provider should always send
                 signed assertions.
 
+            - reference: .properties.uaa.saml.entity_id_override
+              label: Entity ID Override
+              description: |
+                An entry in this field overrides the default Entity ID value of
+                "http://login.<system-domain>". The <system-domain> portion of
+                that default is configured on the "Domains" tab.
+
         - reference: .properties.uaa.ldap
           label: LDAP Server
           description:

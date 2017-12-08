@@ -14,6 +14,10 @@ property_blueprints:
         - name: self_service_links_enabled
           manifest: |
             true
+        - name: default_saml_identity_id
+          type: string
+          manifest: |
+            https://login.(( .cloud_controller.system_domain.value ))
         property_blueprints:
           - name: password_min_length
             type: integer
@@ -63,6 +67,10 @@ property_blueprints:
         - name: self_service_links_enabled
           manifest: |
             false
+        - name: default_saml_identity_id
+          type: string
+          manifest: |
+            https://login.(( .cloud_controller.system_domain.value ))
         property_blueprints:
           - name: sso_name
             type: string
@@ -117,6 +125,10 @@ property_blueprints:
             type: string
             configurable: true
             optional: true
+          - name: entity_id_override
+            type: string
+            configurable: true
+            optional: true
       - name: ldap
         select_value: ldap
         named_manifests:
@@ -126,6 +138,10 @@ property_blueprints:
         - name: self_service_links_enabled
           manifest: |
             false
+        - name: default_saml_identity_id
+          type: string
+          manifest: |
+            https://login.(( .cloud_controller.system_domain.value ))
         property_blueprints:
           - name: url
             type: ldap_url
