@@ -51,7 +51,9 @@ property_blueprints:
               tls_enabled: (( .properties.syslog_tls.selected_option.parsed_manifest(tls_enabled) ))
               ca_cert: (( .properties.syslog_tls.selected_option.parsed_manifest(ca_cert) ))
               permitted_peer: (( .properties.syslog_tls.selected_option.parsed_manifest(permitted_peer) ))
-              custom_rule: (( .properties.syslog_rule.value ))
+              custom_rule: |
+                (( .properties.syslog_rule.value ))
+                if ($programname startswith "vcap.") then ~
           - name: syslog_disabled
             manifest: |
               migration:
