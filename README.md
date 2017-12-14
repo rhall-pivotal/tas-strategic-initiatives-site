@@ -1,4 +1,4 @@
-# p-windows-runtime-2016
+# Pivotal Application Service for Windows
 
 ![ballmer](http://i.giphy.com/mwDdHHKyuHe6c.gif)
 
