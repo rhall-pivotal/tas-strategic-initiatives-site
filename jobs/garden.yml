@@ -14,4 +14,3 @@ manifest: |
     network_plugin_extra_args: [ "--configFile=/var/vcap/jobs/garden-cni/config/adapter.json" ]
     image_plugin: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin.value : .properties.garden_image_plugin_empty.value ))'
     image_plugin_extra_args: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin_extra_args.value : .properties.garden_image_plugin_empty_args.value ))'
-    destroy_containers_on_start: true
