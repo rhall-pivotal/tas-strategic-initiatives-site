@@ -95,3 +95,9 @@ property_blueprints:
   type: boolean
   configurable: true
   default: false
+
+- name: mysql_backup_server_certificate
+  type: rsa_cert_credentials
+  default:
+    domains:
+    - streaming-mysql-backup-tool
