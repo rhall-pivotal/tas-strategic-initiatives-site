@@ -5,6 +5,7 @@ manifest: |
     persistent_image_list:
       - "/var/vcap/packages/cflinuxfs2/rootfs"
     graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
+    cleanup_process_dirs_on_wait: true
     deny_networks: ["0.0.0.0/0"]
     insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
     http_proxy: (( $ops_manager.http_proxy ))
