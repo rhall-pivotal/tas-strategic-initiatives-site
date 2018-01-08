@@ -61,6 +61,14 @@ form:
       When enabled, all requests to Cloud Controller will be captured in the
       syslog
 
+  - reference: .properties.syslog_use_tcp_for_file_forwarding_local_transport
+    label: Use TCP for file forwarding local transport
+    description: |
+      Workaround to avoid truncation of very long
+      (> 1024 bytes)
+      log lines.
+      May negatively impact performance.
+
   - reference: .properties.syslog_rule
     label: Custom rsyslog Configuration
     description: |
