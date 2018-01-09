@@ -7,20 +7,141 @@ runtime_configs:
       version: 0.0.1
     addons:
     - name: bosh-dns-aliases
-      include:
-        # this intentionally matches the IST as well as the ERT
-        jobs:
-        - name: rep
-          release: diego
       jobs:
       - name: bosh-dns-aliases
         release: bosh-dns-aliases
         properties:
           aliases:
+          - domain: _.cell.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "diego_cell" | srt "compute" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: auctioneer.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "diego_brain" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: bbs.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "diego_database" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: blobstore.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "nfs-server" | srt "blobstore" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: cc-uploader.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "diego_brain" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: cloud-controller-ng.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "cloud_controller" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: consul.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "consul_server" | srt "database" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
           - domain: credhub.service.cf.internal
             targets:
             - query: "*"
               instance_group: {{ tile | ert "credhub" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: doppler.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "doppler" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: file-server.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "diego_brain" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: locket.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "diego_database" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: loggregator-trafficcontroller.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "loggregator_trafficcontroller" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: mysql.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "mysql_proxy" | srt "database" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: network-policy-server.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "diego_database" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: reverse-log-proxy.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "loggregator_trafficcontroller" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: routing-api.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "cloud_controller" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: silk-controller.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "diego_database" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: ssh-proxy.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "diego_brain" | srt "control" }}
+              deployment: (( ..cf.deployment_name ))
+              network: (( ..cf.network_name ))
+              domain: bosh
+          - domain: uaa.service.cf.internal
+            targets:
+            - query: "*"
+              instance_group: {{ tile | ert "uaa" | srt "control" }}
               deployment: (( ..cf.deployment_name ))
               network: (( ..cf.network_name ))
               domain: bosh
