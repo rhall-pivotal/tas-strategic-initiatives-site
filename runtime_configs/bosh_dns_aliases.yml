@@ -14,7 +14,7 @@ runtime_configs:
           aliases:
           - domain: _.cell.service.cf.internal
             targets:
-            - query: "*"
+            - query: "_"
               instance_group: {{ tile | ert "diego_cell" | srt "compute" }}
               deployment: (( ..cf.deployment_name ))
               network: (( ..cf.network_name ))
