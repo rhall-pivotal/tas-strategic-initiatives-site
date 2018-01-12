@@ -4,21 +4,21 @@ label: Backup Prepare Node
 resource_label: Backup Prepare Node
 description: Streams backups from MySQL Cluster
 templates:
-- backup-restore-notifications
-- backup-restore-pcf-autoscaling
-- bbr-cfnetworkingdb
-- bbr-cloudcontrollerdb
-- bbr-routingdb
-- bbr-uaadb
-- bbr-usage-servicedb
-- consul_agent
-- database-backup-restorer
-- lock-unlock-pcf-autoscaling
-- mysql-backup
-- nfsbroker-bbr
-- service-backup
-- streaming-mysql-backup-client
-- syslog_forwarder
+- $( job "backup-restore-notifications" )
+- $( job "backup-restore-pcf-autoscaling" )
+- $( job "bbr-cfnetworkingdb" )
+- $( job "bbr-cloudcontrollerdb" )
+- $( job "bbr-routingdb" )
+- $( job "bbr-uaadb" )
+- $( job "bbr-usage-servicedb" )
+- $( job "consul_agent" )
+- $( job "database-backup-restorer" )
+- $( job "lock-unlock-pcf-autoscaling" )
+- $( job "mysql-backup" )
+- $( job "nfsbroker-bbr" )
+- $( job "service-backup" )
+- $( job "streaming-mysql-backup-client" )
+- $( job "syslog_forwarder" )
 resource_definitions:
 - name: ram
   type: integer

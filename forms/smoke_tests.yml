@@ -1,35 +1,34 @@
 ---
-form:
-  name: smoke_tests
-  label: Smoke Tests
-  description: |
-    Specify a Cloud Foundry organization and space where smoke tests can run if
-    in the future you delete your Application Service deployment domains.
+name: smoke_tests
+label: Smoke Tests
+description: |
+  Specify a Cloud Foundry organization and space where smoke tests can run if
+  in the future you delete your Application Service deployment domains.
 
-  property_inputs:
-    - reference: .properties.smoke_tests
+property_inputs:
+  - reference: .properties.smoke_tests
+    label: |
+      Choose where to deploy applications when running the smoke tests
+    selector_property_inputs:
+    - reference: .properties.smoke_tests.on_demand
       label: |
-        Choose where to deploy applications when running the smoke tests
-      selector_property_inputs:
-      - reference: .properties.smoke_tests.on_demand
-        label: |
-          Temporary space within the system organization (This is deleted after
-          smoke tests finish.)
+        Temporary space within the system organization (This is deleted after
+        smoke tests finish.)
 
-      - reference: .properties.smoke_tests.specified
-        label: |
-          Specified org and space (The org and space must have a domain
-          available for routing.)
-        property_inputs:
-          - reference: .properties.smoke_tests.specified.org_name
-            label: Organization
-            description: |
-              The Application Service organization to use when running tests
+    - reference: .properties.smoke_tests.specified
+      label: |
+        Specified org and space (The org and space must have a domain
+        available for routing.)
+      property_inputs:
+        - reference: .properties.smoke_tests.specified.org_name
+          label: Organization
+          description: |
+            The Application Service organization to use when running tests
 
-          - reference: .properties.smoke_tests.specified.space_name
-            label: Space
-            description: The Application Service space to use when running tests
+        - reference: .properties.smoke_tests.specified.space_name
+          label: Space
+          description: The Application Service space to use when running tests
 
-          - reference: .properties.smoke_tests.specified.apps_domain
-            label: Domain
-            description: Must be accessible to the organization
+        - reference: .properties.smoke_tests.specified.apps_domain
+          label: Domain
+          description: Must be accessible to the organization

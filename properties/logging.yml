@@ -1,115 +1,114 @@
 ---
-property_blueprints:
-  - name: logger_endpoint_port
-    type: port
-    configurable: true
-    optional: true
+- name: logger_endpoint_port
+  type: port
+  configurable: true
+  optional: true
 
-  - name: syslog_host
-    type: network_address
-    configurable: true
-    optional: true
+- name: syslog_host
+  type: network_address
+  configurable: true
+  optional: true
 
-  - name: syslog_port
-    type: port
-    configurable: true
-    optional: true
+- name: syslog_port
+  type: port
+  configurable: true
+  optional: true
 
-  - name: syslog_rule
-    type: text
-    configurable: true
-    optional: true
+- name: syslog_rule
+  type: text
+  configurable: true
+  optional: true
 
-  - name: syslog_protocol
-    type: dropdown_select
-    configurable: true
-    optional: true
-    options:
-      - name: tcp
-        label: TCP protocol
-      - name: relp
-        label: RELP protocol
-      - name: udp
-        label: UDP protocol
+- name: syslog_protocol
+  type: dropdown_select
+  configurable: true
+  optional: true
+  options:
+    - name: tcp
+      label: TCP protocol
+    - name: relp
+      label: RELP protocol
+    - name: udp
+      label: UDP protocol
 
-  - name: system_logging
-    type: selector
-    configurable: false
-    default: only-option
-    option_templates:
-      - name: doesnt-matter
-        select_value: only-option
-        named_manifests:
-          - name: syslog
-            manifest: |
-              "(( .properties.syslog_host.value ? .properties.system_logging.selected_option.parsed_manifest(syslog_enabled) : .properties.system_logging.selected_option.parsed_manifest(syslog_disabled) ))"
-          - name: syslog_enabled
-            manifest: |
-              address: (( .properties.syslog_host.value ))
-              port: (( .properties.syslog_port.value ))
-              transport: (( .properties.syslog_protocol.value ))
-              tls_enabled: (( .properties.syslog_tls.selected_option.parsed_manifest(tls_enabled) ))
-              ca_cert: (( .properties.syslog_tls.selected_option.parsed_manifest(ca_cert) ))
-              permitted_peer: (( .properties.syslog_tls.selected_option.parsed_manifest(permitted_peer) ))
-              custom_rule: |
-                (( .properties.syslog_rule.value ))
-                if ($programname startswith "vcap.") then ~
-          - name: syslog_disabled
-            manifest: |
-              migration:
-                disabled: true
-          - name: syslog_aggregator
-            manifest: |
-              "(( .properties.syslog_host.value ? .properties.system_logging.selected_option.parsed_manifest(syslog_aggregator_enabled) : .properties.system_logging.selected_option.parsed_manifest(syslog_aggregator_disabled) ))"
-          - name: syslog_aggregator_enabled
-            manifest: |
-              address: (( .properties.syslog_host.value ))
-              port: (( .properties.syslog_port.value ))
-              transport: (( .properties.syslog_protocol.value ))
-          - name: syslog_aggregator_disabled
-            manifest: |
-              {}
-          - name: syslog_url
-            manifest: |
-              "(( .properties.syslog_host.value ? .properties.system_logging.selected_option.parsed_manifest(syslog_url_enabled) : .properties.system_logging.selected_option.parsed_manifest(syslog_url_disabled) ))"
-          - name: syslog_url_enabled
-            manifest: "(( .properties.syslog_protocol.value ))://(( .properties.syslog_host.value )):(( .properties.syslog_port.value ))"
-          - name: syslog_url_disabled
-            manifest: |
-              ""
+- name: system_logging
+  type: selector
+  configurable: false
+  default: only-option
+  option_templates:
+    - name: doesnt-matter
+      select_value: only-option
+      named_manifests:
+        - name: syslog
+          manifest: |
+            "(( .properties.syslog_host.value ? .properties.system_logging.selected_option.parsed_manifest(syslog_enabled) : .properties.system_logging.selected_option.parsed_manifest(syslog_disabled) ))"
+        - name: syslog_enabled
+          manifest: |
+            address: (( .properties.syslog_host.value ))
+            port: (( .properties.syslog_port.value ))
+            transport: (( .properties.syslog_protocol.value ))
+            tls_enabled: (( .properties.syslog_tls.selected_option.parsed_manifest(tls_enabled) ))
+            ca_cert: (( .properties.syslog_tls.selected_option.parsed_manifest(ca_cert) ))
+            permitted_peer: (( .properties.syslog_tls.selected_option.parsed_manifest(permitted_peer) ))
+            custom_rule: |
+              (( .properties.syslog_rule.value ))
+              if ($programname startswith "vcap.") then ~
+        - name: syslog_disabled
+          manifest: |
+            migration:
+              disabled: true
+        - name: syslog_aggregator
+          manifest: |
+            "(( .properties.syslog_host.value ? .properties.system_logging.selected_option.parsed_manifest(syslog_aggregator_enabled) : .properties.system_logging.selected_option.parsed_manifest(syslog_aggregator_disabled) ))"
+        - name: syslog_aggregator_enabled
+          manifest: |
+            address: (( .properties.syslog_host.value ))
+            port: (( .properties.syslog_port.value ))
+            transport: (( .properties.syslog_protocol.value ))
+        - name: syslog_aggregator_disabled
+          manifest: |
+            {}
+        - name: syslog_url
+          manifest: |
+            "(( .properties.syslog_host.value ? .properties.system_logging.selected_option.parsed_manifest(syslog_url_enabled) : .properties.system_logging.selected_option.parsed_manifest(syslog_url_disabled) ))"
+        - name: syslog_url_enabled
+          manifest: "(( .properties.syslog_protocol.value ))://(( .properties.syslog_host.value )):(( .properties.syslog_port.value ))"
+        - name: syslog_url_disabled
+          manifest: |
+            ""
 
-  - name: syslog_tls
-    type: selector
-    configurable: true
-    default: disabled
-    option_templates:
-      - name: disabled
-        select_value: disabled
-        named_manifests:
-          - name: tls_enabled
-            manifest: |
-              false
-          - name: ca_cert
-            manifest: ""
-          - name: permitted_peer
-            manifest: |
-              ""
-      - name: enabled
-        select_value: enabled
-        property_blueprints:
-          - name: tls_ca_cert
-            type: ca_certificate
-            configurable: true
-          - name: tls_permitted_peer
-            type: string
-            configurable: true
-        named_manifests:
-          - name: tls_enabled
-            manifest: |
-              true
-          - name: ca_cert
-            manifest: |
-              (( .properties.syslog_tls.enabled.tls_ca_cert.value ))
-          - name: permitted_peer
-            manifest: |
-              (( .properties.syslog_tls.enabled.tls_permitted_peer.value ))
+- name: syslog_tls
+  type: selector
+  configurable: true
+  default: disabled
+  option_templates:
+    - name: disabled
+      select_value: disabled
+      named_manifests:
+        - name: tls_enabled
+          manifest: |
+            false
+        - name: ca_cert
+          manifest: ""
+        - name: permitted_peer
+          manifest: |
+            ""
+    - name: enabled
+      select_value: enabled
+      property_blueprints:
+        - name: tls_ca_cert
+          type: ca_certificate
+          configurable: true
+        - name: tls_permitted_peer
+          type: string
+          configurable: true
+      named_manifests:
+        - name: tls_enabled
+          manifest: |
+            true
+        - name: ca_cert
+          manifest: |
+            (( .properties.syslog_tls.enabled.tls_ca_cert.value ))
+        - name: permitted_peer
+          manifest: |
+            (( .properties.syslog_tls.enabled.tls_permitted_peer.value ))

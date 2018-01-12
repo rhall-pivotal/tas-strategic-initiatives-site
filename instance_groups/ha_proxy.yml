@@ -7,10 +7,10 @@ description: HAProxy is the default load balancer for SSL termination. Alternati
   Application Service router IP. Self signed certificates will function
   properly.
 templates:
-- consul_agent
-- haproxy
-- metron_agent
-- syslog_forwarder
+- $( job "consul_agent" )
+- $( job "haproxy" )
+- $( job "metron_agent" )
+- $( job "syslog_forwarder" )
 resource_definitions:
 - name: ram
   type: integer
@@ -47,7 +47,7 @@ instance_definition:
   type: integer
   label: Instances
   configurable: true
-  default: {{ tile | ert "1" | srt "0" }}
+  default: $( variable "ha_proxy_default_instances" )
   constraints:
     min: 0
 property_blueprints:

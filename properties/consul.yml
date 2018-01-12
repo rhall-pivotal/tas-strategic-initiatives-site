@@ -1,12 +1,11 @@
 ---
-property_blueprints:
-  - name: consul_agent_cert
-    type: rsa_cert_credentials
-    configurable: false
+- name: consul_agent_cert
+  type: rsa_cert_credentials
+  configurable: false
 
-  - name: consul_server_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains:
-      - server.dc1.cf.internal
+- name: consul_server_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - server.dc1.cf.internal

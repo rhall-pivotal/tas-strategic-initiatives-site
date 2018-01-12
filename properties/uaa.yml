@@ -1,212 +1,211 @@
 ---
-property_blueprints:
-  - name: uaa
-    type: selector
-    configurable: true
-    default: internal
-    option_templates:
-      - name: internal
-        select_value: internal
-        named_manifests:
-        - name: saml_provider
-          manifest: |
+- name: uaa
+  type: selector
+  configurable: true
+  default: internal
+  option_templates:
+    - name: internal
+      select_value: internal
+      named_manifests:
+      - name: saml_provider
+        manifest: |
 
-        - name: self_service_links_enabled
-          manifest: |
-            true
-        - name: default_saml_identity_id
+      - name: self_service_links_enabled
+        manifest: |
+          true
+      - name: default_saml_identity_id
+        type: string
+        manifest: |
+          http://login.(( .cloud_controller.system_domain.value ))
+      property_blueprints:
+        - name: password_min_length
+          type: integer
+          configurable: true
+          default: 0
+        - name: password_min_uppercase
+          type: integer
+          configurable: true
+          default: 0
+        - name: password_min_lowercase
+          type: integer
+          configurable: true
+          default: 0
+        - name: password_min_numeric
+          type: integer
+          configurable: true
+          default: 0
+        - name: password_min_special
+          type: integer
+          configurable: true
+          default: 0
+        - name: password_expires_after_months
+          type: integer
+          configurable: true
+          default: 0
+        - name: password_max_retry
+          type: integer
+          configurable: true
+          default: 5
+    - name: saml
+      select_value: saml
+      named_manifests:
+      - name: saml_provider
+        manifest: |
+          (( .properties.uaa.saml.sso_name.value )):
+            metadataTrustCheck: false
+            idpMetadata: "(( .properties.uaa.saml.sso_url.value_present? ? .properties.uaa.saml.sso_url.value : .properties.uaa.saml.sso_xml.value ))"
+            nameID: (( .properties.uaa.saml.name_id_format.value ))
+            showSamlLoginLink: true
+            linkText: (( .properties.uaa.saml.display_name.value ))
+            emailDomain: (( .properties.uaa.saml.email_domains.parsed_strings ))
+            attributeMappings:
+              given_name: (( .properties.uaa.saml.first_name_attribute.value ))
+              family_name: (( .properties.uaa.saml.last_name_attribute.value ))
+              email: (( .properties.uaa.saml.email_attribute.value ))
+              external_groups: (( .properties.uaa.saml.external_groups_attribute.value ))
+      - name: self_service_links_enabled
+        manifest: |
+          false
+      - name: default_saml_identity_id
+        type: string
+        manifest: |
+          http://login.(( .cloud_controller.system_domain.value ))
+      property_blueprints:
+        - name: sso_name
           type: string
-          manifest: |
-            http://login.(( .cloud_controller.system_domain.value ))
-        property_blueprints:
-          - name: password_min_length
-            type: integer
-            configurable: true
-            default: 0
-          - name: password_min_uppercase
-            type: integer
-            configurable: true
-            default: 0
-          - name: password_min_lowercase
-            type: integer
-            configurable: true
-            default: 0
-          - name: password_min_numeric
-            type: integer
-            configurable: true
-            default: 0
-          - name: password_min_special
-            type: integer
-            configurable: true
-            default: 0
-          - name: password_expires_after_months
-            type: integer
-            configurable: true
-            default: 0
-          - name: password_max_retry
-            type: integer
-            configurable: true
-            default: 5
-      - name: saml
-        select_value: saml
-        named_manifests:
-        - name: saml_provider
-          manifest: |
-            (( .properties.uaa.saml.sso_name.value )):
-              metadataTrustCheck: false
-              idpMetadata: "(( .properties.uaa.saml.sso_url.value_present? ? .properties.uaa.saml.sso_url.value : .properties.uaa.saml.sso_xml.value ))"
-              nameID: (( .properties.uaa.saml.name_id_format.value ))
-              showSamlLoginLink: true
-              linkText: (( .properties.uaa.saml.display_name.value ))
-              emailDomain: (( .properties.uaa.saml.email_domains.parsed_strings ))
-              attributeMappings:
-                given_name: (( .properties.uaa.saml.first_name_attribute.value ))
-                family_name: (( .properties.uaa.saml.last_name_attribute.value ))
-                email: (( .properties.uaa.saml.email_attribute.value ))
-                external_groups: (( .properties.uaa.saml.external_groups_attribute.value ))
-        - name: self_service_links_enabled
-          manifest: |
-            false
-        - name: default_saml_identity_id
+          configurable: true
+        - name: display_name
           type: string
-          manifest: |
-            http://login.(( .cloud_controller.system_domain.value ))
-        property_blueprints:
-          - name: sso_name
-            type: string
-            configurable: true
-          - name: display_name
-            type: string
-            configurable: true
-          - name: sso_url
-            type: http_url
-            configurable: true
-            optional: true
-          - name: name_id_format
-            type: dropdown_select
-            configurable: true
-            optional: false
-            default: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-            options:
-            - name: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-              label: Email Address
-            - name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-              label: Unspecified
-            - name: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
-              label: Persistent
-          - name: sso_xml
-            type: text
-            configurable: true
-            optional: true
-          - name: sign_auth_requests
-            type: boolean
-            configurable: true
-            default: true
-          - name: require_signed_assertions
-            type: boolean
-            configurable: true
-          - name: email_domains
-            type: string_list
-            configurable: true
-            optional: true
-          - name: first_name_attribute
-            type: string
-            configurable: true
-            optional: true
-          - name: last_name_attribute
-            type: string
-            configurable: true
-            optional: true
-          - name: email_attribute
-            type: string
-            configurable: true
-            optional: true
-          - name: external_groups_attribute
-            type: string
-            configurable: true
-            optional: true
-          - name: entity_id_override
-            type: string
-            configurable: true
-            optional: true
-      - name: ldap
-        select_value: ldap
-        named_manifests:
-        - name: saml_provider
-          manifest: |
+          configurable: true
+        - name: sso_url
+          type: http_url
+          configurable: true
+          optional: true
+        - name: name_id_format
+          type: dropdown_select
+          configurable: true
+          optional: false
+          default: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+          options:
+          - name: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+            label: Email Address
+          - name: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+            label: Unspecified
+          - name: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+            label: Persistent
+        - name: sso_xml
+          type: text
+          configurable: true
+          optional: true
+        - name: sign_auth_requests
+          type: boolean
+          configurable: true
+          default: true
+        - name: require_signed_assertions
+          type: boolean
+          configurable: true
+        - name: email_domains
+          type: string_list
+          configurable: true
+          optional: true
+        - name: first_name_attribute
+          type: string
+          configurable: true
+          optional: true
+        - name: last_name_attribute
+          type: string
+          configurable: true
+          optional: true
+        - name: email_attribute
+          type: string
+          configurable: true
+          optional: true
+        - name: external_groups_attribute
+          type: string
+          configurable: true
+          optional: true
+        - name: entity_id_override
+          type: string
+          configurable: true
+          optional: true
+    - name: ldap
+      select_value: ldap
+      named_manifests:
+      - name: saml_provider
+        manifest: |
 
-        - name: self_service_links_enabled
-          manifest: |
-            false
-        - name: default_saml_identity_id
+      - name: self_service_links_enabled
+        manifest: |
+          false
+      - name: default_saml_identity_id
+        type: string
+        manifest: |
+          http://login.(( .cloud_controller.system_domain.value ))
+      property_blueprints:
+        - name: url
+          type: ldap_url
+          configurable: true
+        - name: credentials
+          type: simple_credentials
+          configurable: true
+        - name: search_base
           type: string
-          manifest: |
-            http://login.(( .cloud_controller.system_domain.value ))
-        property_blueprints:
-          - name: url
-            type: ldap_url
-            configurable: true
-          - name: credentials
-            type: simple_credentials
-            configurable: true
-          - name: search_base
-            type: string
-            configurable: true
-          - name: search_filter
-            type: string
-            configurable: true
-            default: "cn={0}"
-          - name: group_search_base
-            type: string
-            configurable: true
-            optional: true
-          - name: group_search_filter
-            type: string
-            configurable: true
-            default: "member={0}"
-          - name: server_ssl_cert
-            type: text
-            configurable: true
-            optional: true
-          - name: server_ssl_cert_alias
-            type: string
-            configurable: true
-            optional: true
-          - name: mail_attribute_name
-            type: string
-            configurable: true
-            default: 'mail'
-          - name: email_domains
-            type: string_list
-            configurable: true
-            optional: true
-          - name: first_name_attribute
-            type: string
-            configurable: true
-            optional: true
-          - name: last_name_attribute
-            type: string
-            configurable: true
-            optional: true
-          - name: ldap_referrals
-            type: dropdown_select
-            configurable: true
-            optional: false
-            default: "follow"
-            options:
-            - name: "follow"
-              label: Automatically follow any referrals
-            - name: "ignore"
-              label: Ignore referrals and return partial result
-            - name: "throw"
-              label: Throw exception for each referral and abort authentication
-  - name: saml_signature_algorithm
-    type: dropdown_select
-    configurable: true
-    optional: false
-    default: "SHA256"
-    options:
-    - name: "SHA256"
-      label: SHA256
-    - name: "SHA512"
-      label: SHA512
+          configurable: true
+        - name: search_filter
+          type: string
+          configurable: true
+          default: "cn={0}"
+        - name: group_search_base
+          type: string
+          configurable: true
+          optional: true
+        - name: group_search_filter
+          type: string
+          configurable: true
+          default: "member={0}"
+        - name: server_ssl_cert
+          type: text
+          configurable: true
+          optional: true
+        - name: server_ssl_cert_alias
+          type: string
+          configurable: true
+          optional: true
+        - name: mail_attribute_name
+          type: string
+          configurable: true
+          default: 'mail'
+        - name: email_domains
+          type: string_list
+          configurable: true
+          optional: true
+        - name: first_name_attribute
+          type: string
+          configurable: true
+          optional: true
+        - name: last_name_attribute
+          type: string
+          configurable: true
+          optional: true
+        - name: ldap_referrals
+          type: dropdown_select
+          configurable: true
+          optional: false
+          default: "follow"
+          options:
+          - name: "follow"
+            label: Automatically follow any referrals
+          - name: "ignore"
+            label: Ignore referrals and return partial result
+          - name: "throw"
+            label: Throw exception for each referral and abort authentication
+- name: saml_signature_algorithm
+  type: dropdown_select
+  configurable: true
+  optional: false
+  default: "SHA256"
+  options:
+  - name: "SHA256"
+    label: SHA256
+  - name: "SHA512"
+    label: SHA512

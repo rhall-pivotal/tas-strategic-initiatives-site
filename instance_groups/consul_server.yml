@@ -4,15 +4,9 @@ label: Consul
 resource_label: Consul
 description:
 templates:
-{{ define "ert-consul-server-templates" }}
-- consul_server
-- metron_agent
-- syslog_forwarder
-{{ end }}
-{{ define "srt-consul-server-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-consul-server-templates" | srt_template "srt-consul-server-templates" }}
+- $( job "consul_server" )
+- $( job "metron_agent" )
+- $( job "syslog_forwarder" )
 
 resource_definitions:
 - name: ram
@@ -52,8 +46,8 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: {{ tile | ert "true" | srt "false" }}
-  default: {{ tile | ert "3" | srt "0" }}
+  configurable: $( variable "consul_server_configurable_state" )
+  default: $( variable "consul_server_default_instances" )
   constraints:
-    min: {{ tile | ert "1" | srt "0" }}
+    min: $( variable "consul_server_min_instances" )
     may_only_be_odd_or_zero: true

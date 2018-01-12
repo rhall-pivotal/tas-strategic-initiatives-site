@@ -4,15 +4,9 @@ label: CredHub
 resource_label: CredHub
 description: CredHub
 templates:
-{{ define "ert-credhub-templates" }}
-- consul_agent_credhub
-- credhub
-- database-backup-restorer
-{{ end }}
-{{ define "srt-credhub-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-credhub-templates" | srt_template "srt-credhub-templates" }}
+- $( job "consul_agent_credhub" )
+- $( job "credhub" )
+- $( job "database-backup-restorer" )
 
 resource_definitions:
 - name: cpu
@@ -54,5 +48,5 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: {{ tile | ert "true" | srt "false" }}
   default: 0
+  configurable: $( variable "credhub_configurable_state" )

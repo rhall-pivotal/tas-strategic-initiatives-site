@@ -1,106 +1,105 @@
 ---
-form:
-  name: app_containers
-  label: Application Containers
+name: app_containers
+label: Application Containers
+description: |
+  Enable microservice frameworks, private Docker registries, and other
+  services that support your applications at a container level.
+property_inputs:
+- reference: .cloud_controller.enable_custom_buildpacks
+  label: Enable Custom Buildpacks
+  description: Enable custom-built application runtime buildpacks.
+
+- reference: .cloud_controller.allow_app_ssh_access
+  label: Allow SSH access to app containers
   description: |
-    Enable microservice frameworks, private Docker registries, and other
-    services that support your applications at a container level.
-  property_inputs:
-  - reference: .cloud_controller.enable_custom_buildpacks
-    label: Enable Custom Buildpacks
-    description: Enable custom-built application runtime buildpacks.
+    If you are using a load balancer instead of HAProxy, to enable SSH
+    traffic ensure that your load balancer has port 2222 open. PCF users can
+    give SSH access to an app only if an admin assigns them a Space Developer
+    role in the space that the app runs in. Admins can grant this role in
+    Apps Manager or via the cf CLI.
 
-  - reference: .cloud_controller.allow_app_ssh_access
-    label: Allow SSH access to app containers
-    description: |
-      If you are using a load balancer instead of HAProxy, to enable SSH
-      traffic ensure that your load balancer has port 2222 open. PCF users can
-      give SSH access to an app only if an admin assigns them a Space Developer
-      role in the space that the app runs in. Admins can grant this role in
-      Apps Manager or via the cf CLI.
+- reference: .cloud_controller.default_app_ssh_access
+  label: Enable SSH when an app is created
+  description: |
+    When enabled and the space has SSH enabled, a new app will have SSH
+    enabled. Turning this feature off will disable SSH for new apps but allow
+    developers to enable it when necessary.
 
-  - reference: .cloud_controller.default_app_ssh_access
-    label: Enable SSH when an app is created
-    description: |
-      When enabled and the space has SSH enabled, a new app will have SSH
-      enabled. Turning this feature off will disable SSH for new apps but allow
-      developers to enable it when necessary.
+- reference: .diego_cell.insecure_docker_registry_list
+  label: Private Docker Insecure Registry Whitelist
+  description: |
+    If you use private Docker image registries that are secured with
+    self-signed certificates, enter them here as a comma-delimited list. List
+    each registry as either an IP:Port tuple or a Hostname:Port tuple.
+  placeholder: |
+    10.10.10.10:8888,example.com:8888
 
-  - reference: .diego_cell.insecure_docker_registry_list
-    label: Private Docker Insecure Registry Whitelist
-    description: |
-      If you use private Docker image registries that are secured with
-      self-signed certificates, enter them here as a comma-delimited list. List
-      each registry as either an IP:Port tuple or a Hostname:Port tuple.
-    placeholder: |
-      10.10.10.10:8888,example.com:8888
+- reference: .properties.garden_disk_cleanup
+  label: Docker Images Disk-Cleanup Scheduling on Cell VMs
+  selector_property_inputs:
+  - reference: .properties.garden_disk_cleanup.never
+    label: Never clean up Cell disk-space
 
-  - reference: .properties.garden_disk_cleanup
-    label: Docker Images Disk-Cleanup Scheduling on Cell VMs
-    selector_property_inputs:
-    - reference: .properties.garden_disk_cleanup.never
-      label: Never clean up Cell disk-space
+  - reference: .properties.garden_disk_cleanup.routine
+    label: Routinely clean up Cell disk-space
 
-    - reference: .properties.garden_disk_cleanup.routine
-      label: Routinely clean up Cell disk-space
+  - reference: .properties.garden_disk_cleanup.threshold
+    label: Clean up disk-space once threshold is reached
+    property_inputs:
+      - reference: .properties.garden_disk_cleanup.threshold.cleanup_threshold_in_mb
+        label: Threshold of Disk-Used (MB)
+        description: |
+          Disk cleanup will initiate whenever a Cell has exceeded this much
+          disk-space for filesystem layers.
 
-    - reference: .properties.garden_disk_cleanup.threshold
-      label: Clean up disk-space once threshold is reached
+- reference: .diego_brain.starting_container_count_maximum
+  label: Max Inflight Container Starts
+  description: |
+    Maximum number of inflight container starts allowed globally. Value of 0
+    or less indicates no limit.
+
+- reference: .properties.nfs_volume_driver
+  label: |
+    Enabling NFSv3 volume services will allow application developers to bind
+    existing NFS volumes to their applications for shared file access.
+  selector_property_inputs:
+    - reference: .properties.nfs_volume_driver.enable
+      label: Enable
       property_inputs:
-        - reference: .properties.garden_disk_cleanup.threshold.cleanup_threshold_in_mb
-          label: Threshold of Disk-Used (MB)
+        - reference: .properties.nfs_volume_driver.enable.ldap_service_account_user
+          label: LDAP Service Account User
+          description : |
+            Service Account User name (required for LDAP integration only)
+
+        - reference: .properties.nfs_volume_driver.enable.ldap_service_account_password
+          label: LDAP Service Account Password
           description: |
-            Disk cleanup will initiate whenever a Cell has exceeded this much
-            disk-space for filesystem layers.
+            Service Account Password (required for LDAP integration only)
 
-  - reference: .diego_brain.starting_container_count_maximum
-    label: Max Inflight Container Starts
-    description: |
-      Maximum number of inflight container starts allowed globally. Value of 0
-      or less indicates no limit.
+        - reference: .properties.nfs_volume_driver.enable.ldap_server_host
+          label: LDAP Server Host
+          description: |
+            Server hostname or IP address (required for LDAP integration only)
 
-  - reference: .properties.nfs_volume_driver
-    label: |
-      Enabling NFSv3 volume services will allow application developers to bind
-      existing NFS volumes to their applications for shared file access.
-    selector_property_inputs:
-      - reference: .properties.nfs_volume_driver.enable
-        label: Enable
-        property_inputs:
-          - reference: .properties.nfs_volume_driver.enable.ldap_service_account_user
-            label: LDAP Service Account User
-            description : |
-              Service Account User name (required for LDAP integration only)
+        - reference: .properties.nfs_volume_driver.enable.ldap_server_port
+          label: LDAP Server Port
+          description: |
+            Server port (required for LDAP integration only). Defaults to 389.
 
-          - reference: .properties.nfs_volume_driver.enable.ldap_service_account_password
-            label: LDAP Service Account Password
-            description: |
-              Service Account Password (required for LDAP integration only)
+        - reference: .properties.nfs_volume_driver.enable.ldap_user_fqdn
+          label: LDAP User Fully-Qualified Domain Name
+          description: |
+            FQDN for user records searched during user uid resolution
+            (required for LDAP integration only). For example, the FQDN
+            value can be specified as "cn=Users,dc=corp,dc=test,dc=com".
+          placeholder: "cn=Users,dc=corp,dc=test,dc=com"
 
-          - reference: .properties.nfs_volume_driver.enable.ldap_server_host
-            label: LDAP Server Host
-            description: |
-              Server hostname or IP address (required for LDAP integration only)
+    - reference: .properties.nfs_volume_driver.disable
+      label: Disable
 
-          - reference: .properties.nfs_volume_driver.enable.ldap_server_port
-            label: LDAP Server Port
-            description: |
-              Server port (required for LDAP integration only). Defaults to 389.
-
-          - reference: .properties.nfs_volume_driver.enable.ldap_user_fqdn
-            label: LDAP User Fully-Qualified Domain Name
-            description: |
-              FQDN for user records searched during user uid resolution
-              (required for LDAP integration only). For example, the FQDN
-              value can be specified as "cn=Users,dc=corp,dc=test,dc=com".
-            placeholder: "cn=Users,dc=corp,dc=test,dc=com"
-
-      - reference: .properties.nfs_volume_driver.disable
-        label: Disable
-
-  - reference: .properties.enable_grootfs
-    label: Enable the GrootFS container image plugin for Garden RunC
-    description: |
-      Enabling the GrootFS container image plugin is recommended.
-      However, if you experience issues with GrootFS, you can disable the plugin
-      and rollback to the image plugin that is built into Garden RunC.
+- reference: .properties.enable_grootfs
+  label: Enable the GrootFS container image plugin for Garden RunC
+  description: |
+    Enabling the GrootFS container image plugin is recommended.
+    However, if you experience issues with GrootFS, you can disable the plugin
+    and rollback to the image plugin that is built into Garden RunC.

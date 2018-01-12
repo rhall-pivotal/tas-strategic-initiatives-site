@@ -4,23 +4,17 @@ label: Diego Cell
 resource_label: Diego Cell
 description: Diego Cell
 templates:
-{{ define "ert-diego-cell-templates" }}
-- consul_agent
-- rep
-- route_emitter
-- cfdot
-- garden
-- cflinuxfs2-rootfs-setup_diego_cell
-- metron_agent
-- garden-cni
-- nfsv3driver
-- syslog_forwarder
-- grootfs
-{{ end }}
-{{ define "srt-diego-cell-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-diego-cell-templates" | srt_template "srt-diego-cell-templates" }}
+- $( job "consul_agent" )
+- $( job "rep" )
+- $( job "route_emitter" )
+- $( job "cfdot" )
+- $( job "garden" )
+- $( job "cflinuxfs2-rootfs-setup_diego_cell" )
+- $( job "metron_agent" )
+- $( job "garden-cni" )
+- $( job "nfsv3driver" )
+- $( job "syslog_forwarder" )
+- $( job "grootfs" )
 
 resource_definitions:
 - name: ram
@@ -57,10 +51,10 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: {{ tile | ert "true" | srt "false" }}
-  default: {{ tile | ert "3" | srt "0" }}
+  configurable: $( variable "diego_cell_configurable_state" )
+  default: $( variable "diego_cell_default_instances" )
   constraints:
-    min: {{ tile | ert "1" | srt "0" }}
+    min: $( variable "diego_cell_min_instances" )
 property_blueprints:
   - name: executor_disk_capacity
     type: integer

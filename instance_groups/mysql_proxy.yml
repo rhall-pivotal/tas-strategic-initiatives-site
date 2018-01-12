@@ -4,16 +4,10 @@ label: MySQL Proxy
 resource_label: MySQL Proxy
 description: MySQL Proxy
 templates:
-{{ define "ert-mysql-proxy-templates" }}
-- consul_agent
-- route_registrar_mysql_proxy
-- proxy
-- syslog_forwarder
-{{ end }}
-{{ define "srt-mysql-proxy-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-mysql-proxy-templates" | srt_template "srt-mysql-proxy-templates" }}
+- $( job "consul_agent" )
+- $( job "route_registrar_mysql_proxy" )
+- $( job "proxy" )
+- $( job "syslog_forwarder" )
 
 resource_definitions:
 - name: ram
@@ -50,8 +44,8 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: {{ tile | ert "true" | srt "false" }}
-  default: {{ tile | ert "2" | srt "0" }}
+  configurable: $( variable "mysql_proxy_configurable_state" )
+  default: $( variable "mysql_proxy_default_instances" )
   zero_if:
     property_reference: ".properties.system_database"
     property_values:

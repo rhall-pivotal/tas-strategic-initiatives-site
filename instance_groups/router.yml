@@ -5,10 +5,10 @@ resource_label: Router
 description: Routers route Internet traffic to applications and between Pivotal CF
   Application Service components.
 templates:
-- consul_agent
-- gorouter
-- metron_agent
-- syslog_forwarder
+- $( job "consul_agent" )
+- $( job "gorouter" )
+- $( job "metron_agent" )
+- $( job "syslog_forwarder" )
 resource_definitions:
 - name: ram
   type: integer
@@ -46,7 +46,7 @@ instance_definition:
   type: integer
   label: Instances
   configurable: true
-  default: {{ tile | ert "3" | srt "1" }}
+  default: $( variable "router_default_instances" )
   constraints:
     min: 1
 property_blueprints:

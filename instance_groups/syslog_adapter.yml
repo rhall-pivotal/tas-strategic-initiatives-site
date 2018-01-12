@@ -5,16 +5,10 @@ resource_label: Syslog Adapter
 description: This component manages the connections to drains. It should be scaled
   with the number of drains.
 templates:
-{{ define "ert-syslog-adapter-templates" }}
-- consul_agent
-- metron_agent
-- adapter
-- syslog_forwarder
-{{ end }}
-{{ define "srt-syslog-adapter-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-syslog-adapter-templates" | srt_template "srt-syslog-adapter-templates" }}
+- $( job "consul_agent" )
+- $( job "metron_agent" )
+- $( job "adapter" )
+- $( job "syslog_forwarder" )
 
 resource_definitions:
 - name: ram
@@ -51,10 +45,10 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  default: {{ tile | ert "3" | srt "0" }}
-  configurable: {{ tile | ert "true" | srt "false" }}
+  configurable: $( variable "syslog_adapter_configurable_state" )
+  default: $( variable "syslog_adapter_default_instances" )
   constraints:
-    min: {{ tile | ert "1" | srt "0" }}
+    min: $( variable "syslog_adapter_min_instances" )
 property_blueprints:
 - name: adapter_tls
   type: rsa_cert_credentials

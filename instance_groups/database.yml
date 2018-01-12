@@ -5,24 +5,18 @@ resource_label: Database
 description: Database
 
 templates:
-{{ define "ert-database-templates" }}
-- placeholder
-{{ end }}
-{{ define "srt-database-templates" }}
-- consul_server
-- metron_agent
-- syslog_forwarder
-- nats
-- route_registrar_mysql_proxy
-- proxy
-- mysql
-- mysql-metrics
-- streaming-mysql-backup-tool
-- send-email
-- mysql-diag-agent
-- mysql-restore
-{{ end }}
-{{ tile | ert_template "ert-database-templates" | srt_template "srt-database-templates" }}
+- $( job "consul_server" )
+- $( job "metron_agent" )
+- $( job "syslog_forwarder" )
+- $( job "nats" )
+- $( job "route_registrar_mysql_proxy" )
+- $( job "proxy" )
+- $( job "mysql" )
+- $( job "mysql-metrics" )
+- $( job "streaming-mysql-backup-tool" )
+- $( job "send-email" )
+- $( job "mysql-diag-agent" )
+- $( job "mysql-restore" )
 
 resource_definitions:
 - name: cpu
@@ -67,8 +61,8 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: {{ tile | ert "false" | srt "true" }}
-  default: {{ tile | ert "0" | srt "1" }}
+  configurable: $( variable "database_configurable_state" )
+  default: $( variable "database_default_instances" )
   constraints:
-    min: {{ tile | ert "0" | srt "1" }}
+    min: $( variable "database_min_instances" )
     may_only_be_odd_or_zero: true

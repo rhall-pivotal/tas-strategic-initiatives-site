@@ -1,43 +1,42 @@
 ---
-property_blueprints:
-  - name: smtp_from
-    type: email
-    configurable: true
-    optional: true
+- name: smtp_from
+  type: email
+  configurable: true
+  optional: true
 
-  - name: smtp_address
-    type: network_address
-    configurable: true
-    optional: true
+- name: smtp_address
+  type: network_address
+  configurable: true
+  optional: true
 
-  - name: smtp_port
-    type: port
-    configurable: true
-    optional: true
+- name: smtp_port
+  type: port
+  configurable: true
+  optional: true
 
-  - name: smtp_credentials
-    type: simple_credentials
-    configurable: true
-    optional: true
+- name: smtp_credentials
+  type: simple_credentials
+  configurable: true
+  optional: true
 
-  - name: smtp_enable_starttls_auto
-    type: boolean
-    configurable: true
-    default: false
+- name: smtp_enable_starttls_auto
+  type: boolean
+  configurable: true
+  default: false
 
-  - name: smtp_auth_mechanism
-    type: dropdown_select
-    configurable: true
-    default: plain
-    options:
-      - name: none
-        label: None
-      - name: plain
-        label: Plain
-      - name: cram-md5
-        label: CRAMMD5
+- name: smtp_auth_mechanism
+  type: dropdown_select
+  configurable: true
+  default: plain
+  options:
+    - name: none
+      label: None
+    - name: plain
+      label: Plain
+    - name: cram-md5
+      label: CRAMMD5
 
-  - name: smtp_crammd5_secret
-    type: string
-    configurable: true
-    optional: true
+- name: smtp_crammd5_secret
+  type: string
+  configurable: true
+  optional: true

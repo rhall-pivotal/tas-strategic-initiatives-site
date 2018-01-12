@@ -1,269 +1,268 @@
 ---
-property_blueprints:
-  - name: system_blobstore
-    type: selector
-    configurable: true
-    default: internal
-    option_templates:
-      - name: internal
-        select_value: internal
-        named_manifests:
-          - name: ccbuildpack
-            manifest: |
-              blobstore_type: webdav
-              webdav_config:
-                username: ((( webdav-blobstore-credentials.username )))
-                password: ((( webdav-blobstore-credentials.password )))
-                public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
-                ca_cert: (( $ops_manager.ca_certificate ))
-          - name: ccdroplet
-            manifest: |
-              max_staged_droplets_stored: 2
-              blobstore_type: webdav
-              webdav_config:
-                username: ((( webdav-blobstore-credentials.username )))
-                password: ((( webdav-blobstore-credentials.password )))
-                public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
-                ca_cert: (( $ops_manager.ca_certificate ))
-          - name: ccpackage
-            manifest: |
-              max_package_size: 2147483648
-              blobstore_type: webdav
-              webdav_config:
-                username: ((( webdav-blobstore-credentials.username )))
-                password: ((( webdav-blobstore-credentials.password )))
-                public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
-                ca_cert: (( $ops_manager.ca_certificate ))
-          - name: ccresource
-            manifest: |
-              blobstore_type: webdav
-              webdav_config:
-                username: ((( webdav-blobstore-credentials.username )))
-                password: ((( webdav-blobstore-credentials.password )))
-                public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
-                ca_cert: (( $ops_manager.ca_certificate ))
-      - name: external
-        select_value: external
-        named_manifests:
-          - name: aes_hash
-            manifest: |
-              encryption: "AES256"
-          - name: empty_hash
-            manifest: '{}'
-          - name: ccbuildpack
-            manifest: |
-              blobstore_type: fog
-              buildpack_directory_key: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
-              fog_connection:
-                provider: AWS
-                aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
-                aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
-                region:  (( .properties.system_blobstore.external.region.value ))
-                path_style: true
-                endpoint: (( .properties.system_blobstore.external.endpoint.value ))
-              fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
-          - name: ccdroplet
-            manifest: |
-              max_staged_droplets_stored: 2
-              blobstore_type: fog
-              droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
-              fog_connection:
-                provider: AWS
-                aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
-                aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
-                region:  (( .properties.system_blobstore.external.region.value ))
-                path_style: true
-                endpoint: (( .properties.system_blobstore.external.endpoint.value ))
-              fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
-          - name: ccpackage
-            manifest: |
-              max_package_size: 2147483648
-              app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
-              blobstore_type: fog
-              fog_connection:
-                provider: AWS
-                aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
-                aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
-                region:  (( .properties.system_blobstore.external.region.value ))
-                path_style: true
-                endpoint: (( .properties.system_blobstore.external.endpoint.value ))
-              fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
-          - name: ccresource
-            manifest: |
-              blobstore_type: fog
-              resource_directory_key: (( .properties.system_blobstore.external.resources_bucket.value ))
-              fog_connection:
-                provider: AWS
-                aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
-                aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-                aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
-                region:  (( .properties.system_blobstore.external.region.value ))
-                path_style: true
-                endpoint: (( .properties.system_blobstore.external.endpoint.value ))
-              fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
-        property_blueprints:
-          - name: endpoint
-            type: string
-            configurable: true
-            default: "https://s3.amazonaws.com"
-          - name: buildpacks_bucket
-            type: string
-            configurable: true
-          - name: droplets_bucket
-            type: string
-            configurable: true
-          - name: packages_bucket
-            type: string
-            configurable: true
-          - name: resources_bucket
-            type: string
-            configurable: true
-          - name: access_key
-            type: string
-            configurable: true
-          - name: secret_key
-            type: secret
-            configurable: true
-          - name: signature_version
-            type: dropdown_select
-            configurable: true
-            optional: false
-            default: 4
-            options:
-            - name: 2
-              label: V2 Signature
-            - name: 4
-              label: V4 Signature
-          - name: region
-            type: string
-            configurable: true
-            optional: true
-          - name: encryption
-            type: boolean
-            configurable: true
-            optional: false
-            default: false
-      - name: external_gcs
-        select_value: external_gcs
-        named_manifests:
-          - name: ccbuildpack
-            manifest: |
-              blobstore_type: fog
-              buildpack_directory_key: (( .properties.system_blobstore.external_gcs.buildpacks_bucket.value ))
-              fog_connection:
-                provider: Google
-                google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
-                google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
-          - name: ccdroplet
-            manifest: |
-              max_staged_droplets_stored: 2
-              blobstore_type: fog
-              droplet_directory_key: (( .properties.system_blobstore.external_gcs.droplets_bucket.value ))
-              fog_connection:
-                provider: Google
-                google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
-                google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
-          - name: ccpackage
-            manifest: |
-              max_package_size: 2147483648
-              blobstore_type: fog
-              app_package_directory_key: (( .properties.system_blobstore.external_gcs.packages_bucket.value ))
-              fog_connection:
-                provider: Google
-                google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
-                google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
-          - name: ccresource
-            manifest: |
-              blobstore_type: fog
-              resource_directory_key: (( .properties.system_blobstore.external_gcs.resources_bucket.value ))
-              fog_connection:
-                provider: Google
-                google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
-                google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
-        property_blueprints:
-          - name: buildpacks_bucket
-            type: string
-            configurable: true
-          - name: droplets_bucket
-            type: string
-            configurable: true
-          - name: packages_bucket
-            type: string
-            configurable: true
-          - name: resources_bucket
-            type: string
-            configurable: true
-          - name: access_key
-            type: string
-            configurable: true
-          - name: secret_key
-            type: secret
-            configurable: true
-      - name: external_azure
-        select_value: external_azure
-        named_manifests:
-          - name: ccbuildpack
-            manifest: |
-              blobstore_type: fog
-              buildpack_directory_key: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
-              fog_connection:
-                provider: AzureRM
-                environment: (( .properties.system_blobstore.external_azure.environment.value ))
-                azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
-                azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
-          - name: ccdroplet
-            manifest: |
-              max_staged_droplets_stored: 2
-              blobstore_type: fog
-              droplet_directory_key: (( .properties.system_blobstore.external_azure.droplets_container.value ))
-              fog_connection:
-                provider: AzureRM
-                environment: (( .properties.system_blobstore.external_azure.environment.value ))
-                azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
-                azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
-          - name: ccpackage
-            manifest: |
-              max_package_size: 2147483648
-              blobstore_type: fog
-              app_package_directory_key: (( .properties.system_blobstore.external_azure.packages_container.value ))
-              fog_connection:
-                provider: AzureRM
-                environment: (( .properties.system_blobstore.external_azure.environment.value ))
-                azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
-                azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
-          - name: ccresource
-            manifest: |
-              blobstore_type: fog
-              resource_directory_key: (( .properties.system_blobstore.external_azure.resources_container.value ))
-              fog_connection:
-                provider: AzureRM
-                environment: (( .properties.system_blobstore.external_azure.environment.value ))
-                azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
-                azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
-        property_blueprints:
-          - name: buildpacks_container
-            type: string
-            configurable: true
-          - name: droplets_container
-            type: string
-            configurable: true
-          - name: packages_container
-            type: string
-            configurable: true
-          - name: resources_container
-            type: string
-            configurable: true
-          - name: account_name
-            type: string
-            configurable: true
-          - name: access_key
-            type: secret
-            configurable: true
-          - name: environment
-            type: string
-            configurable: true
-            optional: false
-            default: AzureCloud
+- name: system_blobstore
+  type: selector
+  configurable: true
+  default: internal
+  option_templates:
+    - name: internal
+      select_value: internal
+      named_manifests:
+        - name: ccbuildpack
+          manifest: |
+            blobstore_type: webdav
+            webdav_config:
+              username: ((( webdav-blobstore-credentials.username )))
+              password: ((( webdav-blobstore-credentials.password )))
+              public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+              ca_cert: (( $ops_manager.ca_certificate ))
+        - name: ccdroplet
+          manifest: |
+            max_staged_droplets_stored: 2
+            blobstore_type: webdav
+            webdav_config:
+              username: ((( webdav-blobstore-credentials.username )))
+              password: ((( webdav-blobstore-credentials.password )))
+              public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+              ca_cert: (( $ops_manager.ca_certificate ))
+        - name: ccpackage
+          manifest: |
+            max_package_size: 2147483648
+            blobstore_type: webdav
+            webdav_config:
+              username: ((( webdav-blobstore-credentials.username )))
+              password: ((( webdav-blobstore-credentials.password )))
+              public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+              ca_cert: (( $ops_manager.ca_certificate ))
+        - name: ccresource
+          manifest: |
+            blobstore_type: webdav
+            webdav_config:
+              username: ((( webdav-blobstore-credentials.username )))
+              password: ((( webdav-blobstore-credentials.password )))
+              public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+              ca_cert: (( $ops_manager.ca_certificate ))
+    - name: external
+      select_value: external
+      named_manifests:
+        - name: aes_hash
+          manifest: |
+            encryption: "AES256"
+        - name: empty_hash
+          manifest: '{}'
+        - name: ccbuildpack
+          manifest: |
+            blobstore_type: fog
+            buildpack_directory_key: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
+            fog_connection:
+              provider: AWS
+              aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+              aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: true
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccdroplet
+          manifest: |
+            max_staged_droplets_stored: 2
+            blobstore_type: fog
+            droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
+            fog_connection:
+              provider: AWS
+              aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+              aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: true
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccpackage
+          manifest: |
+            max_package_size: 2147483648
+            app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
+            blobstore_type: fog
+            fog_connection:
+              provider: AWS
+              aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+              aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: true
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccresource
+          manifest: |
+            blobstore_type: fog
+            resource_directory_key: (( .properties.system_blobstore.external.resources_bucket.value ))
+            fog_connection:
+              provider: AWS
+              aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+              aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: true
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+      property_blueprints:
+        - name: endpoint
+          type: string
+          configurable: true
+          default: "https://s3.amazonaws.com"
+        - name: buildpacks_bucket
+          type: string
+          configurable: true
+        - name: droplets_bucket
+          type: string
+          configurable: true
+        - name: packages_bucket
+          type: string
+          configurable: true
+        - name: resources_bucket
+          type: string
+          configurable: true
+        - name: access_key
+          type: string
+          configurable: true
+        - name: secret_key
+          type: secret
+          configurable: true
+        - name: signature_version
+          type: dropdown_select
+          configurable: true
+          optional: false
+          default: 4
+          options:
+          - name: 2
+            label: V2 Signature
+          - name: 4
+            label: V4 Signature
+        - name: region
+          type: string
+          configurable: true
+          optional: true
+        - name: encryption
+          type: boolean
+          configurable: true
+          optional: false
+          default: false
+    - name: external_gcs
+      select_value: external_gcs
+      named_manifests:
+        - name: ccbuildpack
+          manifest: |
+            blobstore_type: fog
+            buildpack_directory_key: (( .properties.system_blobstore.external_gcs.buildpacks_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
+              google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
+        - name: ccdroplet
+          manifest: |
+            max_staged_droplets_stored: 2
+            blobstore_type: fog
+            droplet_directory_key: (( .properties.system_blobstore.external_gcs.droplets_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
+              google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
+        - name: ccpackage
+          manifest: |
+            max_package_size: 2147483648
+            blobstore_type: fog
+            app_package_directory_key: (( .properties.system_blobstore.external_gcs.packages_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
+              google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
+        - name: ccresource
+          manifest: |
+            blobstore_type: fog
+            resource_directory_key: (( .properties.system_blobstore.external_gcs.resources_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
+              google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
+      property_blueprints:
+        - name: buildpacks_bucket
+          type: string
+          configurable: true
+        - name: droplets_bucket
+          type: string
+          configurable: true
+        - name: packages_bucket
+          type: string
+          configurable: true
+        - name: resources_bucket
+          type: string
+          configurable: true
+        - name: access_key
+          type: string
+          configurable: true
+        - name: secret_key
+          type: secret
+          configurable: true
+    - name: external_azure
+      select_value: external_azure
+      named_manifests:
+        - name: ccbuildpack
+          manifest: |
+            blobstore_type: fog
+            buildpack_directory_key: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
+            fog_connection:
+              provider: AzureRM
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+        - name: ccdroplet
+          manifest: |
+            max_staged_droplets_stored: 2
+            blobstore_type: fog
+            droplet_directory_key: (( .properties.system_blobstore.external_azure.droplets_container.value ))
+            fog_connection:
+              provider: AzureRM
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+        - name: ccpackage
+          manifest: |
+            max_package_size: 2147483648
+            blobstore_type: fog
+            app_package_directory_key: (( .properties.system_blobstore.external_azure.packages_container.value ))
+            fog_connection:
+              provider: AzureRM
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+        - name: ccresource
+          manifest: |
+            blobstore_type: fog
+            resource_directory_key: (( .properties.system_blobstore.external_azure.resources_container.value ))
+            fog_connection:
+              provider: AzureRM
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+      property_blueprints:
+        - name: buildpacks_container
+          type: string
+          configurable: true
+        - name: droplets_container
+          type: string
+          configurable: true
+        - name: packages_container
+          type: string
+          configurable: true
+        - name: resources_container
+          type: string
+          configurable: true
+        - name: account_name
+          type: string
+          configurable: true
+        - name: access_key
+          type: secret
+          configurable: true
+        - name: environment
+          type: string
+          configurable: true
+          optional: false
+          default: AzureCloud

@@ -1,98 +1,87 @@
 ---
-form:
-  name: uaa
-  label: UAA
-  description: |
-    Configure the User Account and Authentication Server
+name: uaa
+label: UAA
+description: |
+  Configure the User Account and Authentication Server
 
-  verifiers:
-  - name: Verifiers::MysqlDatabaseVerifier
-    properties:
-      host: .properties.uaa_database.external.host
-      port: .properties.uaa_database.external.port
-      username: .properties.uaa_database.external.uaa_username
-      password: .properties.uaa_database.external.uaa_password
-      database: .properties.uaa_database_name
-
-  property_inputs:
-  - reference: .properties.uaa_database
-    label: |
-      Choose the location of your UAA database
-    selector_property_inputs:
-    - reference: .properties.uaa_database.internal_mysql
-      label: |
-        Internal MySQL (preferred for complete high-availability)
-
-    - reference: .properties.uaa_database.external
-      label: |
-        External (preferred if, for example, you use AWS RDS)
-      property_inputs:
-        - reference: .properties.uaa_database.external.host
-          label: Hostname
-
-        - reference: .properties.uaa_database.external.port
-          label: TCP Port
-
-        - reference: .properties.uaa_database.external.uaa_username
-          label: Username
-
-        - reference: .properties.uaa_database.external.uaa_password
-          label: Password
-
-  - reference: .uaa.issuer_uri
-    label: JWT Issuer URI
-    description: When generating tokens, UAA will use this URI as the issuer.
-
-  - reference: .uaa.service_provider_key_credentials
-    label: SAML Service Provider Credentials
-    description: Private key and certificate for the service provider.
-
-  - reference: .uaa.service_provider_key_password
-    label: SAML Service Provider Key Password
-    description: Passphrase for the service provider private key.
-
-  - reference: .properties.saml_signature_algorithm
-    label: Signature Algorithm
-    description: |
-      The supported algorithm for signed requests and assertions.
-
-  - reference: .uaa.apps_manager_access_token_lifetime
-    label: Apps Manager Access Token Lifetime (in seconds)
-    description: Set the lifetime of the access token for Apps Manager.
-
-  - reference: .uaa.apps_manager_refresh_token_lifetime
-    label: Apps Manager Refresh Token Lifetime (in seconds)
-    description: Set the lifetime of the refresh token for Apps Manager.
-
-  - reference: .uaa.cf_cli_access_token_lifetime
-    label: Cloud Foundry CLI Access Token Lifetime (in seconds)
-    description: Set the lifetime of the access token for the `cf` CLI.
-
-  - reference: .uaa.cf_cli_refresh_token_lifetime
-    label: Cloud Foundry CLI Refresh Token Lifetime (in seconds)
-    description: Set the lifetime of the refresh token for the `cf` CLI.
-
-  - reference: .uaa.customize_username_label
-    label: Customize Username Label (on login page)
-    description: The text used to prompt for a username during login
-
-  - reference: .uaa.customize_password_label
-    label: Customize Password Label (on login page)
-    description: The text used to prompt for a password during login
-
-  - reference: .uaa.proxy_ips_regex
-    label: Proxy IPs Regular Expression
-    description: |
-      A pipe ("|") delimited set of regular expressions of IP addresses that are
-      considered reverse proxies. When a request from these IP addresses come
-      in, the X-FORWARDED-FOR and X-FORWARDED-PROTO headers will be respected.
-
-install_time_verifiers:
+verifiers:
 - name: Verifiers::MysqlDatabaseVerifier
-  ignorable: true
   properties:
     host: .properties.uaa_database.external.host
     port: .properties.uaa_database.external.port
     username: .properties.uaa_database.external.uaa_username
     password: .properties.uaa_database.external.uaa_password
     database: .properties.uaa_database_name
+
+property_inputs:
+- reference: .properties.uaa_database
+  label: |
+    Choose the location of your UAA database
+  selector_property_inputs:
+  - reference: .properties.uaa_database.internal_mysql
+    label: |
+      Internal MySQL (preferred for complete high-availability)
+
+  - reference: .properties.uaa_database.external
+    label: |
+      External (preferred if, for example, you use AWS RDS)
+    property_inputs:
+      - reference: .properties.uaa_database.external.host
+        label: Hostname
+
+      - reference: .properties.uaa_database.external.port
+        label: TCP Port
+
+      - reference: .properties.uaa_database.external.uaa_username
+        label: Username
+
+      - reference: .properties.uaa_database.external.uaa_password
+        label: Password
+
+- reference: .uaa.issuer_uri
+  label: JWT Issuer URI
+  description: When generating tokens, UAA will use this URI as the issuer.
+
+- reference: .uaa.service_provider_key_credentials
+  label: SAML Service Provider Credentials
+  description: Private key and certificate for the service provider.
+
+- reference: .uaa.service_provider_key_password
+  label: SAML Service Provider Key Password
+  description: Passphrase for the service provider private key.
+
+- reference: .properties.saml_signature_algorithm
+  label: Signature Algorithm
+  description: |
+    The supported algorithm for signed requests and assertions.
+
+- reference: .uaa.apps_manager_access_token_lifetime
+  label: Apps Manager Access Token Lifetime (in seconds)
+  description: Set the lifetime of the access token for Apps Manager.
+
+- reference: .uaa.apps_manager_refresh_token_lifetime
+  label: Apps Manager Refresh Token Lifetime (in seconds)
+  description: Set the lifetime of the refresh token for Apps Manager.
+
+- reference: .uaa.cf_cli_access_token_lifetime
+  label: Cloud Foundry CLI Access Token Lifetime (in seconds)
+  description: Set the lifetime of the access token for the `cf` CLI.
+
+- reference: .uaa.cf_cli_refresh_token_lifetime
+  label: Cloud Foundry CLI Refresh Token Lifetime (in seconds)
+  description: Set the lifetime of the refresh token for the `cf` CLI.
+
+- reference: .uaa.customize_username_label
+  label: Customize Username Label (on login page)
+  description: The text used to prompt for a username during login
+
+- reference: .uaa.customize_password_label
+  label: Customize Password Label (on login page)
+  description: The text used to prompt for a password during login
+
+- reference: .uaa.proxy_ips_regex
+  label: Proxy IPs Regular Expression
+  description: |
+    A pipe ("|") delimited set of regular expressions of IP addresses that are
+    considered reverse proxies. When a request from these IP addresses come
+    in, the X-FORWARDED-FOR and X-FORWARDED-PROTO headers will be respected.

@@ -1,95 +1,94 @@
 ---
-property_blueprints:
-  - name: auctioneer_client_cert
-    type: rsa_cert_credentials
-    configurable: false
+- name: auctioneer_client_cert
+  type: rsa_cert_credentials
+  configurable: false
 
-  - name: auctioneer_server_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains:
-      - auctioneer.service.cf.internal
-      - "*.auctioneer.service.cf.internal"
+- name: auctioneer_server_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - auctioneer.service.cf.internal
+    - "*.auctioneer.service.cf.internal"
 
-  - name: bbs_client_cert
-    type: rsa_cert_credentials
-    configurable: false
+- name: bbs_client_cert
+  type: rsa_cert_credentials
+  configurable: false
 
-  - name: bbs_server_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains:
-      - bbs.service.cf.internal
-      - "*.bbs.service.cf.internal"
+- name: bbs_server_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - bbs.service.cf.internal
+    - "*.bbs.service.cf.internal"
 
-  - name: loggregator_client_cert
-    type: rsa_cert_credentials
-    configurable: false
+- name: loggregator_client_cert
+  type: rsa_cert_credentials
+  configurable: false
 
-  - name: rep_client_cert
-    type: rsa_cert_credentials
-    configurable: false
+- name: rep_client_cert
+  type: rsa_cert_credentials
+  configurable: false
 
-  - name: rep_server_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains:
-      - cell.service.cf.internal
-      - "*.cell.service.cf.internal"
+- name: rep_server_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - cell.service.cf.internal
+    - "*.cell.service.cf.internal"
 
-  - name: tps_client_cert
-    type: rsa_cert_credentials
-    configurable: false
+- name: tps_client_cert
+  type: rsa_cert_credentials
+  configurable: false
 
-  - name: nfs_volume_driver
-    type: selector
-    configurable: true
-    default: enable
-    option_templates:
-      - name: enable
-        select_value: enable
-        named_manifests:
-          - name: nfsv3driver_properties
-            manifest: |
-              disable: false
-              ldap_svc_user: (( .properties.nfs_volume_driver.enable.ldap_service_account_user.value ))
-              ldap_svc_password: (( .properties.nfs_volume_driver.enable.ldap_service_account_password.value ))
-              ldap_host: (( .properties.nfs_volume_driver.enable.ldap_server_host.value ))
-              ldap_port: (( .properties.nfs_volume_driver.enable.ldap_server_port.value ))
-              ldap_user_fqdn: (( .properties.nfs_volume_driver.enable.ldap_user_fqdn.value ))
+- name: nfs_volume_driver
+  type: selector
+  configurable: true
+  default: enable
+  option_templates:
+    - name: enable
+      select_value: enable
+      named_manifests:
+        - name: nfsv3driver_properties
+          manifest: |
+            disable: false
+            ldap_svc_user: (( .properties.nfs_volume_driver.enable.ldap_service_account_user.value ))
+            ldap_svc_password: (( .properties.nfs_volume_driver.enable.ldap_service_account_password.value ))
+            ldap_host: (( .properties.nfs_volume_driver.enable.ldap_server_host.value ))
+            ldap_port: (( .properties.nfs_volume_driver.enable.ldap_server_port.value ))
+            ldap_user_fqdn: (( .properties.nfs_volume_driver.enable.ldap_user_fqdn.value ))
 
-        property_blueprints:
-          - name: ldap_service_account_user
-            type: string
-            configurable: true
-            optional: true
+      property_blueprints:
+        - name: ldap_service_account_user
+          type: string
+          configurable: true
+          optional: true
 
-          - name: ldap_service_account_password
-            type: secret
-            configurable: true
-            optional: true
+        - name: ldap_service_account_password
+          type: secret
+          configurable: true
+          optional: true
 
-          - name: ldap_server_host
-            type: string
-            configurable: true
-            optional: true
+        - name: ldap_server_host
+          type: string
+          configurable: true
+          optional: true
 
-          - name: ldap_server_port
-            type: integer
-            configurable: true
-            optional: true
+        - name: ldap_server_port
+          type: integer
+          configurable: true
+          optional: true
 
-          - name: ldap_user_fqdn
-            type: string
-            configurable: true
-            optional: true
+        - name: ldap_user_fqdn
+          type: string
+          configurable: true
+          optional: true
 
-      - name: disable
-        select_value: disable
-        named_manifests:
-          - name: nfsv3driver_properties
-            manifest: |
-              disable: true
+    - name: disable
+      select_value: disable
+      named_manifests:
+        - name: nfsv3driver_properties
+          manifest: |
+            disable: true

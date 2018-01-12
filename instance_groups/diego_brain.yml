@@ -4,21 +4,15 @@ label: Diego Brain
 resource_label: Diego Brain
 description: Diego Brain
 templates:
-{{ define "ert-diego-brain-templates" }}
-- consul_agent
-- auctioneer
-- cfdot
-- cc_uploader
-- file_server
-- ssh_proxy
-- tps
-- metron_agent_diego_brain
-- syslog_forwarder
-{{ end }}
-{{ define "srt-diego-brain-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-diego-brain-templates" | srt_template "srt-diego-brain-templates" }}
+- $( job "consul_agent" )
+- $( job "auctioneer" )
+- $( job "cfdot" )
+- $( job "cc_uploader" )
+- $( job "file_server" )
+- $( job "ssh_proxy" )
+- $( job "tps" )
+- $( job "metron_agent_diego_brain" )
+- $( job "syslog_forwarder" )
 
 resource_definitions:
 - name: ram
@@ -57,10 +51,10 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: {{ tile | ert "true" | srt "false" }}
-  default: {{ tile | ert "3" | srt "0" }}
+  configurable: $( variable "diego_brain_configurable_state" )
+  default: $( variable "diego_brain_default_instances" )
   constraints:
-    min: {{ tile | ert "1" | srt "0" }}
+    min: $( variable "diego_brain_min_instances" )
 property_blueprints:
 - name: ssh_host_key
   type: rsa_pkey_credentials

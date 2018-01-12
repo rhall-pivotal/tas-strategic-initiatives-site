@@ -1,592 +1,591 @@
 ---
-property_blueprints:
-  - name: account_database_name
-    type: string
-    configurable: false
-    default: account
+- name: account_database_name
+  type: string
+  configurable: false
+  default: account
 
-  - name: app_usage_service_database_name
-    type: string
-    configurable: false
-    default: app_usage_service
+- name: app_usage_service_database_name
+  type: string
+  configurable: false
+  default: app_usage_service
 
-  - name: autoscale_database_name
-    type: string
-    configurable: false
-    default: autoscale
+- name: autoscale_database_name
+  type: string
+  configurable: false
+  default: autoscale
 
-  - name: ccdb_database_name
-    type: string
-    configurable: false
-    default: ccdb
+- name: ccdb_database_name
+  type: string
+  configurable: false
+  default: ccdb
 
-  - name: diego_database_name
-    type: string
-    configurable: false
-    default: diego
+- name: diego_database_name
+  type: string
+  configurable: false
+  default: diego
 
-  - name: locket_database_name
-    type: string
-    configurable: false
-    default: locket
+- name: locket_database_name
+  type: string
+  configurable: false
+  default: locket
 
-  - name: networkpolicyserver_database_name
-    type: string
-    configurable: false
-    default: networkpolicyserver
+- name: networkpolicyserver_database_name
+  type: string
+  configurable: false
+  default: networkpolicyserver
 
-  - name: notifications_database_name
-    type: string
-    configurable: false
-    default: notifications
+- name: notifications_database_name
+  type: string
+  configurable: false
+  default: notifications
 
-  - name: routing_database_name
-    type: string
-    configurable: false
-    default: routing
+- name: routing_database_name
+  type: string
+  configurable: false
+  default: routing
 
-  - name: silk_database_name
-    type: string
-    configurable: false
-    default: silk
+- name: silk_database_name
+  type: string
+  configurable: false
+  default: silk
 
-  - name: nfsvolume_database_name
-    type: string
-    configurable: false
-    default: nfsvolume
+- name: nfsvolume_database_name
+  type: string
+  configurable: false
+  default: nfsvolume
 
-  - name: system_db_link
-    type: selector
-    configurable: false
-    default: only-option
-    option_templates:
-      - name: doesnt-matter
-        select_value: only-option
-        named_manifests:
-          - name: proxy
-            manifest: |
-              "(( .mysql_proxy.service_hostname.value ? .properties.system_db_link.selected_option.parsed_manifest(proxy_service_hostname) : .properties.system_db_link.selected_option.parsed_manifest(proxy_link) ))"
-          - name: proxy_service_hostname
-            manifest: |
-              database:
-                instances:
-                - address: (( .mysql_proxy.service_hostname.value ))
-          - name: proxy_link
-            manifest: |
-              database: {from: proxy-mysql}
-          - name: app_usage_database_proxy
-            manifest: |
-              "(( .mysql_proxy.service_hostname.value ? .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy_service_hostname) : .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy_link) ))"
-          - name: app_usage_database_proxy_service_hostname
-            manifest: |
-              app-usage-database:
-                instances:
-                - address: (( .mysql_proxy.service_hostname.value ))
-          - name: app_usage_database_proxy_link
-            manifest: |
-              app-usage-database: {from: proxy-mysql}
+- name: system_db_link
+  type: selector
+  configurable: false
+  default: only-option
+  option_templates:
+    - name: doesnt-matter
+      select_value: only-option
+      named_manifests:
+        - name: proxy
+          manifest: |
+            "(( .mysql_proxy.service_hostname.value ? .properties.system_db_link.selected_option.parsed_manifest(proxy_service_hostname) : .properties.system_db_link.selected_option.parsed_manifest(proxy_link) ))"
+        - name: proxy_service_hostname
+          manifest: |
+            database:
+              instances:
+              - address: (( .mysql_proxy.service_hostname.value ))
+        - name: proxy_link
+          manifest: |
+            database: {from: proxy-mysql}
+        - name: app_usage_database_proxy
+          manifest: |
+            "(( .mysql_proxy.service_hostname.value ? .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy_service_hostname) : .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy_link) ))"
+        - name: app_usage_database_proxy_service_hostname
+          manifest: |
+            app-usage-database:
+              instances:
+              - address: (( .mysql_proxy.service_hostname.value ))
+        - name: app_usage_database_proxy_link
+          manifest: |
+            app-usage-database: {from: proxy-mysql}
 
-  - name: system_database
-    type: selector
-    configurable: true
-    default: internal_mysql
-    option_templates:
-      - name: internal_mysql
-        select_value: internal_mysql
-        named_manifests:
+- name: system_database
+  type: selector
+  configurable: true
+  default: internal_mysql
+  option_templates:
+    - name: internal_mysql
+      select_value: internal_mysql
+      named_manifests:
+      - name: mysql_db_link
+        manifest: |
+          (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
+      - name: ccdb
+        manifest: |
+          db_scheme: mysql
+          address: mysql.service.cf.internal
+          port: 3306
+          roles:
+          - tag: admin
+            name: ((( cc-db-credentials.username )))
+            password: ((( cc-db-credentials.password )))
+          databases:
+          - tag: cc
+            name: (( .properties.ccdb_database_name.value ))
+            citext: true
+      - name: ccdb_link
+        manifest: |
+          (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
+      - name: notifications
+        manifest: |
+          port: 3306
+          username: ((( notifications-db-credentials.username )))
+          password: ((( notifications-db-credentials.password )))
+          database: (( .properties.notifications_database_name.value ))
+          max_open_connections: 10
+      - name: autoscaling
+        manifest: |
+          adapter: mysql
+          port: 3306
+          username: ((( autoscale-db-credentials.username )))
+          password: ((( autoscale-db-credentials.password )))
+          name: (( .properties.autoscale_database_name.value ))
+      - name: push-app-usage-service
+        manifest: |
+          port: 3306
+          username: ((( app-usage-db-credentials.username )))
+          password: ((( app-usage-db-credentials.password )))
+          name: (( .properties.app_usage_service_database_name.value ))
+      - name: bbr-usage-servicedb
+        manifest: |
+          port: 3306
+          user: ((( app-usage-db-credentials.username )))
+          password: ((( app-usage-db-credentials.password )))
+          name: (( .properties.app_usage_service_database_name.value ))
+      - name: push_app_usage_service_db_link
+        manifest: |
+          (( .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy) ))
+      - name: diegodb
+        manifest: |
+          db_host: mysql.service.cf.internal
+          db_port: 3306
+          db_username: ((( diego-db-credentials.username )))
+          db_password: ((( diego-db-credentials.password )))
+          db_schema: (( .properties.diego_database_name.value ))
+          max_open_connections: 100
+      - name: locketdb
+        manifest: |
+          db_host: mysql.service.cf.internal
+          db_port: 3306
+          db_username: ((( locket-db-credentials.username )))
+          db_password: ((( locket-db-credentials.password )))
+          db_schema: (( .properties.locket_database_name.value ))
+      - name: routingdb
+        manifest: |
+          type: mysql
+          host: mysql.service.cf.internal
+          port: 3306
+          username: ((( routing-db-credentials.username )))
+          password: ((( routing-db-credentials.password )))
+          schema: (( .properties.routing_database_name.value ))
+      - name: silkdb
+        manifest: |
+          type: mysql
+          host: mysql.service.cf.internal
+          port: 3306
+          username: ((( silk-db-credentials.username )))
+          password: ((( silk-db-credentials.password )))
+          name: (( .properties.silk_database_name.value ))
+      - name: networkpolicyserverdb
+        manifest: |
+          type: mysql
+          host: mysql.service.cf.internal
+          port: 3306
+          username: ((( network-policy-server-db-credentials.username )))
+          password: ((( network-policy-server-db-credentials.password )))
+          name: (( .properties.networkpolicyserver_database_name.value ))
+      - name: pivotal_account
+        manifest: |
+          adapter: mysql
+          port: 3306
+          username: ((( pivotal-account-db-credentials.username )))
+          password: ((( pivotal-account-db-credentials.password )))
+          database: (( .properties.account_database_name.value ))
+      - name: nfsvolume
+        manifest: |
+          username: ((( nfs-volume-db-credentials.username )))
+          password: ((( nfs-volume-db-credentials.password )))
+          name: (( .properties.nfsvolume_database_name.value ))
+      - name: nfsvolume_bbr
+        manifest: |
+          db_username: ((( nfs-volume-db-credentials.username )))
+          db_password: ((( nfs-volume-db-credentials.password )))
+          db_name: (( .properties.nfsvolume_database_name.value ))
+          db_hostname: mysql.service.cf.internal
+          db_port: 3306
+          db_driver: mysql
+          release_level_backup: true
+
+    - name: external
+      select_value: external
+      property_blueprints:
+        - name: host
+          type: string
+          configurable: true
+        - name: port
+          type: port
+          configurable: true
+        - name: account_username
+          type: string
+          configurable: true
+        - name: account_password
+          type: secret
+          configurable: true
+        - name: app_usage_service_username
+          type: string
+          configurable: true
+        - name: app_usage_service_password
+          type: secret
+          configurable: true
+        - name: autoscale_username
+          type: string
+          configurable: true
+        - name: autoscale_password
+          type: secret
+          configurable: true
+        - name: ccdb_username
+          type: string
+          configurable: true
+        - name: ccdb_password
+          type: secret
+          configurable: true
+        - name: diego_username
+          type: string
+          configurable: true
+        - name: diego_password
+          type: secret
+          configurable: true
+        - name: locket_username
+          type: string
+          configurable: true
+        - name: locket_password
+          type: secret
+          configurable: true
+        - name: networkpolicyserver_username
+          type: string
+          configurable: true
+        - name: networkpolicyserver_password
+          type: secret
+          configurable: true
+        - name: nfsvolume_username
+          type: string
+          configurable: true
+        - name: nfsvolume_password
+          type: secret
+          configurable: true
+        - name: notifications_username
+          type: string
+          configurable: true
+        - name: notifications_password
+          type: secret
+          configurable: true
+        - name: routing_username
+          type: string
+          configurable: true
+        - name: routing_password
+          type: secret
+          configurable: true
+        - name: silk_username
+          type: string
+          configurable: true
+        - name: silk_password
+          type: secret
+          configurable: true
+      named_manifests:
         - name: mysql_db_link
           manifest: |
-            (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
+            database: nil
         - name: ccdb
           manifest: |
-            db_scheme: mysql
-            address: mysql.service.cf.internal
-            port: 3306
+            db_scheme: "mysql"
+            address: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
             roles:
             - tag: admin
-              name: ((( cc-db-credentials.username )))
-              password: ((( cc-db-credentials.password )))
+              name: (( .properties.system_database.external.ccdb_username.value ))
+              password: (( .properties.system_database.external.ccdb_password.value ))
             databases:
             - tag: cc
               name: (( .properties.ccdb_database_name.value ))
-              citext: true
         - name: ccdb_link
           manifest: |
-            (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
+            database: nil
         - name: notifications
           manifest: |
-            port: 3306
-            username: ((( notifications-db-credentials.username )))
-            password: ((( notifications-db-credentials.password )))
+            host: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
+            username: (( .properties.system_database.external.notifications_username.value ))
+            password: (( .properties.system_database.external.notifications_password.value ))
             database: (( .properties.notifications_database_name.value ))
             max_open_connections: 10
         - name: autoscaling
           manifest: |
             adapter: mysql
-            port: 3306
-            username: ((( autoscale-db-credentials.username )))
-            password: ((( autoscale-db-credentials.password )))
+            host: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
+            username: (( .properties.system_database.external.autoscale_username.value ))
+            password: (( .properties.system_database.external.autoscale_password.value ))
             name: (( .properties.autoscale_database_name.value ))
         - name: push-app-usage-service
           manifest: |
-            port: 3306
-            username: ((( app-usage-db-credentials.username )))
-            password: ((( app-usage-db-credentials.password )))
+            ip: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
+            username: (( .properties.system_database.external.app_usage_service_username.value ))
+            password: (( .properties.system_database.external.app_usage_service_password.value ))
             name: (( .properties.app_usage_service_database_name.value ))
         - name: bbr-usage-servicedb
           manifest: |
-            port: 3306
-            user: ((( app-usage-db-credentials.username )))
-            password: ((( app-usage-db-credentials.password )))
+            host: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
+            user: (( .properties.system_database.external.app_usage_service_username.value ))
+            password: (( .properties.system_database.external.app_usage_service_password.value ))
             name: (( .properties.app_usage_service_database_name.value ))
         - name: push_app_usage_service_db_link
           manifest: |
-            (( .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy) ))
+            app-usage-database: nil
         - name: diegodb
           manifest: |
-            db_host: mysql.service.cf.internal
-            db_port: 3306
-            db_username: ((( diego-db-credentials.username )))
-            db_password: ((( diego-db-credentials.password )))
+            db_host: (( .properties.system_database.external.host.value ))
+            db_port: (( .properties.system_database.external.port.value ))
+            db_username: (( .properties.system_database.external.diego_username.value ))
+            db_password: (( .properties.system_database.external.diego_password.value ))
             db_schema: (( .properties.diego_database_name.value ))
             max_open_connections: 100
         - name: locketdb
           manifest: |
-            db_host: mysql.service.cf.internal
-            db_port: 3306
-            db_username: ((( locket-db-credentials.username )))
-            db_password: ((( locket-db-credentials.password )))
+            db_host: (( .properties.system_database.external.host.value ))
+            db_port: (( .properties.system_database.external.port.value ))
+            db_username: (( .properties.system_database.external.locket_username.value ))
+            db_password: (( .properties.system_database.external.locket_password.value ))
             db_schema: (( .properties.locket_database_name.value ))
         - name: routingdb
           manifest: |
             type: mysql
-            host: mysql.service.cf.internal
-            port: 3306
-            username: ((( routing-db-credentials.username )))
-            password: ((( routing-db-credentials.password )))
+            host: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
+            username: (( .properties.system_database.external.routing_username.value ))
+            password: (( .properties.system_database.external.routing_password.value ))
             schema: (( .properties.routing_database_name.value ))
         - name: silkdb
           manifest: |
             type: mysql
-            host: mysql.service.cf.internal
-            port: 3306
-            username: ((( silk-db-credentials.username )))
-            password: ((( silk-db-credentials.password )))
+            host: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
+            username: (( .properties.system_database.external.silk_username.value ))
+            password: (( .properties.system_database.external.silk_password.value ))
             name: (( .properties.silk_database_name.value ))
         - name: networkpolicyserverdb
           manifest: |
             type: mysql
-            host: mysql.service.cf.internal
-            port: 3306
-            username: ((( network-policy-server-db-credentials.username )))
-            password: ((( network-policy-server-db-credentials.password )))
+            host: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
+            username: (( .properties.system_database.external.networkpolicyserver_username.value ))
+            password: (( .properties.system_database.external.networkpolicyserver_password.value ))
             name: (( .properties.networkpolicyserver_database_name.value ))
         - name: pivotal_account
           manifest: |
             adapter: mysql
-            port: 3306
-            username: ((( pivotal-account-db-credentials.username )))
-            password: ((( pivotal-account-db-credentials.password )))
+            host: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
+            username: (( .properties.system_database.external.account_username.value ))
+            password: (( .properties.system_database.external.account_password.value ))
             database: (( .properties.account_database_name.value ))
         - name: nfsvolume
           manifest: |
-            username: ((( nfs-volume-db-credentials.username )))
-            password: ((( nfs-volume-db-credentials.password )))
+            host: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
+            username: (( .properties.system_database.external.nfsvolume_username.value ))
+            password: (( .properties.system_database.external.nfsvolume_password.value ))
             name: (( .properties.nfsvolume_database_name.value ))
         - name: nfsvolume_bbr
           manifest: |
-            db_username: ((( nfs-volume-db-credentials.username )))
-            db_password: ((( nfs-volume-db-credentials.password )))
-            db_name: (( .properties.nfsvolume_database_name.value ))
-            db_hostname: mysql.service.cf.internal
-            db_port: 3306
             db_driver: mysql
-            release_level_backup: true
+            db_host: (( .properties.system_database.external.host.value ))
+            db_name: (( .properties.nfsvolume_database_name.value ))
+            db_password: (( .properties.system_database.external.nfsvolume_password.value ))
+            db_port: (( .properties.system_database.external.port.value ))
+            db_username: (( .properties.system_database.external.nfsvolume_username.value ))
 
-      - name: external
-        select_value: external
-        property_blueprints:
-          - name: host
-            type: string
-            configurable: true
-          - name: port
-            type: port
-            configurable: true
-          - name: account_username
-            type: string
-            configurable: true
-          - name: account_password
-            type: secret
-            configurable: true
-          - name: app_usage_service_username
-            type: string
-            configurable: true
-          - name: app_usage_service_password
-            type: secret
-            configurable: true
-          - name: autoscale_username
-            type: string
-            configurable: true
-          - name: autoscale_password
-            type: secret
-            configurable: true
-          - name: ccdb_username
-            type: string
-            configurable: true
-          - name: ccdb_password
-            type: secret
-            configurable: true
-          - name: diego_username
-            type: string
-            configurable: true
-          - name: diego_password
-            type: secret
-            configurable: true
-          - name: locket_username
-            type: string
-            configurable: true
-          - name: locket_password
-            type: secret
-            configurable: true
-          - name: networkpolicyserver_username
-            type: string
-            configurable: true
-          - name: networkpolicyserver_password
-            type: secret
-            configurable: true
-          - name: nfsvolume_username
-            type: string
-            configurable: true
-          - name: nfsvolume_password
-            type: secret
-            configurable: true
-          - name: notifications_username
-            type: string
-            configurable: true
-          - name: notifications_password
-            type: secret
-            configurable: true
-          - name: routing_username
-            type: string
-            configurable: true
-          - name: routing_password
-            type: secret
-            configurable: true
-          - name: silk_username
-            type: string
-            configurable: true
-          - name: silk_password
-            type: secret
-            configurable: true
-        named_manifests:
-          - name: mysql_db_link
-            manifest: |
-              database: nil
-          - name: ccdb
-            manifest: |
-              db_scheme: "mysql"
-              address: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              roles:
-              - tag: admin
-                name: (( .properties.system_database.external.ccdb_username.value ))
-                password: (( .properties.system_database.external.ccdb_password.value ))
-              databases:
-              - tag: cc
-                name: (( .properties.ccdb_database_name.value ))
-          - name: ccdb_link
-            manifest: |
-              database: nil
-          - name: notifications
-            manifest: |
-              host: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.notifications_username.value ))
-              password: (( .properties.system_database.external.notifications_password.value ))
-              database: (( .properties.notifications_database_name.value ))
-              max_open_connections: 10
-          - name: autoscaling
-            manifest: |
-              adapter: mysql
-              host: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.autoscale_username.value ))
-              password: (( .properties.system_database.external.autoscale_password.value ))
-              name: (( .properties.autoscale_database_name.value ))
-          - name: push-app-usage-service
-            manifest: |
-              ip: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.app_usage_service_username.value ))
-              password: (( .properties.system_database.external.app_usage_service_password.value ))
-              name: (( .properties.app_usage_service_database_name.value ))
-          - name: bbr-usage-servicedb
-            manifest: |
-              host: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              user: (( .properties.system_database.external.app_usage_service_username.value ))
-              password: (( .properties.system_database.external.app_usage_service_password.value ))
-              name: (( .properties.app_usage_service_database_name.value ))
-          - name: push_app_usage_service_db_link
-            manifest: |
-              app-usage-database: nil
-          - name: diegodb
-            manifest: |
-              db_host: (( .properties.system_database.external.host.value ))
-              db_port: (( .properties.system_database.external.port.value ))
-              db_username: (( .properties.system_database.external.diego_username.value ))
-              db_password: (( .properties.system_database.external.diego_password.value ))
-              db_schema: (( .properties.diego_database_name.value ))
-              max_open_connections: 100
-          - name: locketdb
-            manifest: |
-              db_host: (( .properties.system_database.external.host.value ))
-              db_port: (( .properties.system_database.external.port.value ))
-              db_username: (( .properties.system_database.external.locket_username.value ))
-              db_password: (( .properties.system_database.external.locket_password.value ))
-              db_schema: (( .properties.locket_database_name.value ))
-          - name: routingdb
-            manifest: |
-              type: mysql
-              host: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.routing_username.value ))
-              password: (( .properties.system_database.external.routing_password.value ))
-              schema: (( .properties.routing_database_name.value ))
-          - name: silkdb
-            manifest: |
-              type: mysql
-              host: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.silk_username.value ))
-              password: (( .properties.system_database.external.silk_password.value ))
-              name: (( .properties.silk_database_name.value ))
-          - name: networkpolicyserverdb
-            manifest: |
-              type: mysql
-              host: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.networkpolicyserver_username.value ))
-              password: (( .properties.system_database.external.networkpolicyserver_password.value ))
-              name: (( .properties.networkpolicyserver_database_name.value ))
-          - name: pivotal_account
-            manifest: |
-              adapter: mysql
-              host: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.account_username.value ))
-              password: (( .properties.system_database.external.account_password.value ))
-              database: (( .properties.account_database_name.value ))
-          - name: nfsvolume
-            manifest: |
-              host: (( .properties.system_database.external.host.value ))
-              port: (( .properties.system_database.external.port.value ))
-              username: (( .properties.system_database.external.nfsvolume_username.value ))
-              password: (( .properties.system_database.external.nfsvolume_password.value ))
-              name: (( .properties.nfsvolume_database_name.value ))
-          - name: nfsvolume_bbr
-            manifest: |
-              db_driver: mysql
-              db_host: (( .properties.system_database.external.host.value ))
-              db_name: (( .properties.nfsvolume_database_name.value ))
-              db_password: (( .properties.system_database.external.nfsvolume_password.value ))
-              db_port: (( .properties.system_database.external.port.value ))
-              db_username: (( .properties.system_database.external.nfsvolume_username.value ))
+- name: mysql_backups
+  type: selector
+  configurable: true
+  default: disable
+  option_templates:
+  - name: disable
+    select_value: disable
+    named_manifests:
+    - name: destination
+      manifest: "[]"
+    - name: cron_schedule
+      manifest: |
 
-  - name: mysql_backups
-    type: selector
-    configurable: true
-    default: disable
-    option_templates:
+    - name: backup_all_masters
+      manifest: |
+        false
+  - name: s3
+    select_value: s3
+    named_manifests:
+    - name: destination
+      manifest: |
+        - type: s3
+          config:
+            region: (( .properties.mysql_backups.s3.region.value ))
+            endpoint_url: (( .properties.mysql_backups.s3.endpoint_url.value ))
+            bucket_name: (( .properties.mysql_backups.s3.bucket_name.value ))
+            bucket_path: (( .properties.mysql_backups.s3.bucket_path.value ))
+            access_key_id: (( .properties.mysql_backups.s3.access_key_id.value ))
+            secret_access_key: (( .properties.mysql_backups.s3.secret_access_key.value ))
+    - name: cron_schedule
+      manifest: |
+        (( .properties.mysql_backups.s3.cron_schedule.value ))
+    - name: backup_all_masters
+      manifest: |
+        (( .properties.mysql_backups.s3.backup_all_masters.value ))
+    property_blueprints:
+    - name: endpoint_url
+      type: string
+      configurable: true
+      default: https://s3.amazonaws.com
+    - name: bucket_name
+      type: string
+      configurable: true
+    - name: bucket_path
+      type: string
+      configurable: true
+    - name: access_key_id
+      type: string
+      configurable: true
+    - name: secret_access_key
+      type: secret
+      configurable: true
+    - name: cron_schedule
+      type: string
+      configurable: true
+    - name: backup_all_masters
+      type: boolean
+      configurable: true
+      default: true
+    - name: region
+      type: string
+      configurable: true
+      optional: true
+  - name: gcs
+    select_value: gcs
+    named_manifests:
+    - name: destination
+      manifest: |
+        - type: gcs
+          config:
+            service_account_json: (( .properties.mysql_backups.gcs.service_account_json.value ))
+            project_id: (( .properties.mysql_backups.gcs.project_id.value ))
+            bucket_name: (( .properties.mysql_backups.gcs.bucket_name.value ))
+    - name: cron_schedule
+      manifest: |
+        (( .properties.mysql_backups.gcs.cron_schedule.value ))
+    - name: backup_all_masters
+      manifest: |
+        (( .properties.mysql_backups.gcs.backup_all_masters.value ))
+    property_blueprints:
+    - name: service_account_json
+      type: secret
+      configurable: true
+    - name: project_id
+      type: string
+      configurable: true
+    - name: bucket_name
+      type: string
+      configurable: true
+    - name: cron_schedule
+      type: string
+      configurable: true
+    - name: backup_all_masters
+      type: boolean
+      configurable: true
+      default: true
+  - name: azure
+    select_value: azure
+    named_manifests:
+    - name: destination
+      manifest: |
+        - type: azure
+          config:
+            storage_account: (( .properties.mysql_backups.azure.storage_account.value ))
+            storage_access_key: (( .properties.mysql_backups.azure.storage_access_key.value ))
+            container: (( .properties.mysql_backups.azure.container.value ))
+            path: (( .properties.mysql_backups.azure.path.value ))
+    - name: cron_schedule
+      manifest: |
+        (( .properties.mysql_backups.azure.cron_schedule.value ))
+    - name: backup_all_masters
+      manifest: |
+        (( .properties.mysql_backups.azure.backup_all_masters.value ))
+    property_blueprints:
+    - name: storage_account
+      type: string
+      configurable: true
+    - name: storage_access_key
+      type: secret
+      configurable: true
+    - name: container
+      type: string
+      configurable: true
+    - name: path
+      type: string
+      configurable: true
+    - name: cron_schedule
+      type: string
+      configurable: true
+    - name: backup_all_masters
+      type: boolean
+      configurable: true
+      default: true
+  - name: scp
+    select_value: scp
+    named_manifests:
+    - name: destination
+      manifest: |
+        - type: scp
+          config:
+            server: (( .properties.mysql_backups.scp.server.value ))
+            port: (( .properties.mysql_backups.scp.port.value ))
+            user: (( .properties.mysql_backups.scp.user.value ))
+            key: (( .properties.mysql_backups.scp.key.value ))
+            destination: (( .properties.mysql_backups.scp.destination.value ))
+    - name: cron_schedule
+      manifest: |
+        (( .properties.mysql_backups.scp.cron_schedule.value ))
+    - name: backup_all_masters
+      manifest: |
+        (( .properties.mysql_backups.scp.backup_all_masters.value ))
+    property_blueprints:
+    - name: server
+      type: string
+      configurable: true
+    - name: port
+      type: port
+      configurable: true
+      default: 22
+    - name: user
+      type: string
+      configurable: true
+    - name: key
+      type: text
+      configurable: true
+    - name: destination
+      type: string
+      configurable: true
+    - name: cron_schedule
+      type: string
+      configurable: true
+    - name: backup_all_masters
+      type: boolean
+      configurable: true
+      default: true
+
+- name: mysql_activity_logging
+  type: selector
+  configurable: true
+  default: enable
+  option_templates:
     - name: disable
       select_value: disable
       named_manifests:
-      - name: destination
-        manifest: "[]"
-      - name: cron_schedule
-        manifest: |
+        - name: mysql_audit_events
+          manifest: ""
 
-      - name: backup_all_masters
-        manifest: |
-          false
-    - name: s3
-      select_value: s3
+    - name: enable
+      select_value: enable
       named_manifests:
-      - name: destination
-        manifest: |
-          - type: s3
-            config:
-              region: (( .properties.mysql_backups.s3.region.value ))
-              endpoint_url: (( .properties.mysql_backups.s3.endpoint_url.value ))
-              bucket_name: (( .properties.mysql_backups.s3.bucket_name.value ))
-              bucket_path: (( .properties.mysql_backups.s3.bucket_path.value ))
-              access_key_id: (( .properties.mysql_backups.s3.access_key_id.value ))
-              secret_access_key: (( .properties.mysql_backups.s3.secret_access_key.value ))
-      - name: cron_schedule
-        manifest: |
-          (( .properties.mysql_backups.s3.cron_schedule.value ))
-      - name: backup_all_masters
-        manifest: |
-          (( .properties.mysql_backups.s3.backup_all_masters.value ))
+        - name: mysql_audit_events
+          manifest: (( .properties.mysql_activity_logging.enable.audit_logging_events.value ))
       property_blueprints:
-      - name: endpoint_url
-        type: string
-        configurable: true
-        default: https://s3.amazonaws.com
-      - name: bucket_name
-        type: string
-        configurable: true
-      - name: bucket_path
-        type: string
-        configurable: true
-      - name: access_key_id
-        type: string
-        configurable: true
-      - name: secret_access_key
-        type: secret
-        configurable: true
-      - name: cron_schedule
-        type: string
-        configurable: true
-      - name: backup_all_masters
-        type: boolean
-        configurable: true
-        default: true
-      - name: region
-        type: string
-        configurable: true
-        optional: true
-    - name: gcs
-      select_value: gcs
-      named_manifests:
-      - name: destination
-        manifest: |
-          - type: gcs
-            config:
-              service_account_json: (( .properties.mysql_backups.gcs.service_account_json.value ))
-              project_id: (( .properties.mysql_backups.gcs.project_id.value ))
-              bucket_name: (( .properties.mysql_backups.gcs.bucket_name.value ))
-      - name: cron_schedule
-        manifest: |
-          (( .properties.mysql_backups.gcs.cron_schedule.value ))
-      - name: backup_all_masters
-        manifest: |
-          (( .properties.mysql_backups.gcs.backup_all_masters.value ))
-      property_blueprints:
-      - name: service_account_json
-        type: secret
-        configurable: true
-      - name: project_id
-        type: string
-        configurable: true
-      - name: bucket_name
-        type: string
-        configurable: true
-      - name: cron_schedule
-        type: string
-        configurable: true
-      - name: backup_all_masters
-        type: boolean
-        configurable: true
-        default: true
-    - name: azure
-      select_value: azure
-      named_manifests:
-      - name: destination
-        manifest: |
-          - type: azure
-            config:
-              storage_account: (( .properties.mysql_backups.azure.storage_account.value ))
-              storage_access_key: (( .properties.mysql_backups.azure.storage_access_key.value ))
-              container: (( .properties.mysql_backups.azure.container.value ))
-              path: (( .properties.mysql_backups.azure.path.value ))
-      - name: cron_schedule
-        manifest: |
-          (( .properties.mysql_backups.azure.cron_schedule.value ))
-      - name: backup_all_masters
-        manifest: |
-          (( .properties.mysql_backups.azure.backup_all_masters.value ))
-      property_blueprints:
-      - name: storage_account
-        type: string
-        configurable: true
-      - name: storage_access_key
-        type: secret
-        configurable: true
-      - name: container
-        type: string
-        configurable: true
-      - name: path
-        type: string
-        configurable: true
-      - name: cron_schedule
-        type: string
-        configurable: true
-      - name: backup_all_masters
-        type: boolean
-        configurable: true
-        default: true
-    - name: scp
-      select_value: scp
-      named_manifests:
-      - name: destination
-        manifest: |
-          - type: scp
-            config:
-              server: (( .properties.mysql_backups.scp.server.value ))
-              port: (( .properties.mysql_backups.scp.port.value ))
-              user: (( .properties.mysql_backups.scp.user.value ))
-              key: (( .properties.mysql_backups.scp.key.value ))
-              destination: (( .properties.mysql_backups.scp.destination.value ))
-      - name: cron_schedule
-        manifest: |
-          (( .properties.mysql_backups.scp.cron_schedule.value ))
-      - name: backup_all_masters
-        manifest: |
-          (( .properties.mysql_backups.scp.backup_all_masters.value ))
-      property_blueprints:
-      - name: server
-        type: string
-        configurable: true
-      - name: port
-        type: port
-        configurable: true
-        default: 22
-      - name: user
-        type: string
-        configurable: true
-      - name: key
-        type: text
-        configurable: true
-      - name: destination
-        type: string
-        configurable: true
-      - name: cron_schedule
-        type: string
-        configurable: true
-      - name: backup_all_masters
-        type: boolean
-        configurable: true
-        default: true
-
-  - name: mysql_activity_logging
-    type: selector
-    configurable: true
-    default: enable
-    option_templates:
-      - name: disable
-        select_value: disable
-        named_manifests:
-          - name: mysql_audit_events
-            manifest: ""
-
-      - name: enable
-        select_value: enable
-        named_manifests:
-          - name: mysql_audit_events
-            manifest: (( .properties.mysql_activity_logging.enable.audit_logging_events.value ))
-        property_blueprints:
-          - name: audit_logging_events
-            type: string
-            configurable: true
-            default: "connect,query"
+        - name: audit_logging_events
+          type: string
+          configurable: true
+          default: "connect,query"

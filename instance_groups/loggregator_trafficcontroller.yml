@@ -4,19 +4,13 @@ label: Loggregator Trafficcontroller
 resource_label: Loggregator Trafficcontroller
 description: Loggregator trafficcontroller distributes requests to Loggregator servers
 templates:
-{{ define "ert-loggregator-trafficcontroller-templates" }}
-- consul_agent_loggregator_trafficcontroller
-- loggregator_trafficcontroller
-- metron_agent
-- reverse_log_proxy
-- route_registrar_loggregator_trafficcontroller
-- bosh_system_metrics_forwarder
-- syslog_forwarder
-{{ end }}
-{{ define "srt-loggregator-trafficcontroller-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-loggregator-trafficcontroller-templates" | srt_template "srt-loggregator-trafficcontroller-templates" }}
+- $( job "consul_agent_loggregator_trafficcontroller" )
+- $( job "loggregator_trafficcontroller" )
+- $( job "metron_agent" )
+- $( job "reverse_log_proxy" )
+- $( job "route_registrar_loggregator_trafficcontroller" )
+- $( job "bosh-system-metrics-forwarder" )
+- $( job "syslog_forwarder" )
 
 resource_definitions:
 - name: ram
@@ -53,10 +47,10 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  default: {{ tile | ert "3" | srt "0" }}
-  configurable: {{ tile | ert "true" | srt "false" }}
+  configurable: $( variable "loggregator_trafficcontroller_configurable_state" )
+  default: $( variable "loggregator_trafficcontroller_default_instances" )
   constraints:
-    min: {{ tile | ert "1" | srt "0" }}
+    min: $( variable "loggregator_trafficcontroller_min_instances" )
 property_blueprints:
 - name: cc_trafficcontroller_tls_cert
   type: rsa_cert_credentials

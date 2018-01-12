@@ -1,37 +1,36 @@
 ---
-form:
-  name: experimental_features
-  label: Advanced Features
-  description: |
-    These are several features that may require a greater understanding of
-    Cloud Foundry system components and their more recently introduced
-    capabilities.
-  markdown: |
-    You can specify how much memory or disk you want to set as the Diego Cells'
-    available capacity. You can overcommit these resources with values that
-    exceed the Diego Cell VM sizes configured in the Resource Config section.
+name: experimental_features
+label: Advanced Features
+description: |
+  These are several features that may require a greater understanding of
+  Cloud Foundry system components and their more recently introduced
+  capabilities.
+markdown: |
+  You can specify how much memory or disk you want to set as the Diego Cells'
+  available capacity. You can overcommit these resources with values that
+  exceed the Diego Cell VM sizes configured in the Resource Config section.
 
-  property_inputs:
-    - reference: .diego_cell.executor_memory_capacity
-      label: Cell Memory Capacity (MB)
+property_inputs:
+  - reference: .diego_cell.executor_memory_capacity
+    label: Cell Memory Capacity (MB)
 
-    - reference: .diego_cell.executor_disk_capacity
-      label: Cell Disk Capacity (MB)
+  - reference: .diego_cell.executor_disk_capacity
+    label: Cell Disk Capacity (MB)
 
-    - reference: .nfs_server.blobstore_internal_access_rules
-      label: Whitelist for non-RFC-1918 Private Networks
-      description: |
-        If your Application Service deployment is using a private network that is
-        not RFC 1918 (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16), then you must
-        type in "allow <your-network>;" here. It is important to include the
-        word "allow" and the semi-colon at the end. Multiple rules should be
-        separated by a comma. For example, "allow 172.99.0.0/24;,allow
-        172.55.0.0/24;"
-      placeholder: |
-        e.g.: allow 172.99.0.0/24;,allow 172.55.0.0/24;
+  - reference: .nfs_server.blobstore_internal_access_rules
+    label: Whitelist for non-RFC-1918 Private Networks
+    description: |
+      If your Application Service deployment is using a private network that is
+      not RFC 1918 (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16), then you must
+      type in "allow <your-network>;" here. It is important to include the
+      word "allow" and the semi-colon at the end. Multiple rules should be
+      separated by a comma. For example, "allow 172.99.0.0/24;,allow
+      172.55.0.0/24;"
+    placeholder: |
+      e.g.: allow 172.99.0.0/24;,allow 172.55.0.0/24;
 
-    - reference: .properties.cf_dial_timeout_in_seconds
-      label: CF CLI Connection Timeout
-      description: |
-        Max wait time to establish a connection, including name resolution, in
-        seconds.
+  - reference: .properties.cf_dial_timeout_in_seconds
+    label: CF CLI Connection Timeout
+    description: |
+      Max wait time to establish a connection, including name resolution, in
+      seconds.

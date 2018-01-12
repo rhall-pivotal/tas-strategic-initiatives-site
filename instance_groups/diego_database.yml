@@ -4,21 +4,15 @@ label: Diego BBS
 resource_label: Diego BBS
 description: An datastore node for Diego
 templates:
-{{ define "ert-diego-database-templates" }}
-- consul_agent_diego_database
-- bbs
-- cfdot
-- metron_agent
-- locket
-- route_registrar_diego_database
-- policy-server
-- policy-server-internal
-- syslog_forwarder
-{{ end }}
-{{ define "srt-diego-database-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-diego-database-templates" | srt_template "srt-diego-database-templates" }}
+- $( job "consul_agent_diego_database" )
+- $( job "bbs" )
+- $( job "cfdot" )
+- $( job "metron_agent" )
+- $( job "locket" )
+- $( job "route_registrar_diego_database" )
+- $( job "policy-server" )
+- $( job "policy-server-internal" )
+- $( job "syslog_forwarder" )
 
 resource_definitions:
 - name: ram
@@ -56,10 +50,10 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: {{ tile | ert "true" | srt "false" }}
-  default: {{ tile | ert "3" | srt "0" }}
+  configurable: $( variable "diego_database_configurable_state" )
+  default: $( variable "diego_database_default_instances" )
   constraints:
-    min: {{ tile | ert "1" | srt "0" }}
+    min: $( variable "diego_database_min_instances" )
 property_blueprints:
   - name: locket_server_cert
     type: rsa_cert_credentials

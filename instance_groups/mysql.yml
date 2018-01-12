@@ -5,21 +5,15 @@ resource_label: MySQL Server
 description: Multi-tenant MySQL server.
 
 templates:
-{{ define "ert-mysql-templates" }}
-- consul_agent
-- metron_agent
-- mysql
-- mysql-metrics
-- streaming-mysql-backup-tool
-- send-email
-- mysql-diag-agent
-- mysql-restore
-- syslog_forwarder
-{{ end }}
-{{ define "srt-mysql-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-mysql-templates" | srt_template "srt-mysql-templates" }}
+- $( job "consul_agent" )
+- $( job "metron_agent" )
+- $( job "mysql" )
+- $( job "mysql-metrics" )
+- $( job "streaming-mysql-backup-tool" )
+- $( job "send-email" )
+- $( job "mysql-diag-agent" )
+- $( job "mysql-restore" )
+- $( job "syslog_forwarder" )
 
 resource_definitions:
 - name: ram
@@ -63,8 +57,8 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: {{ tile | ert "true" | srt "false" }}
-  default: {{ tile | ert "3" | srt "0" }}
+  configurable: $( variable "mysql_configurable_state" )
+  default: $( variable "mysql_default_instances" )
 
   constraints:
     may_only_be_odd_or_zero: true

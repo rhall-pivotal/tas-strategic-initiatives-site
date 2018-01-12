@@ -4,29 +4,23 @@ label: Cloud Controller
 resource_label: Cloud Controller
 description: Coordinates Pivotal CF Application Service application lifecycles
 templates:
-{{ define "ert-cloud-controller-templates" }}
-- consul_agent_cloud_controller
-- go-buildpack
-- binary-buildpack
-- nodejs-buildpack
-- ruby-buildpack
-- php-buildpack
-- python-buildpack
-- java-buildpack
-- staticfile-buildpack
-- dotnet-core-buildpack
-- cloud_controller_ng
-- routing-api
-- metron_agent
-- route_registrar_cloud_controller
-- statsd_injector
-- cloud-controller-backup
-- syslog_forwarder
-{{ end }}
-{{ define "srt-cloud-controller-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-cloud-controller-templates" | srt_template "srt-cloud-controller-templates" }}
+- $( job "consul_agent_cloud_controller" )
+- $( job "go-buildpack" )
+- $( job "binary-buildpack" )
+- $( job "nodejs-buildpack" )
+- $( job "ruby-buildpack" )
+- $( job "php-buildpack" )
+- $( job "python-buildpack" )
+- $( job "java-buildpack" )
+- $( job "staticfile-buildpack" )
+- $( job "dotnet-core-buildpack" )
+- $( job "cloud_controller_ng" )
+- $( job "routing-api" )
+- $( job "metron_agent" )
+- $( job "route_registrar_cloud_controller" )
+- $( job "statsd_injector" )
+- $( job "cloud-controller-backup" )
+- $( job "syslog_forwarder" )
 
 resource_definitions:
 - name: ram
@@ -64,10 +58,9 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: {{ tile | ert "true" | srt "false" }}
-  default: {{ tile | ert "2" | srt "0" }}
+  default: $( variable "cloud_controller_default_instances" )
   constraints:
-    min: {{ tile | ert "1" | srt "0" }}
+    min: $( variable "cloud_controller_min_instances" )
 property_blueprints:
 - name: db_encryption_credentials
   type: simple_credentials

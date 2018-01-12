@@ -1,38 +1,37 @@
 ---
-form:
-  name: cloud_controller
-  label: Cloud Controller
-  description: Configure the Cloud Controller
+name: cloud_controller
+label: Cloud Controller
+description: Configure the Cloud Controller
 
-  property_inputs:
-    - reference: .cloud_controller.encrypt_key
-      label: Cloud Controller DB Encryption Key
-      description: |
-        Leave blank unless restoring a Cloud Controller Database exported from
-        a previous installation.
+property_inputs:
+  - reference: .cloud_controller.encrypt_key
+    label: Cloud Controller DB Encryption Key
+    description: |
+      Leave blank unless restoring a Cloud Controller Database exported from
+      a previous installation.
 
-    - reference: .properties.cc_api_rate_limit
-      label: |
-        Enabling CF API Rate Limiting will prevent API consumers from
-        overwhelming the platform API servers. Limits are imposed on a per-user
-        or per-client basis and reset on an hourly interval.
-      selector_property_inputs:
-        - reference: .properties.cc_api_rate_limit.enable
-          label: Enable
-          property_inputs:
-            - reference: .properties.cc_api_rate_limit.enable.general_limit
-              label: General Limit
-              description: |
-                The number of requests a user or client is allowed to make for
-                all endpoints that do not have a custom limit over an hour
-                interval.
+  - reference: .properties.cc_api_rate_limit
+    label: |
+      Enabling CF API Rate Limiting will prevent API consumers from
+      overwhelming the platform API servers. Limits are imposed on a per-user
+      or per-client basis and reset on an hourly interval.
+    selector_property_inputs:
+      - reference: .properties.cc_api_rate_limit.enable
+        label: Enable
+        property_inputs:
+          - reference: .properties.cc_api_rate_limit.enable.general_limit
+            label: General Limit
+            description: |
+              The number of requests a user or client is allowed to make for
+              all endpoints that do not have a custom limit over an hour
+              interval.
 
-            - reference: .properties.cc_api_rate_limit.enable.unauthenticated_limit
-              label: Unauthenticated Limit
-              description: |
-                The number of requests an unauthenticated client is allowed to
-                make over an hour interval.
+          - reference: .properties.cc_api_rate_limit.enable.unauthenticated_limit
+            label: Unauthenticated Limit
+            description: |
+              The number of requests an unauthenticated client is allowed to
+              make over an hour interval.
 
-        - reference: .properties.cc_api_rate_limit.disable
-          label: Disable
+      - reference: .properties.cc_api_rate_limit.disable
+        label: Disable
 

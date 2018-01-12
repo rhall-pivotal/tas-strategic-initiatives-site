@@ -1,74 +1,73 @@
 ---
-form:
-  name: system_logging
-  label: System Logging
+name: system_logging
+label: System Logging
+description: |
+  Optionally configure rsyslog to forward platform component logs
+  to an external service.
+  If you do not fill these fields,
+  platform logs will not be forwarded
+  but will remain available on the component VMs
+  and for download via Ops Manager.
+
+property_inputs:
+- reference: .properties.syslog_host
+  label: Address
   description: |
-    Optionally configure rsyslog to forward platform component logs
-    to an external service.
-    If you do not fill these fields,
-    platform logs will not be forwarded
-    but will remain available on the component VMs
-    and for download via Ops Manager.
+    The aggregator must be reachable from the Application Service network, accept
+    TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd).
+    You can also configure this with an IP address.
 
-  property_inputs:
-  - reference: .properties.syslog_host
-    label: Address
-    description: |
-      The aggregator must be reachable from the Application Service network, accept
-      TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd).
-      You can also configure this with an IP address.
+- reference: .properties.syslog_port
+  label: Port
+  description: |
+    The typical syslogd port is 514. Ensure syslogd is listening on external
+    interfaces.
 
-  - reference: .properties.syslog_port
-    label: Port
-    description: |
-      The typical syslogd port is 514. Ensure syslogd is listening on external
-      interfaces.
+- reference: .properties.syslog_protocol
+  label: Transport Protocol
+  description: Select the transport protocol for forwarding logs.
 
-  - reference: .properties.syslog_protocol
-    label: Transport Protocol
-    description: Select the transport protocol for forwarding logs.
+- reference: .properties.syslog_tls
+  label: Encrypt syslog using TLS?
+  selector_property_inputs:
+  - reference: .properties.syslog_tls.disabled
+    label: "No"
 
-  - reference: .properties.syslog_tls
-    label: Encrypt syslog using TLS?
-    selector_property_inputs:
-    - reference: .properties.syslog_tls.disabled
-      label: "No"
+  - reference: .properties.syslog_tls.enabled
+    label: "Yes"
+    property_inputs:
+    - reference: .properties.syslog_tls.enabled.tls_permitted_peer
+      label: Permitted Peer
+      description: |
+        Either the accepted fingerprint (SHA1) or name of remote peer, e.g.
+        *.example.com.
 
-    - reference: .properties.syslog_tls.enabled
-      label: "Yes"
-      property_inputs:
-      - reference: .properties.syslog_tls.enabled.tls_permitted_peer
-        label: Permitted Peer
-        description: |
-          Either the accepted fingerprint (SHA1) or name of remote peer, e.g.
-          *.example.com.
+    - reference: .properties.syslog_tls.enabled.tls_ca_cert
+      label: TLS CA Certificate
+      description: |
+        This certificate will ensure that logs get securely transported to
+        the syslog destination.
 
-      - reference: .properties.syslog_tls.enabled.tls_ca_cert
-        label: TLS CA Certificate
-        description: |
-          This certificate will ensure that logs get securely transported to
-          the syslog destination.
+- reference: .doppler.message_drain_buffer_size
+  label: Syslog Drain Buffer Size (# of messages)
+  description: |
+    The number of log messages the buffer holds before dropping messages. A
+    larger buffer size might overload the system.
 
-  - reference: .doppler.message_drain_buffer_size
-    label: Syslog Drain Buffer Size (# of messages)
-    description: |
-      The number of log messages the buffer holds before dropping messages. A
-      larger buffer size might overload the system.
+- reference: .cloud_controller.security_event_logging_enabled
+  label: Enable Cloud Controller security event logging
+  description: |
+    When enabled, all requests to Cloud Controller will be captured in the
+    syslog
 
-  - reference: .cloud_controller.security_event_logging_enabled
-    label: Enable Cloud Controller security event logging
-    description: |
-      When enabled, all requests to Cloud Controller will be captured in the
-      syslog
-
-  - reference: .properties.syslog_rule
-    label: Custom rsyslog Configuration
-    description: |
-      Accepts configuration for rsyslog
-      in the rainerscript syntax.
-      For example,
-      'if ($app-name startswith "exampleComponent") then {~}'
-      can be used to drop all traffic
-      from a particular component.
-      Entered configuration will be applied
-      prior to the forwarding rule.
+- reference: .properties.syslog_rule
+  label: Custom rsyslog Configuration
+  description: |
+    Accepts configuration for rsyslog
+    in the rainerscript syntax.
+    For example,
+    'if ($app-name startswith "exampleComponent") then {~}'
+    can be used to drop all traffic
+    from a particular component.
+    Entered configuration will be applied
+    prior to the forwarding rule.

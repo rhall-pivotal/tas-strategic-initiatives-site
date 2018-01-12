@@ -1,282 +1,281 @@
 ---
-form:
-  name: mysql_config
-  label: Internal MySQL
-  description: |
-    Only configure this section if you selected Internal Databases - MySQL
-    in the previous Databases section.
-  markdown: |
-    A proxy tier routes MySQL connections from internal components to healthy
-    cluster nodes. Configure DNS and/or your own load balancer to point to
-    multiple proxy instances for increased availability. TCP healthchecks can
-    be configured against port 1936.
+name: mysql_config
+label: Internal MySQL
+description: |
+  Only configure this section if you selected Internal Databases - MySQL
+  in the previous Databases section.
+markdown: |
+  A proxy tier routes MySQL connections from internal components to healthy
+  cluster nodes. Configure DNS and/or your own load balancer to point to
+  multiple proxy instances for increased availability. TCP healthchecks can
+  be configured against port 1936.
 
-    The automated backups functionality works with any S3-compatible file store
-    that can receive your backup files.
+  The automated backups functionality works with any S3-compatible file store
+  that can receive your backup files.
 
-  property_inputs:
-    - reference: .mysql_proxy.static_ips
-      label: MySQL Proxy IPs
+property_inputs:
+  - reference: .mysql_proxy.static_ips
+    label: MySQL Proxy IPs
+    description: |
+      Enter the IP address(es) for the MySQL proxy instances configured on
+      your external load balancer.
+
+  - reference: .mysql_proxy.service_hostname
+    label: MySQL Service Hostname
+    description: |
+      To remove a MySQL proxy as a single point of failure, configure your
+      load balancer to route application requests to multiple proxy
+      instances. Then enter the IP or hostname of the load balancer here, so
+      components reach their MySQL databases through the load balancer. If
+      this field is blank, components use the IP of the first MySQL proxy
+      instance.
+
+  - reference: .mysql_monitor.poll_frequency
+    label: Replication canary time period
+    description: |
+      How frequently the canary checks for replication failure, in seconds.
+      Lower numbers will cause the canary to run more frequently, adding load
+      to the database.
+
+  - reference: .mysql_monitor.write_read_delay
+    label: Replication canary read delay
+    description: |
+      How long the canary waits to verify data is replicating across each
+      MySQL node, in seconds. Clusters under heavily load will experience
+      some small replication lag as writesets are committed across the nodes.
+
+  - reference: .mysql_monitor.recipient_email
+    label: E-mail address (required)
+    description: |
+      The MySQL service will send alerts when the cluster experiences a
+      replication issue or a node is not allowed to auto-rejoin the cluster.
+    placeholder: Fill in your desired email address
+
+  - reference: .mysql.cli_history
+    label: Allow Command History
+    description: |
+      When disabled, prohibits the creation of command line history files on
+      the MySQL nodes.
+
+  - reference: .mysql.remote_admin_access
+    label: Allow Remote Admin Access
+    description: |
+      When enabled, admin and roadmin will be able to connect from any remote host.
+
+  - reference: .mysql.cluster_probe_timeout
+    label: Cluster Probe Timeout
+    description: |
+      The maximum amount of time, in seconds, that a new node will search
+      for existing cluster nodes. The default value is 10 seconds.
+
+  - reference: .properties.mysql_backups
+    label: Automated Backups Configuration
+    selector_property_inputs:
+    - reference: .properties.mysql_backups.disable
+      label: Disable automated backups of MySQL
       description: |
-        Enter the IP address(es) for the MySQL proxy instances configured on
-        your external load balancer.
+        Disable automated backups of MySQL. The Backup Prepare VM can still be
+        deployed in the case that you are using bbr for manual backup of your
+        database.
 
-    - reference: .mysql_proxy.service_hostname
-      label: MySQL Service Hostname
+    - reference: .properties.mysql_backups.s3
+      label: |
+        Enable automated backups from MySQL to an S3 bucket or other
+        S3-compatible file store
       description: |
-        To remove a MySQL proxy as a single point of failure, configure your
-        load balancer to route application requests to multiple proxy
-        instances. Then enter the IP or hostname of the load balancer here, so
-        components reach their MySQL databases through the load balancer. If
-        this field is blank, components use the IP of the first MySQL proxy
-        instance.
-
-    - reference: .mysql_monitor.poll_frequency
-      label: Replication canary time period
-      description: |
-        How frequently the canary checks for replication failure, in seconds.
-        Lower numbers will cause the canary to run more frequently, adding load
-        to the database.
-
-    - reference: .mysql_monitor.write_read_delay
-      label: Replication canary read delay
-      description: |
-        How long the canary waits to verify data is replicating across each
-        MySQL node, in seconds. Clusters under heavily load will experience
-        some small replication lag as writesets are committed across the nodes.
-
-    - reference: .mysql_monitor.recipient_email
-      label: E-mail address (required)
-      description: |
-        The MySQL service will send alerts when the cluster experiences a
-        replication issue or a node is not allowed to auto-rejoin the cluster.
-      placeholder: Fill in your desired email address
-
-    - reference: .mysql.cli_history
-      label: Allow Command History
-      description: |
-        When disabled, prohibits the creation of command line history files on
-        the MySQL nodes.
-
-    - reference: .mysql.remote_admin_access
-      label: Allow Remote Admin Access
-      description: |
-        When enabled, admin and roadmin will be able to connect from any remote host.
-
-    - reference: .mysql.cluster_probe_timeout
-      label: Cluster Probe Timeout
-      description: |
-        The maximum amount of time, in seconds, that a new node will search
-        for existing cluster nodes. The default value is 10 seconds.
-
-    - reference: .properties.mysql_backups
-      label: Automated Backups Configuration
-      selector_property_inputs:
-      - reference: .properties.mysql_backups.disable
-        label: Disable automated backups of MySQL
+        Enable automated backups from MySQL to an S3 bucket or other
+        S3-compatible file store
+      property_inputs:
+      - reference: .properties.mysql_backups.s3.endpoint_url
+        label: S3 Endpoint URL
         description: |
-          Disable automated backups of MySQL. The Backup Prepare VM can still be
-          deployed in the case that you are using bbr for manual backup of your
-          database.
+          Specify the endpoint that matches the region the bucket is hosted
+          in. Defaults to https://s3.amazonaws.com for us-east-1 if no url is
+          provided.
 
-      - reference: .properties.mysql_backups.s3
-        label: |
-          Enable automated backups from MySQL to an S3 bucket or other
-          S3-compatible file store
+      - reference: .properties.mysql_backups.s3.bucket_name
+        label: S3 Bucket Name
         description: |
-          Enable automated backups from MySQL to an S3 bucket or other
-          S3-compatible file store
+          Do not include 's3://' prefix, trailing '/', or underscores. The
+          bucket is created automatically if it does not already exist.
+        placeholder: my-bucket
+
+      - reference: .properties.mysql_backups.s3.bucket_path
+        label: Bucket Path
+        description: |
+          Specify a folder within the bucket to hold the MySQL backups. Do
+          not include a trailing slash.
+        placeholder: my-backups-folder/elastic-runtime
+
+      - reference: .properties.mysql_backups.s3.region
+        label: S3 Bucket Region
+        description: |
+          The AWS Region where the bucket is located, e.g.  "us-east-1"
+          or "ap-northeast-1".
+        placeholder: "us-east-1"
+
+      - reference: .properties.mysql_backups.s3.access_key_id
+        label: AWS Access Key ID
+
+      - reference: .properties.mysql_backups.s3.secret_access_key
+        label: AWS Secret Access Key
+
+      - reference: .properties.mysql_backups.s3.cron_schedule
+        label: Cron Schedule
+        description: |
+          Schedule MySQL backups as a cron expression (see
+          http://godoc.org/github.com/robfig/cron). Schedule uses the machine
+          local time zone.
+        placeholder: "@every 15m"
+
+      - reference: .properties.mysql_backups.s3.backup_all_masters
+        label: Backup All Nodes
+        description: |
+          Each node is a duplicate master. This option makes unique backups
+          from each master, rather than from a single instance.
+
+    - reference: .properties.mysql_backups.scp
+      label: Enable automated backups from MySQL to a remote host via SCP
+      description: |
+        Enable automated backups from MySQL to a remote host via SCP
+      property_inputs:
+      - reference: .properties.mysql_backups.scp.server
+        label: Hostname
+
+      - reference: .properties.mysql_backups.scp.port
+        label: Port
+        description: |
+          SCP uses the SSH protocol, so provide the TCP port that your server
+          uses for the SSH protocol.
+
+      - reference: .properties.mysql_backups.scp.user
+        label: Username
+
+      - reference: .properties.mysql_backups.scp.key
+        label: Private key
+        description: Do not password protect
+
+      - reference: .properties.mysql_backups.scp.destination
+        label: Destination directory
+
+      - reference: .properties.mysql_backups.scp.cron_schedule
+        label: Cron Schedule
+        description: |
+          Schedule MySQL backups as a cron expression (see
+          http://godoc.org/github.com/robfig/cron). Schedule uses the machine
+          local time zone.
+        placeholder: "@every 15m"
+
+      - reference: .properties.mysql_backups.scp.backup_all_masters
+        label: Backup All Nodes
+        description: |
+          Each node is a duplicate master. This option makes unique backups
+          from each master, rather than from a single instance.
+
+    - reference: .properties.mysql_backups.gcs
+      label: Enable automated backups from MySQL to Google Cloud Storage
+      description: |
+        Enable automated backups from MySQL to Google Cloud Storage
+      property_inputs:
+      - reference: .properties.mysql_backups.gcs.service_account_json
+        label: GCP Service Account Key JSON
+        description: Your Google Cloud Platform Service Account Key with access to the specified project and bucket in JSON format.
+
+      - reference: .properties.mysql_backups.gcs.project_id
+        label: GCP Project ID
+        description: Your Google Cloud Platform Project ID. The Project ID can be found on the Dashboard of the GCP Console.
+
+      - reference: .properties.mysql_backups.gcs.bucket_name
+        label: GCP Storage Bucket Name
+        description: The name of a bucket in Google Cloud Storage where backups will be uploaded.
+
+      - reference: .properties.mysql_backups.gcs.cron_schedule
+        label: Cron Schedule
+        description: |
+          Schedule MySQL backups as a cron expression (see
+          http://godoc.org/github.com/robfig/cron). Schedule uses the machine
+          local time zone.
+        placeholder: "@every 15m"
+
+      - reference: .properties.mysql_backups.gcs.backup_all_masters
+        label: Backup All Nodes
+        description: |
+          Each node is a duplicate master. This option makes unique backups
+          from each master, rather than from a single instance.
+
+    - reference: .properties.mysql_backups.azure
+      label: Enable automated backups from MySQL to Azure
+      description: |
+        Enable automated backups from MySQL to Azure
+      property_inputs:
+      - reference: .properties.mysql_backups.azure.storage_account
+        label: Azure Storage Account
+        description: The name of your Azure Storage Account where backups will be uploaded.
+
+      - reference: .properties.mysql_backups.azure.storage_access_key
+        label: Azure Storage Access Key
+        description: The Azure Storage Access Key used for authentication when the Storage Account is accessed.
+
+      - reference: .properties.mysql_backups.azure.container
+        label: Azure Storage Container
+        description: The name of the Azure Storage Container that will store the uploaded backups.
+
+      - reference: .properties.mysql_backups.azure.path
+        label: Backup Path
+        description: A path within the Azure Storage Container where backups will be uploaded.
+
+      - reference: .properties.mysql_backups.azure.cron_schedule
+        label: Cron Schedule
+        description: |
+          Schedule MySQL backups as a cron expression (see
+          http://godoc.org/github.com/robfig/cron). Schedule uses the machine
+          local time zone.
+        placeholder: "@every 15m"
+
+      - reference: .properties.mysql_backups.azure.backup_all_masters
+        label: Backup All Nodes
+        description: |
+          Each node is a duplicate master. This option makes unique backups
+          from each master, rather than from a single instance.
+
+  - reference: .properties.mysql_activity_logging
+    label: Server Activity Logging
+    selector_property_inputs:
+      - reference: .properties.mysql_activity_logging.disable
+        label: Disable server activity logging
+        description: Disable server activity logging
+
+      - reference: .properties.mysql_activity_logging.enable
+        label: Enable server activity logging
+        description: Enable server activity logging
         property_inputs:
-        - reference: .properties.mysql_backups.s3.endpoint_url
-          label: S3 Endpoint URL
-          description: |
-            Specify the endpoint that matches the region the bucket is hosted
-            in. Defaults to https://s3.amazonaws.com for us-east-1 if no url is
-            provided.
+          - reference: .properties.mysql_activity_logging.enable.audit_logging_events
+            label: Event types
+            description: |
+              The MySQL service will keep a record of server activity. The
+              default setting tracks who connected to the system and what
+              queries were processed. For more information, see:
+              https://mariadb.com/kb/en/mariadb/about-the-mariadb-audit-plugin/
 
-        - reference: .properties.mysql_backups.s3.bucket_name
-          label: S3 Bucket Name
-          description: |
-            Do not include 's3://' prefix, trailing '/', or underscores. The
-            bucket is created automatically if it does not already exist.
-          placeholder: my-bucket
+  - reference: .mysql_proxy.startup_delay
+    label: Load Balancer Healthy Threshold
+    description: |
+      Specifies the amount of time, in seconds, to wait until declaring the
+      Proxy instance started. This allows an external load balancer time to
+      register the instance as healthy.
 
-        - reference: .properties.mysql_backups.s3.bucket_path
-          label: Bucket Path
-          description: |
-            Specify a folder within the bucket to hold the MySQL backups. Do
-            not include a trailing slash.
-          placeholder: my-backups-folder/elastic-runtime
+  - reference: .mysql_proxy.shutdown_delay
+    label: Load Balancer Unhealthy Threshold
+    description: |
+      Specifies the amount of time, in seconds, that the MySQL Proxy will
+      continue to accept connections before shutting down. During this
+      period, the healthcheck will report unhealthy to cause load balancers
+      to fail over to other Proxies. This value should be greater than or
+      equal to the max time it could take your load balancer to consider a
+      Proxy instance unhealthy, given contiguous failed healthchecks.
 
-        - reference: .properties.mysql_backups.s3.region
-          label: S3 Bucket Region
-          description: |
-            The AWS Region where the bucket is located, e.g.  "us-east-1"
-            or "ap-northeast-1".
-          placeholder: "us-east-1"
-
-        - reference: .properties.mysql_backups.s3.access_key_id
-          label: AWS Access Key ID
-
-        - reference: .properties.mysql_backups.s3.secret_access_key
-          label: AWS Secret Access Key
-
-        - reference: .properties.mysql_backups.s3.cron_schedule
-          label: Cron Schedule
-          description: |
-            Schedule MySQL backups as a cron expression (see
-            http://godoc.org/github.com/robfig/cron). Schedule uses the machine
-            local time zone.
-          placeholder: "@every 15m"
-
-        - reference: .properties.mysql_backups.s3.backup_all_masters
-          label: Backup All Nodes
-          description: |
-            Each node is a duplicate master. This option makes unique backups
-            from each master, rather than from a single instance.
-
-      - reference: .properties.mysql_backups.scp
-        label: Enable automated backups from MySQL to a remote host via SCP
-        description: |
-          Enable automated backups from MySQL to a remote host via SCP
-        property_inputs:
-        - reference: .properties.mysql_backups.scp.server
-          label: Hostname
-
-        - reference: .properties.mysql_backups.scp.port
-          label: Port
-          description: |
-            SCP uses the SSH protocol, so provide the TCP port that your server
-            uses for the SSH protocol.
-
-        - reference: .properties.mysql_backups.scp.user
-          label: Username
-
-        - reference: .properties.mysql_backups.scp.key
-          label: Private key
-          description: Do not password protect
-
-        - reference: .properties.mysql_backups.scp.destination
-          label: Destination directory
-
-        - reference: .properties.mysql_backups.scp.cron_schedule
-          label: Cron Schedule
-          description: |
-            Schedule MySQL backups as a cron expression (see
-            http://godoc.org/github.com/robfig/cron). Schedule uses the machine
-            local time zone.
-          placeholder: "@every 15m"
-
-        - reference: .properties.mysql_backups.scp.backup_all_masters
-          label: Backup All Nodes
-          description: |
-            Each node is a duplicate master. This option makes unique backups
-            from each master, rather than from a single instance.
-
-      - reference: .properties.mysql_backups.gcs
-        label: Enable automated backups from MySQL to Google Cloud Storage
-        description: |
-          Enable automated backups from MySQL to Google Cloud Storage
-        property_inputs:
-        - reference: .properties.mysql_backups.gcs.service_account_json
-          label: GCP Service Account Key JSON
-          description: Your Google Cloud Platform Service Account Key with access to the specified project and bucket in JSON format.
-
-        - reference: .properties.mysql_backups.gcs.project_id
-          label: GCP Project ID
-          description: Your Google Cloud Platform Project ID. The Project ID can be found on the Dashboard of the GCP Console.
-
-        - reference: .properties.mysql_backups.gcs.bucket_name
-          label: GCP Storage Bucket Name
-          description: The name of a bucket in Google Cloud Storage where backups will be uploaded.
-
-        - reference: .properties.mysql_backups.gcs.cron_schedule
-          label: Cron Schedule
-          description: |
-            Schedule MySQL backups as a cron expression (see
-            http://godoc.org/github.com/robfig/cron). Schedule uses the machine
-            local time zone.
-          placeholder: "@every 15m"
-
-        - reference: .properties.mysql_backups.gcs.backup_all_masters
-          label: Backup All Nodes
-          description: |
-            Each node is a duplicate master. This option makes unique backups
-            from each master, rather than from a single instance.
-
-      - reference: .properties.mysql_backups.azure
-        label: Enable automated backups from MySQL to Azure
-        description: |
-          Enable automated backups from MySQL to Azure
-        property_inputs:
-        - reference: .properties.mysql_backups.azure.storage_account
-          label: Azure Storage Account
-          description: The name of your Azure Storage Account where backups will be uploaded.
-
-        - reference: .properties.mysql_backups.azure.storage_access_key
-          label: Azure Storage Access Key
-          description: The Azure Storage Access Key used for authentication when the Storage Account is accessed.
-
-        - reference: .properties.mysql_backups.azure.container
-          label: Azure Storage Container
-          description: The name of the Azure Storage Container that will store the uploaded backups.
-
-        - reference: .properties.mysql_backups.azure.path
-          label: Backup Path
-          description: A path within the Azure Storage Container where backups will be uploaded.
-
-        - reference: .properties.mysql_backups.azure.cron_schedule
-          label: Cron Schedule
-          description: |
-            Schedule MySQL backups as a cron expression (see
-            http://godoc.org/github.com/robfig/cron). Schedule uses the machine
-            local time zone.
-          placeholder: "@every 15m"
-
-        - reference: .properties.mysql_backups.azure.backup_all_masters
-          label: Backup All Nodes
-          description: |
-            Each node is a duplicate master. This option makes unique backups
-            from each master, rather than from a single instance.
-
-    - reference: .properties.mysql_activity_logging
-      label: Server Activity Logging
-      selector_property_inputs:
-        - reference: .properties.mysql_activity_logging.disable
-          label: Disable server activity logging
-          description: Disable server activity logging
-
-        - reference: .properties.mysql_activity_logging.enable
-          label: Enable server activity logging
-          description: Enable server activity logging
-          property_inputs:
-            - reference: .properties.mysql_activity_logging.enable.audit_logging_events
-              label: Event types
-              description: |
-                The MySQL service will keep a record of server activity. The
-                default setting tracks who connected to the system and what
-                queries were processed. For more information, see:
-                https://mariadb.com/kb/en/mariadb/about-the-mariadb-audit-plugin/
-
-    - reference: .mysql_proxy.startup_delay
-      label: Load Balancer Healthy Threshold
-      description: |
-        Specifies the amount of time, in seconds, to wait until declaring the
-        Proxy instance started. This allows an external load balancer time to
-        register the instance as healthy.
-
-    - reference: .mysql_proxy.shutdown_delay
-      label: Load Balancer Unhealthy Threshold
-      description: |
-        Specifies the amount of time, in seconds, that the MySQL Proxy will
-        continue to accept connections before shutting down. During this
-        period, the healthcheck will report unhealthy to cause load balancers
-        to fail over to other Proxies. This value should be greater than or
-        equal to the max time it could take your load balancer to consider a
-        Proxy instance unhealthy, given contiguous failed healthchecks.
-
-    - reference: .mysql.prevent_node_auto_rejoin
-      label: Prevent node auto re-join
-      description: |
-        When checked, nodes unable to IST will be prevented from automatically
-        deleting their data and performing an SST.
+  - reference: .mysql.prevent_node_auto_rejoin
+    label: Prevent node auto re-join
+    description: |
+      When checked, nodes unable to IST will be prevented from automatically
+      deleting their data and performing an SST.

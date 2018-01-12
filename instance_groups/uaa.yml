@@ -4,18 +4,12 @@ label: UAA
 resource_label: UAA
 description: Pivotal CF Application Service's Authentication and Authorization server
 templates:
-{{ define "ert-uaa-templates" }}
-- consul_agent_uaa
-- uaa
-- metron_agent
-- route_registrar_uaa
-- statsd_injector
-- syslog_forwarder
-{{ end }}
-{{ define "srt-uaa-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-uaa-templates" | srt_template "srt-uaa-templates" }}
+- $( job "consul_agent_uaa" )
+- $( job "uaa" )
+- $( job "metron_agent" )
+- $( job "route_registrar_uaa" )
+- $( job "statsd_injector" )
+- $( job "syslog_forwarder" )
 
 resource_definitions:
 - name: ram
@@ -53,10 +47,10 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  default: {{ tile | ert "2" | srt "0" }}
-  configurable: {{ tile | ert "true" | srt "false" }}
+  configurable: $( variable "uaa_configurable_state" )
+  default: $( variable "uaa_default_instances" )
   constraints:
-    min: {{ tile | ert "1" | srt "0" }}
+    min: $( variable "uaa_min_instances" )
 property_blueprints:
 - name: admin_credentials
   type: simple_credentials

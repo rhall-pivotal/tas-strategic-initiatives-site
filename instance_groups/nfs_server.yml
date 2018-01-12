@@ -4,18 +4,12 @@ label: File Storage
 resource_label: File Storage
 description: Stores droplets and app packages on behalf of Cloud Controller
 templates:
-{{ define "ert-nfs-server-templates" }}
-- consul_agent_nfs_server
-- metron_agent
-- blobstore
-- route_registrar_nfs_server
-- blobstore-backup
-- syslog_forwarder
-{{ end }}
-{{ define "srt-nfs-server-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-nfs-server-templates" | srt_template "srt-nfs-server-templates" }}
+- $( job "consul_agent_nfs_server" )
+- $( job "metron_agent" )
+- $( job "blobstore" )
+- $( job "route_registrar_nfs_server" )
+- $( job "blobstore-backup" )
+- $( job "syslog_forwarder" )
 
 resource_definitions:
 - name: ram
@@ -55,10 +49,10 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: {{ tile | ert "true" | srt "false" }}
-  default: {{ tile | ert "1" | srt "0" }}
+  configurable: $( variable "nfs_server_configurable_state" )
+  default: $( variable "nfs_server_default_instances" )
   constraints:
-    max: {{ tile | ert "1" | srt "0" }}
+    max: $( variable "nfs_server_max_instances" )
     min: 0
   zero_if:
     property_reference: ".properties.system_blobstore"

@@ -1,41 +1,40 @@
 ---
-property_blueprints:
-  - name: cc_api_rate_limit
-    type: selector
-    configurable: true
-    default: disable
-    option_templates:
-      - name: enable
-        select_value: enable
-        named_manifests:
-          - name: rate_limiter
-            manifest: |
-              enabled: true
-              general_limit: (( .properties.cc_api_rate_limit.enable.general_limit.value ))
-              unauthenticated_limit: (( .properties.cc_api_rate_limit.enable.unauthenticated_limit.value ))
-        property_blueprints:
-          - name: general_limit
-            type: integer
-            configurable: true
-            default: 2000
-          - name: unauthenticated_limit
-            type: integer
-            configurable: true
-            default: 100
-      - name: disable
-        select_value: disable
-        named_manifests:
-          - name: rate_limiter
-            manifest: |
-              enabled: false
+- name: cc_api_rate_limit
+  type: selector
+  configurable: true
+  default: disable
+  option_templates:
+    - name: enable
+      select_value: enable
+      named_manifests:
+        - name: rate_limiter
+          manifest: |
+            enabled: true
+            general_limit: (( .properties.cc_api_rate_limit.enable.general_limit.value ))
+            unauthenticated_limit: (( .properties.cc_api_rate_limit.enable.unauthenticated_limit.value ))
+      property_blueprints:
+        - name: general_limit
+          type: integer
+          configurable: true
+          default: 2000
+        - name: unauthenticated_limit
+          type: integer
+          configurable: true
+          default: 100
+    - name: disable
+      select_value: disable
+      named_manifests:
+        - name: rate_limiter
+          manifest: |
+            enabled: false
 
-  - name: cloud_controller_client_cert
-    type: rsa_cert_credentials
-    configurable: false
+- name: cloud_controller_client_cert
+  type: rsa_cert_credentials
+  configurable: false
 
-  - name: cloud_controller_mutual_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains:
-      - cloud-controller-ng.service.cf.internal
+- name: cloud_controller_mutual_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - cloud-controller-ng.service.cf.internal

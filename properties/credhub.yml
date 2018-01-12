@@ -1,34 +1,33 @@
 ---
-property_blueprints:
-  - name: credhub_key_encryption_passwords
-    type: collection
+- name: credhub_key_encryption_passwords
+  type: collection
+  configurable: true
+  property_blueprints:
+  - name: name
+    type: string
     configurable: true
-    property_blueprints:
-    - name: name
-      type: string
-      configurable: true
-    - name: key
-      type: secret
-      configurable: true
-    - name: primary
-      type: boolean
-      configurable: true
-      default: false
-    named_manifests:
-    - name: keys
-      manifest: |
-        provider_name: internal-provider
-        encryption_password: (( current_record.key.value ))
-        active: (( current_record.primary.value ))
-
-  - name: credhub_tls
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains:
-      - credhub.service.cf.internal
-
-  - name: secure_service_instance_credentials
+  - name: key
+    type: secret
+    configurable: true
+  - name: primary
     type: boolean
     configurable: true
     default: false
+  named_manifests:
+  - name: keys
+    manifest: |
+      provider_name: internal-provider
+      encryption_password: (( current_record.key.value ))
+      active: (( current_record.primary.value ))
+
+- name: credhub_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - credhub.service.cf.internal
+
+- name: secure_service_instance_credentials
+  type: boolean
+  configurable: true
+  default: false

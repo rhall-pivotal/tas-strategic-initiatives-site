@@ -4,62 +4,56 @@ label: Control
 resource_label: Control
 description: Control
 templates:
-{{ define "ert-control-templates" }}
-- placeholder
-{{ end }}
-{{ define "srt-control-templates" }}
-- consul_agent_control
-- bbs
-- cfdot
-- metron_agent_control
-- locket
-- route_registrar_control
-- policy-server
-- policy-server-internal
-- syslog_forwarder
-- uaa
-- statsd_injector
-- go-buildpack
-- binary-buildpack
-- nodejs-buildpack
-- ruby-buildpack
-- php-buildpack
-- python-buildpack
-- java-buildpack
-- staticfile-buildpack
-- dotnet-core-buildpack
-- cloud_controller_ng
-- routing-api
-- cloud-controller-backup
-- cloud_controller_clock
-- cloud_controller_worker
-- auctioneer
-- cc_uploader
-- file_server
-- ssh_proxy
-- tps
-- loggregator_trafficcontroller
-- reverse_log_proxy
-- adapter
-- scheduler
-- doppler
-- credhub
-- database-backup-restorer
-- bosh_system_metrics_forwarder
-- smoke_tests
-- push-usage-service
-- cflinuxfs2-rootfs-setup
-- push-apps-manager
-- deploy-notifications
-- deploy-notifications-ui
-- push-pivotal-account
-- deploy-autoscaling
-- register-broker
-- nfsbrokerpush
-- bootstrap
-- rejoin-unsafe
-{{ end }}
-{{ tile | ert_template "ert-control-templates" | srt_template "srt-control-templates" }}
+- $( job "consul_agent_control" )
+- $( job "bbs" )
+- $( job "cfdot" )
+- $( job "metron_agent_control" )
+- $( job "locket" )
+- $( job "route_registrar_control" )
+- $( job "policy-server" )
+- $( job "policy-server-internal" )
+- $( job "syslog_forwarder" )
+- $( job "uaa" )
+- $( job "statsd_injector" )
+- $( job "go-buildpack" )
+- $( job "binary-buildpack" )
+- $( job "nodejs-buildpack" )
+- $( job "ruby-buildpack" )
+- $( job "php-buildpack" )
+- $( job "python-buildpack" )
+- $( job "java-buildpack" )
+- $( job "staticfile-buildpack" )
+- $( job "dotnet-core-buildpack" )
+- $( job "cloud_controller_ng" )
+- $( job "routing-api" )
+- $( job "cloud-controller-backup" )
+- $( job "cloud_controller_clock" )
+- $( job "cloud_controller_worker" )
+- $( job "auctioneer" )
+- $( job "cc_uploader" )
+- $( job "file_server" )
+- $( job "ssh_proxy" )
+- $( job "tps" )
+- $( job "loggregator_trafficcontroller" )
+- $( job "reverse_log_proxy" )
+- $( job "adapter" )
+- $( job "scheduler" )
+- $( job "doppler" )
+- $( job "credhub" )
+- $( job "database-backup-restorer" )
+- $( job "bosh-system-metrics-forwarder" )
+- $( job "smoke_tests" )
+- $( job "push-usage-service" )
+- $( job "cflinuxfs2-rootfs-setup" )
+- $( job "push-apps-manager" )
+- $( job "deploy-notifications" )
+- $( job "deploy-notifications-ui" )
+- $( job "push-pivotal-account" )
+- $( job "deploy-autoscaling" )
+- $( job "register-broker" )
+- $( job "nfsbrokerpush" )
+- $( job "bootstrap" )
+- $( job "rejoin-unsafe" )
 
 resource_definitions:
 - name: ram
@@ -97,7 +91,7 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: {{ tile | ert "false" | srt "true" }}
-  default: {{ tile | ert "0" | srt "1" }}
+  configurable: $( variable "control_configurable_state" )
+  default: $( variable "control_default_instances" )
   constraints:
-    min: {{ tile | ert "0" | srt "1" }}
+    min: $( variable "control_min_instances" )

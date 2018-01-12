@@ -5,16 +5,10 @@ resource_label: NATS
 description: Acts as the Pivotal CF Application Service message bus
 
 templates:
-{{ define "ert-nats-templates" }}
-- consul_agent
-- nats
-- metron_agent
-- syslog_forwarder
-{{ end }}
-{{ define "srt-nats-templates" }}
-- placeholder
-{{ end }}
-{{ tile | ert_template "ert-nats-templates" | srt_template "srt-nats-templates" }}
+- $( job "consul_agent" )
+- $( job "nats" )
+- $( job "metron_agent" )
+- $( job "syslog_forwarder" )
 
 resource_definitions:
 - name: ram
@@ -56,7 +50,7 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: {{ tile | ert "true" | srt "false" }}
-  default: {{ tile | ert "2" | srt "0" }}
+  configurable: $( variable "nats_configurable_state" )
+  default: $( variable "nats_default_instances" )
   constraints:
-    min: {{ tile | ert "1" | srt "0" }}
+    min: $( variable "nats_min_instances" )
