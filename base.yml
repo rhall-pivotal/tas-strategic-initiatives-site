@@ -373,28 +373,28 @@ post_deploy_errands:
     colocated: true
     run_default: true
     instances:
-      - $( variable "errand_instance_group" )
+      - $( variable "errand_instance_group" )/first
     label: Smoke Test Errand
     description: Runs Smoke Tests against your Application Service installation
   - name: push-usage-service
     colocated: true
     run_default: true
     instances:
-      - $( variable "errand_instance_group" )
+      - $( variable "errand_instance_group" )/first
     label: Usage Service Errand
     description: Pushes the Pivotal Usage Service application to your Application Service installation. Pivotal Apps Manager depends on this application.
   - name: push-apps-manager
     colocated: true
     run_default: true
     instances:
-      - $( variable "errand_instance_group" )
+      - $( variable "errand_instance_group" )/first
     label: Apps Manager Errand
     description: Pushes the Pivotal Apps Manager application to your Application Service installation
   - name: deploy-notifications
     colocated: true
     run_default: true
     instances:
-      - $( variable "errand_instance_group" )
+      - $( variable "errand_instance_group" )/first
     label: Notifications Errand
     description: |
       Pushes the Pivotal Notifications application to your Application Service installation
@@ -402,35 +402,35 @@ post_deploy_errands:
     colocated: true
     run_default: true
     instances:
-      - $( variable "errand_instance_group" )
+      - $( variable "errand_instance_group" )/first
     label: Notifications UI Errand
     description: Pushes the Notifications UI component to your Application Service installation
   - name: push-pivotal-account
     colocated: true
     run_default: true
     instances:
-      - $( variable "errand_instance_group" )
+      - $( variable "errand_instance_group" )/first
     label: Pivotal Account Errand
     description: Pushes the Pivotal Account application to your Application Service installation
   - name: deploy-autoscaling
     colocated: true
     run_default: true
     instances:
-      - $( variable "errand_instance_group" )
+      - $( variable "errand_instance_group" )/first
     label: Autoscaling Errand
     description: Pushes the Pivotal App Autoscaling application to your Application Service installation
   - name: register-broker
     colocated: true
     run_default: true
     instances:
-      - $( variable "errand_instance_group" )
+      - $( variable "errand_instance_group" )/first
     label: Autoscaling Registration Errand
     description: Registers the Autoscaling Service Broker
   - name: nfsbrokerpush
     colocated: true
     run_default: true
     instances:
-      - $( variable "errand_instance_group" )
+      - $( variable "errand_instance_group" )/first
     label: NFS Broker Errand
     description: Pushes the NFS Broker application to your Application Service installation
 
