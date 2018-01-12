@@ -16,3 +16,10 @@ manifest: |
     network_plugin_extra_args: [ "--configFile=/var/vcap/jobs/garden-cni/config/adapter.json" ]
     image_plugin: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin.value : .properties.garden_image_plugin_empty.value ))'
     image_plugin_extra_args: '(( .properties.enable_grootfs.value ? .properties.garden_image_plugin_extra_args.value : .properties.garden_image_plugin_empty_args.value ))'
+  grootfs:
+    graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
+    insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      cert: (( .properties.rep_server_cert.cert_pem ))
+      key: (( .properties.rep_server_cert.private_key_pem ))
