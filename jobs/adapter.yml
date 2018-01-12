@@ -4,9 +4,10 @@ release: cf-syslog-drain
 manifest: |
   scalablesyslog:
     adapter:
-      health: {{ tile | ert "8080" | srt "8083" }}
+      health: $( variable "scalablesyslog_adapter_health_port" )
       logs:
-        addr: reverse-log-proxy.service.cf.internal:{{ tile | ert "8082" | srt "8086" }}
+        addr: reverse-log-proxy.service.cf.internal:$( variable "reverse_log_proxy_port" )
+
       tls:
         ca: (( $ops_manager.ca_certificate ))
         cert: (( .syslog_adapter.adapter_tls.cert_pem ))

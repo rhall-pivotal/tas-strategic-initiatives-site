@@ -7,7 +7,7 @@ provides: |
 manifest: |
   cf_mysql:
     mysql:
-      port: {{ tile | ert "3306" | srt "33306" }}
+      port: $( variable "mysql_port" )
       cli_history: (( .mysql.cli_history.value ))
       interrupt_notify_cmd: "/var/vcap/jobs/send-email/bin/run"
       innodb_buffer_pool_size: 2147483648

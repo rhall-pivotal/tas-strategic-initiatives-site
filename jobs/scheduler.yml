@@ -6,7 +6,7 @@ manifest: |
     scheduler:
       api:
         url: https://cloud-controller-ng.service.cf.internal:9023
-      health: {{ tile | ert "8080" | srt "8085" }}
+      health: $( variable "scheduler_health_port" )
       tls:
         client:
           cert: (( .syslog_scheduler.scheduler_client_tls.cert_pem ))

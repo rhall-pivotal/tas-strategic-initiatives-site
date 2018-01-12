@@ -24,7 +24,7 @@ manifest: |
     notifications_ui_location: https://notifications-ui.(( .cloud_controller.system_domain.value ))
     encryption_key: ((( push-pivotal-account-encryption-key )))
     app_push:
-      instance_number: {{ tile | ert "2" | srt "1" }}
-      memory: {{ tile | ert "1024" | srt "768" }}
+      instance_number: $( variable "push_pivotal_account_instances" )
+      memory: $( variable "push_pivotal_account_instance_memory" )
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))

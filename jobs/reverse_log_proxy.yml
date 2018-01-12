@@ -10,4 +10,4 @@ manifest: |
         key: (( .syslog_adapter.adapter_rlp_tls.private_key_pem ))
   reverse_log_proxy:
     egress:
-      port: {{ tile | ert "8082" | srt "8086" }}
+      port: $( variable "reverse_log_proxy_port" )

@@ -98,7 +98,7 @@ manifest: |
       temporary_local_sync: true
       temporary_local_tasks: true
       temporary_local_tps: true
-      file_server_url: http://file-server.service.cf.internal:{{ tile | ert 8080 | srt 8084 }}
+      file_server_url: http://file-server.service.cf.internal:$( variable "diego_fileserver_port" )
     allowed_cors_domains:
     - https://apm.(( .cloud_controller.system_domain.value ))
     - https://metrics.(( .cloud_controller.system_domain.value ))

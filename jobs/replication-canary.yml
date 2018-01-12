@@ -14,7 +14,7 @@ manifest: |
       canary_database: monitor
       canary_username: ((( mysql-monitor-db-credentials.username )))
       canary_password: ((( mysql-monitor-db-credentials.password )))
-      mysql_port: {{ tile | ert "3306" | srt "33306" }}
+      mysql_port: $( variable "mysql_port" )
       notifications_client_username: (( .uaa.notifications_client_credentials.identity ))
       notifications_client_secret: (( .uaa.notifications_client_credentials.password ))
       poll_frequency: (( poll_frequency.value ))
