@@ -58,6 +58,7 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
+  configurable: $( variable "cloud_controller_configurable_state" )
   default: $( variable "cloud_controller_default_instances" )
   constraints:
     min: $( variable "cloud_controller_min_instances" )
