@@ -1,0 +1,21 @@
+---
+name: consul_agent
+alias: consul_server_database
+release: consul
+provides: $( variable "consul_server_database_link" )
+consumes: |
+  consul_common: {from: consul_common_link}
+  consul_client: {from: consul_client_link}
+  consul_server: {from: consul_server_link}
+manifest: |
+  consul:
+    agent:
+      domain: cf.internal
+      mode: server
+    encrypt_keys:
+    - ((( consul-encryption-key )))
+    ca_cert: (( $ops_manager.ca_certificate ))
+    server_cert: (( .properties.consul_server_cert.cert_pem ))
+    server_key: (( .properties.consul_server_cert.private_key_pem ))
+    agent_cert: (( .properties.consul_agent_cert.cert_pem ))
+    agent_key: (( .properties.consul_agent_cert.private_key_pem ))
