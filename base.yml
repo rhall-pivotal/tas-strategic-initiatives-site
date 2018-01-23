@@ -3,8 +3,8 @@ name: pas-windows
 metadata_version: '2.1'
 provides_product_versions:
 - name: pas-windows
-  version: "0.0.0.0$PRERELEASE_VERSION$"
-product_version: "0.0.0.0$PRERELEASE_VERSION$"
+  version: $( version )
+product_version: $( version )
 minimum_version_for_upgrade: 2.0.0
 requires_product_versions:
 - name: cf
@@ -14,6 +14,38 @@ description: "Gives developers the ability to push apps to compute instances pow
 icon_image: $( icon )
 rank: 88
 serial: false
+
+stemcell_criteria: $( stemcell )
+
+releases:
+- $( release "consul" )
+- $( release "diego" )
+- $( release "event_log" )
+- $( release "garden-runc" )
+- $( release "hwc-offline-buildpack" )
+- $( release "loggregator" )
+- $( release "winc" )
+- $( release "windows-utilities" )
+
+form_types:
+- $( form "vm_options" )
+- $( form "application_containers" )
+- $( form "system_logging" )
+
+job_types:
+- $( instance_group "windows_diego_cell" )
+
+property_blueprints:
+- $( property "metron_tls_cert" )
+- $( property "bbs_client_cert" )
+- $( property "loggregator_client_cert" )
+- $( property "rep_server_cert" )
+- $( property "windows_admin_password" )
+- $( property "kms" )
+- $( property "system_logging" )
+- $( property "bosh_ssh_enabled" )
+- $( property "rdp_enabled" )
+
 post_deploy_errands:
   - name: install-hwc-buildpack
     colocated: true
@@ -22,3 +54,5 @@ post_deploy_errands:
       - windows_diego_cell/first
     label: Install HWC Buildpack Errand
     description: Install the HWC buildpack to your Elastic Runtime for Windows installation
+
+install_time_verifiers: []

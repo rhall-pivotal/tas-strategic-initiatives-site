@@ -1,33 +1,32 @@
 ---
-form:
-  name: system_logging
-  label: System Logging
-  description: |
-    Configure system logging.
+name: system_logging
+label: System Logging
+description: |
+  Configure system logging.
 
-  property_inputs:
-  - reference: .properties.system_logging
-    label: Enable Syslog for VM logs?
-    selector_property_inputs:
-    - reference: .properties.system_logging.enable
-      label: Enable
-      property_inputs:
-      - reference: .properties.system_logging.enable.syslog_host
-        label: Address
-        description: |
-          The aggregator must be reachable from the network this tile is deployed
-          into and accept TCP or UDP connections. You can also configure this with
-          an IP address.
+property_inputs:
+- reference: .properties.system_logging
+  label: Enable Syslog for VM logs?
+  selector_property_inputs:
+  - reference: .properties.system_logging.enable
+    label: Enable
+    property_inputs:
+    - reference: .properties.system_logging.enable.syslog_host
+      label: Address
+      description: |
+        The aggregator must be reachable from the network this tile is deployed
+        into and accept TCP or UDP connections. You can also configure this with
+        an IP address.
 
-      - reference: .properties.system_logging.enable.syslog_port
-        label: Port
-        description: |
-          The typical syslogd port is 514. Ensure syslogd is listening on external
-          interfaces.
+    - reference: .properties.system_logging.enable.syslog_port
+      label: Port
+      description: |
+        The typical syslogd port is 514. Ensure syslogd is listening on external
+        interfaces.
 
-      - reference: .properties.system_logging.enable.syslog_protocol
-        label: Protocol
-        description: Select the transport protocol for forwarding logs.
+    - reference: .properties.system_logging.enable.syslog_protocol
+      label: Protocol
+      description: Select the transport protocol for forwarding logs.
 
-    - reference: .properties.system_logging.disable
-      label: Disable
+  - reference: .properties.system_logging.disable
+    label: Disable

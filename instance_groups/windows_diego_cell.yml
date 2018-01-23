@@ -3,21 +3,21 @@ name: windows_diego_cell
 label: Windows Diego Cell
 resource_label: Windows Diego Cell
 templates:
-  - consul_agent_windows
-  - rep_windows
-  - route_emitter_windows
-  - event_log_forwarder
-  - garden_windows
-  - winc
-  - winc_image
-  - winc_network
-  - metron_agent_windows
-  - enable_rdp
-  - enable_ssh
-  - set_kms_host
-  - set_password
-  - windows2016fs
-  - install_hwc_buildpack
+  - $( job "consul_agent_windows" )
+  - $( job "rep_windows" )
+  - $( job "route_emitter_windows" )
+  - $( job "event_log_forwarder" )
+  - $( job "garden-windows" )
+  - $( job "winc" )
+  - $( job "winc-image" )
+  - $( job "winc-network" )
+  - $( job "metron_agent_windows" )
+  - $( job "enable_rdp" )
+  - $( job "enable_ssh" )
+  - $( job "set_kms_host" )
+  - $( job "set_password" )
+  - $( job "windows2016fs" )
+  - $( job "install-hwc-buildpack" )
 
 resource_definitions:
   - name: ram

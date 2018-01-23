@@ -1,31 +1,30 @@
 ---
-property_blueprints:
-  - name: kms
-    type: selector
-    configurable: true
-    default: disable
-    option_templates:
-      - name: enable
-        select_value: enable
-        property_blueprints:
-          - name: host
-            type: string
-            optional: false
-            configurable: true
-          - name: port
-            type: port
-            optional: false
-            configurable: true
-            default: 1688
-        named_manifests:
-          - name: set_kms_host
-            manifest: |
-              enabled: true
-              host:  (( .properties.kms.enable.host.value ))
-              port:  (( .properties.kms.enable.port.value ))
-      - name: disable
-        select_value: disable
-        named_manifests:
-          - name: set_kms_host
-            manifest: |
-              enabled: false
+- name: kms
+  type: selector
+  configurable: true
+  default: disable
+  option_templates:
+    - name: enable
+      select_value: enable
+      property_blueprints:
+        - name: host
+          type: string
+          optional: false
+          configurable: true
+        - name: port
+          type: port
+          optional: false
+          configurable: true
+          default: 1688
+      named_manifests:
+        - name: set_kms_host
+          manifest: |
+            enabled: true
+            host:  (( .properties.kms.enable.host.value ))
+            port:  (( .properties.kms.enable.port.value ))
+    - name: disable
+      select_value: disable
+      named_manifests:
+        - name: set_kms_host
+          manifest: |
+            enabled: false

@@ -1,9 +1,8 @@
 ---
-form:
-  name: application_containers
-  label: Application Containers
-  description: "Enable custom configuration that supports your applications at a container level."
-  property_inputs:
-  - reference: .windows_diego_cell.placement_tags
-    label: Segment Name
-    description: This field is used as the placement tag for your Diego Cells. It should be unique. Use this name to configure an Isolation Segment with the Cloud Controller.
+name: application_containers
+label: Application Containers
+description: "Enable custom configuration that supports your applications at a container level."
+property_inputs:
+- reference: .windows_diego_cell.placement_tags
+  label: Segment Name
+  description: This field is used as the placement tag for your Diego Cells. It should be unique. Use this name to configure an Isolation Segment with the Cloud Controller.

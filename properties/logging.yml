@@ -1,41 +1,40 @@
 ---
-property_blueprints:
-  - name: system_logging
-    type: selector
-    configurable: true
-    default: disable
-    option_templates:
-    - name: enable
-      select_value: enable
-      named_manifests:
-      - name: syslog
-        manifest: |
-          enabled: true
-          address: (( .properties.system_logging.enable.syslog_host.value ))
-          port: (( .properties.system_logging.enable.syslog_port.value ))
-          protocol: (( .properties.system_logging.enable.syslog_protocol.value ))
-      property_blueprints:
-      - name: syslog_host
-        type: network_address
-        configurable: true
-        optional: false
-      - name: syslog_port
-        type: port
-        configurable: true
-        optional: false
-      - name: syslog_protocol
-        type: dropdown_select
-        configurable: true
-        optional: false
-        default: udp
-        options:
-          - name: tcp
-            label: TCP protocol
-          - name: udp
-            label: UDP protocol
-    - name: disable
-      select_value: disable
-      named_manifests:
-      - name: syslog
-        manifest: |
-          enabled: false
+- name: system_logging
+  type: selector
+  configurable: true
+  default: disable
+  option_templates:
+  - name: enable
+    select_value: enable
+    named_manifests:
+    - name: syslog
+      manifest: |
+        enabled: true
+        address: (( .properties.system_logging.enable.syslog_host.value ))
+        port: (( .properties.system_logging.enable.syslog_port.value ))
+        protocol: (( .properties.system_logging.enable.syslog_protocol.value ))
+    property_blueprints:
+    - name: syslog_host
+      type: network_address
+      configurable: true
+      optional: false
+    - name: syslog_port
+      type: port
+      configurable: true
+      optional: false
+    - name: syslog_protocol
+      type: dropdown_select
+      configurable: true
+      optional: false
+      default: udp
+      options:
+        - name: tcp
+          label: TCP protocol
+        - name: udp
+          label: UDP protocol
+  - name: disable
+    select_value: disable
+    named_manifests:
+    - name: syslog
+      manifest: |
+        enabled: false
