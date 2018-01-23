@@ -4,6 +4,7 @@ label: Control
 resource_label: Control
 description: Control
 templates:
+{{if eq tile "srt"}}
 - $( job "consul_agent_control" )
 - $( job "bbs" )
 - $( job "cfdot" )
@@ -54,6 +55,9 @@ templates:
 - $( job "nfsbrokerpush" )
 - $( job "bootstrap" )
 - $( job "rejoin-unsafe" )
+{{else}}
+- $( job "placeholder" )
+{{end}}
 
 resource_definitions:
 - name: ram

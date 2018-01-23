@@ -2,8 +2,7 @@
 name: bosh-dns-aliases
 runtime_config: |
   releases:
-  - name: bosh-dns-aliases
-    version: 0.0.1
+  - $( release "bosh-dns-aliases" )
   addons:
   - name: bosh-dns-aliases
     jobs:

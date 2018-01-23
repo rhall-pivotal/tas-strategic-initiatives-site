@@ -5,12 +5,16 @@ resource_label: File Storage
 description: Stores droplets and app packages on behalf of Cloud Controller
 
 templates:
+{{if eq tile "srt"}}
 - $( job "consul_agent_nfs_server" )
 - $( job "metron_agent" )
 - $( job "blobstore" )
 - $( job "route_registrar_nfs_server" )
 - $( job "blobstore-backup" )
 - $( job "syslog_forwarder" )
+{{else}}
+- $( job "placeholder" )
+{{end}}
 
 resource_definitions:
 - name: cpu

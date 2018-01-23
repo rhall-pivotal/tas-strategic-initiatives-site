@@ -4,10 +4,14 @@ label: Doppler Server
 resource_label: Doppler Server
 description: Doppler server collects application logs
 templates:
+{{if eq tile "ert"}}
 - $( job "consul_agent_doppler" )
 - $( job "doppler" )
 - $( job "metron_agent" )
 - $( job "syslog_forwarder" )
+{{else}}
+- $( job "placeholder" )
+{{end}}
 
 resource_definitions:
 - name: ram

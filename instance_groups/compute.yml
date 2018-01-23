@@ -4,6 +4,7 @@ label: Compute
 resource_label: Compute
 description: Compute
 templates:
+{{if eq tile "srt"}}
 - $( job "consul_agent" )
 - $( job "rep" )
 - $( job "route_emitter" )
@@ -14,6 +15,9 @@ templates:
 - $( job "garden-cni" )
 - $( job "nfsv3driver" )
 - $( job "syslog_forwarder" )
+{{else}}
+- $( job "placeholder" )
+{{end}}
 
 resource_definitions:
 - name: ram

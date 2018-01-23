@@ -4,6 +4,7 @@ label: Loggregator Trafficcontroller
 resource_label: Loggregator Trafficcontroller
 description: Loggregator trafficcontroller distributes requests to Loggregator servers
 templates:
+{{if eq tile "ert"}}
 - $( job "consul_agent_loggregator_trafficcontroller" )
 - $( job "loggregator_trafficcontroller" )
 - $( job "metron_agent" )
@@ -11,6 +12,9 @@ templates:
 - $( job "route_registrar_loggregator_trafficcontroller" )
 - $( job "bosh-system-metrics-forwarder" )
 - $( job "syslog_forwarder" )
+{{else}}
+- $( job "placeholder" )
+{{end}}
 
 resource_definitions:
 - name: ram

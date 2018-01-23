@@ -5,6 +5,7 @@ resource_label: Database
 description: Database
 
 templates:
+{{if eq tile "srt"}}
 - $( job "consul_server" )
 - $( job "metron_agent" )
 - $( job "syslog_forwarder" )
@@ -17,6 +18,9 @@ templates:
 - $( job "send-email" )
 - $( job "mysql-diag-agent" )
 - $( job "mysql-restore" )
+{{else}}
+- $( job "placeholder" )
+{{end}}
 
 resource_definitions:
 - name: cpu
