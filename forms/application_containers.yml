@@ -1,88 +1,87 @@
 ---
-form:
-  name: application_containers
-  label: Application Containers
+name: application_containers
+label: Application Containers
+description: |
+  Enable custom configuration that supports your applications at a container
+  level.
+
+property_inputs:
+- reference: .isolated_diego_cell.insecure_docker_registry_list
+  label: Private Docker Insecure Registry Whitelist
   description: |
-    Enable custom configuration that supports your applications at a container
-    level.
+    If you use private Docker image registries that are secured with
+    self-signed certificates, enter them here as a comma-delimited list. List
+    each registry as either an IP:Port tuple or a Hostname:Port tuple.
+  placeholder: |
+    10.10.10.10:8888,example.com:8888
 
-  property_inputs:
-  - reference: .isolated_diego_cell.insecure_docker_registry_list
-    label: Private Docker Insecure Registry Whitelist
-    description: |
-      If you use private Docker image registries that are secured with
-      self-signed certificates, enter them here as a comma-delimited list. List
-      each registry as either an IP:Port tuple or a Hostname:Port tuple.
-    placeholder: |
-      10.10.10.10:8888,example.com:8888
+- reference: .isolated_diego_cell.placement_tag
+  label: Segment Name
+  description: |
+    This field is used as the placement tag for your Diego Cells. It should
+    be unique. Use this name to configure an Isolation Segment with the Cloud
+    Controller.
 
-  - reference: .isolated_diego_cell.placement_tag
-    label: Segment Name
-    description: |
-      This field is used as the placement tag for your Diego Cells. It should
-      be unique. Use this name to configure an Isolation Segment with the Cloud
-      Controller.
+- reference: .properties.garden_disk_cleanup
+  label: Docker Images Disk-Cleanup Scheduling on Cell VMs
+  selector_property_inputs:
+  - reference: .properties.garden_disk_cleanup.never
+    label: Never clean up Cell disk-space
 
-  - reference: .properties.garden_disk_cleanup
-    label: Docker Images Disk-Cleanup Scheduling on Cell VMs
-    selector_property_inputs:
-    - reference: .properties.garden_disk_cleanup.never
-      label: Never clean up Cell disk-space
+  - reference: .properties.garden_disk_cleanup.routine
+    label: Routinely clean up Cell disk-space
 
-    - reference: .properties.garden_disk_cleanup.routine
-      label: Routinely clean up Cell disk-space
+  - reference: .properties.garden_disk_cleanup.threshold
+    label: Clean up disk-space once threshold is reached
+    property_inputs:
+      - reference: .properties.garden_disk_cleanup.threshold.cleanup_threshold_in_mb
+        label: Threshold of Disk-Used (MB)
+        description: |
+          Disk cleanup will initiate whenever a Cell has exceeded this much
+          disk-space for filesystem layers.
 
-    - reference: .properties.garden_disk_cleanup.threshold
-      label: Clean up disk-space once threshold is reached
+- reference: .properties.nfs_volume_driver
+  label: |
+    Enabling NFSv3 volume services will allow application developers to bind
+    existing NFS volumes to their applications for shared file access.
+  selector_property_inputs:
+    - reference: .properties.nfs_volume_driver.enable
+      label: Enable
       property_inputs:
-        - reference: .properties.garden_disk_cleanup.threshold.cleanup_threshold_in_mb
-          label: Threshold of Disk-Used (MB)
+        - reference: .properties.nfs_volume_driver.enable.ldap_service_account_user
+          label: LDAP Service Account User
+          description : |
+            Service Account User name (required for LDAP integration only)
+
+        - reference: .properties.nfs_volume_driver.enable.ldap_service_account_password
+          label: LDAP Service Account Password
           description: |
-            Disk cleanup will initiate whenever a Cell has exceeded this much
-            disk-space for filesystem layers.
+            Service Account Password (required for LDAP integration only)
 
-  - reference: .properties.nfs_volume_driver
-    label: |
-      Enabling NFSv3 volume services will allow application developers to bind
-      existing NFS volumes to their applications for shared file access.
-    selector_property_inputs:
-      - reference: .properties.nfs_volume_driver.enable
-        label: Enable
-        property_inputs:
-          - reference: .properties.nfs_volume_driver.enable.ldap_service_account_user
-            label: LDAP Service Account User
-            description : |
-              Service Account User name (required for LDAP integration only)
+        - reference: .properties.nfs_volume_driver.enable.ldap_server_host
+          label: LDAP Server Host
+          description: |
+            Server hostname or IP address (required for LDAP integration only)
 
-          - reference: .properties.nfs_volume_driver.enable.ldap_service_account_password
-            label: LDAP Service Account Password
-            description: |
-              Service Account Password (required for LDAP integration only)
+        - reference: .properties.nfs_volume_driver.enable.ldap_server_port
+          label: LDAP Server Port
+          description: |
+            Server port (required for LDAP integration only). Defaults to 389.
 
-          - reference: .properties.nfs_volume_driver.enable.ldap_server_host
-            label: LDAP Server Host
-            description: |
-              Server hostname or IP address (required for LDAP integration only)
+        - reference: .properties.nfs_volume_driver.enable.ldap_user_fqdn
+          label: LDAP User Fully-Qualified Domain Name
+          description: |
+            FQDN for user records searched during user uid resolution
+            (required for LDAP integration only). For example, the FQDN
+            value can be specified as "cn=Users,dc=corp,dc=test,dc=com".
+          placeholder: "cn=Users,dc=corp,dc=test,dc=com"
 
-          - reference: .properties.nfs_volume_driver.enable.ldap_server_port
-            label: LDAP Server Port
-            description: |
-              Server port (required for LDAP integration only). Defaults to 389.
+    - reference: .properties.nfs_volume_driver.disable
+      label: Disable
 
-          - reference: .properties.nfs_volume_driver.enable.ldap_user_fqdn
-            label: LDAP User Fully-Qualified Domain Name
-            description: |
-              FQDN for user records searched during user uid resolution
-              (required for LDAP integration only). For example, the FQDN
-              value can be specified as "cn=Users,dc=corp,dc=test,dc=com".
-            placeholder: "cn=Users,dc=corp,dc=test,dc=com"
-
-      - reference: .properties.nfs_volume_driver.disable
-        label: Disable
-
-  - reference: .properties.enable_grootfs
-    label: Enable the GrootFS container image plugin for Garden RunC
-    description: |
-      Enabling the GrootFS container image plugin is recommended.
-      However, if you experience issues with GrootFS, you can disable the plugin
-      and rollback to the image plugin that is built into Garden RunC.
+- reference: .properties.enable_grootfs
+  label: Enable the GrootFS container image plugin for Garden RunC
+  description: |
+    Enabling the GrootFS container image plugin is recommended.
+    However, if you experience issues with GrootFS, you can disable the plugin
+    and rollback to the image plugin that is built into Garden RunC.

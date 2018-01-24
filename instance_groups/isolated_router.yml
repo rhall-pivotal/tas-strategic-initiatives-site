@@ -4,10 +4,10 @@ label: Router
 resource_label: Router
 description: Routers route Internet traffic to applications placed in the isolation segment.
 templates:
-  - consul_agent
-  - gorouter
-  - metron_agent
-  - syslog_forwarder
+  - $( job "consul_agent" )
+  - $( job "gorouter" )
+  - $( job "metron_agent" )
+  - $( job "syslog_forwarder" )
 
 resource_definitions:
   - name: ram

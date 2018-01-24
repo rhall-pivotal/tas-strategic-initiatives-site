@@ -1,230 +1,229 @@
 ---
-property_blueprints:
-  - name: routing_table_sharding_mode
-    type: selector
-    configurable: true
-    default: isolation_segment_only
-    option_templates:
-    - name: isolation_segment_only
-      select_value: isolation_segment_only
-      named_manifests:
-      - name: sharding_mode
-        manifest: |
-          segments
-      - name: isolation_segments
-        manifest: |
-          ['(( .isolated_diego_cell.placement_tag.value ))']
-      - name: routing_api_enabled
-        manifest: |
-          false
-    - name: no_isolation_segment
-      select_value: no_isolation_segment
-      named_manifests:
-      - name: sharding_mode
-        manifest: |
-          shared-and-segments
-      - name: isolation_segments
-        manifest: |
-          []
-      - name: routing_api_enabled
-        manifest: |
-          true
-
-  - name: networking_poe_ssl_certs
-    type: collection
-    configurable: true
-    property_blueprints:
-    - name: name
-      type: string
-      configurable: true
-    - name: certificate
-      type: rsa_cert_credentials
-      configurable: true
+- name: routing_table_sharding_mode
+  type: selector
+  configurable: true
+  default: isolation_segment_only
+  option_templates:
+  - name: isolation_segment_only
+    select_value: isolation_segment_only
     named_manifests:
-    - name: routing_certificates
+    - name: sharding_mode
       manifest: |
-        cert_chain: (( current_record.certificate.cert_pem ))
-        private_key: (( current_record.certificate.private_key_pem ))
+        segments
+    - name: isolation_segments
+      manifest: |
+        ['(( .isolated_diego_cell.placement_tag.value ))']
+    - name: routing_api_enabled
+      manifest: |
+        false
+  - name: no_isolation_segment
+    select_value: no_isolation_segment
+    named_manifests:
+    - name: sharding_mode
+      manifest: |
+        shared-and-segments
+    - name: isolation_segments
+      manifest: |
+        []
+    - name: routing_api_enabled
+      manifest: |
+        true
 
-  - name: routing_custom_ca_certificates
-    type: text
+- name: networking_poe_ssl_certs
+  type: collection
+  configurable: true
+  property_blueprints:
+  - name: name
+    type: string
     configurable: true
-    optional: true
-
-  - name: routing_disable_http
-    type: boolean
-    configurable: true
-    default: false
-
-  - name: routing_minimum_tls_version
-    type: selector
-    configurable: true
-    default: tls_v1_2
-    option_templates:
-      - name: tls_v1_0
-        select_value: tls_v1_0
-        named_manifests:
-          - name: min_tls_version
-            manifest: |
-              TLSv1.0
-          - name: disable_tls_10
-            manifest: |
-              false
-          - name: disable_tls_11
-            manifest: |
-              false
-      - name: tls_v1_1
-        select_value: tls_v1_1
-        named_manifests:
-          - name: min_tls_version
-            manifest: |
-              TLSv1.1
-          - name: disable_tls_10
-            manifest: |
-              true
-          - name: disable_tls_11
-            manifest: |
-              false
-      - name: tls_v1_2
-        select_value: tls_v1_2
-        named_manifests:
-          - name: min_tls_version
-            manifest: |
-              TLSv1.2
-          - name: disable_tls_10
-            manifest: |
-              true
-          - name: disable_tls_11
-            manifest: |
-              true
-
-  - name: router_backend_max_conn
-    type: integer
-    configurable: true
-    default: 500
-
-  - name: routing_tls_termination
-    type: selector
-    default: load_balancer
-    configurable: true
-    option_templates:
-      - name: load_balancer
-        select_value: load_balancer
-        named_manifests:
-          - name: gorouter_forwarded_client_cert
-            manifest: |
-              always_forward
-          - name: haproxy_client_cert
-            manifest: |
-              false
-      - name: ha_proxy
-        select_value: ha_proxy
-        named_manifests:
-          - name: gorouter_forwarded_client_cert
-            manifest: |
-              forward
-          - name: haproxy_client_cert
-            manifest: |
-              true
-      - name: router
-        select_value: router
-        named_manifests:
-          - name: gorouter_forwarded_client_cert
-            manifest: |
-              sanitize_set
-          - name: haproxy_client_cert
-            manifest: |
-              false
-
-  - name: router_client_cert_validation
-    type: selector
-    configurable: true
-    default: request
-    option_templates:
-      - name: none
-        select_value: none
-        named_manifests:
-          - name: client_cert_validation
-            manifest: |
-              none
-      - name: request
-        select_value: request
-        named_manifests:
-          - name: client_cert_validation
-            manifest: |
-              request
-      - name: require
-        select_value: require
-        named_manifests:
-          - name: client_cert_validation
-            manifest: |
-              require
-
-  - name: gorouter_ssl_ciphers
-    type: text
-    configurable: true
-
-  - name: haproxy_ssl_ciphers
-    type: text
-    configurable: true
-
-  - name: haproxy_max_buffer_size
-    type: integer
-    configurable: true
-    default: 16384
-
-  - name: haproxy_client_certificate
+  - name: certificate
     type: rsa_cert_credentials
-    configurable: false
-
-  - name: haproxy_forward_tls
-    type: selector
     configurable: true
-    default: enable
-    option_templates:
-    - name: enable
-      select_value: enable
+  named_manifests:
+  - name: routing_certificates
+    manifest: |
+      cert_chain: (( current_record.certificate.cert_pem ))
+      private_key: (( current_record.certificate.private_key_pem ))
+
+- name: routing_custom_ca_certificates
+  type: text
+  configurable: true
+  optional: true
+
+- name: routing_disable_http
+  type: boolean
+  configurable: true
+  default: false
+
+- name: routing_minimum_tls_version
+  type: selector
+  configurable: true
+  default: tls_v1_2
+  option_templates:
+    - name: tls_v1_0
+      select_value: tls_v1_0
       named_manifests:
-        - name: backend_port
+        - name: min_tls_version
           manifest: |
-            443
-        - name: backend_ssl
+            TLSv1.0
+        - name: disable_tls_10
           manifest: |
-            "verify"
-      property_blueprints:
-      - name: backend_ca
-        type: text
-        configurable: true
-    - name: disable
-      select_value: disable
+            false
+        - name: disable_tls_11
+          manifest: |
+            false
+    - name: tls_v1_1
+      select_value: tls_v1_1
       named_manifests:
-        - name: backend_port
+        - name: min_tls_version
           manifest: |
-            80
-        - name: backend_ssl
+            TLSv1.1
+        - name: disable_tls_10
           manifest: |
-            "off"
+            true
+        - name: disable_tls_11
+          manifest: |
+            false
+    - name: tls_v1_2
+      select_value: tls_v1_2
+      named_manifests:
+        - name: min_tls_version
+          manifest: |
+            TLSv1.2
+        - name: disable_tls_10
+          manifest: |
+            true
+        - name: disable_tls_11
+          manifest: |
+            true
 
-  - name: container_networking
-    type: selector
-    configurable: true
-    default: enable
-    option_templates:
-    - name: enable
-      select_value: enable
-    - name: disable
-      select_value: disable
+- name: router_backend_max_conn
+  type: integer
+  configurable: true
+  default: 500
 
-  - name: skip_cert_verify
-    type: boolean
-    configurable: true
+- name: routing_tls_termination
+  type: selector
+  default: load_balancer
+  configurable: true
+  option_templates:
+    - name: load_balancer
+      select_value: load_balancer
+      named_manifests:
+        - name: gorouter_forwarded_client_cert
+          manifest: |
+            always_forward
+        - name: haproxy_client_cert
+          manifest: |
+            false
+    - name: ha_proxy
+      select_value: ha_proxy
+      named_manifests:
+        - name: gorouter_forwarded_client_cert
+          manifest: |
+            forward
+        - name: haproxy_client_cert
+          manifest: |
+            true
+    - name: router
+      select_value: router
+      named_manifests:
+        - name: gorouter_forwarded_client_cert
+          manifest: |
+            sanitize_set
+        - name: haproxy_client_cert
+          manifest: |
+            false
 
-  - name: networking_point_of_entry
-    type: selector
-    configurable: true
-    default: terminate_at_router
-    option_templates:
-      - name: terminate_at_router
-        select_value: terminate_at_router
-      - name: terminate_before_router
-        select_value: terminate_before_router
+- name: router_client_cert_validation
+  type: selector
+  configurable: true
+  default: request
+  option_templates:
+    - name: none
+      select_value: none
+      named_manifests:
+        - name: client_cert_validation
+          manifest: |
+            none
+    - name: request
+      select_value: request
+      named_manifests:
+        - name: client_cert_validation
+          manifest: |
+            request
+    - name: require
+      select_value: require
+      named_manifests:
+        - name: client_cert_validation
+          manifest: |
+            require
+
+- name: gorouter_ssl_ciphers
+  type: text
+  configurable: true
+
+- name: haproxy_ssl_ciphers
+  type: text
+  configurable: true
+
+- name: haproxy_max_buffer_size
+  type: integer
+  configurable: true
+  default: 16384
+
+- name: haproxy_client_certificate
+  type: rsa_cert_credentials
+  configurable: false
+
+- name: haproxy_forward_tls
+  type: selector
+  configurable: true
+  default: enable
+  option_templates:
+  - name: enable
+    select_value: enable
+    named_manifests:
+      - name: backend_port
+        manifest: |
+          443
+      - name: backend_ssl
+        manifest: |
+          "verify"
+    property_blueprints:
+    - name: backend_ca
+      type: text
+      configurable: true
+  - name: disable
+    select_value: disable
+    named_manifests:
+      - name: backend_port
+        manifest: |
+          80
+      - name: backend_ssl
+        manifest: |
+          "off"
+
+- name: container_networking
+  type: selector
+  configurable: true
+  default: enable
+  option_templates:
+  - name: enable
+    select_value: enable
+  - name: disable
+    select_value: disable
+
+- name: skip_cert_verify
+  type: boolean
+  configurable: true
+
+- name: networking_point_of_entry
+  type: selector
+  configurable: true
+  default: terminate_at_router
+  option_templates:
+    - name: terminate_at_router
+      select_value: terminate_at_router
+    - name: terminate_before_router
+      select_value: terminate_before_router

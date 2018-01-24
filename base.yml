@@ -3,8 +3,8 @@ name: p-isolation-segment
 metadata_version: '2.1'
 provides_product_versions:
 - name: p-isolation-segment
-  version: "0.0.0.0$PRERELEASE_VERSION$"
-product_version: "0.0.0.0$PRERELEASE_VERSION$"
+  version: $( version )
+product_version: $( version )
 minimum_version_for_upgrade: 2.0.0
 requires_product_versions:
 - name: cf
@@ -14,3 +14,64 @@ description: "Gives developers the ability to push apps to a dedicated set of co
 icon_image: $( icon )
 rank: 89
 serial: false
+
+stemcell_criteria: $( stemcell )
+
+releases:
+- $( release "cf-networking" )
+- $( release "cflinuxfs2" )
+- $( release "consul" )
+- $( release "diego" )
+- $( release "garden-runc" )
+- $( release "haproxy" )
+- $( release "loggregator" )
+- $( release "nfs-volume" )
+- $( release "routing" )
+- $( release "syslog-migration" )
+
+form_types:
+- $( form "networking" )
+- $( form "application_containers" )
+- $( form "system_logging" )
+- $( form "advanced_features" )
+
+job_types:
+- $( instance_group "isolated_ha_proxy" )
+- $( instance_group "isolated_router" )
+- $( instance_group "isolated_diego_cell" )
+
+property_blueprints:
+- $( property "metron_tls_cert" )
+- $( property "bbs_client_cert" )
+- $( property "rep_server_cert" )
+- $( property "nfs_volume_driver" )
+- $( property "loggregator_client_cert" )
+- $( property "garden_disk_cleanup" )
+- $( property "enable_grootfs" )
+- $( property "garden_image_plugin" )
+- $( property "garden_image_plugin_empty" )
+- $( property "garden_image_plugin_extra_args" )
+- $( property "garden_image_plugin_empty_args" )
+- $( property "rep_preloaded_rootfses_garden" )
+- $( property "rep_preloaded_rootfses_grootfs" )
+- $( property "system_logging" )
+- $( property "routing_table_sharding_mode" )
+- $( property "networking_poe_ssl_certs" )
+- $( property "routing_custom_ca_certificates" )
+- $( property "routing_disable_http" )
+- $( property "routing_minimum_tls_version" )
+- $( property "router_backend_max_conn" )
+- $( property "routing_tls_termination" )
+- $( property "router_client_cert_validation" )
+- $( property "gorouter_ssl_ciphers" )
+- $( property "haproxy_ssl_ciphers" )
+- $( property "haproxy_max_buffer_size" )
+- $( property "haproxy_client_certificate" )
+- $( property "haproxy_forward_tls" )
+- $( property "container_networking" )
+- $( property "skip_cert_verify" )
+- $( property "networking_point_of_entry" )
+
+post_deploy_errands: []
+
+install_time_verifiers: []

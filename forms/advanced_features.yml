@@ -1,15 +1,14 @@
 ---
-form:
-  name: advanced_features
-  label: Advanced Features
-  description: |
-    These are several features that may require a greater understanding of
-    Cloud Foundry system components and their more recently introduced
-    capabilities.
+name: advanced_features
+label: Advanced Features
+description: |
+  These are several features that may require a greater understanding of
+  Cloud Foundry system components and their more recently introduced
+  capabilities.
 
-  property_inputs:
-  - reference: .isolated_diego_cell.executor_memory_capacity
-    label: Cell Memory Capacity (MB)
+property_inputs:
+- reference: .isolated_diego_cell.executor_memory_capacity
+  label: Cell Memory Capacity (MB)
 
-  - reference: .isolated_diego_cell.executor_disk_capacity
-    label: Cell Disk Capacity (MB)
+- reference: .isolated_diego_cell.executor_disk_capacity
+  label: Cell Disk Capacity (MB)

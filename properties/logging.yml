@@ -1,57 +1,56 @@
 ---
-property_blueprints:
-  - name: system_logging
-    type: selector
-    configurable: true
-    default: disabled
-    option_templates:
-      - name: disabled
-        select_value: disabled
-        named_manifests:
-          - name: syslog
-            manifest: |
-              migration:
-                disabled: true
-          - name: syslog_url
-            manifest: ""
-      - name: enabled
-        select_value: enabled
-        property_blueprints:
-          - name: host
-            type: network_address
-            configurable: true
-          - name: port
-            type: port
-            configurable: true
-          - name: protocol
-            type: dropdown_select
-            configurable: true
-            options:
-              - name: tcp
-                label: TCP protocol
-              - name: relp
-                label: RELP protocol
-              - name: udp
-                label: UDP protocol
-          - name: tls_enabled
-            type: boolean
-            configurable: true
-            optional: true
-            default: false
-          - name: tls_permitted_peer
-            type: string
-            configurable: true
-            optional: true
-          - name: tls_ca_cert
-            type: ca_certificate
-            configurable: true
-            optional: true
-        named_manifests:
-          - name: syslog
-            manifest: |
-              address: (( .properties.system_logging.enabled.host.value ))
-              port: (( .properties.system_logging.enabled.port.value ))
-              transport: (( .properties.system_logging.enabled.protocol.value ))
-              tls_enabled: (( .properties.system_logging.enabled.tls_enabled.value ))
-              ca_cert: (( .properties.system_logging.enabled.tls_ca_cert.value ))
-              permitted_peer: (( .properties.system_logging.enabled.tls_permitted_peer.value ))
+- name: system_logging
+  type: selector
+  configurable: true
+  default: disabled
+  option_templates:
+    - name: disabled
+      select_value: disabled
+      named_manifests:
+        - name: syslog
+          manifest: |
+            migration:
+              disabled: true
+        - name: syslog_url
+          manifest: ""
+    - name: enabled
+      select_value: enabled
+      property_blueprints:
+        - name: host
+          type: network_address
+          configurable: true
+        - name: port
+          type: port
+          configurable: true
+        - name: protocol
+          type: dropdown_select
+          configurable: true
+          options:
+            - name: tcp
+              label: TCP protocol
+            - name: relp
+              label: RELP protocol
+            - name: udp
+              label: UDP protocol
+        - name: tls_enabled
+          type: boolean
+          configurable: true
+          optional: true
+          default: false
+        - name: tls_permitted_peer
+          type: string
+          configurable: true
+          optional: true
+        - name: tls_ca_cert
+          type: ca_certificate
+          configurable: true
+          optional: true
+      named_manifests:
+        - name: syslog
+          manifest: |
+            address: (( .properties.system_logging.enabled.host.value ))
+            port: (( .properties.system_logging.enabled.port.value ))
+            transport: (( .properties.system_logging.enabled.protocol.value ))
+            tls_enabled: (( .properties.system_logging.enabled.tls_enabled.value ))
+            ca_cert: (( .properties.system_logging.enabled.tls_ca_cert.value ))
+            permitted_peer: (( .properties.system_logging.enabled.tls_permitted_peer.value ))
