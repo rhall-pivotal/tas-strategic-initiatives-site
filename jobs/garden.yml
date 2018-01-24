@@ -15,7 +15,6 @@ manifest: |
     insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
     https_proxy: (( $ops_manager.https_proxy ))
     no_proxy: (( $ops_manager.no_proxy ))
-    default_container_grace_time: 0
     persistent_image_list:
     - "/var/vcap/packages/cflinuxfs2/rootfs"
   grootfs:
