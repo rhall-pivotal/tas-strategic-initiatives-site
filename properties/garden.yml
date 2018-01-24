@@ -34,26 +34,6 @@
   configurable: true
   default: true
 
-- name: garden_image_plugin
-  type: string
-  configurable: false
-  default: "/var/vcap/packages/grootfs/bin/grootfs"
-
-- name: garden_image_plugin_empty
-  type: string
-  configurable: false
-  default: null
-
-- name: garden_image_plugin_extra_args
-  type: string_list
-  configurable: false
-  default: ["--config=/var/vcap/jobs/garden/config/grootfs_config.yml"]
-
-- name: garden_image_plugin_empty_args
-  type: string_list
-  configurable: false
-  default: []
-
 - name: rep_preloaded_rootfses_garden
   type: string_list
   configurable: false
