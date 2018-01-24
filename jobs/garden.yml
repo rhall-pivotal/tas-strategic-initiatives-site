@@ -7,7 +7,7 @@ manifest: |
     network_plugin: "/var/vcap/packages/runc-cni/bin/garden-external-networker"
     network_plugin_extra_args:
     - "--configFile=/var/vcap/jobs/garden-cni/config/adapter.json"
-    deprecated_use_garden_shed: (( .properties.enable_grootfs.value ? false : true ))
+    deprecated_use_garden_shed: "(( .properties.enable_grootfs.value ? 'false' : 'true' ))"
     http_proxy: (( $ops_manager.http_proxy ))
     cleanup_process_dirs_on_wait: true
     deny_networks:
