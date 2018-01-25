@@ -38,6 +38,7 @@ manifest: |
     min_tls_version: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(min_tls_version) ))
     backends:
       max_conns: (( .properties.router_backend_max_conn.value ))
+      enable_tls: true
     frontend_idle_timeout: (( .router.frontend_idle_timeout.value ))
   routing_api:
     enabled: true
