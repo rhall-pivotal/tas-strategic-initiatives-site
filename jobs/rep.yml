@@ -4,7 +4,7 @@ release: diego
 manifest: |
   containers:
     proxy:
-      enabled: (( .properties.rep_proxy_enabled ))
+      enabled: (( .properties.rep_proxy_enabled.value ))
   diego:
     rep:
       bbs:
