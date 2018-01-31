@@ -120,6 +120,7 @@ manifest: |
         - console.support
         - doppler.firehose
         - healthwatch.read
+        - healthwatch.admin
         - notification_preferences.read
         - notification_preferences.write
         - notifications.manage
@@ -387,7 +388,7 @@ manifest: |
         override: true
         authorized-grant-types: authorization_code,password,implicit,refresh_token
         authorities: uaa.resource
-        scope: healthwatch.read
+        scope: healthwatch.read,healthwatch.admin
         access-token-validity: 900
         redirect-uri: "https://healthwatch.(( .cloud_controller.system_domain.value ))"
         autoapprove: true
