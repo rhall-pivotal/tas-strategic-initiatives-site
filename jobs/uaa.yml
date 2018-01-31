@@ -280,6 +280,15 @@ manifest: |
         scope: "openid,cloud_controller.permissions,cloud_controller.read,cloud_controller.write,doppler.firehose"
         access-token-validity: 3600
         redirect-uri: "https://autoscale.(( .cloud_controller.system_domain.value ))/sessions/create"
+      (( .uaa.autoscale_api_client_credentials.identity )):
+        id: (( .uaa.autoscale_api_client_credentials.identity ))
+        secret: (( .uaa.autoscale_api_client_credentials.password ))
+        override: true
+        autoapprove: true
+        authorities: "uaa.resource,cloud_controller.write,cloud_controller.read,cloud_controller.admin"
+        authorized-grant-types: "client_credentials,authorization_code,refresh_token"
+        scope: "openid,cloud_controller.permissions,cloud_controller.read,cloud_controller.write"
+        access-token-validity: 3600
       system_passwords:
         id: (( .uaa.system_passwords_client_credentials.identity ))
         secret: (( .uaa.system_passwords_client_credentials.password ))

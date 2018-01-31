@@ -1,0 +1,30 @@
+---
+- name: autoscale_instance_count
+  type: integer
+  configurable: true
+  constraints:
+    min: 1
+  default: 3
+
+- name: autoscale_api_instance_count
+  type: integer
+  configurable: true
+  constraints:
+    min: 1
+  default: 1
+
+- name: autoscale_metric_bucket_count
+  type: integer
+  configurable: true
+  constraints:
+    min: 15
+    max: 120
+  default: 35
+
+- name: scaling_interval_in_seconds
+  type: integer
+  configurable: true
+  constraints:
+    min: 15
+    max: 120
+  default: 35
