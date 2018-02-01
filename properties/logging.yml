@@ -45,6 +45,10 @@
           type: ca_certificate
           configurable: true
           optional: true
+        - name: use_tcp_for_file_forwarding_local_transport
+          type: boolean
+          configurable: true
+          default: false
       named_manifests:
         - name: syslog
           manifest: |
@@ -54,3 +58,4 @@
             tls_enabled: (( .properties.system_logging.enabled.tls_enabled.value ))
             ca_cert: (( .properties.system_logging.enabled.tls_ca_cert.value ))
             permitted_peer: (( .properties.system_logging.enabled.tls_permitted_peer.value ))
+            use_tcp_for_file_forwarding_local_transport: (( .properties.system_logging.enabled.use_tcp_for_file_forwarding_local_transport.value ))

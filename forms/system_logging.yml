@@ -51,3 +51,11 @@ property_inputs:
       description: |
         This certificate will ensure that logs get securely transported to
         the syslog destination
+
+    - reference: .properties.system_logging.enabled.use_tcp_for_file_forwarding_local_transport
+      label: Use TCP for file forwarding local transport
+      description: |
+        Workaround to avoid truncation of very long
+        (> 1024 bytes)
+        log lines.
+        May negatively impact performance.
