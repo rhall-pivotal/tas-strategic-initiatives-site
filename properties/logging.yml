@@ -14,11 +14,6 @@
   configurable: true
   optional: true
 
-- name: syslog_rule
-  type: text
-  configurable: true
-  optional: true
-
 - name: syslog_protocol
   type: dropdown_select
   configurable: true
@@ -50,6 +45,7 @@
             tls_enabled: (( .properties.syslog_tls.selected_option.parsed_manifest(tls_enabled) ))
             ca_cert: (( .properties.syslog_tls.selected_option.parsed_manifest(ca_cert) ))
             permitted_peer: (( .properties.syslog_tls.selected_option.parsed_manifest(permitted_peer) ))
+            use_tcp_for_file_forwarding_local_transport: (( .properties.syslog_use_tcp_for_file_forwarding_local_transport.value ))
             custom_rule: |
               (( .properties.syslog_rule.value ))
               if ($programname startswith "vcap.") then ~
@@ -112,3 +108,13 @@
         - name: permitted_peer
           manifest: |
             (( .properties.syslog_tls.enabled.tls_permitted_peer.value ))
+
+- name: syslog_use_tcp_for_file_forwarding_local_transport
+  type: boolean
+  configurable: true
+  default: false
+
+- name: syslog_rule
+  type: text
+  configurable: true
+  optional: true
