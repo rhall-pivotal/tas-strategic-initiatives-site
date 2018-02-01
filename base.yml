@@ -417,13 +417,6 @@ post_deploy_errands:
       - $( variable "errand_instance_group" )
     label: App Autoscaler Errand
     description: Pushes the Pivotal App Autoscaler application to your Application Service installation
-  - name: register-broker
-    colocated: true
-    run_default: true
-    instances:
-      - $( variable "errand_instance_group" )
-    label: Autoscaling Registration Errand
-    description: Registers the Autoscaling Service Broker
   - name: nfsbrokerpush
     colocated: true
     run_default: true
