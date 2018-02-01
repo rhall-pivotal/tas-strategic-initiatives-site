@@ -49,6 +49,11 @@
           type: boolean
           configurable: true
           default: false
+        - name: syslog_rule
+          type: text
+          configurable: true
+          optional: true
+
       named_manifests:
         - name: syslog
           manifest: |
@@ -59,3 +64,6 @@
             ca_cert: (( .properties.system_logging.enabled.tls_ca_cert.value ))
             permitted_peer: (( .properties.system_logging.enabled.tls_permitted_peer.value ))
             use_tcp_for_file_forwarding_local_transport: (( .properties.system_logging.enabled.use_tcp_for_file_forwarding_local_transport.value ))
+            syslog_rule: |
+              (( .properties.system_logging.enabled.syslog_rule.value ))
+              if ($programname startswith "vcap.") then ~

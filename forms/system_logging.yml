@@ -2,8 +2,12 @@
 name: system_logging
 label: System Logging
 description: |
-  Configure system logging. Complete the External Syslog fields only if using
-  an external syslogd server.
+  Optionally configure rsyslog to forward platform component logs
+  to an external service.
+  If you do not fill these fields,
+  platform logs will not be forwarded
+  but will remain available on the component VMs
+  and for download via Ops Manager.
 
 property_inputs:
 - reference: .properties.system_logging
@@ -59,3 +63,15 @@ property_inputs:
         (> 1024 bytes)
         log lines.
         May negatively impact performance.
+
+    - reference: .properties.system_logging.enabled.syslog_rule
+      label: Custom rsyslog Configuration
+      description: |
+        Accepts configuration for rsyslog
+        in the rainerscript syntax.
+        For example,
+        'if ($app-name startswith "exampleComponent") then {~}'
+        can be used to drop all traffic
+        from a particular component.
+        Entered configuration will be applied
+        prior to the forwarding rule.
