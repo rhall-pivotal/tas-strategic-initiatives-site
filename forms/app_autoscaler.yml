@@ -1,7 +1,7 @@
 ---
-name: autoscaling
-label: Autoscaling
-description: Configure Autoscaler
+name: app_autoscaler
+label: App Autoscaler
+description: Configure the App Autoscaler
 
 property_inputs:
   - reference: .properties.autoscale_instance_count
@@ -15,7 +15,7 @@ property_inputs:
     description: |
       The size of the window of metrics that the autoscaler uses to make scaling decisions (in seconds).
 
-  - reference: .properties.scaling_interval_in_seconds
+  - reference: .properties.autoscale_scaling_interval_in_seconds
     label: Scaling Interval
     description: |
       How frequently the autoscaler evaluates an application for scaling (in seconds).

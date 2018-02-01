@@ -73,10 +73,10 @@ form_types:
 - $( form "generic_white_label_config" )
 - $( form "apps_manager_config" )
 - $( form "smtp_config" )
+- $( form "app_autoscaler" )
 - $( form "cloud_controller" )
 - $( form "smoke_tests" )
 - $( form "experimental_features" )
-- $( form "autoscaling" )
 
 job_types:
 - $( instance_group "database" ) # SRT only
@@ -206,6 +206,10 @@ property_blueprints:
 - $( property "saml_signature_algorithm" )
 - $( property "uaa_database_name" )
 - $( property "uaa_database" )
+- $( property "autoscale_instance_count" )
+- $( property "autoscale_api_instance_count" )
+- $( property "autoscale_metric_bucket_count" )
+- $( property "autoscale_scaling_interval_in_seconds" )
 
 runtime_configs:
 - $( runtime_config "bosh-dns-aliases" )
