@@ -9,8 +9,6 @@ manifest: |
     client_secret: (( .uaa.autoscale_client_credentials.password ))
     api_client_id: (( .uaa.autoscale_api_client_credentials.identity ))
     api_client_secret: (( .uaa.autoscale_api_client_credentials.password ))
-  app_domains:
-  - (( .cloud_controller.system_domain.value ))
   domain: (( .cloud_controller.system_domain.value ))
   doppler:
     host: wss://doppler.(( .cloud_controller.system_domain.value )):(( .properties.logger_endpoint_port.value || "443" ))
