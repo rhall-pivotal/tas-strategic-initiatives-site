@@ -241,6 +241,11 @@
   - name: disable
     select_value: disable
 
+- name: bosh_dns_servers
+  type: string_list
+  configurable: false
+  default: "169.254.0.2"
+
 - name: container_networking_interface_plugin
   type: selector
   configurable: true
@@ -273,6 +278,10 @@
       type: boolean
       configurable: true
       default: false
+    - name: dns_servers
+      type: string_list
+      configurable: true
+      optional: true
     named_manifests:
       - name: runtime_config
         manifest: |
@@ -291,7 +300,7 @@
               release: cf-networking
               properties:
                 cf_networking:
-                  dns_servers: ["169.254.0.2"]
+                  dns_servers: (( $ops_manager.dns_release_present ? .properties.bosh_dns_servers.parsed_strings : .properties.container_networking_interface_plugin.silk.dns_servers.parsed_strings ))
                   mtu: (( .properties.container_networking_interface_plugin.silk.network_mtu.value ))
                   iptables_logging: (( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ))
                   iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
