@@ -21,7 +21,7 @@ manifest: |
       providers: (( .properties.uaa.selected_option.parsed_manifest(saml_provider) ))
       signRequest: (( .properties.uaa.saml.sign_auth_requests.value ))
       signatureAlgorithm: (( .properties.saml_signature_algorithm.value ))
-      entityid: (( .properties.uaa.saml.entity_id_override.value || .properties.uaa.selected_option.parsed_manifest(default_saml_identity_id) ))
+      entityid: (( .properties.saml_entity_id_override.value || .properties.uaa.selected_option.parsed_manifest(default_saml_entity_id) ))
       serviceProviderCertificate: ''
       wantAssertionSigned: (( .properties.uaa.saml.require_signed_assertions.value ))
       keys:

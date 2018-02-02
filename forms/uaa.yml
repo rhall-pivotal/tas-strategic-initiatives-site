@@ -50,6 +50,13 @@ property_inputs:
   label: SAML Service Provider Key Password
   description: Passphrase for the service provider private key.
 
+- reference: .properties.saml_entity_id_override
+  label: SAML Entity ID Override
+  description: |
+    An entry in this field overrides the default Entity ID value of
+    "http://login.<system-domain>". The <system-domain> portion of
+    that default is configured on the "Domains" tab.
+
 - reference: .properties.saml_signature_algorithm
   label: Signature Algorithm
   description: |

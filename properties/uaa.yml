@@ -13,7 +13,7 @@
       - name: self_service_links_enabled
         manifest: |
           true
-      - name: default_saml_identity_id
+      - name: default_saml_entity_id
         type: string
         manifest: |
           http://login.(( .cloud_controller.system_domain.value ))
@@ -66,7 +66,7 @@
       - name: self_service_links_enabled
         manifest: |
           false
-      - name: default_saml_identity_id
+      - name: default_saml_entity_id
         type: string
         manifest: |
           http://login.(( .cloud_controller.system_domain.value ))
@@ -137,7 +137,7 @@
       - name: self_service_links_enabled
         manifest: |
           false
-      - name: default_saml_identity_id
+      - name: default_saml_entity_id
         type: string
         manifest: |
           http://login.(( .cloud_controller.system_domain.value ))
@@ -199,6 +199,7 @@
             label: Ignore referrals and return partial result
           - name: "throw"
             label: Throw exception for each referral and abort authentication
+
 - name: saml_signature_algorithm
   type: dropdown_select
   configurable: true
@@ -209,3 +210,8 @@
     label: SHA256
   - name: "SHA512"
     label: SHA512
+
+- name: saml_entity_id_override
+  type: string
+  configurable: true
+  optional: true
