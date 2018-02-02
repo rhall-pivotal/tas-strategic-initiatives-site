@@ -13,7 +13,6 @@ manifest: |
         ca_certs:
         - (( $ops_manager.ca_certificate ))
         url: https://uaa.service.cf.internal:8443
-        verification_key: (( .uaa.jwt_signing_key_credentials.public_key_pem ))
     authorization:
       acls:
         enabled: true
