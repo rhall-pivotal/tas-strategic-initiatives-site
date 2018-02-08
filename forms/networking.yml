@@ -207,14 +207,13 @@ property_inputs:
       Maximum concurrent TCP connections per backend for each instance of
       the Router. A value of 0 means unlimited.
 
-  - reference: .router.max_idle_connections
-    label: Router Max Idle Keepalive Connections
-    description: |
-      Max number of idle keepalive connections maintained by Gorouter to all
-      backends. The default value of 0 disables keepalive support. The max
-      number of idle connections per backend is 100; this limit takes
-      precedent if concurrent requests per backend is greater than 100 and
-      total concurrent requests is less than Max Idle Keepalive Connections.
+  - reference: .properties.router_keepalive_connections
+    label: Enable Keepalive Connections for Router
+    selector_property_inputs:
+    - reference: .properties.router_keepalive_connections.enable
+      label: Enable
+    - reference: .properties.router_keepalive_connections.disable
+      label: Disable
 
   - reference: .router.request_timeout_in_seconds
     label: Router Timeout to Backends (in seconds)

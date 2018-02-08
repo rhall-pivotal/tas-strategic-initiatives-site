@@ -119,6 +119,7 @@ property_blueprints:
 - $( property "autoscale_scaling_interval_in_seconds" )
 - $( property "bbs_client_cert" )
 - $( property "bbs_server_cert" )
+- $( property "bosh_dns_servers" )
 - $( property "cc_api_rate_limit" )
 - $( property "ccdb_database_name" )
 - $( property "cf_dial_timeout_in_seconds" )
@@ -178,6 +179,7 @@ property_blueprints:
 - $( property "route_services" )
 - $( property "router_backend_max_conn" )
 - $( property "router_client_cert_validation" )
+- $( property "router_keepalive_connections" )
 - $( property "routing_custom_ca_certificates" )
 - $( property "routing_database_name" )
 - $( property "routing_disable_http" )
@@ -212,7 +214,6 @@ property_blueprints:
 - $( property "uaa" )
 - $( property "uaa_database" )
 - $( property "uaa_database_name" )
-- $( property "bosh_dns_servers" )
 
 runtime_configs:
 - $( runtime_config "bosh-dns-aliases" )
