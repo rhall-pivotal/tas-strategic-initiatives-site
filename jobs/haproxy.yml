@@ -13,7 +13,7 @@ manifest: |
     client_ca_file: |
       (( .properties.routing_custom_ca_certificates.value ))
       (( $ops_manager.ca_certificate ))
-      ((( /cf/diego-instance-identity-intermediate-ca.certificate )))
+      ((( /cf/diego-instance-identity-root-ca.certificate )))
     client_cert: (( .properties.routing_tls_termination.selected_option.parsed_manifest(haproxy_client_cert) ))
     client_timeout: (( .router.request_timeout_in_seconds.value ))
     disable_http: (( .properties.routing_disable_http.value ))
