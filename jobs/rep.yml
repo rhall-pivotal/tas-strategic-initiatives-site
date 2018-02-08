@@ -4,7 +4,13 @@ manifest: |
   containers:
     proxy:
       enabled: (( .properties.rep_proxy_enabled.value ))
-  enable_declarative_healthcheck: true
+    trusted_ca_certificates:
+    - |
+      ((( /cf/diego-instance-identity-root-ca.certificate )))
+    - |
+      (( $ops_manager.ca_certificate ))
+    - |
+      (( $ops_manager.trusted_certificates ))
   diego:
     executor:
       disk_capacity_mb: (( executor_disk_capacity.value ))
@@ -28,10 +34,7 @@ manifest: |
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       locket:
         api_location: locket.service.cf.internal:8891
-      trusted_certs: |
-        ((( /cf/diego-instance-identity-root-ca.certificate )))
-        (( $ops_manager.ca_certificate ))
-        (( $ops_manager.trusted_certificates ))
+  enable_declarative_healthcheck: true
   loggregator:
     use_v2_api: true
     ca_cert: (( $ops_manager.ca_certificate ))
