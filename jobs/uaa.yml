@@ -393,6 +393,16 @@ manifest: |
         redirect-uri: "https://healthwatch.(( .cloud_controller.system_domain.value ))"
         autoapprove: true
         refresh-token-validity: 2628000
+      healthwatch_alerts:
+        id: "(( .uaa.healthwatch_alerts_credentials.identity ))"
+        secret: "(( .uaa.healthwatch_alerts_credentials.password ))"
+        override: true
+        scope: uaa.none
+        authorized-grant-types: client_credentials
+        authorities: notifications.write
+        secret: "((uaa_clients_cc-service-dashboards_secret))"
+        access-token-validity: 3600
+        autoapprove: true
       healthwatch_firehose:
         id: "(( .uaa.healthwatch_firehose_credentials.identity ))"
         secret: "(( .uaa.healthwatch_firehose_credentials.password ))"
