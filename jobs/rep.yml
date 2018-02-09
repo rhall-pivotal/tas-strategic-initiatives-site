@@ -1,6 +1,7 @@
 name: rep
 release: diego
 manifest: |
+  enable_declarative_healthcheck: true
   diego:
     executor:
       disk_capacity_mb: (( executor_disk_capacity.value ))
