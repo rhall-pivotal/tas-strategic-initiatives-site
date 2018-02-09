@@ -304,8 +304,7 @@
       - name: runtime_config
         manifest: |
           releases:
-          - name: cf-networking
-            version: 1.9.0
+          - $( release "cf-networking" )
           addons:
           - name: c2c-diego-cell-cf
             include:
