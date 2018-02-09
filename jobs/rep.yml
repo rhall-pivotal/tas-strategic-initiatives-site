@@ -1,6 +1,9 @@
 name: rep
 release: diego
 manifest: |
+  containers:
+    proxy:
+      enabled: (( .properties.rep_proxy_enabled.value ))
   enable_declarative_healthcheck: true
   diego:
     executor:
