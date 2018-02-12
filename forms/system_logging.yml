@@ -54,6 +54,12 @@ property_inputs:
     The number of log messages the buffer holds before dropping messages. A
     larger buffer size might overload the system.
 
+- reference: .properties.syslog_metrics_to_syslog_enabled
+  label: Include container metrics in SysLog Drains
+  description: |
+    Receive container metrics delivered in create-user-provided-service
+    (CUPS) Syslog Drain bindings.
+
 - reference: .cloud_controller.security_event_logging_enabled
   label: Enable Cloud Controller security event logging
   description: |

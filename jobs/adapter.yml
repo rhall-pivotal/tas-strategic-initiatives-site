@@ -7,7 +7,7 @@ manifest: |
       health: $( variable "scalablesyslog_adapter_health_port" )
       logs:
         addr: reverse-log-proxy.service.cf.internal:$( variable "reverse_log_proxy_port" )
-
+      metrics_to_syslog_enabled: (( .properties.syslog_metrics_to_syslog_enabled.value ))
       tls:
         ca: (( $ops_manager.ca_certificate ))
         cert: (( .syslog_adapter.adapter_tls.cert_pem ))
