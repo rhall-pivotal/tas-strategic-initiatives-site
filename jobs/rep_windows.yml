@@ -32,6 +32,7 @@ manifest: |
         ((( /cf/diego-instance-identity-root-ca.certificate )))
         (( $ops_manager.ca_certificate ))
         (( $ops_manager.trusted_certificates ))
+  enable_declarative_healthcheck: true
   loggregator:
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( .properties.loggregator_client_cert.cert_pem ))
