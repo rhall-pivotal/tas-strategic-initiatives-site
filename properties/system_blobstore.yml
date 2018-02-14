@@ -47,6 +47,13 @@
         - name: aes_hash
           manifest: |
             encryption: "AES256"
+        - name: kms_hash
+          manifest: |
+            encryption: "aws:kms"
+            x-amz-server-side-encryption-aws-kms-key-id: (( .properties.system_blobstore.external.encryption_kms_key_id.value ))
+        - name: encrypt_hash
+          manifest: |
+            "(( .properties.system_blobstore.external.encryption_kms_key_id.value ? .properties.system_blobstore.selected_option.parsed_manifest(kms_hash) : .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) ))"
         - name: empty_hash
           manifest: '{}'
         - name: ccbuildpack
@@ -61,7 +68,7 @@
               region:  (( .properties.system_blobstore.external.region.value ))
               path_style: true
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
-            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccdroplet
           manifest: |
             max_staged_droplets_stored: 2
@@ -75,7 +82,7 @@
               region:  (( .properties.system_blobstore.external.region.value ))
               path_style: true
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
-            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccpackage
           manifest: |
             max_package_size: 2147483648
@@ -89,7 +96,7 @@
               region:  (( .properties.system_blobstore.external.region.value ))
               path_style: true
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
-            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccresource
           manifest: |
             blobstore_type: fog
@@ -102,7 +109,7 @@
               region:  (( .properties.system_blobstore.external.region.value ))
               path_style: true
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
-            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
       property_blueprints:
         - name: endpoint
           type: string
@@ -145,6 +152,10 @@
           configurable: true
           optional: false
           default: false
+        - name: encryption_kms_key_id
+          type: string
+          configurable: true
+          optional: true
     - name: external_gcs
       select_value: external_gcs
       named_manifests:

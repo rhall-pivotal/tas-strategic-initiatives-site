@@ -77,6 +77,12 @@ property_inputs:
       - reference: .properties.system_blobstore.external.encryption
         label: Server-side Encryption (available for AWS S3 only)
 
+      - reference: .properties.system_blobstore.external.encryption_kms_key_id
+        label: KMS Key ID (requires Server-side Encryption to be checked)
+        description: |
+          The files uploaded to the blobstore will be encrypted using the given KMS key.
+          If Server-side Encryption is enabled and a KMS Key ID is not provided, the default AWS key is used.
+
       - reference: .properties.system_blobstore.external.buildpacks_bucket
         label: Buildpacks Bucket Name
         description: S3 bucket for storing app buildpacks.
