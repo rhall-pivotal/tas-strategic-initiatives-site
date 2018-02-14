@@ -4,6 +4,7 @@ release: garden-runc
 manifest: |
   garden:
     cleanup_process_dirs_on_wait: true
+    debug_listen_address: 127.0.0.1:17019
     deny_networks:
     - 0.0.0.0/0
     deprecated_use_garden_shed: "(( .properties.enable_grootfs.value ? false : true ))"
