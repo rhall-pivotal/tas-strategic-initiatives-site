@@ -22,7 +22,7 @@ manifest: |
     privileged_image_plugin: /var/vcap/packages/grootfs/bin/grootfs
     privileged_image_plugin_extra_args:
     - --config
-    - /var/vcap/jobs/grootfs/config/privileged_grootfs_config.yml
+    - /var/vcap/jobs/garden/config/privileged_grootfs_config.yml
   grootfs:
     graph_cleanup_threshold_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(graph_cleanup_threshold_in_mb) ))
     insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
