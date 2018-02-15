@@ -58,11 +58,17 @@ property_inputs:
         label: URL Endpoint
         description: URL endpoint of your S3-compatible file store
 
+      - reference: .properties.system_blobstore.external.iam_instance_profile_authentication
+        label: S3 AWS with Instance Profile
+        description: |
+          Use instance profile for S3 authentication. This must have been associated with
+          your resource config as a VM extension.
+
       - reference: .properties.system_blobstore.external.access_key
-        label: Access Key
+        label: Access Key (required if not using S3 AWS with Instance Profile)
 
       - reference: .properties.system_blobstore.external.secret_key
-        label: Secret Key
+        label: Secret Key (required if not using S3 AWS with Instance Profile)
 
       - reference: .properties.system_blobstore.external.signature_version
         label: S3 Signature Version
