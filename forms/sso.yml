@@ -50,7 +50,9 @@ property_inputs:
               timespan) before the account is locked
 
       - reference: .properties.uaa.saml
-        label: SAML Identity Provider
+        label: |
+          SAML Identity Provider (SAML Identity Providers created by PAS must
+          be manually disabled when you no longer require them.)
         property_inputs:
           - reference: .properties.uaa.saml.sso_name
             label: Provider Name
