@@ -150,6 +150,21 @@ property_inputs:
       - reference: .properties.haproxy_forward_tls.disable
         label: Disable
 
+  - reference: .properties.haproxy_hsts_support
+    label: HAProxy support for HSTS
+    selector_property_inputs:
+      - reference: .properties.haproxy_hsts_support.enable
+        label: Enable
+        property_inputs:
+        - reference: .properties.haproxy_hsts_support.enable.max_age
+          label: Max Age in Seconds
+        - reference: .properties.haproxy_hsts_support.enable.include_subdomains
+          label: Include Subdomains
+        - reference: .properties.haproxy_hsts_support.enable.enable_preload
+          label: Enable Preload
+      - reference: .properties.haproxy_hsts_support.disable
+        label: Disable
+
   - reference: .ha_proxy.skip_cert_verify
     label: Disable SSL certificate verification for this environment
     description: |

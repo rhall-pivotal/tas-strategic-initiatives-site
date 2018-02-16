@@ -20,6 +20,10 @@ manifest: |
     disable_tls_10: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_10) ))
     disable_tls_11: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_11) ))
     enable_health_check_http: true
+    hsts_enable: (( .properties.haproxy_hsts_support.selected_option.parsed_manifest(hsts_enable) ))
+    hsts_include_subdomains: (( .properties.haproxy_hsts_support.selected_option.parsed_manifest(hsts_include_subdomains) ))
+    hsts_max_age: (( .properties.haproxy_hsts_support.selected_option.parsed_manifest(hsts_max_age) ))
+    hsts_preload: (( .properties.haproxy_hsts_support.selected_option.parsed_manifest(hsts_preload) ))
     internal_only_domains: (( .ha_proxy.internal_only_domains.parsed_strings ))
     keepalive_timeout: (( .router.frontend_idle_timeout.value ))
     server_timeout: (( .router.request_timeout_in_seconds.value ))

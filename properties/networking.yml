@@ -161,6 +161,55 @@
         manifest: |
           "off"
 
+- name: haproxy_hsts_support
+  type: selector
+  configurable: true
+  default: disable
+  option_templates:
+  - name: enable
+    select_value: enable
+    named_manifests:
+      - name: hsts_enable
+        manifest: |
+          true
+      - name: hsts_include_subdomains
+        manifest: |
+          (( .properties.haproxy_hsts_support.enable.include_subdomains.value ))
+      - name: hsts_max_age
+        manifest: |
+          (( .properties.haproxy_hsts_support.enable.max_age.value ))
+      - name: hsts_preload
+        manifest: |
+          (( .properties.haproxy_hsts_support.enable.enable_preload.value ))
+    property_blueprints:
+    - name: max_age
+      type: integer
+      configurable: true
+      default: 31536000
+    - name: include_subdomains
+      type: boolean
+      configurable: true
+      default: false
+    - name: enable_preload
+      type: boolean
+      configurable: true
+      default: false
+  - name: disable
+    select_value: disable
+    named_manifests:
+      - name: hsts_enable
+        manifest: |
+          false
+      - name: hsts_include_subdomains
+        manifest: |
+          false
+      - name: hsts_max_age
+        manifest: |
+          0
+      - name: hsts_preload
+        manifest: |
+          false
+
 - name: haproxy_max_buffer_size
   type: integer
   configurable: true
