@@ -127,6 +127,7 @@
 - name: gorouter_ssl_ciphers
   type: text
   configurable: true
+  default: "ECDHE-RSA-AES128-GCM-SHA256:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
 
 - name: haproxy_client_certificate
   type: rsa_cert_credentials
@@ -168,6 +169,7 @@
 - name: haproxy_ssl_ciphers
   type: text
   configurable: true
+  default: "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256:TLS_DHE_RSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
 
 - name: tcp_routing
   type: selector
