@@ -21,6 +21,7 @@ releases:
 - $( release "bosh-dns-aliases" )
 - $( release "bosh-system-metrics-forwarder" )
 - $( release "capi" )
+- $( release "cf-app-sd" )
 - $( release "cf-autoscaling" )
 - $( release "cf-backup-and-restore" )
 - $( release "cf-mysql" )
@@ -94,6 +95,7 @@ job_types:
 - $( instance_group "cloud_controller" ) # ERT only
 - $( instance_group "ha_proxy" ) # ERT & SRT
 - $( instance_group "router" ) # ERT & SRT
+- $( instance_group "service-discovery-controller" ) # ERT only
 - $( instance_group "mysql_monitor" ) # ERT & SRT
 - $( instance_group "clock_global" ) # ERT only
 - $( instance_group "cloud_controller_worker" ) # ERT only
@@ -136,6 +138,7 @@ property_blueprints:
 - $( property "credhub_tls" )
 - $( property "diego_database_name" )
 - $( property "enable_grootfs" )
+- $( property "enable_service_discovery_for_apps" )
 - $( property "garden_disk_cleanup" )
 - $( property "gorouter_ssl_ciphers" )
 - $( property "haproxy_client_certificate" )
@@ -143,6 +146,7 @@ property_blueprints:
 - $( property "haproxy_hsts_support" )
 - $( property "haproxy_max_buffer_size" )
 - $( property "haproxy_ssl_ciphers" )
+- $( property "hidden_service_discovery_checkbox" )
 - $( property "locket_database_name" )
 - $( property "logger_endpoint_port" )
 - $( property "loggregator_client_cert" )
@@ -190,6 +194,8 @@ property_blueprints:
 - $( property "saml_signature_algorithm" )
 - $( property "secure_service_instance_credentials" )
 - $( property "security_acknowledgement" )
+- $( property "service_discovery_client_tls" )
+- $( property "service_discovery_server_tls" )
 - $( property "silk_database_name" )
 - $( property "smoke_tests" )
 - $( property "smtp_address" )

@@ -1,21 +1,15 @@
 ---
-name: compute
-label: Compute
-resource_label: Compute
-description: Compute
+name: service-discovery-controller
+label: Service Discovery Controller
+resource_label: Service Discovery Controller
+description: Provides routing information for internal app routes
+
 templates:
-{{if eq tile "srt"}}
+{{if eq tile "ert"}}
 - $( job "consul_agent" )
-- $( job "rep" )
-- $( job "route_emitter" )
-- $( job "cfdot" )
-- $( job "garden" )
-- $( job "cflinuxfs2-rootfs-setup_diego_cell" )
 - $( job "metron_agent" )
-- $( job "garden-cni" )
-- $( job "nfsv3driver" )
 - $( job "syslog_forwarder" )
-- $( job "bosh-dns-adapter" )
+- $( job "service-discovery-controller" )
 {{else}}
 - $( job "placeholder" )
 {{end}}
@@ -25,38 +19,46 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 16384
+  default: 1024
   constraints:
-    min: 2048
+    min: 1024
+
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk
   configurable: true
-  default: 65536
+  default: 2048
   constraints:
-    min: 4096
+    min: 1024
+
 - name: persistent_disk
   type: integer
   label: Persistent Disk
   configurable: false
   default: 0
+
 - name: cpu
   type: integer
   label: CPU
   configurable: true
-  default: 2
+  default: 1
   constraints:
     min: 1
+
 static_ip: 0
 dynamic_ip: 1
-max_in_flight: 4%
+max_in_flight: 1
 single_az_only: false
+
 instance_definition:
   name: instances
   type: integer
   label: Instances
-  configurable: $( variable "compute_configurable_state" )
-  default: $( variable "compute_default_instances" )
+  configurable: $( variable "service_discovery_controller_configurable_state" )
+  default: $( variable "service_discovery_controller_default_instances" )
   constraints:
-    min: $( variable "compute_min_instances" )
-    max: $( variable "compute_max_instances" )
+    min: 0
+  zero_if:
+    property_reference: ".properties.enable_service_discovery_for_apps"
+    property_values:
+    - false

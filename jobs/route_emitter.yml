@@ -9,6 +9,7 @@ manifest: |
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       local_mode: true
+  internal_routes: (( .properties.enable_service_discovery_for_apps.value ))
   register_direct_instance_routes: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(use_container_address) ))
   tcp:
     enabled: true

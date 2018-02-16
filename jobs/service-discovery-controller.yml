@@ -1,0 +1,11 @@
+---
+name: service-discovery-controller
+release: cf-app-sd
+manifest: |
+  dnshttps:
+    client:
+      ca: (( $ops_manager.ca_certificate ))
+    server:
+      tls:
+        certificate: (( .properties.service_discovery_server_tls.cert_pem ))
+        private_key: (( .properties.service_discovery_server_tls.private_key_pem ))

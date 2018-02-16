@@ -1,0 +1,12 @@
+---
+name: bosh-dns-adapter
+release: cf-app-sd
+manifest: |
+  cf_app_sd_disable: (( .properties.hidden_service_discovery_checkbox.selected_option.parsed_manifest(service_discovery) ))
+  dnshttps:
+    client:
+      tls:
+        certificate: (( .properties.service_discovery_client_tls.cert_pem ))
+        private_key: (( .properties.service_discovery_client_tls.private_key_pem ))
+    server:
+      ca: (( $ops_manager.ca_certificate ))

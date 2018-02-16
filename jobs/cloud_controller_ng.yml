@@ -92,6 +92,7 @@ manifest: |
         "buildpack/windows2016": "buildpack_app_lifecycle/buildpack_app_lifecycle.tgz"
         "docker": "docker_app_lifecycle/docker_app_lifecycle.tgz"
       temporary_cc_uploader_mtls: true
+      temporary_create_internal_domain: (( .properties.enable_service_discovery_for_apps.value ))
       temporary_droplet_download_mtls: true
       temporary_local_apps: true
       temporary_local_staging: true
