@@ -2,7 +2,7 @@
 name: bosh-dns-adapter
 release: cf-app-sd
 manifest: |
-  cf_app_sd_disable: (( .properties.hidden_service_discovery_checkbox.selected_option.parsed_manifest(service_discovery) ))
+  cf_app_sd_disable: (( .properties.enable_service_discovery_for_apps.value ? false : true ))
   dnshttps:
     client:
       tls:

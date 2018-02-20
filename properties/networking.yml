@@ -4,25 +4,6 @@
   configurable: true
   default: false
 
-# needed to flip the checkbox boolean value as the basic ternary operator always produces a string...
-- name: hidden_service_discovery_checkbox
-  type: selector
-  configurable: false
-  default: only-option
-  option_templates:
-    - name: doesnt-matter
-      select_value: only-option
-      named_manifests:
-        - name: service_discovery
-          manifest: |
-            "(( .properties.enable_service_discovery_for_apps.value ? .properties.hidden_service_discovery_checkbox.selected_option.parsed_manifest(enable_service_discovery) : .properties.hidden_service_discovery_checkbox.selected_option.parsed_manifest(disable_service_discovery) ))"
-        - name: enable_service_discovery
-          manifest: |
-            false
-        - name: disable_service_discovery
-          manifest: |
-            true
-
 - name: service_discovery_client_tls
   type: rsa_cert_credentials
   configurable: false
