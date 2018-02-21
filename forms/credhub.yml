@@ -41,6 +41,41 @@ property_inputs:
       - reference: .properties.credhub_database.external.tls_ca
         label: Database CA Certificate
 
+- reference: .properties.credhub_hsm_provider_partition
+  label: HSM Provider Partition
+  description: |
+    The name of the HSM provider partition.
+
+- reference: .properties.credhub_hsm_provider_partition_password
+  label: HSM Provider Partition Password
+  description: |
+    The password used to access the HSM provider partition.
+
+- reference: .properties.credhub_hsm_provider_client_certificate
+  label: HSM Provider Client Certificate
+  description: |
+    The client certificate for the HSM.
+
+- reference: .properties.credhub_hsm_provider_servers
+  label: HSM Provider Servers
+  property_inputs:
+  - reference: host_address
+    label: Host Address
+    description: |
+      The host name or IP address of the HSM server.
+  - reference: port
+    label: Port
+    description: |
+      The port of the HSM server.
+  - reference: partition_serial_number
+    label: Partition Serial Number
+    description: |
+      The serial number of the HSM partition.
+  - reference: hsm_certificate
+    label: HSM Certificate
+    description: |
+      The certificate for the HSM server.
+
 - reference: .properties.credhub_key_encryption_passwords
   label: Encryption Keys
   property_inputs:
@@ -48,6 +83,8 @@ property_inputs:
     label: Name
     description: |
       Name of the encryption key.
+  - reference: provider
+    label: Provider
   - reference: key
     label: Key
     description: |
@@ -57,7 +94,7 @@ property_inputs:
     label: Primary
     description: |
        Checking this checkbox marks this key as the primary encryption key.
-       Only 1 key should be marked as primary.
+       Only one key should be marked as primary.
 
 - reference: .properties.secure_service_instance_credentials
   label: Secure Service Instance Credentials

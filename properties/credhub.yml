@@ -1,4 +1,71 @@
 ---
+- name: credhub_hsm_provider_partition
+  type: string
+  configurable: true
+  optional: true
+
+- name: credhub_hsm_provider_partition_password
+  type: secret
+  configurable: true
+  optional: true
+
+- name: credhub_hsm_provider_client_certificate
+  type: rsa_cert_credentials
+  configurable: true
+  optional: true
+
+- name: credhub_hsm_provider_servers
+  type: collection
+  configurable: true
+  optional: true
+  property_blueprints:
+  - name: host_address
+    type: string
+    configurable: true
+  - name: port
+    type: integer
+    configurable: true
+  - name: partition_serial_number
+    type: string
+    configurable: true
+  - name: hsm_certificate
+    type: text
+    configurable: true
+  named_manifests:
+  - name: servers
+    manifest: |
+      host: (( current_record.host_address.value ))
+      port: (( current_record.port.value ))
+      partition_serial_number: (( current_record.partition_serial_number.value ))
+      certificate: (( current_record.hsm_certificate.value ))
+
+- name: credhub_hsm_provider_list
+  type: selector
+  configurable: false
+  default: only-option
+  option_templates:
+    - name: doesnt-matter
+      select_value: only-option
+      named_manifests:
+      - name: list
+        manifest: |
+          "(( .properties.credhub_hsm_provider_partition.value ? .properties.credhub_hsm_provider_list.selected_option.parsed_manifest(internal_hsm) : .properties.credhub_hsm_provider_list.selected_option.parsed_manifest(internal_only) ))"
+      - name: internal_hsm
+        manifest: |
+          - name: internal-provider
+            type: internal
+          - name: hsm-provider
+            type: hsm
+            partition: (( .properties.credhub_hsm_provider_partition.value ))
+            partition_password: ((  .properties.credhub_hsm_provider_partition_password.value ))
+            client_certificate: (( .properties.credhub_hsm_provider_client_certificate.cert_pem ))
+            client_key: (( .properties.credhub_hsm_provider_client_certificate.private_key_pem ))
+            servers: (( .properties.credhub_hsm_provider_servers.parsed_manifest(servers) ))
+      - name: internal_only
+        manifest: |
+          - name: internal-provider
+            type: internal
+
 - name: credhub_key_encryption_passwords
   type: collection
   configurable: true
@@ -6,6 +73,14 @@
   - name: name
     type: string
     configurable: true
+  - name: provider
+    type: dropdown_select
+    configurable: true
+    options:
+    - name: internal
+      label: Internal
+    - name: hsm
+      label: HSM
   - name: key
     type: secret
     configurable: true
@@ -16,7 +91,7 @@
   named_manifests:
   - name: keys
     manifest: |
-      provider_name: internal-provider
+      provider_name: (( current_record.provider.value ))-provider
       encryption_password: (( current_record.key.value ))
       active: (( current_record.primary.value ))
 
