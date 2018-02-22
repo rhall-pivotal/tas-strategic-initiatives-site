@@ -309,6 +309,11 @@
         - name: secret
           manifest: |
 
+- name: router_enable_proxy
+  type: boolean
+  configurable: true
+  default: false
+
 - name: network_policy_server_cert
   type: rsa_cert_credentials
   default:

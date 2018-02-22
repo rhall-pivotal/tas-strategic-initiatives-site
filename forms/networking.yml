@@ -211,6 +211,15 @@ property_inputs:
       Do not enable this option without deploying routers for each
       Isolation Segment first.
 
+  - reference: .properties.router_enable_proxy
+    label: Enable support for PROXY protocol in CF Router
+    description: |
+      When enabled, Gorouter will parse each request for the presence
+      of PROXY metadata. This comes with a performance penalty.
+      If a client IP is sent this way, as when a load balancer
+      terminates TLS but doesn't support HTTP, Gorouter will set
+      the X-Forwarded-For header to this value.
+
   - reference: .properties.route_services
     label: |
       Choose whether to enable route services. Route services enable you to
