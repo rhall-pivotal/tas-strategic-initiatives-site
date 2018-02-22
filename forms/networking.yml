@@ -175,6 +175,15 @@ property_inputs:
     to prevent Router from filling the local disk entirely with the
     contents of access logs.
 
+- reference: .properties.router_enable_proxy
+  label: Enable support for PROXY protocol in CF Router
+  description: |
+    When enabled, Gorouter will parse each request for the presence
+    of PROXY metadata. This comes with a performance penalty.
+    If a client IP is sent this way, as when a load balancer
+    terminates TLS but doesn't support HTTP, Gorouter will set
+    the X-Forwarded-For header to this value.
+
 - reference: .properties.router_backend_max_conn
   label: Max Connections Per Backend
   description: |

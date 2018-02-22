@@ -18,6 +18,7 @@ manifest: |
       password: (( status_credentials.password ))
     route_services_secret: ((( router-route-services-secret )))
     client_cert_validation: (( .properties.router_client_cert_validation.selected_option.parsed_manifest(client_cert_validation) ))
+    enable_proxy: (( .properties.router_enable_proxy.value ))
     disable_http: (( .properties.routing_disable_http.value ))
     cipher_suites: (( .properties.gorouter_ssl_ciphers.value ))
     enable_ssl: true
