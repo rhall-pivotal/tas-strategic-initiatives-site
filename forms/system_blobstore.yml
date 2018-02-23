@@ -83,6 +83,14 @@ property_inputs:
           The files uploaded to the blobstore will be encrypted using the given KMS key.
           If Server-side Encryption is enabled and a KMS Key ID is not provided, the default AWS key is used.
 
+      - reference: .properties.system_blobstore.external.versioning
+        label: Versioning is enabled for all buckets listed below.
+        description: |
+          This setting determines how the buckets are backed up and restored.
+          Non-versioned S3 blobstore backup and restore is not supported yet.
+          More information at https://docs.pivotal.io/pivotalcf/2-1/customizing/backup-restore/backup-pcf-bbr.html.
+          S3 Signature Version must be set to V4 Signature for this to work properly.
+
       - reference: .properties.system_blobstore.external.buildpacks_bucket
         label: Buildpacks Bucket Name
         description: S3 bucket for storing app buildpacks.
