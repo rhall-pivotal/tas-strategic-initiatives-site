@@ -512,3 +512,7 @@ manifest: |
         access-token-validity: 120
         override: true
         refresh-token-validity: 3600
+    servlet:
+      session-cookie:
+        max-age: (( .properties.uaa_session_cookie_max_age.value ))
+      idle-timeout: (( .properties.uaa_session_idle_timeout.value ))

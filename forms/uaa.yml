@@ -78,6 +78,14 @@ property_inputs:
   label: Cloud Foundry CLI Refresh Token Lifetime (in seconds)
   description: Set the lifetime of the refresh token for the `cf` CLI.
 
+- reference: .uaa.uaa_session_cookie_max_age
+  label: Global Login Session Max Timeout (in seconds)
+  description: Set the max timeout for a global login session.
+
+- reference: .uaa.uaa_session_idle_timeout
+  label: Global Login Session Idle Timeout (in seconds)
+  description: Set the max timeout for idle global login sessions.
+
 - reference: .uaa.customize_username_label
   label: Customize Username Label (on login page)
   description: The text used to prompt for a username during login
