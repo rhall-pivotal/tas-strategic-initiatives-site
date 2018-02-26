@@ -21,5 +21,10 @@ manifest: |
             script: /bin/true
         reverse_log_proxy: {}
         routing-api: {}
+        service-discovery-controller:
+          name: service-discovery-controller
+          check:
+            interval: 5s
+            script: /bin/true
         silk-controller: {}
         uaa: {}
