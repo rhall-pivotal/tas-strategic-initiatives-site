@@ -3,32 +3,36 @@ const should = require("should")
 const migration = require("../201711071502_credhub_credentials_2_0.js");
 
 original_hash = {
-	properties: {
-		".properties.deploy_autoscaling_broker_credentials": "super-secret-1",
-		".properties.deploy_autoscaling_encryption_key": "super-secret-2",
-		".backup-prepare.backup_encryption_key": "super-secret-3",
-		".diego_database.bbs_encryption_passphrase": "super-secret-4",
-		".nfs_server.blobstore_secret": "super-secret-5",
-		".properties.deploy_notifications_encryption_key": "super-secret-6",
-		".properties.push_pivotal_account_encryption_key": "super-secret-7",
-		".properties.push_usage_service_secret_token": "super-secret-8",
-		".router.route_services_secret": "super-secret-9",
-	},
+  properties: {
+    ".properties.deploy_autoscaling_broker_credentials": "super-secret-1",
+    ".properties.deploy_autoscaling_encryption_key": "super-secret-2",
+    ".backup-prepare.backup_encryption_key": "super-secret-3",
+    ".properties.consul_encrypt_key": "super-secret-10",
+    ".diego_database.bbs_encryption_passphrase": "super-secret-4",
+    ".nats.credentials": "super-secret-11",
+    ".nfs_server.blobstore_secret": "super-secret-5",
+    ".properties.deploy_notifications_encryption_key": "super-secret-6",
+    ".properties.push_pivotal_account_encryption_key": "super-secret-7",
+    ".properties.push_usage_service_secret_token": "super-secret-8",
+    ".router.route_services_secret": "super-secret-9",
+  },
   variable_migrations: []
 };
 
 migrated_hash = {
-	properties: {
-		".properties.deploy_autoscaling_broker_credentials": "super-secret-1",
-		".properties.deploy_autoscaling_encryption_key": "super-secret-2",
-		".backup-prepare.backup_encryption_key": "super-secret-3",
-		".diego_database.bbs_encryption_passphrase": "super-secret-4",
-		".nfs_server.blobstore_secret": "super-secret-5",
-		".properties.deploy_notifications_encryption_key": "super-secret-6",
-		".properties.push_pivotal_account_encryption_key": "super-secret-7",
-		".properties.push_usage_service_secret_token": "super-secret-8",
-		".router.route_services_secret": "super-secret-9",
-	},
+  properties: {
+    ".properties.deploy_autoscaling_broker_credentials": "super-secret-1",
+    ".properties.deploy_autoscaling_encryption_key": "super-secret-2",
+    ".backup-prepare.backup_encryption_key": "super-secret-3",
+    ".diego_database.bbs_encryption_passphrase": "super-secret-4",
+    ".nats.credentials": "super-secret-11",
+    ".properties.consul_encrypt_key": "super-secret-10",
+    ".nfs_server.blobstore_secret": "super-secret-5",
+    ".properties.deploy_notifications_encryption_key": "super-secret-6",
+    ".properties.push_pivotal_account_encryption_key": "super-secret-7",
+    ".properties.push_usage_service_secret_token": "super-secret-8",
+    ".router.route_services_secret": "super-secret-9",
+  },
   variable_migrations: [
     {
       "from": "super-secret-1",
@@ -43,8 +47,16 @@ migrated_hash = {
       "to_variable": "deploy-autoscaling-encryption-key"
     },
     {
+      "from": "super-secret-10",
+      "to_variable": "consul-encryption-key"
+    },
+    {
       "from": "super-secret-4",
       "to_variable": "diego-db-bbs-encryption-passphrase"
+    },
+    {
+      "from": "super-secret-11",
+      "to_variable": "nats-credentials"
     },
     {
       "from": "super-secret-5",
@@ -65,7 +77,7 @@ migrated_hash = {
     {
       "from": "super-secret-9",
       "to_variable": "router-route-services-secret"
-    },
+    }
   ]
 };
 
