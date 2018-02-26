@@ -2,7 +2,7 @@ require("tap").mochaGlobals()
 const should = require("should")
 const migration = require("../201711071502_credhub_credentials_2_0.js");
 
-original_hash = {
+input = {
   properties: {
     ".properties.deploy_autoscaling_broker_credentials": "secret-broker-credentials",
     ".properties.deploy_autoscaling_encryption_key": "secret-autoscaling-key",
@@ -19,7 +19,7 @@ original_hash = {
   variable_migrations: []
 };
 
-migrated_hash = {
+expectedOutput = {
   properties: {
     ".properties.deploy_autoscaling_broker_credentials": "secret-broker-credentials",
     ".properties.deploy_autoscaling_encryption_key": "secret-autoscaling-key",
@@ -81,10 +81,10 @@ migrated_hash = {
   ]
 };
 
-describe("migrate 2.0 credentials to credhub", function() {
-  context("when migrations run", function() {
-    it("returns the expected migrated hash", function(){
-      migration.migrate(original_hash).should.deepEqual(migrated_hash);
+describe("initial credhub credentials migration", function() {
+  context("when the migration is run", function() {
+    it("migrates a subset of credentials to credhub", function(){
+      migration.migrate(input).should.deepEqual(expectedOutput);
     });
   });
 });
