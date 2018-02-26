@@ -4,78 +4,78 @@ const migration = require("../201711071502_credhub_credentials_2_0.js");
 
 original_hash = {
   properties: {
-    ".properties.deploy_autoscaling_broker_credentials": "super-secret-1",
-    ".properties.deploy_autoscaling_encryption_key": "super-secret-2",
-    ".backup-prepare.backup_encryption_key": "super-secret-3",
-    ".properties.consul_encrypt_key": "super-secret-10",
-    ".diego_database.bbs_encryption_passphrase": "super-secret-4",
-    ".nats.credentials": "super-secret-11",
-    ".nfs_server.blobstore_secret": "super-secret-5",
-    ".properties.deploy_notifications_encryption_key": "super-secret-6",
-    ".properties.push_pivotal_account_encryption_key": "super-secret-7",
-    ".properties.push_usage_service_secret_token": "super-secret-8",
-    ".router.route_services_secret": "super-secret-9",
+    ".properties.deploy_autoscaling_broker_credentials": "secret-broker-credentials",
+    ".properties.deploy_autoscaling_encryption_key": "secret-autoscaling-key",
+    ".backup-prepare.backup_encryption_key": "secret-backup-key",
+    ".properties.consul_encrypt_key": "secret-consul-key",
+    ".diego_database.bbs_encryption_passphrase": "secret-bbs-passphrase",
+    ".nats.credentials": "secret-nats-credentials",
+    ".nfs_server.blobstore_secret": "secret-blobstore-secret",
+    ".properties.deploy_notifications_encryption_key": "secret-notifications-encryption-key",
+    ".properties.push_pivotal_account_encryption_key": "secret-pivotal-account-encryption-key",
+    ".properties.push_usage_service_secret_token": "secret-usage-service-token",
+    ".router.route_services_secret": "secret-route-services-secret",
   },
   variable_migrations: []
 };
 
 migrated_hash = {
   properties: {
-    ".properties.deploy_autoscaling_broker_credentials": "super-secret-1",
-    ".properties.deploy_autoscaling_encryption_key": "super-secret-2",
-    ".backup-prepare.backup_encryption_key": "super-secret-3",
-    ".diego_database.bbs_encryption_passphrase": "super-secret-4",
-    ".nats.credentials": "super-secret-11",
-    ".properties.consul_encrypt_key": "super-secret-10",
-    ".nfs_server.blobstore_secret": "super-secret-5",
-    ".properties.deploy_notifications_encryption_key": "super-secret-6",
-    ".properties.push_pivotal_account_encryption_key": "super-secret-7",
-    ".properties.push_usage_service_secret_token": "super-secret-8",
-    ".router.route_services_secret": "super-secret-9",
+    ".properties.deploy_autoscaling_broker_credentials": "secret-broker-credentials",
+    ".properties.deploy_autoscaling_encryption_key": "secret-autoscaling-key",
+    ".backup-prepare.backup_encryption_key": "secret-backup-key",
+    ".diego_database.bbs_encryption_passphrase": "secret-bbs-passphrase",
+    ".nats.credentials": "secret-nats-credentials",
+    ".properties.consul_encrypt_key": "secret-consul-key",
+    ".nfs_server.blobstore_secret": "secret-blobstore-secret",
+    ".properties.deploy_notifications_encryption_key": "secret-notifications-encryption-key",
+    ".properties.push_pivotal_account_encryption_key": "secret-pivotal-account-encryption-key",
+    ".properties.push_usage_service_secret_token": "secret-usage-service-token",
+    ".router.route_services_secret": "secret-route-services-secret",
   },
   variable_migrations: [
     {
-      "from": "super-secret-1",
+      "from": "secret-broker-credentials",
       "to_variable": "deploy-autoscaling-broker-credentials"
     },
     {
-      "from": "super-secret-2",
+      "from": "secret-autoscaling-key",
       "to_variable": "deploy-autoscaling-encryption-key"
     },
     {
-      "from": "super-secret-3",
+      "from": "secret-backup-key",
       "to_variable": "deploy-autoscaling-encryption-key"
     },
     {
-      "from": "super-secret-10",
+      "from": "secret-consul-key",
       "to_variable": "consul-encryption-key"
     },
     {
-      "from": "super-secret-4",
+      "from": "secret-bbs-passphrase",
       "to_variable": "diego-db-bbs-encryption-passphrase"
     },
     {
-      "from": "super-secret-11",
+      "from": "secret-nats-credentials",
       "to_variable": "nats-credentials"
     },
     {
-      "from": "super-secret-5",
+      "from": "secret-blobstore-secret",
       "to_variable": "nfs-server-blobstore-secret"
     },
     {
-      "from": "super-secret-6",
+      "from": "secret-notifications-encryption-key",
       "to_variable": "deploy-notifications-encryption-key"
     },
     {
-      "from": "super-secret-7",
+      "from": "secret-pivotal-account-encryption-key",
       "to_variable": "push-pivotal-account-encryption-key"
     },
     {
-      "from": "super-secret-8",
+      "from": "secret-usage-service-token",
       "to_variable": "push-usage-service-secret-token"
     },
     {
-      "from": "super-secret-9",
+      "from": "secret-route-services-secret",
       "to_variable": "router-route-services-secret"
     }
   ]
