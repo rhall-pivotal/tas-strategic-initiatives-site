@@ -17,3 +17,5 @@ manifest: |
     network_plugin_extra_args:
     - --configFile=/var/vcap/jobs/garden-cni/config/adapter.json
     no_proxy: (( $ops_manager.no_proxy ))
+    persistent_image_list:
+    - "/var/vcap/packages/cflinuxfs2/rootfs.tar"
