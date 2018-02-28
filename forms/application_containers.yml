@@ -79,13 +79,6 @@ property_inputs:
     - reference: .properties.nfs_volume_driver.disable
       label: Disable
 
-- reference: .properties.enable_grootfs
-  label: Enable the GrootFS container image plugin for Garden RunC
-  description: |
-    Enabling the GrootFS container image plugin is recommended.
-    However, if you experience issues with GrootFS, you can disable the plugin
-    and rollback to the image plugin that is built into Garden RunC.
-
 - reference: .properties.rep_proxy_enabled
   label: Enable Envoy proxy on Garden containers
   description: ""
