@@ -28,3 +28,18 @@
           default: 10_240
           constraints:
             min: 1
+
+- name: enable_grootfs
+  type: boolean
+  configurable: true
+  default: true
+
+- name: rep_preloaded_rootfses_garden
+  type: string_list
+  configurable: false
+  default: ["cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs"]
+
+- name: rep_preloaded_rootfses_grootfs
+  type: string_list
+  configurable: false
+  default: ["cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"]

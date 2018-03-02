@@ -19,8 +19,7 @@ manifest: |
       enable_legacy_api_endpoints: false
       locket:
         api_location: locket.service.cf.internal:8891
-      preloaded_rootfses:
-      - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
+      preloaded_rootfses: '(( .properties.enable_grootfs.value ? .properties.rep_preloaded_rootfses_grootfs.value : .properties.rep_preloaded_rootfses_garden.value ))'
       require_tls: true
       server_cert: (( .properties.rep_server_cert.cert_pem ))
       server_key: (( .properties.rep_server_cert.private_key_pem ))
