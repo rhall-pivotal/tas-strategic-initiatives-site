@@ -26,8 +26,7 @@ manifest: |
       server_cert: (( .properties.rep_server_cert.cert_pem ))
       server_key: (( .properties.rep_server_cert.private_key_pem ))
       use_azure_fault_domains: true
-      preloaded_rootfses:
-      - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
+      preloaded_rootfses: '(( .properties.enable_grootfs.value ? .properties.rep_preloaded_rootfses_grootfs.value : .properties.rep_preloaded_rootfses_garden.value ))'
       placement_tags: [ (( placement_tag.value )) ]
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
