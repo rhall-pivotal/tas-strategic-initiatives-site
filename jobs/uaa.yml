@@ -320,6 +320,13 @@ manifest: |
         secret: (( .uaa.doppler_client_credentials.password ))
         authorities: uaa.resource
         authorized-grant-types: client_credentials
+      noisy_neighbor_nozzle:
+        id: (( .uaa.noisy_neighbor_client_credentials.identity ))
+        secret: (( .uaa.noisy_neighbor_client_credentials.password ))
+        authorities: doppler.firehose,uaa.resource,cloud_controller.admin_read_only
+        authorized-grant-types: client_credentials
+        override: true
+        scope: doppler.firehose
       gorouter:
         id: (( .uaa.gorouter_client_credentials.identity ))
         secret: (( .uaa.gorouter_client_credentials.password ))
