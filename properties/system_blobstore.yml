@@ -216,6 +216,69 @@
         - name: secret_key
           type: secret
           configurable: true
+    - name: external_gcs_service_account
+      select_value: external_gcs_service_account
+      named_manifests:
+        - name: ccbuildpack
+          manifest: |
+            blobstore_type: fog
+            buildpack_directory_key: (( .properties.system_blobstore.external_gcs.buildpacks_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
+              google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
+              google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+        - name: ccdroplet
+          manifest: |
+            max_staged_droplets_stored: 2
+            blobstore_type: fog
+            droplet_directory_key: (( .properties.system_blobstore.external_gcs.droplets_bucket.value ))
+            fog_connection:
+              google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
+              google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
+              google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+        - name: ccpackage
+          manifest: |
+            max_package_size: 2147483648
+            blobstore_type: fog
+            app_package_directory_key: (( .properties.system_blobstore.external_gcs.packages_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
+              google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
+              google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+        - name: ccresource
+          manifest: |
+            blobstore_type: fog
+            resource_directory_key: (( .properties.system_blobstore.external_gcs.resources_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
+              google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
+              google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+      property_blueprints:
+        - name: buildpacks_bucket
+          type: string
+          configurable: true
+        - name: droplets_bucket
+          type: string
+          configurable: true
+        - name: packages_bucket
+          type: string
+          configurable: true
+        - name: resources_bucket
+          type: string
+          configurable: true
+        - name: project_id
+          type: string
+          configurable: true
+        - name: service_account_email
+          type: string
+          configurable: true
+        - name: service_account_json_key
+          type: text
+          configurable: true
+
     - name: external_azure
       select_value: external_azure
       named_manifests:

@@ -117,7 +117,7 @@ property_inputs:
           the same name as above.
 
   - reference: .properties.system_blobstore.external_gcs
-    label: External Google Cloud Storage
+    label: External Google Cloud Storage with Access Key and Secret Key
     description:
     property_inputs:
       - reference: .properties.system_blobstore.external_gcs.access_key
@@ -145,6 +145,52 @@ property_inputs:
           as above.
 
       - reference: .properties.system_blobstore.external_gcs.resources_bucket
+        label: Resources Bucket Name
+        description: |
+          Bucket for storing app resources. Pivotal recommends that you use a
+          unique bucket name for app resources, but you can also use the same
+          name as above.
+
+  - reference: .properties.system_blobstore.external_gcs_service_account
+    label: External Google Cloud Storage with Service Account
+    description:
+    property_inputs:
+      - reference: .properties.system_blobstore.external_gcs_service_account.project_id
+        label: GCP Project ID
+        description: |
+          Your Google Cloud Platform Project ID. The Project ID can be found
+          on the Dashboard of the GCP Console.
+
+      - reference: .properties.system_blobstore.external_gcs_service_account.service_account_email
+        label: GCP Service Account Email
+        description: |
+          Your Google Cloud Platform Service Account Email.
+
+      - reference: .properties.system_blobstore.external_gcs_service_account.service_account_json_key
+        label: GCP Service Account Key JSON
+        description: |
+          Your Google Cloud Platform Service Account Key with access to the specified
+          project and bucket in JSON format.
+
+      - reference: .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket
+        label: Buildpacks Bucket Name
+        description: Bucket for storing app buildpacks.
+
+      - reference: .properties.system_blobstore.external_gcs_service_account.droplets_bucket
+        label: Droplets Bucket Name
+        description: |
+          Bucket for storing app droplets. Pivotal recommends that you use a
+          unique bucket name for droplets, but you can also use the same name
+          as above.
+
+      - reference: .properties.system_blobstore.external_gcs_service_account.packages_bucket
+        label: Packages Bucket Name
+        description: |
+          Bucket for storing app packages. Pivotal recommends that you use a
+          unique bucket name for packages, but you can also use the same name
+          as above.
+
+      - reference: .properties.system_blobstore.external_gcs_service_account.resources_bucket
         label: Resources Bucket Name
         description: |
           Bucket for storing app resources. Pivotal recommends that you use a
