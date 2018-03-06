@@ -2,6 +2,7 @@
 name: rep_windows
 release: diego
 manifest: |
+  declarative_healthcheck_path: /var/vcap/packages/healthcheck_windows/internal
   diego:
     executor:
       ca_certs_for_downloads: (( $ops_manager.ca_certificate ))
