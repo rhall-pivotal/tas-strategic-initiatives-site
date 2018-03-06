@@ -32,7 +32,7 @@ manifest: |
         ((( /cf/diego-instance-identity-root-ca.certificate )))
         (( $ops_manager.ca_certificate ))
         (( $ops_manager.trusted_certificates ))
-        (( ..cf.properties.networking_poe_ssl_cert.cert_pem ))
+        (( ..cf.properties.networking_poe_ssl_certs.parsed_manifest(routing_certificates) ))
   enable_declarative_healthcheck: true
   loggregator:
     ca_cert: (( $ops_manager.ca_certificate ))
