@@ -222,7 +222,7 @@
         - name: ccbuildpack
           manifest: |
             blobstore_type: fog
-            buildpack_directory_key: (( .properties.system_blobstore.external_gcs.buildpacks_bucket.value ))
+            buildpack_directory_key: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
             fog_connection:
               provider: Google
               google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
@@ -232,7 +232,7 @@
           manifest: |
             max_staged_droplets_stored: 2
             blobstore_type: fog
-            droplet_directory_key: (( .properties.system_blobstore.external_gcs.droplets_bucket.value ))
+            droplet_directory_key: (( .properties.system_blobstore.external_gcs_service_account.droplets_bucket.value ))
             fog_connection:
               google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
               google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
@@ -241,7 +241,7 @@
           manifest: |
             max_package_size: 2147483648
             blobstore_type: fog
-            app_package_directory_key: (( .properties.system_blobstore.external_gcs.packages_bucket.value ))
+            app_package_directory_key: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
             fog_connection:
               provider: Google
               google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
@@ -250,7 +250,7 @@
         - name: ccresource
           manifest: |
             blobstore_type: fog
-            resource_directory_key: (( .properties.system_blobstore.external_gcs.resources_bucket.value ))
+            resource_directory_key: (( .properties.system_blobstore.external_gcs_service_account.resources_bucket.value ))
             fog_connection:
               provider: Google
               google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
