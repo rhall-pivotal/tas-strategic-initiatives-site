@@ -286,7 +286,7 @@ manifest: |
         secret: (( .uaa.autoscale_api_client_credentials.password ))
         override: true
         autoapprove: true
-        authorities: "uaa.resource,cloud_controller.read"
+        authorities: "uaa.resource,cloud_controller.admin_read_only"
         authorized-grant-types: "client_credentials"
         access-token-validity: 3600
       system_passwords:
