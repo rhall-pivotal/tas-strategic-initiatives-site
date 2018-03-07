@@ -29,7 +29,7 @@
     type: rsa_cert_credentials
     configurable: true
   named_manifests:
-  - name: routing_certificates
+  - name: routing_certificates_and_private_keys
     manifest: |
       cert_chain: (( current_record.certificate.cert_pem ))
       private_key: (( current_record.certificate.private_key_pem ))
