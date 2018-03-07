@@ -4,9 +4,10 @@ release: garden-runc
 manifest: |
   garden:
     listen_address: "127.0.0.1:9241"
-    image_plugin: "/var/vcap/packages/winc-image/winc-image.exe"
+    image_plugin: "/var/vcap/packages/groot/groot.exe"
     image_plugin_extra_args:
-    - "--log=/var/vcap/sys/log/winc-image/winc-image.log"
+    - "--driver-store=/var/vcap/data/groot"
+    - "--config=/var/vcap/jobs/groot/config/groot.yml"
     network_plugin: "/var/vcap/packages/winc-network/winc-network.exe"
     network_plugin_extra_args:
     - "--configFile=/var/vcap/jobs/winc-network/config/interface.json"
