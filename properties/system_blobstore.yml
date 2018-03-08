@@ -234,6 +234,7 @@
             blobstore_type: fog
             droplet_directory_key: (( .properties.system_blobstore.external_gcs_service_account.droplets_bucket.value ))
             fog_connection:
+              provider: Google
               google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
               google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
               google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
