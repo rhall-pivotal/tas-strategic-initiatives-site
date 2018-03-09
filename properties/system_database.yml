@@ -386,11 +386,12 @@
         - name: nfsvolume_bbr
           manifest: |
             db_driver: mysql
-            db_host: (( .properties.system_database.external.host.value ))
+            db_hostname: (( .properties.system_database.external.host.value ))
             db_name: (( .properties.nfsvolume_database_name.value ))
             db_password: (( .properties.system_database.external.nfsvolume_password.value ))
             db_port: (( .properties.system_database.external.port.value ))
             db_username: (( .properties.system_database.external.nfsvolume_username.value ))
+            release_level_backup: true
 
 - name: mysql_backups
   type: selector
