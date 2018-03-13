@@ -4,6 +4,7 @@ manifest: |
   containers:
     proxy:
       enabled: (( .properties.rep_proxy_enabled.value ))
+      additional_memory_allocation_mb: 32
     trusted_ca_certificates:
     - |
       ((( /cf/diego-instance-identity-root-ca.certificate )))
