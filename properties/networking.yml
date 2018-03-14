@@ -185,10 +185,12 @@
 - name: gorouter_ssl_ciphers
   type: text
   configurable: true
+  default: "ECDHE-RSA-AES128-GCM-SHA256:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
 
 - name: haproxy_ssl_ciphers
   type: text
   configurable: true
+  default: "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384"
 
 - name: haproxy_max_buffer_size
   type: integer
