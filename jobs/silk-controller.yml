@@ -1,0 +1,16 @@
+---
+name: silk-controller
+release: cf-networking
+provides: |
+  cf_network: {as: cf_network, shared: true}
+consumes: |
+  (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
+manifest: |
+  cf_networking:
+    disable: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(disable_silk) ))
+    network: (( .properties.container_networking_interface_plugin.silk.network_cidr.value || "10.255.0.0/16" ))
+    silk_controller:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      server_cert: (( .diego_database.silk_controller_server_cert.cert_pem ))
+      server_key: (( .diego_database.silk_controller_server_cert.private_key_pem ))
+      database: (( .properties.system_database.selected_option.parsed_manifest(silkdb) ))

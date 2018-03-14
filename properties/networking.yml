@@ -376,75 +376,9 @@
       configurable: true
       optional: true
     named_manifests:
-      - name: runtime_config
+      - name: disable_silk
         manifest: |
-          releases:
-          - $( release "cf-networking" )
-          addons:
-          - name: c2c-diego-cell-cf
-            include:
-              # this intentionally matches the IST as well as the ERT
-              jobs:
-              - name: rep
-                release: diego
-            jobs:
-            - name: cni
-              release: cf-networking
-              properties:
-                cf_networking:
-                  dns_servers: '(( $director.dns_release_present ? .properties.bosh_dns_servers.parsed_strings : .properties.container_networking_interface_plugin.silk.dns_servers.parsed_strings ))'
-                  mtu: (( .properties.container_networking_interface_plugin.silk.network_mtu.value ))
-                  iptables_logging: (( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ))
-                  iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
-                  iptables_denied_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_denied_logs_per_sec.value ))
-            - name: iptables-logger
-              release: cf-networking
-            - name: netmon
-              release: cf-networking
-            - name: silk-daemon
-              release: cf-networking
-              consumes:
-                cf_network: {from: cf_network, deployment: (( .deployment_name )) }
-              properties:
-                cf_networking:
-                  silk_daemon:
-                    ca_cert: (( $ops_manager.ca_certificate ))
-                    client_cert: (( .diego_database.silk_daemon_client_cert.cert_pem ))
-                    client_key: (( .diego_database.silk_daemon_client_cert.private_key_pem ))
-                  vtep_port: (( .properties.container_networking_interface_plugin.silk.vtep_port.value ))
-            - name: vxlan-policy-agent
-              release: cf-networking
-              properties:
-                cf_networking:
-                  iptables_logging: (( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ))
-                  iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
-                  policy_server:
-                    hostname: network-policy-server.service.cf.internal
-                  vxlan_policy_agent:
-                    client_cert: (( .properties.network_policy_agent_cert.cert_pem ))
-                    client_key: (( .properties.network_policy_agent_cert.private_key_pem ))
-                    ca_cert: (( $ops_manager.ca_certificate ))
-          - name: c2c-diego-database-cf
-            include:
-              deployments: [(( .deployment_name ))]
-              jobs:
-              - name: bbs
-                release: diego
-            jobs:
-            - name: silk-controller
-              release: cf-networking
-              provides:
-                cf_network: {as: cf_network, shared: true}
-              consumes:
-                (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
-              properties:
-                cf_networking:
-                  network: (( .properties.container_networking_interface_plugin.silk.network_cidr.value || "10.255.0.0/16" ))
-                  silk_controller:
-                    ca_cert: (( $ops_manager.ca_certificate ))
-                    server_cert: (( .diego_database.silk_controller_server_cert.cert_pem ))
-                    server_key: (( .diego_database.silk_controller_server_cert.private_key_pem ))
-                    database: (( .properties.system_database.selected_option.parsed_manifest(silkdb) ))
+          false
       - name: use_container_address
         manifest: |
           false
@@ -452,10 +386,9 @@
   - name: external
     select_value: external
     named_manifests:
-      - name: runtime_config
+      - name: disable_silk
         manifest: |
-          releases: []
-          addons: []
+          true
       - name: use_container_address
         manifest: |
           true
