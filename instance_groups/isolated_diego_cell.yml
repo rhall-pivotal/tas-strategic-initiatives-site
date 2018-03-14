@@ -3,16 +3,21 @@ name: isolated_diego_cell
 label: Diego Cell
 resource_label: Diego Cell
 templates:
-  - $( job "consul_agent" )
-  - $( job "rep" )
-  - $( job "route_emitter" )
-  - $( job "cfdot" )
-  - $( job "garden" )
-  - $( job "cflinuxfs2-rootfs-setup" )
-  - $( job "metron_agent" )
-  - $( job "garden-cni" )
-  - $( job "nfsv3driver" )
-  - $( job "syslog_forwarder" )
+- $( job "consul_agent" )
+- $( job "rep" )
+- $( job "route_emitter" )
+- $( job "cfdot" )
+- $( job "garden" )
+- $( job "cflinuxfs2-rootfs-setup" )
+- $( job "metron_agent" )
+- $( job "cni" )
+- $( job "silk-daemon" )
+- $( job "garden-cni" )
+- $( job "netmon" )
+- $( job "vxlan-policy-agent" )
+- $( job "nfsv3driver" )
+- $( job "syslog_forwarder" )
+- $( job "iptables-logger" )
 
 resource_definitions:
   - name: ram

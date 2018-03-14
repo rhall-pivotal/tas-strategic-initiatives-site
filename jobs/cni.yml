@@ -1,0 +1,11 @@
+---
+name: cni
+release: cf-networking
+manifest: |
+  cf_networking:
+    disable: (( ..cf.properties.container_networking_interface_plugin.selected_option.parsed_manifest(disable_silk) ))
+    dns_servers: '(( $director.dns_release_present ? ..cf.properties.bosh_dns_servers.parsed_strings : ..cf.properties.container_networking_interface_plugin.silk.dns_servers.parsed_strings ))'
+    mtu: (( ..cf.properties.container_networking_interface_plugin.silk.network_mtu.value ))
+    iptables_logging: (( ..cf.properties.container_networking_interface_plugin.silk.enable_log_traffic.value ))
+    iptables_accepted_udp_logs_per_sec: (( ..cf.properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
+    iptables_denied_logs_per_sec: (( ..cf.properties.container_networking_interface_plugin.silk.iptables_denied_logs_per_sec.value ))
