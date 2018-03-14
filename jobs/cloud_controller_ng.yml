@@ -99,6 +99,7 @@ manifest: |
       temporary_local_tasks: true
       temporary_local_tps: true
       file_server_url: http://file-server.service.cf.internal:$( variable "diego_fileserver_port" )
+      pid_limit: 0
     allowed_cors_domains:
     - https://apm.(( .cloud_controller.system_domain.value ))
     - https://metrics.(( .cloud_controller.system_domain.value ))
