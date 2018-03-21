@@ -8,7 +8,9 @@ manifest: |
       host_key: (( .diego_brain.ssh_host_key.private_key_pem ))
       enable_cf_auth: true
       diego_credentials: ''
-      uaa_token_url: https://uaa.(( .cloud_controller.system_domain.value ))/oauth/token
+      uaa:
+        url: https://uaa.(( .cloud_controller.system_domain.value ))
+        port: 443
       uaa_secret: (( .uaa.ssh_proxy_client_credentials.password ))
       bbs:
         client_cert: (( .properties.bbs_client_cert.cert_pem ))

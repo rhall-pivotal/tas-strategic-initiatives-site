@@ -6,28 +6,19 @@ manifest: |
     bbs:
       active_key_label: key1
       auctioneer:
-        require_tls: true
         api_location: auctioneer.service.cf.internal:9016
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.auctioneer_client_cert.cert_pem ))
         client_key: (( .properties.auctioneer_client_cert.private_key_pem ))
       ca_cert: (( $ops_manager.ca_certificate ))
       detect_consul_cell_registrations: false
-      etcd:
-        client_cert: ''
-        client_key: ''
-        machines: []
-        ca_cert: ''
       encryption_keys:
       - label: key1
         passphrase: ((( diego-db-bbs-encryption-passphrase )))
-      locket:
-        api_location: locket.service.cf.internal:8891
       rep:
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.rep_client_cert.cert_pem ))
         client_key: (( .properties.rep_client_cert.private_key_pem ))
-        require_tls: true
       server_cert: (( .properties.bbs_server_cert.cert_pem ))
       server_key: (( .properties.bbs_server_cert.private_key_pem ))
       skip_consul_lock: true

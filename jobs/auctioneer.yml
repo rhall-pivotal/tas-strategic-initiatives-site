@@ -16,7 +16,4 @@ manifest: |
       rep:
         client_cert: (( .properties.rep_client_cert.cert_pem ))
         client_key: (( .properties.rep_client_cert.private_key_pem ))
-        require_tls: true
         ca_cert: (( $ops_manager.ca_certificate ))
-      locket:
-        api_location: locket.service.cf.internal:8891
