@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
+
+	yaml "gopkg.in/yaml.v2"
 )
 
 //go:generate counterfeiter -o ./fakes/command_runner.go --fake-name CommandRunner . CommandRunner
@@ -23,6 +26,21 @@ type ProductConfig struct {
 type ProductService struct {
 	config    ProductConfig
 	cmdRunner CommandRunner
+}
+
+type StagedProductResponse struct {
+	GUID string `json:"guid"`
+	Type string `json:"type"`
+}
+
+type StagedManifestResponse struct {
+	Manifest map[string]interface{}
+	Errors   OMError `json:"errors"`
+}
+
+type OMError struct {
+	// XXX: reconsider, the key here may change depending on the endpoint
+	Messages []string `json:"base"`
 }
 
 func NewProductService(config ProductConfig) (*ProductService, error) {
@@ -115,14 +133,61 @@ func (p *ProductService) RenderManifest() (Manifest, error) {
 		"om",
 		"--skip-ssl-validation",
 		"--target", os.Getenv("OM_URL"),
-		"staged-manifest",
-		"--product-name", p.config.Name,
+		"curl",
+		"--path", "/api/v0/staged/products",
 	)
 	if err != nil {
-		return Manifest{}, fmt.Errorf("Unable to retrieve staged manifest for product %q: %s: %s", p.config.Name, err, errOutput)
+		return Manifest{}, fmt.Errorf("Unable to retrieve staged products: %s: %s", err, errOutput)
 	}
 
-	return NewManifest(string(response), p.cmdRunner), nil
+	var stagedProducts []StagedProductResponse
+	err = json.Unmarshal([]byte(response), &stagedProducts)
+	if err != nil {
+		return Manifest{}, fmt.Errorf("Unable to retrieve staged products: %s", err)
+	}
+
+	var productGUID string
+	var stagedTypes []string
+	for _, sp := range stagedProducts {
+		if sp.Type == p.config.Name {
+			productGUID = sp.GUID
+			break
+		} else {
+			stagedTypes = append(stagedTypes, sp.Type)
+		}
+	}
+	if productGUID == "" {
+		return Manifest{}, fmt.Errorf("Product %q has not been staged. Staged products: %q",
+			p.config.Name, strings.Join(stagedTypes, ", "))
+	}
+
+	response, errOutput, err = p.cmdRunner.Run(
+		"om",
+		"--skip-ssl-validation",
+		"--target", os.Getenv("OM_URL"),
+		"curl",
+		"--path", fmt.Sprintf("/api/v0/staged/products/%s/manifest", productGUID),
+	)
+	if err != nil {
+		return Manifest{}, fmt.Errorf("Unable to retrieve staged manifest for product guid %q: %s: %s", productGUID, err, errOutput)
+	}
+	var smr StagedManifestResponse
+	err = json.Unmarshal([]byte(response), &smr)
+	if err != nil {
+		return Manifest{}, fmt.Errorf("Unable to retrieve staged manifest for product guid %q: %s", productGUID, err)
+	}
+	if len(smr.Errors.Messages) > 0 {
+		return Manifest{}, fmt.Errorf("Unable to retrieve staged manifest for product guid %q: %s",
+			productGUID,
+			smr.Errors.Messages[0])
+	}
+
+	y, err := yaml.Marshal(smr.Manifest)
+	if err != nil {
+		return Manifest{}, err // un-tested
+	}
+
+	return NewManifest(string(y), p.cmdRunner), nil
 }
 
 func mergeProperties(minimalProperties, additionalProperties map[string]interface{}) map[string]interface{} {
