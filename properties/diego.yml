@@ -31,13 +31,15 @@
   type: rsa_cert_credentials
   configurable: false
 
-- name: rep_server_cert
+- name: rep_server_cert_v2
   type: rsa_cert_credentials
   configurable: false
   default:
     domains:
-    - cell.service.cf.internal
     - "*.cell.service.cf.internal"
+    - cell.service.cf.internal
+    - 127.0.0.1
+    - localhost
 
 - name: tps_client_cert
   type: rsa_cert_credentials

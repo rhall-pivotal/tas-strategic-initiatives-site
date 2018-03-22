@@ -23,5 +23,5 @@ manifest: |
     insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
-      cert: (( .properties.rep_server_cert.cert_pem ))
-      key: (( .properties.rep_server_cert.private_key_pem ))
+      cert: (( .properties.rep_server_cert_v2.cert_pem ))
+      key: (( .properties.rep_server_cert_v2.private_key_pem ))
