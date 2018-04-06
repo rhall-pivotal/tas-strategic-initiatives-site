@@ -8,6 +8,8 @@ manifest: |
     - name: uaa
       port: 8080
       registration_interval: 4s
+      tags:
+        component: uaa
       uris:
       - "uaa.(( .cloud_controller.system_domain.value ))"
       - "*.uaa.(( .cloud_controller.system_domain.value ))"
