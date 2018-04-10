@@ -21,8 +21,6 @@ manifest: |
       use_azure_fault_domains: true
       preloaded_rootfses: '(( .properties.enable_grootfs.value ? .properties.rep_preloaded_rootfses_grootfs.value : .properties.rep_preloaded_rootfses_garden.value ))'
       placement_tags: [ (( placement_tag.value )) ]
-      locket:
-        api_location: locket.service.cf.internal:8891
   enable_declarative_healthcheck: true
   loggregator:
     use_v2_api: true
