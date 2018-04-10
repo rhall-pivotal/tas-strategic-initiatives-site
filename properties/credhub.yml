@@ -93,7 +93,10 @@
   - name: keys
     manifest: |
       active: (( current_record.primary.value ))
-      encryption_key_name: (( current_record.key.value ))
+      # ToDo: Restore this once credhub correctly handles the presence of both
+      #       yaml keys.
+      # See https://www.pivotaltracker.com/story/show/156667357
+      # encryption_key_name: (( current_record.pro current_record.key.value ))
       encryption_password: (( current_record.key.value ))
       provider_name: (( current_record.provider.value ))-provider
 
