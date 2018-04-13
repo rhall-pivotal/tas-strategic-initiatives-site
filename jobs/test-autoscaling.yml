@@ -13,3 +13,8 @@ manifest: |
   domain: (( .cloud_controller.system_domain.value ))
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  uaa:
+    api_client_id: (( .uaa.autoscale_api_client_credentials.identity ))
+    api_client_secret: (( .uaa.autoscale_api_client_credentials.password ))
+    client: (( .uaa.autoscale_client_credentials.identity ))
+    client_secret: (( .uaa.autoscale_client_credentials.password ))
