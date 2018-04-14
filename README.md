@@ -5,20 +5,9 @@ Service (see [Creating a Pivotal Cloud Foundry Product
 Tile](https://docs.pivotal.io/partners/creating.html)), to be consumed by
 Operations Manager&trade;.
 
-## Updating an Instance Group
-
-Runtime definition for an instance group can be found in
-`instance_groups/<instance_group_name>.yml`, and configuration (forms and
-validations) can be found in `forms/<job_name>.yml`. See the [Product Template
-Reference](https://docs.pivotal.io/partners/product-template-reference.html)
-for details on the formats.
-
-### Changing Instance Group Order
-
-Instance group order is defined by `_order.yml` files. To change the order
-instance groups appear in the Ops Manager UI, edit `forms/_order.yml`. To
-change the order in which the instance groups are deployed, edit
-`instance_groups/_order.yml`
+## Building a PAS tile with this repo
+The CLI tool [kiln](https://github.com/pivotal-cf/kiln) is used to build the .pivotal file.
+See [kiln's Docs](https://github.com/pivotal-cf/kiln/blob/master/README.md) for more details.
 
 ## Contributing
 
