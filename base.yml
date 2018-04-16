@@ -39,16 +39,16 @@ job_types:
 - $( instance_group "windows_diego_cell" )
 
 property_blueprints:
-- $( property "metron_tls_cert" )
 - $( property "bbs_client_cert" )
+- $( property "bosh_ssh_enabled" )
+- $( property "kms" )
 - $( property "loggregator_client_cert" )
+- $( property "metron_tls_cert" )
+- $( property "rdp_enabled" )
 - $( property "rep_server_cert" )
 - $( property "rep_server_cert_v2" )
-- $( property "windows_admin_password" )
-- $( property "kms" )
 - $( property "system_logging" )
-- $( property "bosh_ssh_enabled" )
-- $( property "rdp_enabled" )
+- $( property "windows_admin_password" )
 
 post_deploy_errands:
   - name: install-hwc-buildpack
