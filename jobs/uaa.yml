@@ -283,7 +283,7 @@ manifest: |
         autoapprove: true
         authorities: "uaa.resource,cloud_controller.write,cloud_controller.read,cloud_controller.admin,notifications.write,critical_notifications.write,emails.write,doppler.firehose"
         authorized-grant-types: "client_credentials,authorization_code,refresh_token"
-        scope: "openid,cloud_controller.permissions,cloud_controller.read,cloud_controller.write,doppler.firehose"
+        scope: "openid,cloud_controller.read,cloud_controller.write"
         access-token-validity: 3600
         redirect-uri: "https://autoscale.(( .cloud_controller.system_domain.value ))/sessions/create"
       (( .uaa.autoscale_api_client_credentials.identity )):
