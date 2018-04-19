@@ -53,7 +53,7 @@
             use_tcp_for_file_forwarding_local_transport: (( .properties.syslog_use_tcp_for_file_forwarding_local_transport.value ))
             custom_rule: |
               (( .properties.syslog_rule.value ))
-              if ($programname startswith "vcap.") then ~
+              if ($programname startswith "vcap.") then stop
         - name: syslog_disabled
           manifest: |
             migration:
