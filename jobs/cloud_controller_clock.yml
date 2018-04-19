@@ -13,6 +13,8 @@ manifest: |
     clients:
       cc-service-dashboards:
         secret: (( .uaa.cc_service_dashboards_credentials.password ))
+      cc_routing:
+        secret: (( .uaa.cc_routing_credentials.password ))
   system_domain: (( .cloud_controller.system_domain.value ))
   cc:
     buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
@@ -75,6 +77,8 @@ manifest: |
     url: https://login.(( .cloud_controller.system_domain.value ))
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  routing_api:
+    enabled: true
   hm9000:
     port: 12345
   release_level_backup: true
