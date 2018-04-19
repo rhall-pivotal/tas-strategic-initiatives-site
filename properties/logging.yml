@@ -66,4 +66,4 @@
             use_tcp_for_file_forwarding_local_transport: (( .properties.system_logging.enabled.use_tcp_for_file_forwarding_local_transport.value ))
             custom_rule: |
               (( .properties.system_logging.enabled.syslog_rule.value ))
-              if ($programname startswith "vcap.") then ~
+              if ($programname startswith "vcap.") then stop
