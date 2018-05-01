@@ -1,5 +1,11 @@
 # planitest
 
+## Warning! Breaking Changes Ahead!
+
+Planitest is still very early in development (pre-alpha).
+
+Expect breaking changes!
+
 ## What is it?
 
 Test helpers for Ops Manager tile developers. Given the set of tile options selected by the operator, what should the generated BOSH manifest look like?
@@ -51,12 +57,23 @@ Context("when the operator sets the minimum TLS version to 1.1", func() {
 
 ## What do you need?
 
+There are two ways to run planitest, using a real Ops Manager as backend
+renderer or using a generator tool to provide faster feedback.
+
+### Use `om` as renderer
+1. Set environment variable `RENDERER` to `om`
 1. An [Ops Manager](https://docs.pivotal.io/pivotalcf/1-12/customizing/) instance to test against. It should have the BOSH tile deployed.
 1. The [om](https://github.com/pivotal-cf/om) CLI
 1. The [bosh](https://bosh.io/docs/cli-v2.html#install) CLI
-1. A minimal product-properties JSON file usable by `om configure-product`
+1. A minimal product-properties JSON file usable by [`om configure-product`](https://github.com/pivotal-cf/om/blob/master/docs/configure-product/README.md)
 1. A product-network JSON file usable by `om configure-product`
 1. The tile you want to test. It should be already uploaded to Ops Manager, along with the stemcell it depends on.
+
+### Use `ops-manifest` as renderer
+1. Set environment variable `RENDERER` to `ops-manifest`
+1. The [ops-manifest](https://github.com/pivotal-cf/ops-manifest) CLI
+1. The metadata.yml file extracted from a tile
+1. A configuration file (JSON or YAML) exported with [`om staged-config`](https://github.com/pivotal-cf/om/blob/master/docs/staged-config/README.md)
 
 ## Rough edges
 
@@ -64,6 +81,8 @@ Context("when the operator sets the minimum TLS version to 1.1", func() {
 1. Rendering a staged manifest for a large product on Ops Manager can be slooooow
 1. Currently runs om with the `--skip-ssl-validation` flag
 1. API is liable to change in breaking ways
+1. `ops-manifest` is also under heavy construction so it may render differently
+   from an Ops Manager
 
 ## Prior art
 

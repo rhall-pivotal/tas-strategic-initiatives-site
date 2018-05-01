@@ -3,7 +3,6 @@ package manifest_test
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"regexp"
 
@@ -20,17 +19,21 @@ func TestManifestGeneration(t *testing.T) {
 }
 
 var product *planitest.ProductService
+var productConfig planitest.ProductConfig
 
 var _ = BeforeEach(func() {
 	productVersion, err := fetchProductVersion()
 	Expect(err).NotTo(HaveOccurred())
 
-	product, err = planitest.NewProductService(planitest.ProductConfig{
+	productConfig = planitest.ProductConfig{
 		Name:              "cf",
 		Version:           productVersion,
+		ConfigFile:        "product_properties.yml",
 		PropertiesFile:    "product_config.json",
-		NetworkConfigFile: os.Getenv("NETWORK_CONFIG_FILE"),
-	})
+		MetadataFile:      "cf-metadata.yml",
+		NetworkConfigFile: "network_config.json",
+	}
+	product, err = planitest.NewProductService(productConfig)
 	Expect(err).NotTo(HaveOccurred())
 })
 

@@ -6,9 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strings"
-
-	yaml "gopkg.in/yaml.v2"
 )
 
 //go:generate counterfeiter -o ./fakes/command_runner.go --fake-name CommandRunner . CommandRunner
@@ -21,21 +18,23 @@ type ProductConfig struct {
 	Version           string
 	PropertiesFile    string
 	NetworkConfigFile string
+	ConfigFile        string
+	MetadataFile      string
 }
 
 type ProductService struct {
-	config    ProductConfig
-	cmdRunner CommandRunner
-}
-
-type StagedProductResponse struct {
-	GUID string `json:"guid"`
-	Type string `json:"type"`
+	config        ProductConfig
+	cmdRunner     CommandRunner
+	RenderService RenderService
 }
 
 type StagedManifestResponse struct {
 	Manifest map[string]interface{}
 	Errors   OMError `json:"errors"`
+}
+
+type RenderService interface {
+	RenderManifest(ProductConfig) (Manifest, error)
 }
 
 type OMError struct {
@@ -44,21 +43,36 @@ type OMError struct {
 }
 
 func NewProductService(config ProductConfig) (*ProductService, error) {
-	return NewProductServiceWithRunner(config, NewExecutor())
+	cmdRunner := NewExecutor()
+
+	productService, err := NewProductServiceWithRunner(config, cmdRunner)
+	if err != nil {
+		return nil, err
+	}
+
+	return productService, err
 }
 
 func NewProductServiceWithRunner(config ProductConfig, cmdRunner CommandRunner) (*ProductService, error) {
-	err := validateEnvironmentVariables()
+	err := validateProductConfig(config)
 	if err != nil {
 		return nil, err
 	}
 
-	err = validateProductConfig(config)
+	var renderService RenderService
+	switch os.Getenv("RENDERER") {
+	case "om":
+		renderService, err = NewOMServiceWithRunner(cmdRunner)
+	case "ops-manifest":
+		renderService, err = NewOpsManifestServiceWithRunner(cmdRunner)
+	default:
+		err = errors.New("RENDERER must be set to om or ops-manifest")
+	}
 	if err != nil {
 		return nil, err
 	}
 
-	return &ProductService{config: config, cmdRunner: cmdRunner}, nil
+	return &ProductService{config: config, cmdRunner: cmdRunner, RenderService: renderService}, nil
 }
 
 func (p *ProductService) Configure(additionalProperties map[string]interface{}) error {
@@ -128,68 +142,6 @@ func (p *ProductService) Configure(additionalProperties map[string]interface{}) 
 	return nil
 }
 
-func (p *ProductService) RenderManifest() (Manifest, error) {
-	response, errOutput, err := p.cmdRunner.Run(
-		"om",
-		"--skip-ssl-validation",
-		"--target", os.Getenv("OM_URL"),
-		"curl",
-		"--path", "/api/v0/staged/products",
-	)
-	if err != nil {
-		return Manifest{}, fmt.Errorf("Unable to retrieve staged products: %s: %s", err, errOutput)
-	}
-
-	var stagedProducts []StagedProductResponse
-	err = json.Unmarshal([]byte(response), &stagedProducts)
-	if err != nil {
-		return Manifest{}, fmt.Errorf("Unable to retrieve staged products: %s", err)
-	}
-
-	var productGUID string
-	var stagedTypes []string
-	for _, sp := range stagedProducts {
-		if sp.Type == p.config.Name {
-			productGUID = sp.GUID
-			break
-		} else {
-			stagedTypes = append(stagedTypes, sp.Type)
-		}
-	}
-	if productGUID == "" {
-		return Manifest{}, fmt.Errorf("Product %q has not been staged. Staged products: %q",
-			p.config.Name, strings.Join(stagedTypes, ", "))
-	}
-
-	response, errOutput, err = p.cmdRunner.Run(
-		"om",
-		"--skip-ssl-validation",
-		"--target", os.Getenv("OM_URL"),
-		"curl",
-		"--path", fmt.Sprintf("/api/v0/staged/products/%s/manifest", productGUID),
-	)
-	if err != nil {
-		return Manifest{}, fmt.Errorf("Unable to retrieve staged manifest for product guid %q: %s: %s", productGUID, err, errOutput)
-	}
-	var smr StagedManifestResponse
-	err = json.Unmarshal([]byte(response), &smr)
-	if err != nil {
-		return Manifest{}, fmt.Errorf("Unable to retrieve staged manifest for product guid %q: %s", productGUID, err)
-	}
-	if len(smr.Errors.Messages) > 0 {
-		return Manifest{}, fmt.Errorf("Unable to retrieve staged manifest for product guid %q: %s",
-			productGUID,
-			smr.Errors.Messages[0])
-	}
-
-	y, err := yaml.Marshal(smr.Manifest)
-	if err != nil {
-		return Manifest{}, err // un-tested
-	}
-
-	return NewManifest(string(y), p.cmdRunner), nil
-}
-
 func mergeProperties(minimalProperties, additionalProperties map[string]interface{}) map[string]interface{} {
 	combinedProperties := make(map[string]interface{}, len(minimalProperties)+len(additionalProperties))
 	for k, v := range minimalProperties {
@@ -204,17 +156,6 @@ func mergeProperties(minimalProperties, additionalProperties map[string]interfac
 	return combinedProperties
 }
 
-func validateEnvironmentVariables() error {
-	requiredEnvVars := []string{"OM_USERNAME", "OM_PASSWORD", "OM_URL"}
-	for _, envVar := range requiredEnvVars {
-		value := os.Getenv(envVar)
-		if value == "" {
-			return fmt.Errorf("Environment variable %s must be set", envVar)
-		}
-	}
-	return nil
-}
-
 func validateProductConfig(config ProductConfig) error {
 	if len(config.Name) == 0 {
 		return errors.New("Product name must be provided in config")
@@ -224,12 +165,22 @@ func validateProductConfig(config ProductConfig) error {
 		return errors.New("Product version must be provided in config")
 	}
 
-	if len(config.PropertiesFile) == 0 {
-		return errors.New("Properties file must be provided in config")
-	}
+	if os.Getenv("RENDERER") == "ops-manifest" {
+		if len(config.MetadataFile) == 0 {
+			return errors.New("Metadata file must be provided in config")
+		}
+		if len(config.ConfigFile) == 0 {
+			return errors.New("Config file must be provided")
+		}
+	} else {
+		if len(config.PropertiesFile) == 0 {
+			return errors.New("Properties file must be provided in config")
+		}
 
-	if len(config.NetworkConfigFile) == 0 {
-		return errors.New("Network config file must be provided in config")
+		if len(config.NetworkConfigFile) == 0 {
+			return errors.New("Network config file must be provided in config")
+		}
+
 	}
 
 	return nil
