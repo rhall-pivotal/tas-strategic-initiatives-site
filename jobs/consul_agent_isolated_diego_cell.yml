@@ -1,0 +1,13 @@
+---
+name: consul_agent
+alias: consul_agent_isolated_diego_cell
+release: consul
+consumes: |
+  consul: nil
+  consul_common: {from: consul_common_link, deployment: ((  ..cf.deployment_name  )) }
+  consul_client: {from: consul_client_link, deployment: ((  ..cf.deployment_name  )) }
+  consul_server: nil
+manifest: |
+  consul:
+    agent:
+      node_name_includes_id: true
