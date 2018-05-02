@@ -17,10 +17,10 @@ manifest: |
         secret: (( .uaa.cc_routing_credentials.password ))
   system_domain: (( .cloud_controller.system_domain.value ))
   cc:
-    buildpacks: (( .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))
-    droplets: (( .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))
-    packages: (( .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))
-    resource_pool: (( .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))
+    buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))'
+    droplets: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))'
+    packages:  '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccpackage_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))'
+    resource_pool:  '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccresource_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))'
     default_running_security_groups:
     - default_security_group
     db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))

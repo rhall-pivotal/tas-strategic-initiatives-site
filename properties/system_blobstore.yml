@@ -65,7 +65,18 @@
               aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
               aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
               aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
-              use_iam_profile: (( .properties.system_blobstore.external.iam_instance_profile_authentication.value ))
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: true
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccbuildpack_iam
+          manifest: |
+            blobstore_type: fog
+            buildpack_directory_key: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
+            fog_connection:
+              provider: AWS
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              use_iam_profile: true
               region:  (( .properties.system_blobstore.external.region.value ))
               path_style: true
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
@@ -80,7 +91,19 @@
               aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
               aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
               aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
-              use_iam_profile: (( .properties.system_blobstore.external.iam_instance_profile_authentication.value ))
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: true
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccdroplet_iam
+          manifest: |
+            max_staged_droplets_stored: 2
+            blobstore_type: fog
+            droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
+            fog_connection:
+              provider: AWS
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              use_iam_profile: true
               region:  (( .properties.system_blobstore.external.region.value ))
               path_style: true
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
@@ -95,7 +118,19 @@
               aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
               aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
               aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
-              use_iam_profile: (( .properties.system_blobstore.external.iam_instance_profile_authentication.value ))
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: true
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccpackage_iam
+          manifest: |
+            max_package_size: 2147483648
+            app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
+            blobstore_type: fog
+            fog_connection:
+              provider: AWS
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              use_iam_profile: true
               region:  (( .properties.system_blobstore.external.region.value ))
               path_style: true
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
@@ -109,11 +144,23 @@
               aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
               aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
               aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
-              use_iam_profile: (( .properties.system_blobstore.external.iam_instance_profile_authentication.value ))
               region:  (( .properties.system_blobstore.external.region.value ))
               path_style: true
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccresource_iam
+          manifest: |
+            blobstore_type: fog
+            resource_directory_key: (( .properties.system_blobstore.external.resources_bucket.value ))
+            fog_connection:
+              provider: AWS
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              use_iam_profile: true
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: true
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+
       property_blueprints:
         - name: endpoint
           type: string
