@@ -14,12 +14,15 @@ type CommandRunner interface {
 }
 
 type ProductConfig struct {
-	Name              string
-	Version           string
-	PropertiesFile    string
-	NetworkConfigFile string
-	ConfigFile        string
-	MetadataFile      string
+	Name         string
+	Version      string
+	ConfigFile   string
+	MetadataFile string
+}
+
+type ConfigJSON struct {
+	ProductProperties *map[string]interface{} `json:"product-properties,omitempty"`
+	NetworkConfig     *map[string]interface{} `json:"network-config,omitempty"`
 }
 
 type ProductService struct {
@@ -54,12 +57,9 @@ func NewProductService(config ProductConfig) (*ProductService, error) {
 }
 
 func NewProductServiceWithRunner(config ProductConfig, cmdRunner CommandRunner) (*ProductService, error) {
-	err := validateProductConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
 	var renderService RenderService
+	var err error
+
 	switch os.Getenv("RENDERER") {
 	case "om":
 		renderService, err = NewOMServiceWithRunner(cmdRunner)
@@ -72,32 +72,20 @@ func NewProductServiceWithRunner(config ProductConfig, cmdRunner CommandRunner) 
 		return nil, err
 	}
 
+	err = validateProductConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
 	return &ProductService{config: config, cmdRunner: cmdRunner, RenderService: renderService}, nil
 }
 
 func (p *ProductService) Configure(additionalProperties map[string]interface{}) error {
+	configInput, err := ioutil.ReadFile(p.config.ConfigFile)
 
-	propertiesJSON, err := ioutil.ReadFile(p.config.PropertiesFile)
+	propertiesJSON, networkJSON, err := extractPropertiesAndNetworkConfig(configInput, additionalProperties)
 	if err != nil {
-		return fmt.Errorf("Unable to configure product %q: %s", p.config.Name, err)
-	}
-
-	var minimalProperties map[string]interface{}
-	err = json.Unmarshal(propertiesJSON, &minimalProperties)
-	if err != nil {
-		return fmt.Errorf("Unable to configure product %q: could not parse properties file %q: %s", p.config.Name, p.config.PropertiesFile, err)
-	}
-
-	networkJSON, err := ioutil.ReadFile(p.config.NetworkConfigFile)
-	if err != nil {
-		return fmt.Errorf("Unable to configure product %q: %s", p.config.Name, err)
-	}
-
-	combinedProperties := mergeProperties(minimalProperties, additionalProperties)
-
-	propertiesJSON, err = json.Marshal(combinedProperties)
-	if err != nil {
-		return fmt.Errorf("Unable to configure product %q: %s", p.config.Name, err) // un-tested
+		return fmt.Errorf("Unable to configure product %q: %s (config file %s)", p.config.Name, err, p.config.ConfigFile)
 	}
 
 	_, errOutput, err := p.cmdRunner.Run(
@@ -142,6 +130,48 @@ func (p *ProductService) Configure(additionalProperties map[string]interface{}) 
 	return nil
 }
 
+func extractPropertiesAndNetworkConfig(configInput []byte, additionalProperties map[string]interface{}) ([]byte, []byte, error) {
+	var configJSON ConfigJSON
+	err := json.Unmarshal(configInput, &configJSON)
+
+	if err != nil {
+		return nil, nil, fmt.Errorf("could not parse config file: %s", err)
+	}
+
+	if configJSON.NetworkConfig == nil {
+		return nil, nil, fmt.Errorf("network config must be provided in the config file")
+	}
+
+	networkJSON, err := json.Marshal(configJSON.NetworkConfig)
+	if err != nil {
+		return nil, nil, err // un-tested
+	}
+
+	if configJSON.ProductProperties == nil {
+		return nil, nil, fmt.Errorf("product properties must be provided in the config file")
+	}
+
+	propertiesJSON, err := json.Marshal(configJSON.ProductProperties)
+	if err != nil {
+		return nil, nil, err // un-tested
+	}
+
+	var minimalProperties *map[string]interface{}
+	err = json.Unmarshal(propertiesJSON, &minimalProperties)
+	if err != nil {
+		return nil, nil, fmt.Errorf("could not parse product properties: %s", err)
+	}
+
+	combinedProperties := mergeProperties(*minimalProperties, additionalProperties)
+
+	propertiesJSON, err = json.Marshal(combinedProperties)
+	if err != nil {
+		return nil, nil, err // un-tested
+	}
+
+	return propertiesJSON, networkJSON, nil
+}
+
 func mergeProperties(minimalProperties, additionalProperties map[string]interface{}) map[string]interface{} {
 	combinedProperties := make(map[string]interface{}, len(minimalProperties)+len(additionalProperties))
 	for k, v := range minimalProperties {
@@ -165,22 +195,14 @@ func validateProductConfig(config ProductConfig) error {
 		return errors.New("Product version must be provided in config")
 	}
 
+	if len(config.ConfigFile) == 0 {
+		return errors.New("Config file must be provided")
+	}
+
 	if os.Getenv("RENDERER") == "ops-manifest" {
 		if len(config.MetadataFile) == 0 {
 			return errors.New("Metadata file must be provided in config")
 		}
-		if len(config.ConfigFile) == 0 {
-			return errors.New("Config file must be provided")
-		}
-	} else {
-		if len(config.PropertiesFile) == 0 {
-			return errors.New("Properties file must be provided in config")
-		}
-
-		if len(config.NetworkConfigFile) == 0 {
-			return errors.New("Network config file must be provided in config")
-		}
-
 	}
 
 	return nil

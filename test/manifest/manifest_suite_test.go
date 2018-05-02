@@ -26,12 +26,10 @@ var _ = BeforeEach(func() {
 	Expect(err).NotTo(HaveOccurred())
 
 	productConfig = planitest.ProductConfig{
-		Name:              "cf",
-		Version:           productVersion,
-		ConfigFile:        "product_properties.yml",
-		PropertiesFile:    "product_config.json",
-		MetadataFile:      "cf-metadata.yml",
-		NetworkConfigFile: "network_config.json",
+		Name:         "cf",
+		Version:      productVersion,
+		ConfigFile:   "config.json",
+		MetadataFile: "cf-metadata.yml",
 	}
 	product, err = planitest.NewProductService(productConfig)
 	Expect(err).NotTo(HaveOccurred())
