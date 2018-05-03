@@ -99,3 +99,17 @@
   type: string
   configurable: true
   default: "{ \"usd\": \"$\", \"eur\": \"€\" }"
+
+- name: push_apps_manager_memory
+  type: integer
+  configurable: true
+  optional: true
+  constraints:
+    min: 128
+
+- name: push_apps_manager_invitations_memory
+  type: integer
+  configurable: true
+  optional: true
+  constraints:
+    min: 256

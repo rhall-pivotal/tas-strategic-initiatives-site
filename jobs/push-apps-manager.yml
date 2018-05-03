@@ -19,6 +19,7 @@ manifest: |
     display_plan_prices: (( .properties.push_apps_manager_display_plan_prices.value ))
     currency_lookup: (( .properties.push_apps_manager_currency_lookup.value ))
     instances: $( variable "push_apps_manager_instances" )
+    memory: (( .properties.push_apps_manager_memory.value ))
     white_labeling:
       marketplace_name: (( .properties.push_apps_manager_marketplace_name.value ))
       nav_links: (( .properties.push_apps_manager_nav_links.value ))
@@ -35,6 +36,7 @@ manifest: |
     apps_domain: (( .cloud_controller.apps_domain.value ))
   invitations:
     instances: $( variable "push_apps_manager_invitations_instances" )
+    memory: (( .properties.push_apps_manager_invitations_memory.value ))
     uaa_client_secret: (( .uaa.invitations_client_credentials.password ))
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
