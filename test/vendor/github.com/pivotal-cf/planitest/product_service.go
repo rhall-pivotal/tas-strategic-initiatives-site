@@ -1,17 +1,11 @@
 package planitest
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"io/ioutil"
 	"os"
-)
 
-//go:generate counterfeiter -o ./fakes/command_runner.go --fake-name CommandRunner . CommandRunner
-type CommandRunner interface {
-	Run(string, ...string) (string, string, error)
-}
+	"github.com/pivotal-cf/planitest/internal"
+)
 
 type ProductConfig struct {
 	Name         string
@@ -27,7 +21,6 @@ type ConfigJSON struct {
 
 type ProductService struct {
 	config        ProductConfig
-	cmdRunner     CommandRunner
 	RenderService RenderService
 }
 
@@ -37,7 +30,7 @@ type StagedManifestResponse struct {
 }
 
 type RenderService interface {
-	RenderManifest(ProductConfig) (Manifest, error)
+	RenderManifest(additionalProperties map[string]interface{}) (Manifest, error)
 }
 
 type OMError struct {
@@ -46,9 +39,9 @@ type OMError struct {
 }
 
 func NewProductService(config ProductConfig) (*ProductService, error) {
-	cmdRunner := NewExecutor()
+	omRunner := internal.NewOMRunner(NewExecutor())
 
-	productService, err := NewProductServiceWithRunner(config, cmdRunner)
+	productService, err := NewProductServiceWithRunner(config, omRunner)
 	if err != nil {
 		return nil, err
 	}
@@ -56,15 +49,24 @@ func NewProductService(config ProductConfig) (*ProductService, error) {
 	return productService, err
 }
 
-func NewProductServiceWithRunner(config ProductConfig, cmdRunner CommandRunner) (*ProductService, error) {
+func NewProductServiceWithRunner(config ProductConfig, omRunner OMRunner) (*ProductService, error) {
 	var renderService RenderService
 	var err error
 
 	switch os.Getenv("RENDERER") {
 	case "om":
-		renderService, err = NewOMServiceWithRunner(cmdRunner)
+		renderService, err = NewOMServiceWithRunner(OMConfig{
+			Name:       config.Name,
+			Version:    config.Version,
+			ConfigFile: config.ConfigFile,
+		}, omRunner)
 	case "ops-manifest":
-		renderService, err = NewOpsManifestServiceWithRunner(cmdRunner)
+		renderService, err = NewOpsManifestServiceWithRunner(OpsManifestConfig{
+			Name:         config.Name,
+			Version:      config.Version,
+			ConfigFile:   config.ConfigFile,
+			MetadataFile: config.MetadataFile,
+		}, NewExecutor())
 	default:
 		err = errors.New("RENDERER must be set to om or ops-manifest")
 	}
@@ -77,113 +79,7 @@ func NewProductServiceWithRunner(config ProductConfig, cmdRunner CommandRunner) 
 		return nil, err
 	}
 
-	return &ProductService{config: config, cmdRunner: cmdRunner, RenderService: renderService}, nil
-}
-
-func (p *ProductService) Configure(additionalProperties map[string]interface{}) error {
-	configInput, err := ioutil.ReadFile(p.config.ConfigFile)
-
-	propertiesJSON, networkJSON, err := extractPropertiesAndNetworkConfig(configInput, additionalProperties)
-	if err != nil {
-		return fmt.Errorf("Unable to configure product %q: %s (config file %s)", p.config.Name, err, p.config.ConfigFile)
-	}
-
-	_, errOutput, err := p.cmdRunner.Run(
-		"om",
-		"--skip-ssl-validation",
-		"--target", os.Getenv("OM_URL"),
-		"revert-staged-changes",
-	)
-
-	if err != nil {
-		return fmt.Errorf("Unable to revert staged changes: %s: %s", err, errOutput)
-	}
-
-	_, errOutput, err = p.cmdRunner.Run(
-		"om",
-		"--skip-ssl-validation",
-		"--target", os.Getenv("OM_URL"),
-		"stage-product",
-		"--product-name", p.config.Name,
-		"--product-version", p.config.Version,
-	)
-
-	if err != nil {
-		return fmt.Errorf("Unable to stage product %q, version %q: %s: %s",
-			p.config.Name, p.config.Version, err, errOutput)
-	}
-
-	_, errOutput, err = p.cmdRunner.Run(
-		"om",
-		"--skip-ssl-validation",
-		"--target", os.Getenv("OM_URL"),
-		"configure-product",
-		"--product-name", p.config.Name,
-		"--product-properties", string(propertiesJSON),
-		"--product-network", string(networkJSON),
-	)
-
-	if err != nil {
-		return fmt.Errorf("Unable to configure product %q: %s: %s", p.config.Name, err, errOutput)
-	}
-
-	return nil
-}
-
-func extractPropertiesAndNetworkConfig(configInput []byte, additionalProperties map[string]interface{}) ([]byte, []byte, error) {
-	var configJSON ConfigJSON
-	err := json.Unmarshal(configInput, &configJSON)
-
-	if err != nil {
-		return nil, nil, fmt.Errorf("could not parse config file: %s", err)
-	}
-
-	if configJSON.NetworkConfig == nil {
-		return nil, nil, fmt.Errorf("network config must be provided in the config file")
-	}
-
-	networkJSON, err := json.Marshal(configJSON.NetworkConfig)
-	if err != nil {
-		return nil, nil, err // un-tested
-	}
-
-	if configJSON.ProductProperties == nil {
-		return nil, nil, fmt.Errorf("product properties must be provided in the config file")
-	}
-
-	propertiesJSON, err := json.Marshal(configJSON.ProductProperties)
-	if err != nil {
-		return nil, nil, err // un-tested
-	}
-
-	var minimalProperties *map[string]interface{}
-	err = json.Unmarshal(propertiesJSON, &minimalProperties)
-	if err != nil {
-		return nil, nil, fmt.Errorf("could not parse product properties: %s", err)
-	}
-
-	combinedProperties := mergeProperties(*minimalProperties, additionalProperties)
-
-	propertiesJSON, err = json.Marshal(combinedProperties)
-	if err != nil {
-		return nil, nil, err // un-tested
-	}
-
-	return propertiesJSON, networkJSON, nil
-}
-
-func mergeProperties(minimalProperties, additionalProperties map[string]interface{}) map[string]interface{} {
-	combinedProperties := make(map[string]interface{}, len(minimalProperties)+len(additionalProperties))
-	for k, v := range minimalProperties {
-		combinedProperties[k] = v
-	}
-
-	for k, v := range additionalProperties {
-		combinedProperties[k] = map[string]interface{}{
-			"value": v,
-		}
-	}
-	return combinedProperties
+	return &ProductService{config: config, RenderService: renderService}, nil
 }
 
 func validateProductConfig(config ProductConfig) error {

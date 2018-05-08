@@ -5,25 +5,37 @@ import (
 )
 
 type OpsManifestService struct {
+	config    OpsManifestConfig
 	cmdRunner CommandRunner
 }
 
-func NewOpsManifestService() (*OpsManifestService, error) {
-	return NewOpsManifestServiceWithRunner(NewExecutor())
+type OpsManifestConfig struct {
+	Name         string
+	Version      string
+	ConfigFile   string
+	MetadataFile string
 }
 
-func NewOpsManifestServiceWithRunner(cmdRunner CommandRunner) (*OpsManifestService, error) {
-	return &OpsManifestService{cmdRunner: cmdRunner}, nil
+func NewOpsManifestService(config OpsManifestConfig) (*OpsManifestService, error) {
+	return NewOpsManifestServiceWithRunner(config, NewExecutor())
 }
 
-func (o OpsManifestService) RenderManifest(config ProductConfig) (Manifest, error) {
+func NewOpsManifestServiceWithRunner(config OpsManifestConfig, cmdRunner CommandRunner) (*OpsManifestService, error) {
+	return &OpsManifestService{config: config, cmdRunner: cmdRunner}, nil
+}
+
+func (o *OpsManifestService) Configure(additionalProperties map[string]interface{}) error {
+	return nil
+}
+
+func (o OpsManifestService) RenderManifest(additionalProperties map[string]interface{}) (Manifest, error) {
 	response, errOutput, err := o.cmdRunner.Run(
 		"ops-manifest",
-		"-m", config.MetadataFile,
-		"-c", config.ConfigFile,
+		"-m", o.config.MetadataFile,
+		"-c", o.config.ConfigFile,
 	)
 	if err != nil {
 		return Manifest{}, fmt.Errorf("Unable to retrieve bosh manifest: %s: %s", err, errOutput)
 	}
-	return NewManifest(string(response), o.cmdRunner), nil
+	return NewManifest(string(response)), nil
 }

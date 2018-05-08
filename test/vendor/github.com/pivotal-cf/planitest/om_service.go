@@ -3,75 +3,48 @@ package planitest
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
-	"strings"
 
+	"github.com/pivotal-cf/planitest/internal"
 	yaml "gopkg.in/yaml.v2"
 )
 
-type StagedProduct struct {
-	GUID           string `json:"guid"`
-	Type           string `json:"type"`
-	ProductVersion string `json:"product_version"`
-}
-
 type OMService struct {
-	cmdRunner CommandRunner
+	omRunner OMRunner
+	config   OMConfig
 }
 
-func NewOMService() (*OMService, error) {
+type OMConfig struct {
+	Name       string
+	Version    string
+	ConfigFile string
+}
+
+//go:generate counterfeiter -o ./fakes/om_runner.go --fake-name OMRunner . OMRunner
+type OMRunner interface {
+	ResetAndConfigure(productName string, productVersion string, propertiesJSON string, networkJSON string) error
+	GetManifest(productGUID string) (map[string]interface{}, error)
+	FindStagedProduct(productName string) (internal.StagedProduct, error)
+}
+
+func NewOMService(config OMConfig) (*OMService, error) {
 	err := validateEnvironmentVariables()
 	if err != nil {
 		return nil, err
 	}
 
-	return NewOMServiceWithRunner(NewExecutor())
+	omRunner := internal.NewOMRunner(NewExecutor())
+	return NewOMServiceWithRunner(config, omRunner)
 }
 
-func NewOMServiceWithRunner(cmdRunner CommandRunner) (*OMService, error) {
+func NewOMServiceWithRunner(config OMConfig, omRunner OMRunner) (*OMService, error) {
 	err := validateEnvironmentVariables()
 	if err != nil {
 		return nil, err
 	}
 
-	return &OMService{cmdRunner: cmdRunner}, nil
-}
-
-func (o OMService) StagedProducts() ([]StagedProduct, error) {
-	response, errOutput, err := o.cmdRunner.Run(
-		"om",
-		"--skip-ssl-validation",
-		"--target", os.Getenv("OM_URL"),
-		"curl",
-		"--path", "/api/v0/staged/products",
-	)
-	if err != nil {
-		return nil, fmt.Errorf("Unable to retrieve staged products: %s: %s", err, errOutput)
-	}
-
-	var stagedProducts []StagedProduct
-	err = json.Unmarshal([]byte(response), &stagedProducts)
-	if err != nil {
-		return nil, fmt.Errorf("Unable to retrieve staged products: %s", err)
-	}
-
-	return stagedProducts, nil
-}
-
-func (o OMService) FindStagedProduct(productName string) (StagedProduct, error) {
-	stagedProducts, _ := o.StagedProducts()
-
-	var stagedTypes []string
-	for _, sp := range stagedProducts {
-		if sp.Type == productName {
-			return sp, nil
-		} else {
-			stagedTypes = append(stagedTypes, sp.Type)
-		}
-	}
-
-	return StagedProduct{}, fmt.Errorf("Product %q has not been staged. Staged products: %q",
-		productName, strings.Join(stagedTypes, ", "))
+	return &OMService{config: config, omRunner: omRunner}, nil
 }
 
 func validateEnvironmentVariables() error {
@@ -85,37 +58,101 @@ func validateEnvironmentVariables() error {
 	return nil
 }
 
-func (o OMService) RenderManifest(config ProductConfig) (Manifest, error) {
-	stagedProduct, err := o.FindStagedProduct(config.Name)
+func extractPropertiesAndNetworkConfig(configInput []byte, additionalProperties map[string]interface{}) ([]byte, []byte, error) {
+	var configJSON ConfigJSON
+	err := json.Unmarshal(configInput, &configJSON)
+
+	if err != nil {
+		return nil, nil, fmt.Errorf("could not parse config file: %s", err)
+	}
+
+	if configJSON.NetworkConfig == nil {
+		return nil, nil, fmt.Errorf("network config must be provided in the config file")
+	}
+
+	networkJSON, err := json.Marshal(configJSON.NetworkConfig)
+	if err != nil {
+		return nil, nil, err // un-tested
+	}
+
+	if configJSON.ProductProperties == nil {
+		return nil, nil, fmt.Errorf("product properties must be provided in the config file")
+	}
+
+	propertiesJSON, err := json.Marshal(configJSON.ProductProperties)
+	if err != nil {
+		return nil, nil, err // un-tested
+	}
+
+	var minimalProperties *map[string]interface{}
+	err = json.Unmarshal(propertiesJSON, &minimalProperties)
+	if err != nil {
+		return nil, nil, fmt.Errorf("could not parse product properties: %s", err)
+	}
+
+	combinedProperties := mergeProperties(*minimalProperties, additionalProperties)
+
+	propertiesJSON, err = json.Marshal(combinedProperties)
+	if err != nil {
+		return nil, nil, err // un-tested
+	}
+
+	return propertiesJSON, networkJSON, nil
+}
+
+func mergeProperties(minimalProperties, additionalProperties map[string]interface{}) map[string]interface{} {
+	combinedProperties := make(map[string]interface{}, len(minimalProperties)+len(additionalProperties))
+	for k, v := range minimalProperties {
+		combinedProperties[k] = v
+	}
+
+	for k, v := range additionalProperties {
+		combinedProperties[k] = map[string]interface{}{
+			"value": v,
+		}
+	}
+	return combinedProperties
+}
+
+func (o OMService) RenderManifest(additionalProperties map[string]interface{}) (Manifest, error) {
+	stagedProduct, err := o.omRunner.FindStagedProduct(o.config.Name)
 	if err != nil {
 		return Manifest{}, err
 	}
 
-	response, errOutput, err := o.cmdRunner.Run(
-		"om",
-		"--skip-ssl-validation",
-		"--target", os.Getenv("OM_URL"),
-		"curl",
-		"--path", fmt.Sprintf("/api/v0/staged/products/%s/manifest", stagedProduct.GUID),
-	)
+	err = o.configure(additionalProperties)
 	if err != nil {
-		return Manifest{}, fmt.Errorf("Unable to retrieve staged manifest for product guid %q: %s: %s", stagedProduct.GUID, err, errOutput)
-	}
-	var smr StagedManifestResponse
-	err = json.Unmarshal([]byte(response), &smr)
-	if err != nil {
-		return Manifest{}, fmt.Errorf("Unable to retrieve staged manifest for product guid %q: %s", stagedProduct.GUID, err)
-	}
-	if len(smr.Errors.Messages) > 0 {
-		return Manifest{}, fmt.Errorf("Unable to retrieve staged manifest for product guid %q: %s",
-			stagedProduct.GUID,
-			smr.Errors.Messages[0])
+		return Manifest{}, err
 	}
 
-	y, err := yaml.Marshal(smr.Manifest)
+	manifest, err := o.omRunner.GetManifest(stagedProduct.GUID)
+	if err != nil {
+		return Manifest{}, err
+	}
+
+	y, err := yaml.Marshal(manifest)
 	if err != nil {
 		return Manifest{}, err // un-tested
 	}
 
-	return NewManifest(string(y), o.cmdRunner), nil
+	return NewManifest(string(y)), nil
+}
+
+func (o *OMService) configure(additionalProperties map[string]interface{}) error {
+	configInput, err := ioutil.ReadFile(o.config.ConfigFile)
+	if err != nil {
+		return fmt.Errorf("Unable to configure product %q: %s (config file %s)", o.config.Name, err, o.config.ConfigFile)
+	}
+
+	propertiesJSON, networkJSON, err := extractPropertiesAndNetworkConfig(configInput, additionalProperties)
+	if err != nil {
+		return fmt.Errorf("Unable to configure product %q: %s (config file %s)", o.config.Name, err, o.config.ConfigFile)
+	}
+
+	err = o.omRunner.ResetAndConfigure(o.config.Name, o.config.Version, string(propertiesJSON), string(networkJSON))
+	if err != nil {
+		panic(err)
+	}
+
+	return nil
 }

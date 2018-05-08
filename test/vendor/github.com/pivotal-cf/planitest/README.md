@@ -18,10 +18,12 @@ Basic assertion about the properties under an instance group. The `Property` met
 
 ```go
 It("configures the router minimum TLS version", func() {
-  err := product.Configure(map[string]interface{}{})
-  Expect(err).NotTo(HaveOccurred())
+  if os.Getenv("RENDERER") == "om" {
+    err := product.Configure(map[string]interface{}{})
+    Expect(err).NotTo(HaveOccurred())
+  }
 
-  manifest, err := product.RenderManifest()
+  manifest, err := product.RenderService.RenderManifest()
   Expect(err).NotTo(HaveOccurred())
 
   router, err := manifest.FindInstanceGroupJob("router", "gorouter")
@@ -38,12 +40,14 @@ Context("when the operator sets the minimum TLS version to 1.1", func() {
   var manifest planitest.Manifest
 
   BeforeEach(func() {
-    err := product.Configure(map[string]interface{}{
-      ".properties.routing_minimum_tls_version": "tls_v1_1",
-    })
-    Expect(err).NotTo(HaveOccurred())
+    if os.Getenv("RENDERER") == "om" {
+      err := product.Configure(map[string]interface{}{
+        ".properties.routing_minimum_tls_version": "tls_v1_1",
+      })
+      Expect(err).NotTo(HaveOccurred())
+    }
 
-    manifest, err = product.RenderManifest()
+    manifest, err = product.RenderService.RenderManifest()
     Expect(err).NotTo(HaveOccurred())
   })
 
@@ -65,8 +69,7 @@ renderer or using a generator tool to provide faster feedback.
 1. An [Ops Manager](https://docs.pivotal.io/pivotalcf/1-12/customizing/) instance to test against. It should have the BOSH tile deployed.
 1. The [om](https://github.com/pivotal-cf/om) CLI
 1. The [bosh](https://bosh.io/docs/cli-v2.html#install) CLI
-1. A minimal product-properties JSON file usable by [`om configure-product`](https://github.com/pivotal-cf/om/blob/master/docs/configure-product/README.md)
-1. A product-network JSON file usable by `om configure-product`
+1. A config JSON file usable by `om configure-product` (refer to example config file below)
 1. The tile you want to test. It should be already uploaded to Ops Manager, along with the stemcell it depends on.
 
 ### Use `ops-manifest` as renderer
@@ -83,6 +86,7 @@ renderer or using a generator tool to provide faster feedback.
 1. API is liable to change in breaking ways
 1. `ops-manifest` is also under heavy construction so it may render differently
    from an Ops Manager
+1. example config file [here](https://github.com/pivotal-cf/p-runtime/blob/c39892693750464d1655761969398dbad2ce6d14/test/manifest/config.json). Be sure to include `product-properties` and `network-config`
 
 ## Prior art
 

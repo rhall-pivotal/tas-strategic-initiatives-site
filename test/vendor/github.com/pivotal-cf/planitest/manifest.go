@@ -8,12 +8,24 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+//go:generate counterfeiter -o ./fakes/command_runner.go --fake-name CommandRunner . CommandRunner
+type CommandRunner interface {
+	Run(string, ...string) (string, string, error)
+}
+
 type Manifest struct {
 	cmdRunner CommandRunner
 	content   string
 }
 
-func NewManifest(content string, cmdRunner CommandRunner) Manifest {
+func NewManifest(content string) Manifest {
+	return Manifest{
+		cmdRunner: NewExecutor(),
+		content:   content,
+	}
+}
+
+func NewManifestWithRunner(content string, cmdRunner CommandRunner) Manifest {
 	return Manifest{
 		cmdRunner: cmdRunner,
 		content:   content,
@@ -27,7 +39,7 @@ func (m *Manifest) FindInstanceGroupJob(instanceGroup, job string) (Manifest, er
 	if err != nil {
 		return Manifest{}, fmt.Errorf("Problem interpolating manifest: %s: %s", err, errOutput)
 	}
-	return NewManifest(output, m.cmdRunner), nil
+	return NewManifestWithRunner(output, m.cmdRunner), nil
 }
 
 func (m *Manifest) Property(path string) (interface{}, error) {
