@@ -6,6 +6,11 @@ consumes: |
 manifest: |
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
   uaadb: (( .properties.uaa_database.selected_option.parsed_manifest(db_config) ))
+  encryption:
+    active_key_label: default_key
+    encryption_keys:
+      - label: default_key
+        passphrase: (((uaa-default-encryption-passphrase)))
   login:
     home_redirect: "https://account.(( .cloud_controller.system_domain.value ))/identity/apps"
     links:
