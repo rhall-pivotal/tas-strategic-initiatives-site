@@ -1,6 +1,6 @@
 ---
 name: vxlan-policy-agent
-release: cf-networking
+release: silk
 manifest: |
   cf_networking:
     disable: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(disable_silk) ))
