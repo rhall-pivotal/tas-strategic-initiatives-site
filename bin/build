@@ -2,6 +2,7 @@
 
 set -eu
 
+: "${METADATA_ONLY:=false}"
 : "${PRODUCT:=srt}"
 : "${STEMCELL_PATH:=}"
 : "${STUB_RELEASES:=false}"
@@ -42,8 +43,16 @@ pushd "${tmp_dir}" > /dev/null
   version="$( cat ./version )"
 
   optional_flags=""
+
+  if [ "${METADATA_ONLY}" == "true" ]; then
+    optional_flags+="--metadata-only "
+  else
+    optional_flags+="--output-file "
+    optional_flags+="./${PRODUCT}-${version}.pivotal "
+  fi
+
   if [ "${STUB_RELEASES}" == "true" ]; then
-    optional_flags="--stub-releases"
+    optional_flags+="--stub-releases "
   fi
 
   echo "Baking ${PRODUCT} ${version} in the kiln..." > /dev/stderr
@@ -55,7 +64,6 @@ pushd "${tmp_dir}" > /dev/null
     --metadata base.yml \
     --migrations-directory ./migrations/common \
     --migrations-directory "./migrations/${PRODUCT}" \
-    --output-file "./${PRODUCT}-${version}.pivotal" \
     --properties-directory ./properties \
     --releases-directory ./releases \
     --runtime-configs-directory ./runtime_configs \
@@ -63,7 +71,9 @@ pushd "${tmp_dir}" > /dev/null
     --variables-file "./variables/${PRODUCT}.yml" \
     --variable metadata-git-sha="$(git rev-parse HEAD)" \
     --version "${version}" \
-    "${optional_flags}"
+    ${optional_flags}
 
-  echo "Successfully created tile at ${tmp_dir}/${PRODUCT}-${version}.pivotal" > /dev/stderr
+  if [ "${METADATA_ONLY}" != "true" ]; then
+    echo "Successfully created tile at ${tmp_dir}/${PRODUCT}-${version}.pivotal" > /dev/stderr
+  fi
 popd > /dev/null
