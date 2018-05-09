@@ -10,12 +10,12 @@ tile_dir="$( cd "$( dirname "$0" )/.." && pwd )"
 tmp_dir="$(mktemp -d -t "p-runtime.XXXXXXXXX")"
 
 if [ ! -d "${tile_dir}/releases" ]; then
-  echo "Missing required directory '${tile_dir}/releases'. Create this directory and download all required release tarballs into it."
+  echo "Missing required directory '${tile_dir}/releases'. Create this directory and download all required release tarballs into it." > /dev/stderr
   exit 1
 fi
 
 if [ -z "${STEMCELL_PATH}" ]; then
-  echo "Downloading latest stemcell from bosh.io (override with \$STEMCELL_PATH)..."
+  echo "Downloading latest stemcell from bosh.io (override with \$STEMCELL_PATH)..." > /dev/stderr
   STEMCELL_PATH="${tmp_dir}/stemcell.tgz"
   light_stemcell_url="$(curl --silent 'http://bosh.io/api/v1/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent' | jq -r 'map(select(.light))[0].light.url')"
   wget --quiet -O "${STEMCELL_PATH}" "${light_stemcell_url}"
@@ -46,7 +46,7 @@ pushd "${tmp_dir}" > /dev/null
     optional_flags="--stub-releases"
   fi
 
-  echo "Building tile ${PRODUCT} ${version}..."
+  echo "Baking ${PRODUCT} ${version} in the kiln..." > /dev/stderr
   kiln bake \
     --forms-directory ./forms \
     --icon icon.png \
@@ -65,5 +65,5 @@ pushd "${tmp_dir}" > /dev/null
     --version "${version}" \
     "${optional_flags}"
 
-  echo "Successfully created tile at ${tmp_dir}/${PRODUCT}-${version}.pivotal"
+  echo "Successfully created tile at ${tmp_dir}/${PRODUCT}-${version}.pivotal" > /dev/stderr
 popd > /dev/null
