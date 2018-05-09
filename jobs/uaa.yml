@@ -52,6 +52,8 @@ manifest: |
         text: (( .uaa.customize_password_label.value ))
       username:
         text: (( .uaa.customize_username_label.value ))
+    mfa:
+      (( .properties.uaa.selected_option.parsed_manifest(uaa_mfa_google_authenticator) ))
   release_level_backup: true
   uaa:
     sslCertificate: (( .uaa.ssl_credentials.cert_pem ))
