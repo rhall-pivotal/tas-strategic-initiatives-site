@@ -22,6 +22,9 @@ manifest: |
       preloaded_rootfses: '(( .properties.enable_grootfs.value ? .properties.rep_preloaded_rootfses_grootfs.value : .properties.rep_preloaded_rootfses_garden.value ))'
       placement_tags: [ (( placement_tag.value )) ]
   enable_declarative_healthcheck: true
+  logging:
+    format:
+      timestamp: (( ..cf.properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))
   loggregator:
     use_v2_api: true
     ca_cert: (( $ops_manager.ca_certificate ))
