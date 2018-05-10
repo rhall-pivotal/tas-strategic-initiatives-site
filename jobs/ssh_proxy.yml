@@ -18,6 +18,9 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
     ssl:
       skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  logging:
+    format:
+      timestamp: (( .properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))
   loggregator:
     use_v2_api: true
     ca_cert: (( $ops_manager.ca_certificate ))

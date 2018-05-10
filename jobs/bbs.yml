@@ -23,6 +23,9 @@ manifest: |
       server_key: (( .properties.bbs_server_cert.private_key_pem ))
       skip_consul_lock: true
       sql: (( .properties.system_database.selected_option.parsed_manifest(diegodb) ))
+  logging:
+    format:
+      timestamp: (( .properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))
   loggregator:
     use_v2_api: true
     ca_cert: (( $ops_manager.ca_certificate ))

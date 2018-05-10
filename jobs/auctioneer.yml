@@ -17,6 +17,9 @@ manifest: |
         client_cert: (( .properties.rep_client_cert.cert_pem ))
         client_key: (( .properties.rep_client_cert.private_key_pem ))
         ca_cert: (( $ops_manager.ca_certificate ))
+  logging:
+    format:
+      timestamp: (( .properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))
   loggregator:
     use_v2_api: true
     ca_cert: (( $ops_manager.ca_certificate ))

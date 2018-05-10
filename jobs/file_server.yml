@@ -5,6 +5,9 @@ manifest: |
   diego:
     file_server:
       listen_addr: 0.0.0.0:$( variable "diego_fileserver_port" )
+  logging:
+    format:
+      timestamp: (( .properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))
   loggregator:
     use_v2_api: true
     ca_cert: (( $ops_manager.ca_certificate ))

@@ -22,6 +22,9 @@ manifest: |
       post_setup_hook: sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"
       post_setup_user: root
   enable_declarative_healthcheck: true
+  logging:
+    format:
+      timestamp: (( .properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))
   loggregator:
     use_v2_api: true
     ca_cert: (( $ops_manager.ca_certificate ))
