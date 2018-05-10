@@ -26,6 +26,9 @@ manifest: |
       - windows2016:oci:///C:/var/vcap/packages/windows2016fs
       placement_tags: (( placement_tags.parsed_strings ))
   enable_declarative_healthcheck: true
+  logging:
+    format:
+      timestamp: (( ..cf.properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))
   loggregator:
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( .properties.loggregator_client_cert.cert_pem ))
