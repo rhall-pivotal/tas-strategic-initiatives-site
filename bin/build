@@ -8,7 +8,10 @@ set -eu
 : "${STUB_RELEASES:=false}"
 
 tile_dir="$( cd "$( dirname "$0" )/.." && pwd )"
-tmp_dir="$(mktemp -d -t "p-runtime.XXXXXXXXX")"
+build_dir="$(mktemp -d -t "p-runtime.XXXXXXXXX")"
+trap '{ rm -rf "${build_dir}"; }' EXIT
+
+output_dir="$(mktemp -d -t "p-runtime.XXXXXXXXX")"
 
 if [ ! -d "${tile_dir}/releases" ]; then
   echo "Missing required directory '${tile_dir}/releases'. Create this directory and download all required release tarballs into it." > /dev/stderr
@@ -17,7 +20,7 @@ fi
 
 if [ -z "${STEMCELL_PATH}" ]; then
   echo "Downloading latest stemcell from bosh.io (override with \$STEMCELL_PATH)..." > /dev/stderr
-  STEMCELL_PATH="${tmp_dir}/stemcell.tgz"
+  STEMCELL_PATH="${build_dir}/stemcell.tgz"
   light_stemcell_url="$(curl --silent 'http://bosh.io/api/v1/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent' | jq -r 'map(select(.light))[0].light.url')"
   wget --quiet -O "${STEMCELL_PATH}" "${light_stemcell_url}"
 fi
@@ -37,9 +40,9 @@ preprocess() {
   popd > /dev/null
 }
 
-preprocess "${tile_dir}" "${tmp_dir}"
+preprocess "${tile_dir}" "${build_dir}"
 
-pushd "${tmp_dir}" > /dev/null
+pushd "${build_dir}" > /dev/null
   version="$( cat ./version )"
 
   optional_flags=""
@@ -48,7 +51,7 @@ pushd "${tmp_dir}" > /dev/null
     optional_flags+="--metadata-only "
   else
     optional_flags+="--output-file "
-    optional_flags+="./${PRODUCT}-${version}.pivotal "
+    optional_flags+="${output_dir}/${PRODUCT}-${version}.pivotal "
   fi
 
   if [ "${STUB_RELEASES}" == "true" ]; then
@@ -74,6 +77,6 @@ pushd "${tmp_dir}" > /dev/null
     ${optional_flags}
 
   if [ "${METADATA_ONLY}" != "true" ]; then
-    echo "Successfully created tile at ${tmp_dir}/${PRODUCT}-${version}.pivotal" > /dev/stderr
+    echo "Successfully created tile at ${output_dir}/${PRODUCT}-${version}.pivotal" > /dev/stderr
   fi
 popd > /dev/null
