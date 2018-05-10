@@ -34,7 +34,7 @@ var _ = Describe("UAA", func() {
 					agent, err := manifest.FindInstanceGroupJob("uaa", "uaa")
 					Expect(err).NotTo(HaveOccurred())
 
-					issuer, err := agent.Property("login/providers/google-provider/config/issuer")
+					issuer, err := agent.Property("login/providers/googleProvider/config/issuer")
 					Expect(err).NotTo(HaveOccurred())
 					Expect(issuer).To(Equal("some-issuer"))
 				})
@@ -67,7 +67,7 @@ var _ = Describe("UAA", func() {
 					agent, err := manifest.FindInstanceGroupJob("uaa", "uaa")
 					Expect(err).NotTo(HaveOccurred())
 
-					issuer, err := agent.Property("login/providers/google-provider/config/issuer")
+					issuer, err := agent.Property("login/providers/googleProvider/config/issuer")
 					Expect(err).NotTo(HaveOccurred())
 					Expect(issuer).To(Equal("some-issuer"))
 				})

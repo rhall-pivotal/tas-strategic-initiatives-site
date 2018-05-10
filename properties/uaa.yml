@@ -21,13 +21,13 @@
         type: string
         manifest: |
           providers:
-            google-provider:
+            googleProvider:
               type: google-authenticator
               config:
                 providerDescription: N/A
                 issuer: (( .properties.uaa.internal.mfa_google_authenticator_issuer.value ))
           enabled: (( .properties.uaa.internal.enable_mfa_google_authenticator.value ))
-          providerName: google-provider
+          providerName: googleProvider
       property_blueprints:
         - name: password_min_length
           type: integer
@@ -170,13 +170,13 @@
         type: string
         manifest: |
           providers:
-            google-provider:
+            googleProvider:
               type: google-authenticator
               config:
                 providerDescription: N/A
                 issuer: (( .properties.uaa.ldap.mfa_google_authenticator_issuer.value ))
           enabled: (( .properties.uaa.ldap.enable_mfa_google_authenticator.value ))
-          providerName: google-provider
+          providerName: googleProvider
       property_blueprints:
         - name: url
           type: ldap_url
