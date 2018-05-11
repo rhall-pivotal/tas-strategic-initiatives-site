@@ -3254,11 +3254,6 @@ job_types:
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
       uaadb: (( .properties.uaa_database.selected_option.parsed_manifest(db_config) ))
       login:
-        home_redirect: "https://account.(( .cloud_controller.system_domain.value ))/identity/apps"
-        links:
-          passwd: https://account.(( .cloud_controller.system_domain.value ))/forgot-password
-          signup: https://account.(( .cloud_controller.system_domain.value ))/sign-up
-          home: https://apps.(( .cloud_controller.system_domain.value ))
         notifications:
           url: https://notifications.(( .cloud_controller.system_domain.value ))
         saml:
