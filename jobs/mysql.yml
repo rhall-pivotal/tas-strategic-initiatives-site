@@ -2,9 +2,12 @@
 name: mysql
 release: cf-mysql
 provides: |
-  internal-mysql-database: {as: direct-mysql}
+  mysql: {as: cf-mysql-direct-mysql}
+consumes: |
+  mysql: {from: cf-mysql-direct-mysql}
 
 manifest: |
+  cf_mysql_enabled: (( .properties.system_database.selected_option.parsed_manifest(enable_internal_mysql) ))
   cf_mysql:
     mysql:
       port: $( variable "mysql_port" )

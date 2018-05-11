@@ -1,15 +1,15 @@
 ---
 name: proxy
-release: cf-mysql
+release: pxc
 provides: |
   mysql-database: {as: proxy-mysql}
+consumes: |
+  mysql: {from: pxc-direct-mysql}
 
 manifest: |
-  cf_mysql:
-    proxy:
-      api_uri: proxy-p-mysql-ert.(( .cloud_controller.system_domain.value ))
-      api_password: ((( mysql-proxy-dashboard-credentials.password )))
-      api_username: ((( mysql-proxy-dashboard-credentials.username )))
-      consul_enabled: true
-      startup_delay: (( .mysql_proxy.startup_delay.value ))
-      shutdown_delay: (( .mysql_proxy.shutdown_delay.value ))
+  api_uri: proxy-p-mysql-ert.(( .cloud_controller.system_domain.value ))
+  api_password: ((( mysql-proxy-dashboard-credentials.password )))
+  api_username: ((( mysql-proxy-dashboard-credentials.username )))
+  consul_enabled: true
+  startup_delay: (( .mysql_proxy.startup_delay.value ))
+  shutdown_delay: (( .mysql_proxy.shutdown_delay.value ))

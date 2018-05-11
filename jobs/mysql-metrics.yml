@@ -1,6 +1,8 @@
 ---
 name: mysql-metrics
 release: mysql-monitoring
+consumes: |
+  mysql: {from: pxc-direct-mysql}
 manifest: |
   mysql-metrics:
     origin: mysql

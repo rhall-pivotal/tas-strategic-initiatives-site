@@ -97,9 +97,13 @@ property_inputs:
 - reference: .properties.system_database
   label: Choose the location of your system databases
   selector_property_inputs:
+  - reference: .properties.system_database.internal_pxc
+    label: |
+      Internal Databases - MySQL with TLS (preferred for complete high-availability)
+
   - reference: .properties.system_database.internal_mysql
     label: |
-      Internal Databases - MySQL (preferred for complete high-availability)
+      Internal Databases - MySQL
 
   - reference: .properties.system_database.external
     label: External Databases (preferred if, for example, you use AWS RDS)

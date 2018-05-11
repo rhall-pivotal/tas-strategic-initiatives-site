@@ -1,0 +1,84 @@
+---
+name: mysql-clustered
+release: pxc
+provides: |
+  mysql: {as: pxc-direct-mysql}
+consumes: |
+  mysql: {from: pxc-direct-mysql}
+
+manifest: |
+  pxc_enabled: (( .properties.system_database.selected_option.parsed_manifest(enable_pxc) ))
+  port: $( variable "mysql_port" )
+  cli_history: (( .mysql.cli_history.value ))
+  innodb_buffer_pool_size: 2147483648
+  innodb_strict_mode: true
+  max_open_files: 1048576
+  startup_timeout: 120
+  cluster_probe_timeout: (( .mysql.cluster_probe_timeout.value ))
+  cluster_health:
+    password: ((( mysql-cluster-health-credentials.password )))
+  remote_admin_access: (( .mysql.remote_admin_access.value ))
+  seeded_databases:
+  - name: (( .properties.account_database_name.value ))
+    username: ((( pivotal-account-db-credentials.username )))
+    password: ((( pivotal-account-db-credentials.password )))
+  - name: (( .properties.app_usage_service_database_name.value ))
+    username: ((( app-usage-db-credentials.username )))
+    password: ((( app-usage-db-credentials.password )))
+  - name: (( .properties.autoscale_database_name.value ))
+    username: ((( autoscale-db-credentials.username )))
+    password: ((( autoscale-db-credentials.password )))
+  - name: (( .properties.ccdb_database_name.value ))
+    username: ((( cc-db-credentials.username )))
+    password: ((( cc-db-credentials.password )))
+  - name: (( .properties.credhub_database_name.value ))
+    username: ((( credhub-db-credentials.username )))
+    password: ((( credhub-db-credentials.password )))
+  - name: (( .properties.diego_database_name.value ))
+    username: ((( diego-db-credentials.username )))
+    password: ((( diego-db-credentials.password )))
+  - name: (( .properties.locket_database_name.value ))
+    username: ((( locket-db-credentials.username )))
+    password: ((( locket-db-credentials.password )))
+  - name: (( .properties.networkpolicyserver_database_name.value ))
+    username: ((( network-policy-server-db-credentials.username )))
+    password: ((( network-policy-server-db-credentials.password )))
+  - name: (( .properties.nfsvolume_database_name.value ))
+    username: ((( nfs-volume-db-credentials.username )))
+    password: ((( nfs-volume-db-credentials.password )))
+  - name: (( .properties.notifications_database_name.value ))
+    username: ((( notifications-db-credentials.username )))
+    password: ((( notifications-db-credentials.password )))
+  - name: (( .properties.routing_database_name.value ))
+    username: ((( routing-db-credentials.username )))
+    password: ((( routing-db-credentials.password )))
+  - name: (( .properties.silk_database_name.value ))
+    username: ((( silk-db-credentials.username )))
+    password: ((( silk-db-credentials.password )))
+  - name: (( .properties.uaa_database_name.value ))
+    username: ((( uaa-db-credentials.username )))
+    password: ((( uaa-db-credentials.password )))
+  - name: monitor
+    username: ((( mysql-monitor-db-credentials.username )))
+    password: ((( mysql-monitor-db-credentials.password )))
+  - name: metrics_db
+    username: ((( mysql-metrics-db-credentials.username )))
+    password: ((( mysql-metrics-db-credentials.password )))
+  tls:
+    galera:
+      ca: (( $ops_manager.ca_certificate ))
+      certificate: (( .properties.pxc_internal_certificate.cert_pem ))
+      private_key: (( .properties.pxc_internal_certificate.private_key_pem ))
+    server:
+      ca: (( $ops_manager.ca_certificate ))
+      certificate: (( .properties.pxc_server_certificate.cert_pem ))
+      private_key: (( .properties.pxc_server_certificate.private_key_pem ))
+  server_audit_excluded_users:
+  - ((( mysql-metrics-db-credentials.username )))
+  - ((( mysql-monitor-db-credentials.username )))
+  admin_password: ((( mysql-admin-credentials.password )))
+  galera_agent:
+    db_password: ((( mysql-galera-sidecar-credentials.password )))
+    endpoint_username: ((( mysql-bootstrap-db-credentials.username )))
+    endpoint_password: ((( mysql-bootstrap-db-credentials.password )))
+  server_audit_logs_enabled: (( .properties.mysql_activity_logging.selected_option.parsed_manifest(pxc_server_audit_logs_enabled) ))

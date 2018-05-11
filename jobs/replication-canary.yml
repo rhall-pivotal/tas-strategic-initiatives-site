@@ -1,6 +1,8 @@
 ---
 name: replication-canary
 release: mysql-monitoring
+consumes: |
+  mysql: {from: pxc-direct-mysql}
 manifest: |
   cf_mysql:
     external_host: p-mysql-ert.(( .cloud_controller.system_domain.value ))

@@ -88,11 +88,135 @@
 - name: system_database
   type: selector
   configurable: true
-  default: internal_mysql
+  default: internal_pxc
   option_templates:
+    - name: internal_pxc
+      select_value: internal_pxc
+      named_manifests:
+      - name: enable_pxc
+        manifest: |
+          true
+      - name: enable_internal_mysql
+        manifest: |
+          false
+      - name: mysql_db_link
+        manifest: |
+          (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
+      - name: ccdb
+        manifest: |
+          db_scheme: mysql
+          address: mysql.service.cf.internal
+          port: 3306
+          roles:
+          - tag: admin
+            name: ((( cc-db-credentials.username )))
+            password: ((( cc-db-credentials.password )))
+          databases:
+          - tag: cc
+            name: (( .properties.ccdb_database_name.value ))
+            citext: true
+      - name: ccdb_link
+        manifest: |
+          (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
+      - name: notifications
+        manifest: |
+          port: 3306
+          username: ((( notifications-db-credentials.username )))
+          password: ((( notifications-db-credentials.password )))
+          database: (( .properties.notifications_database_name.value ))
+          max_open_connections: 10
+      - name: autoscaling
+        manifest: |
+          adapter: mysql
+          port: 3306
+          username: ((( autoscale-db-credentials.username )))
+          password: ((( autoscale-db-credentials.password )))
+          name: (( .properties.autoscale_database_name.value ))
+      - name: push-app-usage-service
+        manifest: |
+          port: 3306
+          username: ((( app-usage-db-credentials.username )))
+          password: ((( app-usage-db-credentials.password )))
+          name: (( .properties.app_usage_service_database_name.value ))
+      - name: bbr-usage-servicedb
+        manifest: |
+          port: 3306
+          user: ((( app-usage-db-credentials.username )))
+          password: ((( app-usage-db-credentials.password )))
+          name: (( .properties.app_usage_service_database_name.value ))
+      - name: push_app_usage_service_db_link
+        manifest: |
+          (( .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy) ))
+      - name: diegodb
+        manifest: |
+          db_host: mysql.service.cf.internal
+          db_port: 3306
+          db_username: ((( diego-db-credentials.username )))
+          db_password: ((( diego-db-credentials.password )))
+          db_schema: (( .properties.diego_database_name.value ))
+          max_open_connections: 100
+      - name: locketdb
+        manifest: |
+          db_host: mysql.service.cf.internal
+          db_port: 3306
+          db_username: ((( locket-db-credentials.username )))
+          db_password: ((( locket-db-credentials.password )))
+          db_schema: (( .properties.locket_database_name.value ))
+      - name: routingdb
+        manifest: |
+          type: mysql
+          host: mysql.service.cf.internal
+          port: 3306
+          username: ((( routing-db-credentials.username )))
+          password: ((( routing-db-credentials.password )))
+          schema: (( .properties.routing_database_name.value ))
+      - name: silkdb
+        manifest: |
+          type: mysql
+          host: mysql.service.cf.internal
+          port: 3306
+          username: ((( silk-db-credentials.username )))
+          password: ((( silk-db-credentials.password )))
+          name: (( .properties.silk_database_name.value ))
+      - name: networkpolicyserverdb
+        manifest: |
+          type: mysql
+          host: mysql.service.cf.internal
+          port: 3306
+          username: ((( network-policy-server-db-credentials.username )))
+          password: ((( network-policy-server-db-credentials.password )))
+          name: (( .properties.networkpolicyserver_database_name.value ))
+      - name: pivotal_account
+        manifest: |
+          adapter: mysql
+          port: 3306
+          username: ((( pivotal-account-db-credentials.username )))
+          password: ((( pivotal-account-db-credentials.password )))
+          database: (( .properties.account_database_name.value ))
+      - name: nfsvolume
+        manifest: |
+          username: ((( nfs-volume-db-credentials.username )))
+          password: ((( nfs-volume-db-credentials.password )))
+          name: (( .properties.nfsvolume_database_name.value ))
+      - name: nfsvolume_bbr
+        manifest: |
+          db_username: ((( nfs-volume-db-credentials.username )))
+          db_password: ((( nfs-volume-db-credentials.password )))
+          db_name: (( .properties.nfsvolume_database_name.value ))
+          db_hostname: mysql.service.cf.internal
+          db_port: 3306
+          db_driver: mysql
+          release_level_backup: true
+
     - name: internal_mysql
       select_value: internal_mysql
       named_manifests:
+      - name: enable_pxc
+        manifest: |
+          false
+      - name: enable_internal_mysql
+        manifest: |
+          true
       - name: mysql_db_link
         manifest: |
           (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
@@ -278,6 +402,12 @@
           type: secret
           configurable: true
       named_manifests:
+        - name: enable_pxc
+          manifest: |
+            false
+        - name: enable_internal_mysql
+          manifest: |
+            false
         - name: mysql_db_link
           manifest: |
             database: nil
@@ -401,16 +531,35 @@
     - name: disable
       select_value: disable
       named_manifests:
-        - name: mysql_audit_events
-          manifest: ""
-
+      - name: mysql_audit_events
+        manifest: ""
+      - name: pxc_server_audit_logs_enabled
+        manifest: |
+          false
     - name: enable
       select_value: enable
       named_manifests:
-        - name: mysql_audit_events
-          manifest: (( .properties.mysql_activity_logging.enable.audit_logging_events.value ))
+      - name: mysql_audit_events
+        manifest: (( .properties.mysql_activity_logging.enable.audit_logging_events.value ))
+      - name: pxc_server_audit_logs_enabled
+        manifest: |
+          true
       property_blueprints:
         - name: audit_logging_events
           type: string
           configurable: true
           default: "connect,query"
+
+- name: pxc_internal_certificate
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - pxc_internal_certificate
+
+- name: pxc_server_certificate
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - mysql.service.cf.internal
