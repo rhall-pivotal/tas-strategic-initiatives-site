@@ -49,14 +49,6 @@ property_inputs:
               Maximum allowed password entry attempts (within a five minute
               timespan) before the account is locked
 
-          - reference: .properties.uaa.internal.enable_mfa_google_authenticator
-            label: Enable Multi-Factor Authentication (MFA) with Google Authenticator
-
-          - reference: .properties.uaa.internal.mfa_google_authenticator_issuer
-            label: Google Authenticator Code Label (Issuer) Required if MFA is Enabled
-            description: |
-              This will show up in the subtitle of an entry in the google authenticator app
-
       - reference: .properties.uaa.saml
         label: |
           SAML Identity Provider (SAML Identity Providers created by PAS must
@@ -203,11 +195,3 @@ property_inputs:
 
           - reference: .properties.uaa.ldap.ldap_referrals
             label: LDAP Referrals
-
-          - reference: .properties.uaa.ldap.enable_mfa_google_authenticator
-            label: Enable Multi-Factor Authentication (MFA) with Google Authenticator
-
-          - reference: .properties.uaa.ldap.mfa_google_authenticator_issuer
-            label: Google Authenticator Code Label (Issuer) Required if MFA is Enabled
-            description: |
-              This will show up in the subtitle of an entry in the google authenticator app
