@@ -11,7 +11,6 @@ templates:
 - $( job "mysql" )
 - $( job "mysql-clustered" )
 - $( job "mysql-metrics" )
-- $( job "streaming-mysql-backup-tool" )
 - $( job "send-email" )
 - $( job "mysql-diag-agent" )
 - $( job "mysql-restore" )
@@ -94,9 +93,3 @@ property_blueprints:
   type: boolean
   configurable: true
   default: false
-
-- name: backup_server_certificate
-  type: rsa_cert_credentials
-  default:
-    domains:
-    - streaming-mysql-backup-tool
