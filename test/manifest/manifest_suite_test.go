@@ -20,6 +20,40 @@ func TestManifestGeneration(t *testing.T) {
 
 var product *planitest.ProductService
 var productConfig planitest.ProductConfig
+var metadataFile string
+
+var _ = SynchronizedBeforeSuite(func() []byte {
+	var env []string
+
+	file, err := ioutil.TempFile("", "Planitest")
+	Expect(err).NotTo(HaveOccurred())
+
+	// _, err := os.Getwd()
+	// Expect(err).NotTo(HaveOccurred())
+
+	env = append(env, "METADATA_ONLY=true", "STUB_RELEASES=true", "PRODUCT=ert")
+
+	cmd := planitest.NewExecutorWithEnv(env)
+
+	output, errOutput, err := cmd.Run("../../bin/build")
+	if err != nil {
+		fmt.Errorf("error running bin/build: %s: %s", err, errOutput)
+	}
+	Expect(err).NotTo(HaveOccurred())
+
+	_, err = file.WriteString(output)
+	Expect(err).NotTo(HaveOccurred())
+
+	return []byte(file.Name())
+}, func(path []byte) {
+	metadataFile = string(path)
+})
+
+// var _ = SynchronizedAfterSuite(func() {
+// }, func() {
+// 	err := os.Remove(metadataFile)
+// 	Expect(err).NotTo(HaveOccurred())
+// })
 
 var _ = BeforeEach(func() {
 	productVersion, err := fetchProductVersion()
@@ -29,7 +63,7 @@ var _ = BeforeEach(func() {
 		Name:         "cf",
 		Version:      productVersion,
 		ConfigFile:   "config.json",
-		MetadataFile: "cf-metadata.yml",
+		MetadataFile: metadataFile,
 	}
 	product, err = planitest.NewProductService(productConfig)
 	Expect(err).NotTo(HaveOccurred())

@@ -2,9 +2,8 @@ package planitest
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
 
+	"github.com/cppforlife/go-patch/patch"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -14,73 +13,53 @@ type CommandRunner interface {
 }
 
 type Manifest struct {
-	cmdRunner CommandRunner
-	content   string
+	content string
 }
 
 func NewManifest(content string) Manifest {
 	return Manifest{
-		cmdRunner: NewExecutor(),
-		content:   content,
-	}
-}
-
-func NewManifestWithRunner(content string, cmdRunner CommandRunner) Manifest {
-	return Manifest{
-		cmdRunner: cmdRunner,
-		content:   content,
+		content: content,
 	}
 }
 
 func (m *Manifest) FindInstanceGroupJob(instanceGroup, job string) (Manifest, error) {
 	path := fmt.Sprintf("/instance_groups/name=%s/jobs/name=%s", instanceGroup, job)
 
-	output, errOutput, err := m.interpolate(path)
+	result, err := m.interpolate(path)
 	if err != nil {
-		return Manifest{}, fmt.Errorf("Problem interpolating manifest: %s: %s", err, errOutput)
+		return Manifest{}, err
 	}
-	return NewManifestWithRunner(output, m.cmdRunner), nil
+
+	content, err := yaml.Marshal(result)
+	if err != nil {
+		return Manifest{}, err // should never happen
+	}
+	return NewManifest(string(content)), nil
 }
 
 func (m *Manifest) Property(path string) (interface{}, error) {
-	resultYAML, errOutput, err := m.interpolate(fmt.Sprintf("/properties/%s", path))
-	if err != nil {
-		return "", fmt.Errorf("Problem interpolating manifest: %s: %s", err, errOutput)
-	}
+	return m.interpolate(fmt.Sprintf("/properties/%s", path))
+}
 
-	var result interface{}
-	err = yaml.Unmarshal([]byte(resultYAML), &result)
-	if err != nil {
-		return nil, fmt.Errorf("Problem unmarshalling result retrieving property %q: %s", path, err)
-	}
-	return result, nil
+func (m *Manifest) Path(path string) (interface{}, error) {
+	return m.interpolate(path)
 }
 
 func (m *Manifest) String() string {
 	return m.content
 }
 
-func (m *Manifest) interpolate(expr string) (string, string, error) {
-	manifestFile, err := ioutil.TempFile("", "manifest")
+func (m *Manifest) interpolate(path string) (interface{}, error) {
+	var content interface{}
+	err := yaml.Unmarshal([]byte(m.content), &content)
 	if err != nil {
-		return "", "", err // un-tested
+		return "", fmt.Errorf("failed to parse manifest: %s", err)
 	}
 
-	defer os.Remove(manifestFile.Name()) // un-tested
-
-	if _, err = manifestFile.WriteString(m.content); err != nil {
-		return "", "", err // un-tested
+	res, err := patch.FindOp{Path: patch.MustNewPointerFromString(path)}.Apply(content)
+	if err != nil {
+		return "", fmt.Errorf("failed to find value at path '%s': %s", path, m.content)
 	}
 
-	if err = manifestFile.Close(); err != nil {
-		return "", "", err // un-tested
-	}
-
-	return m.cmdRunner.Run(
-		"bosh",
-		"--non-interactive",
-		"interpolate",
-		fmt.Sprintf("--path=%s", expr),
-		manifestFile.Name(),
-	)
+	return res, nil
 }

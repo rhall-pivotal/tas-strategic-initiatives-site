@@ -18,12 +18,7 @@ Basic assertion about the properties under an instance group. The `Property` met
 
 ```go
 It("configures the router minimum TLS version", func() {
-  if os.Getenv("RENDERER") == "om" {
-    err := product.Configure(map[string]interface{}{})
-    Expect(err).NotTo(HaveOccurred())
-  }
-
-  manifest, err := product.RenderService.RenderManifest()
+  manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
   Expect(err).NotTo(HaveOccurred())
 
   router, err := manifest.FindInstanceGroupJob("router", "gorouter")
@@ -40,14 +35,9 @@ Context("when the operator sets the minimum TLS version to 1.1", func() {
   var manifest planitest.Manifest
 
   BeforeEach(func() {
-    if os.Getenv("RENDERER") == "om" {
-      err := product.Configure(map[string]interface{}{
-        ".properties.routing_minimum_tls_version": "tls_v1_1",
-      })
-      Expect(err).NotTo(HaveOccurred())
-    }
-
-    manifest, err = product.RenderService.RenderManifest()
+    manifest, err = product.RenderService.RenderManifest(map[string]interface{}{
+      ".properties.routing_minimum_tls_version": "tls_v1_1",
+    })
     Expect(err).NotTo(HaveOccurred())
   })
 
@@ -80,6 +70,8 @@ renderer or using a generator tool to provide faster feedback.
 
 ## Rough edges
 
+1. ops-manifest does not currently [support selectors
+   properly](https://github.com/pivotal-cf/ops-manifest/issues/1)
 1. Don't attempt to run tests that use planitest in parallel as different examples will step on each other
 1. Rendering a staged manifest for a large product on Ops Manager can be slooooow
 1. Currently runs om with the `--skip-ssl-validation` flag

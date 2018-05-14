@@ -40,8 +40,9 @@ type OMError struct {
 
 func NewProductService(config ProductConfig) (*ProductService, error) {
 	omRunner := internal.NewOMRunner(NewExecutor())
+	opsManifestRunner := internal.NewOpsManifestRunner(NewExecutor())
 
-	productService, err := NewProductServiceWithRunner(config, omRunner)
+	productService, err := NewProductServiceWithRunner(config, omRunner, opsManifestRunner)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +50,7 @@ func NewProductService(config ProductConfig) (*ProductService, error) {
 	return productService, err
 }
 
-func NewProductServiceWithRunner(config ProductConfig, omRunner OMRunner) (*ProductService, error) {
+func NewProductServiceWithRunner(config ProductConfig, omRunner OMRunner, opsManifestRunner OpsManifestRunner) (*ProductService, error) {
 	var renderService RenderService
 	var err error
 
@@ -62,11 +63,9 @@ func NewProductServiceWithRunner(config ProductConfig, omRunner OMRunner) (*Prod
 		}, omRunner)
 	case "ops-manifest":
 		renderService, err = NewOpsManifestServiceWithRunner(OpsManifestConfig{
-			Name:         config.Name,
-			Version:      config.Version,
 			ConfigFile:   config.ConfigFile,
 			MetadataFile: config.MetadataFile,
-		}, NewExecutor())
+		}, opsManifestRunner)
 	default:
 		err = errors.New("RENDERER must be set to om or ops-manifest")
 	}
@@ -83,16 +82,18 @@ func NewProductServiceWithRunner(config ProductConfig, omRunner OMRunner) (*Prod
 }
 
 func validateProductConfig(config ProductConfig) error {
-	if len(config.Name) == 0 {
-		return errors.New("Product name must be provided in config")
-	}
-
-	if len(config.Version) == 0 {
-		return errors.New("Product version must be provided in config")
-	}
-
 	if len(config.ConfigFile) == 0 {
 		return errors.New("Config file must be provided")
+	}
+
+	if os.Getenv("RENDERER") == "om" {
+		if len(config.Name) == 0 {
+			return errors.New("Product name must be provided in config")
+		}
+
+		if len(config.Version) == 0 {
+			return errors.New("Product version must be provided in config")
+		}
 	}
 
 	if os.Getenv("RENDERER") == "ops-manifest" {

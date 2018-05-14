@@ -3,17 +3,21 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 )
 
-//go:generate counterfeiter -o ./fakes/command_runner.go --fake-name CommandRunner . CommandRunner
 type CommandRunner interface {
 	Run(string, ...string) (string, string, error)
 }
 
 type OMRunner struct {
 	cmdRunner CommandRunner
+	FileIO    fileIO
+}
+
+type FileIO struct {
 }
 
 type StagedProduct struct {
@@ -32,10 +36,31 @@ type OMError struct {
 	Messages []string `json:"base"`
 }
 
+type fileIO interface {
+	TempFile(string, string) (*os.File, error)
+	Remove(string) error
+}
+
 func NewOMRunner(cmdRunner CommandRunner) OMRunner {
 	return OMRunner{
 		cmdRunner: cmdRunner,
+		FileIO:    FileIO{},
 	}
+}
+
+func NewOMRunnerWithFileIO(cmdRunner CommandRunner, fileIO fileIO) OMRunner {
+	return OMRunner{
+		cmdRunner: cmdRunner,
+		FileIO:    fileIO,
+	}
+}
+
+func (f FileIO) TempFile(a, b string) (*os.File, error) {
+	return ioutil.TempFile(a, b)
+}
+
+func (f FileIO) Remove(a string) error {
+	return os.Remove(a)
 }
 
 func (o OMRunner) StagedProducts() ([]StagedProduct, error) {
@@ -75,7 +100,7 @@ func (o OMRunner) FindStagedProduct(productName string) (StagedProduct, error) {
 		productName, strings.Join(stagedTypes, ", "))
 }
 
-func (o OMRunner) ResetAndConfigure(productName string, productVersion string, propertiesJSON string, networkJSON string) error {
+func (o OMRunner) ResetAndConfigure(productName string, productVersion string, configJSON string) error {
 	_, errOutput, err := o.cmdRunner.Run(
 		"om",
 		"--skip-ssl-validation",
@@ -101,14 +126,24 @@ func (o OMRunner) ResetAndConfigure(productName string, productVersion string, p
 			productName, productVersion, err, errOutput)
 	}
 
+	configFile, err := o.FileIO.TempFile("", "")
+	if err != nil {
+		return fmt.Errorf("Unable to ResetAndConfigure: %s", err)
+	}
+	defer o.FileIO.Remove(configFile.Name())
+
+	_, err = configFile.WriteString(configJSON)
+	if err != nil {
+		return err // un-tested
+	}
+
 	_, errOutput, err = o.cmdRunner.Run(
 		"om",
 		"--skip-ssl-validation",
 		"--target", os.Getenv("OM_URL"),
 		"configure-product",
 		"--product-name", productName,
-		"--product-properties", propertiesJSON,
-		"--product-network", networkJSON,
+		"--config", configFile.Name(),
 	)
 
 	if err != nil {

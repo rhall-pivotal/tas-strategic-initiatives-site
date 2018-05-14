@@ -23,9 +23,15 @@ type OMConfig struct {
 
 //go:generate counterfeiter -o ./fakes/om_runner.go --fake-name OMRunner . OMRunner
 type OMRunner interface {
-	ResetAndConfigure(productName string, productVersion string, propertiesJSON string, networkJSON string) error
+	ResetAndConfigure(productName string, productVersion string, configJSON string) error
 	GetManifest(productGUID string) (map[string]interface{}, error)
 	FindStagedProduct(productName string) (internal.StagedProduct, error)
+}
+
+//go:generate counterfeiter -o ./fakes/file_io.go --fake-name FileIO . FileIO
+type FileIO interface {
+	TempFile(string, string) (*os.File, error)
+	Remove(string) error
 }
 
 func NewOMService(config OMConfig) (*OMService, error) {
@@ -47,6 +53,14 @@ func NewOMServiceWithRunner(config OMConfig, omRunner OMRunner) (*OMService, err
 	return &OMService{config: config, omRunner: omRunner}, nil
 }
 
+func TempFile(a, b string) (*os.File, error) {
+	return ioutil.TempFile(a, b)
+}
+
+func Remove(a string) error {
+	return os.Remove(a)
+}
+
 func validateEnvironmentVariables() error {
 	requiredEnvVars := []string{"OM_USERNAME", "OM_PASSWORD", "OM_URL"}
 	for _, envVar := range requiredEnvVars {
@@ -58,46 +72,53 @@ func validateEnvironmentVariables() error {
 	return nil
 }
 
-func extractPropertiesAndNetworkConfig(configInput []byte, additionalProperties map[string]interface{}) ([]byte, []byte, error) {
-	var configJSON ConfigJSON
-	err := json.Unmarshal(configInput, &configJSON)
+func (o *OMService) appendProperties(additionalProperties map[string]interface{}) ([]byte, error) {
+	configInput, err := ioutil.ReadFile(o.config.ConfigFile)
+	if err != nil {
+		return nil, fmt.Errorf("Unable to configure product %q: %s (config file %s)", o.config.Name, err, o.config.ConfigFile)
+	}
+
+	var inputJSON ConfigJSON
+	err = json.Unmarshal(configInput, &inputJSON)
 
 	if err != nil {
-		return nil, nil, fmt.Errorf("could not parse config file: %s", err)
+		return nil, fmt.Errorf("could not parse config file: %s", err)
 	}
 
-	if configJSON.NetworkConfig == nil {
-		return nil, nil, fmt.Errorf("network config must be provided in the config file")
+	if inputJSON.NetworkConfig == nil {
+		return nil, fmt.Errorf("network config must be provided in the config file")
 	}
 
-	networkJSON, err := json.Marshal(configJSON.NetworkConfig)
+	if inputJSON.ProductProperties == nil {
+		return nil, fmt.Errorf("product properties must be provided in the config file")
+	}
+
+	propertiesJSON, err := json.Marshal(inputJSON.ProductProperties)
 	if err != nil {
-		return nil, nil, err // un-tested
-	}
-
-	if configJSON.ProductProperties == nil {
-		return nil, nil, fmt.Errorf("product properties must be provided in the config file")
-	}
-
-	propertiesJSON, err := json.Marshal(configJSON.ProductProperties)
-	if err != nil {
-		return nil, nil, err // un-tested
+		return nil, err // un-tested
 	}
 
 	var minimalProperties *map[string]interface{}
 	err = json.Unmarshal(propertiesJSON, &minimalProperties)
 	if err != nil {
-		return nil, nil, fmt.Errorf("could not parse product properties: %s", err)
+		return nil, fmt.Errorf("could not parse product properties: %s", err)
 	}
 
 	combinedProperties := mergeProperties(*minimalProperties, additionalProperties)
 
 	propertiesJSON, err = json.Marshal(combinedProperties)
 	if err != nil {
-		return nil, nil, err // un-tested
+		return nil, err // un-tested
 	}
 
-	return propertiesJSON, networkJSON, nil
+	err = json.Unmarshal(propertiesJSON, &inputJSON.ProductProperties)
+	if err != nil {
+		return nil, err // un-tested
+	}
+
+	outputJSON, err := json.Marshal(inputJSON)
+
+	return outputJSON, nil
 }
 
 func mergeProperties(minimalProperties, additionalProperties map[string]interface{}) map[string]interface{} {
@@ -139,17 +160,12 @@ func (o OMService) RenderManifest(additionalProperties map[string]interface{}) (
 }
 
 func (o *OMService) configure(additionalProperties map[string]interface{}) error {
-	configInput, err := ioutil.ReadFile(o.config.ConfigFile)
+	configInput, err := o.appendProperties(additionalProperties)
 	if err != nil {
-		return fmt.Errorf("Unable to configure product %q: %s (config file %s)", o.config.Name, err, o.config.ConfigFile)
+		return fmt.Errorf("Unable to configure product %q: %s", o.config.Name, err)
 	}
 
-	propertiesJSON, networkJSON, err := extractPropertiesAndNetworkConfig(configInput, additionalProperties)
-	if err != nil {
-		return fmt.Errorf("Unable to configure product %q: %s (config file %s)", o.config.Name, err, o.config.ConfigFile)
-	}
-
-	err = o.omRunner.ResetAndConfigure(o.config.Name, o.config.Version, string(propertiesJSON), string(networkJSON))
+	err = o.omRunner.ResetAndConfigure(o.config.Name, o.config.Version, string(configInput))
 	if err != nil {
 		panic(err)
 	}
