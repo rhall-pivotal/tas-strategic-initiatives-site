@@ -2,8 +2,6 @@
 name: policy-server-internal
 release: cf-networking
 manifest: |
-  cf_networking:
-    policy_server_internal:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      server_cert: (( .properties.network_policy_server_cert.cert_pem ))
-      server_key: (( .properties.network_policy_server_cert.private_key_pem ))
+  ca_cert: (( $ops_manager.ca_certificate ))
+  server_cert: (( .properties.network_policy_server_cert.cert_pem ))
+  server_key: (( .properties.network_policy_server_cert.private_key_pem ))

@@ -4,10 +4,8 @@ release: silk
 consumes: |
   cf_network: {from: cf_network, deployment: (( .deployment_name )) }
 manifest: |
-  cf_networking:
-    disable: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(disable_silk) ))
-    silk_daemon:
-      ca_cert: (( $ops_manager.ca_certificate ))
-      client_cert: (( .diego_database.silk_daemon_client_cert.cert_pem ))
-      client_key: (( .diego_database.silk_daemon_client_cert.private_key_pem ))
-    vtep_port: (( .properties.container_networking_interface_plugin.silk.vtep_port.value ))
+  ca_cert: (( $ops_manager.ca_certificate ))
+  client_cert: (( .diego_database.silk_daemon_client_cert.cert_pem ))
+  client_key: (( .diego_database.silk_daemon_client_cert.private_key_pem ))
+  disable: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(disable_silk) ))
+  vtep_port: (( .properties.container_networking_interface_plugin.silk.vtep_port.value ))
