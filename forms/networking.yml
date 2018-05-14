@@ -57,6 +57,22 @@ property_inputs:
     - reference: .properties.routing_minimum_tls_version.tls_v1_2
       label: TLSv1.2
 
+- reference: .properties.routing_log_client_ips
+  label: Logging of Client IPs in CF Router
+  description: |
+    To comply with GDPR, select one of the options to disable logging
+    of client IPs. If the source IP exposed by your load balancer is
+    its own, choose to disable logging of XFF header only. If the
+    source IP exposed by your load balancer is that of the downstream
+    client, choose to disable logging of the source IP also.
+  selector_property_inputs:
+    - reference: .properties.routing_log_client_ips.log_client_ips
+      label: Log client IPs
+    - reference: .properties.routing_log_client_ips.disable_x_forwarded_for
+      label: Disable logging of X-Forwarded-For header only
+    - reference: .properties.routing_log_client_ips.disable_all_log_client_ips
+      label: Disable logging of both source IP and X-Forwarded-For header
+
 - reference: .properties.routing_tls_termination
   label: |
     Configure support for the X-Forwarded-Client-Cert header. This header

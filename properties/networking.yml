@@ -97,6 +97,39 @@
           manifest: |
             true
 
+- name: routing_log_client_ips
+  type: selector
+  configurable: true
+  default: log_client_ips
+  option_templates:
+    - name: log_client_ips
+      select_value: log_client_ips
+      named_manifests:
+        - name: disable_log_forwarded_for
+          manifest: |
+            false
+        - name: disable_log_source_ips
+          manifest: |
+            false
+    - name: disable_x_forwarded_for
+      select_value: disable_x_forwarded_for
+      named_manifests:
+        - name: disable_log_forwarded_for
+          manifest: |
+            true
+        - name: disable_log_source_ips
+          manifest: |
+            false
+    - name: disable_all_log_client_ips
+      select_value: disable_all_log_client_ips
+      named_manifests:
+        - name: disable_log_forwarded_for
+          manifest: |
+            true
+        - name: disable_log_source_ips
+          manifest: |
+            true
+
 - name: router_backend_max_conn
   type: integer
   configurable: true
