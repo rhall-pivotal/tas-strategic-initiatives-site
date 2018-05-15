@@ -13,7 +13,7 @@ trap '{ rm -rf "${build_dir}"; }' EXIT
 
 output_dir="$(mktemp -d -t "p-runtime.XXXXXXXXX")"
 
-if [ ! -d "${tile_dir}/releases" ]; then
+if [[ (! -d "${tile_dir}/releases") && (! "${STUB_RELEASES}") ]]; then
   echo "Missing required directory '${tile_dir}/releases'. Create this directory and download all required release tarballs into it." > /dev/stderr
   exit 1
 fi
@@ -46,6 +46,7 @@ pushd "${build_dir}" > /dev/null
   version="$( cat ./version )"
 
   optional_flags=""
+  release_dir="./releases"
 
   if [ "${METADATA_ONLY}" == "true" ]; then
     optional_flags+="--metadata-only "
@@ -56,6 +57,7 @@ pushd "${build_dir}" > /dev/null
 
   if [ "${STUB_RELEASES}" == "true" ]; then
     optional_flags+="--stub-releases "
+    release_dir="./test/releases"
   fi
 
   echo "Baking ${PRODUCT} ${version} in the kiln..." > /dev/stderr
@@ -68,7 +70,7 @@ pushd "${build_dir}" > /dev/null
     --migrations-directory ./migrations/common \
     --migrations-directory "./migrations/${PRODUCT}" \
     --properties-directory ./properties \
-    --releases-directory ./releases \
+    --releases-directory "./test/releases" \
     --runtime-configs-directory ./runtime_configs \
     --stemcell-tarball "${STEMCELL_PATH}" \
     --variables-file "./variables/${PRODUCT}.yml" \
