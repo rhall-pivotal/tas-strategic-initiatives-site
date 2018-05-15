@@ -3,6 +3,7 @@ package manifest_test
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"regexp"
 
@@ -28,9 +29,6 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 	file, err := ioutil.TempFile("", "Planitest")
 	Expect(err).NotTo(HaveOccurred())
 
-	// _, err := os.Getwd()
-	// Expect(err).NotTo(HaveOccurred())
-
 	env = append(env, "METADATA_ONLY=true", "STUB_RELEASES=true", "PRODUCT=ert")
 
 	cmd := planitest.NewExecutorWithEnv(env)
@@ -49,11 +47,11 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 	metadataFile = string(path)
 })
 
-// var _ = SynchronizedAfterSuite(func() {
-// }, func() {
-// 	err := os.Remove(metadataFile)
-// 	Expect(err).NotTo(HaveOccurred())
-// })
+var _ = SynchronizedAfterSuite(func() {
+}, func() {
+	err := os.Remove(metadataFile)
+	Expect(err).NotTo(HaveOccurred())
+})
 
 var _ = BeforeEach(func() {
 	productVersion, err := fetchProductVersion()
