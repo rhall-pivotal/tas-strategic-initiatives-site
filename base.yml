@@ -434,13 +434,6 @@ post_deploy_errands:
     run_default: true
     instances:
       - $( variable "errand_instance_group" )
-  - name: push-pivotal-account
-    label: Pivotal Account Errand
-    description: Pushes the Pivotal Account application to your Application Service installation
-    colocated: true
-    run_default: true
-    instances:
-      - $( variable "errand_instance_group" )
   - name: deploy-autoscaler
     label: App Autoscaler Errand
     description: Pushes the Pivotal App Autoscaler application to your Application Service installation
