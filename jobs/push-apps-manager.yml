@@ -17,6 +17,7 @@ manifest: |
     cf_dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
     enable_invitations: (( .properties.push_apps_manager_enable_invitations.value ))
     display_plan_prices: (( .properties.push_apps_manager_display_plan_prices.value ))
+    currency_lookup: (( .properties.push_apps_manager_currency_lookup.value ))
     instances: $( variable "push_apps_manager_instances" )
     white_labeling:
       marketplace_name: (( .properties.push_apps_manager_marketplace_name.value ))
