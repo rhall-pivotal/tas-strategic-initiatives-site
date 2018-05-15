@@ -35,7 +35,7 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 
 	output, errOutput, err := cmd.Run("../../bin/build")
 	if err != nil {
-		fmt.Errorf("error running bin/build: %s: %s", err, errOutput)
+		fmt.Fprintf(os.Stderr, "error running bin/build: %s: %s", err, errOutput)
 	}
 	Expect(err).NotTo(HaveOccurred())
 
