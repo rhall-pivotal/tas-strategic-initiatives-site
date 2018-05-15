@@ -67,3 +67,13 @@
             custom_rule: |
               (( .properties.system_logging.enabled.syslog_rule.value ))
               if ($programname startswith "vcap.") then stop
+              "(( ..cf.properties.container_networking_interface_plugin.silk.enable_log_traffic.value ? .properties.system_logging.selected_option.parsed_manifest(iptables_logging_enabled) : .properties.system_logging.selected_option.parsed_manifest(iptables_logging_disabled) ))"
+        - name: iptables_logging_enabled
+          manifest: |
+            if $programname == 'kernel' and ($msg contains "DENY_" or $msg contains "OK_") then {
+             -/var/log/kern.log
+             stop
+            }
+        - name: iptables_logging_disabled
+          manifest: |
+            ""
