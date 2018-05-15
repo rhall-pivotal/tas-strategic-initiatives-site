@@ -19,7 +19,7 @@ runtime_config: |
             domain: bosh
         - domain: bbs.service.cf.internal
           targets:
-          - query: "*"
+          - query: "q-s4" # all instances, regardless of health (clients retry)
             instance_group: $( variable "bosh_dns_bbs_instance_group" )
             deployment: (( ..cf.deployment_name ))
             network: (( ..cf.network_name ))
