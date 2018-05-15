@@ -1,6 +1,5 @@
 ---
 name: netmon
-release: cf-networking
+release: silk
 manifest: |
-  cf_networking:
-    disable: (( ..cf.properties.container_networking_interface_plugin.selected_option.parsed_manifest(disable_silk) ))
+  disable: (( ..cf.properties.container_networking_interface_plugin.selected_option.parsed_manifest(disable_silk) ))

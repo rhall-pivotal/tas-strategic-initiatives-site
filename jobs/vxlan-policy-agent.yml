@@ -1,14 +1,12 @@
 ---
 name: vxlan-policy-agent
-release: cf-networking
+release: silk
 manifest: |
-  cf_networking:
-    disable: (( ..cf.properties.container_networking_interface_plugin.selected_option.parsed_manifest(disable_silk) ))
-    iptables_logging: (( ..cf.properties.container_networking_interface_plugin.silk.enable_log_traffic.value ))
-    iptables_accepted_udp_logs_per_sec: (( ..cf.properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
-    policy_server:
-      hostname: network-policy-server.service.cf.internal
-    vxlan_policy_agent:
-      client_cert: (( ..cf.properties.network_policy_agent_cert.cert_pem ))
-      client_key: (( ..cf.properties.network_policy_agent_cert.private_key_pem ))
-      ca_cert: (( $ops_manager.ca_certificate ))
+  ca_cert: (( $ops_manager.ca_certificate ))
+  client_cert: (( ..cf.properties.network_policy_agent_cert.cert_pem ))
+  client_key: (( ..cf.properties.network_policy_agent_cert.private_key_pem ))
+  disable: (( ..cf.properties.container_networking_interface_plugin.selected_option.parsed_manifest(disable_silk) ))
+  iptables_accepted_udp_logs_per_sec: (( ..cf.properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
+  iptables_logging: (( ..cf.properties.container_networking_interface_plugin.silk.enable_log_traffic.value ))
+  policy_server:
+    hostname: network-policy-server.service.cf.internal
