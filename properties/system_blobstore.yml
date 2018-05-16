@@ -178,6 +178,22 @@
         - name: resources_bucket
           type: string
           configurable: true
+        - name: buildpacks_backup_bucket
+          type: string
+          configurable: true
+          optional: true
+        - name: droplets_backup_bucket
+          type: string
+          configurable: true
+          optional: true
+        - name: packages_backup_bucket
+          type: string
+          configurable: true
+          optional: true
+        - name: resources_backup_bucket
+          type: string
+          configurable: true
+          optional: true
         - name: iam_instance_profile_authentication
           type: boolean
           configurable: true
@@ -201,6 +217,10 @@
           - name: 4
             label: V4 Signature
         - name: region
+          type: string
+          configurable: true
+          optional: true
+        - name: backup_region
           type: string
           configurable: true
           optional: true

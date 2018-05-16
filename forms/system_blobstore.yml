@@ -89,14 +89,6 @@ property_inputs:
           The files uploaded to the blobstore will be encrypted using the given KMS key.
           If Server-side Encryption is enabled and a KMS Key ID is not provided, the default AWS key is used.
 
-      - reference: .properties.system_blobstore.external.versioning
-        label: Versioning is enabled for all buckets listed below.
-        description: |
-          This setting determines how the buckets are backed up and restored.
-          Non-versioned S3 blobstore backup and restore is not supported yet.
-          More information at https://docs.pivotal.io/pivotalcf/2-1/customizing/backup-restore/backup-pcf-bbr.html.
-          S3 Signature Version must be set to V4 Signature for this to work properly.
-
       - reference: .properties.system_blobstore.external.buildpacks_bucket
         label: Buildpacks Bucket Name
         description: S3 bucket for storing app buildpacks.
@@ -117,6 +109,45 @@ property_inputs:
 
       - reference: .properties.system_blobstore.external.resources_bucket
         label: Resources Bucket Name
+        description: |
+          S3 bucket for storing app resources. Pivotal recommends that you
+          use a unique bucket name for app resources, but you can also use
+          the same name as above.
+
+      - reference: .properties.system_blobstore.external.versioning
+        label: Versioning is enabled for all buckets listed below.
+        description: |
+          This setting determines how the buckets are backed up and restored.
+          More information at https://docs.pivotal.io/pivotalcf/2-1/customizing/backup-restore/backup-pcf-bbr.html.
+          S3 Signature Version must be set to V4 Signature for this to work properly.
+
+      - reference: .properties.system_blobstore.external.backup_region
+        label: Backup Region
+        description: |
+          The AWS Region where the buckets are located, e.g. "us-east-1"
+          or "ap-northeast-1".
+        placeholder: "us-east-1"
+
+      - reference: .properties.system_blobstore.external.buildpacks_backup_bucket
+        label: Backup Buildpacks Bucket Name
+        description: S3 bucket for storing app buildpacks.
+
+      - reference: .properties.system_blobstore.external.droplets_backup_bucket
+        label: Backup Droplets Bucket Name
+        description: |
+          S3 bucket for storing app droplets. Pivotal recommends that you use
+          a unique bucket name for droplets, but you can also use the same
+          name as above.
+
+      - reference: .properties.system_blobstore.external.packages_backup_bucket
+        label: Backup Packages Bucket Name
+        description: |
+          S3 bucket for storing app packages. Pivotal recommends that you use
+          a unique bucket name for packages, but you can also use the same
+          name as above.
+
+      - reference: .properties.system_blobstore.external.resources_backup_bucket
+        label: Backup Resources Bucket Name
         description: |
           S3 bucket for storing app resources. Pivotal recommends that you
           use a unique bucket name for app resources, but you can also use
