@@ -28,13 +28,16 @@ resource_definitions:
     constraints:
       min: 2_048
 
+  # GCP currently sets the root disk size based on the size of the ephemeral
+  # disk and the current recommended root disk size on GCP is 100GB
+  # https://docs.pivotal.io/pivotalcf/2-1/windows/about-windows-stemcells.html
   - name: ephemeral_disk
     type: integer
     label: Ephemeral Disk
     configurable: true
-    default: 65_536
+    default: 102_400
     constraints:
-      min: 4_096
+      min: 102_400
 
   - name: persistent_disk
     type: integer
