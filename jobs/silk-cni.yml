@@ -1,6 +1,8 @@
 ---
 name: silk-cni
 release: silk
+consumes: |
+  cf_network: { from: cf_network, deployment: ((  ..cf.deployment_name  )) }
 manifest: |
   disable: (( ..cf.properties.container_networking_interface_plugin.selected_option.parsed_manifest(disable_silk) ))
   dns_servers: '(( $director.dns_release_present ? ..cf.properties.bosh_dns_servers.parsed_strings : ..cf.properties.container_networking_interface_plugin.silk.dns_servers.parsed_strings ))'
