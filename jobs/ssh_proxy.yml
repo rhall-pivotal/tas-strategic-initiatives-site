@@ -5,17 +5,15 @@ manifest: |
   connect_to_instance_address: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(use_container_address) ))
   diego:
     ssh_proxy:
-      host_key: (( .diego_brain.ssh_host_key.private_key_pem ))
-      enable_cf_auth: true
-      diego_credentials: ''
-      uaa:
-        url: https://uaa.(( .cloud_controller.system_domain.value ))
-        port: 443
-      uaa_secret: (( .uaa.ssh_proxy_client_credentials.password ))
       bbs:
+        ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
+      enable_cf_auth: true
+      host_key: (( .diego_brain.ssh_host_key.private_key_pem ))
+      uaa:
         ca_cert: (( $ops_manager.ca_certificate ))
+      uaa_secret: (( .uaa.ssh_proxy_client_credentials.password ))
     ssl:
       skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
   logging:
