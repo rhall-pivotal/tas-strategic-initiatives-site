@@ -7,7 +7,14 @@ templates:
 {{if eq tile "ert"}}
 - $( job "consul_agent_doppler" )
 - $( job "doppler" )
+- $( job "log-cache" )
+- $( job "log-cache-cf-auth-proxy" )
+- $( job "log-cache-expvar-forwarder" )
+- $( job "log-cache-gateway" )
+- $( job "log-cache-group-reader" )
+- $( job "log-cache-nozzle" )
 - $( job "metron_agent" )
+- $( job "route_registrar_log_cache_reverse_proxy" )
 - $( job "syslog_forwarder" )
 {{else}}
 - $( job "placeholder" )
@@ -18,9 +25,9 @@ resource_definitions:
   type: integer
   label: RAM
   configurable: true
-  default: 1024
+  default: 4096
   constraints:
-    min: 1024
+    min: 4096
 - name: ephemeral_disk
   type: integer
   label: Ephemeral Disk

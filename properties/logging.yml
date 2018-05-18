@@ -133,3 +133,26 @@
   type: text
   configurable: true
   optional: true
+
+- name: log_cache_auth_proxy_client_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - log-cache
+
+- name: log_cache_server_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - log_cache
+    - log-cache
+    - logcache
+
+- name: log_cache_nozzle_client_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - log-cache

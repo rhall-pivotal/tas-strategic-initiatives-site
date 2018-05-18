@@ -76,7 +76,7 @@ var _ = Describe("Routing", func() {
 				Expect(router.Property("router/disable_log_source_ips")).To(BeFalse())
 			})
 		})
-		Context("when the operatoer chooses `Disable logging of both source IP and X-Forwarded-For header`", func() {
+		Context("when the operator chooses `Disable logging of both source IP and X-Forwarded-For header`", func() {
 			It("disbales both source ip logging and x-forwarded-for logging", func() {
 				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
 					".properties.routing_log_client_ips": "disable_all_log_client_ips",

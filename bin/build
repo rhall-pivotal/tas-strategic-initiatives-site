@@ -70,7 +70,7 @@ pushd "${build_dir}" > /dev/null
     --migrations-directory ./migrations/common \
     --migrations-directory "./migrations/${PRODUCT}" \
     --properties-directory ./properties \
-    --releases-directory "./test/releases" \
+    --releases-directory "${release_dir}" \
     --runtime-configs-directory ./runtime_configs \
     --stemcell-tarball "${STEMCELL_PATH}" \
     --variables-file "./variables/${PRODUCT}.yml" \

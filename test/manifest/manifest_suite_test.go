@@ -22,6 +22,7 @@ func TestManifestGeneration(t *testing.T) {
 var product *planitest.ProductService
 var productConfig planitest.ProductConfig
 var metadataFile string
+var productName string
 
 var _ = SynchronizedBeforeSuite(func() []byte {
 	var env []string
@@ -29,7 +30,12 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 	file, err := ioutil.TempFile("", "Planitest")
 	Expect(err).NotTo(HaveOccurred())
 
-	env = append(env, "METADATA_ONLY=true", "STUB_RELEASES=true", "PRODUCT=ert")
+	productToBuild := os.Getenv("PRODUCT")
+	if productToBuild == "" {
+		productToBuild = "ert"
+	}
+
+	env = append(env, "METADATA_ONLY=true", "STUB_RELEASES=true", fmt.Sprintf("PRODUCT=%s", productToBuild))
 
 	cmd := planitest.NewExecutorWithEnv(env)
 
@@ -45,6 +51,10 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 	return []byte(file.Name())
 }, func(path []byte) {
 	metadataFile = string(path)
+	productName = os.Getenv("PRODUCT")
+	if productName == "" {
+		productName = "ert"
+	}
 })
 
 var _ = SynchronizedAfterSuite(func() {
