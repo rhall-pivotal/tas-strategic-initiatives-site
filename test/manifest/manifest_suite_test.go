@@ -37,6 +37,8 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 
 	env = append(env, "METADATA_ONLY=true", "STUB_RELEASES=true", fmt.Sprintf("PRODUCT=%s", productToBuild))
 
+	fmt.Printf("Testing product: %s", productToBuild)
+
 	cmd := planitest.NewExecutorWithEnv(env)
 
 	output, errOutput, err := cmd.Run("../../bin/build")
