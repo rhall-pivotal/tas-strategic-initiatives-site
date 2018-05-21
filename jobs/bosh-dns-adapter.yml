@@ -1,6 +1,6 @@
 ---
 name: bosh-dns-adapter
-release: cf-app-sd
+release: cf-networking
 manifest: |
   cf_app_sd_disable: "(( .properties.enable_service_discovery_for_apps.value ? false : true ))"
   dnshttps:
