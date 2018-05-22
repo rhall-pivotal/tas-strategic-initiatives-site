@@ -8,6 +8,22 @@ import (
 )
 
 var _ = Describe("System Blobstore", func() {
+	Describe("non-s3 blobstores", func() {
+		Context("when s3 is not selected", func() {
+			It("doesn't enable unversioned S3 backups", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-unversioned-blobstore-backup-restorer")
+				Expect(err).NotTo(HaveOccurred())
+
+				jobEnabled, err := job.Property("enabled")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(jobEnabled).To(BeFalse())
+			})
+		})
+	})
+
 	Describe("s3 compatible", func() {
 		var (
 			inputProperties map[string]interface{}
@@ -71,11 +87,9 @@ var _ = Describe("System Blobstore", func() {
 						Expect(bucketProperties).To(HaveKeyWithValue("aws_secret_access_key", "some-secret-access-key"))
 					}
 				})
-
 			})
 
 			Context("and IAM instance profiles are enabled", func() {
-
 				BeforeEach(func() {
 					inputProperties[".properties.system_blobstore.external.iam_instance_profile_authentication"] = true
 				})
@@ -98,13 +112,10 @@ var _ = Describe("System Blobstore", func() {
 						Expect(bucketProperties).NotTo(HaveKey("aws_access_secret_key"))
 					}
 				})
-
 			})
-
 		})
 
 		Context("when the user disables versioning", func() {
-
 			BeforeEach(func() {
 				inputProperties[".properties.system_blobstore.external.backup_region"] = "some-backup-region"
 				inputProperties[".properties.system_blobstore.external.buildpacks_backup_bucket"] = "some-buildpacks-bucket"
@@ -165,7 +176,6 @@ var _ = Describe("System Blobstore", func() {
 			})
 
 			Context("and IAM instance profiles are disabled", func() {
-
 				BeforeEach(func() {
 					inputProperties[".properties.system_blobstore.external.iam_instance_profile_authentication"] = false
 					inputProperties[".properties.system_blobstore.external.access_key"] = "some-access-key-id"
@@ -189,11 +199,9 @@ var _ = Describe("System Blobstore", func() {
 						Expect(bucketProperties).To(HaveKeyWithValue("aws_secret_access_key", "some-secret-access-key"))
 					}
 				})
-
 			})
 
 			Context("and IAM instance profiles are enabled", func() {
-
 				BeforeEach(func() {
 					inputProperties[".properties.system_blobstore.external.iam_instance_profile_authentication"] = true
 				})
@@ -216,9 +224,7 @@ var _ = Describe("System Blobstore", func() {
 						Expect(bucketProperties).NotTo(HaveKey("aws_access_secret_key"))
 					}
 				})
-
 			})
-
 		})
 	})
 })
