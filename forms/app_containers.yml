@@ -31,6 +31,8 @@ property_inputs:
     Enabling the GrootFS container image plugin is recommended.
     However, if you experience issues with GrootFS, you can disable the plugin
     and rollback to the image plugin that is built into Garden RunC.
+    It is recommended to recreate all VMs in the BOSH Director config
+    when toggling this option on or off.
 
 - reference: .properties.rep_proxy_enabled
   label: Router uses TLS to verify application identity
