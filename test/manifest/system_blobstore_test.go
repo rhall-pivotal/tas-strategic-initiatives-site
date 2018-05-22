@@ -1,6 +1,8 @@
 package manifest_test
 
 import (
+	"fmt"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -9,6 +11,7 @@ var _ = Describe("System Blobstore", func() {
 	Describe("s3 compatible", func() {
 		var (
 			inputProperties map[string]interface{}
+			buckets         = []string{"buildpacks", "droplets", "packages", "resources"}
 		)
 
 		BeforeEach(func() {
@@ -42,16 +45,75 @@ var _ = Describe("System Blobstore", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(jobEnabled).To(BeFalse())
 			})
+
+			Context("and IAM instance profiles are disabled", func() {
+
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external.iam_instance_profile_authentication"] = false
+					inputProperties[".properties.system_blobstore.external.access_key"] = "some-access-key-id"
+					inputProperties[".properties.system_blobstore.external.secret_key"] = map[string]string{
+						"secret": "some-secret-access-key",
+					}
+				})
+
+				It("specifies that backups use the provided access key", func() {
+					manifest, err := product.RenderService.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-versioned-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, bucket := range buckets {
+						bucketProperties, err := job.Property(fmt.Sprintf("buckets/%s", bucket))
+						Expect(err).NotTo(HaveOccurred())
+						Expect(bucketProperties).NotTo(HaveKey("use_iam_profile"))
+						Expect(bucketProperties).To(HaveKeyWithValue("aws_access_key_id", "some-access-key-id"))
+						Expect(bucketProperties).To(HaveKeyWithValue("aws_secret_access_key", "some-secret-access-key"))
+					}
+				})
+
+			})
+
+			Context("and IAM instance profiles are enabled", func() {
+
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external.iam_instance_profile_authentication"] = true
+				})
+
+				It("specifies that backups should use it", func() {
+					manifest, err := product.RenderService.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-versioned-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, bucket := range buckets {
+						iamInstanceProfileAuthentication, err := job.Property(fmt.Sprintf("buckets/%s/use_iam_profile", bucket))
+						Expect(err).NotTo(HaveOccurred())
+						Expect(iamInstanceProfileAuthentication).To(BeTrue())
+
+						bucketProperties, err := job.Property(fmt.Sprintf("buckets/%s", bucket))
+						Expect(err).NotTo(HaveOccurred())
+						Expect(bucketProperties).NotTo(HaveKey("aws_access_key_id"))
+						Expect(bucketProperties).NotTo(HaveKey("aws_access_secret_key"))
+					}
+				})
+
+			})
+
 		})
 
 		Context("when the user disables versioning", func() {
-			It("disables the s3-versioned-blobstore-backup-restorer and enables the s3-unversioned-blobstore-backup-restorer", func() {
+
+			BeforeEach(func() {
 				inputProperties[".properties.system_blobstore.external.backup_region"] = "some-backup-region"
 				inputProperties[".properties.system_blobstore.external.buildpacks_backup_bucket"] = "some-buildpacks-bucket"
 				inputProperties[".properties.system_blobstore.external.droplets_backup_bucket"] = "some-droplets-bucket"
 				inputProperties[".properties.system_blobstore.external.packages_backup_bucket"] = "some-packages-bucket"
 				inputProperties[".properties.system_blobstore.external.resources_backup_bucket"] = "some-resources-bucket"
+			})
 
+			It("disables the s3-versioned-blobstore-backup-restorer and enables the s3-unversioned-blobstore-backup-restorer", func() {
 				manifest, err := product.RenderService.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
@@ -101,6 +163,62 @@ var _ = Describe("System Blobstore", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resourcesBackupName).To(Equal("some-resources-bucket"))
 			})
+
+			Context("and IAM instance profiles are disabled", func() {
+
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external.iam_instance_profile_authentication"] = false
+					inputProperties[".properties.system_blobstore.external.access_key"] = "some-access-key-id"
+					inputProperties[".properties.system_blobstore.external.secret_key"] = map[string]string{
+						"secret": "some-secret-access-key",
+					}
+				})
+
+				It("specifies that backups use the provided access key", func() {
+					manifest, err := product.RenderService.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-unversioned-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, bucket := range buckets {
+						bucketProperties, err := job.Property(fmt.Sprintf("buckets/%s", bucket))
+						Expect(err).NotTo(HaveOccurred())
+						Expect(bucketProperties).NotTo(HaveKey("use_iam_profile"))
+						Expect(bucketProperties).To(HaveKeyWithValue("aws_access_key_id", "some-access-key-id"))
+						Expect(bucketProperties).To(HaveKeyWithValue("aws_secret_access_key", "some-secret-access-key"))
+					}
+				})
+
+			})
+
+			Context("and IAM instance profiles are enabled", func() {
+
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external.iam_instance_profile_authentication"] = true
+				})
+
+				It("specifies that backups should use it", func() {
+					manifest, err := product.RenderService.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-unversioned-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, bucket := range buckets {
+						iamInstanceProfileAuthentication, err := job.Property(fmt.Sprintf("buckets/%s/use_iam_profile", bucket))
+						Expect(err).NotTo(HaveOccurred())
+						Expect(iamInstanceProfileAuthentication).To(BeTrue())
+
+						bucketProperties, err := job.Property(fmt.Sprintf("buckets/%s", bucket))
+						Expect(err).NotTo(HaveOccurred())
+						Expect(bucketProperties).NotTo(HaveKey("aws_access_key_id"))
+						Expect(bucketProperties).NotTo(HaveKey("aws_access_secret_key"))
+					}
+				})
+
+			})
+
 		})
 	})
 })

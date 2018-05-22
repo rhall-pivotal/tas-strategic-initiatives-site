@@ -41,6 +41,22 @@
               password: ((( webdav-blobstore-credentials.password )))
               public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
               ca_cert: (( $ops_manager.ca_certificate ))
+        - name: backup_buildpack
+          manifest: null
+        - name: backup_buildpack_iam
+          manifest: null
+        - name: backup_droplet
+          manifest: null
+        - name: backup_droplet_iam
+          manifest: null
+        - name: backup_package
+          manifest: null
+        - name: backup_package_iam
+          manifest: null
+        - name: backup_resource
+          manifest: null
+        - name: backup_resource_iam
+          manifest: null
     - name: external
       select_value: external
       named_manifests:
@@ -160,6 +176,82 @@
               path_style: true
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: backup_buildpack
+          manifest: |
+            name: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+            aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            backup:
+              name: (( .properties.system_blobstore.external.buildpacks_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: backup_buildpack_iam
+          manifest: |
+            name: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            use_iam_profile: true
+            backup:
+              name: (( .properties.system_blobstore.external.buildpacks_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: backup_droplet
+          manifest: |
+            name: (( .properties.system_blobstore.external.droplets_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+            aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            backup:
+              name: (( .properties.system_blobstore.external.droplets_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: backup_droplet_iam
+          manifest: |
+            name: (( .properties.system_blobstore.external.droplets_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            use_iam_profile: true
+            backup:
+              name: (( .properties.system_blobstore.external.droplets_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: backup_package
+          manifest: |
+            name: (( .properties.system_blobstore.external.packages_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+            aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            backup:
+              name: (( .properties.system_blobstore.external.packages_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: backup_package_iam
+          manifest: |
+            name: (( .properties.system_blobstore.external.packages_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            use_iam_profile: true
+            backup:
+              name: (( .properties.system_blobstore.external.packages_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: backup_resource
+          manifest: |
+            name: (( .properties.system_blobstore.external.resources_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+            aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            backup:
+              name: (( .properties.system_blobstore.external.resources_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: backup_resource_iam
+          manifest: |
+            name: (( .properties.system_blobstore.external.resources_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            use_iam_profile: true
+            backup:
+              name: (( .properties.system_blobstore.external.resources_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
 
       property_blueprints:
         - name: endpoint
@@ -274,6 +366,23 @@
               provider: Google
               google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
               google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
+          manifest: null
+        - name: backup_buildpack
+          manifest: null
+        - name: backup_buildpack_iam
+          manifest: null
+        - name: backup_droplet
+          manifest: null
+        - name: backup_droplet_iam
+          manifest: null
+        - name: backup_package
+          manifest: null
+        - name: backup_package_iam
+          manifest: null
+        - name: backup_resource
+          manifest: null
+        - name: backup_resource_iam
+          manifest: null
       property_blueprints:
         - name: buildpacks_bucket
           type: string
@@ -334,6 +443,22 @@
               google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
               google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
               google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+        - name: backup_buildpack
+          manifest: null
+        - name: backup_buildpack_iam
+          manifest: null
+        - name: backup_droplet
+          manifest: null
+        - name: backup_droplet_iam
+          manifest: null
+        - name: backup_package
+          manifest: null
+        - name: backup_package_iam
+          manifest: null
+        - name: backup_resource
+          manifest: null
+        - name: backup_resource_iam
+          manifest: null
       property_blueprints:
         - name: buildpacks_bucket
           type: string
@@ -398,6 +523,22 @@
               environment: (( .properties.system_blobstore.external_azure.environment.value ))
               azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
               azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+        - name: backup_buildpack
+          manifest: null
+        - name: backup_buildpack_iam
+          manifest: null
+        - name: backup_droplet
+          manifest: null
+        - name: backup_droplet_iam
+          manifest: null
+        - name: backup_package
+          manifest: null
+        - name: backup_package_iam
+          manifest: null
+        - name: backup_resource
+          manifest: null
+        - name: backup_resource_iam
+          manifest: null
       property_blueprints:
         - name: buildpacks_container
           type: string

@@ -26,6 +26,7 @@ var _ = Describe("Logging", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			syslogForwardingEnabled, err := agent.Property("syslog_daemon_config/enable")
+			Expect(err).NotTo(HaveOccurred())
 			Expect(syslogForwardingEnabled).To(BeFalse())
 		})
 	})
