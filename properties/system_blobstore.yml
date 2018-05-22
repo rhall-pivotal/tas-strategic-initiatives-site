@@ -57,6 +57,12 @@
           manifest: null
         - name: backup_resource_iam
           manifest: null
+        - name: enable_unversioned_s3_backup
+          manifest: |
+            false
+        - name: enable_versioned_s3_backup
+          manifest: |
+            false
     - name: external
       select_value: external
       named_manifests:
@@ -252,6 +258,12 @@
             backup:
               name: (( .properties.system_blobstore.external.resources_backup_bucket.value ))
               region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: enable_unversioned_s3_backup
+          manifest: |
+            '(( .properties.system_blobstore.external.versioning.value ? false : true ))'
+        - name: enable_versioned_s3_backup
+          manifest: |
+            (( .properties.system_blobstore.external.versioning.value ))
 
       property_blueprints:
         - name: endpoint
@@ -383,6 +395,12 @@
           manifest: null
         - name: backup_resource_iam
           manifest: null
+        - name: enable_unversioned_s3_backup
+          manifest: |
+            false
+        - name: enable_versioned_s3_backup
+          manifest: |
+            false
       property_blueprints:
         - name: buildpacks_bucket
           type: string
@@ -459,6 +477,12 @@
           manifest: null
         - name: backup_resource_iam
           manifest: null
+        - name: enable_unversioned_s3_backup
+          manifest: |
+            false
+        - name: enable_versioned_s3_backup
+          manifest: |
+            false
       property_blueprints:
         - name: buildpacks_bucket
           type: string
@@ -539,6 +563,12 @@
           manifest: null
         - name: backup_resource_iam
           manifest: null
+        - name: enable_unversioned_s3_backup
+          manifest: |
+            false
+        - name: enable_versioned_s3_backup
+          manifest: |
+            false
       property_blueprints:
         - name: buildpacks_container
           type: string

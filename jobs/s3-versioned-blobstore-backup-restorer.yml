@@ -2,7 +2,7 @@
 name: s3-versioned-blobstore-backup-restorer
 release: backup-and-restore-sdk
 manifest: |
-  enabled: (( .properties.system_blobstore.external.versioning.value ))
+  enabled: (( .properties.system_blobstore.selected_option.parsed_manifest(enable_versioned_s3_backup) ))
   buckets:
     buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack) ))'
     droplets: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_droplet_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_droplet) ))'
