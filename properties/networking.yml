@@ -415,6 +415,12 @@
       - name: use_container_address
         manifest: |
           false
+      - name: cni_config_dir
+        manifest: |
+          /var/vcap/jobs/silk-cni/config/cni
+      - name: cni_plugin_dir
+        manifest: |
+          /var/vcap/packages/silk-cni/bin
 
   - name: external
     select_value: external
@@ -425,6 +431,12 @@
       - name: use_container_address
         manifest: |
           true
+      - name: cni_config_dir
+        manifest: |
+          /var/vcap/jobs/cni/config/cni
+      - name: cni_plugin_dir
+        manifest: |
+          /var/vcap/packages/cni/bin
 
 - name: cf_networking_enable_space_developer_self_service
   type: boolean
