@@ -9,8 +9,16 @@ var _ = Describe("Networking", func() {
 	Describe("Container networking", func() {
 		var (
 			inputProperties map[string]interface{}
+			instanceGroup   string
 		)
 
+		BeforeEach(func() {
+			if productName == "ert" {
+				instanceGroup = "diego_cell"
+			} else {
+				instanceGroup = "compute"
+			}
+		})
 		Context("when Silk is enabled", func() {
 			BeforeEach(func() {
 				inputProperties = map[string]interface{}{
@@ -22,7 +30,7 @@ var _ = Describe("Networking", func() {
 				manifest, err := product.RenderService.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
-				job, err := manifest.FindInstanceGroupJob("diego_cell", "garden-cni")
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "garden-cni")
 				Expect(err).NotTo(HaveOccurred())
 
 				cniConfigDir, err := job.Property("cni_config_dir")
@@ -35,7 +43,7 @@ var _ = Describe("Networking", func() {
 				manifest, err := product.RenderService.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
-				job, err := manifest.FindInstanceGroupJob("diego_cell", "garden-cni")
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "garden-cni")
 				Expect(err).NotTo(HaveOccurred())
 
 				cniPluginDir, err := job.Property("cni_plugin_dir")
@@ -56,7 +64,7 @@ var _ = Describe("Networking", func() {
 				manifest, err := product.RenderService.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
-				job, err := manifest.FindInstanceGroupJob("diego_cell", "garden-cni")
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "garden-cni")
 				Expect(err).NotTo(HaveOccurred())
 
 				cniConfigDir, err := job.Property("cni_config_dir")
@@ -69,7 +77,7 @@ var _ = Describe("Networking", func() {
 				manifest, err := product.RenderService.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
-				job, err := manifest.FindInstanceGroupJob("diego_cell", "garden-cni")
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "garden-cni")
 				Expect(err).NotTo(HaveOccurred())
 				cniPluginDir, err := job.Property("cni_plugin_dir")
 				Expect(err).NotTo(HaveOccurred())
