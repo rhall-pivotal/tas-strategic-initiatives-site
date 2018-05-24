@@ -1,5 +1,5 @@
 name: garden-cni
 release: cf-networking
 manifest: |
-  cni_config_dir: "/var/vcap/jobs/silk-cni/config/cni"
-  cni_plugin_dir: "/var/vcap/packages/silk-cni/bin"
+  cni_config_dir: (( ..cf.properties.container_networking_interface_plugin.selected_option.parsed_manifest(cni_config_dir) ))
+  cni_plugin_dir: (( ..cf.properties.container_networking_interface_plugin.selected_option.parsed_manifest(cni_plugin_dir) ))
