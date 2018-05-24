@@ -84,7 +84,7 @@ var _ = Describe("System Blobstore", func() {
 						Expect(err).NotTo(HaveOccurred())
 						Expect(bucketProperties).NotTo(HaveKey("use_iam_profile"))
 						Expect(bucketProperties).To(HaveKeyWithValue("aws_access_key_id", "some-access-key-id"))
-						Expect(bucketProperties).To(HaveKeyWithValue("aws_secret_access_key", "some-secret-access-key"))
+						Expect(bucketProperties).To(HaveKeyWithValue("aws_secret_access_key", ContainSubstring("system_blobstore/external/secret_key")))
 					}
 				})
 			})
@@ -196,7 +196,7 @@ var _ = Describe("System Blobstore", func() {
 						Expect(err).NotTo(HaveOccurred())
 						Expect(bucketProperties).NotTo(HaveKey("use_iam_profile"))
 						Expect(bucketProperties).To(HaveKeyWithValue("aws_access_key_id", "some-access-key-id"))
-						Expect(bucketProperties).To(HaveKeyWithValue("aws_secret_access_key", "some-secret-access-key"))
+						Expect(bucketProperties).To(HaveKeyWithValue("aws_secret_access_key", ContainSubstring("system_blobstore/external/secret_key")))
 					}
 				})
 			})
