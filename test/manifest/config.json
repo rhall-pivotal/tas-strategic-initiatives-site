@@ -1,4 +1,23 @@
 {
+  "network-config": {
+    "network": {
+      "name": "pineapple-speaker-pas-subnet"
+    },
+    "other_availability_zones": [
+      {
+        "name": "us-central1-a"
+      },
+      {
+        "name": "us-central1-b"
+      },
+      {
+        "name": "us-central1-c"
+      }
+    ],
+    "singleton_availability_zone": {
+      "name": "us-central1-a"
+    }
+  },
   "product-properties": {
     ".cloud_controller.apps_domain": {
       "value": "apps.example.com"
@@ -21,8 +40,17 @@
         }
       ]
     },
+    ".properties.container_networking_interface_plugin": {
+      "value": "external"
+    },
+    ".properties.enable_service_discovery_for_apps": {
+      "value": true
+    },
     ".properties.gorouter_ssl_ciphers": {
       "value": "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384"
+    },
+    ".properties.haproxy_forward_tls": {
+      "value": "disable"
     },
     ".properties.haproxy_ssl_ciphers": {
       "value": "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384"
@@ -41,6 +69,36 @@
     ".properties.security_acknowledgement": {
       "value": "X"
     },
+    ".properties.smtp_address": {
+      "value": "smtp.sendgrid.net"
+    },
+    ".properties.smtp_auth_mechanism": {
+      "value": "plain"
+    },
+    ".properties.smtp_credentials": {
+      "value": {
+        "identity": "apikey",
+        "password": "smtp-password"
+      }
+    },
+    ".properties.smtp_enable_starttls_auto": {
+      "value": true
+    },
+    ".properties.smtp_from": {
+      "value": "identitystaging@mailinator.com"
+    },
+    ".properties.smtp_port": {
+      "value": "2525"
+    },
+    ".properties.system_blobstore": {
+      "value": "internal"
+    },
+    ".properties.tcp_routing": {
+      "value": "enable"
+    },
+    ".properties.tcp_routing.enable.reservable_ports": {
+      "value": "1024-1123"
+    },
     ".uaa.service_provider_key_credentials": {
       "value": {
         "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIFQjCCAyqgAwIBAgIQV3W2yPqhse+Uo1aLAaD8DzANBgkqhkiG9w0BAQsFADBx\nMRowGAYDVQQDExFyZWxlbmcuY2YtYXBwLmNvbTEPMA0GA1UECxMGUmVsRW5nMQsw\nCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExEDAOBgNVBAoTB1Bpdm90YWwxFjAUBgNV\nBAcTDVNhbiBGcmFuY2lzY28wHhcNMTgwMzE2MDE1MzA1WhcNMTkwMzE2MDE1MzA1\nWjCBijELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1TYW4gRnJh\nbmNpc2NvMRAwDgYDVQQKEwdQaXZvdGFsMRUwEwYDVQQLEwxDbG91ZGZvdW5kcnkx\nLTArBgNVBAMTJHN0YXItY3JhZnRlci5henVyZS5yZWxlbmcuY2YtYXBwLmNvbTCC\nASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKnTujk56yD5xqho1vNYUdiL\nJqzbswznxCTBqZa2EbKAGVC3dJOsJxT1EBTx/O7v7AqMWnO9Ol6tkRzjeifndTJ5\ncqScyBGM0wemDh/0on4LT/WQlJI2qIEOpQwrszi9wfLf4V42A3bQvrSje4qDVJD0\n77RUdi5dOWYHfS8eTxDY6ms2AYy3fvU4LEIvt9ME8HuhA7MH5yQOHAeKqvlCAKcc\nc2nDVZkyu3uETWn6TmSGWEZ5BqsYdPxwNGgvBXbq8xJPNUdCS15oz19+C8uEb+xg\nDfNK0cOpVXIywJOifxnPx+nDS+1xK4RYULq2l/CcnD6y8rfjYAoJjggb3Y+0m8MC\nAwEAAaOBuzCBuDAOBgNVHQ8BAf8EBAMCBaAwEwYDVR0lBAwwCgYIKwYBBQUHAwEw\nDAYDVR0TAQH/BAIwADAfBgNVHSMEGDAWgBTsZDfH9DxOCbqaMVebVvj/0/mSmzBi\nBgNVHREEWzBZgisqLmFwcHMuc3Rhci1jcmFmdGVyLmF6dXJlLnJlbGVuZy5jZi1h\ncHAuY29tgioqLnN5cy5zdGFyLWNyYWZ0ZXIuYXp1cmUucmVsZW5nLmNmLWFwcC5j\nb20wDQYJKoZIhvcNAQELBQADggIBAAOXf+/4QUiNDEcmUHdddJf1Q+oFcJAXtRsW\nyXEu3Xtr0wUaIqzwZvlGSOHOqHqQ2Y9/Qexcj+yfYjtRJBisZJVmjq0BvZZ+wMBt\nros3QuMXACHbWQIJA5rxh2INlMfpS4QUewbr9Nefiw0hZ+g2D27YizVkSUifs8hs\nUnymNA1rwRcviU2Ss0dExKQp6COGLsfjcg13mzcb0p8UmlR9VTn/oJLGipCoh/2g\nMvbVBzVuv4Wh+Kcul28IjQ9j2Z1IpGJ+LkEhnvBUy5abLdDj4QdDCwS02pVn/Gzk\npDP0q5OAanONZqMH7zhP+TzMtGnSSx6phI1xMqthaoe9aLqelJ2sga5WBHKyAYMU\nlwXizBef0owNBtVH8msKalTLvYSzOPjWtC48wdHwtay8iezfRoPi3vS/VWXdVCSN\nAlh6fXsB63dVLChCrQY5Qj2lrnF0t3/erhvpf6Q1eulMwHmIWF6moMlzbIyDMPAZ\nEzk8OAqZkexFamv3LJtgwEEs5OkfQfjqW3cgt2yNIC3R6d9Dgo18zm6GRLb/Ve8t\njP7qRzx5wIOH8PgdqCXF+bratJ3+HIGKJpuAYhTaOJxsD+4cq8QGLX/QH+d5P86A\ndEXUmZLWfswa4tQnG5015syaG3eZXQrp0AiwC4Wg0rWDzH7lDnxJt7Lq4JYQw64w\nUvmWQ7Rf\n-----END CERTIFICATE-----\n",
@@ -48,23 +106,38 @@
       }
     }
   },
-  "network-config": {
-    "network": {
-      "name": "equinox-ocelot-pas-subnet"
+  "resources": {
+    "consul_server": {
+      "instances": 3
     },
-    "other_availability_zones": [
-      {
-        "name": "us-central1-a"
-      },
-      {
-        "name": "us-central1-b"
-      },
-      {
-        "name": "us-central1-c"
-      }
-    ],
-    "singleton_availability_zone": {
-      "name": "us-central1-a"
+    "credhub": {
+      "instances": 1
+    },
+    "diego_brain": {
+      "elb_names": [
+        "tcp:pineapple-speaker-cf-ssh"
+          ]
+    },
+    "diego_cell": {
+      "instances": 3
+    },
+    "mysql": {
+      "instances": 3
+    },
+    "mysql_proxy": {
+      "instances": 2
+    },
+    "router": {
+      "elb_names": [
+        "http:pineapple-speaker-httpslb",
+        "tcp:pineapple-speaker-cf-ws"
+      ],
+      "instances": 3
+    },
+    "tcp_router": {
+      "elb_names": [
+        "tcp:pineapple-speaker-cf-tcp"
+      ]
     }
   }
 }
