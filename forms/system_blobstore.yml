@@ -115,11 +115,10 @@ property_inputs:
           the same name as above.
 
       - reference: .properties.system_blobstore.external.versioning
-        label: Versioning is enabled for all buckets listed below.
+        label: Use versioning for backup and restore. (All of the above buckets must have versioning enabled and use the V4 S3 Signature Version).
         description: |
-          This setting determines how the buckets are backed up and restored.
+          If versioning is not enabled or supported, you can configure separate buckets below for backups.
           More information at https://docs.pivotal.io/pivotalcf/2-1/customizing/backup-restore/backup-pcf-bbr.html.
-          S3 Signature Version must be set to V4 Signature for this to work properly.
 
       - reference: .properties.system_blobstore.external.backup_region
         label: Backup Region
