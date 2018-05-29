@@ -80,7 +80,7 @@ form_types:
 - $( form "app_autoscaler" )
 - $( form "cloud_controller" )
 - $( form "smoke_tests" )
-- $( form "experimental_features" )
+- $( form "advanced_features" )
 
 job_types:
 - $( instance_group "database" ) # SRT only
@@ -148,6 +148,7 @@ property_blueprints:
 - $( property "diego_database_name" )
 - $( property "diego_log_timestamp_format" )
 - $( property "enable_grootfs" )
+- $( property "enable_log_cache" )
 - $( property "enable_service_discovery_for_apps" )
 - $( property "garden_disk_cleanup" )
 - $( property "gorouter_ssl_ciphers" )

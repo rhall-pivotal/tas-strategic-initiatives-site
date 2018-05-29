@@ -41,6 +41,18 @@ var _ = Describe("Logging", func() {
 			}
 		})
 
+		It("is enabled by default", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			logCache, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache")
+			Expect(err).NotTo(HaveOccurred())
+
+			disabledProperty, err := logCache.Property("disabled")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(disabledProperty).To(BeFalse())
+		})
+
 		It("has tls server certs", func() {
 			manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
 			Expect(err).NotTo(HaveOccurred())
@@ -203,6 +215,21 @@ var _ = Describe("Logging", func() {
 
 		})
 
+		Context("when .properties.enable_log_cache is set to false", func() {
+			It("sets the log-cache.disable manifest property to true", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					".properties.enable_log_cache": false,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				logCache, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache")
+				Expect(err).NotTo(HaveOccurred())
+
+				disabledProperty, err := logCache.Property("disabled")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(disabledProperty).To(BeTrue())
+			})
+		})
 	})
 
 	Describe("log cache scheduler", func() {

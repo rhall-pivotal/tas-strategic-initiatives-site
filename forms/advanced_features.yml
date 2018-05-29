@@ -1,5 +1,5 @@
 ---
-name: experimental_features
+name: advanced_features
 label: Advanced Features
 description: |
   These are several features that may require a greater understanding of
@@ -34,3 +34,9 @@ property_inputs:
     description: |
       Max wait time to establish a connection, including name resolution, in
       seconds.
+
+  - reference: .properties.enable_log_cache
+    label: Enable log-cache
+    description: |
+      Log cache enables more responsive retrieval of logging and metrics for
+      apps and is a dependency for some newer features like autoscaling
