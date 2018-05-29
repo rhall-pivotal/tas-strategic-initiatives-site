@@ -9,7 +9,7 @@ import (
 var _ = Describe("Routing", func() {
 	Describe("operator defaults", func() {
 		It("configures the ha-proxy and router minimum TLS versions", func() {
-			manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
+			manifest, err := product.RenderService.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")

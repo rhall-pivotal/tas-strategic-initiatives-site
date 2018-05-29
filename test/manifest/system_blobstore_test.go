@@ -11,7 +11,7 @@ var _ = Describe("System Blobstore", func() {
 	Describe("non-s3 blobstores", func() {
 		Context("when s3 is not selected", func() {
 			It("doesn't enable unversioned S3 backups", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
+				manifest, err := product.RenderService.RenderManifest(nil)
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-unversioned-blobstore-backup-restorer")
