@@ -8,10 +8,10 @@ set -eu
 : "${STUB_RELEASES:=false}"
 
 tile_dir="$( cd "$( dirname "$0" )/.." && pwd )"
-build_dir="$(mktemp -d -t "p-runtime")"
+build_dir="$(mktemp -d -t "p-runtime.XXXXXXXXX")"
 trap '{ rm -rf "${build_dir}"; }' EXIT
 
-output_dir="$(mktemp -d -t "p-runtime")"
+output_dir="$(mktemp -d -t "p-runtime.XXXXXXXXX")"
 
 if [[ (! -d "${tile_dir}/releases") && (! "${STUB_RELEASES}") ]]; then
   echo "Missing required directory '${tile_dir}/releases'. Create this directory and download all required release tarballs into it." > /dev/stderr
