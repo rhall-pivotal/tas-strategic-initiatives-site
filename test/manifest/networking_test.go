@@ -86,4 +86,51 @@ var _ = Describe("Networking", func() {
 			})
 		})
 	})
+
+	Describe("Service Discovery For Apps", func() {
+		var instanceGroup string
+
+		It("is located on the service-discovery-controller", func() {
+			if productName != "ert" {
+				Skip("Test only valid for ERT")
+			}
+
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = manifest.FindInstanceGroupJob("service-discovery-controller", "service-discovery-controller")
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("is colocated with the diego_brain", func() {
+			if productName != "ert" {
+				Skip("Test only valid for ERT")
+			}
+
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = manifest.FindInstanceGroupJob("diego_brain", "service-discovery-controller")
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("is turned on by default", func() {
+			if productName == "ert" {
+				instanceGroup = "diego_cell"
+			} else {
+				instanceGroup = "compute"
+			}
+
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "route_emitter")
+			Expect(err).NotTo(HaveOccurred())
+
+			enabled, err := job.Property("internal_routes/enabled")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(enabled).To(BeTrue())
+		})
+	})
 })
