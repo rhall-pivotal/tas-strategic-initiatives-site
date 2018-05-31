@@ -95,18 +95,20 @@ verifiers:
 
 property_inputs:
 - reference: .properties.system_database
-  label: Choose the location of your system databases
+  label: |
+    Choose the location of your system databases.
+    Please consult the documentation for migrating existing installations from MariaDB to Percona.
   selector_property_inputs:
   - reference: .properties.system_database.internal_pxc
     label: |
-      Internal Databases - MySQL with TLS (preferred for complete high-availability)
+      Internal Databases - MySQL - Percona XtraDB Cluster
 
   - reference: .properties.system_database.internal_mysql
     label: |
-      Internal Databases - MySQL
+      Internal Databases - MySQL - MariaDB Galera Cluster (deprecated - planned to be removed in PAS 2.4)
 
   - reference: .properties.system_database.external
-    label: External Databases (preferred if, for example, you use AWS RDS)
+    label: External Databases - (e.g. AWS RDS)
     property_inputs:
       - reference: .properties.system_database.external.host
         label: Hostname
