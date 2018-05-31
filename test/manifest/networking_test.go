@@ -90,18 +90,6 @@ var _ = Describe("Networking", func() {
 	Describe("Service Discovery For Apps", func() {
 		var instanceGroup string
 
-		It("is located on the service-discovery-controller", func() {
-			if productName != "ert" {
-				Skip("Test only valid for ERT")
-			}
-
-			manifest, err := product.RenderService.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			_, err = manifest.FindInstanceGroupJob("service-discovery-controller", "service-discovery-controller")
-			Expect(err).NotTo(HaveOccurred())
-		})
-
 		It("is colocated with the diego_brain", func() {
 			if productName != "ert" {
 				Skip("Test only valid for ERT")
