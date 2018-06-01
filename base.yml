@@ -49,7 +49,6 @@ releases:
 - $( release "notifications" )
 - $( release "notifications-ui" )
 - $( release "php-offline-buildpack" )
-- $( release "pivotal-account" )
 - $( release "push-apps-manager-release" )
 - $( release "push-usage-service-release" )
 - $( release "python-offline-buildpack" )
@@ -366,12 +365,6 @@ variables:
 
 - name: notifications-db-credentials
   type: user
-
-- name: pivotal-account-db-credentials
-  type: user
-
-- name: push-pivotal-account-encryption-key
-  type: password
 
 - name: push-usage-service-secret-token
   type: password

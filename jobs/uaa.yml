@@ -425,17 +425,6 @@ manifest: |
         authorities: routing.routes.write,routing.routes.read,routing.router_groups.read
         scope: routing.routes.write,routing.routes.read,routing.router_groups.read
         access-token-validity: 1209600
-      pivotal_account:
-        id: (( .uaa.pivotal_account_client_credentials.identity ))
-        secret: (( .uaa.pivotal_account_client_credentials.password ))
-        scope: openid,password.write,oauth.approvals
-        authorities: uaa.resource,idps.read,clients.read,scim.read,scim.create,scim.write,emails.write,oauth.login,notification_templates.write,notifications.manage,notification_templates.read,uaa.admin
-        authorized-grant-types: client_credentials,authorization_code
-        access-token-validity: 1209600
-        refresh-token-validity: 1209600
-        autoapprove: true
-        override: true
-        redirect-uri: https://account.(( .cloud_controller.system_domain.value ))/**
       concourse_atc:
         id: (( .uaa.concourse_atc_client_credentials.identity ))
         secret: (( .uaa.concourse_atc_client_credentials.password ))

@@ -23,9 +23,6 @@ manifest: |
       disable_auto_sst: (( .mysql.prevent_node_auto_rejoin.value ))
       remote_admin_access: (( .mysql.remote_admin_access.value ))
       seeded_databases:
-      - name: (( .properties.account_database_name.value ))
-        username: ((( pivotal-account-db-credentials.username )))
-        password: ((( pivotal-account-db-credentials.password )))
       - name: (( .properties.app_usage_service_database_name.value ))
         username: ((( app-usage-db-credentials.username )))
         password: ((( app-usage-db-credentials.password )))

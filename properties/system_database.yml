@@ -186,13 +186,6 @@
           username: ((( network-policy-server-db-credentials.username )))
           password: ((( network-policy-server-db-credentials.password )))
           name: (( .properties.networkpolicyserver_database_name.value ))
-      - name: pivotal_account
-        manifest: |
-          adapter: mysql
-          port: 3306
-          username: ((( pivotal-account-db-credentials.username )))
-          password: ((( pivotal-account-db-credentials.password )))
-          database: (( .properties.account_database_name.value ))
       - name: nfsvolume
         manifest: |
           username: ((( nfs-volume-db-credentials.username )))
@@ -304,13 +297,6 @@
           username: ((( network-policy-server-db-credentials.username )))
           password: ((( network-policy-server-db-credentials.password )))
           name: (( .properties.networkpolicyserver_database_name.value ))
-      - name: pivotal_account
-        manifest: |
-          adapter: mysql
-          port: 3306
-          username: ((( pivotal-account-db-credentials.username )))
-          password: ((( pivotal-account-db-credentials.password )))
-          database: (( .properties.account_database_name.value ))
       - name: nfsvolume
         manifest: |
           username: ((( nfs-volume-db-credentials.username )))
@@ -498,14 +484,6 @@
             username: (( .properties.system_database.external.networkpolicyserver_username.value ))
             password: (( .properties.system_database.external.networkpolicyserver_password.value ))
             name: (( .properties.networkpolicyserver_database_name.value ))
-        - name: pivotal_account
-          manifest: |
-            adapter: mysql
-            host: (( .properties.system_database.external.host.value ))
-            port: (( .properties.system_database.external.port.value ))
-            username: (( .properties.system_database.external.account_username.value ))
-            password: (( .properties.system_database.external.account_password.value ))
-            database: (( .properties.account_database_name.value ))
         - name: nfsvolume
           manifest: |
             host: (( .properties.system_database.external.host.value ))
