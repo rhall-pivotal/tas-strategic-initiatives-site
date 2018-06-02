@@ -88,6 +88,54 @@ var _ = Describe("Networking", func() {
 		})
 	})
 
+	Describe("DNS search domain", func() {
+		var (
+			inputProperties map[string]interface{}
+			instanceGroup   string
+		)
+
+		BeforeEach(func() {
+			if productName == "ert" {
+				instanceGroup = "diego_cell"
+			} else {
+				instanceGroup = "compute"
+			}
+		})
+
+		It("configures search_domains on the garden-cni job", func() {
+			inputProperties = map[string]interface{}{
+				".properties.cf_networking_search_domains": "some-search-domain,another-search-domain",
+			}
+
+			manifest, err := product.RenderService.RenderManifest(inputProperties)
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "garden-cni")
+			Expect(err).NotTo(HaveOccurred())
+
+			searchDomains, err := job.Property("search_domains")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(searchDomains).To(Equal([]interface{}{
+				"some-search-domain",
+				"another-search-domain",
+			}))
+		})
+
+		It("configures search_domains on the garden-cni job", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "garden-cni")
+			Expect(err).NotTo(HaveOccurred())
+
+			searchDomains, err := job.Property("search_domains")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(searchDomains).To(HaveLen(0))
+		})
+	})
+
 	Describe("Service Discovery For Apps", func() {
 		It("is colocated on the diego_brain instance", func() {
 			if productName != "ert" {

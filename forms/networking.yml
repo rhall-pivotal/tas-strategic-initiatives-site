@@ -363,6 +363,12 @@ property_inputs:
       - reference: .properties.container_networking_interface_plugin.external
         label: External
 
+  - reference: .properties.cf_networking_search_domains
+    label: DNS Search Domains
+    description: |
+      DNS search domains to be used in containers. A comma-separated list can
+      be specified.
+
   - reference: .properties.tcp_routing
     label: |
       Enable TCP requests to your apps via specific ports on the TCP router.
