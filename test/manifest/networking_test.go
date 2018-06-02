@@ -19,6 +19,7 @@ var _ = Describe("Networking", func() {
 				instanceGroup = "compute"
 			}
 		})
+
 		Context("when Silk is enabled", func() {
 			BeforeEach(func() {
 				inputProperties = map[string]interface{}{
@@ -88,9 +89,7 @@ var _ = Describe("Networking", func() {
 	})
 
 	Describe("Service Discovery For Apps", func() {
-		var instanceGroup string
-
-		It("is colocated with the diego_brain", func() {
+		It("is colocated on the diego_brain instance", func() {
 			if productName != "ert" {
 				Skip("Test only valid for ERT")
 			}
@@ -102,7 +101,21 @@ var _ = Describe("Networking", func() {
 			Expect(err).NotTo(HaveOccurred())
 		})
 
+		It("is colocated on the control instance", func() {
+			if productName != "srt" {
+				Skip("Test only valid for SRT")
+			}
+
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = manifest.FindInstanceGroupJob("control", "service-discovery-controller")
+			Expect(err).NotTo(HaveOccurred())
+		})
+
 		It("is turned on by default", func() {
+			var instanceGroup string
+
 			if productName == "ert" {
 				instanceGroup = "diego_cell"
 			} else {
