@@ -11,6 +11,11 @@ manifest: |
       port: 8443
   request_timeout_in_seconds: (( .router.request_timeout_in_seconds.value ))
   router:
+    backends:
+      max_conns: (( .properties.router_backend_max_conn.value ))
+      enable_tls: true
+      cert_chain: (( .properties.routing_backends_client_cert.cert_pem ))
+      private_key: (( .properties.routing_backends_client_cert.private_key_pem ))
     ca_certs: |
       (( .properties.routing_custom_ca_certificates.value ))
       (( $ops_manager.ca_certificate ))
@@ -39,9 +44,6 @@ manifest: |
     enable_ssl: true
     tls_pem: (( .properties.networking_poe_ssl_certs.parsed_manifest(routing_certificates_and_private_keys) ))
     min_tls_version: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(min_tls_version) ))
-    backends:
-      max_conns: (( .properties.router_backend_max_conn.value ))
-      enable_tls: true
     frontend_idle_timeout: (( .router.frontend_idle_timeout.value ))
   routing_api:
     enabled: true
