@@ -18,6 +18,7 @@ manifest: |
       max_open_files: 1048576
       startup_timeout: 120
       cluster_probe_timeout: (( .mysql.cluster_probe_timeout.value ))
+      max_connections: (( .mysql.max_connections.value ))
       cluster_health:
         password: ((( mysql-cluster-health-credentials.password )))
       disable_auto_sst: (( .mysql.prevent_node_auto_rejoin.value ))

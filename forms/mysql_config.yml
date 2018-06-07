@@ -68,6 +68,11 @@ property_inputs:
       The maximum amount of time, in seconds, that a new node will search
       for existing cluster nodes. The default value is 10 seconds.
 
+  - reference: .mysql.max_connections
+    label: Max Connections
+    description: |
+      The maximum number of connections allowed to the database.
+
   - reference: .properties.mysql_activity_logging
     label: Server Activity Logging
     selector_property_inputs:
