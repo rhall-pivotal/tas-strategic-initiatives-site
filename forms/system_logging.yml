@@ -74,6 +74,13 @@ property_inputs:
     log lines.
     May negatively impact performance.
 
+- reference: .properties.syslog_drop_debug
+  label: Don't Forward Debug Logs
+  description: |
+    Some components produce volumnous debug logs.
+    This option prevents them from being forwarded.
+    They will still be written to local disk.
+
 - reference: .properties.syslog_rule
   label: Custom rsyslog Configuration
   description: |

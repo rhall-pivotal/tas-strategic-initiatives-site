@@ -251,4 +251,39 @@ var _ = Describe("Logging", func() {
 		})
 
 	})
+
+	Describe("syslog forwarding", func() {
+		It("includes the vcap rule and does not forward debug logs", func() {
+			manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				".properties.syslog_host": "example.com",
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			syslogForwarder, err := manifest.FindInstanceGroupJob("router", "syslog_forwarder")
+			Expect(err).NotTo(HaveOccurred())
+
+			syslogConfig, err := syslogForwarder.Property("syslog/custom_rule")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(syslogConfig).To(ContainSubstring(`if ($programname startswith "vcap.") then stop`))
+			Expect(syslogConfig).To(ContainSubstring(`if ($msg contains "DEBUG") then stop`))
+		})
+
+		Context("when debug logs are enabled", func() {
+			It("does not include the debug stop rule", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					".properties.syslog_host":       "example.com",
+					".properties.syslog_drop_debug": false,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				syslogForwarder, err := manifest.FindInstanceGroupJob("router", "syslog_forwarder")
+				Expect(err).NotTo(HaveOccurred())
+
+				syslogConfig, err := syslogForwarder.Property("syslog/custom_rule")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(syslogConfig).To(ContainSubstring(`if ($programname startswith "vcap.") then stop`))
+				Expect(syslogConfig).NotTo(ContainSubstring(`if ($msg contains "DEBUG") then stop`))
+			})
+		})
+	})
 })
