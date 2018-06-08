@@ -10,7 +10,7 @@ import (
 	"github.com/onsi/gomega/gexec"
 )
 
-var _ = Describe("preprocess-metadata-parts", func() {
+var _ = Describe("preprocess", func() {
 	var (
 		outputPath        string
 		metadataPartsPath string
@@ -53,6 +53,8 @@ description: some-description
 icon_image: some-icon
 rank: 90
 serial: false
+job_types:
+- $( instance_group "some_instance_group" )
 post_deploy_errands:
   - name: some-errand
 variables:
@@ -62,27 +64,15 @@ variables:
     is_ca: true
 `))
 
-		ertTemplateFilePath := filepath.Join(outputPath, "ert_jobs", "template.yml")
-		contents, err = ioutil.ReadFile(ertTemplateFilePath)
+		instanceGroupPath := filepath.Join(outputPath, "instance_groups", "some_instance_group.yml")
+		contents, err = ioutil.ReadFile(instanceGroupPath)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(contents).To(MatchYAML(`---
-name: ert-job-template
-label: Job for ERT
-count: 3
-configurable: true
-description:
-- Multi-line content
-- for the ERT
-`))
-
-		srtTemplateFilePath := filepath.Join(outputPath, "srt_jobs", "template.yml")
-		contents, err = ioutil.ReadFile(srtTemplateFilePath)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(contents).To(MatchYAML(`---
-name: srt-job-template
-label: Job for ERT
-count: 0
-configurable: false
+name: some_instance_group
+label: Some Instance Group
+templates:
+- $( job "some_job" )
+- $( job "some_other_job" )
 `))
 	})
 
@@ -115,6 +105,8 @@ description: some-description
 icon_image: some-icon
 rank: 90
 serial: false
+job_types:
+- $( instance_group "some_instance_group" )
 post_deploy_errands:
   - name: some-errand
 variables:
@@ -124,27 +116,14 @@ variables:
     is_ca: true
 `))
 
-		ertTemplateFilePath := filepath.Join(outputPath, "ert_jobs", "template.yml")
-		contents, err = ioutil.ReadFile(ertTemplateFilePath)
+		instanceGroupPath := filepath.Join(outputPath, "instance_groups", "some_instance_group.yml")
+		contents, err = ioutil.ReadFile(instanceGroupPath)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(contents).To(MatchYAML(`---
-name: ert-job-template
-label: Job for SRT
-count: 0
-configurable: false
-`))
-
-		srtTemplateFilePath := filepath.Join(outputPath, "srt_jobs", "template.yml")
-		contents, err = ioutil.ReadFile(srtTemplateFilePath)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(contents).To(MatchYAML(`---
-name: srt-job-template
-label: Job for SRT
-count: 1
-configurable: true
-description:
-- Multi-line content
-- for the SRT
+name: some_instance_group
+label: Some Instance Group
+templates:
+- $( job "placeholder" )
 `))
 	})
 
