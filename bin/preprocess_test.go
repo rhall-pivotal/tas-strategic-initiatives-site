@@ -128,11 +128,11 @@ templates:
 	})
 
 	Context("failure cases", func() {
-		Context("when the metadata file contains a bad template definition", func() {
+		Context("when the metadata file contains a malformed expression", func() {
 			It("prints an error message", func() {
 				command := exec.Command(pathToMain,
 					"--tile-name", "ert",
-					"--input-path", filepath.Join("fixtures", "bad-template"),
+					"--input-path", filepath.Join("fixtures", "malformed-expression"),
 					"--output-path", outputPath,
 				)
 
