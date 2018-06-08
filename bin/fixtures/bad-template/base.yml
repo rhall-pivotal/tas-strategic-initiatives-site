@@ -1,0 +1,21 @@
+---
+metadata_version: some-metadata-version
+provides_product_versions:
+- name: {{ tile | ert "ert" | srt "srt" }}-product
+requires_product_versions:
+- name: some-other-product
+  version: 1.2.3.4
+product_version: some-product-version
+minimum_version_for_upgrade: some-minimum-version
+label: some-label
+description: some-description
+icon_image: some-icon
+rank: 90
+serial: false
+post_deploy_errands:
+  - name: some-errand
+variables:
+- name: root-ca
+  type: rsa
+  options:
+    is_ca: true
