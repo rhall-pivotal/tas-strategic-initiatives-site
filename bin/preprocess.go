@@ -10,9 +10,6 @@ import (
 	"text/template"
 )
 
-type ERT struct{}
-type SRT struct{}
-
 func main() {
 	var flags struct {
 		tileName   string
