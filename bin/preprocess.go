@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -95,34 +94,6 @@ func processTemplateFile(inputFilePath, outputFilePath, tileName string) error {
 			}
 
 			return tile
-		},
-		"ert_template": func(templateName interface{}, tile interface{}) (interface{}, error) {
-			if tile == "ert" {
-				out := &bytes.Buffer{}
-
-				err := tmpl.ExecuteTemplate(out, templateName.(string), tile)
-				if err != nil {
-					return "", err
-				}
-
-				return out.String(), nil
-			}
-
-			return tile, nil
-		},
-		"srt_template": func(templateName interface{}, tile interface{}) (interface{}, error) {
-			if tile == "srt" {
-				out := &bytes.Buffer{}
-
-				err := tmpl.ExecuteTemplate(out, templateName.(string), tile)
-				if err != nil {
-					return "", err
-				}
-
-				return out.String(), nil
-			}
-
-			return tile, nil
 		},
 	})).Parse(string(metadataFile))
 	if err != nil {
