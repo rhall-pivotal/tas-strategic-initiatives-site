@@ -128,6 +128,23 @@ templates:
 	})
 
 	Context("failure cases", func() {
+
+		Context("when the metadata file references a missing key", func() {
+			It("errors", func() {
+				command := exec.Command(pathToMain,
+					"--tile-name", "ert",
+					"--input-path", filepath.Join("fixtures", "missing-key"),
+					"--output-path", outputPath,
+				)
+
+				session, err := gexec.Start(command, GinkgoWriter, GinkgoWriter)
+				Expect(err).NotTo(HaveOccurred())
+
+				Eventually(session).Should(gexec.Exit(1))
+				Expect(string(session.Err.Contents())).To(ContainSubstring("some_missing_key"))
+			})
+		})
+
 		Context("when the metadata file contains a malformed expression", func() {
 			It("prints an error message", func() {
 				command := exec.Command(pathToMain,

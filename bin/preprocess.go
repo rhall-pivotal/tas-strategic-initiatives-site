@@ -73,29 +73,31 @@ func processTemplateFile(inputFilePath, outputFilePath, tileName string) error {
 		return err
 	}
 
-	tmpl := template.New("tile-preprocess")
-	tmpl, err = tmpl.Funcs(template.FuncMap(map[string]interface{}{
-		"tile": func() (interface{}, error) {
-			if tileName != "ert" && tileName != "srt" {
-				return "", fmt.Errorf("unsupported tile name: %s\n", tileName)
-			}
-			return tileName, nil
-		},
-		"ert": func(value interface{}, tile interface{}) interface{} {
-			if tile == "ert" {
-				return value
-			}
+	tmpl, err := template.New("tile-preprocess").
+		Funcs(template.FuncMap(map[string]interface{}{
+			"tile": func() (interface{}, error) {
+				if tileName != "ert" && tileName != "srt" {
+					return "", fmt.Errorf("unsupported tile name: %s\n", tileName)
+				}
+				return tileName, nil
+			},
+			"ert": func(value interface{}, tile interface{}) interface{} {
+				if tile == "ert" {
+					return value
+				}
 
-			return tile
-		},
-		"srt": func(value interface{}, tile interface{}) interface{} {
-			if tile == "srt" {
-				return value
-			}
+				return tile
+			},
+			"srt": func(value interface{}, tile interface{}) interface{} {
+				if tile == "srt" {
+					return value
+				}
 
-			return tile
-		},
-	})).Parse(string(metadataFile))
+				return tile
+			},
+		})).
+		Option("missingkey=error").
+		Parse(string(metadataFile))
 	if err != nil {
 		return err
 	}
