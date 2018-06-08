@@ -20,6 +20,49 @@ var _ = Describe("Networking", func() {
 			}
 		})
 
+		Context("when the operator configures database connection timeout for CNI plugin", func() {
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.cf_networking_database_connection_timeout": 250,
+				}
+
+				if productName == "ert" {
+					instanceGroup = "diego_database"
+				} else {
+					instanceGroup = "control"
+				}
+			})
+
+			It("sets the manifest database connection timeout properties for the cf networking jobs to be 250", func() {
+				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				policyServerJob, err := manifest.FindInstanceGroupJob(instanceGroup, "policy-server")
+				Expect(err).NotTo(HaveOccurred())
+
+				policyServerConnectTimeoutSeconds, err := policyServerJob.Property("database/connect_timeout_seconds")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(policyServerConnectTimeoutSeconds).To(Equal(250))
+
+				policyServerInternalJob, err := manifest.FindInstanceGroupJob(instanceGroup, "policy-server-internal")
+				Expect(err).NotTo(HaveOccurred())
+
+				policyServerInternalConnectTimeoutSeconds, err := policyServerInternalJob.Property("database/connect_timeout_seconds")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(policyServerInternalConnectTimeoutSeconds).To(Equal(250))
+
+				silkControllerJob, err := manifest.FindInstanceGroupJob(instanceGroup, "silk-controller")
+				Expect(err).NotTo(HaveOccurred())
+
+				silkControllerConnectTimeoutSeconds, err := silkControllerJob.Property("database/connect_timeout_seconds")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(silkControllerConnectTimeoutSeconds).To(Equal(250))
+			})
+		})
+
 		Context("when Silk is enabled", func() {
 			BeforeEach(func() {
 				inputProperties = map[string]interface{}{

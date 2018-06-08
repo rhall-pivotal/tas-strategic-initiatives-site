@@ -178,6 +178,7 @@
           username: ((( silk-db-credentials.username )))
           password: ((( silk-db-credentials.password )))
           name: (( .properties.silk_database_name.value ))
+          connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
       - name: networkpolicyserverdb
         manifest: |
           type: mysql
@@ -186,6 +187,7 @@
           username: ((( network-policy-server-db-credentials.username )))
           password: ((( network-policy-server-db-credentials.password )))
           name: (( .properties.networkpolicyserver_database_name.value ))
+          connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
       - name: nfsvolume
         manifest: |
           username: ((( nfs-volume-db-credentials.username )))
@@ -297,6 +299,7 @@
           username: ((( network-policy-server-db-credentials.username )))
           password: ((( network-policy-server-db-credentials.password )))
           name: (( .properties.networkpolicyserver_database_name.value ))
+          connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
       - name: nfsvolume
         manifest: |
           username: ((( nfs-volume-db-credentials.username )))
@@ -484,6 +487,7 @@
             username: (( .properties.system_database.external.networkpolicyserver_username.value ))
             password: (( .properties.system_database.external.networkpolicyserver_password.value ))
             name: (( .properties.networkpolicyserver_database_name.value ))
+            connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
         - name: nfsvolume
           manifest: |
             host: (( .properties.system_database.external.host.value ))

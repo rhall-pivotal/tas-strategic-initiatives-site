@@ -438,6 +438,13 @@
         manifest: |
           /var/vcap/packages/cni/bin
 
+- name: cf_networking_database_connection_timeout
+  type: integer
+  configurable: true
+  default: 120
+  constraints:
+    min: 120
+
 - name: cf_networking_enable_space_developer_self_service
   type: boolean
   configurable: true
