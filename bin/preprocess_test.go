@@ -128,7 +128,6 @@ templates:
 	})
 
 	Context("failure cases", func() {
-
 		Context("when the metadata file references a missing key", func() {
 			It("errors", func() {
 				command := exec.Command(pathToMain,
