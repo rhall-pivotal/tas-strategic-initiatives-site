@@ -400,6 +400,15 @@ manifest: |
         redirect-uri: "https://healthwatch.(( .cloud_controller.system_domain.value ))"
         autoapprove: true
         refresh-token-validity: 2628000
+      healthwatch_api_admin:
+        id: "(( .uaa.healthwatch_api_admin_credentials.identity ))"
+        secret: "(( .uaa.healthwatch_api_admin_credentials.password ))"
+        override: true
+        scope: healthwatch.admin
+        authorized-grant-types: client_credentials,refresh_token
+        authorities: healthwatch.admin
+        access-token-validity: 3600
+        autoapprove: true
       healthwatch_alerts:
         id: "(( .uaa.healthwatch_alerts_credentials.identity ))"
         secret: "(( .uaa.healthwatch_alerts_credentials.password ))"
