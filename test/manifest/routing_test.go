@@ -63,7 +63,35 @@ var _ = Describe("Routing", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(routerMinTLSVersion).To(Equal("TLSv1.1"))
 			})
+
 		})
+	})
+
+	Describe("TLS termination", func() {
+
+		It("secures traffic between the infrastructure load balancer and HAProxy / Gorouter", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
+			Expect(err).NotTo(HaveOccurred())
+
+			haproxySSLPEM, err := haproxy.Property("ha_proxy/ssl_pem")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(haproxySSLPEM).NotTo(BeEmpty())
+
+			router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+			Expect(err).NotTo(HaveOccurred())
+
+			routerEnableSSL, err := router.Property("router/enable_ssl")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(routerEnableSSL).To(BeTrue())
+
+			routerTLSPEM, err := router.Property("router/tls_pem")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(routerTLSPEM).NotTo(BeEmpty())
+		})
+
 	})
 
 	Describe("IP Logging", func() {
