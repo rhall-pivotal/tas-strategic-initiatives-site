@@ -92,6 +92,44 @@ var _ = Describe("Routing", func() {
 			Expect(routerTLSPEM).NotTo(BeEmpty())
 		})
 
+		Context("when the operator disables TLS termination, terminating only at the load balancer", func() {
+
+			var (
+				manifest planitest.Manifest
+				err      error
+			)
+
+			BeforeEach(func() {
+				manifest, err = product.RenderService.RenderManifest(map[string]interface{}{
+					".properties.routing_disable_https": true,
+				})
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("disables TLS termination on the router", func() {
+				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+				Expect(err).NotTo(HaveOccurred())
+
+				routerEnableSSL, err := router.Property("router/enable_ssl")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(routerEnableSSL).To(BeFalse())
+
+				routerTLSPEM, err := router.Property("router/tls_pem")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(routerTLSPEM).To(BeEmpty())
+			})
+
+			It("disables TLS termination on HAProxy", func() {
+				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
+				Expect(err).NotTo(HaveOccurred())
+
+				haproxySSLPEM, err := haproxy.Property("ha_proxy/ssl_pem")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(haproxySSLPEM).To(BeEmpty())
+			})
+
+		})
+
 	})
 
 	Describe("IP Logging", func() {

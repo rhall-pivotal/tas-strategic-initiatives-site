@@ -41,8 +41,8 @@ manifest: |
       password: ((( router-status-credentials.password )))
     cipher_suites: (( .properties.gorouter_ssl_ciphers.value ))
     disable_http: (( .properties.routing_disable_http.value ))
-    enable_ssl: true
-    tls_pem: (( .properties.networking_poe_ssl_certs.parsed_manifest(routing_certificates_and_private_keys) ))
+    enable_ssl: "(( .properties.routing_disable_https.value ? false : true ))"
+    tls_pem: "(( .properties.routing_disable_https.value ? [] : .properties.networking_poe_ssl_certs.parsed_manifest(routing_certificates_and_private_keys) ))"
     min_tls_version: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(min_tls_version) ))
     frontend_idle_timeout: (( .router.frontend_idle_timeout.value ))
   routing_api:

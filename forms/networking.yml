@@ -44,6 +44,13 @@ property_inputs:
       Resource Config section, add your ELB by name to the ELB Name column
       for TCP Router.
 
+  - reference: .properties.routing_disable_https
+    label: Disable HTTPS listener for HAProxy and Router
+    description: |
+      It is recommended that traffic is secured between your load balancer
+      and HAProxy / Router. Select this option if you would prefer requests
+      to be forwarded unencrypted.
+
   - reference: .properties.networking_poe_ssl_certs
     label: Certificates and Private Keys for HAProxy and Router
     property_inputs:

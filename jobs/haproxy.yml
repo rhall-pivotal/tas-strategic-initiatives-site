@@ -28,6 +28,6 @@ manifest: |
     keepalive_timeout: (( .router.frontend_idle_timeout.value ))
     server_timeout: (( .router.request_timeout_in_seconds.value ))
     ssl_ciphers: (( .properties.haproxy_ssl_ciphers.value ))
-    ssl_pem: (( .properties.networking_poe_ssl_certs.parsed_manifest(routing_certificates_and_private_keys) ))
+    ssl_pem: "(( .properties.routing_disable_https.value ? [] : .properties.networking_poe_ssl_certs.parsed_manifest(routing_certificates_and_private_keys) ))"
     tcp_link_port: 2222
     trusted_domain_cidrs: (( .ha_proxy.trusted_domain_cidrs.value ))
