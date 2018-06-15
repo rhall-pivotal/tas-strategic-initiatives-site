@@ -14,13 +14,21 @@ var _ = Describe("Routing", func() {
 
 			haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(haproxy.Property("ha_proxy/disable_tls_10")).To(BeTrue())
-			Expect(haproxy.Property("ha_proxy/disable_tls_11")).To(BeTrue())
+
+			haproxyDisableTLS10, err := haproxy.Property("ha_proxy/disable_tls_10")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(haproxyDisableTLS10).To(BeTrue())
+
+			haproxyDisableTLS11, err := haproxy.Property("ha_proxy/disable_tls_11")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(haproxyDisableTLS11).To(BeTrue())
 
 			router, err := manifest.FindInstanceGroupJob("router", "gorouter")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(router.Property("router/min_tls_version")).To(Equal("TLSv1.2"))
 
+			routerMinTLSVersion, err := router.Property("router/min_tls_version")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(routerMinTLSVersion).To(Equal("TLSv1.2"))
 		})
 
 		Context("when the operator sets the minimum TLS version to 1.1", func() {
@@ -39,12 +47,21 @@ var _ = Describe("Routing", func() {
 			It("configures the ha-proxy and router minimum TLS versions", func() {
 				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(haproxy.Property("ha_proxy/disable_tls_10")).To(BeTrue())
-				Expect(haproxy.Property("ha_proxy/disable_tls_11")).To(BeFalse())
+
+				haproxyDisableTLS10, err := haproxy.Property("ha_proxy/disable_tls_10")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(haproxyDisableTLS10).To(BeTrue())
+
+				haproxyDisableTLS11, err := haproxy.Property("ha_proxy/disable_tls_11")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(haproxyDisableTLS11).To(BeFalse())
 
 				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(router.Property("router/min_tls_version")).To(Equal("TLSv1.1"))
+
+				routerMinTLSVersion, err := router.Property("router/min_tls_version")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(routerMinTLSVersion).To(Equal("TLSv1.1"))
 			})
 		})
 	})
@@ -59,8 +76,14 @@ var _ = Describe("Routing", func() {
 
 				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(router.Property("router/disable_log_forwarded_for")).To(BeFalse())
-				Expect(router.Property("router/disable_log_source_ips")).To(BeFalse())
+
+				disableLogForwardedFor, err := router.Property("router/disable_log_forwarded_for")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(disableLogForwardedFor).To(BeFalse())
+
+				disableLogSourceIPs, err := router.Property("router/disable_log_source_ips")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(disableLogSourceIPs).To(BeFalse())
 			})
 		})
 		Context("when the operator chooses `Disable logging of X-Forwarded-For header only`", func() {
@@ -72,8 +95,14 @@ var _ = Describe("Routing", func() {
 
 				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(router.Property("router/disable_log_forwarded_for")).To(BeTrue())
-				Expect(router.Property("router/disable_log_source_ips")).To(BeFalse())
+
+				disableLogForwardedFor, err := router.Property("router/disable_log_forwarded_for")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(disableLogForwardedFor).To(BeTrue())
+
+				disableLogSourceIPs, err := router.Property("router/disable_log_source_ips")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(disableLogSourceIPs).To(BeFalse())
 			})
 		})
 		Context("when the operator chooses `Disable logging of both source IP and X-Forwarded-For header`", func() {
@@ -85,8 +114,14 @@ var _ = Describe("Routing", func() {
 
 				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(router.Property("router/disable_log_forwarded_for")).To(BeTrue())
-				Expect(router.Property("router/disable_log_source_ips")).To(BeTrue())
+
+				disableLogForwardedFor, err := router.Property("router/disable_log_forwarded_for")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(disableLogForwardedFor).To(BeTrue())
+
+				disableLogSourceIPs, err := router.Property("router/disable_log_source_ips")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(disableLogSourceIPs).To(BeTrue())
 			})
 		})
 	})
@@ -99,8 +134,14 @@ var _ = Describe("Routing", func() {
 
 			router, err := manifest.FindInstanceGroupJob("router", "gorouter")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(router.Property("router/backends/cert_chain")).NotTo(BeNil())
-			Expect(router.Property("router/backends/private_key")).NotTo(BeNil())
+
+			certChain, err := router.Property("router/backends/cert_chain")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(certChain).NotTo(BeNil())
+
+			privateKey, err := router.Property("router/backends/private_key")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(privateKey).NotTo(BeNil())
 		})
 	})
 })

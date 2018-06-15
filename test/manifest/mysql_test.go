@@ -30,7 +30,10 @@ var _ = Describe("MySQL", func() {
 		It("configures the max connections for mysql to be the set value", func() {
 			mysql, err := manifest.FindInstanceGroupJob(instanceGroup, "mysql")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(mysql.Property("cf_mysql/mysql/max_connections")).To(Equal(10000))
+
+			maxConnections, err := mysql.Property("cf_mysql/mysql/max_connections")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(maxConnections).To(Equal(10000))
 		})
 
 		Context("when the operator selects clustered mysql", func() {
@@ -50,7 +53,10 @@ var _ = Describe("MySQL", func() {
 			It("configures max connections for pxc-mysql to be the configured value", func() {
 				mysqlClustered, err := manifest.FindInstanceGroupJob(instanceGroup, "pxc-mysql")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(mysqlClustered.Property("max_connections")).To(Equal(40000))
+
+				maxConnections, err := mysqlClustered.Property("max_connections")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(maxConnections).To(Equal(40000))
 			})
 		})
 	})
