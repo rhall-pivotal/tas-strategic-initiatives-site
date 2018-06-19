@@ -8,7 +8,33 @@ import (
 var _ = Describe("Diego", func() {
 	var instanceGroup string
 
+	Context("BBS", func() {
+
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "control"
+			} else {
+				instanceGroup = "diego_database"
+			}
+		})
+
+		It("retries tasks to be more resilient to temporarily constrained resources", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			bbs, err := manifest.FindInstanceGroupJob(instanceGroup, "bbs")
+			Expect(err).NotTo(HaveOccurred())
+
+			maxRetries, err := bbs.Property("tasks/max_retries")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(maxRetries).To(Equal(3))
+		})
+
+	})
+
 	Context("SSH Proxy", func() {
+
 		BeforeEach(func() {
 			if productName == "srt" {
 				instanceGroup = "control"
@@ -30,6 +56,7 @@ var _ = Describe("Diego", func() {
 			Expect(uaaProperties).NotTo(HaveKey("url"))
 			Expect(uaaProperties).NotTo(HaveKey("port"))
 		})
+
 	})
 
 	Context("Persistence", func() {
