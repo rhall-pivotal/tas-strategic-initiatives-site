@@ -215,6 +215,17 @@ var _ = Describe("Networking", func() {
 				}
 			})
 
+			It("co-locates the bosh-dns-adapter and bpm", func() {
+				manifest, err := product.RenderService.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = manifest.FindInstanceGroupJob(instanceGroup, "bosh-dns-adapter")
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = manifest.FindInstanceGroupJob(instanceGroup, "bpm")
+				Expect(err).NotTo(HaveOccurred())
+			})
+
 			It("emits internal routes", func() {
 				manifest, err := product.RenderService.RenderManifest(nil)
 				Expect(err).NotTo(HaveOccurred())
