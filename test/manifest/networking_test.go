@@ -180,49 +180,55 @@ var _ = Describe("Networking", func() {
 	})
 
 	Describe("Service Discovery For Apps", func() {
-		It("is colocated on the diego_brain instance", func() {
-			if productName != "ert" {
-				Skip("Test only valid for ERT")
-			}
 
-			manifest, err := product.RenderService.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
+		Describe("controller", func() {
 
-			_, err = manifest.FindInstanceGroupJob("diego_brain", "service-discovery-controller")
-			Expect(err).NotTo(HaveOccurred())
-		})
-
-		It("is colocated on the control instance", func() {
-			if productName != "srt" {
-				Skip("Test only valid for SRT")
-			}
-
-			manifest, err := product.RenderService.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			_, err = manifest.FindInstanceGroupJob("control", "service-discovery-controller")
-			Expect(err).NotTo(HaveOccurred())
-		})
-
-		It("is turned on by default", func() {
 			var instanceGroup string
 
-			if productName == "ert" {
-				instanceGroup = "diego_cell"
-			} else {
-				instanceGroup = "compute"
-			}
+			BeforeEach(func() {
+				if productName == "ert" {
+					instanceGroup = "diego_brain"
+				} else {
+					instanceGroup = "control"
+				}
+			})
 
-			manifest, err := product.RenderService.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
+			It("is deployed", func() {
+				manifest, err := product.RenderService.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
 
-			job, err := manifest.FindInstanceGroupJob(instanceGroup, "route_emitter")
-			Expect(err).NotTo(HaveOccurred())
+				_, err = manifest.FindInstanceGroupJob(instanceGroup, "service-discovery-controller")
+				Expect(err).NotTo(HaveOccurred())
+			})
 
-			enabled, err := job.Property("internal_routes/enabled")
-			Expect(err).NotTo(HaveOccurred())
-
-			Expect(enabled).To(BeTrue())
 		})
+
+		Describe("cell", func() {
+
+			var instanceGroup string
+
+			BeforeEach(func() {
+				if productName == "ert" {
+					instanceGroup = "diego_cell"
+				} else {
+					instanceGroup = "compute"
+				}
+			})
+
+			It("emits internal routes", func() {
+				manifest, err := product.RenderService.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "route_emitter")
+				Expect(err).NotTo(HaveOccurred())
+
+				enabled, err := job.Property("internal_routes/enabled")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(enabled).To(BeTrue())
+			})
+
+		})
+
 	})
 })
