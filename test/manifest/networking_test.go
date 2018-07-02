@@ -6,13 +6,19 @@ import (
 )
 
 var _ = Describe("Networking", func() {
-	Describe("DNS search domain", func() {
-		var (
-			inputProperties map[string]interface{}
-		)
+	Describe("job colocation", func() {
+		It("co-locates bpm", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
 
+			_, err = manifest.FindInstanceGroupJob("isolated_diego_cell", "bpm")
+			Expect(err).NotTo(HaveOccurred())
+		})
+	})
+
+	Describe("DNS search domain", func() {
 		It("configures search_domains on the garden-cni job", func() {
-			inputProperties = map[string]interface{}{
+			inputProperties := map[string]interface{}{
 				".properties.cf_networking_search_domains": "some-search-domain,another-search-domain",
 			}
 
