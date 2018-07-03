@@ -34,4 +34,58 @@ var _ = Describe("UAA", func() {
 
 	})
 
+	Describe("Metrics clients", func() {
+		It("apps_metrics has the expected permission scopes", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			appMetricsScopes, err := uaa.Property("uaa/clients/apps_metrics/scope")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(appMetricsScopes).To(Equal("cloud_controller.admin,cloud_controller.read,metrics.read,cloud_controller.admin_read_only"))
+
+		})
+
+		It("apps_metrics has the expected redirect uri", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			appMetricsRedirectUri, err := uaa.Property("uaa/clients/apps_metrics/redirect-uri")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(appMetricsRedirectUri).To(Equal("https://metrics.sys.example.com,https://metrics.sys.example.com/,https://metrics.sys.example.com/*,https://metrics-previous.sys.example.com,https://metrics-previous.sys.example.com/,https://metrics-previous.sys.example.com/*"))
+
+		})
+
+		It("apps_metrics_processing has the expected permission scopes", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			appMetricsProcessingScopes, err := uaa.Property("uaa/clients/apps_metrics_processing/scope")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(appMetricsProcessingScopes).To(Equal("openid,oauth.approvals,doppler.firehose,cloud_controller.admin,cloud_controller.admin_read_only"))
+
+		})
+
+		It("apps_metrics_processing has the expected redirect uri", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			appMetricsRedirectUri, err := uaa.Property("uaa/clients/apps_metrics_processing/redirect-uri")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(appMetricsRedirectUri).To(Equal("https://metrics.sys.example.com,https://metrics-previous.sys.example.com"))
+
+		})
+	})
+
 })
