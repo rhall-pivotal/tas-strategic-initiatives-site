@@ -1,6 +1,8 @@
 ---
 name: service-discovery-controller
 release: cf-networking
+provides:
+  service-discovery-controller: {as: service-discovery-controller, shared: true}
 manifest: |
   dnshttps:
     client:
