@@ -343,3 +343,10 @@
 - name: routing_backends_client_cert
   type: rsa_cert_credentials
   configurable: false
+
+- name: service_discovery_client_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - service-discovery-controller.service.cf.internal

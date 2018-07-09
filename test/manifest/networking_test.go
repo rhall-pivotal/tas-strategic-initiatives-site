@@ -50,4 +50,27 @@ var _ = Describe("Networking", func() {
 			Expect(searchDomains).To(HaveLen(0))
 		})
 	})
+
+	Describe("BOSH DNS Adapter for App Service Discovery", func() {
+		It("is colocated with the isolated_diego_cell", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = manifest.FindInstanceGroupJob("isolated_diego_cell", "bosh-dns-adapter")
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("is turned on by default", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "route_emitter")
+			Expect(err).NotTo(HaveOccurred())
+
+			enabled, err := job.Property("internal_routes/enabled")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(enabled).To(BeTrue())
+		})
+	})
 })
