@@ -1,6 +1,8 @@
 ---
 name: bosh-dns-adapter
 release: cf-networking
+consumes: |
+  service-discovery-controller: {from: service-discovery-controller, deployment: (( ..cf.deployment_name )) }
 manifest: |
   cf_app_sd_disable: "(( ..cf.properties.enable_service_discovery_for_apps.value ? false : true ))"
   dnshttps:
