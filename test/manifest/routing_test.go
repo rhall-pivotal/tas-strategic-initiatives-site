@@ -172,26 +172,4 @@ var _ = Describe("Routing", func() {
 			Expect(privateKey).NotTo(BeNil())
 		})
 	})
-
-	Describe("TLS termination", func() {
-		Context("when TLS is terminated for the first time at infrastructure load balancer", func() {
-			It("sets ha_proxy.client_ca_file", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
-				Expect(err).NotTo(HaveOccurred())
-
-				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(haproxy.Property("ha_proxy/client_ca_file")).NotTo(BeNil())
-			})
-
-			It("sets ha_proxy.client_cert to false", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
-				Expect(err).NotTo(HaveOccurred())
-
-				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(haproxy.Property("ha_proxy/client_cert")).To(BeFalse())
-			})
-		})
-	})
 })
