@@ -63,12 +63,10 @@ var _ = Describe("Routing", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(routerMinTLSVersion).To(Equal("TLSv1.1"))
 			})
-
 		})
 	})
 
 	Describe("TLS termination", func() {
-
 		It("secures traffic between the infrastructure load balancer and HAProxy / Gorouter", func() {
 			manifest, err := product.RenderService.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -91,7 +89,6 @@ var _ = Describe("Routing", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(routerTLSPEM).NotTo(BeEmpty())
 		})
-
 	})
 
 	Describe("IP Logging", func() {
@@ -214,27 +211,14 @@ var _ = Describe("Routing", func() {
 
 	Describe("TLS termination", func() {
 		Context("when TLS is terminated for the first time at infrastructure load balancer", func() {
-			It("sets ha_proxy.client_ca_file", func() {
+			It("configures the router and proxy", func() {
 				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
 				Expect(err).NotTo(HaveOccurred())
 
 				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(haproxy.Property("ha_proxy/client_ca_file")).NotTo(BeNil())
-			})
-
-			It("sets ha_proxy.client_cert to false", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
-				Expect(err).NotTo(HaveOccurred())
-
-				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
-				Expect(err).NotTo(HaveOccurred())
 				Expect(haproxy.Property("ha_proxy/client_cert")).To(BeFalse())
-			})
-
-			It("sets router.forwarded_client_cert", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
-				Expect(err).NotTo(HaveOccurred())
 
 				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
 				Expect(err).NotTo(HaveOccurred())
@@ -243,7 +227,7 @@ var _ = Describe("Routing", func() {
 		})
 
 		Context("when TLS is terminated for the first time at ha proxy", func() {
-			It("sets ha_proxy.client_ca_file", func() {
+			It("configures the router and proxy", func() {
 				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
 					".properties.routing_tls_termination": "ha_proxy",
 				})
@@ -252,24 +236,7 @@ var _ = Describe("Routing", func() {
 				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(haproxy.Property("ha_proxy/client_ca_file")).NotTo(BeNil())
-			})
-
-			It("sets ha_proxy.client_cert to true", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
-					".properties.routing_tls_termination": "ha_proxy",
-				})
-				Expect(err).NotTo(HaveOccurred())
-
-				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
-				Expect(err).NotTo(HaveOccurred())
 				Expect(haproxy.Property("ha_proxy/client_cert")).To(BeTrue())
-			})
-
-			It("sets router.forwarded_client_cert", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
-					".properties.routing_tls_termination": "ha_proxy",
-				})
-				Expect(err).NotTo(HaveOccurred())
 
 				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
 				Expect(err).NotTo(HaveOccurred())
@@ -278,7 +245,7 @@ var _ = Describe("Routing", func() {
 		})
 
 		Context("when TLS is terminated for the first time at the router", func() {
-			It("sets ha_proxy.client_cert", func() {
+			It("configures the router and proxy", func() {
 				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
 					".properties.routing_tls_termination": "router",
 				})
@@ -286,14 +253,8 @@ var _ = Describe("Routing", func() {
 
 				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
 				Expect(err).NotTo(HaveOccurred())
+				Expect(haproxy.Property("ha_proxy/client_ca_file")).NotTo(BeNil())
 				Expect(haproxy.Property("ha_proxy/client_cert")).To(BeFalse())
-			})
-
-			It("sets router.forwarded_client_cert", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
-					".properties.routing_tls_termination": "router",
-				})
-				Expect(err).NotTo(HaveOccurred())
 
 				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
 				Expect(err).NotTo(HaveOccurred())

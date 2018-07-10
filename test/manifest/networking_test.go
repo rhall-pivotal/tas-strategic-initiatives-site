@@ -70,7 +70,7 @@ var _ = Describe("Networking", func() {
 				}
 			})
 
-			It("configures the cni_config_dir", func() {
+			It("configures the cni_config_dir and cni_plugin_dir", func() {
 				manifest, err := product.RenderService.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
@@ -79,20 +79,10 @@ var _ = Describe("Networking", func() {
 
 				cniConfigDir, err := job.Property("cni_config_dir")
 				Expect(err).NotTo(HaveOccurred())
-
 				Expect(cniConfigDir).To(Equal("/var/vcap/jobs/silk-cni/config/cni"))
-			})
-
-			It("configures the cni_plugin_dir", func() {
-				manifest, err := product.RenderService.RenderManifest(inputProperties)
-				Expect(err).NotTo(HaveOccurred())
-
-				job, err := manifest.FindInstanceGroupJob(instanceGroup, "garden-cni")
-				Expect(err).NotTo(HaveOccurred())
 
 				cniPluginDir, err := job.Property("cni_plugin_dir")
 				Expect(err).NotTo(HaveOccurred())
-
 				Expect(cniPluginDir).To(Equal("/var/vcap/packages/silk-cni/bin"))
 			})
 		})
@@ -113,19 +103,10 @@ var _ = Describe("Networking", func() {
 
 				cniConfigDir, err := job.Property("cni_config_dir")
 				Expect(err).NotTo(HaveOccurred())
-
 				Expect(cniConfigDir).To(Equal("/var/vcap/jobs/cni/config/cni"))
-			})
 
-			It("configures the cni_plugin_dir", func() {
-				manifest, err := product.RenderService.RenderManifest(inputProperties)
-				Expect(err).NotTo(HaveOccurred())
-
-				job, err := manifest.FindInstanceGroupJob(instanceGroup, "garden-cni")
-				Expect(err).NotTo(HaveOccurred())
 				cniPluginDir, err := job.Property("cni_plugin_dir")
 				Expect(err).NotTo(HaveOccurred())
-
 				Expect(cniPluginDir).To(Equal("/var/vcap/packages/cni/bin"))
 			})
 		})
@@ -180,11 +161,8 @@ var _ = Describe("Networking", func() {
 	})
 
 	Describe("Service Discovery For Apps", func() {
-
 		Describe("controller", func() {
-
 			var instanceGroup string
-
 			BeforeEach(func() {
 				if productName == "ert" {
 					instanceGroup = "diego_brain"
@@ -200,13 +178,10 @@ var _ = Describe("Networking", func() {
 				_, err = manifest.FindInstanceGroupJob(instanceGroup, "service-discovery-controller")
 				Expect(err).NotTo(HaveOccurred())
 			})
-
 		})
 
 		Describe("cell", func() {
-
 			var instanceGroup string
-
 			BeforeEach(func() {
 				if productName == "ert" {
 					instanceGroup = "diego_cell"
@@ -238,8 +213,6 @@ var _ = Describe("Networking", func() {
 
 				Expect(enabled).To(BeTrue())
 			})
-
 		})
-
 	})
 })

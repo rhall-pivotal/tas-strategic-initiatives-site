@@ -9,7 +9,6 @@ var _ = Describe("Logging", func() {
 	var instanceGroup string
 
 	Describe("notifications", func() {
-
 		BeforeEach(func() {
 			if productName == "srt" {
 				instanceGroup = "control"
@@ -30,5 +29,4 @@ var _ = Describe("Logging", func() {
 			Expect(template).To(ContainSubstring("CF Notification: {{.Subject}}"))
 		})
 	})
-
 })
