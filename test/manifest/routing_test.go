@@ -174,7 +174,7 @@ var _ = Describe("Routing", func() {
 	})
 
 	Describe("Router Client Cert Validation", func() {
-		Context("when set to not require client certificate", func() {
+		Context("when it does not request client certificates", func() {
 			It("sets the validation type to none", func() {
 				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
 					".properties.router_client_cert_validation": "none",
@@ -187,7 +187,7 @@ var _ = Describe("Routing", func() {
 			})
 		})
 
-		Context("when set to request client certificate", func() {
+		Context("when it requests but does not require client certificates", func() {
 			It("sets the validation type to request", func() {
 				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
 				Expect(err).NotTo(HaveOccurred())
@@ -198,7 +198,7 @@ var _ = Describe("Routing", func() {
 			})
 		})
 
-		Context("when set to rquire client certificate", func() {
+		Context("when it requires client certificates", func() {
 			It("sets the validation type to require", func() {
 				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
 					".properties.router_client_cert_validation": "require",
