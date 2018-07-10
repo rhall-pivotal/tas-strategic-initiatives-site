@@ -173,6 +173,45 @@ var _ = Describe("Routing", func() {
 		})
 	})
 
+	Describe("Router Client Cert Validation", func() {
+		Context("when set to not require client certificate", func() {
+			It("sets the validation type to none", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					".properties.router_client_cert_validation": "none",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(router.Property("router/client_cert_validation")).To(ContainSubstring("none"))
+			})
+		})
+
+		Context("when set to request client certificate", func() {
+			It("sets the validation type to request", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
+				Expect(err).NotTo(HaveOccurred())
+
+				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(router.Property("router/client_cert_validation")).To(ContainSubstring("request"))
+			})
+		})
+
+		Context("when set to rquire client certificate", func() {
+			It("sets the validation type to require", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					".properties.router_client_cert_validation": "require",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(router.Property("router/client_cert_validation")).To(ContainSubstring("require"))
+			})
+		})
+	})
+
 	Describe("TLS termination", func() {
 		Context("when TLS is terminated for the first time at infrastructure load balancer", func() {
 			It("sets ha_proxy.client_ca_file", func() {
