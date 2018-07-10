@@ -192,6 +192,15 @@ var _ = Describe("Routing", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(haproxy.Property("ha_proxy/client_cert")).To(BeFalse())
 			})
+
+			It("sets router.forwarded_client_cert", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
+				Expect(err).NotTo(HaveOccurred())
+
+				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(router.Property("router/forwarded_client_cert")).To(ContainSubstring("always_forward"))
+			})
 		})
 
 		Context("when TLS is terminated for the first time at ha proxy", func() {
@@ -215,6 +224,41 @@ var _ = Describe("Routing", func() {
 				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(haproxy.Property("ha_proxy/client_cert")).To(BeTrue())
+			})
+
+			It("sets router.forwarded_client_cert", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					".properties.routing_tls_termination": "ha_proxy",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(router.Property("router/forwarded_client_cert")).To(ContainSubstring("forward"))
+			})
+		})
+
+		Context("when TLS is terminated for the first time at the router", func() {
+			It("sets ha_proxy.client_cert", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					".properties.routing_tls_termination": "router",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(haproxy.Property("ha_proxy/client_cert")).To(BeFalse())
+			})
+
+			It("sets router.forwarded_client_cert", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					".properties.routing_tls_termination": "router",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(router.Property("router/forwarded_client_cert")).To(ContainSubstring("sanitize_set"))
 			})
 		})
 	})
