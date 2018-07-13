@@ -164,27 +164,36 @@
         - name: gorouter_forwarded_client_cert
           manifest: |
             always_forward
-        - name: haproxy_client_cert
-          manifest: |
-            false
     - name: ha_proxy
       select_value: ha_proxy
       named_manifests:
         - name: gorouter_forwarded_client_cert
           manifest: |
             forward
-        - name: haproxy_client_cert
-          manifest: |
-            true
     - name: router
       select_value: router
       named_manifests:
         - name: gorouter_forwarded_client_cert
           manifest: |
             sanitize_set
-        - name: haproxy_client_cert
+
+- name: haproxy_client_cert_validation
+  type: selector
+  configurable: true
+  default: none
+  option_templates:
+    - name: none
+      select_value: none
+      named_manifests:
+        - name: client_cert_validation
           manifest: |
             false
+    - name: request
+      select_value: request
+      named_manifests:
+        - name: client_cert_validation
+          manifest: |
+            true
 
 - name: router_client_cert_validation
   type: selector
