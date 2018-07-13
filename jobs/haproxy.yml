@@ -10,11 +10,7 @@ manifest: |
     backend_port: (( .properties.haproxy_forward_tls.selected_option.parsed_manifest(backend_port) ))
     backend_ssl: (( .properties.haproxy_forward_tls.selected_option.parsed_manifest(backend_ssl) ))
     buffer_size_bytes: (( .properties.haproxy_max_buffer_size.value ))
-    client_ca_file: |
-      (( .properties.routing_custom_ca_certificates.value ))
-      (( $ops_manager.ca_certificate ))
-      ((( /cf/diego-instance-identity-root-ca.certificate )))
-    client_cert: (( .properties.routing_tls_termination.selected_option.parsed_manifest(haproxy_client_cert) ))
+    client_cert: (( .properties.haproxy_client_cert_validation.selected_option.parsed_manifest(client_cert_validation) ))
     client_timeout: (( .router.request_timeout_in_seconds.value ))
     disable_http: (( .properties.routing_disable_http.value ))
     disable_tls_10: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_10) ))

@@ -110,6 +110,18 @@ property_inputs:
         label: |
           TLS terminated for the first time at the Router
 
+  - reference: .properties.haproxy_client_cert_validation
+    label: HAProxy behavior for Client Certificate Validation
+    selector_property_inputs:
+      - reference: .properties.haproxy_client_cert_validation.none
+        label: |
+          HAProxy does not request client certificates.
+      - reference: .properties.router_client_cert_validation.request
+        label: |
+          HAProxy requests but does not require client certificates.
+          This option is necessary if you want to enable mTLS for applications
+          and TLS is terminated for the first time at HAProxy
+
   - reference: .properties.router_client_cert_validation
     label: Router behavior for Client Certificate Validation
     selector_property_inputs:
