@@ -4,17 +4,18 @@ release: nfs-volume
 consumes: (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
 manifest: |
   nfsbrokerpush:
-    domain: (( .cloud_controller.system_domain.value ))
-    db: (( .properties.system_database.selected_option.parsed_manifest(nfsvolume) ))
-    cf:
-      admin_user: (( .uaa.admin_credentials.identity ))
-      admin_password: (( .uaa.admin_credentials.password ))
-      dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
-    organization: system
-    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
     app_domain: (( .cloud_controller.system_domain.value ))
-    space: nfs
-    username: ((( nfs-broker-push-db-credentials.username )))
-    password: ((( nfs-broker-push-db-credentials.password )))
-    syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))
+    cf:
+      admin_password: (( .uaa.admin_credentials.password ))
+      admin_user: (( .uaa.admin_credentials.identity ))
+      dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
+    db: (( .properties.system_database.selected_option.parsed_manifest(nfsvolume) ))
+    domain: (( .cloud_controller.system_domain.value ))
     ldap_enabled: (( .properties.nfs_volume_driver.enable.ldap_server_host.value_present? ))
+    organization: system
+    password: ((( nfs-broker-push-db-credentials.password )))
+    register_broker: false
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+    space: nfs
+    syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))
+    username: ((( nfs-broker-push-db-credentials.username )))
