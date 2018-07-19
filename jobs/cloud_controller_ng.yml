@@ -6,7 +6,7 @@ consumes: |
 provides: |
   cloud_controller: {as: cloud_controller, shared: true}
 manifest: |
-  name: Pivotal Application Service (PAS)
+  name: $( variable "label" )
   build: $( variable "build-version" )
   description: https://docs.pivotal.io/pivotalcf/2-3/pcf-release-notes/runtime-rn.html
   uaa:
