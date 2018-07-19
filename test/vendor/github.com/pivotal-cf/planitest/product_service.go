@@ -16,7 +16,7 @@ type ProductConfig struct {
 
 type ConfigJSON struct {
 	ProductProperties *map[string]interface{} `json:"product-properties,omitempty"`
-	NetworkConfig     *map[string]interface{} `json:"network-config,omitempty"`
+	NetworkProperties *map[string]interface{} `json:"network-properties,omitempty"`
 }
 
 type ProductService struct {

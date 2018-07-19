@@ -51,8 +51,8 @@ func (o OpsManifestService) appendProperties(additionalProperties map[string]int
 		return nil, fmt.Errorf("could not parse config file: %s", err)
 	}
 
-	if inputJSON.NetworkConfig == nil {
-		return nil, fmt.Errorf("network config must be provided in the config file")
+	if inputJSON.NetworkProperties == nil {
+		return nil, fmt.Errorf("network properties must be provided in the config file")
 	}
 
 	if inputJSON.ProductProperties == nil {
