@@ -13,8 +13,8 @@ trap '{ rm -rf "${build_dir}"; }' EXIT
 
 output_dir="$(mktemp -d -t "p-runtime.XXXXXXXXX")"
 
-if [[ (! -d "${tile_dir}/releases") && (! "${STUB_RELEASES}") ]]; then
-  echo "Missing required directory '${tile_dir}/releases'. Create this directory and download all required release tarballs into it." > /dev/stderr
+if [[ (! -d "${tile_dir}/releases") && ("${STUB_RELEASES}" != "true") ]]; then
+  echo "Missing required directory '${tile_dir}/releases'. Use STUB_RELEASES=true or create this directory and download all required release tarballs into it." > /dev/stderr
   exit 1
 fi
 
