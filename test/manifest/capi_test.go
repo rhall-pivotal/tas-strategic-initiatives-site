@@ -78,4 +78,40 @@ var _ = Describe("CAPI", func() {
 			})
 		})
 	})
+
+	Context("for the cloud_controller_ng job ", func() {
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "control"
+			} else {
+				instanceGroup = "cloud_controller"
+			}
+		})
+
+		It("defaults logging level to info", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			cloudControllerNg, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+			Expect(err).NotTo(HaveOccurred())
+
+			loggingLevel, err := cloudControllerNg.Property("cc/logging_level")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(loggingLevel).To(Equal(string("info")))
+		})
+
+		It("configures logging level to debug", func() {
+			manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				".properties.cc_logging_level": "debug",
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			cloudControllerNg, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+			Expect(err).NotTo(HaveOccurred())
+
+			loggingLevel, err := cloudControllerNg.Property("cc/logging_level")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(loggingLevel).To(Equal(string("debug")))
+		})
+	})
 })

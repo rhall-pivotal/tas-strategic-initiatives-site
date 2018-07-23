@@ -31,6 +31,7 @@ manifest: |
   domain: (( .cloud_controller.system_domain.value ))
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
   cc:
+    logging_level: (( .properties.cc_logging_level.value ))
     buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))'
     droplets: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))'
     packages:  '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccpackage_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))'
