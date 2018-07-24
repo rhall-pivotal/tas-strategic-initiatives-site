@@ -24,7 +24,6 @@ releases:
 - $( release "bosh-dns-aliases" )
 - $( release "bosh-system-metrics-forwarder" )
 - $( release "bpm" )
-- $( release "broker-registrar" )
 - $( release "capi" )
 - $( release "cf-autoscaling" )
 - $( release "cf-backup-and-restore" )
@@ -457,13 +456,6 @@ post_deploy_errands:
   - name: nfsbrokerpush
     label: NFS Broker Errand
     description: Pushes the NFS Broker application to your Application Service installation
-    colocated: true
-    run_default: true
-    instances:
-      - $( variable "errand_instance_group" )
-  - name: broker-registrar
-    label: NFS Broker Registration Errand
-    description: Registers the NFS Broker with your Application Service installation
     colocated: true
     run_default: true
     instances:

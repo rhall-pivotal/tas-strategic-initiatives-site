@@ -9,6 +9,7 @@ var _ = Describe("Diego", func() {
 	var instanceGroup string
 
 	Context("BBS", func() {
+
 		BeforeEach(func() {
 			if productName == "srt" {
 				instanceGroup = "control"
@@ -33,6 +34,7 @@ var _ = Describe("Diego", func() {
 	})
 
 	Context("SSH Proxy", func() {
+
 		BeforeEach(func() {
 			if productName == "srt" {
 				instanceGroup = "control"
@@ -75,24 +77,6 @@ var _ = Describe("Diego", func() {
 
 			_, err = manifest.FindInstanceGroupJob(instanceGroup, "mapfs")
 			Expect(err).NotTo(HaveOccurred())
-		})
-
-		Context("Broker errands", func() {
-			BeforeEach(func() {
-				if productName == "srt" {
-					instanceGroup = "control"
-				} else {
-					instanceGroup = "clock_global"
-				}
-			})
-
-			It("colocates the broker-reigstrar errand in the appropriate instance group", func() {
-				manifest, err := product.RenderService.RenderManifest(nil)
-				Expect(err).NotTo(HaveOccurred())
-
-				_, err = manifest.FindInstanceGroupJob(instanceGroup, "broker-registrar")
-				Expect(err).NotTo(HaveOccurred())
-			})
 		})
 	})
 })
