@@ -12,7 +12,7 @@ manifest: |
       - (( $ops_manager.trusted_certificates ))
   diego:
     rep:
-      preloaded_rootfses: '(( .properties.enable_grootfs.value ? .properties.rep_preloaded_rootfses_grootfs.value : .properties.rep_preloaded_rootfses_garden.value ))'
+      preloaded_rootfses: (( .properties.rep_preloaded_rootfses_grootfs.value ))
       use_azure_fault_domains: true
     executor:
       disk_capacity_mb: (( .diego_cell.executor_disk_capacity.value ))
