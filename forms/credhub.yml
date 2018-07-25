@@ -41,6 +41,26 @@ property_inputs:
       - reference: .properties.credhub_database.external.tls_ca
         label: Database CA Certificate
 
+- reference: .properties.credhub_key_encryption_passwords
+  label: Encryption Keys
+  property_inputs:
+  - reference: name
+    label: Name
+    description: |
+      Name of the encryption key.
+  - reference: provider
+    label: Provider
+  - reference: key
+    label: Key
+    description: |
+      The encryption key will be used to encrypt all data. The key must be
+      at least 20 characters long.
+  - reference: primary
+    label: Primary
+    description: |
+       Checking this checkbox marks this key as the primary encryption key.
+       Only one key should be marked as primary.
+
 - reference: .properties.credhub_hsm_provider_partition
   label: HSM Provider Partition
   description: |
@@ -75,26 +95,6 @@ property_inputs:
     label: HSM Certificate
     description: |
       The certificate for the HSM server.
-
-- reference: .properties.credhub_key_encryption_passwords
-  label: Encryption Keys
-  property_inputs:
-  - reference: name
-    label: Name
-    description: |
-      Name of the encryption key.
-  - reference: provider
-    label: Provider
-  - reference: key
-    label: Key
-    description: |
-      The encryption key will be used to encrypt all data. The key must be
-      at least 20 characters long.
-  - reference: primary
-    label: Primary
-    description: |
-       Checking this checkbox marks this key as the primary encryption key.
-       Only one key should be marked as primary.
 
 - reference: .properties.secure_service_instance_credentials
   label: Secure Service Instance Credentials
