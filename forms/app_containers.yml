@@ -110,3 +110,8 @@ property_inputs:
 
   - reference: .properties.diego_log_timestamp_format.unix-epoch
     label: Seconds since the Unix epoch (e.g. 1518137653.479724884)
+
+- reference: .properties.cloud_controller_default_health_check_timeout
+  label: Default health check timeout
+  description: |
+    Warning: Decreasing this below it's current value may cause existing applications with startup times greater than the new value to fail to start up.
