@@ -15,11 +15,6 @@ manifest: |
     rep:
       use_azure_fault_domains: true
       open_bindmounts_acl: true
-      consul:
-        require_tls: true
-        ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( windows_consul_agent_cert.cert_pem ))
-        client_key: (( windows_consul_agent_cert.private_key_pem ))
       locket:
         api_location: "locket.service.cf.internal:8891"
       preloaded_rootfses:

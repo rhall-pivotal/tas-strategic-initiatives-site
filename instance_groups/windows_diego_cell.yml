@@ -3,7 +3,6 @@ name: windows_diego_cell
 label: Windows Diego Cell
 resource_label: Windows Diego Cell
 templates:
-  - $( job "consul_agent_windows" )
   - $( job "rep_windows" )
   - $( job "route_emitter_windows" )
   - $( job "event_log_forwarder" )
@@ -76,9 +75,3 @@ property_blueprints:
     configurable: true
     optional: true
 
-  - name: windows_consul_agent_cert
-    type: rsa_cert_credentials
-    configurable: false
-    default:
-      domains:
-      - 127.0.0.1
