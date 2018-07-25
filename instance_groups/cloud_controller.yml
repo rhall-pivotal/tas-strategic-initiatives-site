@@ -5,7 +5,6 @@ resource_label: Cloud Controller
 description: Coordinates Pivotal CF Application Service application lifecycles
 templates:
 {{if eq tile "ert"}}
-- $( job "consul_agent_cloud_controller" )
 - $( job "go-buildpack" )
 - $( job "binary-buildpack" )
 - $( job "nodejs-buildpack" )

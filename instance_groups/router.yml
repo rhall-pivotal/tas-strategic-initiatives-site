@@ -5,7 +5,6 @@ resource_label: Router
 description: Routers route Internet traffic to applications and between Pivotal CF
   Application Service components.
 templates:
-- $( job "consul_agent" )
 - $( job "gorouter" )
 - $( job "metron_agent" )
 - $( job "syslog_forwarder" )

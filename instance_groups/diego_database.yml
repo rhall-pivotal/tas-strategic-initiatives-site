@@ -5,7 +5,6 @@ resource_label: Diego BBS
 description: An datastore node for Diego
 templates:
 {{if eq tile "ert"}}
-- $( job "consul_agent_diego_database" )
 - $( job "bbs" )
 - $( job "cfdot" )
 - $( job "metron_agent" )

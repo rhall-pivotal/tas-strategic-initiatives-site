@@ -5,7 +5,6 @@ resource_label: Control
 description: Control
 templates:
 {{if eq tile "srt"}}
-- $( job "consul_agent_control" )
 - $( job "bbs" )
 - $( job "cfdot" )
 - $( job "metron_agent_control" )

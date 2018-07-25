@@ -5,7 +5,6 @@ resource_label: CredHub
 description: CredHub
 templates:
 {{if eq tile "ert"}}
-- $( job "consul_agent_credhub" )
 - $( job "credhub" )
 - $( job "database-backup-restorer" )
 {{else}}

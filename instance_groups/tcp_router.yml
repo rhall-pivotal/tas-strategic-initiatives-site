@@ -4,7 +4,6 @@ label: TCP Router
 resource_label: TCP Router
 description: TCP Routers route TCP traffic.
 templates:
-- $( job "consul_agent" )
 - $( job "tcp_router" )
 - $( job "metron_agent" )
 - $( job "syslog_forwarder" )

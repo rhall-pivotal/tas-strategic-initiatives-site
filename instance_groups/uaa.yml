@@ -5,7 +5,6 @@ resource_label: UAA
 description: Pivotal CF Application Service's Authentication and Authorization server
 templates:
 {{if eq tile "ert"}}
-- $( job "consul_agent_uaa" )
 - $( job "uaa" )
 - $( job "metron_agent" )
 - $( job "route_registrar_uaa" )

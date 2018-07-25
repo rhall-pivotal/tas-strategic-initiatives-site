@@ -6,7 +6,6 @@ description: Multi-tenant MySQL server.
 
 templates:
 {{if eq tile "ert"}}
-- $( job "consul_agent" )
 - $( job "pxc-mysql" )
 - $( job "galera-agent" )
 - $( job "cluster-health-logger" )
