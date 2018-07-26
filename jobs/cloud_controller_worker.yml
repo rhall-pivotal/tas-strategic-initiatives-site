@@ -65,6 +65,7 @@ manifest: |
       temporary_local_sync: true
       temporary_local_tasks: true
       temporary_local_tps: true
+    staging_timeout_in_seconds: (( .cloud_controller.staging_timeout_in_seconds.value ))
   uaa:
     url: https://uaa.(( .cloud_controller.system_domain.value ))
     clients:

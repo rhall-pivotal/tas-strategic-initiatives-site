@@ -147,5 +147,27 @@ var _ = Describe("CAPI", func() {
 				}
 			})
 		})
+
+		Context("when the Operator sets a staging timeout", func() {
+			BeforeEach(func() {
+				var err error
+				manifest, err = product.RenderService.RenderManifest(map[string]interface{}{
+					".cloud_controller.staging_timeout_in_seconds": 1000,
+				})
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("passes the value to CC jobs", func() {
+				for _, job := range ccJobs {
+					manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
+					Expect(err).NotTo(HaveOccurred())
+
+					insecureDockerRegistryList, err := manifestJob.Property("cc/staging_timeout_in_seconds")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(insecureDockerRegistryList).To(Equal(1000))
+				}
+			})
+		})
 	})
 })

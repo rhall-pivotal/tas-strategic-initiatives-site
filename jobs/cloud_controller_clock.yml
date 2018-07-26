@@ -74,6 +74,7 @@ manifest: |
       temporary_local_sync: true
       temporary_local_tasks: true
       temporary_local_tps: true
+    staging_timeout_in_seconds: (( .cloud_controller.staging_timeout_in_seconds.value ))
   credhub_api:
     ca_cert: (( $ops_manager.ca_certificate ))
   login:
