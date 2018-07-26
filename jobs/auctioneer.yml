@@ -17,6 +17,7 @@ manifest: |
         client_cert: (( .properties.rep_client_cert.cert_pem ))
         client_key: (( .properties.rep_client_cert.private_key_pem ))
         ca_cert: (( $ops_manager.ca_certificate ))
+  enable_consul_service_registration: false
   logging:
     format:
       timestamp: (( .properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))

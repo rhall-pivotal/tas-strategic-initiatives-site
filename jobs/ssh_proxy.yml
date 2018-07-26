@@ -16,6 +16,7 @@ manifest: |
       uaa_secret: (( .uaa.ssh_proxy_client_credentials.password ))
     ssl:
       skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  enable_consul_service_registration: false
   logging:
     format:
       timestamp: (( .properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))

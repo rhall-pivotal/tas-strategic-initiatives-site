@@ -9,6 +9,7 @@ manifest: |
   diego:
     locket:
       sql: (( .properties.system_database.selected_option.parsed_manifest(locketdb) ))
+  enable_consul_service_registration: false
   logging:
     format:
       timestamp: (( .properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))

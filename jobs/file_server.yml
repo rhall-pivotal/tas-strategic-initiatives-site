@@ -5,6 +5,7 @@ manifest: |
   diego:
     file_server:
       listen_addr: 0.0.0.0:$( variable "diego_fileserver_port" )
+  enable_consul_service_registration: false
   logging:
     format:
       timestamp: (( .properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))
