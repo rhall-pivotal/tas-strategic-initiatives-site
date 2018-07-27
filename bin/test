@@ -1,4 +1,4 @@
 #!/bin/bash
 
-RENDERER="${RENDERER:-ops-manifest}" PRODUCT=ert ginkgo -p -r -slowSpecThreshold 15 test/manifest
-RENDERER="${RENDERER:-ops-manifest}" PRODUCT=srt ginkgo -p -r -slowSpecThreshold 15 test/manifest
+RENDERER="${RENDERER:-ops-manifest}" PRODUCT=ert ginkgo -p -r -slowSpecThreshold 15 "$@" test/manifest
+RENDERER="${RENDERER:-ops-manifest}" PRODUCT=srt ginkgo -p -r -slowSpecThreshold 15 "$@" test/manifest
