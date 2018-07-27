@@ -2,6 +2,8 @@
 name: locket
 release: diego
 manifest: |
+  bpm:
+    enabled: true
   tls:
     key: (( .diego_database.locket_server_cert.private_key_pem ))
     ca_cert: (( $ops_manager.ca_certificate ))

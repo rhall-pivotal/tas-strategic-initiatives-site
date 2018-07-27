@@ -2,6 +2,8 @@
 name: file_server
 release: diego
 manifest: |
+  bpm:
+    enabled: true
   diego:
     file_server:
       listen_addr: 0.0.0.0:$( variable "diego_fileserver_port" )
