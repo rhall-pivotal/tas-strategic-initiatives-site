@@ -7,11 +7,6 @@ import (
 )
 
 var _ = Describe("CAPI", func() {
-	type Job struct {
-		InstanceGroup string
-		Name          string
-	}
-
 	var (
 		ccJobs   []Job
 		manifest planitest.Manifest

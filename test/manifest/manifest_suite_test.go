@@ -14,6 +14,11 @@ import (
 	"testing"
 )
 
+type Job struct {
+	InstanceGroup string
+	Name          string
+}
+
 func TestManifestGeneration(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Manifest Generation Suite")

@@ -31,140 +31,88 @@ var _ = Describe("Diego", func() {
 		})
 	})
 
-	Context("BPM", func() {
-		Context("Diego Database jobs", func() {
-			BeforeEach(func() {
-				if productName == "srt" {
-					instanceGroup = "control"
-				} else {
-					instanceGroup = "diego_database"
+	Describe("BPM", func() {
+		var diegoJobs []Job
+
+		BeforeEach(func() {
+			if productName == "srt" {
+				diegoJobs = []Job{
+					{
+						InstanceGroup: "control",
+						Name:          "bbs",
+					},
+					{
+						InstanceGroup: "control",
+						Name:          "locket",
+					},
+					{
+						InstanceGroup: "control",
+						Name:          "auctioneer",
+					},
+					{
+						InstanceGroup: "control",
+						Name:          "file_server",
+					},
+					{
+						InstanceGroup: "control",
+						Name:          "ssh_proxy",
+					},
+					{
+						InstanceGroup: "compute",
+						Name:          "rep",
+					},
+					{
+						InstanceGroup: "compute",
+						Name:          "route_emitter",
+					},
 				}
-			})
-
-			Context("bbs", func() {
-				It("bpm.enabled is set to true", func() {
-					manifest, err := product.RenderService.RenderManifest(nil)
-					Expect(err).NotTo(HaveOccurred())
-
-					bbs, err := manifest.FindInstanceGroupJob(instanceGroup, "bbs")
-					Expect(err).NotTo(HaveOccurred())
-
-					bbsBpmEnabled, err := bbs.Property("bpm/enabled")
-					Expect(err).NotTo(HaveOccurred())
-
-					Expect(bbsBpmEnabled).To(BeTrue())
-				})
-			})
-
-			Context("locket", func() {
-				It("bpm.enabled is set to true", func() {
-					manifest, err := product.RenderService.RenderManifest(nil)
-					Expect(err).NotTo(HaveOccurred())
-
-					locket, err := manifest.FindInstanceGroupJob(instanceGroup, "locket")
-					Expect(err).NotTo(HaveOccurred())
-
-					locketBpmEnabled, err := locket.Property("bpm/enabled")
-					Expect(err).NotTo(HaveOccurred())
-
-					Expect(locketBpmEnabled).To(BeTrue())
-				})
-			})
+			} else {
+				diegoJobs = []Job{
+					{
+						InstanceGroup: "diego_database",
+						Name:          "bbs",
+					},
+					{
+						InstanceGroup: "diego_database",
+						Name:          "locket",
+					},
+					{
+						InstanceGroup: "diego_brain",
+						Name:          "auctioneer",
+					},
+					{
+						InstanceGroup: "diego_brain",
+						Name:          "file_server",
+					},
+					{
+						InstanceGroup: "diego_brain",
+						Name:          "ssh_proxy",
+					},
+					{
+						InstanceGroup: "diego_cell",
+						Name:          "rep",
+					},
+					{
+						InstanceGroup: "diego_cell",
+						Name:          "route_emitter",
+					},
+				}
+			}
 		})
 
-		Context("Diego Brain jobs", func() {
-			BeforeEach(func() {
-				if productName == "srt" {
-					instanceGroup = "control"
-				} else {
-					instanceGroup = "diego_brain"
-				}
-			})
+		It("bpm.enabled is set to true", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
 
-			Context("auctioneer", func() {
-				It("bpm.enabled is set to true", func() {
-					manifest, err := product.RenderService.RenderManifest(nil)
-					Expect(err).NotTo(HaveOccurred())
+			for _, diegoJob := range diegoJobs {
+				bbs, err := manifest.FindInstanceGroupJob(diegoJob.InstanceGroup, diegoJob.Name)
+				Expect(err).NotTo(HaveOccurred())
 
-					auctioneer, err := manifest.FindInstanceGroupJob(instanceGroup, "auctioneer")
-					Expect(err).NotTo(HaveOccurred())
+				bbsBpmEnabled, err := bbs.Property("bpm/enabled")
+				Expect(err).NotTo(HaveOccurred())
 
-					auctioneerBpmEnabled, err := auctioneer.Property("bpm/enabled")
-					Expect(err).NotTo(HaveOccurred())
-
-					Expect(auctioneerBpmEnabled).To(BeTrue())
-				})
-			})
-
-			Context("file_server", func() {
-				It("bpm.enabled is set to true", func() {
-					manifest, err := product.RenderService.RenderManifest(nil)
-					Expect(err).NotTo(HaveOccurred())
-
-					fileServer, err := manifest.FindInstanceGroupJob(instanceGroup, "file_server")
-					Expect(err).NotTo(HaveOccurred())
-
-					fileServerBpmEnabled, err := fileServer.Property("bpm/enabled")
-					Expect(err).NotTo(HaveOccurred())
-
-					Expect(fileServerBpmEnabled).To(BeTrue())
-				})
-			})
-
-			Context("ssh_proxy", func() {
-				It("bpm.enabled is set to true", func() {
-					manifest, err := product.RenderService.RenderManifest(nil)
-					Expect(err).NotTo(HaveOccurred())
-
-					sshProxy, err := manifest.FindInstanceGroupJob(instanceGroup, "ssh_proxy")
-					Expect(err).NotTo(HaveOccurred())
-
-					sshProxyBpmEnabled, err := sshProxy.Property("bpm/enabled")
-					Expect(err).NotTo(HaveOccurred())
-
-					Expect(sshProxyBpmEnabled).To(BeTrue())
-				})
-			})
-		})
-
-		Context("Diego Cell jobs", func() {
-			BeforeEach(func() {
-				if productName == "srt" {
-					instanceGroup = "compute"
-				} else {
-					instanceGroup = "diego_cell"
-				}
-			})
-
-			Context("rep", func() {
-				It("bpm.enabled is set to true", func() {
-					manifest, err := product.RenderService.RenderManifest(nil)
-					Expect(err).NotTo(HaveOccurred())
-
-					rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
-					Expect(err).NotTo(HaveOccurred())
-
-					repBpmEnabled, err := rep.Property("bpm/enabled")
-					Expect(err).NotTo(HaveOccurred())
-
-					Expect(repBpmEnabled).To(BeTrue())
-				})
-			})
-
-			Context("route_emitter", func() {
-				It("bpm.enabled is set to true", func() {
-					manifest, err := product.RenderService.RenderManifest(nil)
-					Expect(err).NotTo(HaveOccurred())
-
-					routeEmitter, err := manifest.FindInstanceGroupJob(instanceGroup, "route_emitter")
-					Expect(err).NotTo(HaveOccurred())
-
-					routeEmitterBpmEnabled, err := routeEmitter.Property("bpm/enabled")
-					Expect(err).NotTo(HaveOccurred())
-
-					Expect(routeEmitterBpmEnabled).To(BeTrue())
-				})
-			})
+				Expect(bbsBpmEnabled).To(BeTrue())
+			}
 		})
 	})
 
