@@ -34,6 +34,29 @@ var _ = Describe("UAA", func() {
 
 	})
 
+	Describe("BPM", func() {
+		It("co-locates the BPM job with all diego jobs", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = manifest.FindInstanceGroupJob(instanceGroup, "bpm")
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("sets bpm.enabled to true", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			manifestJob, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			bpmEnabled, err := manifestJob.Property("bpm/enabled")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(bpmEnabled).To(BeTrue())
+		})
+	})
+
 	Describe("Metrics clients", func() {
 		It("apps_metrics has the expected permission scopes", func() {
 			manifest, err := product.RenderService.RenderManifest(nil)

@@ -4,6 +4,8 @@ release: uaa
 consumes: |
   (( .properties.uaa_database.selected_option.parsed_manifest(db_link) ))
 manifest: |
+  bpm:
+    enabled: true
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
   uaadb: (( .properties.uaa_database.selected_option.parsed_manifest(db_config) ))
   encryption:
