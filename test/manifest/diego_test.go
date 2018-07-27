@@ -100,18 +100,28 @@ var _ = Describe("Diego", func() {
 			}
 		})
 
-		It("bpm.enabled is set to true", func() {
+		It("co-locates the BPM job with all diego jobs", func() {
 			manifest, err := product.RenderService.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			for _, diegoJob := range diegoJobs {
-				bbs, err := manifest.FindInstanceGroupJob(diegoJob.InstanceGroup, diegoJob.Name)
+				_, err = manifest.FindInstanceGroupJob(diegoJob.InstanceGroup, "bpm")
+				Expect(err).NotTo(HaveOccurred())
+			}
+		})
+
+		It("sets bpm.enabled to true", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, diegoJob := range diegoJobs {
+				manifestJob, err := manifest.FindInstanceGroupJob(diegoJob.InstanceGroup, diegoJob.Name)
 				Expect(err).NotTo(HaveOccurred())
 
-				bbsBpmEnabled, err := bbs.Property("bpm/enabled")
+				bpmEnabled, err := manifestJob.Property("bpm/enabled")
 				Expect(err).NotTo(HaveOccurred())
 
-				Expect(bbsBpmEnabled).To(BeTrue())
+				Expect(bpmEnabled).To(BeTrue())
 			}
 		})
 	})
