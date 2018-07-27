@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("CF CLI", func() {
+var _ = XDescribe("CF CLI", func() {
 	var instanceGroup string
 
 	BeforeEach(func() {
