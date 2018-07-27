@@ -1,9 +1,10 @@
 package manifest_test
 
 import (
+	"github.com/pivotal-cf/planitest"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/planitest"
 )
 
 var _ = Describe("MySQL", func() {
@@ -15,6 +16,40 @@ var _ = Describe("MySQL", func() {
 		} else {
 			instanceGroup = "mysql"
 		}
+	})
+
+	Describe("PXC releases", func() {
+		It("colocates the cluster-health-logger job on the appropriate instance", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = manifest.FindInstanceGroupJob(instanceGroup, "cluster-health-logger")
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("colocates the galera-agent job on the appropriate instance", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = manifest.FindInstanceGroupJob(instanceGroup, "galera-agent")
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("colocates the gra-log-purger job on the appropriate instance", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = manifest.FindInstanceGroupJob(instanceGroup, "gra-log-purger")
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("colocates the pxc-mysql job on the appropriate instance", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = manifest.FindInstanceGroupJob(instanceGroup, "pxc-mysql")
+			Expect(err).NotTo(HaveOccurred())
+		})
 	})
 
 	Describe("when the operator turns on audit logging", func() {
@@ -35,7 +70,7 @@ var _ = Describe("MySQL", func() {
 		})
 	})
 
-	Context("when the operator configures max connections for mysql", func() {
+	Describe("when the operator configures max connections for mysql", func() {
 		var (
 			manifest planitest.Manifest
 			err      error
@@ -58,16 +93,11 @@ var _ = Describe("MySQL", func() {
 		})
 
 		Context("when the operator selects clustered mysql", func() {
-			var (
-				inputProperties map[string]interface{}
-			)
-
 			BeforeEach(func() {
-				inputProperties = map[string]interface{}{
+				manifest, err = product.RenderService.RenderManifest(map[string]interface{}{
 					".properties.system_database": "internal_pxc",
 					".mysql.max_connections":      40000,
-				}
-				manifest, err = product.RenderService.RenderManifest(inputProperties)
+				})
 				Expect(err).NotTo(HaveOccurred())
 			})
 
