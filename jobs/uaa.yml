@@ -239,7 +239,9 @@ manifest: |
           - cloud_controller.global_auditor
           - actuator.read
           - openid
-        scope: cloud_controller.read,cloud_controller.write,cloud_controller.global_auditor,cloud_controller.admin,usage_service.audit,cloud_controller.user,actuator.read,cloud_controller.admin_read_only,openid
+          - network.write
+          - network.admin
+        scope: cloud_controller.read,cloud_controller.write,cloud_controller.global_auditor,cloud_controller.admin,usage_service.audit,cloud_controller.user,actuator.read,cloud_controller.admin_read_only,openid,network.write,network.admin
         authorized-grant-types: implicit
         show-on-homepage: true
         app-launch-url: "https://apps.(( .cloud_controller.system_domain.value ))"

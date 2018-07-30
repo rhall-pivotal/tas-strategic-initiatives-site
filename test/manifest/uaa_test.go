@@ -1,6 +1,8 @@
 package manifest_test
 
 import (
+	"strings"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -57,7 +59,7 @@ var _ = Describe("UAA", func() {
 		})
 	})
 
-	Describe("Metrics clients", func() {
+	Describe("Clients", func() {
 		It("apps_metrics has the expected permission scopes", func() {
 			manifest, err := product.RenderService.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -109,6 +111,26 @@ var _ = Describe("UAA", func() {
 			Expect(appMetricsRedirectUri).To(Equal("https://metrics.sys.example.com,https://metrics-previous.sys.example.com"))
 
 		})
-	})
 
+		It("apps_manager_js client includes network.write and network.admin", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			rawScopes, err := uaa.Property("uaa/clients/apps_manager_js/scope")
+			Expect(err).ToNot(HaveOccurred())
+
+			scopes := strings.Split(rawScopes.(string), ",")
+			Expect(scopes).To(ContainElement("network.write"))
+			Expect(scopes).To(ContainElement("network.admin"))
+
+			autoapproveList, err := uaa.Property("uaa/clients/apps_manager_js/autoapprove")
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(autoapproveList).To(ContainElement("network.write"))
+			Expect(autoapproveList).To(ContainElement("network.admin"))
+		})
+	})
 })
