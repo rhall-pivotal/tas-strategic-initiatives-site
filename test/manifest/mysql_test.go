@@ -7,41 +7,20 @@ import (
 )
 
 var _ = Describe("MySQL", func() {
-	var instanceGroup string
-
-	BeforeEach(func() {
-		if productName == "srt" {
-			instanceGroup = "database"
-		} else {
-			instanceGroup = "mysql"
-		}
-	})
-
-	Describe("when the operator turns on audit logging", func() {
-		It("enables audit logs", func() {
-			manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
-				".properties.mysql_activity_logging": "enable",
-				".properties.system_database":        "internal_pxc",
-			})
-			Expect(err).NotTo(HaveOccurred())
-
-			mysql, err := manifest.FindInstanceGroupJob(instanceGroup, "pxc-mysql")
-			Expect(err).NotTo(HaveOccurred())
-
-			auditLogsEnabled, err := mysql.Property("engine_config/audit_logs/enabled")
-			Expect(err).NotTo(HaveOccurred())
-
-			Expect(auditLogsEnabled).To(BeTrue())
-		})
-	})
-
 	Context("when the operator configures max connections for mysql", func() {
 		var (
-			manifest planitest.Manifest
-			err      error
+			manifest      planitest.Manifest
+			instanceGroup string
+			err           error
 		)
 
 		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "database"
+			} else {
+				instanceGroup = "mysql"
+			}
+
 			manifest, err = product.RenderService.RenderManifest(map[string]interface{}{
 				".mysql.max_connections": 10000,
 			})
@@ -75,7 +54,7 @@ var _ = Describe("MySQL", func() {
 				mysqlClustered, err := manifest.FindInstanceGroupJob(instanceGroup, "pxc-mysql")
 				Expect(err).NotTo(HaveOccurred())
 
-				maxConnections, err := mysqlClustered.Property("engine_config/max_connections")
+				maxConnections, err := mysqlClustered.Property("max_connections")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(maxConnections).To(Equal(40000))
 			})

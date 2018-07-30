@@ -10,18 +10,14 @@ manifest: |
   pxc_enabled: (( .properties.system_database.selected_option.parsed_manifest(enable_pxc) ))
   port: $( variable "mysql_port" )
   cli_history: (( .mysql.cli_history.value ))
-  engine_config:
-    innodb_buffer_pool_size: 2147483648
-    innodb_strict_mode: true
-    max_connections: (( .mysql.max_connections.value ))
-    audit_logs:
-      enabled: (( .properties.mysql_activity_logging.selected_option.parsed_manifest(pxc_server_audit_logs_enabled) ))
-      audit_log_exclude_accounts:
-      - ((( mysql-metrics-db-credentials.username )))
-      - ((( mysql-monitor-db-credentials.username )))
+  innodb_buffer_pool_size: 2147483648
+  innodb_strict_mode: true
   max_open_files: 1048576
-  monit_startup_timeout: 60
+  startup_timeout: 120
   cluster_probe_timeout: (( .mysql.cluster_probe_timeout.value ))
+  max_connections: (( .mysql.max_connections.value ))
+  cluster_health:
+    password: ((( mysql-cluster-health-credentials.password )))
   remote_admin_access: (( .mysql.remote_admin_access.value ))
   seeded_databases:
   - name: (( .properties.app_usage_service_database_name.value ))
@@ -75,4 +71,12 @@ manifest: |
       ca: (( $ops_manager.ca_certificate ))
       certificate: (( .properties.pxc_server_certificate.cert_pem ))
       private_key: (( .properties.pxc_server_certificate.private_key_pem ))
+  server_audit_excluded_users:
+  - ((( mysql-metrics-db-credentials.username )))
+  - ((( mysql-monitor-db-credentials.username )))
   admin_password: ((( mysql-admin-credentials.password )))
+  galera_agent:
+    db_password: ((( mysql-galera-sidecar-credentials.password )))
+    endpoint_username: ((( mysql-bootstrap-db-credentials.username )))
+    endpoint_password: ((( mysql-bootstrap-db-credentials.password )))
+  server_audit_logs_enabled: (( .properties.mysql_activity_logging.selected_option.parsed_manifest(pxc_server_audit_logs_enabled) ))

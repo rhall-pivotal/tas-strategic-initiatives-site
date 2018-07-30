@@ -7,9 +7,6 @@ description: Multi-tenant MySQL server.
 templates:
 {{if eq tile "ert"}}
 - $( job "pxc-mysql" )
-- $( job "galera-agent" )
-- $( job "cluster-health-logger" )
-- $( job "gra-log-purger" )
 - $( job "metron_agent" )
 - $( job "mysql" )
 - $( job "mysql-metrics" )
