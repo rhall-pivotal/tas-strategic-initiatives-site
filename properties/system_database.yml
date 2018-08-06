@@ -179,6 +179,8 @@
           password: ((( silk-db-credentials.password )))
           name: (( .properties.silk_database_name.value ))
           connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
+          require_ssl: true
+          ca_cert: (( $ops_manager.ca_certificate ))
       - name: networkpolicyserverdb
         manifest: |
           type: mysql

@@ -8,15 +8,18 @@ import (
 var _ = Describe("Networking", func() {
 	Describe("Container networking", func() {
 		var (
-			inputProperties map[string]interface{}
-			instanceGroup   string
+			inputProperties         map[string]interface{}
+			cellInstanceGroup       string
+			controllerInstanceGroup string
 		)
 
 		BeforeEach(func() {
 			if productName == "ert" {
-				instanceGroup = "diego_cell"
+				cellInstanceGroup = "diego_cell"
+				controllerInstanceGroup = "diego_database"
 			} else {
-				instanceGroup = "compute"
+				cellInstanceGroup = "compute"
+				controllerInstanceGroup = "control"
 			}
 		})
 
@@ -25,19 +28,13 @@ var _ = Describe("Networking", func() {
 				inputProperties = map[string]interface{}{
 					".properties.cf_networking_database_connection_timeout": 250,
 				}
-
-				if productName == "ert" {
-					instanceGroup = "diego_database"
-				} else {
-					instanceGroup = "control"
-				}
 			})
 
 			It("sets the manifest database connection timeout properties for the cf networking jobs to be 250", func() {
 				manifest, err := product.RenderService.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
-				policyServerJob, err := manifest.FindInstanceGroupJob(instanceGroup, "policy-server")
+				policyServerJob, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server")
 				Expect(err).NotTo(HaveOccurred())
 
 				policyServerConnectTimeoutSeconds, err := policyServerJob.Property("database/connect_timeout_seconds")
@@ -45,7 +42,7 @@ var _ = Describe("Networking", func() {
 
 				Expect(policyServerConnectTimeoutSeconds).To(Equal(250))
 
-				policyServerInternalJob, err := manifest.FindInstanceGroupJob(instanceGroup, "policy-server-internal")
+				policyServerInternalJob, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server-internal")
 				Expect(err).NotTo(HaveOccurred())
 
 				policyServerInternalConnectTimeoutSeconds, err := policyServerInternalJob.Property("database/connect_timeout_seconds")
@@ -53,7 +50,7 @@ var _ = Describe("Networking", func() {
 
 				Expect(policyServerInternalConnectTimeoutSeconds).To(Equal(250))
 
-				silkControllerJob, err := manifest.FindInstanceGroupJob(instanceGroup, "silk-controller")
+				silkControllerJob, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "silk-controller")
 				Expect(err).NotTo(HaveOccurred())
 
 				silkControllerConnectTimeoutSeconds, err := silkControllerJob.Property("database/connect_timeout_seconds")
@@ -65,16 +62,14 @@ var _ = Describe("Networking", func() {
 
 		Context("when Silk is enabled", func() {
 			BeforeEach(func() {
-				inputProperties = map[string]interface{}{
-					".properties.container_networking_interface_plugin": "silk",
-				}
+				inputProperties = map[string]interface{}{}
 			})
 
 			It("configures the cni_config_dir and cni_plugin_dir", func() {
 				manifest, err := product.RenderService.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
-				job, err := manifest.FindInstanceGroupJob(instanceGroup, "garden-cni")
+				job, err := manifest.FindInstanceGroupJob(cellInstanceGroup, "garden-cni")
 				Expect(err).NotTo(HaveOccurred())
 
 				cniConfigDir, err := job.Property("cni_config_dir")
@@ -84,6 +79,22 @@ var _ = Describe("Networking", func() {
 				cniPluginDir, err := job.Property("cni_plugin_dir")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(cniPluginDir).To(Equal("/var/vcap/packages/silk-cni/bin"))
+			})
+
+			It("configures TLS to the internal database", func() {
+				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "silk-controller")
+				Expect(err).NotTo(HaveOccurred())
+
+				tlsEnabled, err := job.Property("database/require_ssl")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(tlsEnabled).To(BeTrue())
+
+				caCert, err := job.Property("database/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).NotTo(BeEmpty())
 			})
 		})
 
@@ -98,7 +109,7 @@ var _ = Describe("Networking", func() {
 				manifest, err := product.RenderService.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
-				job, err := manifest.FindInstanceGroupJob(instanceGroup, "garden-cni")
+				job, err := manifest.FindInstanceGroupJob(cellInstanceGroup, "garden-cni")
 				Expect(err).NotTo(HaveOccurred())
 
 				cniConfigDir, err := job.Property("cni_config_dir")
