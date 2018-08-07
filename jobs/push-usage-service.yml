@@ -8,8 +8,8 @@ manifest: |
     api_url: "https://api.(( .cloud_controller.system_domain.value ))"
     uaa_url: "https://login.(( .cloud_controller.system_domain.value ))"
     notifications_service_url: "https://notifications.(( .cloud_controller.system_domain.value ))"
-    push_client_id: (( .uaa.push_apps_manager_credentials.identity ))
-    push_client_secret: (( .uaa.push_apps_manager_credentials.password ))
+    admin_username: (( .uaa.push_apps_manager_credentials.identity ))
+    admin_password: (( .uaa.push_apps_manager_credentials.password ))
     system_domain: (( .cloud_controller.system_domain.value ))
     apps_domain: (( .cloud_controller.apps_domain.value ))
   app_usage_service:
