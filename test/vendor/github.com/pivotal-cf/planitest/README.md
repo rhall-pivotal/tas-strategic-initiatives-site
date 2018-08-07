@@ -1,0 +1,92 @@
+# planitest
+
+## Warning! Breaking Changes Ahead!
+
+Planitest is still very early in development (pre-alpha).
+
+Expect breaking changes!
+
+## What is it?
+
+Test helpers for Ops Manager tile developers. Given the set of tile options selected by the operator, what should the generated BOSH manifest look like?
+
+It can be prohibitively expensive to deploy your tile in each of these configurations - planitest lets you make assertions about the staged manifest.
+
+## Example code
+
+Basic assertion about the properties under an instance group. The `Property` method accepts a path expression (as you might use in ops-files):
+
+```go
+It("configures the router minimum TLS version", func() {
+  manifest, err := product.RenderService.RenderManifest(nil)
+  Expect(err).NotTo(HaveOccurred())
+
+  router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+  Expect(err).NotTo(HaveOccurred())
+
+  routerMinTLSVersion, err := router.Property("router/min_tls_version")
+  Expect(err).NotTo(HaveOccurred())
+  Expect(routerMinTLSVersion).To(Equal("TLSv1.2"))
+})
+```
+
+An example of a context that sets a different configuration. Here we override the default `routing_minimum_tls_version` and assert that the router is configured correctly:
+
+```go
+Context("when the operator sets the minimum TLS version to 1.1", func() {
+
+  var (
+    manifest planitest.Manifest
+    err      error
+  )
+
+  BeforeEach(func() {
+    manifest, err = product.RenderService.RenderManifest(map[string]interface{}{
+      ".properties.routing_minimum_tls_version": "tls_v1_1",
+    })
+    Expect(err).NotTo(HaveOccurred())
+  })
+
+  It("configures the router minimum TLS version", func() {
+    router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+    Expect(err).NotTo(HaveOccurred())
+
+    routerMinTLSVersion, err := router.Property("router/min_tls_version")
+    Expect(err).NotTo(HaveOccurred())
+    Expect(routerMinTLSVersion).To(Equal("TLSv1.1"))
+  })
+
+})
+```
+
+## What do you need?
+
+There are two ways to run planitest, using a real Ops Manager as backend
+renderer or using a generator tool to provide faster feedback.
+
+### Use `om` as renderer
+1. Set environment variable `RENDERER` to `om`
+1. An [Ops Manager](https://docs.pivotal.io/pivotalcf/1-12/customizing/) instance to test against. It should have the BOSH tile deployed.
+1. The [om](https://github.com/pivotal-cf/om) CLI
+1. The [bosh](https://bosh.io/docs/cli-v2.html#install) CLI
+1. A config JSON file usable by `om configure-product` (refer to example config file below)
+1. The tile you want to test. It should be already uploaded to Ops Manager, along with the stemcell it depends on.
+#### Rough Edges for `om`:
+1. Don't attempt to run tests in parallel as different examples will step on each other
+1. Currently runs om with the `--skip-ssl-validation` flag
+1. Rendering a staged manifest for a large product on Ops Manager can be slooooow
+
+
+### Use `ops-manifest` as renderer
+1. Set environment variable `RENDERER` to `ops-manifest`
+1. The [ops-manifest](https://github.com/pivotal-cf/ops-manifest) CLI
+1. The metadata.yml file extracted from a tile
+1. A configuration file (JSON or YAML) exported with [`om staged-config`](https://github.com/pivotal-cf/om/blob/master/docs/staged-config/README.md)
+#### Rough edges for `ops-manifest`:
+1. `ops-manifest` is also under heavy construction so it may render differently
+   from an Ops Manager
+1. example config file [here](https://github.com/pivotal-cf/p-runtime/blob/c39892693750464d1655761969398dbad2ce6d14/test/manifest/config.json). Be sure to include `product-properties` and `network-properties`
+
+## Prior art
+
+* [om-manifest-validator](https://github.com/pivotal-cf-experimental/om-manifest-validator)

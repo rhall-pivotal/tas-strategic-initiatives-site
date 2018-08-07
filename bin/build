@@ -1,0 +1,82 @@
+#!/bin/bash
+
+set -eu
+
+: "${METADATA_ONLY:=false}"
+: "${PRODUCT:=wrt}"
+: "${STEMCELL_PATH:=}"
+: "${STUB_RELEASES:=false}"
+
+tile_dir="$( cd "$( dirname "$0" )/.." && pwd )"
+build_dir="$(mktemp -d -t "p-windows-runtime-2016.XXXXXXXXX")"
+trap '{ rm -rf "${build_dir}"; }' EXIT
+
+output_dir="$(mktemp -d -t "p-windows-runtime-2016.XXXXXXXXX")"
+
+if [[ (! -d "${tile_dir}/releases") && (! "${STUB_RELEASES}") ]]; then
+  echo "Missing required directory '${tile_dir}/releases'. Create this directory and download all required release tarballs into it." > /dev/stderr
+  exit 1
+fi
+
+if [ -z "${STEMCELL_PATH}" ]; then
+  echo "Downloading latest stemcell from bosh.io (override with \$STEMCELL_PATH)..." > /dev/stderr
+  STEMCELL_PATH="${build_dir}/stemcell.tgz"
+  light_stemcell_url="$(curl --silent -L 'https://bosh.io/api/v1/stemcells/bosh-google-kvm-windows2016-go_agent' | jq -r 'map(select(.light))[0].light.url')"
+  wget --quiet -O "${STEMCELL_PATH}" "${light_stemcell_url}"
+fi
+
+# this can be removed once https://www.pivotaltracker.com/story/show/157092101 is finished
+preprocess() {
+  local tile_dir dest
+  tile_dir="${1}"
+  dest="${2}"
+
+  pushd "${GOPATH}/src/github.com/pivotal-cf/pcf-releng-ci/tasks/build/preprocess-metadata-repo" > /dev/null
+    cp -Rp "${tile_dir}"/. "${dest}"
+    go run main.go \
+      --tile-name "${PRODUCT}" \
+      --input-path "${dest}" \
+      --output-path "${dest}"
+  popd > /dev/null
+}
+
+preprocess "${tile_dir}" "${build_dir}"
+
+pushd "${build_dir}" > /dev/null
+  version="$( cat ./version )"
+
+  optional_flags=""
+  release_dir="./releases"
+
+  if [ "${METADATA_ONLY}" == "true" ]; then
+    optional_flags+="--metadata-only "
+  else
+    optional_flags+="--output-file "
+    optional_flags+="${output_dir}/${PRODUCT}-${version}.pivotal "
+  fi
+
+  if [ "${STUB_RELEASES}" == "true" ]; then
+    optional_flags+="--stub-releases "
+    release_dir="./test/releases"
+  fi
+
+  echo "Baking ${PRODUCT} ${version} in the kiln..." > /dev/stderr
+  kiln bake \
+    --forms-directory ./forms \
+    --icon icon.png \
+    --instance-groups-directory ./instance_groups \
+    --jobs-directory ./jobs \
+    --metadata base.yml \
+    --migrations-directory ./migrations/common \
+    --migrations-directory "./migrations/${PRODUCT}" \
+    --properties-directory ./properties \
+    --releases-directory "${release_dir}" \
+    --stemcell-tarball "${STEMCELL_PATH}" \
+    --variable metadata-git-sha="$(git rev-parse HEAD)" \
+    --version "${version}" \
+    ${optional_flags}
+
+  if [ "${METADATA_ONLY}" != "true" ]; then
+    echo "Successfully created tile at ${output_dir}/${PRODUCT}-${version}.pivotal" > /dev/stderr
+  fi
+popd > /dev/null
