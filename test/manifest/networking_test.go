@@ -23,6 +23,24 @@ var _ = Describe("Networking", func() {
 			}
 		})
 
+		Describe("policy server", func() {
+			It("uses the correct database host", func() {
+				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server")
+				Expect(err).NotTo(HaveOccurred())
+
+				host, err := job.Property("database/host")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(host).To(Equal("mysql.service.cf.internal"))
+
+				databaseLink, err := job.Path("/consumes/database")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(databaseLink).To(BeNil())
+			})
+		})
+
 		Context("when the operator configures database connection timeout for CNI plugin", func() {
 			BeforeEach(func() {
 				inputProperties = map[string]interface{}{
@@ -96,6 +114,23 @@ var _ = Describe("Networking", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).NotTo(BeEmpty())
 			})
+
+			It("uses the correct database host", func() {
+				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "silk-controller")
+				Expect(err).NotTo(HaveOccurred())
+
+				host, err := job.Property("database/host")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(host).To(Equal("mysql.service.cf.internal"))
+
+				databaseLink, err := job.Path("/consumes/database")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(databaseLink).To(BeNil())
+			})
+
 		})
 
 		Context("when External is enabled", func() {
