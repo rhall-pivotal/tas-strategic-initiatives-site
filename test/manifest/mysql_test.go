@@ -54,7 +54,7 @@ var _ = Describe("MySQL", func() {
 				mysqlClustered, err := manifest.FindInstanceGroupJob(instanceGroup, "pxc-mysql")
 				Expect(err).NotTo(HaveOccurred())
 
-				maxConnections, err := mysqlClustered.Property("max_connections")
+				maxConnections, err := mysqlClustered.Property("engine_config/max_connections")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(maxConnections).To(Equal(40000))
 			})
