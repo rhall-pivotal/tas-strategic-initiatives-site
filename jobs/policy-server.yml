@@ -2,7 +2,7 @@
 name: policy-server
 release: cf-networking
 consumes: |
-  (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
+  database: nil
 manifest: |
   database: (( .properties.system_database.selected_option.parsed_manifest(networkpolicyserverdb) ))
   debug_port: 22223

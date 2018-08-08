@@ -4,7 +4,7 @@ release: silk
 provides: |
   cf_network: {as: cf_network, shared: true}
 consumes: |
-  (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
+  database: nil
 manifest: |
   ca_cert: (( $ops_manager.ca_certificate ))
   database: (( .properties.system_database.selected_option.parsed_manifest(silkdb) ))
