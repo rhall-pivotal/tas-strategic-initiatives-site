@@ -102,7 +102,6 @@ manifest: |
         groupSearchFilter: (( .properties.uaa.ldap.group_search_filter.value ))
       userDN: (( .properties.uaa.ldap.credentials.identity ))
       userPassword: (( .properties.uaa.ldap.credentials.password ))
-      sslCertificateAlias: (( .properties.uaa.ldap.server_ssl_cert_alias.value ))
     admin:
       client_secret: (( .uaa.admin_client_credentials.password ))
     log_level: INFO
