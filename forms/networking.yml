@@ -107,10 +107,9 @@ property_inputs:
   selector_property_inputs:
     - reference: .properties.router_client_cert_validation.none
       label: |
-        Router does not request client certificates. This option is incompatible
-        with XFCC options "TLS terminated for the first time at HAProxy" and
-        "TLS terminated for the first time at the Router" because these options
-        require mutual authentication.
+        Router does not request client certificates. When used in combination
+        with "TLS terminated for the first time at the Router", a XFCC header
+        will not be forwarded to applications.
     - reference: .properties.router_client_cert_validation.request
       label: |
         Router requests but does not require client certificates.
