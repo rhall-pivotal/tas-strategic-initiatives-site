@@ -17,6 +17,7 @@ exports.migrate = function(input) {
         properties['.properties.uaa.ldap.search_filter'] = properties['.uaa.ldap_search_filter'];
         properties['.properties.uaa.ldap.group_search_base'] = properties['.properties.group_search.enable_admin_groups.ldap_group_search_base'];
         properties['.properties.uaa.ldap.group_search_filter'] = properties['.properties.group_search.enable_admin_groups.ldap_group_search_filter'];
+        properties['.properties.uaa.ldap.server_ssl_cert_alias'] = properties['.uaa.ldap_server_ssl_cert_alias'];
         properties['.properties.uaa.ldap.server_ssl_cert'] = properties['.uaa.ldap_server_ssl_cert'];
         properties['.properties.uaa.ldap.mail_attribute_name'] = properties['.uaa.ldap_mail_attribute_name'];
     } else {
