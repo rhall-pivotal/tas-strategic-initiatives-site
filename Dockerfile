@@ -8,4 +8,4 @@ WORKDIR /tmp/ops-manifest
 RUN bundle install && \
   rm -rf *.gem && \
   gem build ops-manifest.gemspec && \
-  gem install ops-manifest-*.gem
+  gem install ops-manifest-*.gem --no-ri
