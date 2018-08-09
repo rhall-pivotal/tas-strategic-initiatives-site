@@ -39,6 +39,10 @@ func main() {
 			return err
 		}
 
+		if info.IsDir() && info.Name() == "vendor" {
+			return filepath.SkipDir
+		}
+
 		if info.IsDir() {
 			return nil
 		}
