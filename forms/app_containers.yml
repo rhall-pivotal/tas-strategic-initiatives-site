@@ -92,11 +92,13 @@ property_inputs:
             Server port (required for LDAP integration only). Defaults to 389.
 
         - reference: .properties.nfs_volume_driver.enable.ldap_user_fqdn
-          label: LDAP User Fully-Qualified Domain Name
+          label: LDAP User Search Base
           description: |
-            FQDN for user records searched during user uid resolution
-            (required for LDAP integration only). For example, the FQDN
-            value can be specified as "cn=Users,dc=corp,dc=test,dc=com".
+            The location in the LDAP directory tree from which any LDAP User
+            search begins. The typical LDAP Search Base matches your domain
+            name. For example, it can be specified as
+            "cn=Users,dc=corp,dc=test,dc=com". Required for LDAP integration
+            only.
           placeholder: "cn=Users,dc=corp,dc=test,dc=com"
 
         - reference: .properties.nfs_volume_driver.enable.ldap_server_ca_cert
