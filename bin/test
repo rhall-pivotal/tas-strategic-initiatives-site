@@ -24,22 +24,27 @@ function build_docker_image() {
 }
 
 function run_manifest_tests() {
-  local go_path
+  local go_path ginkgo_args
   go_path=/go/src/github.com/pivotal-cf/p-runtime
+
+  ginkgo_args="-p -r -slowSpecThreshold 15 'test/manifest'"
+  if [ "$#" -gt 0 ]; then
+    ginkgo_args="$( printf "'%s' " "$@") ${ginkgo_args}"
+  fi
 
   echo -e "${info_color}Running manifest tests for PAS...${no_color}"
   docker run \
     -e "PRODUCT=ert" -e "RENDERER=${RENDERER}" \
     -v "$PWD:${go_path}" -w "${go_path}" \
     -it ops-manifest-do-not-push \
-    /bin/bash -c "ginkgo $( printf "'%s' " "$@") -p -r -slowSpecThreshold 15 'test/manifest'"
+    /bin/bash -c "ginkgo ${ginkgo_args}"
 
   echo -e "${info_color}Running manifest tests for Small Footprint PAS...${no_color}"
   docker run \
     -e "PRODUCT=srt" -e "RENDERER=${RENDERER}" \
     -v "$PWD:${go_path}" -w "${go_path}" \
     -it ops-manifest-do-not-push \
-    /bin/bash -c "ginkgo $( printf "'%s' " "$@") -p -r -slowSpecThreshold 15 'test/manifest'"
+    /bin/bash -c "ginkgo ${ginkgo_args}"
 }
 
 function main() {
