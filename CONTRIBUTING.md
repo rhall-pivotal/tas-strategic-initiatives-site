@@ -9,6 +9,21 @@ The `master` branch represents the "next" version of PAS and is used to build
 release-candidates for the upcoming release.
 If a change is required in more than one version, separate PRs for each branch will be required.
 
+#### Building a tile
+
+To build a PAS tile locally to test your changes:
+1. Download an install the latest
+   [kiln](https://github.com/pivotal-cf/kiln/releases) binary
+1. Make a `./releases` directory in the p-runtime repo
+1. Download all the BOSH releases into `./releases`
+  - This is a manual step for the moment, we usually download a previously built
+    tile and unzip the `./releases` dir from it
+1. To build a Small Footprint PAS run `./bin/build` or `PRODUCT=ert ./bin/build` to
+   build a full PAS tile
+1. If you only need to test UI changes and don't need to actually deploy the
+   tile, you can skip the release downloading with `STUB_RELEASES=true
+   ./bin/build`
+
 #### Property Changes
 
 TODO
