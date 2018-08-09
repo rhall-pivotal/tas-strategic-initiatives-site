@@ -31,6 +31,22 @@ var _ = Describe("Routing", func() {
 			Expect(routerMinTLSVersion).To(Equal("TLSv1.2"))
 		})
 
+		It("enables TLS to backends if a TLS route is registered", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+			Expect(err).NotTo(HaveOccurred())
+
+			tlsEnabled, err := router.Property("router/backends/enable_tls")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(tlsEnabled).To(BeTrue())
+
+			routerCACerts, err := router.Property("router/ca_certs")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(routerCACerts).NotTo(BeEmpty())
+		})
+
 		Context("when the operator sets the minimum TLS version to 1.1", func() {
 			var (
 				manifest planitest.Manifest
