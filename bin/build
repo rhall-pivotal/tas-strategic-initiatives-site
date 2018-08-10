@@ -30,6 +30,7 @@ pushd "${tile_dir}" > /dev/null
 
   optional_flags=""
   release_dir="./releases"
+  embed_dir="./embed"
 
   if [ "${METADATA_ONLY}" == "true" ]; then
     optional_flags+="--metadata-only "
@@ -57,6 +58,7 @@ pushd "${tile_dir}" > /dev/null
     --stemcell-tarball "${STEMCELL_PATH}" \
     --variable metadata-git-sha="$(git rev-parse HEAD)" \
     --version "${version}" \
+    --embed "${embed_dir}/windowsfs-release" \
     ${optional_flags}
 
   if [ "${METADATA_ONLY}" != "true" ]; then
