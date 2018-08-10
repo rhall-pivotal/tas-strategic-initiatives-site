@@ -58,7 +58,7 @@ var _ = BeforeEach(func() {
 	Expect(err).NotTo(HaveOccurred())
 
 	productConfig = planitest.ProductConfig{
-		Name:         "cf",
+		Name:         "p-isolation-segment",
 		Version:      productVersion,
 		ConfigFile:   "config.json",
 		MetadataFile: metadataFile,
