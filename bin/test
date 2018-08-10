@@ -1,3 +1,55 @@
 #!/bin/bash
 
-RENDERER="${RENDERER:-ops-manifest}" ginkgo -p -r -slowSpecThreshold 15 test/manifest
+set -eu
+
+: "${RENDERER:=ops-manifest}"
+
+info_color='\033[0;34m'
+success_color='\033[0;32m'
+no_color='\033[0m'
+
+function build_docker_image() {
+  if [ ! -d ./vendor/ops-manifest ]; then
+    echo -e "${info_color}Cloning ops-manifest (ask PAS RelEng team for read access if it fails)...${no_color}"
+    git clone git@github.com:pivotal-cf/ops-manifest ./vendor/ops-manifest
+  fi
+
+  pushd ./vendor/ops-manifest > /dev/null
+    echo -e "${info_color}Updating ops-manifest submodules (ask PAS RelEng team for read access if it fails)...${no_color}"
+    git submodule update --init --recursive
+  popd > /dev/null
+
+  echo -e "${info_color}Building docker image...${no_color}"
+  docker build -t ops-manifest-do-not-push .
+}
+
+function run_manifest_tests() {
+  local go_path ginkgo_args
+  go_path=/go/src/github.com/pivotal-cf/p-runtime
+
+  ginkgo_args="-p -r -slowSpecThreshold 15 'test/manifest'"
+  if [ "$#" -gt 0 ]; then
+    ginkgo_args="$( printf "'%s' " "$@") ${ginkgo_args}"
+  fi
+
+  echo -e "${info_color}Running manifest tests for Windows Runtime 2016...${no_color}"
+  docker run \
+    -e "RENDERER=${RENDERER}" \
+    -v "$PWD:${go_path}" -w "${go_path}" \
+    -it ops-manifest-do-not-push \
+    /bin/bash -c "ginkgo ${ginkgo_args}"
+}
+
+function main() {
+  local tile_repo
+  tile_repo=$( cd "$( dirname "$( dirname "$0" )")" && pwd )
+
+  pushd "${tile_repo}" > /dev/null
+    build_docker_image
+    run_manifest_tests "$@"
+  popd > /dev/null
+
+  echo -e "\n${success_color}SUCCESS!${no_color}"
+}
+
+main "$@"

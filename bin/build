@@ -25,24 +25,7 @@ if [ -z "${STEMCELL_PATH}" ]; then
   wget --quiet -O "${STEMCELL_PATH}" "${light_stemcell_url}"
 fi
 
-# this can be removed once https://www.pivotaltracker.com/story/show/157092101 is finished
-preprocess() {
-  local tile_dir dest
-  tile_dir="${1}"
-  dest="${2}"
-
-  pushd "${GOPATH}/src/github.com/pivotal-cf/pcf-releng-ci/tasks/build/preprocess-metadata-repo" > /dev/null
-    cp -Rp "${tile_dir}"/. "${dest}"
-    go run main.go \
-      --tile-name "${PRODUCT}" \
-      --input-path "${dest}" \
-      --output-path "${dest}"
-  popd > /dev/null
-}
-
-preprocess "${tile_dir}" "${build_dir}"
-
-pushd "${build_dir}" > /dev/null
+pushd "${tile_dir}" > /dev/null
   version="$( cat ./version )"
 
   optional_flags=""
