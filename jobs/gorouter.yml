@@ -14,6 +14,7 @@ manifest: |
       (( .properties.routing_custom_ca_certificates.value ))
       (( $ops_manager.ca_certificate ))
       ((( /cf/diego-instance-identity-root-ca.certificate )))
+    frontend_idle_timeout: (( ..cf.router.frontend_idle_timeout.value ))
     tracing:
       enable_zipkin: (( enable_zipkin.value ))
     write_access_logs_locally: (( enable_write_access_logs.value ))

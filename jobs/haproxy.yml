@@ -20,6 +20,7 @@ manifest: |
     hsts_max_age: (( .properties.haproxy_hsts_support.selected_option.parsed_manifest(hsts_max_age) ))
     hsts_preload: (( .properties.haproxy_hsts_support.selected_option.parsed_manifest(hsts_preload) ))
     internal_only_domains: (( .isolated_ha_proxy.internal_only_domains.parsed_strings ))
+    keepalive_timeout: (( ..cf.router.frontend_idle_timeout.value ))
     server_timeout: (( .isolated_router.request_timeout_in_seconds.value ))
     ssl_ciphers: (( .properties.haproxy_ssl_ciphers.value ))
     ssl_pem: (( .properties.networking_poe_ssl_certs.parsed_manifest(routing_certificates_and_private_keys) ))

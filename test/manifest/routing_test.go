@@ -18,4 +18,26 @@ var _ = Describe("Diego Persistence", func() {
 			Expect(router.Property("router/backends/private_key")).NotTo(BeNil())
 		})
 	})
+
+	Describe("idle timeouts", func() {
+
+		It("inherits the PAS frontend idle timeout", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			haproxy, err := manifest.FindInstanceGroupJob("isolated_ha_proxy", "haproxy")
+			Expect(err).NotTo(HaveOccurred())
+			haproxyTimeout, err := haproxy.Property("ha_proxy/keepalive_timeout")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(haproxyTimeout).To(Equal(900))
+
+			router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
+			Expect(err).NotTo(HaveOccurred())
+			routerTimeout, err := router.Property("router/frontend_idle_timeout")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(routerTimeout).To(Equal(900))
+		})
+
+	})
+
 })
