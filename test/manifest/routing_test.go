@@ -299,4 +299,49 @@ var _ = Describe("Routing", func() {
 			})
 		})
 	})
+
+	Describe("idle timeouts", func() {
+
+		It("sets a default timeout", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
+			Expect(err).NotTo(HaveOccurred())
+			haproxyTimeout, err := haproxy.Property("ha_proxy/keepalive_timeout")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(haproxyTimeout).To(Equal(900))
+
+			router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+			Expect(err).NotTo(HaveOccurred())
+			routerTimeout, err := router.Property("router/frontend_idle_timeout")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(routerTimeout).To(Equal(900))
+		})
+
+		Context("when the operator specifies an idle timeout for IaaS compatibility", func() {
+
+			It("is applied", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					".router.frontend_idle_timeout": 300,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
+				Expect(err).NotTo(HaveOccurred())
+				haproxyTimeout, err := haproxy.Property("ha_proxy/keepalive_timeout")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(haproxyTimeout).To(Equal(300))
+
+				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+				Expect(err).NotTo(HaveOccurred())
+				routerTimeout, err := router.Property("router/frontend_idle_timeout")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(routerTimeout).To(Equal(300))
+			})
+
+		})
+
+	})
+
 })
