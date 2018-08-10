@@ -47,6 +47,15 @@ function run_manifest_tests() {
     /bin/bash -c "ginkgo ${ginkgo_args}"
 }
 
+function run_migration_tests() {
+  pushd migrations > /dev/null
+    echo -e "${info_color}Installing NPM deps...${no_color}"
+    npm install
+    echo -e "${info_color}Running migration tests...${no_color}"
+    npm test
+  popd > /dev/null
+}
+
 function main() {
   local tile_repo
   tile_repo=$( cd "$( dirname "$( dirname "$0" )")" && pwd )
@@ -54,6 +63,7 @@ function main() {
   pushd "${tile_repo}" > /dev/null
     build_docker_image
     run_manifest_tests "$@"
+    run_migration_tests
   popd > /dev/null
 
   echo -e "\n${success_color}SUCCESS!${no_color}"
