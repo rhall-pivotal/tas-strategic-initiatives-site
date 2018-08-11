@@ -107,6 +107,10 @@ manifest: |
       package: binary-buildpack-cflinuxfs2
     - name: binary_buildpack
       package: binary-buildpack-cflinuxfs3
+    - name: binary_buildpack
+      package: binary-buildpack-windows2012R2
+    - name: binary_buildpack
+      package: binary-buildpack-windows2016
     broker_client_default_async_poll_interval_seconds: 10
     diego:
       file_server_url: http://file-server.service.cf.internal:$( variable "diego_fileserver_port" )
