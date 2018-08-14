@@ -32,4 +32,6 @@
 - name: rep_preloaded_rootfses_grootfs
   type: string_list
   configurable: false
-  default: ["cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"]
+  default:
+  - "cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"
+  - "cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar"

@@ -1,0 +1,10 @@
+---
+name: cflinuxfs3-rootfs-setup
+alias: cflinuxfs3-rootfs-setup_diego_cell
+release: cflinuxfs3
+manifest: |
+  cflinuxfs3-rootfs:
+    trusted_certs: |
+      ((( /cf/diego-instance-identity-root-ca.certificate )))
+      (( $ops_manager.ca_certificate ))
+      (( $ops_manager.trusted_certificates ))
