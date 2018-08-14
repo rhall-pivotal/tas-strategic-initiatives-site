@@ -170,4 +170,35 @@ var _ = Describe("Diego", func() {
 			Expect(err).NotTo(HaveOccurred())
 		})
 	})
+
+	Context("Root file systems", func() {
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "compute"
+			} else {
+				instanceGroup = "diego_cell"
+			}
+		})
+
+		It("colocates the cflinuxfs2-rootfs-setup job", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = manifest.FindInstanceGroupJob(instanceGroup, "cflinuxfs2-rootfs-setup")
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("configures the preloaded_rootfses on the rep", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
+			Expect(err).NotTo(HaveOccurred())
+
+			preloadedRootfses, err := rep.Property("diego/rep/preloaded_rootfses")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(preloadedRootfses).To(ContainElement("cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"))
+		})
+	})
 })
