@@ -191,7 +191,11 @@ var _ = Describe("CAPI", func() {
 
 			Expect(stacks).To(ContainElement(map[interface{}]interface{}{
 				"name":        "cflinuxfs2",
-				"description": "Cloud Foundry Linux-based filesystem",
+				"description": "Cloud Foundry Linux-based filesystem - Ubuntu Trusty 14.04 LTS",
+			}))
+			Expect(stacks).To(ContainElement(map[interface{}]interface{}{
+				"name":        "cflinuxfs3",
+				"description": "Cloud Foundry Linux-based filesystem - Ubuntu Bionic 18.04 LTS",
 			}))
 			Expect(stacks).To(ContainElement(map[interface{}]interface{}{
 				"name":        "windows2012R2",
@@ -202,6 +206,5 @@ var _ = Describe("CAPI", func() {
 				"description": "Microsoft Windows 2016",
 			}))
 		})
-
 	})
 })
