@@ -184,8 +184,11 @@ var _ = Describe("Diego", func() {
 			manifest, err := product.RenderService.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
-			_, err = manifest.FindInstanceGroupJob(instanceGroup, "cflinuxfs2-rootfs-setup")
+			setup, err := manifest.FindInstanceGroupJob(instanceGroup, "cflinuxfs2-rootfs-setup")
 			Expect(err).NotTo(HaveOccurred())
+
+			trustedCerts, err := setup.Property("cflinuxfs2-rootfs/trusted_certs")
+			Expect(trustedCerts).NotTo(BeEmpty())
 		})
 
 		It("configures the preloaded_rootfses on the rep", func() {
