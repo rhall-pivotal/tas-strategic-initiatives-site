@@ -165,4 +165,43 @@ var _ = Describe("CAPI", func() {
 			})
 		})
 	})
+
+	Describe("stacks", func() {
+
+		var instanceGroup string
+
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "control"
+			} else {
+				instanceGroup = "cloud_controller"
+			}
+
+			var err error
+			manifest, err = product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("defines stacks", func() {
+			cc, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+			Expect(err).NotTo(HaveOccurred())
+
+			stacks, err := cc.Property("cc/stacks")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(stacks).To(ContainElement(map[interface{}]interface{}{
+				"name":        "cflinuxfs2",
+				"description": "Cloud Foundry Linux-based filesystem",
+			}))
+			Expect(stacks).To(ContainElement(map[interface{}]interface{}{
+				"name":        "windows2012R2",
+				"description": "Microsoft Windows / .Net 64 bit",
+			}))
+			Expect(stacks).To(ContainElement(map[interface{}]interface{}{
+				"name":        "windows2016",
+				"description": "Microsoft Windows 2016",
+			}))
+		})
+
+	})
 })
