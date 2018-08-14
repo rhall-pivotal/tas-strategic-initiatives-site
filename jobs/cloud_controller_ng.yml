@@ -117,11 +117,6 @@ manifest: |
     diego:
       file_server_url: http://file-server.service.cf.internal:$( variable "diego_fileserver_port" )
       insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
-      lifecycle_bundles:
-        "buildpack/cflinuxfs2": "buildpack_app_lifecycle/buildpack_app_lifecycle.tgz"
-        "buildpack/windows2012R2": "windows_app_lifecycle/windows_app_lifecycle.tgz"
-        "buildpack/windows2016": "buildpack_app_lifecycle/buildpack_app_lifecycle.tgz"
-        "docker": "docker_app_lifecycle/docker_app_lifecycle.tgz"
       pid_limit: 0
       temporary_cc_uploader_mtls: true
       temporary_droplet_download_mtls: true

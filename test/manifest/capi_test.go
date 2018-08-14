@@ -76,6 +76,18 @@ var _ = Describe("CAPI", func() {
 					Expect(healthCheck).To(Equal(60))
 				}
 			})
+
+			It("inherits the default spec set of lifecycle bundles", func() {
+				for _, job := range ccJobs {
+					manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
+					Expect(err).NotTo(HaveOccurred())
+
+					diego, err := manifestJob.Property("cc/diego")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(diego).NotTo(HaveKey("lifecycle_bundles"))
+				}
+			})
 		})
 
 		Context("when the Operator sets CC logging level to debug", func() {
