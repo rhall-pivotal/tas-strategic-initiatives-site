@@ -37,19 +37,27 @@
 - name: rep_preloaded_rootfses_garden
   type: string_list
   configurable: false
-  default: ["cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs"]
+  default:
+  - "cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs"
+  - "cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs"
 
 - name: garden_persistent_image_list_garden
   type: string_list
   configurable: false
-  default: ["/var/vcap/packages/cflinuxfs2/rootfs"]
+  default:
+  - "/var/vcap/packages/cflinuxfs2/rootfs"
+  - "/var/vcap/packages/cflinuxfs3/rootfs"
 
 - name: rep_preloaded_rootfses_grootfs
   type: string_list
   configurable: false
-  default: ["cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"]
+  default:
+  - "cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"
+  - "cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar"
 
 - name: garden_persistent_image_list_grootfs
   type: string_list
   configurable: false
-  default: ["/var/vcap/packages/cflinuxfs2/rootfs.tar"]
+  default:
+  - "/var/vcap/packages/cflinuxfs2/rootfs.tar"
+  - "/var/vcap/packages/cflinuxfs3/rootfs.tar"

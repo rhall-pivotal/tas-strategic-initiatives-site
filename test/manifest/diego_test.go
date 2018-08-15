@@ -37,6 +37,17 @@ var _ = Describe("Diego", func() {
 			Expect(trustedCerts).NotTo(BeEmpty())
 		})
 
+		It("colocates the cflinuxfs3-rootfs-setup job", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			setup, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "cflinuxfs3-rootfs-setup")
+			Expect(err).NotTo(HaveOccurred())
+
+			trustedCerts, err := setup.Property("cflinuxfs3-rootfs/trusted_certs")
+			Expect(trustedCerts).NotTo(BeEmpty())
+		})
+
 		It("configures the preloaded_rootfses on the rep", func() {
 			manifest, err := product.RenderService.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -48,6 +59,7 @@ var _ = Describe("Diego", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(preloadedRootfses).To(ContainElement("cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"))
+			Expect(preloadedRootfses).To(ContainElement("cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar"))
 		})
 
 		Context("when grootfs is disabled", func() {
@@ -65,6 +77,7 @@ var _ = Describe("Diego", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				Expect(preloadedRootfses).To(ContainElement("cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs"))
+				Expect(preloadedRootfses).To(ContainElement("cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs"))
 			})
 
 		})
@@ -84,6 +97,7 @@ var _ = Describe("Diego", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs2/rootfs.tar"))
+			Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs3/rootfs.tar"))
 		})
 
 		Context("when grootfs is disabled", func() {
@@ -101,6 +115,7 @@ var _ = Describe("Diego", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs2/rootfs"))
+				Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs3/rootfs"))
 			})
 
 		})
