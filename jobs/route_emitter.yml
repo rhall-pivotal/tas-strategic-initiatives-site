@@ -3,6 +3,8 @@ release: diego
 consumes: |
   nats: {from: nats, deployment: ((  ..cf.deployment_name  )) }
 manifest: |
+  bpm:
+    enabled: true
   diego:
     route_emitter:
       bbs:

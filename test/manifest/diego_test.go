@@ -7,6 +7,35 @@ import (
 
 var _ = Describe("Diego", func() {
 
+	Describe("has BPM enabled", func() {
+		It("co-locates bpm job", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = manifest.FindInstanceGroupJob("isolated_diego_cell", "bpm")
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("sets bpm.enabled to true for rep and route_emitter", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
+			Expect(err).NotTo(HaveOccurred())
+
+			repBpmEnabled, err := rep.Property("bpm/enabled")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(repBpmEnabled).To(BeTrue())
+
+			routeEmitter, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "route_emitter")
+			Expect(err).NotTo(HaveOccurred())
+
+			routeEmitterBpmEnabled, err := routeEmitter.Property("bpm/enabled")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(routeEmitterBpmEnabled).To(BeTrue())
+		})
+	})
+
 	Describe("Persistence", func() {
 
 		It("colocates the nfsv3driver job with the mapfs job from the mapfs-release", func() {

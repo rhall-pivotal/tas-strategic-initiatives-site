@@ -1,6 +1,8 @@
 name: rep
 release: diego
 manifest: |
+  bpm:
+    enabled: true
   containers:
     proxy:
       enabled: (( .properties.rep_proxy_enabled.value ))
