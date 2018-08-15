@@ -61,27 +61,6 @@ var _ = Describe("Diego", func() {
 			Expect(preloadedRootfses).To(ContainElement("cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"))
 			Expect(preloadedRootfses).To(ContainElement("cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar"))
 		})
-
-		Context("when grootfs is disabled", func() {
-
-			It("configures the preloaded_rootfses on the rep", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
-					".properties.enable_grootfs": false,
-				})
-				Expect(err).NotTo(HaveOccurred())
-
-				rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
-				Expect(err).NotTo(HaveOccurred())
-
-				preloadedRootfses, err := rep.Property("diego/rep/preloaded_rootfses")
-				Expect(err).NotTo(HaveOccurred())
-
-				Expect(preloadedRootfses).To(ContainElement("cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs"))
-				Expect(preloadedRootfses).To(ContainElement("cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs"))
-			})
-
-		})
-
 	})
 
 	Describe("Garden", func() {
@@ -99,27 +78,6 @@ var _ = Describe("Diego", func() {
 			Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs2/rootfs.tar"))
 			Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs3/rootfs.tar"))
 		})
-
-		Context("when grootfs is disabled", func() {
-
-			It("ensures the standard root filesystem remains in the layer cache", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
-					".properties.enable_grootfs": false,
-				})
-				Expect(err).NotTo(HaveOccurred())
-
-				garden, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "garden")
-				Expect(err).NotTo(HaveOccurred())
-
-				persistentImageList, err := garden.Property("garden/persistent_image_list")
-				Expect(err).NotTo(HaveOccurred())
-
-				Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs2/rootfs"))
-				Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs3/rootfs"))
-			})
-
-		})
-
 	})
 
 })

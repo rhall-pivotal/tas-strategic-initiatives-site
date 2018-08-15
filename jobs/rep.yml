@@ -19,7 +19,7 @@ manifest: |
       instance_identity_key: ((( /cf/diego-instance-identity-intermediate-ca.private_key )))
     rep:
       use_azure_fault_domains: true
-      preloaded_rootfses: '(( .properties.enable_grootfs.value ? .properties.rep_preloaded_rootfses_grootfs.value : .properties.rep_preloaded_rootfses_garden.value ))'
+      preloaded_rootfses: (( .properties.rep_preloaded_rootfses_grootfs.value ))
       placement_tags: [ (( placement_tag.value )) ]
   enable_consul_service_registration: false
   enable_declarative_healthcheck: true
