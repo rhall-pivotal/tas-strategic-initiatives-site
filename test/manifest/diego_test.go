@@ -24,7 +24,7 @@ var _ = Describe("Diego", func() {
 
 	})
 
-	Context("Root file systems", func() {
+	Describe("Root file systems", func() {
 
 		It("colocates the cflinuxfs2-rootfs-setup job", func() {
 			manifest, err := product.RenderService.RenderManifest(nil)
@@ -48,6 +48,42 @@ var _ = Describe("Diego", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(preloadedRootfses).To(ContainElement("cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"))
+		})
+
+	})
+
+	Describe("Garden", func() {
+
+		It("ensures the standard root filesystem remains in the layer cache", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			garden, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "garden")
+			Expect(err).NotTo(HaveOccurred())
+
+			persistentImageList, err := garden.Property("garden/persistent_image_list")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs2/rootfs.tar"))
+		})
+
+		Context("when grootfs is disabled", func() {
+
+			It("ensures the standard root filesystem remains in the layer cache", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					".properties.enable_grootfs": false,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				garden, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "garden")
+				Expect(err).NotTo(HaveOccurred())
+
+				persistentImageList, err := garden.Property("garden/persistent_image_list")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs2/rootfs"))
+			})
+
 		})
 
 	})

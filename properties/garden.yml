@@ -39,7 +39,17 @@
   configurable: false
   default: ["cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs"]
 
+- name: garden_persistent_image_list_garden
+  type: string_list
+  configurable: false
+  default: ["/var/vcap/packages/cflinuxfs2/rootfs"]
+
 - name: rep_preloaded_rootfses_grootfs
   type: string_list
   configurable: false
   default: ["cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"]
+
+- name: garden_persistent_image_list_grootfs
+  type: string_list
+  configurable: false
+  default: ["/var/vcap/packages/cflinuxfs2/rootfs.tar"]
