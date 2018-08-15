@@ -50,6 +50,25 @@ var _ = Describe("Diego", func() {
 			Expect(preloadedRootfses).To(ContainElement("cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"))
 		})
 
+		Context("when grootfs is disabled", func() {
+
+			It("configures the preloaded_rootfses on the rep", func() {
+				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					".properties.enable_grootfs": false,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
+				Expect(err).NotTo(HaveOccurred())
+
+				preloadedRootfses, err := rep.Property("diego/rep/preloaded_rootfses")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(preloadedRootfses).To(ContainElement("cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs"))
+			})
+
+		})
+
 	})
 
 	Describe("Garden", func() {
