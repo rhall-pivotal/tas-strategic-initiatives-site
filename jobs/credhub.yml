@@ -16,6 +16,13 @@ manifest: |
     authorization:
       acls:
         enabled: true
+      permissions:
+        - path: /credhub-clients/*
+          actors: ["uaa-client:credhub-service-broker"]
+          operations: ["read", "write", "delete", "read_acl", "write_acl"]
+        - path: /credhub-service-broker/*
+          actors: ["uaa-client:credhub-service-broker"]
+          operations: ["read", "write", "delete", "read_acl", "write_acl"]
     ca_certificate: (( $ops_manager.ca_certificate ))
     data_storage: (( .properties.credhub_database.selected_option.parsed_manifest(db_config) ))
     encryption:
