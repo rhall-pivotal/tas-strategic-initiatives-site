@@ -4,6 +4,7 @@ label: Router
 resource_label: Router
 description: Routers route Internet traffic to applications placed in the isolation segment.
 templates:
+  - $( job "bpm" )
   - $( job "gorouter" )
   - $( job "metron_agent" )
   - $( job "syslog_forwarder" )

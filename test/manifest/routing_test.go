@@ -40,4 +40,13 @@ var _ = Describe("Diego Persistence", func() {
 
 	})
 
+	Describe("bpm", func() {
+		It("co-locates the BPM job with all routing jobs", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = manifest.FindInstanceGroupJob("isolated_router", "bpm")
+			Expect(err).NotTo(HaveOccurred())
+		})
+	})
 })
