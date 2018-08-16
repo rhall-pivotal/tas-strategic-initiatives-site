@@ -5,6 +5,7 @@ resource_label: Loggregator Trafficcontroller
 description: Loggregator trafficcontroller distributes requests to Loggregator servers
 templates:
 {{if eq tile "ert"}}
+- $( job "bpm" )
 - $( job "loggregator_trafficcontroller" )
 - $( job "metron_agent" )
 - $( job "reverse_log_proxy" )

@@ -5,6 +5,7 @@ resource_label: MySQL Proxy
 description: MySQL Proxy
 templates:
 {{if eq tile "ert"}}
+- $( job "bpm" )
 - $( job "route_registrar_mysql_proxy" )
 - $( job "proxy" )
 - $( job "syslog_forwarder" )

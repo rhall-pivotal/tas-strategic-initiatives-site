@@ -1,6 +1,8 @@
 package manifest_test
 
 import (
+	"fmt"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pivotal-cf/planitest"
@@ -344,4 +346,91 @@ var _ = Describe("Routing", func() {
 
 	})
 
+	Describe("BPM", func() {
+		var routingJobs []Job
+
+		BeforeEach(func() {
+			if productName == "srt" {
+				routingJobs = []Job{
+					{
+						Name:          "route_registrar",
+						InstanceGroup: "control",
+					},
+					{
+						Name:          "tcp_router",
+						InstanceGroup: "tcp_router",
+					},
+					{
+						Name:          "routing-api",
+						InstanceGroup: "control",
+					},
+					{
+						Name:          "gorouter",
+						InstanceGroup: "router",
+					},
+					{
+						Name:          "bbr-routingdb",
+						InstanceGroup: "backup-prepare",
+					},
+				}
+			} else {
+				routingJobs = []Job{
+					{
+						Name:          "tcp_router",
+						InstanceGroup: "tcp_router",
+					},
+					{
+						Name:          "routing-api",
+						InstanceGroup: "cloud_controller",
+					},
+					{
+						Name:          "route_registrar",
+						InstanceGroup: "cloud_controller",
+					},
+					{
+						Name:          "route_registrar",
+						InstanceGroup: "loggregator_trafficcontroller",
+					},
+					{
+						Name:          "route_registrar",
+						InstanceGroup: "nfs_server",
+					},
+					{
+						Name:          "route_registrar",
+						InstanceGroup: "mysql_proxy",
+					},
+					{
+						Name:          "route_registrar",
+						InstanceGroup: "diego_database",
+					},
+					{
+						Name:          "route_registrar",
+						InstanceGroup: "doppler",
+					},
+					{
+						Name:          "route_registrar",
+						InstanceGroup: "uaa",
+					},
+					{
+						Name:          "gorouter",
+						InstanceGroup: "router",
+					},
+					{
+						Name:          "bbr-routingdb",
+						InstanceGroup: "backup-prepare",
+					},
+				}
+			}
+		})
+
+		It("co-locates the BPM job with all routing jobs", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, job := range routingJobs {
+				_, err = manifest.FindInstanceGroupJob(job.InstanceGroup, "bpm")
+				Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("Expected to find `bpm` job on instance group `%s`", job.InstanceGroup))
+			}
+		})
+	})
 })

@@ -5,6 +5,7 @@ resource_label: Doppler Server
 description: Doppler server collects application logs
 templates:
 {{if eq tile "ert"}}
+- $( job "bpm" )
 - $( job "doppler" )
 - $( job "log-cache" )
 - $( job "log-cache-cf-auth-proxy" )

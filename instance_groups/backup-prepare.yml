@@ -4,6 +4,7 @@ label: Backup Prepare Node
 resource_label: Backup Prepare Node
 description: Streams backups from MySQL Cluster
 templates:
+- $( job "bpm" )
 - $( job "backup-restore-notifications" )
 - $( job "backup-restore-pcf-autoscaling" )
 - $( job "bbr-cfnetworkingdb" )

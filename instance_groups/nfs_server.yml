@@ -5,6 +5,7 @@ resource_label: File Storage
 description: Stores droplets and app packages on behalf of Cloud Controller
 templates:
 {{if eq tile "ert"}}
+- $( job "bpm" )
 - $( job "metron_agent" )
 - $( job "blobstore" )
 - $( job "route_registrar_nfs_server" )

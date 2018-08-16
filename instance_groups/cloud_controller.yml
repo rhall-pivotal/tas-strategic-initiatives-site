@@ -5,6 +5,7 @@ resource_label: Cloud Controller
 description: Coordinates Pivotal CF Application Service application lifecycles
 templates:
 {{if eq tile "ert"}}
+- $( job "bpm" )
 - $( job "go-buildpack" )
 - $( job "binary-buildpack" )
 - $( job "nodejs-buildpack" )
