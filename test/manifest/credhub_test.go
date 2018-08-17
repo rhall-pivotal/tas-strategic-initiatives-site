@@ -17,7 +17,9 @@ var _ = Describe("CredHub", func() {
 	})
 
 	Describe("encryption keys", func() {
+
 		Context("when there is a single internal key", func() {
+
 			It("configures credhub with the key", func() {
 				manifest, err := product.RenderService.RenderManifest(nil)
 				Expect(err).NotTo(HaveOccurred())
@@ -34,9 +36,11 @@ var _ = Describe("CredHub", func() {
 				Expect(key["key_properties"]).To(HaveKeyWithValue("encryption_password", ContainSubstring("credhub_key_encryption_passwords/0/key.value")))
 				Expect(key["active"]).To(BeTrue())
 			})
+
 		})
 
 		Context("when there is an additional HSM key set as primary", func() {
+
 			It("configures credhub with the keys, with the HSM key marked as active", func() {
 				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
 					".properties.credhub_key_encryption_passwords": []map[string]interface{}{
@@ -77,6 +81,36 @@ var _ = Describe("CredHub", func() {
 				Expect(hsmKey["key_properties"]).To(HaveKeyWithValue("encryption_key_name", ContainSubstring("credhub_key_encryption_passwords/1/key.value")))
 				Expect(hsmKey["active"]).To(BeTrue())
 			})
+
 		})
+
 	})
+
+	Describe("permissions", func() {
+
+		It("grants permissions to the credhub-service-broker tile", func() {
+			manifest, err := product.RenderService.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+			Expect(err).NotTo(HaveOccurred())
+
+			permissions, err := credhub.Property("credhub/authorization/permissions")
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(permissions).To(ContainElement(map[interface{}]interface{}{
+				"path":       "/credhub-clients/*",
+				"actors":     []interface{}{"uaa-client:credhub-service-broker"},
+				"operations": []interface{}{"read", "write", "delete", "read_acl", "write_acl"},
+			}))
+
+			Expect(permissions).To(ContainElement(map[interface{}]interface{}{
+				"path":       "/credhub-service-broker/*",
+				"actors":     []interface{}{"uaa-client:credhub-service-broker"},
+				"operations": []interface{}{"read", "write", "delete", "read_acl", "write_acl"},
+			}))
+		})
+
+	})
+
 })
