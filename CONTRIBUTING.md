@@ -26,7 +26,24 @@ To build a PAS tile locally to test your changes:
 
 #### Property Changes
 
-TODO
+To TDD changes to a PAS tile, use [planitest](https://github.com/pivotal-cf/planitest) and [ops-manifest](https://github.com/pivotal-cf/ops-manifest). `planitest` is a testing library to make assertions against the generated BOSH manifest while `ops-manifest` is extracted Ops Manager code that transforms the tile metadata into a BOSH manifest without the need to stand up a running Ops Manager. 
+
+When you write tests using `planitest` and `ops-manifest`, you are testing that changes made to the tile will result in the expected changes to the BOSH manifest, such as adding a job to an instance group or ensuring a property value is set. Currently, there is no way to test changes to the tile UI. 
+
+[See example code here](https://github.com/pivotal-cf/planitest/blob/master/example_product_service_test.go).
+
+If you want more confidence in your tile changes, you can use [om](https://github.com/pivotal-cf/om/) as the renderer for `planitest` and run your tests against a real Ops Manager.
+
+For more information about tile metadata, refer to the [Product Template Reference](https://docs.pivotal.io/tiledev/2-2/product-template-reference.html).
+
+**Setting up ops-manifest and running tests**
+
+1. Clone the branch of PAS you want to make changes to
+1. Generate a Github API token
+1. Run `./bin/test` with your Github username and API token
+1. To add new tests, modify or create an appropriate test file in `tests/manifest`
+1. Implement the code changes in the PAS repo
+1. Make a PR!
 
 #### Bumping releases
 
