@@ -92,10 +92,11 @@
   named_manifests:
   - name: keys
     manifest: |
-      active: (( current_record.primary.value ))
-      encryption_key_name: (( current_record.key.value ))
-      encryption_password: (( current_record.key.value ))
       provider_name: (( current_record.provider.value ))-provider
+      key_properties:
+        encryption_key_name: (( current_record.key.value ))
+        encryption_password: (( current_record.key.value ))
+      active: (( current_record.primary.value ))
 
 - name: credhub_tls
   type: rsa_cert_credentials
