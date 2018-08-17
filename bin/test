@@ -9,15 +9,13 @@ success_color='\033[0;32m'
 no_color='\033[0m'
 
 function build_docker_image() {
-  if [ ! -d ./vendor/ops-manifest ]; then
-    echo -e "${info_color}Cloning ops-manifest (ask PAS RelEng team for read access if it fails)...${no_color}"
-    git clone git@github.com:pivotal-cf/ops-manifest ./vendor/ops-manifest
+  if [ ! -f ./vendor/ops-manifest.gem ]; then
+    github_username="${GITHUB_USERNAME:?}"
+    github_api_token="${GITHUB_API_TOKEN:?}"
+    gem_url=$(curl -u "${github_username}:${github_api_token}"  https://api.github.com/repos/pivotal-cf/ops-manifest/releases/latest | jq -r .assets[0].url)
+    echo -e "${info_color}Grabbing latest ops-manifest release (ask PAS RelEng team for read access if it fails)...${no_color}"
+    curl -u "${github_username}:${github_api_token}" -H "Accept: application/octet-stream" -L -o vendor/ops-manifest.gem "${gem_url}"
   fi
-
-  pushd ./vendor/ops-manifest > /dev/null
-    echo -e "${info_color}Updating ops-manifest submodules (ask PAS RelEng team for read access if it fails)...${no_color}"
-    git submodule update --init --recursive
-  popd > /dev/null
 
   echo -e "${info_color}Building docker image...${no_color}"
   docker build -t ops-manifest-do-not-push .
