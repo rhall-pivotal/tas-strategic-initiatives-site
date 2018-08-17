@@ -361,6 +361,10 @@ var _ = Describe("Routing", func() {
 						InstanceGroup: "database",
 					},
 					{
+						Name:          "route_registrar",
+						InstanceGroup: "blobstore",
+					},
+					{
 						Name:          "tcp_router",
 						InstanceGroup: "tcp_router",
 					},
