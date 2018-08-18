@@ -9,20 +9,20 @@ import (
 
 type OpsManifestRunner struct {
 	cmdRunner CommandRunner
-	FileIO    fileIO
+	FileIO    FileIO
 }
 
-func NewOpsManifestRunner(cmdRunner CommandRunner) OpsManifestRunner {
+func NewOpsManifestRunner(cmdRunner CommandRunner, fileIO FileIO) OpsManifestRunner {
 	return OpsManifestRunner{
 		cmdRunner: cmdRunner,
-		FileIO:    FileIO{},
+		FileIO:    fileIO,
 	}
 }
 
 func (o OpsManifestRunner) GetManifest(productProperties, metadataFilePath string) (map[string]interface{}, error) {
 	configFile, err := o.FileIO.TempFile("", "")
-	configFileJson := fmt.Sprintf("%s.json", configFile.Name())
-	os.Rename(configFile.Name(), configFileJson)
+	configFileYML := fmt.Sprintf("%s.yml", configFile.Name())
+	os.Rename(configFile.Name(), configFileYML)
 
 	if err != nil {
 		return nil, err //not tested
@@ -35,7 +35,7 @@ func (o OpsManifestRunner) GetManifest(productProperties, metadataFilePath strin
 
 	response, errOutput, err := o.cmdRunner.Run(
 		"ops-manifest",
-		"--config-file", configFileJson,
+		"--config-file", configFileYML,
 		"--metadata-path", metadataFilePath,
 	)
 

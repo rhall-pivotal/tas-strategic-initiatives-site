@@ -1,71 +1,54 @@
 package planitest
 
 import (
+	"bytes"
 	"errors"
+	"io"
+	"io/ioutil"
 	"os"
+
+	"archive/zip"
 
 	"github.com/pivotal-cf/planitest/internal"
 )
 
 type ProductConfig struct {
-	Name         string
-	Version      string
-	ConfigFile   string
-	MetadataFile string
-}
-
-type ConfigJSON struct {
-	ProductProperties *map[string]interface{} `json:"product-properties,omitempty"`
-	NetworkConfig     *map[string]interface{} `json:"network-config,omitempty"`
+	TileFile   io.ReadSeeker
+	ConfigFile io.ReadSeeker
 }
 
 type ProductService struct {
 	config        ProductConfig
-	RenderService RenderService
-}
-
-type StagedManifestResponse struct {
-	Manifest map[string]interface{}
-	Errors   OMError `json:"errors"`
+	renderService RenderService
 }
 
 type RenderService interface {
-	RenderManifest(additionalProperties map[string]interface{}) (Manifest, error)
-}
-
-type OMError struct {
-	// XXX: reconsider, the key here may change depending on the endpoint
-	Messages []string `json:"base"`
+	RenderManifest(tileConfig io.Reader, tileMetadata io.Reader) (string, error)
 }
 
 func NewProductService(config ProductConfig) (*ProductService, error) {
-	omRunner := internal.NewOMRunner(NewExecutor())
-	opsManifestRunner := internal.NewOpsManifestRunner(NewExecutor())
-
-	productService, err := NewProductServiceWithRunner(config, omRunner, opsManifestRunner)
-	if err != nil {
-		return nil, err
+	if config.TileFile == nil {
+		return nil, errors.New("Tile file must be provided")
 	}
 
-	return productService, err
-}
+	if config.ConfigFile == nil {
+		return nil, errors.New("Config file must be provided")
+	}
 
-func NewProductServiceWithRunner(config ProductConfig, omRunner OMRunner, opsManifestRunner OpsManifestRunner) (*ProductService, error) {
-	var renderService RenderService
-	var err error
+	executor := internal.NewEnvironmentSharingCommandRunner(os.Environ())
+	omRunner := internal.NewOMRunner(executor, internal.RealIO)
+	opsManifestRunner := internal.NewOpsManifestRunner(executor, internal.RealIO)
+
+	var (
+		renderService RenderService
+		err           error
+	)
 
 	switch os.Getenv("RENDERER") {
 	case "om":
-		renderService, err = NewOMServiceWithRunner(OMConfig{
-			Name:       config.Name,
-			Version:    config.Version,
-			ConfigFile: config.ConfigFile,
-		}, omRunner)
+		renderService, err = internal.NewOMServiceWithRunner(omRunner)
 	case "ops-manifest":
-		renderService, err = NewOpsManifestServiceWithRunner(OpsManifestConfig{
-			ConfigFile:   config.ConfigFile,
-			MetadataFile: config.MetadataFile,
-		}, opsManifestRunner)
+		renderService, err = internal.NewOpsManifestServiceWithRunner(opsManifestRunner, internal.RealIO)
 	default:
 		err = errors.New("RENDERER must be set to om or ops-manifest")
 	}
@@ -73,34 +56,55 @@ func NewProductServiceWithRunner(config ProductConfig, omRunner OMRunner, opsMan
 		return nil, err
 	}
 
-	err = validateProductConfig(config)
+	return &ProductService{config: config, renderService: renderService}, nil
+}
+
+func (p *ProductService) RenderManifest(additionalProperties map[string]interface{}) (Manifest, error) {
+	_, err := p.config.ConfigFile.Seek(0, 0)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = p.config.TileFile.Seek(0, 0)
+	if err != nil {
+		return "", err
+	}
+
+	tileConfig, err := internal.MergeAdditionalProductProperties(p.config.ConfigFile, additionalProperties)
+	if err != nil {
+		return "", err
+	}
+
+	m, err := p.renderService.RenderManifest(tileConfig, p.config.TileFile)
+	if err != nil {
+		return "", err
+	}
+
+	return Manifest(m), nil
+}
+
+func ExtractTileMetadataFile(path string) (io.ReadSeeker, error) {
+	f, err := zip.OpenReader(path)
 	if err != nil {
 		return nil, err
 	}
+	defer f.Close()
 
-	return &ProductService{config: config, RenderService: renderService}, nil
-}
+	for _, file := range f.File {
+		if file.Name == "metadata/metadata.yml" {
+			r, err := file.Open()
+			if err != nil {
+				return nil, err
+			}
 
-func validateProductConfig(config ProductConfig) error {
-	if len(config.ConfigFile) == 0 {
-		return errors.New("Config file must be provided")
-	}
+			b, err := ioutil.ReadAll(r)
+			if err != nil {
+				return nil, err
+			}
 
-	if os.Getenv("RENDERER") == "om" {
-		if len(config.Name) == 0 {
-			return errors.New("Product name must be provided in config")
-		}
-
-		if len(config.Version) == 0 {
-			return errors.New("Product version must be provided in config")
-		}
-	}
-
-	if os.Getenv("RENDERER") == "ops-manifest" {
-		if len(config.MetadataFile) == 0 {
-			return errors.New("Metadata file must be provided in config")
+			return bytes.NewReader(b), nil
 		}
 	}
 
-	return nil
+	return nil, errors.New("did not find metadata/metadata.yml in tile")
 }

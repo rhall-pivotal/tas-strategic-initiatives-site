@@ -9,7 +9,7 @@ var _ = Describe("Diego", func() {
 
 	Describe("has BPM enabled", func() {
 		It("co-locates bpm job", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			_, err = manifest.FindInstanceGroupJob("isolated_diego_cell", "bpm")
@@ -17,7 +17,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		It("sets bpm.enabled to true for rep and route_emitter", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
@@ -41,7 +41,7 @@ var _ = Describe("Diego", func() {
 		It("colocates the nfsv3driver job with the mapfs job from the mapfs-release", func() {
 			instanceGroup := "isolated_diego_cell"
 
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			_, err = manifest.FindInstanceGroupJob(instanceGroup, "nfsv3driver")
@@ -56,7 +56,7 @@ var _ = Describe("Diego", func() {
 	Describe("Root file systems", func() {
 
 		It("colocates the cflinuxfs2-rootfs-setup job", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			setup, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "cflinuxfs2-rootfs-setup")
@@ -67,7 +67,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		It("colocates the cflinuxfs3-rootfs-setup job", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			setup, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "cflinuxfs3-rootfs-setup")
@@ -78,7 +78,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		It("configures the preloaded_rootfses on the rep", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
@@ -95,7 +95,7 @@ var _ = Describe("Diego", func() {
 	Describe("Garden", func() {
 
 		It("ensures the standard root filesystem remains in the layer cache", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			garden, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "garden")

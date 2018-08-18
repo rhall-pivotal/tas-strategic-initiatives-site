@@ -9,7 +9,7 @@ var _ = Describe("Diego Persistence", func() {
 	// TODO: stop skipping once ops-manifest supports testing for credentials
 	XDescribe("Gorouter provides client certs in request to Diego cells", func() {
 		It("creates a backend cert_chain and private_key", func() {
-			manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
+			manifest, err := product.RenderManifest(map[string]interface{}{})
 			Expect(err).NotTo(HaveOccurred())
 
 			router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
@@ -22,7 +22,7 @@ var _ = Describe("Diego Persistence", func() {
 	Describe("idle timeouts", func() {
 
 		It("inherits the PAS frontend idle timeout", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			haproxy, err := manifest.FindInstanceGroupJob("isolated_ha_proxy", "haproxy")
@@ -42,7 +42,7 @@ var _ = Describe("Diego Persistence", func() {
 
 	Describe("bpm", func() {
 		It("co-locates the BPM job with all routing jobs", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			_, err = manifest.FindInstanceGroupJob("isolated_router", "bpm")

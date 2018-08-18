@@ -3,21 +3,12 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"os"
 	"strings"
 )
 
-type CommandRunner interface {
-	Run(string, ...string) (string, string, error)
-}
-
 type OMRunner struct {
 	cmdRunner CommandRunner
-	FileIO    fileIO
-}
-
-type FileIO struct {
+	FileIO    FileIO
 }
 
 type StagedProduct struct {
@@ -36,38 +27,17 @@ type OMError struct {
 	Messages []string `json:"base"`
 }
 
-type fileIO interface {
-	TempFile(string, string) (*os.File, error)
-	Remove(string) error
-}
-
-func NewOMRunner(cmdRunner CommandRunner) OMRunner {
-	return OMRunner{
-		cmdRunner: cmdRunner,
-		FileIO:    FileIO{},
-	}
-}
-
-func NewOMRunnerWithFileIO(cmdRunner CommandRunner, fileIO fileIO) OMRunner {
+func NewOMRunner(cmdRunner CommandRunner, fileIO FileIO) OMRunner {
 	return OMRunner{
 		cmdRunner: cmdRunner,
 		FileIO:    fileIO,
 	}
 }
 
-func (f FileIO) TempFile(a, b string) (*os.File, error) {
-	return ioutil.TempFile(a, b)
-}
-
-func (f FileIO) Remove(a string) error {
-	return os.Remove(a)
-}
-
 func (o OMRunner) StagedProducts() ([]StagedProduct, error) {
 	response, errOutput, err := o.cmdRunner.Run(
 		"om",
 		"--skip-ssl-validation",
-		"--target", os.Getenv("OM_URL"),
 		"curl",
 		"--path", "/api/v0/staged/products",
 	)
@@ -104,7 +74,6 @@ func (o OMRunner) ResetAndConfigure(productName string, productVersion string, c
 	_, errOutput, err := o.cmdRunner.Run(
 		"om",
 		"--skip-ssl-validation",
-		"--target", os.Getenv("OM_URL"),
 		"revert-staged-changes",
 	)
 
@@ -115,7 +84,6 @@ func (o OMRunner) ResetAndConfigure(productName string, productVersion string, c
 	_, errOutput, err = o.cmdRunner.Run(
 		"om",
 		"--skip-ssl-validation",
-		"--target", os.Getenv("OM_URL"),
 		"stage-product",
 		"--product-name", productName,
 		"--product-version", productVersion,
@@ -140,7 +108,6 @@ func (o OMRunner) ResetAndConfigure(productName string, productVersion string, c
 	_, errOutput, err = o.cmdRunner.Run(
 		"om",
 		"--skip-ssl-validation",
-		"--target", os.Getenv("OM_URL"),
 		"configure-product",
 		"--product-name", productName,
 		"--config", configFile.Name(),
@@ -157,7 +124,6 @@ func (o OMRunner) GetManifest(productGUID string) (map[string]interface{}, error
 	response, errOutput, err := o.cmdRunner.Run(
 		"om",
 		"--skip-ssl-validation",
-		"--target", os.Getenv("OM_URL"),
 		"curl",
 		"--path", fmt.Sprintf("/api/v0/staged/products/%s/manifest", productGUID),
 	)

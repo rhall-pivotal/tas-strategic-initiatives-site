@@ -12,7 +12,7 @@ var _ = Describe("Networking", func() {
 				".properties.cf_networking_search_domains": "some-search-domain,another-search-domain",
 			}
 
-			manifest, err := product.RenderService.RenderManifest(inputProperties)
+			manifest, err := product.RenderManifest(inputProperties)
 			Expect(err).NotTo(HaveOccurred())
 
 			job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "garden-cni")
@@ -28,7 +28,7 @@ var _ = Describe("Networking", func() {
 		})
 
 		It("defaults search_domains to empty", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "garden-cni")
@@ -43,7 +43,7 @@ var _ = Describe("Networking", func() {
 
 	Describe("BOSH DNS Adapter for App Service Discovery", func() {
 		It("is colocated with the isolated_diego_cell", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			_, err = manifest.FindInstanceGroupJob("isolated_diego_cell", "bosh-dns-adapter")
@@ -51,7 +51,7 @@ var _ = Describe("Networking", func() {
 		})
 
 		It("is turned on by default", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "route_emitter")
@@ -67,7 +67,7 @@ var _ = Describe("Networking", func() {
 	Describe("TLS termination", func() {
 		Context("when TLS is terminated for the first time at infrastructure load balancer", func() {
 			It("configures the router and proxy", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
+				manifest, err := product.RenderManifest(map[string]interface{}{})
 				Expect(err).NotTo(HaveOccurred())
 
 				haproxy, err := manifest.FindInstanceGroupJob("isolated_ha_proxy", "haproxy")
@@ -84,7 +84,7 @@ var _ = Describe("Networking", func() {
 		Context("when TLS is terminated for the first time at ha proxy", func() {
 			Context("when ha proxy client cert validation is set to none", func() {
 				It("configures ha proxy and router", func() {
-					manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					manifest, err := product.RenderManifest(map[string]interface{}{
 						".properties.routing_tls_termination": "ha_proxy",
 					})
 					Expect(err).NotTo(HaveOccurred())
@@ -102,7 +102,7 @@ var _ = Describe("Networking", func() {
 
 			Context("when ha proxy client cert validation is set to request ", func() {
 				It("configures ha proxy and router", func() {
-					manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					manifest, err := product.RenderManifest(map[string]interface{}{
 						".properties.routing_tls_termination":        "ha_proxy",
 						".properties.haproxy_client_cert_validation": "request",
 					})
@@ -122,7 +122,7 @@ var _ = Describe("Networking", func() {
 
 		Context("when TLS is terminated for the first time at the router", func() {
 			It("configures the router and proxy", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.routing_tls_termination": "router",
 				})
 				Expect(err).NotTo(HaveOccurred())
