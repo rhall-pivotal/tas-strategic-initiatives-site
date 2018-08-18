@@ -21,7 +21,7 @@ var _ = Describe("CredHub", func() {
 		Context("when there is a single internal key", func() {
 
 			It("configures credhub with the key", func() {
-				manifest, err := product.RenderService.RenderManifest(nil)
+				manifest, err := product.RenderManifest(nil)
 				Expect(err).NotTo(HaveOccurred())
 
 				credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
@@ -42,7 +42,7 @@ var _ = Describe("CredHub", func() {
 		Context("when there is an additional HSM key set as primary", func() {
 
 			It("configures credhub with the keys, with the HSM key marked as active", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.credhub_key_encryption_passwords": []map[string]interface{}{
 						{
 							"key": map[string]interface{}{
@@ -89,7 +89,7 @@ var _ = Describe("CredHub", func() {
 	Describe("permissions", func() {
 
 		It("grants permissions to the credhub-service-broker tile", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")

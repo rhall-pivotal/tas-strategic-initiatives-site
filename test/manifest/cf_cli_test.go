@@ -17,7 +17,7 @@ var _ = XDescribe("CF CLI", func() {
 	})
 
 	It("colocates the cf-cli-6-linux job on the instance group used to run errands", func() {
-		manifest, err := product.RenderService.RenderManifest(nil)
+		manifest, err := product.RenderManifest(nil)
 		Expect(err).NotTo(HaveOccurred())
 
 		_, err = manifest.FindInstanceGroupJob(instanceGroup, "cf-cli-6-linux")

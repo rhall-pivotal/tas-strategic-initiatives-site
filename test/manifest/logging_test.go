@@ -19,7 +19,7 @@ var _ = Describe("Logging", func() {
 		})
 
 		It("disables support for forwarding syslog to metron", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			agent, err := manifest.FindInstanceGroupJob(instanceGroup, "metron_agent")
@@ -42,7 +42,7 @@ var _ = Describe("Logging", func() {
 		})
 
 		It("is enabled by default", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			logCache, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache")
@@ -54,7 +54,7 @@ var _ = Describe("Logging", func() {
 		})
 
 		It("has tls server certs", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			logCache, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache")
@@ -68,7 +68,7 @@ var _ = Describe("Logging", func() {
 		})
 
 		It("specifies the port to listen on", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			logCache, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache")
@@ -85,7 +85,7 @@ var _ = Describe("Logging", func() {
 		})
 
 		It("has a log-cache-gateway with a gateway addr", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			logCache, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-gateway")
@@ -101,7 +101,7 @@ var _ = Describe("Logging", func() {
 		})
 
 		It("has a log-cache-group-reader with a port", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			groupReader, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-group-reader")
@@ -117,7 +117,7 @@ var _ = Describe("Logging", func() {
 		})
 
 		It("has a log-cache-nozzle with tls certs", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			nozzle, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-nozzle")
@@ -131,7 +131,7 @@ var _ = Describe("Logging", func() {
 		})
 
 		It("has a log-cache-expvar-forwarder job with templated counters/gauges", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			forwarder, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-expvar-forwarder")
@@ -157,7 +157,7 @@ var _ = Describe("Logging", func() {
 		})
 
 		It("registers the log-cache route", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			routeRegistrar, err := manifest.FindInstanceGroupJob(instanceGroup, "route_registrar")
@@ -177,7 +177,7 @@ var _ = Describe("Logging", func() {
 		})
 
 		It("has an auth proxy", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			proxy, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-cf-auth-proxy")
@@ -217,7 +217,7 @@ var _ = Describe("Logging", func() {
 
 		Context("when .properties.enable_log_cache is set to false", func() {
 			It("sets the log-cache.disable manifest property to true", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.enable_log_cache": false,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -243,7 +243,7 @@ var _ = Describe("Logging", func() {
 		})
 
 		It("has a scheduler", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			_, err = manifest.FindInstanceGroupJob(instanceGroup, "log-cache-scheduler")
@@ -254,7 +254,7 @@ var _ = Describe("Logging", func() {
 
 	Describe("syslog forwarding", func() {
 		It("includes the vcap rule and does not forward debug logs", func() {
-			manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+			manifest, err := product.RenderManifest(map[string]interface{}{
 				".properties.syslog_host": "example.com",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -270,7 +270,7 @@ var _ = Describe("Logging", func() {
 
 		Context("when debug logs are enabled", func() {
 			It("does not include the debug stop rule", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.syslog_host":       "example.com",
 					".properties.syslog_drop_debug": false,
 				})

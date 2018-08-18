@@ -25,7 +25,7 @@ var _ = Describe("Networking", func() {
 
 		Describe("policy server", func() {
 			It("uses the correct database host", func() {
-				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server")
@@ -49,7 +49,7 @@ var _ = Describe("Networking", func() {
 			})
 
 			It("sets the manifest database connection timeout properties for the cf networking jobs to be 250", func() {
-				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
 				policyServerJob, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server")
@@ -84,7 +84,7 @@ var _ = Describe("Networking", func() {
 			})
 
 			It("configures the cni_config_dir and cni_plugin_dir", func() {
-				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob(cellInstanceGroup, "garden-cni")
@@ -100,7 +100,7 @@ var _ = Describe("Networking", func() {
 			})
 
 			It("configures TLS to the internal database", func() {
-				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "silk-controller")
@@ -116,7 +116,7 @@ var _ = Describe("Networking", func() {
 			})
 
 			It("uses the correct database host", func() {
-				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "silk-controller")
@@ -141,7 +141,7 @@ var _ = Describe("Networking", func() {
 			})
 
 			It("configures the cni_config_dir", func() {
-				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob(cellInstanceGroup, "garden-cni")
@@ -177,7 +177,7 @@ var _ = Describe("Networking", func() {
 				".properties.cf_networking_search_domains": "some-search-domain,another-search-domain",
 			}
 
-			manifest, err := product.RenderService.RenderManifest(inputProperties)
+			manifest, err := product.RenderManifest(inputProperties)
 			Expect(err).NotTo(HaveOccurred())
 
 			job, err := manifest.FindInstanceGroupJob(instanceGroup, "garden-cni")
@@ -193,7 +193,7 @@ var _ = Describe("Networking", func() {
 		})
 
 		It("configures search_domains on the garden-cni job", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			job, err := manifest.FindInstanceGroupJob(instanceGroup, "garden-cni")
@@ -218,7 +218,7 @@ var _ = Describe("Networking", func() {
 			})
 
 			It("is deployed", func() {
-				manifest, err := product.RenderService.RenderManifest(nil)
+				manifest, err := product.RenderManifest(nil)
 				Expect(err).NotTo(HaveOccurred())
 
 				_, err = manifest.FindInstanceGroupJob(instanceGroup, "service-discovery-controller")
@@ -237,7 +237,7 @@ var _ = Describe("Networking", func() {
 			})
 
 			It("co-locates the bosh-dns-adapter and bpm", func() {
-				manifest, err := product.RenderService.RenderManifest(nil)
+				manifest, err := product.RenderManifest(nil)
 				Expect(err).NotTo(HaveOccurred())
 
 				_, err = manifest.FindInstanceGroupJob(instanceGroup, "bosh-dns-adapter")
@@ -248,7 +248,7 @@ var _ = Describe("Networking", func() {
 			})
 
 			It("emits internal routes", func() {
-				manifest, err := product.RenderService.RenderManifest(nil)
+				manifest, err := product.RenderManifest(nil)
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob(instanceGroup, "route_emitter")

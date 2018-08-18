@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
+	"strings"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -28,57 +30,53 @@ var product *planitest.ProductService
 var productConfig planitest.ProductConfig
 var metadataFile string
 var productName string
+var configFile *os.File
 
 var _ = SynchronizedBeforeSuite(func() []byte {
-	var env []string
-
-	file, err := ioutil.TempFile("", "Planitest")
-	Expect(err).NotTo(HaveOccurred())
-
 	productToBuild := os.Getenv("PRODUCT")
 	if productToBuild == "" {
 		productToBuild = "ert"
 	}
 
-	env = append(env, "METADATA_ONLY=true", "STUB_RELEASES=true", fmt.Sprintf("PRODUCT=%s", productToBuild))
-
 	fmt.Printf("Testing product: %s", productToBuild)
 
-	cmd := planitest.NewExecutorWithEnv(env)
+	cmd := exec.Command("../../bin/build")
+	cmd.Env = append(os.Environ(),
+		"METADATA_ONLY=true",
+		"STUB_RELEASES=true",
+		fmt.Sprintf("PRODUCT=%s", productToBuild),
+	)
 
-	output, errOutput, err := cmd.Run("../../bin/build")
+	output, err := cmd.Output()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error running bin/build: %s: %s", err, errOutput)
+		fmt.Fprintf(os.Stderr, "error running bin/build: %s", err.Error())
 	}
 	Expect(err).NotTo(HaveOccurred())
 
-	_, err = file.WriteString(output)
-	Expect(err).NotTo(HaveOccurred())
+	return []byte(output)
+}, func(metadataContents []byte) {
 
-	return []byte(file.Name())
-}, func(path []byte) {
-	metadataFile = string(path)
+	metadataFile = string(metadataContents)
 	productName = os.Getenv("PRODUCT")
 	if productName == "" {
 		productName = "ert"
 	}
+
+	var err error
+
+	configFile, err = os.Open("config.json")
+	Expect(err).NotTo(HaveOccurred())
 })
 
-var _ = SynchronizedAfterSuite(func() {
-}, func() {
-	err := os.Remove(metadataFile)
-	Expect(err).NotTo(HaveOccurred())
+var _ = AfterSuite(func() {
+	configFile.Close()
 })
 
 var _ = BeforeEach(func() {
-	productVersion, err := fetchProductVersion()
-	Expect(err).NotTo(HaveOccurred())
-
+	var err error
 	productConfig = planitest.ProductConfig{
-		Name:         "cf",
-		Version:      productVersion,
-		ConfigFile:   "config.json",
-		MetadataFile: metadataFile,
+		ConfigFile: configFile,
+		TileFile:   strings.NewReader(metadataFile),
 	}
 	product, err = planitest.NewProductService(productConfig)
 	Expect(err).NotTo(HaveOccurred())

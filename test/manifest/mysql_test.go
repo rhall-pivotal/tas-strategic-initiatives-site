@@ -21,7 +21,7 @@ var _ = Describe("MySQL", func() {
 				instanceGroup = "mysql"
 			}
 
-			manifest, err = product.RenderService.RenderManifest(map[string]interface{}{
+			manifest, err = product.RenderManifest(map[string]interface{}{
 				".mysql.max_connections": 10000,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -46,7 +46,7 @@ var _ = Describe("MySQL", func() {
 					".properties.system_database": "internal_pxc",
 					".mysql.max_connections":      40000,
 				}
-				manifest, err = product.RenderService.RenderManifest(inputProperties)
+				manifest, err = product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 			})
 

@@ -21,7 +21,7 @@ var _ = Describe("UAA", func() {
 	Describe("route registration", func() {
 
 		It("tags the emitted metrics", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			routeRegistrar, err := manifest.FindInstanceGroupJob(instanceGroup, "route_registrar")
@@ -38,7 +38,7 @@ var _ = Describe("UAA", func() {
 
 	Describe("BPM", func() {
 		It("co-locates the BPM job with all diego jobs", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			_, err = manifest.FindInstanceGroupJob(instanceGroup, "bpm")
@@ -46,7 +46,7 @@ var _ = Describe("UAA", func() {
 		})
 
 		It("sets bpm.enabled to true", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			manifestJob, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
@@ -61,7 +61,7 @@ var _ = Describe("UAA", func() {
 
 	Describe("Clients", func() {
 		It("apps_metrics has the expected permission scopes", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
@@ -74,7 +74,7 @@ var _ = Describe("UAA", func() {
 		})
 
 		It("apps_metrics has the expected redirect uri", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
@@ -87,7 +87,7 @@ var _ = Describe("UAA", func() {
 		})
 
 		It("apps_metrics_processing has the expected permission scopes", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
@@ -100,7 +100,7 @@ var _ = Describe("UAA", func() {
 		})
 
 		It("apps_metrics_processing has the expected redirect uri", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
@@ -113,7 +113,7 @@ var _ = Describe("UAA", func() {
 		})
 
 		It("apps_manager_js client includes network.write and network.admin", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")

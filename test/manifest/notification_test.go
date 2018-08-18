@@ -18,7 +18,7 @@ var _ = Describe("Logging", func() {
 		})
 
 		It("has a notifications job with default CF notification template", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			notifications, err := manifest.FindInstanceGroupJob(instanceGroup, "deploy-notifications")

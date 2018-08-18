@@ -11,7 +11,7 @@ import (
 var _ = Describe("Routing", func() {
 	Describe("operator defaults", func() {
 		It("configures the ha-proxy and router minimum TLS versions", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
@@ -34,7 +34,7 @@ var _ = Describe("Routing", func() {
 		})
 
 		It("enables TLS to backends if a TLS route is registered", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			router, err := manifest.FindInstanceGroupJob("router", "gorouter")
@@ -56,7 +56,7 @@ var _ = Describe("Routing", func() {
 			)
 
 			BeforeEach(func() {
-				manifest, err = product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err = product.RenderManifest(map[string]interface{}{
 					".properties.routing_minimum_tls_version": "tls_v1_1",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -86,7 +86,7 @@ var _ = Describe("Routing", func() {
 
 	Describe("TLS termination", func() {
 		It("secures traffic between the infrastructure load balancer and HAProxy / Gorouter", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
@@ -112,7 +112,7 @@ var _ = Describe("Routing", func() {
 	Describe("IP Logging", func() {
 		Context("when the operator chooses to log client Ips", func() {
 			It("does not disable ip logging or x-forwarded-for logging", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.routing_log_client_ips": "log_client_ips",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -131,7 +131,7 @@ var _ = Describe("Routing", func() {
 		})
 		Context("when the operator chooses `Disable logging of X-Forwarded-For header only`", func() {
 			It("only disables x-forwarded-for logging but not source ip logging", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.routing_log_client_ips": "disable_x_forwarded_for",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -150,7 +150,7 @@ var _ = Describe("Routing", func() {
 		})
 		Context("when the operator chooses `Disable logging of both source IP and X-Forwarded-For header`", func() {
 			It("disbales both source ip logging and x-forwarded-for logging", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.routing_log_client_ips": "disable_all_log_client_ips",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -172,7 +172,7 @@ var _ = Describe("Routing", func() {
 	// TODO: stop skipping once ops-manifest supports testing for credentials
 	XDescribe("Gorouter provides client certs in request to Diego cells", func() {
 		It("creates a backend cert_chain and private_key", func() {
-			manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
+			manifest, err := product.RenderManifest(map[string]interface{}{})
 			Expect(err).NotTo(HaveOccurred())
 
 			router, err := manifest.FindInstanceGroupJob("router", "gorouter")
@@ -191,7 +191,7 @@ var _ = Describe("Routing", func() {
 	Describe("Router Client Cert Validation", func() {
 		Context("when it does not request client certificates", func() {
 			It("sets the validation type to none", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.router_client_cert_validation": "none",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -204,7 +204,7 @@ var _ = Describe("Routing", func() {
 
 		Context("when it requests but does not require client certificates", func() {
 			It("sets the validation type to request", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
+				manifest, err := product.RenderManifest(map[string]interface{}{})
 				Expect(err).NotTo(HaveOccurred())
 
 				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
@@ -215,7 +215,7 @@ var _ = Describe("Routing", func() {
 
 		Context("when it requires client certificates", func() {
 			It("sets the validation type to require", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.router_client_cert_validation": "require",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -230,7 +230,7 @@ var _ = Describe("Routing", func() {
 	Describe("TLS termination", func() {
 		Context("when TLS is terminated for the first time at infrastructure load balancer", func() {
 			It("configures the router and proxy", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{})
+				manifest, err := product.RenderManifest(map[string]interface{}{})
 				Expect(err).NotTo(HaveOccurred())
 
 				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
@@ -247,7 +247,7 @@ var _ = Describe("Routing", func() {
 		Context("when TLS is terminated for the first time at ha proxy", func() {
 			Context("when ha proxy client cert validation is set to none", func() {
 				It("configures ha proxy and router", func() {
-					manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					manifest, err := product.RenderManifest(map[string]interface{}{
 						".properties.routing_tls_termination": "ha_proxy",
 					})
 					Expect(err).NotTo(HaveOccurred())
@@ -265,7 +265,7 @@ var _ = Describe("Routing", func() {
 
 			Context("when ha proxy client cert validation is set to request ", func() {
 				It("configures ha proxy and router", func() {
-					manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+					manifest, err := product.RenderManifest(map[string]interface{}{
 						".properties.routing_tls_termination":        "ha_proxy",
 						".properties.haproxy_client_cert_validation": "request",
 					})
@@ -285,7 +285,7 @@ var _ = Describe("Routing", func() {
 
 		Context("when TLS is terminated for the first time at the router", func() {
 			It("configures the router and proxy", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.routing_tls_termination": "router",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -305,7 +305,7 @@ var _ = Describe("Routing", func() {
 	Describe("idle timeouts", func() {
 
 		It("sets a default timeout", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
@@ -324,7 +324,7 @@ var _ = Describe("Routing", func() {
 		Context("when the operator specifies an idle timeout for IaaS compatibility", func() {
 
 			It("is applied", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err := product.RenderManifest(map[string]interface{}{
 					".router.frontend_idle_timeout": 300,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -432,7 +432,7 @@ var _ = Describe("Routing", func() {
 		})
 
 		It("co-locates the BPM job with all routing jobs", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			for _, job := range routingJobs {

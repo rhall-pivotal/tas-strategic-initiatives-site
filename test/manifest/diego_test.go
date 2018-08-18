@@ -18,7 +18,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		It("retries tasks to be more resilient to temporarily constrained resources", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			bbs, err := manifest.FindInstanceGroupJob(instanceGroup, "bbs")
@@ -101,7 +101,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		It("co-locates the BPM job with all diego jobs", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			for _, diegoJob := range diegoJobs {
@@ -111,7 +111,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		It("sets bpm.enabled to true", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			for _, diegoJob := range diegoJobs {
@@ -136,7 +136,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		It("uses the default UAA URL and port configuration", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			sshProxy, err := manifest.FindInstanceGroupJob(instanceGroup, "ssh_proxy")
@@ -160,7 +160,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		It("colocates the nfsv3driver job with the mapfs job from the mapfs-release", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			_, err = manifest.FindInstanceGroupJob(instanceGroup, "nfsv3driver")
@@ -181,7 +181,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		It("colocates the cflinuxfs2-rootfs-setup job", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			setup, err := manifest.FindInstanceGroupJob(instanceGroup, "cflinuxfs2-rootfs-setup")
@@ -192,7 +192,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		It("colocates the cflinuxfs3-rootfs-setup job", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			setup, err := manifest.FindInstanceGroupJob(instanceGroup, "cflinuxfs3-rootfs-setup")
@@ -203,7 +203,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		It("configures the preloaded_rootfses on the rep", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")

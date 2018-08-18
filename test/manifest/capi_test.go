@@ -50,7 +50,7 @@ var _ = Describe("CAPI", func() {
 		Context("when the Operator accepts the default values", func() {
 			BeforeEach(func() {
 				var err error
-				manifest, err = product.RenderService.RenderManifest(nil)
+				manifest, err = product.RenderManifest(nil)
 				Expect(err).NotTo(HaveOccurred())
 			})
 
@@ -93,7 +93,7 @@ var _ = Describe("CAPI", func() {
 		Context("when the Operator sets CC logging level to debug", func() {
 			BeforeEach(func() {
 				var err error
-				manifest, err = product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err = product.RenderManifest(map[string]interface{}{
 					".properties.cc_logging_level": "debug",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -114,7 +114,7 @@ var _ = Describe("CAPI", func() {
 		Context("when the Operator sets the Default Health Check Timeout", func() {
 			BeforeEach(func() {
 				var err error
-				manifest, err = product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err = product.RenderManifest(map[string]interface{}{
 					".properties.cloud_controller_default_health_check_timeout": 120,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -136,7 +136,7 @@ var _ = Describe("CAPI", func() {
 		Context("when the Operator sets an Insecure Registry list", func() {
 			BeforeEach(func() {
 				var err error
-				manifest, err = product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err = product.RenderManifest(map[string]interface{}{
 					".diego_cell.insecure_docker_registry_list": "item1,item2,item3",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -158,7 +158,7 @@ var _ = Describe("CAPI", func() {
 		Context("when the Operator sets a staging timeout", func() {
 			BeforeEach(func() {
 				var err error
-				manifest, err = product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err = product.RenderManifest(map[string]interface{}{
 					".cloud_controller.staging_timeout_in_seconds": 1000,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -190,7 +190,7 @@ var _ = Describe("CAPI", func() {
 			}
 
 			var err error
-			manifest, err = product.RenderService.RenderManifest(nil)
+			manifest, err = product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 		})
 

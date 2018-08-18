@@ -20,7 +20,7 @@ var _ = Describe("Apps Manager", func() {
 		})
 
 		It("uses the spec defaults", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
@@ -38,7 +38,7 @@ var _ = Describe("Apps Manager", func() {
 		Context("when the operator specifies memory limits", func() {
 
 			It("applies them", func() {
-				manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.push_apps_manager_memory":             1024,
 					".properties.push_apps_manager_invitations_memory": 2048,
 				})

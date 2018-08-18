@@ -11,7 +11,7 @@ var _ = Describe("System Blobstore", func() {
 	Describe("non-s3 blobstores", func() {
 		Context("when s3 is not selected", func() {
 			It("doesn't enable unversioned S3 backups", func() {
-				manifest, err := product.RenderService.RenderManifest(nil)
+				manifest, err := product.RenderManifest(nil)
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-unversioned-blobstore-backup-restorer")
@@ -44,7 +44,7 @@ var _ = Describe("System Blobstore", func() {
 			It("enables the s3-versioned-blobstore-backup-restorer, and disables the s3-unversioned-blobstore-backup-restorer", func() {
 				inputProperties[".properties.system_blobstore.external.versioning"] = true
 
-				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-versioned-blobstore-backup-restorer")
@@ -73,7 +73,7 @@ var _ = Describe("System Blobstore", func() {
 				})
 
 				It("specifies that backups use the provided access key", func() {
-					manifest, err := product.RenderService.RenderManifest(inputProperties)
+					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
 					job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-versioned-blobstore-backup-restorer")
@@ -95,7 +95,7 @@ var _ = Describe("System Blobstore", func() {
 				})
 
 				It("specifies that backups should use it", func() {
-					manifest, err := product.RenderService.RenderManifest(inputProperties)
+					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
 					job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-versioned-blobstore-backup-restorer")
@@ -125,7 +125,7 @@ var _ = Describe("System Blobstore", func() {
 			})
 
 			It("disables the s3-versioned-blobstore-backup-restorer and enables the s3-unversioned-blobstore-backup-restorer", func() {
-				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-versioned-blobstore-backup-restorer")
@@ -185,7 +185,7 @@ var _ = Describe("System Blobstore", func() {
 				})
 
 				It("specifies that backups use the provided access key", func() {
-					manifest, err := product.RenderService.RenderManifest(inputProperties)
+					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
 					job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-unversioned-blobstore-backup-restorer")
@@ -207,7 +207,7 @@ var _ = Describe("System Blobstore", func() {
 				})
 
 				It("specifies that backups should use it", func() {
-					manifest, err := product.RenderService.RenderManifest(inputProperties)
+					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
 					job, err := manifest.FindInstanceGroupJob("backup-prepare", "s3-unversioned-blobstore-backup-restorer")
