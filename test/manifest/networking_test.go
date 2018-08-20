@@ -259,6 +259,105 @@ var _ = Describe("Networking", func() {
 
 				Expect(enabled).To(BeTrue())
 			})
+
+			Context("when internal domain is empty", func() {
+				It("defaults internal domain to apps.internal", func() {
+					manifest, err := product.RenderService.RenderManifest(nil)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(instanceGroup, "bosh-dns-adapter")
+					Expect(err).NotTo(HaveOccurred())
+
+					internalDomains, err := job.Property("internal_domains")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(internalDomains).To(ConsistOf("apps.internal."))
+				})
+			})
+
+			Context("when internal domain is configured", func() {
+				var (
+					inputProperties map[string]interface{}
+				)
+
+				It("sets internal domains to the provided internal domains", func() {
+					inputProperties = map[string]interface{}{
+						".properties.cf_networking_internal_domain": "some-internal-domain",
+					}
+					manifest, err := product.RenderService.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(instanceGroup, "bosh-dns-adapter")
+					Expect(err).NotTo(HaveOccurred())
+
+					internalDomains, err := job.Property("internal_domains")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(internalDomains).To(Equal([]interface{}{
+						"some-internal-domain",
+					}))
+				})
+			})
+		})
+
+		Describe("api", func() {
+			var instanceGroup string
+			BeforeEach(func() {
+				if productName == "ert" {
+					instanceGroup = "cloud_controller"
+				} else {
+					instanceGroup = "control"
+				}
+			})
+
+			Context("when internal domain is empty", func() {
+				It("adds apps.internal to app domains", func() {
+					manifest, err := product.RenderService.RenderManifest(nil)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+					Expect(err).NotTo(HaveOccurred())
+
+					internalDomains, err := job.Property("app_domains")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(internalDomains).To(Equal([]interface{}{
+						"apps.example.com",
+						map[interface{}]interface{}{
+							"name":     "apps.internal.",
+							"internal": true,
+						},
+					}))
+				})
+			})
+
+			Context("when internal domain is configured", func() {
+				var (
+					inputProperties map[string]interface{}
+				)
+
+				It("adds internal domains to app domains", func() {
+					inputProperties = map[string]interface{}{
+						".properties.cf_networking_internal_domain": "some-internal-domain",
+					}
+					manifest, err := product.RenderService.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+					Expect(err).NotTo(HaveOccurred())
+
+					internalDomains, err := job.Property("app_domains")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(internalDomains).To(Equal([]interface{}{
+						"apps.example.com",
+						map[interface{}]interface{}{
+							"name":     "some-internal-domain",
+							"internal": true,
+						},
+					}))
+				})
+			})
 		})
 	})
 })

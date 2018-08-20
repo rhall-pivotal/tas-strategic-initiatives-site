@@ -12,7 +12,7 @@ manifest: |
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       local_mode: true
   internal_routes:
-    enabled: (( .properties.enable_service_discovery_for_apps.value ))
+    enabled: true
   loggregator:
     use_v2_api: true
     ca_cert: (( $ops_manager.ca_certificate ))
