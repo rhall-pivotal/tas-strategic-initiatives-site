@@ -14,7 +14,7 @@ var _ = Describe("WindowsVersion", func() {
 	)
 
 	BeforeEach(func() {
-		manifest, err = product.RenderService.RenderManifest(map[string]interface{}{})
+		manifest, err = product.RenderManifest(nil)
 		Expect(err).NotTo(HaveOccurred())
 	})
 
