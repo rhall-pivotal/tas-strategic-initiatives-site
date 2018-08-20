@@ -262,7 +262,7 @@ var _ = Describe("Networking", func() {
 
 			Context("when internal domain is empty", func() {
 				It("defaults internal domain to apps.internal", func() {
-					manifest, err := product.RenderService.RenderManifest(nil)
+					manifest, err := product.RenderManifest(nil)
 					Expect(err).NotTo(HaveOccurred())
 
 					job, err := manifest.FindInstanceGroupJob(instanceGroup, "bosh-dns-adapter")
@@ -284,7 +284,7 @@ var _ = Describe("Networking", func() {
 					inputProperties = map[string]interface{}{
 						".properties.cf_networking_internal_domain": "some-internal-domain",
 					}
-					manifest, err := product.RenderService.RenderManifest(inputProperties)
+					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
 					job, err := manifest.FindInstanceGroupJob(instanceGroup, "bosh-dns-adapter")
@@ -312,7 +312,7 @@ var _ = Describe("Networking", func() {
 
 			Context("when internal domain is empty", func() {
 				It("adds apps.internal to app domains", func() {
-					manifest, err := product.RenderService.RenderManifest(nil)
+					manifest, err := product.RenderManifest(nil)
 					Expect(err).NotTo(HaveOccurred())
 
 					job, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
@@ -340,7 +340,7 @@ var _ = Describe("Networking", func() {
 					inputProperties = map[string]interface{}{
 						".properties.cf_networking_internal_domain": "some-internal-domain",
 					}
-					manifest, err := product.RenderService.RenderManifest(inputProperties)
+					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
 					job, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
