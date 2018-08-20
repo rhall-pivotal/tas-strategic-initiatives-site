@@ -128,6 +128,23 @@ var _ = Describe("CredHub", func() {
 			}))
 		})
 
+		It("grants permission to the cloud controller to read service key credentials", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+			Expect(err).NotTo(HaveOccurred())
+
+			permissions, err := credhub.Property("credhub/authorization/permissions")
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(permissions).To(ContainElement(map[interface{}]interface{}{
+				"path":       "/*",
+				"actors":     []interface{}{"uaa-client:cc_service_key_client"},
+				"operations": []interface{}{"read"},
+			}))
+		})
+
 	})
 
 })

@@ -26,6 +26,9 @@ manifest: |
         - path: /c/*
           actors: ["uaa-client:services_credhub_client"]
           operations: ["read", "write", "delete", "read_acl", "write_acl"]
+        - path: /*
+          actors: ["uaa-client:cc_service_key_client"]
+          operations: ["read"]
     ca_certificate: (( $ops_manager.ca_certificate ))
     data_storage: (( .properties.credhub_database.selected_option.parsed_manifest(db_config) ))
     encryption:
