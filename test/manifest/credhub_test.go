@@ -145,6 +145,23 @@ var _ = Describe("CredHub", func() {
 			}))
 		})
 
+		It("grants permissions to the credhub_admin_client", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+			Expect(err).NotTo(HaveOccurred())
+
+			permissions, err := credhub.Property("credhub/authorization/permissions")
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(permissions).To(ContainElement(map[interface{}]interface{}{
+				"path":       "/*",
+				"actors":     []interface{}{"uaa-client:credhub_admin_client"},
+				"operations": []interface{}{"read", "write", "delete", "read_acl", "write_acl"},
+			}))
+		})
+
 	})
 
 })

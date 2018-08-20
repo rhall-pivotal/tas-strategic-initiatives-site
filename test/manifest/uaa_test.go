@@ -132,5 +132,28 @@ var _ = Describe("UAA", func() {
 			Expect(autoapproveList).To(ContainElement("network.write"))
 			Expect(autoapproveList).To(ContainElement("network.admin"))
 		})
+
+		It("credhub_admin_client has credhub.read and credhub.write", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			id, err := uaa.Property("uaa/clients/credhub_admin_client/id")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(id).To(Equal("credhub_admin_client"))
+
+			rawAuthorities, err := uaa.Property("uaa/clients/credhub_admin_client/authorities")
+			Expect(err).ToNot(HaveOccurred())
+
+			authorities := strings.Split(rawAuthorities.(string), ",")
+			Expect(authorities).To(ConsistOf([]string{"credhub.read", "credhub.write"}))
+
+			authorizedGrantTypes, err := uaa.Property("uaa/clients/credhub_admin_client/authorized-grant-types")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(authorizedGrantTypes).To(Equal("client_credentials"))
+		})
+
 	})
 })

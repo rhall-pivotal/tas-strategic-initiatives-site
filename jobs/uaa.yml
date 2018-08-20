@@ -520,6 +520,11 @@ manifest: |
         access-token-validity: 120
         override: true
         refresh-token-validity: 3600
+      credhub_admin_client:
+        id: (( .uaa.credhub_admin_client_client_credentials.identity ))
+        secret: (( .uaa.credhub_admin_client_client_credentials.password ))
+        authorities: credhub.read,credhub.write
+        authorized-grant-types: client_credentials
     servlet:
       session-cookie:
         max-age: (( .properties.uaa_session_cookie_max_age.value ))
