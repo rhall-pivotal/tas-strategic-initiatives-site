@@ -378,7 +378,7 @@ var _ = Describe("Routing", func() {
 					},
 					{
 						Name:          "bbr-routingdb",
-						InstanceGroup: "backup-prepare",
+						InstanceGroup: "backup-restore",
 					},
 				}
 			} else {
@@ -425,7 +425,7 @@ var _ = Describe("Routing", func() {
 					},
 					{
 						Name:          "bbr-routingdb",
-						InstanceGroup: "backup-prepare",
+						InstanceGroup: "backup-restore",
 					},
 				}
 			}
