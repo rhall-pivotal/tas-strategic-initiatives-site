@@ -4,7 +4,6 @@ release: cf-networking
 consumes: |
   service-discovery-controller: {from: service-discovery-controller, deployment: (( ..cf.deployment_name )) }
 manifest: |
-  cf_app_sd_disable: "(( ..cf.properties.enable_service_discovery_for_apps.value ? false : true ))"
   dnshttps:
     client:
       tls:
@@ -12,3 +11,5 @@ manifest: |
         private_key: (( .properties.service_discovery_client_tls.private_key_pem ))
     server:
       ca: (( $ops_manager.ca_certificate ))
+  internal_domains:
+    - (( ..cf.properties.cf_networking_internal_domain.value ))

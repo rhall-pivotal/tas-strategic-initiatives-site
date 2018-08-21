@@ -20,7 +20,6 @@ var _ = Describe("Diego Persistence", func() {
 	})
 
 	Describe("idle timeouts", func() {
-
 		It("inherits the PAS frontend idle timeout", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -37,7 +36,6 @@ var _ = Describe("Diego Persistence", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(routerTimeout).To(Equal(900))
 		})
-
 	})
 
 	Describe("bpm", func() {

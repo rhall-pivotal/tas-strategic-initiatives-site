@@ -13,7 +13,7 @@ manifest: |
         client_key: (( .properties.bbs_client_cert.private_key_pem ))
       local_mode: true
   internal_routes:
-    enabled: (( ..cf.properties.enable_service_discovery_for_apps.value ))
+    enabled: true
   logging:
     format:
       timestamp: (( ..cf.properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))

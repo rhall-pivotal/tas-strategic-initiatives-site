@@ -42,16 +42,11 @@ var _ = Describe("Networking", func() {
 	})
 
 	Describe("BOSH DNS Adapter for App Service Discovery", func() {
-		It("is colocated with the isolated_diego_cell", func() {
+		It("colocates the dns-adapter and route emitter on the isolated_diego_cell", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			_, err = manifest.FindInstanceGroupJob("isolated_diego_cell", "bosh-dns-adapter")
-			Expect(err).NotTo(HaveOccurred())
-		})
-
-		It("is turned on by default", func() {
-			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "route_emitter")
@@ -61,6 +56,24 @@ var _ = Describe("Networking", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(enabled).To(BeTrue())
+		})
+
+		//TODO: Testing inheritance from PAS requires manual additions to ops-manifest fixture.
+		// Unpend this test when we can render the manifest with inheritance properties like
+		// `..cf.properties.cf_networking_internal_domain`.
+		Context("when PAS internal domain is empty", func() {
+			PIt("defaults internal domain to apps.internal", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "bosh-dns-adapter")
+				Expect(err).NotTo(HaveOccurred())
+
+				internalDomains, err := job.Property("internal_domains")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(internalDomains).To(ConsistOf("apps.internal"))
+			})
 		})
 	})
 
