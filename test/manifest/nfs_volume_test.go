@@ -8,7 +8,7 @@ import (
 var _ = Describe("NFS volume service", func() {
 	Context("when the NFS V3 driver is enabled without LDAP configuration", func() {
 		It("enables the nfsv3driver job", func() {
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			nfsV3DriverPush, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "nfsv3driver")
@@ -36,7 +36,7 @@ var _ = Describe("NFS volume service", func() {
 		})
 
 		It("configures LDAP on the nfsv3driver job", func() {
-			manifest, err := product.RenderService.RenderManifest(ldapConfiguration)
+			manifest, err := product.RenderManifest(ldapConfiguration)
 			Expect(err).NotTo(HaveOccurred())
 
 			nfsV3DriverPush, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "nfsv3driver")
@@ -71,7 +71,7 @@ var _ = Describe("NFS volume service", func() {
 			It("configures LDAP on the nfsv3driver job", func() {
 				ldapConfiguration[".properties.nfs_volume_driver.enable.ldap_ca_cert"] = "ldap-ca-cert"
 
-				manifest, err := product.RenderService.RenderManifest(ldapConfiguration)
+				manifest, err := product.RenderManifest(ldapConfiguration)
 				Expect(err).NotTo(HaveOccurred())
 
 				nfsV3DriverPush, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "nfsv3driver")
@@ -86,7 +86,7 @@ var _ = Describe("NFS volume service", func() {
 
 	Context("when the NFS V3 driver is disabled", func() {
 		It("disables the nfsv3driver job", func() {
-			manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+			manifest, err := product.RenderManifest(map[string]interface{}{
 				".properties.nfs_volume_driver": "disable",
 			})
 			Expect(err).NotTo(HaveOccurred())

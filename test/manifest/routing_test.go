@@ -9,7 +9,7 @@ var _ = Describe("Diego Persistence", func() {
 	// TODO: stop skipping once ops-manifest supports testing for credentials
 	XDescribe("Gorouter provides client certs in request to Diego cells", func() {
 		It("creates a backend cert_chain and private_key", func() {
-			manifest, err := product.RenderManifest(map[string]interface{}{})
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
