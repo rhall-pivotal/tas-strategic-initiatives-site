@@ -271,7 +271,7 @@ var _ = Describe("Networking", func() {
 					internalDomains, err := job.Property("internal_domains")
 					Expect(err).NotTo(HaveOccurred())
 
-					Expect(internalDomains).To(ConsistOf("apps.internal."))
+					Expect(internalDomains).To(ConsistOf("apps.internal"))
 				})
 			})
 
@@ -324,7 +324,7 @@ var _ = Describe("Networking", func() {
 					Expect(internalDomains).To(Equal([]interface{}{
 						"apps.example.com",
 						map[interface{}]interface{}{
-							"name":     "apps.internal.",
+							"name":     "apps.internal",
 							"internal": true,
 						},
 					}))
