@@ -23,4 +23,12 @@ var _ = Describe("CF CLI", func() {
 		_, err = manifest.FindInstanceGroupJob(instanceGroup, "cf-cli-6-linux")
 		Expect(err).NotTo(HaveOccurred())
 	})
+
+	It("colocates the cf-cli-6-linux job on the backup-restore instance group", func() {
+		manifest, err := product.RenderManifest(nil)
+		Expect(err).NotTo(HaveOccurred())
+
+		_, err = manifest.FindInstanceGroupJob("backup-restore", "cf-cli-6-linux")
+		Expect(err).NotTo(HaveOccurred())
+	})
 })
