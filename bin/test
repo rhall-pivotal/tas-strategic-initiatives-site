@@ -14,6 +14,7 @@ function build_docker_image() {
     github_api_token="${GITHUB_API_TOKEN:?}"
     gem_url=$(curl -u "${github_username}:${github_api_token}"  https://api.github.com/repos/pivotal-cf/ops-manifest/releases/latest | jq -r .assets[0].url)
     echo -e "${info_color}Grabbing latest ops-manifest release (ask PAS RelEng team for read access if it fails)...${no_color}"
+    mkdir -p vendor
     curl -u "${github_username}:${github_api_token}" -H "Accept: application/octet-stream" -L -o vendor/ops-manifest.gem "${gem_url}"
   fi
 
