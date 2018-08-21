@@ -37,7 +37,6 @@ var _ = Describe("Diego", func() {
 	})
 
 	Describe("Persistence", func() {
-
 		It("colocates the nfsv3driver job with the mapfs job from the mapfs-release", func() {
 			instanceGroup := "isolated_diego_cell"
 

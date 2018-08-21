@@ -78,6 +78,11 @@ property_inputs:
             only.
           placeholder: "cn=Users,dc=corp,dc=test,dc=com"
 
+        - reference: .properties.nfs_volume_driver.enable.ldap_ca_cert
+          label: LDAP Server CA Cert
+          description: |
+            Server CA certificate (required for LDAP integration with SSL only)
+
     - reference: .properties.nfs_volume_driver.disable
       label: Disable
 

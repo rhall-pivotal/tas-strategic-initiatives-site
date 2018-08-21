@@ -15,6 +15,7 @@
             ldap_host: (( .properties.nfs_volume_driver.enable.ldap_server_host.value ))
             ldap_port: (( .properties.nfs_volume_driver.enable.ldap_server_port.value ))
             ldap_user_fqdn: (( .properties.nfs_volume_driver.enable.ldap_user_fqdn.value ))
+            ldap_ca_cert: (( .properties.nfs_volume_driver.enable.ldap_ca_cert.value ))
 
       property_blueprints:
         - name: ldap_service_account_user
@@ -39,6 +40,11 @@
 
         - name: ldap_user_fqdn
           type: string
+          configurable: true
+          optional: true
+
+        - name: ldap_ca_cert
+          type: text
           configurable: true
           optional: true
 
