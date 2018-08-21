@@ -16,7 +16,7 @@ var _ = Describe("NFS volume service", func() {
 				instanceGroup = "diego_cell"
 			}
 
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			nfsV3DriverPush, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsv3driver")
@@ -34,7 +34,7 @@ var _ = Describe("NFS volume service", func() {
 				instanceGroup = "clock_global"
 			}
 
-			manifest, err := product.RenderService.RenderManifest(nil)
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			nfsBrokerPush, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsbrokerpush")
@@ -68,7 +68,7 @@ var _ = Describe("NFS volume service", func() {
 				instanceGroup = "clock_global"
 			}
 
-			manifest, err := product.RenderService.RenderManifest(ldapConfiguration)
+			manifest, err := product.RenderManifest(ldapConfiguration)
 			Expect(err).NotTo(HaveOccurred())
 
 			nfsBrokerPush, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsbrokerpush")
@@ -86,7 +86,7 @@ var _ = Describe("NFS volume service", func() {
 				instanceGroup = "diego_cell"
 			}
 
-			manifest, err := product.RenderService.RenderManifest(ldapConfiguration)
+			manifest, err := product.RenderManifest(ldapConfiguration)
 			Expect(err).NotTo(HaveOccurred())
 
 			nfsV3DriverPush, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsv3driver")
@@ -127,7 +127,7 @@ var _ = Describe("NFS volume service", func() {
 
 				ldapConfiguration[".properties.nfs_volume_driver.enable.ldap_ca_cert"] = "ldap-ca-cert"
 
-				manifest, err := product.RenderService.RenderManifest(ldapConfiguration)
+				manifest, err := product.RenderManifest(ldapConfiguration)
 				Expect(err).NotTo(HaveOccurred())
 
 				nfsV3DriverPush, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsv3driver")
@@ -148,7 +148,7 @@ var _ = Describe("NFS volume service", func() {
 				instanceGroup = "diego_cell"
 			}
 
-			manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+			manifest, err := product.RenderManifest(map[string]interface{}{
 				".properties.nfs_volume_driver": "disable",
 			})
 			Expect(err).NotTo(HaveOccurred())
