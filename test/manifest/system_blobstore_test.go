@@ -227,4 +227,60 @@ var _ = Describe("System Blobstore", func() {
 			})
 		})
 	})
+
+	Describe("azure storage", func() {
+		var (
+			inputProperties map[string]interface{}
+			containers      = []string{"buildpacks", "droplets", "packages"}
+		)
+
+		BeforeEach(func() {
+			inputProperties = map[string]interface{}{
+				".properties.system_blobstore":                                     "external_azure",
+				".properties.system_blobstore.external_azure.buildpacks_container": "some-buildpacks-bucket",
+				".properties.system_blobstore.external_azure.droplets_container":   "some-droplets-bucket",
+				".properties.system_blobstore.external_azure.packages_container":   "some-packages-bucket",
+				".properties.system_blobstore.external_azure.resources_container":  "some-resources-bucket",
+				".properties.system_blobstore.external_azure.account_name":         "some-account-name",
+				".properties.system_blobstore.external_azure.access_key": map[string]string{
+					"secret": "some-access-key",
+				},
+			}
+		})
+
+		It("disables the azure-blobstore-backup-restorer", func() {
+			manifest, err := product.RenderService.RenderManifest(inputProperties)
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob("backup-restore", "azure-blobstore-backup-restorer")
+			Expect(err).NotTo(HaveOccurred())
+
+			jobEnabled, err := job.Property("enabled")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(jobEnabled).To(BeFalse())
+		})
+
+		Context("when the user enables soft deletes", func() {
+			It("enables the azure-blobstore-backup-restorer", func() {
+				inputProperties[".properties.system_blobstore.external_azure.enable_bbr"] = true
+
+				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob("backup-restore", "azure-blobstore-backup-restorer")
+				Expect(err).NotTo(HaveOccurred())
+
+				jobEnabled, err := job.Property("enabled")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(jobEnabled).To(BeTrue())
+
+				for _, container := range containers {
+					containerProperties, err := job.Property(fmt.Sprintf("containers/%s", container))
+					Expect(err).NotTo(HaveOccurred())
+					Expect(containerProperties).To(HaveKeyWithValue("azure_storage_account", "some-account-name"))
+					Expect(containerProperties).To(HaveKeyWithValue("azure_storage_key", ContainSubstring("system_blobstore/external_azure/access_key")))
+				}
+			})
+		})
+	})
 })
