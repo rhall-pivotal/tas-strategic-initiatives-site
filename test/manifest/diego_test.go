@@ -216,4 +216,42 @@ var _ = Describe("Diego", func() {
 			Expect(preloadedRootfses).To(ContainElement("cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar"))
 		})
 	})
+
+	Context("route integrity", func() {
+
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "compute"
+			} else {
+				instanceGroup = "diego_cell"
+			}
+		})
+
+		It("does not enable route integrity by default", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
+			Expect(err).NotTo(HaveOccurred())
+
+			enabled, err := rep.Property("containers/proxy/enabled")
+			Expect(enabled).To(BeFalse())
+		})
+
+		Context("when route integrity is enabled", func() {
+			It("enables the envoy proxy", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.rep_proxy_enabled": true,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
+				Expect(err).NotTo(HaveOccurred())
+
+				enabled, err := rep.Property("containers/proxy/enabled")
+				Expect(enabled).To(BeTrue())
+			})
+		})
+
+	})
 })
