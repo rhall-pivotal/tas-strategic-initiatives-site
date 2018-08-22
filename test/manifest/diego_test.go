@@ -239,6 +239,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		Context("when route integrity is enabled", func() {
+
 			It("enables the envoy proxy", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.rep_proxy_enabled": true,
@@ -249,7 +250,12 @@ var _ = Describe("Diego", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				enabled, err := rep.Property("containers/proxy/enabled")
+				Expect(err).NotTo(HaveOccurred())
 				Expect(enabled).To(BeTrue())
+
+				additionalMemory, err := rep.Property("containers/proxy/additional_memory_allocation_mb")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(additionalMemory).To(Equal(32))
 			})
 		})
 
