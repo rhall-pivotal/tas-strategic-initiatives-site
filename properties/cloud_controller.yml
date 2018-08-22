@@ -39,6 +39,13 @@
     domains:
     - cloud-controller-ng.service.cf.internal
 
+- name: cloud_controller_public_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - cloud-controller-ng.service.cf.internal
+
 - name: cc_logging_level
   type: text
   configurable: true

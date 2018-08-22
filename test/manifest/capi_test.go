@@ -88,6 +88,7 @@ var _ = Describe("CAPI", func() {
 					Expect(diego).NotTo(HaveKey("lifecycle_bundles"))
 				}
 			})
+
 		})
 
 		Context("when the Operator sets CC logging level to debug", func() {
@@ -178,7 +179,7 @@ var _ = Describe("CAPI", func() {
 		})
 	})
 
-	Describe("stacks", func() {
+	Describe("api", func() {
 
 		var instanceGroup string
 
@@ -194,42 +195,69 @@ var _ = Describe("CAPI", func() {
 			Expect(err).NotTo(HaveOccurred())
 		})
 
-		It("defines stacks", func() {
-			cc, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
-			Expect(err).NotTo(HaveOccurred())
+		Describe("tls routing", func() {
+			It("configures the route registrar to use tls", func() {
+				routeRegistrarJob, err := manifest.FindInstanceGroupJob(instanceGroup, "route_registrar")
+				Expect(err).NotTo(HaveOccurred())
 
-			stacks, err := cc.Property("cc/stacks")
-			Expect(err).NotTo(HaveOccurred())
+				tlsPort, err := routeRegistrarJob.Property("route_registrar/routes/name=api/tls_port")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(tlsPort).To(Equal(9024))
 
-			Expect(stacks).To(ContainElement(map[interface{}]interface{}{
-				"name":        "cflinuxfs2",
-				"description": "Cloud Foundry Linux-based filesystem - Ubuntu Trusty 14.04 LTS",
-			}))
-			Expect(stacks).To(ContainElement(map[interface{}]interface{}{
-				"name":        "cflinuxfs3",
-				"description": "Cloud Foundry Linux-based filesystem - Ubuntu Bionic 18.04 LTS",
-			}))
-			Expect(stacks).To(ContainElement(map[interface{}]interface{}{
-				"name":        "windows2012R2",
-				"description": "Microsoft Windows / .Net 64 bit",
-			}))
-			Expect(stacks).To(ContainElement(map[interface{}]interface{}{
-				"name":        "windows2016",
-				"description": "Microsoft Windows 2016",
-			}))
+				certAltName, err := routeRegistrarJob.Property("route_registrar/routes/name=api/server_cert_domain_san")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(certAltName).To(Equal("cloud-controller-ng.service.cf.internal"))
+			})
+
+			It("configures the cloud controller tls certs", func() {
+				cloudControllerJob, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(cloudControllerJob.Property("cc/public_tls")).Should(HaveKey("ca_cert"))
+				Expect(cloudControllerJob.Property("cc/public_tls")).Should(HaveKey("certificate"))
+				Expect(cloudControllerJob.Property("cc/public_tls")).Should(HaveKey("private_key"))
+			})
 		})
 
-		It("temporarily reduces the local worker count to 1 to workaround a buildpack install race condition", func() {
+		Describe("stacks", func() {
 
-			// https://www.pivotaltracker.com/story/show/159749341
+			It("defines stacks", func() {
+				cc, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+				Expect(err).NotTo(HaveOccurred())
 
-			cc, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
-			Expect(err).NotTo(HaveOccurred())
+				stacks, err := cc.Property("cc/stacks")
+				Expect(err).NotTo(HaveOccurred())
 
-			numberOfWorkers, err := cc.Property("cc/jobs/local/number_of_workers")
-			Expect(err).NotTo(HaveOccurred())
+				Expect(stacks).To(ContainElement(map[interface{}]interface{}{
+					"name":        "cflinuxfs2",
+					"description": "Cloud Foundry Linux-based filesystem - Ubuntu Trusty 14.04 LTS",
+				}))
+				Expect(stacks).To(ContainElement(map[interface{}]interface{}{
+					"name":        "cflinuxfs3",
+					"description": "Cloud Foundry Linux-based filesystem - Ubuntu Bionic 18.04 LTS",
+				}))
+				Expect(stacks).To(ContainElement(map[interface{}]interface{}{
+					"name":        "windows2012R2",
+					"description": "Microsoft Windows / .Net 64 bit",
+				}))
+				Expect(stacks).To(ContainElement(map[interface{}]interface{}{
+					"name":        "windows2016",
+					"description": "Microsoft Windows 2016",
+				}))
+			})
 
-			Expect(numberOfWorkers).To(Equal(1))
+			It("temporarily reduces the local worker count to 1 to workaround a buildpack install race condition", func() {
+
+				// https://www.pivotaltracker.com/story/show/159749341
+
+				cc, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+				Expect(err).NotTo(HaveOccurred())
+
+				numberOfWorkers, err := cc.Property("cc/jobs/local/number_of_workers")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(numberOfWorkers).To(Equal(1))
+			})
 		})
 	})
 })

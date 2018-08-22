@@ -31,7 +31,8 @@ manifest: |
       uris:
       - "api.(( .cloud_controller.system_domain.value ))/networking"
     - name: api
-      port: 9022
+      server_cert_domain_san: "cloud-controller-ng.service.cf.internal"
+      tls_port: 9024
       registration_interval: 20s
       tags:
         component: CloudController

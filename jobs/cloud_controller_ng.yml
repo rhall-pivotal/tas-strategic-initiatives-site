@@ -48,6 +48,10 @@ manifest: |
       private_key: (( .properties.cloud_controller_mutual_cert.private_key_pem ))
       ca_cert: (( $ops_manager.ca_certificate ))
       public_cert: (( .properties.cloud_controller_mutual_cert.cert_pem ))
+    public_tls:
+      private_key: (( .properties.cloud_controller_public_tls_cert.private_key_pem ))
+      ca_cert: (( $ops_manager.ca_certificate ))
+      certificate: (( .properties.cloud_controller_public_tls_cert.cert_pem ))
     stacks:
     - name: cflinuxfs2
       description: Cloud Foundry Linux-based filesystem - Ubuntu Trusty 14.04 LTS

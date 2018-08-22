@@ -6,8 +6,9 @@ manifest: |
   route_registrar:
     routes:
     - name: api
-      port: 9022
       registration_interval: 20s
+      server_cert_domain_san: "cloud-controller-ng.service.cf.internal"
+      tls_port: 9024
       tags:
         component: CloudController
       uris:
