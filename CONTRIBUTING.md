@@ -42,7 +42,7 @@ For more information about tile metadata, refer to the [Product Template Referen
 1. Generate a Github API token
 1. Run `./bin/test` with your Github username and API token
 1. To add new tests, modify or create an appropriate test file in `tests/manifest`
-1. Implement the code changes in the PAS repo
+1. Implement the code changes in the PAS repo, IST, WRT, etc.
 1. Make a PR!
 
 #### Bumping releases
