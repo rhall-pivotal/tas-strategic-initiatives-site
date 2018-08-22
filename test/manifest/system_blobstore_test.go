@@ -249,7 +249,7 @@ var _ = Describe("System Blobstore", func() {
 		})
 
 		It("disables the azure-blobstore-backup-restorer", func() {
-			manifest, err := product.RenderService.RenderManifest(inputProperties)
+			manifest, err := product.RenderManifest(inputProperties)
 			Expect(err).NotTo(HaveOccurred())
 
 			job, err := manifest.FindInstanceGroupJob("backup-restore", "azure-blobstore-backup-restorer")
@@ -264,7 +264,7 @@ var _ = Describe("System Blobstore", func() {
 			It("enables the azure-blobstore-backup-restorer", func() {
 				inputProperties[".properties.system_blobstore.external_azure.enable_bbr"] = true
 
-				manifest, err := product.RenderService.RenderManifest(inputProperties)
+				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob("backup-restore", "azure-blobstore-backup-restorer")
