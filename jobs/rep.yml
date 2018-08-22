@@ -5,9 +5,7 @@ manifest: |
   bpm:
     enabled: true
   containers:
-    proxy:
-      enabled: (( .properties.rep_proxy_enabled.value ))
-      additional_memory_allocation_mb: 32
+    proxy: (( .properties.route_integrity.selected_option.parsed_manifest(proxy) ))
     trusted_ca_certificates:
       - ((( /cf/diego-instance-identity-root-ca.certificate )))
       - (( $ops_manager.ca_certificate ))

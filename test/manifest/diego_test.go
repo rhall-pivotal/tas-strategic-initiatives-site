@@ -242,7 +242,7 @@ var _ = Describe("Diego", func() {
 
 			It("enables the envoy proxy", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.rep_proxy_enabled": true,
+					".properties.route_integrity": "tls_verify",
 				})
 				Expect(err).NotTo(HaveOccurred())
 
@@ -257,6 +257,7 @@ var _ = Describe("Diego", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(additionalMemory).To(Equal(32))
 			})
+
 		})
 
 	})
