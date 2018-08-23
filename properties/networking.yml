@@ -349,9 +349,12 @@
   configurable: true
   optional: true
 
-- name: routing_backends_client_cert
+- name: routing_backends_client_cert_with_san
   type: rsa_cert_credentials
   configurable: false
+  default:
+    domains:
+    - gorouter.service.cf.internal
 
 - name: service_discovery_client_tls
   type: rsa_cert_credentials

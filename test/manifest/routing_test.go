@@ -5,21 +5,28 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Diego Persistence", func() {
-	// TODO: stop skipping once ops-manifest supports testing for credentials
-	XDescribe("Gorouter provides client certs in request to Diego cells", func() {
+var _ = Describe("Routing", func() {
+
+	Describe("Gorouter provides client certs in request to Diego cells", func() {
+
 		It("creates a backend cert_chain and private_key", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(router.Property("router/backends/cert_chain")).NotTo(BeNil())
-			Expect(router.Property("router/backends/private_key")).NotTo(BeNil())
+
+			_, err = router.Property("router/backends/cert_chain")
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = router.Property("router/backends/private_key")
+			Expect(err).NotTo(HaveOccurred())
 		})
+
 	})
 
 	Describe("idle timeouts", func() {
+
 		It("inherits the PAS frontend idle timeout", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -36,6 +43,7 @@ var _ = Describe("Diego Persistence", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(routerTimeout).To(Equal(900))
 		})
+
 	})
 
 	Describe("bpm", func() {

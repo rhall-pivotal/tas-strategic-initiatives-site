@@ -59,7 +59,34 @@
   type: rsa_cert_credentials
   configurable: false
 
-- name: rep_proxy_enabled
-  type: boolean
+- name: route_integrity
+  type: selector
   configurable: true
-  default: false
+  default: do_not_verify
+  option_templates:
+    - name: do_not_verify
+      select_value: do_not_verify
+      named_manifests:
+        - name: proxy
+          manifest: |
+            enabled: false
+    - name: tls_verify
+      select_value: tls_verify
+      named_manifests:
+        - name: proxy
+          manifest: |
+            enabled: true
+            additional_memory_allocation_mb: 32
+    - name: mutual_tls_verify
+      select_value: mutual_tls_verify
+      named_manifests:
+        - name: proxy
+          manifest: |
+            enabled: true
+            additional_memory_allocation_mb: 32
+            enable_unproxied_port_mappings: false
+            require_and_verify_client_certificates: true
+            trusted_ca_certificates:
+            - (( $ops_manager.ca_certificate ))
+            verify_subject_alt_name:
+            - gorouter.service.cf.internal

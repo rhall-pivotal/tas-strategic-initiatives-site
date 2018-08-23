@@ -8,8 +8,8 @@ manifest: |
     backends:
       enable_tls: true
       max_conns: (( .properties.router_backend_max_conn.value ))
-      cert_chain: (( .properties.routing_backends_client_cert.cert_pem ))
-      private_key: (( .properties.routing_backends_client_cert.private_key_pem ))
+      cert_chain: (( .properties.routing_backends_client_cert_with_san.cert_pem ))
+      private_key: (( .properties.routing_backends_client_cert_with_san.private_key_pem ))
     ca_certs: |
       (( .properties.routing_custom_ca_certificates.value ))
       (( $ops_manager.ca_certificate ))

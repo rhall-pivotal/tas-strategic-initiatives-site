@@ -86,7 +86,14 @@ property_inputs:
     - reference: .properties.nfs_volume_driver.disable
       label: Disable
 
-- reference: .properties.rep_proxy_enabled
+- reference: .properties.route_integrity
   label: Router uses TLS to verify application identity
   description: |
     Improves resiliency and consistency for application routes.
+  selector_property_inputs:
+  - reference: .properties.route_integrity.do_not_verify
+    label: Router does not verify application identity
+  - reference: .properties.route_integrity.tls_verify
+    label: Router uses TLS to verify application identity
+  - reference: .properties.route_integrity.mutual_tls_verify
+    label: Router and applications use mutual TLS to verify each other's identity
