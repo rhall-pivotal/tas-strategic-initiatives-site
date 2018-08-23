@@ -1,6 +1,6 @@
 require("tap").mochaGlobals()
 const should = require("should")
-const migration = require("../201808219904_route_integrity_proxy_enabled.js")
+const migration = require("../201808211904_route_integrity_proxy_enabled.js")
 
 describe("Route Integrity", function() {
   context("when the proxy enabled property is not defined", function() {
