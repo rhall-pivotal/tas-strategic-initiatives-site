@@ -169,22 +169,19 @@ var _ = Describe("Routing", func() {
 		})
 	})
 
-	// TODO: stop skipping once ops-manifest supports testing for credentials
-	XDescribe("Gorouter provides client certs in request to Diego cells", func() {
+	Describe("Gorouter provides client certs in request to Diego cells", func() {
 		It("creates a backend cert_chain and private_key", func() {
-			manifest, err := product.RenderManifest(map[string]interface{}{})
+			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			router, err := manifest.FindInstanceGroupJob("router", "gorouter")
 			Expect(err).NotTo(HaveOccurred())
 
-			certChain, err := router.Property("router/backends/cert_chain")
+			_, err = router.Property("router/backends/cert_chain")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(certChain).NotTo(BeNil())
 
-			privateKey, err := router.Property("router/backends/private_key")
+			_, err = router.Property("router/backends/private_key")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(privateKey).NotTo(BeNil())
 		})
 	})
 
