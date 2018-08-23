@@ -119,6 +119,19 @@
           manifest: |
             enabled: true
             additional_memory_allocation_mb: 32
+    - name: mutual_tls_verify
+      select_value: mutual_tls_verify
+      named_manifests:
+        - name: proxy
+          manifest: |
+            enabled: true
+            additional_memory_allocation_mb: 32
+            enable_unproxied_port_mappings: false
+            require_and_verify_client_certificates: true
+            trusted_ca_certificates:
+            - (( $ops_manager.ca_certificate ))
+            verify_subject_alt_name:
+            - gorouter.service.cf.internal
 
 - name: diego_log_timestamp_format
   type: selector

@@ -260,5 +260,48 @@ var _ = Describe("Diego", func() {
 
 		})
 
+		Context("when strict route integrity is enabled", func() {
+
+			var proxyProperties map[interface{}]interface{}
+
+			BeforeEach(func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.route_integrity": "mutual_tls_verify",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
+				Expect(err).NotTo(HaveOccurred())
+
+				rawProxyProperties, err := rep.Property("containers/proxy")
+				Expect(err).NotTo(HaveOccurred())
+
+				proxyProperties = rawProxyProperties.(map[interface{}]interface{})
+			})
+
+			It("enables the proxy", func() {
+				Expect(proxyProperties["enabled"]).To(BeTrue())
+			})
+
+			It("allocates sufficient RAM for the proxy", func() {
+				Expect(proxyProperties["additional_memory_allocation_mb"]).To(Equal(32))
+			})
+
+			It("requires and verifies client credentials", func() {
+				Expect(proxyProperties["require_and_verify_client_certificates"]).To(BeTrue())
+			})
+
+			It("specifies the CA that it trusts", func() {
+				Expect(proxyProperties).To(HaveKey("trusted_ca_certificates"))
+			})
+
+			It("configures the subject alt name to be verified", func() {
+				Expect(proxyProperties["verify_subject_alt_name"]).To(Equal([]interface{}{"gorouter.service.cf.internal"}))
+			})
+
+			It("disables direct access to container ports", func() {
+				Expect(proxyProperties["enable_unproxied_port_mappings"]).To(BeFalse())
+			})
+		})
 	})
 })
