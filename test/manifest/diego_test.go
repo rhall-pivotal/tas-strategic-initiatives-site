@@ -215,6 +215,20 @@ var _ = Describe("Diego", func() {
 			Expect(preloadedRootfses).To(ContainElement("cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"))
 			Expect(preloadedRootfses).To(ContainElement("cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar"))
 		})
+
+		It("ensures the standard root filesystems remain in the layer cache", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			garden, err := manifest.FindInstanceGroupJob(instanceGroup, "garden")
+			Expect(err).NotTo(HaveOccurred())
+
+			persistentImageList, err := garden.Property("garden/persistent_image_list")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs2/rootfs.tar"))
+			Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs3/rootfs.tar"))
+		})
 	})
 
 	Context("route integrity", func() {
