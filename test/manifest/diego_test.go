@@ -1,6 +1,8 @@
 package manifest_test
 
 import (
+	"fmt"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -318,4 +320,37 @@ var _ = Describe("Diego", func() {
 			})
 		})
 	})
+
+	Context("cflinuxfs2-rootfs and cflinuxfs3-rootfs", func() {
+
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "compute"
+			} else {
+				instanceGroup = "diego_cell"
+			}
+		})
+
+		It("configures the trusted certs", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			cflinuxfs2RootfsSetup, err := manifest.FindInstanceGroupJob(instanceGroup, "cflinuxfs2-rootfs-setup")
+			Expect(err).NotTo(HaveOccurred())
+
+			trustedCerts, err := cflinuxfs2RootfsSetup.Property("cflinuxfs2-rootfs/trusted_certs")
+			Expect(err).NotTo(HaveOccurred())
+			fmt.Println("trustedCerts:", trustedCerts)
+			Expect(trustedCerts).NotTo(BeNil())
+
+			cflinuxfs3RootfsSetup, err := manifest.FindInstanceGroupJob(instanceGroup, "cflinuxfs3-rootfs-setup")
+			Expect(err).NotTo(HaveOccurred())
+
+			trustedCerts, err = cflinuxfs3RootfsSetup.Property("cflinuxfs3-rootfs/trusted_certs")
+			Expect(err).NotTo(HaveOccurred())
+			fmt.Println("trustedCerts:", trustedCerts)
+			Expect(trustedCerts).NotTo(BeNil())
+		})
+	})
+
 })
