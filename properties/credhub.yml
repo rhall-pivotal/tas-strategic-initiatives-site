@@ -56,11 +56,12 @@
             type: internal
           - name: hsm-provider
             type: hsm
-            partition: (( .properties.credhub_hsm_provider_partition.value ))
-            partition_password: ((  .properties.credhub_hsm_provider_partition_password.value ))
-            client_certificate: (( .properties.credhub_hsm_provider_client_certificate.cert_pem ))
-            client_key: (( .properties.credhub_hsm_provider_client_certificate.private_key_pem ))
-            servers: (( .properties.credhub_hsm_provider_servers.parsed_manifest(servers) ))
+            connection_properties:
+              partition: (( .properties.credhub_hsm_provider_partition.value ))
+              partition_password: ((  .properties.credhub_hsm_provider_partition_password.value ))
+              client_certificate: (( .properties.credhub_hsm_provider_client_certificate.cert_pem ))
+              client_key: (( .properties.credhub_hsm_provider_client_certificate.private_key_pem ))
+              servers: (( .properties.credhub_hsm_provider_servers.parsed_manifest(servers) ))
       - name: internal_only
         manifest: |
           - name: internal-provider

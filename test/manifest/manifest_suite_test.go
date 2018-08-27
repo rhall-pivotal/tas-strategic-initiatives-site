@@ -1,13 +1,21 @@
 package manifest_test
 
 import (
+	"bytes"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	"crypto/x509/pkix"
+	"encoding/pem"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -95,4 +103,47 @@ func fetchProductVersion() (string, error) {
 	}
 
 	return matches[1], nil
+}
+
+type tlsKeypair struct {
+	Certificate string
+	PrivateKey  string
+}
+
+func generateTLSKeypair(hostname string) tlsKeypair {
+	priv, err := rsa.GenerateKey(rand.Reader, 2048)
+	Expect(err).NotTo(HaveOccurred())
+
+	serialNumberLimit := new(big.Int).Lsh(big.NewInt(1), 128)
+	serialNumber, err := rand.Int(rand.Reader, serialNumberLimit)
+	Expect(err).NotTo(HaveOccurred())
+
+	template := x509.Certificate{
+		SerialNumber: serialNumber,
+		Subject: pkix.Name{
+			Organization: []string{"Acme Co"},
+		},
+		DNSNames:              []string{hostname},
+		NotBefore:             time.Now(),
+		NotAfter:              time.Now().Add(time.Hour * 24),
+		KeyUsage:              x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,
+		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
+		BasicConstraintsValid: true,
+	}
+
+	derBytes, err := x509.CreateCertificate(rand.Reader, &template, &template, &priv.PublicKey, priv)
+	Expect(err).NotTo(HaveOccurred())
+
+	certContents := bytes.Buffer{}
+	err = pem.Encode(&certContents, &pem.Block{Type: "CERTIFICATE", Bytes: derBytes})
+	Expect(err).NotTo(HaveOccurred())
+
+	privateKeyContents := bytes.Buffer{}
+	err = pem.Encode(&privateKeyContents, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(priv)})
+	Expect(err).NotTo(HaveOccurred())
+
+	return tlsKeypair{
+		Certificate: certContents.String(),
+		PrivateKey:  privateKeyContents.String(),
+	}
 }

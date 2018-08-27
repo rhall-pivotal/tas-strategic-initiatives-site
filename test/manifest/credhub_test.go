@@ -42,6 +42,8 @@ var _ = Describe("CredHub", func() {
 		Context("when there is an additional HSM key set as primary", func() {
 
 			It("configures credhub with the keys, with the HSM key marked as active", func() {
+				fakeClientKeypair := generateTLSKeypair("some-hsm-client")
+				fakeServerKeypair := generateTLSKeypair("some-hsm-host")
 				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.credhub_key_encryption_passwords": []map[string]interface{}{
 						{
@@ -59,6 +61,22 @@ var _ = Describe("CredHub", func() {
 							"name":     "hsm key display name",
 							"primary":  true,
 							"provider": "hsm",
+						},
+					},
+					".properties.credhub_hsm_provider_client_certificate": map[string]interface{}{
+						"cert_pem":        fakeClientKeypair.Certificate,
+						"private_key_pem": fakeClientKeypair.PrivateKey,
+					},
+					".properties.credhub_hsm_provider_partition": "some-hsm-partition",
+					".properties.credhub_hsm_provider_partition_password": map[string]interface{}{
+						"secret": "some-hsm-partition-password",
+					},
+					".properties.credhub_hsm_provider_servers": []map[string]interface{}{
+						{
+							"host_address":            "some-hsm-host",
+							"hsm_certificate":         fakeServerKeypair.Certificate,
+							"partition_serial_number": "some-hsm-partition-serial",
+							"port": 9999,
 						},
 					},
 				})
@@ -80,6 +98,29 @@ var _ = Describe("CredHub", func() {
 				Expect(hsmKey["provider_name"]).To(Equal("hsm-provider"))
 				Expect(hsmKey["key_properties"]).To(HaveKeyWithValue("encryption_key_name", ContainSubstring("credhub_key_encryption_passwords/1/key.value")))
 				Expect(hsmKey["active"]).To(BeTrue())
+
+				providers, err := credhub.Property("credhub/encryption/providers")
+				Expect(err).ToNot(HaveOccurred())
+
+				internalProvider := providers.([]interface{})[0].(map[interface{}]interface{})
+				Expect(internalProvider["name"]).To(Equal("internal-provider"))
+				Expect(internalProvider["type"]).To(Equal("internal"))
+
+				hsmProvider := providers.([]interface{})[1].(map[interface{}]interface{})
+				Expect(hsmProvider["name"]).To(Equal("hsm-provider"))
+				Expect(hsmProvider["type"]).To(Equal("hsm"))
+
+				hsmConnectionProperties := hsmProvider["connection_properties"].(map[interface{}]interface{})
+				Expect(hsmConnectionProperties["partition"]).To(Equal("some-hsm-partition"))
+				Expect(hsmConnectionProperties["partition_password"]).NotTo(BeEmpty())
+				Expect(hsmConnectionProperties["client_certificate"]).NotTo(BeEmpty())
+				Expect(hsmConnectionProperties["client_key"]).NotTo(BeEmpty())
+
+				hsmServer := hsmConnectionProperties["servers"].([]interface{})[0].(map[interface{}]interface{})
+				Expect(hsmServer["certificate"]).NotTo(BeEmpty())
+				Expect(hsmServer["host"]).To(Equal("some-hsm-host"))
+				Expect(hsmServer["partition_serial_number"]).To(Equal("some-hsm-partition-serial"))
+				Expect(hsmServer["port"]).To(Equal(9999))
 			})
 
 		})
