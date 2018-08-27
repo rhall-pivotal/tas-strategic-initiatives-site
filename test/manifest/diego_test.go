@@ -1,8 +1,6 @@
 package manifest_test
 
 import (
-	"fmt"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -340,7 +338,6 @@ var _ = Describe("Diego", func() {
 
 			trustedCerts, err := cflinuxfs2RootfsSetup.Property("cflinuxfs2-rootfs/trusted_certs")
 			Expect(err).NotTo(HaveOccurred())
-			fmt.Println("trustedCerts:", trustedCerts)
 			Expect(trustedCerts).NotTo(BeNil())
 
 			cflinuxfs3RootfsSetup, err := manifest.FindInstanceGroupJob(instanceGroup, "cflinuxfs3-rootfs-setup")
@@ -348,7 +345,6 @@ var _ = Describe("Diego", func() {
 
 			trustedCerts, err = cflinuxfs3RootfsSetup.Property("cflinuxfs3-rootfs/trusted_certs")
 			Expect(err).NotTo(HaveOccurred())
-			fmt.Println("trustedCerts:", trustedCerts)
 			Expect(trustedCerts).NotTo(BeNil())
 		})
 	})
