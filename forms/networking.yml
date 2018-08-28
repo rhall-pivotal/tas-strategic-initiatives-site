@@ -276,9 +276,11 @@ property_inputs:
   - reference: .router.frontend_idle_timeout
     label: Frontend Idle Timeout for Router and HAProxy
     description: |
-      Duration in seconds to maintain an open connection when client supports keep-alive.
-      This property should be configured to a value greater than the IAAS-provided load
-      balancer value in order to prevent connections from being closed prematurely.
+      Duration in seconds to maintain an open connection when client supports
+      keep-alive. This property must be configured to a value that  corresponds
+      with the behavior of the IAAS-provided load balancer value in order to
+      prevent connections from being closed prematurely. For details see:
+      https://docs.pivotal.io/pivotalcf/customizing/frontend-idle-timeout.html
 
   - reference: .router.drain_wait
     label: Load Balancer Unhealthy Threshold
