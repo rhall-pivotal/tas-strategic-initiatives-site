@@ -239,25 +239,6 @@
             backup:
               name: (( .properties.system_blobstore.external.packages_backup_bucket.value ))
               region: (( .properties.system_blobstore.external.backup_region.value ))
-        - name: backup_resource
-          manifest: |
-            name: (( .properties.system_blobstore.external.resources_bucket.value ))
-            region: (( .properties.system_blobstore.external.region.value ))
-            aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
-            aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
-            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
-            backup:
-              name: (( .properties.system_blobstore.external.resources_backup_bucket.value ))
-              region: (( .properties.system_blobstore.external.backup_region.value ))
-        - name: backup_resource_iam
-          manifest: |
-            name: (( .properties.system_blobstore.external.resources_bucket.value ))
-            region: (( .properties.system_blobstore.external.region.value ))
-            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
-            use_iam_profile: true
-            backup:
-              name: (( .properties.system_blobstore.external.resources_backup_bucket.value ))
-              region: (( .properties.system_blobstore.external.backup_region.value ))
         - name: enable_unversioned_s3_backup
           manifest: |
             '(( .properties.system_blobstore.external.versioning.value ? false : true ))'

@@ -27,7 +27,7 @@ var _ = Describe("System Blobstore", func() {
 	Describe("s3 compatible", func() {
 		var (
 			inputProperties map[string]interface{}
-			buckets         = []string{"buildpacks", "droplets", "packages", "resources"}
+			backupBuckets   = []string{"buildpacks", "droplets", "packages"}
 		)
 
 		BeforeEach(func() {
@@ -79,7 +79,7 @@ var _ = Describe("System Blobstore", func() {
 					job, err := manifest.FindInstanceGroupJob("backup-restore", "s3-versioned-blobstore-backup-restorer")
 					Expect(err).NotTo(HaveOccurred())
 
-					for _, bucket := range buckets {
+					for _, bucket := range backupBuckets {
 						bucketProperties, err := job.Property(fmt.Sprintf("buckets/%s", bucket))
 						Expect(err).NotTo(HaveOccurred())
 						Expect(bucketProperties).NotTo(HaveKey("use_iam_profile"))
@@ -101,7 +101,7 @@ var _ = Describe("System Blobstore", func() {
 					job, err := manifest.FindInstanceGroupJob("backup-restore", "s3-versioned-blobstore-backup-restorer")
 					Expect(err).NotTo(HaveOccurred())
 
-					for _, bucket := range buckets {
+					for _, bucket := range backupBuckets {
 						iamInstanceProfileAuthentication, err := job.Property(fmt.Sprintf("buckets/%s/use_iam_profile", bucket))
 						Expect(err).NotTo(HaveOccurred())
 						Expect(iamInstanceProfileAuthentication).To(BeTrue())
@@ -165,14 +165,6 @@ var _ = Describe("System Blobstore", func() {
 				packagesBackupName, err := job.Property("buckets/packages/backup/name")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(packagesBackupName).To(Equal("some-packages-bucket"))
-
-				resourcesBackupRegion, err := job.Property("buckets/resources/backup/region")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(resourcesBackupRegion).To(Equal("some-backup-region"))
-
-				resourcesBackupName, err := job.Property("buckets/resources/backup/name")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(resourcesBackupName).To(Equal("some-resources-bucket"))
 			})
 
 			Context("and IAM instance profiles are disabled", func() {
@@ -191,7 +183,7 @@ var _ = Describe("System Blobstore", func() {
 					job, err := manifest.FindInstanceGroupJob("backup-restore", "s3-unversioned-blobstore-backup-restorer")
 					Expect(err).NotTo(HaveOccurred())
 
-					for _, bucket := range buckets {
+					for _, bucket := range backupBuckets {
 						bucketProperties, err := job.Property(fmt.Sprintf("buckets/%s", bucket))
 						Expect(err).NotTo(HaveOccurred())
 						Expect(bucketProperties).NotTo(HaveKey("use_iam_profile"))
@@ -213,7 +205,7 @@ var _ = Describe("System Blobstore", func() {
 					job, err := manifest.FindInstanceGroupJob("backup-restore", "s3-unversioned-blobstore-backup-restorer")
 					Expect(err).NotTo(HaveOccurred())
 
-					for _, bucket := range buckets {
+					for _, bucket := range backupBuckets {
 						iamInstanceProfileAuthentication, err := job.Property(fmt.Sprintf("buckets/%s/use_iam_profile", bucket))
 						Expect(err).NotTo(HaveOccurred())
 						Expect(iamInstanceProfileAuthentication).To(BeTrue())
