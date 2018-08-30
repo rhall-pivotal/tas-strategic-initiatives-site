@@ -121,7 +121,6 @@ var _ = Describe("System Blobstore", func() {
 				inputProperties[".properties.system_blobstore.external.buildpacks_backup_bucket"] = "some-buildpacks-bucket"
 				inputProperties[".properties.system_blobstore.external.droplets_backup_bucket"] = "some-droplets-bucket"
 				inputProperties[".properties.system_blobstore.external.packages_backup_bucket"] = "some-packages-bucket"
-				inputProperties[".properties.system_blobstore.external.resources_backup_bucket"] = "some-resources-bucket"
 			})
 
 			It("disables the s3-versioned-blobstore-backup-restorer and enables the s3-unversioned-blobstore-backup-restorer", func() {
