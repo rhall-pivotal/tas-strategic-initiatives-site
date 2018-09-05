@@ -7,16 +7,24 @@ import (
 
 var _ = Describe("NFS volume service", func() {
 	Context("when the NFS V3 driver is enabled without LDAP configuration", func() {
-		It("enables the nfsv3driver job", func() {
+		It("does not configure LDAP on the nfsv3driver job", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
-			nfsV3DriverPush, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "nfsv3driver")
+			nfsV3Driver, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "nfsv3driver")
 			Expect(err).NotTo(HaveOccurred())
 
-			nfsV3DriverDisable, err := nfsV3DriverPush.Property("nfsv3driver/disable")
+			nfsV3DriverProperties, err := nfsV3Driver.Property("nfsv3driver")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(nfsV3DriverDisable).To(BeFalse())
+
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("disable", BeFalse()))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_svc_user", BeNil()))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_svc_password", BeNil()))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_host", BeNil()))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_port", BeNil()))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_user_fqdn", BeNil()))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_ca_cert", BeNil()))
+			Expect(nfsV3DriverProperties).NotTo(HaveKey("allowed-in-source"))
 		})
 	})
 
@@ -39,32 +47,20 @@ var _ = Describe("NFS volume service", func() {
 			manifest, err := product.RenderManifest(ldapConfiguration)
 			Expect(err).NotTo(HaveOccurred())
 
-			nfsV3DriverPush, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "nfsv3driver")
+			nfsV3Driver, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "nfsv3driver")
 			Expect(err).NotTo(HaveOccurred())
 
-			ldapServiceUser, err := nfsV3DriverPush.Property("nfsv3driver/ldap_svc_user")
+			nfsV3DriverProperties, err := nfsV3Driver.Property("nfsv3driver")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(ldapServiceUser).To(Equal("service-account-user"))
 
-			ldapServicePassword, err := nfsV3DriverPush.Property("nfsv3driver/ldap_svc_password")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(ldapServicePassword).To(MatchRegexp("((/opsmgr/p-isolation-segment-[a-z0-9]{20}/nfs_volume_driver/enable/ldap_service_account_password.value))"))
-
-			ldapHost, err := nfsV3DriverPush.Property("nfsv3driver/ldap_host")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(ldapHost).To(Equal("ldap-host"))
-
-			ldapPort, err := nfsV3DriverPush.Property("nfsv3driver/ldap_port")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(ldapPort).To(Equal(12345))
-
-			ldapUserFqdn, err := nfsV3DriverPush.Property("nfsv3driver/ldap_user_fqdn")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(ldapUserFqdn).To(Equal("ldap-user-search-base"))
-
-			ldapCACert, err := nfsV3DriverPush.Property("nfsv3driver/ldap_ca_cert")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(ldapCACert).To(BeNil())
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("disable", BeFalse()))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_svc_user", "service-account-user"))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_svc_password", MatchRegexp("((/opsmgr/p-isolation-segment-[a-z0-9]{20}/nfs_volume_driver/enable/ldap_service_account_password.value))")))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_host", "ldap-host"))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_port", 12345))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_user_fqdn", "ldap-user-search-base"))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_ca_cert", BeNil()))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("allowed-in-source", ""))
 		})
 
 		Context("when the LDAP CA certificate is configured", func() {
@@ -74,12 +70,13 @@ var _ = Describe("NFS volume service", func() {
 				manifest, err := product.RenderManifest(ldapConfiguration)
 				Expect(err).NotTo(HaveOccurred())
 
-				nfsV3DriverPush, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "nfsv3driver")
+				nfsV3Driver, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "nfsv3driver")
 				Expect(err).NotTo(HaveOccurred())
 
-				ldapCACert, err := nfsV3DriverPush.Property("nfsv3driver/ldap_ca_cert")
+				nfsV3DriverProperties, err := nfsV3Driver.Property("nfsv3driver")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(ldapCACert).To(Equal("ldap-ca-cert"))
+
+				Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_ca_cert", "ldap-ca-cert"))
 			})
 		})
 	})
@@ -91,12 +88,13 @@ var _ = Describe("NFS volume service", func() {
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			nfsV3DriverPush, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "nfsv3driver")
+			nfsV3Driver, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "nfsv3driver")
 			Expect(err).NotTo(HaveOccurred())
 
-			nfsV3DriverDisable, err := nfsV3DriverPush.Property("nfsv3driver/disable")
+			nfsV3DriverProperties, err := nfsV3Driver.Property("nfsv3driver")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(nfsV3DriverDisable).To(BeTrue())
+
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("disable", BeTrue()))
 		})
 	})
 })
