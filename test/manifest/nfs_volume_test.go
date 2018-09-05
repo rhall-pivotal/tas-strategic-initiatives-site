@@ -105,7 +105,7 @@ var _ = Describe("NFS volume service", func() {
 
 			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("disable", BeFalse()))
 			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_svc_user", "service-account-user"))
-			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_svc_password", MatchRegexp("((/opsmgr/cf-[a-z0-9]{20}/nfs_volume_driver/enable/ldap_service_account_password.value))")))
+			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_svc_password", Not(BeEmpty())))
 			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_host", "ldap-host"))
 			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_port", 12345))
 			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("ldap_user_fqdn", "ldap-user-search-base"))
