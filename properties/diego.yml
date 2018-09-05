@@ -55,6 +55,21 @@
       named_manifests:
         - name: nfsv3driver_properties
           manifest: |
+            "(( .properties.nfs_volume_driver.enable.ldap_server_host.value_present? ? .properties.nfs_volume_driver.selected_option.parsed_manifest(nfsv3driver_properties_ldap) : .properties.nfs_volume_driver.selected_option.parsed_manifest(nfsv3driver_properties_non_ldap) ))"
+
+        - name: nfsv3driver_properties_ldap
+          manifest: |
+            disable: false
+            ldap_svc_user: (( .properties.nfs_volume_driver.enable.ldap_service_account_user.value ))
+            ldap_svc_password: (( .properties.nfs_volume_driver.enable.ldap_service_account_password.value ))
+            ldap_host: (( .properties.nfs_volume_driver.enable.ldap_server_host.value ))
+            ldap_port: (( .properties.nfs_volume_driver.enable.ldap_server_port.value ))
+            ldap_user_fqdn: (( .properties.nfs_volume_driver.enable.ldap_user_fqdn.value ))
+            ldap_ca_cert: (( .properties.nfs_volume_driver.enable.ldap_ca_cert.value ))
+            allowed-in-source: ""
+
+        - name: nfsv3driver_properties_non_ldap
+          manifest: |
             disable: false
             ldap_svc_user: (( .properties.nfs_volume_driver.enable.ldap_service_account_user.value ))
             ldap_svc_password: (( .properties.nfs_volume_driver.enable.ldap_service_account_password.value ))
