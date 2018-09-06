@@ -35,3 +35,15 @@ property_inputs:
       - reference: .properties.cc_api_rate_limit.disable
         label: Disable
 
+  - reference: .properties.ccdb_connection_validation_timeout
+    label: Database Connection Validation Timeout
+    description: |
+      The connection validation timeout in seconds. Note that setting this to -1 results
+      in an additional query whenever connections are checked out from the pool, which
+      can have performance implications.
+
+  - reference: .properties.ccdb_read_timeout
+    label: Database Read Timeout
+    description: |
+      The read timeout for query responses in seconds.
+

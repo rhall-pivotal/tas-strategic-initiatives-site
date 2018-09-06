@@ -104,6 +104,8 @@
           (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
       - name: ccdb
         manifest: |
+          connection_validation_timeout: (( .properties.ccdb_connection_validation_timeout.value ))
+          read_timeout: (( .properties.ccdb_read_timeout.value ))
           db_scheme: mysql
           address: mysql.service.cf.internal
           port: 3306
@@ -219,6 +221,8 @@
           (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
       - name: ccdb
         manifest: |
+          connection_validation_timeout: (( .properties.ccdb_connection_validation_timeout.value ))
+          read_timeout: (( .properties.ccdb_read_timeout.value ))
           db_scheme: mysql
           address: mysql.service.cf.internal
           port: 3306
@@ -404,6 +408,8 @@
             database: nil
         - name: ccdb
           manifest: |
+            connection_validation_timeout: (( .properties.ccdb_connection_validation_timeout.value ))
+            read_timeout: (( .properties.ccdb_read_timeout.value ))
             db_scheme: "mysql"
             address: (( .properties.system_database.external.host.value ))
             port: (( .properties.system_database.external.port.value ))

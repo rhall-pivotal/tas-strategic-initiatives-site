@@ -54,7 +54,7 @@ var _ = Describe("CAPI", func() {
 				Expect(err).NotTo(HaveOccurred())
 			})
 
-			It("defaults logging level to info", func() {
+			It("sets defaults", func() {
 				for _, job := range ccJobs {
 					manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
 					Expect(err).NotTo(HaveOccurred())
@@ -62,33 +62,24 @@ var _ = Describe("CAPI", func() {
 					loggingLevel, err := manifestJob.Property("cc/logging_level")
 					Expect(err).NotTo(HaveOccurred())
 					Expect(loggingLevel).To(Equal(string("info")))
-				}
-			})
-
-			It("configures a default health check timeout", func() {
-				for _, job := range ccJobs {
-					manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
-					Expect(err).NotTo(HaveOccurred())
 
 					healthCheck, err := manifestJob.Property("cc/default_health_check_timeout")
 					Expect(err).NotTo(HaveOccurred())
-
 					Expect(healthCheck).To(Equal(60))
-				}
-			})
-
-			It("inherits the default spec set of lifecycle bundles", func() {
-				for _, job := range ccJobs {
-					manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
-					Expect(err).NotTo(HaveOccurred())
 
 					diego, err := manifestJob.Property("cc/diego")
 					Expect(err).NotTo(HaveOccurred())
-
 					Expect(diego).NotTo(HaveKey("lifecycle_bundles"))
+
+					timeout, err := manifestJob.Property("ccdb/connection_validation_timeout")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(timeout).To(Equal(3600))
+
+					timeout, err = manifestJob.Property("ccdb/read_timeout")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(timeout).To(Equal(3600))
 				}
 			})
-
 		})
 
 		Context("when the Operator sets CC logging level to debug", func() {
@@ -108,6 +99,32 @@ var _ = Describe("CAPI", func() {
 					loggingLevel, err := manifestJob.Property("cc/logging_level")
 					Expect(err).NotTo(HaveOccurred())
 					Expect(loggingLevel).To(Equal(string("debug")))
+				}
+			})
+		})
+
+		Context("when the Operator sets the Database Connection Validation Timeout", func() {
+			BeforeEach(func() {
+				var err error
+				manifest, err = product.RenderManifest(map[string]interface{}{
+					".properties.ccdb_connection_validation_timeout": 200,
+					".properties.ccdb_read_timeout":                  200,
+				})
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("configures the timeouts on the ccdb", func() {
+				for _, job := range ccJobs {
+					manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
+					Expect(err).NotTo(HaveOccurred())
+
+					timeout, err := manifestJob.Property("ccdb/connection_validation_timeout")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(timeout).To(Equal(200))
+
+					timeout, err = manifestJob.Property("ccdb/read_timeout")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(timeout).To(Equal(200))
 				}
 			})
 		})

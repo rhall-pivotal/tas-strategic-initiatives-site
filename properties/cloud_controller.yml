@@ -56,3 +56,17 @@
   configurable: true
   default: 60
   minimum: 60
+
+- name: ccdb_connection_validation_timeout
+  type: integer
+  configurable: true
+  default: 3600
+  constraints:
+    min: -1
+
+- name: ccdb_read_timeout
+  type: integer
+  configurable: true
+  default: 3600
+  constraints:
+    min: 1
