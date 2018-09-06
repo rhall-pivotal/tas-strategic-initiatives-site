@@ -8,19 +8,35 @@ import (
 )
 
 var _ = Describe("System Blobstore", func() {
-	Describe("non-s3 blobstores", func() {
-		Context("when s3 is not selected", func() {
-			It("doesn't enable unversioned S3 backups", func() {
-				manifest, err := product.RenderManifest(nil)
-				Expect(err).NotTo(HaveOccurred())
+	Describe("internal blobstore", func() {
+		It("configures the internal blobstore", func() {
+			inputProperties := map[string]interface{}{
+				".properties.system_blobstore_ccpackage_max_valid_packages_stored":  0,
+				".properties.system_blobstore_ccdroplet_max_staged_droplets_stored": 0,
+			}
 
-				job, err := manifest.FindInstanceGroupJob("backup-restore", "s3-unversioned-blobstore-backup-restorer")
-				Expect(err).NotTo(HaveOccurred())
+			manifest, err := product.RenderService.RenderManifest(inputProperties)
+			Expect(err).NotTo(HaveOccurred())
 
-				jobEnabled, err := job.Property("enabled")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(jobEnabled).To(BeFalse())
-			})
+			By("setting properties on cloud_controller_ng")
+			job, err := manifest.FindInstanceGroupJob("cloud_controller", "cloud_controller_ng")
+			Expect(err).NotTo(HaveOccurred())
+
+			maxValidPackages, err := job.Property("cc/packages/max_valid_packages_stored")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(maxValidPackages).To(Equal(0))
+
+			maxStagedDroplets, err := job.Property("cc/droplets/max_staged_droplets_stored")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(maxStagedDroplets).To(Equal(0))
+
+			By("not enabling unversioned S3 backups", func() {})
+			bbr, err := manifest.FindInstanceGroupJob("backup-restore", "s3-unversioned-blobstore-backup-restorer")
+			Expect(err).NotTo(HaveOccurred())
+
+			jobEnabled, err := bbr.Property("enabled")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(jobEnabled).To(BeFalse())
 		})
 	})
 

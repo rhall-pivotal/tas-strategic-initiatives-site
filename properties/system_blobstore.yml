@@ -1,4 +1,18 @@
 ---
+- name: system_blobstore_ccdroplet_max_staged_droplets_stored
+  type: integer
+  configurable: true
+  default: 2
+  constraints:
+    min: 0
+
+- name: system_blobstore_ccpackage_max_valid_packages_stored
+  type: integer
+  configurable: true
+  default: 2
+  constraints:
+    min: 0
+
 - name: system_blobstore
   type: selector
   configurable: true
@@ -17,7 +31,7 @@
               ca_cert: (( $ops_manager.ca_certificate ))
         - name: ccdroplet
           manifest: |
-            max_staged_droplets_stored: 2
+            max_staged_droplets_stored:  (( .properties.system_blobstore_ccdroplet_max_staged_droplets_stored.value ))
             blobstore_type: webdav
             webdav_config:
               username: ((( webdav-blobstore-credentials.username )))
@@ -27,6 +41,7 @@
         - name: ccpackage
           manifest: |
             max_package_size: 2147483648
+            max_valid_packages_stored: (( .properties.system_blobstore_ccpackage_max_valid_packages_stored.value ))
             blobstore_type: webdav
             webdav_config:
               username: ((( webdav-blobstore-credentials.username )))
@@ -101,7 +116,7 @@
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccdroplet
           manifest: |
-            max_staged_droplets_stored: 2
+            max_staged_droplets_stored:  (( .properties.system_blobstore_ccdroplet_max_staged_droplets_stored.value ))
             blobstore_type: fog
             droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
             fog_connection:
@@ -129,6 +144,7 @@
         - name: ccpackage
           manifest: |
             max_package_size: 2147483648
+            max_valid_packages_stored: (( .properties.system_blobstore_ccpackage_max_valid_packages_stored.value ))
             app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
             blobstore_type: fog
             fog_connection:
@@ -327,7 +343,7 @@
               google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
         - name: ccdroplet
           manifest: |
-            max_staged_droplets_stored: 2
+            max_staged_droplets_stored:  (( .properties.system_blobstore_ccdroplet_max_staged_droplets_stored.value ))
             blobstore_type: fog
             droplet_directory_key: (( .properties.system_blobstore.external_gcs.droplets_bucket.value ))
             fog_connection:
@@ -337,6 +353,7 @@
         - name: ccpackage
           manifest: |
             max_package_size: 2147483648
+            max_valid_packages_stored: (( .properties.system_blobstore_ccpackage_max_valid_packages_stored.value ))
             blobstore_type: fog
             app_package_directory_key: (( .properties.system_blobstore.external_gcs.packages_bucket.value ))
             fog_connection:
@@ -484,7 +501,7 @@
               azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
         - name: ccdroplet
           manifest: |
-            max_staged_droplets_stored: 2
+            max_staged_droplets_stored:  (( .properties.system_blobstore_ccdroplet_max_staged_droplets_stored.value ))
             blobstore_type: fog
             droplet_directory_key: (( .properties.system_blobstore.external_azure.droplets_container.value ))
             fog_connection:
@@ -495,6 +512,7 @@
         - name: ccpackage
           manifest: |
             max_package_size: 2147483648
+            max_valid_packages_stored: (( .properties.system_blobstore_ccpackage_max_valid_packages_stored.value ))
             blobstore_type: fog
             app_package_directory_key: (( .properties.system_blobstore.external_azure.packages_container.value ))
             fog_connection:

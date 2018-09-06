@@ -43,6 +43,14 @@ verifiers:
       signature_version: .properties.system_blobstore.external.signature_version
 
 property_inputs:
+- reference: .properties.system_blobstore_ccpackage_max_valid_packages_stored
+  label: Max Valid Packages per App
+  description: Number of recent, valid packages stored per app (not including package for current droplet)
+
+- reference: .properties.system_blobstore_ccdroplet_max_staged_droplets_stored
+  label: Max Staged Droplets per App
+  description: Number of recent, staged droplets stored per app (not including current droplet)
+
 - reference: .properties.system_blobstore
   label: Configure your Cloud Controller's filesystem
   selector_property_inputs:
