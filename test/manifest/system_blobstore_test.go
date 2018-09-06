@@ -9,6 +9,16 @@ import (
 
 var _ = Describe("System Blobstore", func() {
 	Describe("internal blobstore", func() {
+		var instanceGroup string
+
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "control"
+			} else {
+				instanceGroup = "cloud_controller"
+			}
+		})
+
 		It("configures the internal blobstore", func() {
 			inputProperties := map[string]interface{}{
 				".properties.system_blobstore_ccpackage_max_valid_packages_stored":  0,
@@ -19,7 +29,7 @@ var _ = Describe("System Blobstore", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			By("setting properties on cloud_controller_ng")
-			job, err := manifest.FindInstanceGroupJob("cloud_controller", "cloud_controller_ng")
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
 			Expect(err).NotTo(HaveOccurred())
 
 			maxValidPackages, err := job.Property("cc/packages/max_valid_packages_stored")
