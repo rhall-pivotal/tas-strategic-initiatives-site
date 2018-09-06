@@ -15,7 +15,7 @@ var _ = Describe("System Blobstore", func() {
 				".properties.system_blobstore_ccdroplet_max_staged_droplets_stored": 0,
 			}
 
-			manifest, err := product.RenderService.RenderManifest(inputProperties)
+			manifest, err := product.RenderManifest(inputProperties)
 			Expect(err).NotTo(HaveOccurred())
 
 			By("setting properties on cloud_controller_ng")
