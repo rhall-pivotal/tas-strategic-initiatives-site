@@ -6,9 +6,7 @@ import (
 )
 
 var _ = Describe("Apps Manager", func() {
-
 	Describe("Memory", func() {
-
 		var instanceGroup string
 
 		BeforeEach(func() {
@@ -36,7 +34,6 @@ var _ = Describe("Apps Manager", func() {
 		})
 
 		Context("when the operator specifies memory limits", func() {
-
 			It("applies them", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.push_apps_manager_memory":             1024,
@@ -55,9 +52,6 @@ var _ = Describe("Apps Manager", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(invitationsMemory).To(Equal(2048))
 			})
-
 		})
-
 	})
-
 })

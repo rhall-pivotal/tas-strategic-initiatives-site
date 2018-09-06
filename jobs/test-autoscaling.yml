@@ -9,6 +9,7 @@ manifest: |
       dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
     metric_collection_interval: (( .properties.autoscale_metric_bucket_count.value ))
     organization: system
+    space: autoscaling
     scaling_interval_in_seconds: (( .properties.autoscale_scaling_interval_in_seconds.value ))
   domain: (( .cloud_controller.system_domain.value ))
   ssl:
