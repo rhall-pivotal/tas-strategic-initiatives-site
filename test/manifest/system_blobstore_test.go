@@ -41,7 +41,7 @@ var _ = Describe("System Blobstore", func() {
 			Expect(maxStagedDroplets).To(Equal(0))
 
 			By("not enabling unversioned S3 backups", func() {})
-			bbr, err := manifest.FindInstanceGroupJob("backup-restore", "s3-unversioned-blobstore-backup-restorer")
+			bbr, err := manifest.FindInstanceGroupJob("backup_restore", "s3-unversioned-blobstore-backup-restorer")
 			Expect(err).NotTo(HaveOccurred())
 
 			jobEnabled, err := bbr.Property("enabled")
@@ -73,14 +73,14 @@ var _ = Describe("System Blobstore", func() {
 				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
-				job, err := manifest.FindInstanceGroupJob("backup-restore", "s3-versioned-blobstore-backup-restorer")
+				job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-versioned-blobstore-backup-restorer")
 				Expect(err).NotTo(HaveOccurred())
 
 				jobEnabled, err := job.Property("enabled")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(jobEnabled).To(BeTrue())
 
-				job, err = manifest.FindInstanceGroupJob("backup-restore", "s3-unversioned-blobstore-backup-restorer")
+				job, err = manifest.FindInstanceGroupJob("backup_restore", "s3-unversioned-blobstore-backup-restorer")
 				Expect(err).NotTo(HaveOccurred())
 
 				jobEnabled, err = job.Property("enabled")
@@ -102,7 +102,7 @@ var _ = Describe("System Blobstore", func() {
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
-					job, err := manifest.FindInstanceGroupJob("backup-restore", "s3-versioned-blobstore-backup-restorer")
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-versioned-blobstore-backup-restorer")
 					Expect(err).NotTo(HaveOccurred())
 
 					for _, bucket := range backupBuckets {
@@ -124,7 +124,7 @@ var _ = Describe("System Blobstore", func() {
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
-					job, err := manifest.FindInstanceGroupJob("backup-restore", "s3-versioned-blobstore-backup-restorer")
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-versioned-blobstore-backup-restorer")
 					Expect(err).NotTo(HaveOccurred())
 
 					for _, bucket := range backupBuckets {
@@ -153,14 +153,14 @@ var _ = Describe("System Blobstore", func() {
 				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
-				job, err := manifest.FindInstanceGroupJob("backup-restore", "s3-versioned-blobstore-backup-restorer")
+				job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-versioned-blobstore-backup-restorer")
 				Expect(err).NotTo(HaveOccurred())
 
 				jobEnabled, err := job.Property("enabled")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(jobEnabled).To(BeFalse())
 
-				job, err = manifest.FindInstanceGroupJob("backup-restore", "s3-unversioned-blobstore-backup-restorer")
+				job, err = manifest.FindInstanceGroupJob("backup_restore", "s3-unversioned-blobstore-backup-restorer")
 				Expect(err).NotTo(HaveOccurred())
 
 				jobEnabled, err = job.Property("enabled")
@@ -205,7 +205,7 @@ var _ = Describe("System Blobstore", func() {
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
-					job, err := manifest.FindInstanceGroupJob("backup-restore", "s3-unversioned-blobstore-backup-restorer")
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-unversioned-blobstore-backup-restorer")
 					Expect(err).NotTo(HaveOccurred())
 
 					for _, bucket := range backupBuckets {
@@ -227,7 +227,7 @@ var _ = Describe("System Blobstore", func() {
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
-					job, err := manifest.FindInstanceGroupJob("backup-restore", "s3-unversioned-blobstore-backup-restorer")
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-unversioned-blobstore-backup-restorer")
 					Expect(err).NotTo(HaveOccurred())
 
 					for _, bucket := range backupBuckets {
@@ -269,7 +269,7 @@ var _ = Describe("System Blobstore", func() {
 			manifest, err := product.RenderManifest(inputProperties)
 			Expect(err).NotTo(HaveOccurred())
 
-			job, err := manifest.FindInstanceGroupJob("backup-restore", "azure-blobstore-backup-restorer")
+			job, err := manifest.FindInstanceGroupJob("backup_restore", "azure-blobstore-backup-restorer")
 			Expect(err).NotTo(HaveOccurred())
 
 			jobEnabled, err := job.Property("enabled")
@@ -284,7 +284,7 @@ var _ = Describe("System Blobstore", func() {
 				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
-				job, err := manifest.FindInstanceGroupJob("backup-restore", "azure-blobstore-backup-restorer")
+				job, err := manifest.FindInstanceGroupJob("backup_restore", "azure-blobstore-backup-restorer")
 				Expect(err).NotTo(HaveOccurred())
 
 				jobEnabled, err := job.Property("enabled")
