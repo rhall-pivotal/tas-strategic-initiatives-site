@@ -6,17 +6,17 @@ import (
 )
 
 var _ = Describe("Apps Manager", func() {
+	var instanceGroup string
+
+	BeforeEach(func() {
+		if productName == "srt" {
+			instanceGroup = "control"
+		} else {
+			instanceGroup = "clock_global"
+		}
+	})
+
 	Describe("Memory", func() {
-		var instanceGroup string
-
-		BeforeEach(func() {
-			if productName == "srt" {
-				instanceGroup = "control"
-			} else {
-				instanceGroup = "clock_global"
-			}
-		})
-
 		It("uses the spec defaults", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -51,6 +51,36 @@ var _ = Describe("Apps Manager", func() {
 				invitationsMemory, err := appsManager.Property("invitations/memory")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(invitationsMemory).To(Equal(2048))
+			})
+		})
+	})
+
+	Describe("Polling intervals", func() {
+		It("uses the spec defaults", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+			Expect(err).NotTo(HaveOccurred())
+
+			appPollInterval, err := appsManager.Property("apps_manager/app_poll_interval")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(appPollInterval).To(Equal(10))
+		})
+
+		Context("when the operator specifies a poll interval", func() {
+			It("applies them", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.push_apps_manager_app_poll_interval": 333,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+				Expect(err).NotTo(HaveOccurred())
+
+				appPollInterval, err := appsManager.Property("apps_manager/app_poll_interval")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(appPollInterval).To(Equal(333))
 			})
 		})
 	})
