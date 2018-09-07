@@ -8,11 +8,20 @@ manifest: |
       name: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
       azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
       azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+      restore_from:
+        azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+        azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
     droplets:
       name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
       azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
       azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+      restore_from:
+        azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+        azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
     packages:
       name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
       azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
       azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+      restore_from:
+        azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+        azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))

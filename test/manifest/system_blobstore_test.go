@@ -277,10 +277,12 @@ var _ = Describe("System Blobstore", func() {
 			Expect(jobEnabled).To(BeFalse())
 		})
 
-		Context("when the user enables soft deletes", func() {
-			It("enables the azure-blobstore-backup-restorer", func() {
+		Context("when the user enables backup and restore", func() {
+			BeforeEach(func() {
 				inputProperties[".properties.system_blobstore.external_azure.enable_bbr"] = true
+			})
 
+			It("enables the azure-blobstore-backup-restorer", func() {
 				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
@@ -297,6 +299,32 @@ var _ = Describe("System Blobstore", func() {
 					Expect(containerProperties).To(HaveKeyWithValue("azure_storage_account", "some-account-name"))
 					Expect(containerProperties).To(HaveKeyWithValue("azure_storage_key", ContainSubstring("system_blobstore/external_azure/access_key")))
 				}
+			})
+
+			Context("with restore from credentials", func() {
+				It("enables the azure-blobstore-backup-restorer", func() {
+					inputProperties[".properties.system_blobstore.external_azure.restore_from_account_name"] = "some-restore-account-name"
+					inputProperties[".properties.system_blobstore.external_azure.restore_from_access_key"] = map[string]string{
+						"secret": "some-restore-access-key",
+					}
+
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "azure-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					jobEnabled, err := job.Property("enabled")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(jobEnabled).To(BeTrue())
+
+					for _, container := range containers {
+						restoreFromProperties, err := job.Property(fmt.Sprintf("containers/%s/restore_from", container))
+						Expect(err).NotTo(HaveOccurred())
+						Expect(restoreFromProperties).To(HaveKeyWithValue("azure_storage_account", "some-restore-account-name"))
+						Expect(restoreFromProperties).To(HaveKeyWithValue("azure_storage_key", ContainSubstring("system_blobstore/external_azure/restore_from_access_key")))
+					}
+				})
 			})
 		})
 	})

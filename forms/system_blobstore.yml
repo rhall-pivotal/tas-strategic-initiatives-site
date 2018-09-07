@@ -280,3 +280,17 @@ property_inputs:
         label: |
           Enable backup and restore (Soft deletes must be enabled for
           all storage containers listed above).
+
+      - reference: .properties.system_blobstore.external_azure.restore_from_account_name
+        label: Restore from Storage Account
+        description: |
+          Add a separate Storage Account and Access Key to restore from files from
+          containers in a different storage account. Leave blank if restoring from
+          the same Storage Account where backups are taken.
+
+      - reference: .properties.system_blobstore.external_azure.restore_from_account_key
+        label: Restore using Access Key
+        description: |
+          Add a separate Storage Account and Access Key to restore from files from
+          containers in a different storage account. Leave blank if restoring from
+          the same Storage Account where backups are taken.
