@@ -48,6 +48,13 @@ property_inputs:
       Memory limit with which to deploy the Invitations app. Leave blank
       to use the default value.
 
+  - reference: .properties.push_apps_manager_poll_interval
+    label: Apps Manager Polling Interval
+    description: |
+      Apps manager polling interval in seconds. As a workaround to reduce
+      load on the Cloud Controller API, increase the polling interval or
+      set to 0 to stop polling. Values between 0 and 30 will default to 30 seconds.
+
   - reference: .properties.push_apps_manager_app_poll_interval
     label: App Details Polling Interval
     description: |

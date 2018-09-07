@@ -63,6 +63,10 @@ var _ = Describe("Apps Manager", func() {
 			appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
 			Expect(err).NotTo(HaveOccurred())
 
+			pollInterval, err := appsManager.Property("apps_manager/poll_interval")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(pollInterval).To(Equal(30))
+
 			appPollInterval, err := appsManager.Property("apps_manager/app_poll_interval")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(appPollInterval).To(Equal(10))
@@ -72,11 +76,16 @@ var _ = Describe("Apps Manager", func() {
 			It("applies them", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.push_apps_manager_app_poll_interval": 333,
+					".properties.push_apps_manager_poll_interval":     666,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
 				Expect(err).NotTo(HaveOccurred())
+
+				pollInterval, err := appsManager.Property("apps_manager/poll_interval")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(pollInterval).To(Equal(666))
 
 				appPollInterval, err := appsManager.Property("apps_manager/app_poll_interval")
 				Expect(err).NotTo(HaveOccurred())
