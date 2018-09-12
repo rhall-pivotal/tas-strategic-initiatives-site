@@ -109,8 +109,7 @@ var _ = Describe("Diego", func() {
 	})
 
 	Context("route integrity", func() {
-
-		It("does not enable route integrity by default", func() {
+		It("enables the envoy proxy", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -118,14 +117,14 @@ var _ = Describe("Diego", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			enabled, err := rep.Property("containers/proxy/enabled")
-			Expect(enabled).To(BeFalse())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(enabled).To(BeTrue())
 		})
 
-		Context("when route integrity is enabled", func() {
-
-			It("enables the envoy proxy", func() {
+		Context("when route integrity is disabled", func() {
+			It("it disables the envoy proxy", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.route_integrity": "tls_verify",
+					".properties.route_integrity": "do_not_verify",
 				})
 				Expect(err).NotTo(HaveOccurred())
 
@@ -134,13 +133,8 @@ var _ = Describe("Diego", func() {
 
 				enabled, err := rep.Property("containers/proxy/enabled")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(enabled).To(BeTrue())
-
-				additionalMemory, err := rep.Property("containers/proxy/additional_memory_allocation_mb")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(additionalMemory).To(Equal(32))
+				Expect(enabled).To(BeFalse())
 			})
-
 		})
 
 		Context("when strict route integrity is enabled", func() {
