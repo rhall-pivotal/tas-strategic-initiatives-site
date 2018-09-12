@@ -6,6 +6,7 @@ description: Acts as the Pivotal CF Application Service message bus
 
 templates:
 {{if eq tile "ert"}}
+- $( job "bpm" )
 - $( job "nats" )
 - $( job "metron_agent" )
 - $( job "syslog_forwarder" )
