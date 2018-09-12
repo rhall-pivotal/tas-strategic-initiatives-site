@@ -33,9 +33,6 @@ manifest: |
   domain: (( .cloud_controller.system_domain.value ))
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
   cc:
-    jobs:
-      local:
-        number_of_workers: 1
     default_health_check_timeout: (( .properties.cloud_controller_default_health_check_timeout.value ))
     logging_level: (( .properties.cc_logging_level.value ))
     buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))'

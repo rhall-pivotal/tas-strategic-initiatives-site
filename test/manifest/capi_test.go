@@ -263,18 +263,6 @@ var _ = Describe("CAPI", func() {
 				}))
 			})
 
-			It("temporarily reduces the local worker count to 1 to workaround a buildpack install race condition", func() {
-
-				// https://www.pivotaltracker.com/story/show/159749341
-
-				cc, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
-				Expect(err).NotTo(HaveOccurred())
-
-				numberOfWorkers, err := cc.Property("cc/jobs/local/number_of_workers")
-				Expect(err).NotTo(HaveOccurred())
-
-				Expect(numberOfWorkers).To(Equal(1))
-			})
 		})
 	})
 })
