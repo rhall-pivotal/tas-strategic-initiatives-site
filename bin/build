@@ -21,7 +21,7 @@ fi
 if [ -z "${STEMCELL_PATH}" ]; then
   echo "Downloading latest stemcell from bosh.io (override with \$STEMCELL_PATH)..." > /dev/stderr
   STEMCELL_PATH="${build_dir}/stemcell.tgz"
-  light_stemcell_url="$(curl --silent -L 'https://bosh.io/api/v1/stemcells/bosh-google-kvm-windows2016-go_agent' | jq -r 'map(select(.light))[0].light.url')"
+  light_stemcell_url="$(curl --silent -L 'https://bosh.io/api/v1/stemcells/bosh-google-kvm-windows1803-go_agent' | jq -r 'map(select(.light))[0].light.url')"
   wget --quiet -O "${STEMCELL_PATH}" "${light_stemcell_url}"
 fi
 
