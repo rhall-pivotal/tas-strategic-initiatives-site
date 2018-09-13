@@ -100,22 +100,6 @@ var _ = Describe("Logging", func() {
 			}
 		})
 
-		It("has a log-cache-group-reader with a port", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			groupReader, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-group-reader")
-			Expect(err).NotTo(HaveOccurred())
-
-			port, err := groupReader.Property("port")
-			Expect(err).ToNot(HaveOccurred())
-			if productName == "srt" {
-				Expect(port).To(Equal(8088))
-			} else {
-				Expect(port).To(Equal(8084))
-			}
-		})
-
 		It("has a log-cache-nozzle with tls certs", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
