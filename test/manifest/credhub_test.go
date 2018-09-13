@@ -17,9 +17,7 @@ var _ = Describe("CredHub", func() {
 	})
 
 	Describe("encryption keys", func() {
-
 		Context("when there is a single internal key", func() {
-
 			It("configures credhub with the key", func() {
 				manifest, err := product.RenderManifest(nil)
 				Expect(err).NotTo(HaveOccurred())
@@ -36,11 +34,9 @@ var _ = Describe("CredHub", func() {
 				Expect(key["key_properties"]).To(HaveKeyWithValue("encryption_password", ContainSubstring("credhub_key_encryption_passwords/0/key.value")))
 				Expect(key["active"]).To(BeTrue())
 			})
-
 		})
 
 		Context("when there is an additional HSM key set as primary", func() {
-
 			It("configures credhub with the keys, with the HSM key marked as active", func() {
 				fakeClientKeypair := generateTLSKeypair("some-hsm-client")
 				fakeServerKeypair := generateTLSKeypair("some-hsm-host")
@@ -76,7 +72,7 @@ var _ = Describe("CredHub", func() {
 							"host_address":            "some-hsm-host",
 							"hsm_certificate":         fakeServerKeypair.Certificate,
 							"partition_serial_number": "some-hsm-partition-serial",
-							"port": 9999,
+							"port":                    9999,
 						},
 					},
 				})
