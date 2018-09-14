@@ -257,21 +257,6 @@ var _ = Describe("Diego", func() {
 			Expect(additionalMemory).To(Equal(32))
 		})
 
-		Context("when route integrity is disabled", func() {
-			It("does not enable route integrity", func() {
-				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.route_integrity": "do_not_verify",
-				})
-				Expect(err).NotTo(HaveOccurred())
-
-				rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
-				Expect(err).NotTo(HaveOccurred())
-
-				enabled, err := rep.Property("containers/proxy/enabled")
-				Expect(enabled).To(BeFalse())
-			})
-		})
-
 		Context("when strict route integrity is enabled", func() {
 
 			var proxyProperties map[interface{}]interface{}
