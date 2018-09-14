@@ -6,6 +6,7 @@ description: This component handles communication with the Cloud Controller to r
   new bindings.
 templates:
 {{if eq tile "ert"}}
+- $( job "bpm" )
 - $( job "metron_agent" )
 - $( job "scheduler" )
 - $( job "syslog_forwarder" )

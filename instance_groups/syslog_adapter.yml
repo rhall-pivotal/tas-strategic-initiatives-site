@@ -6,6 +6,7 @@ description: This component manages the connections to drains. It should be scal
   with the number of drains.
 templates:
 {{if eq tile "ert"}}
+- $( job "bpm" )
 - $( job "metron_agent" )
 - $( job "adapter" )
 - $( job "syslog_forwarder" )
