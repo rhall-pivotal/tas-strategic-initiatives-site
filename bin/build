@@ -50,8 +50,7 @@ pushd "${tile_dir}" > /dev/null
     --instance-groups-directory ./instance_groups \
     --jobs-directory ./jobs \
     --metadata base.yml \
-    --migrations-directory ./migrations/common \
-    --migrations-directory "./migrations/${PRODUCT}" \
+    --migrations-directory ./migrations \
     --properties-directory ./properties \
     --releases-directory "${release_dir}" \
     --stemcell-tarball "${STEMCELL_PATH}" \
