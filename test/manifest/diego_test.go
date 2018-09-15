@@ -121,22 +121,6 @@ var _ = Describe("Diego", func() {
 			Expect(enabled).To(BeTrue())
 		})
 
-		Context("when route integrity is disabled", func() {
-			It("it disables the envoy proxy", func() {
-				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.route_integrity": "do_not_verify",
-				})
-				Expect(err).NotTo(HaveOccurred())
-
-				rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
-				Expect(err).NotTo(HaveOccurred())
-
-				enabled, err := rep.Property("containers/proxy/enabled")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(enabled).To(BeFalse())
-			})
-		})
-
 		Context("when strict route integrity is enabled", func() {
 
 			var proxyProperties map[interface{}]interface{}
