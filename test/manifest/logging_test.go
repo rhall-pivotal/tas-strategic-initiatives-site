@@ -8,8 +8,7 @@ import (
 var _ = Describe("Logging", func() {
 	var instanceGroup string
 
-	FDescribe("traffic controller", func() {
-
+	Describe("metron agent", func() {
 		BeforeEach(func() {
 			if productName == "srt" {
 				instanceGroup = "compute"
