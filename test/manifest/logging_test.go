@@ -8,31 +8,51 @@ import (
 var _ = Describe("Logging", func() {
 	var instanceGroup string
 
-	Describe("traffic controller", func() {
+	FDescribe("traffic controller", func() {
 
 		BeforeEach(func() {
 			if productName == "srt" {
-				instanceGroup = "control"
+				instanceGroup = "compute"
 			} else {
 				instanceGroup = "loggregator_trafficcontroller"
 			}
 		})
 
-		It("disables support for forwarding syslog to metron", func() {
+		It("sets defaults on the metron agent", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			agent, err := manifest.FindInstanceGroupJob(instanceGroup, "metron_agent")
 			Expect(err).NotTo(HaveOccurred())
 
+			By("disabling support for forwarding syslog to metron")
 			syslogForwardingEnabled, err := agent.Property("syslog_daemon_config/enable")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(syslogForwardingEnabled).To(BeFalse())
+
+			By("disabling the cf deployment name in emitted metrics")
+			deploymentName, err := agent.Property("metron_agent/deployment")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(deploymentName).To(Equal(""))
+		})
+
+		Context("when upgrading", func() {
+			It("enables the cf deployment name in emitted metrics", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.enable_cf_metric_name": true,
+				})
+
+				agent, err := manifest.FindInstanceGroupJob(instanceGroup, "metron_agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				deploymentName, err := agent.Property("metron_agent/deployment")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(deploymentName).To(Equal("cf"))
+			})
 		})
 	})
 
 	Describe("log cache", func() {
-
 		BeforeEach(func() {
 			if productName == "srt" {
 				instanceGroup = "control"
@@ -217,7 +237,6 @@ var _ = Describe("Logging", func() {
 	})
 
 	Describe("log cache scheduler", func() {
-
 		BeforeEach(func() {
 			if productName == "srt" {
 				instanceGroup = "control"

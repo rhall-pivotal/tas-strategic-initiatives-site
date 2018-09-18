@@ -9,6 +9,6 @@ manifest: |
         cert: (( .doppler.metron_tls_cert.cert_pem ))
         key: (( .doppler.metron_tls_cert.private_key_pem ))
   metron_agent:
-    deployment: cf
+    deployment: "(( .properties.enable_cf_metric_name.value ? 'cf' : '' ))"
   syslog_daemon_config:
     enable: false
