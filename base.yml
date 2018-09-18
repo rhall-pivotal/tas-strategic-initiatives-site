@@ -34,6 +34,7 @@ form_types:
 - $( form "vm_options" )
 - $( form "application_containers" )
 - $( form "system_logging" )
+- $( form "advanced_features" )
 
 job_types:
 - $( instance_group "windows_diego_cell" )
@@ -41,6 +42,7 @@ job_types:
 property_blueprints:
 - $( property "bbs_client_cert" )
 - $( property "bosh_ssh_enabled" )
+- $( property "enable_cf_metric_name" )
 - $( property "kms" )
 - $( property "loggregator_client_cert" )
 - $( property "metron_tls_cert" )

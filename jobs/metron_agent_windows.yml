@@ -10,4 +10,4 @@ manifest: |
         key: (( .properties.metron_tls_cert.private_key_pem ))
     use_v2_api: true
   metron_agent:
-    deployment: cf
+    deployment: "(( .properties.enable_cf_metric_name.value ? 'cf' : '' ))"
