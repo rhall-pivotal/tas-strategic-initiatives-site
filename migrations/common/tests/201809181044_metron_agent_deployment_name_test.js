@@ -7,7 +7,7 @@ describe("Metron Agent Deployment Name", function() {
     migration.migrate(
       { properties: {} }
     ).should.deepEqual(
-      { properties: { ".properties.enable_cf_metric_name": { "value": "true" } } }
+      { properties: { ".properties.enable_cf_metric_name": { "value": true } } }
     );
   });
 });
