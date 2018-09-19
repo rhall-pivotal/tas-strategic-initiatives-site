@@ -11,3 +11,8 @@ manifest: |
     use_v2_api: true
   metron_agent:
     deployment: "(( .properties.enable_cf_metric_name.value ? 'cf' : '' ))"
+    tags:
+      placement_tag: (( .windows_diego_cell.placement_tags.value ))
+      product: $( variable "label" )
+      product_version: $( version )
+      system_domain: "(( ..cf.cloud_controller.system_domain.value ))"

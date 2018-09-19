@@ -55,6 +55,7 @@ pushd "${tile_dir}" > /dev/null
     --properties-directory ./properties \
     --releases-directory "${release_dir}" \
     --stemcell-tarball "${STEMCELL_PATH}" \
+    --variables-file "./variables/wrt.yml" \
     --variable metadata-git-sha="$(git rev-parse HEAD)" \
     --version "${version}" \
     --embed "${embed_dir}/windowsfs-release" \
