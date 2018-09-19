@@ -7,3 +7,9 @@ manifest: |
       metron:
         cert: (( .properties.metron_tls_cert.cert_pem ))
         key: (( .properties.metron_tls_cert.private_key_pem ))
+  metron_agent:
+    tags:
+      placement_tag: (( .isolated_diego_cell.placement_tag.value ))
+      product: $( variable "label" )
+      product_version: $( version )
+      system_domain: "(( ..cf.cloud_controller.system_domain.value ))"

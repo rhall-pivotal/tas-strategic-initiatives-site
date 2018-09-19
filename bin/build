@@ -54,6 +54,7 @@ pushd "${tile_dir}" > /dev/null
     --properties-directory ./properties \
     --releases-directory "${release_dir}" \
     --stemcell-tarball "${STEMCELL_PATH}" \
+    --variables-file "./variables/ist.yml" \
     --variable metadata-git-sha="$(git rev-parse HEAD)" \
     --version "${version}" \
     ${optional_flags}
