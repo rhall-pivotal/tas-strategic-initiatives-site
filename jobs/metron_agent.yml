@@ -10,5 +10,9 @@ manifest: |
         key: (( .doppler.metron_tls_cert.private_key_pem ))
   metron_agent:
     deployment: "(( .properties.enable_cf_metric_name.value ? 'cf' : '' ))"
+    tags:
+      product: $( variable "label" )
+      productVersion: $( variable "build-version" )
+      systemDomain: "(( .cloud_controller.system_domain.value ))"
   syslog_daemon_config:
     enable: false

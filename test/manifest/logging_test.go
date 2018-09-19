@@ -7,11 +7,15 @@ import (
 
 var _ = Describe("Logging", func() {
 	Describe("metron agent", func() {
-		var instanceGroups []string
+		var (
+			instanceGroups []string
+			productTag     string
+		)
 
 		BeforeEach(func() {
 			if productName == "srt" {
 				instanceGroups = []string{"blobstore", "compute", "control", "database"}
+				productTag = "PCF Small Footprint"
 			} else {
 				instanceGroups = []string{
 					"clock_global",
@@ -32,6 +36,7 @@ var _ = Describe("Logging", func() {
 					"tcp_router",
 					"uaa",
 				}
+				productTag = "Pivotal Application Service"
 			}
 		})
 
@@ -52,6 +57,13 @@ var _ = Describe("Logging", func() {
 				deploymentName, err := agent.Property("metron_agent/deployment")
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
 				Expect(deploymentName).To(Equal(""), "Instance Group: %s", ig)
+
+				By("adding tags to the metrics emitted")
+				tags, err := agent.Property("metron_agent/tags")
+				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
+				Expect(tags).To(HaveKeyWithValue("product", productTag))
+				Expect(tags).To(HaveKeyWithValue("productVersion", MatchRegexp(`^\d+\.\d+\.\d+.*`)))
+				Expect(tags).To(HaveKeyWithValue("systemDomain", "sys.example.com"))
 			}
 		})
 
