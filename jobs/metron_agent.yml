@@ -12,7 +12,7 @@ manifest: |
     deployment: "(( .properties.enable_cf_metric_name.value ? 'cf' : '' ))"
     tags:
       product: $( variable "label" )
-      productVersion: $( variable "build-version" )
-      systemDomain: "(( .cloud_controller.system_domain.value ))"
+      product_version: $( variable "build-version" )
+      system_domain: "(( .cloud_controller.system_domain.value ))"
   syslog_daemon_config:
     enable: false

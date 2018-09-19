@@ -62,8 +62,8 @@ var _ = Describe("Logging", func() {
 				tags, err := agent.Property("metron_agent/tags")
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
 				Expect(tags).To(HaveKeyWithValue("product", productTag))
-				Expect(tags).To(HaveKeyWithValue("productVersion", MatchRegexp(`^\d+\.\d+\.\d+.*`)))
-				Expect(tags).To(HaveKeyWithValue("systemDomain", "sys.example.com"))
+				Expect(tags).To(HaveKeyWithValue("product_version", MatchRegexp(`^\d+\.\d+\.\d+.*`)))
+				Expect(tags).To(HaveKeyWithValue("system_domain", "sys.example.com"))
 			}
 		})
 
