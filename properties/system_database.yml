@@ -109,6 +109,8 @@
           db_scheme: mysql
           address: mysql.service.cf.internal
           port: 3306
+          ssl_verify_hostname: true
+          ca_cert: (( $ops_manager.ca_certificate ))
           roles:
           - tag: admin
             name: ((( cc-db-credentials.username )))

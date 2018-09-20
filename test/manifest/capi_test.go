@@ -78,6 +78,18 @@ var _ = Describe("CAPI", func() {
 					timeout, err = manifestJob.Property("ccdb/read_timeout")
 					Expect(err).NotTo(HaveOccurred())
 					Expect(timeout).To(Equal(3600))
+
+					address, err := manifestJob.Property("ccdb/address")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(address).To(Equal("mysql.service.cf.internal"))
+
+					sslVerifyHostname, err := manifestJob.Property("ccdb/ssl_verify_hostname")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(sslVerifyHostname).To(BeTrue())
+
+					ca, err := manifestJob.Property("ccdb/ca_cert")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(ca).To(Equal("fake-ops-manager-ca-certificate"))
 				}
 			})
 		})
