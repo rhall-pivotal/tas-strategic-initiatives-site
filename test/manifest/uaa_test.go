@@ -44,6 +44,18 @@ var _ = Describe("UAA", func() {
 			Expect(caCerts).NotTo(BeEmpty())
 		})
 
+		It("requires TLS 1.2", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			tlsProtocols, err := job.Property("uaadb/tls_protocols")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(tlsProtocols).To(Equal("TLSv1.2"))
+		})
+
 	})
 
 	Describe("route registration", func() {
