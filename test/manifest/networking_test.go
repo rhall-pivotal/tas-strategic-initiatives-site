@@ -24,7 +24,6 @@ var _ = Describe("Networking", func() {
 		})
 
 		Describe("policy server", func() {
-
 			It("uses the correct database host", func() {
 				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
@@ -54,9 +53,8 @@ var _ = Describe("Networking", func() {
 
 				caCert, err := job.Property("database/ca_cert")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(caCert).NotTo(BeEmpty())
+				Expect(caCert).To(Equal("fake-ops-manager-ca-certificate"))
 			})
-
 		})
 
 		Context("when the operator configures database connection timeout for CNI plugin", func() {
