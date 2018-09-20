@@ -24,6 +24,7 @@ var _ = Describe("Networking", func() {
 		})
 
 		Describe("policy server", func() {
+
 			It("uses the correct database host", func() {
 				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
@@ -39,6 +40,23 @@ var _ = Describe("Networking", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(databaseLink).To(Equal("nil"))
 			})
+
+			It("configures TLS to the internal database", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server")
+				Expect(err).NotTo(HaveOccurred())
+
+				tlsEnabled, err := job.Property("database/require_ssl")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(tlsEnabled).To(BeTrue())
+
+				caCert, err := job.Property("database/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).NotTo(BeEmpty())
+			})
+
 		})
 
 		Context("when the operator configures database connection timeout for CNI plugin", func() {

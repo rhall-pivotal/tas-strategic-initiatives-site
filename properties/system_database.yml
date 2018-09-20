@@ -192,6 +192,8 @@
           password: ((( network-policy-server-db-credentials.password )))
           name: (( .properties.networkpolicyserver_database_name.value ))
           connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
+          require_ssl: true
+          ca_cert: (( $ops_manager.ca_certificate ))
       - name: nfsvolume
         manifest: |
           username: ((( nfs-volume-db-credentials.username )))
