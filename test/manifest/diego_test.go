@@ -49,7 +49,7 @@ var _ = Describe("Diego", func() {
 			}
 		})
 
-		FIt("configures the diego locket job", func() {
+		It("configures the diego locket job", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
