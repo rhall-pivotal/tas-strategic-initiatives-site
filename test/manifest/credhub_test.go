@@ -118,14 +118,11 @@ var _ = Describe("CredHub", func() {
 				Expect(hsmServer["partition_serial_number"]).To(Equal("some-hsm-partition-serial"))
 				Expect(hsmServer["port"]).To(Equal(9999))
 			})
-
 		})
-
 	})
 
 	Describe("permissions", func() {
-
-		It("grants permissions to the credhub-service-broker tile", func() {
+		It("provides uaa operations rights", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -135,6 +132,7 @@ var _ = Describe("CredHub", func() {
 			permissions, err := credhub.Property("credhub/authorization/permissions")
 			Expect(err).ToNot(HaveOccurred())
 
+			By("granting permissions to the credhub-service-broker tile")
 			Expect(permissions).To(ContainElement(map[interface{}]interface{}{
 				"path":       "/credhub-clients/*",
 				"actors":     []interface{}{"uaa-client:credhub-service-broker"},
@@ -146,59 +144,27 @@ var _ = Describe("CredHub", func() {
 				"actors":     []interface{}{"uaa-client:credhub-service-broker"},
 				"operations": []interface{}{"read", "write", "delete", "read_acl", "write_acl"},
 			}))
-		})
 
-		It("grants permissions to the services_credhub_client", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
-			Expect(err).NotTo(HaveOccurred())
-
-			permissions, err := credhub.Property("credhub/authorization/permissions")
-			Expect(err).ToNot(HaveOccurred())
-
+			By("granting permissions to the services_credhub_client")
 			Expect(permissions).To(ContainElement(map[interface{}]interface{}{
 				"path":       "/c/*",
 				"actors":     []interface{}{"uaa-client:services_credhub_client"},
 				"operations": []interface{}{"read", "write", "delete", "read_acl", "write_acl"},
 			}))
-		})
 
-		It("grants permission to the cloud controller to read service key credentials", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
-			Expect(err).NotTo(HaveOccurred())
-
-			permissions, err := credhub.Property("credhub/authorization/permissions")
-			Expect(err).ToNot(HaveOccurred())
-
+			By("granting permissions to the cloud controller to read service key credentials")
 			Expect(permissions).To(ContainElement(map[interface{}]interface{}{
 				"path":       "/*",
 				"actors":     []interface{}{"uaa-client:cc_service_key_client"},
 				"operations": []interface{}{"read"},
 			}))
-		})
 
-		It("grants permissions to the credhub_admin_client", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
-			Expect(err).NotTo(HaveOccurred())
-
-			permissions, err := credhub.Property("credhub/authorization/permissions")
-			Expect(err).ToNot(HaveOccurred())
-
+			By("granting permissions to the credhub_admin_client")
 			Expect(permissions).To(ContainElement(map[interface{}]interface{}{
 				"path":       "/*",
 				"actors":     []interface{}{"uaa-client:credhub_admin_client"},
 				"operations": []interface{}{"read", "write", "delete", "read_acl", "write_acl"},
 			}))
 		})
-
 	})
-
 })
