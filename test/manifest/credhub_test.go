@@ -135,7 +135,7 @@ var _ = Describe("CredHub", func() {
 
 			ca, err := credhub.Property("credhub/data_storage/tls_ca")
 			Expect(err).ToNot(HaveOccurred())
-			Expect(ca).To(Equal("fake-ops-manager-ca-certificate"))
+			Expect(ca).NotTo(BeEmpty())
 
 			bbrCredhub, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-credhubdb")
 			Expect(err).NotTo(HaveOccurred())
@@ -146,7 +146,7 @@ var _ = Describe("CredHub", func() {
 
 			ca, err = bbrCredhub.Property("credhub/data_storage/tls_ca")
 			Expect(err).ToNot(HaveOccurred())
-			Expect(ca).To(Equal("fake-ops-manager-ca-certificate"))
+			Expect(ca).NotTo(BeEmpty())
 		})
 	})
 

@@ -36,7 +36,7 @@ var _ = Describe("Diego", func() {
 
 			caCert, err := bbs.Property("diego/bbs/sql/ca_cert")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).To(Equal("fake-ops-manager-ca-certificate"))
+			Expect(caCert).NotTo(BeEmpty())
 		})
 	})
 
@@ -62,7 +62,7 @@ var _ = Describe("Diego", func() {
 
 			caCert, err := locket.Property("diego/locket/sql/ca_cert")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).To(Equal("fake-ops-manager-ca-certificate"))
+			Expect(caCert).NotTo(BeEmpty())
 		})
 	})
 

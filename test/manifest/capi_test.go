@@ -89,7 +89,7 @@ var _ = Describe("CAPI", func() {
 
 					ca, err := manifestJob.Property("ccdb/ca_cert")
 					Expect(err).NotTo(HaveOccurred())
-					Expect(ca).To(Equal("fake-ops-manager-ca-certificate"))
+					Expect(ca).NotTo(BeEmpty())
 				}
 			})
 		})

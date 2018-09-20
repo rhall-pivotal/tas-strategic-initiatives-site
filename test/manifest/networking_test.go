@@ -53,7 +53,7 @@ var _ = Describe("Networking", func() {
 
 				caCert, err := job.Property("database/ca_cert")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(caCert).To(Equal("fake-ops-manager-ca-certificate"))
+				Expect(caCert).NotTo(BeEmpty())
 			})
 		})
 
