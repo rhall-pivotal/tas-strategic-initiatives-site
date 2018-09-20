@@ -40,6 +40,32 @@ var _ = Describe("Diego", func() {
 		})
 	})
 
+	Context("locket", func() {
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "control"
+			} else {
+				instanceGroup = "diego_database"
+			}
+		})
+
+		FIt("configures the diego locket job", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			locket, err := manifest.FindInstanceGroupJob(instanceGroup, "locket")
+			Expect(err).NotTo(HaveOccurred())
+
+			requireSSL, err := locket.Property("diego/locket/sql/require_ssl")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(requireSSL).To(BeTrue())
+
+			caCert, err := locket.Property("diego/locket/sql/ca_cert")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(caCert).To(Equal("fake-ops-manager-ca-certificate"))
+		})
+	})
+
 	Describe("BPM", func() {
 		var diegoJobs []Job
 
