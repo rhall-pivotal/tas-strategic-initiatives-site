@@ -19,7 +19,6 @@ var _ = Describe("UAA", func() {
 	})
 
 	Describe("database connection", func() {
-
 		It("configures TLS to the internal database", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -55,11 +54,9 @@ var _ = Describe("UAA", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(tlsProtocols).To(Equal("TLSv1.2"))
 		})
-
 	})
 
 	Describe("route registration", func() {
-
 		It("tags the emitted metrics", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -73,7 +70,6 @@ var _ = Describe("UAA", func() {
 				"component": "uaa",
 			})))
 		})
-
 	})
 
 	Describe("BPM", func() {
