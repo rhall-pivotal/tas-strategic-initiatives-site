@@ -17,17 +17,26 @@ var _ = Describe("Diego", func() {
 			}
 		})
 
-		It("retries tasks to be more resilient to temporarily constrained resources", func() {
+		It("configures the diego bbs job", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			bbs, err := manifest.FindInstanceGroupJob(instanceGroup, "bbs")
 			Expect(err).NotTo(HaveOccurred())
 
+			By("retrying tasks to be more resilient to temporarily constrained resources")
 			maxRetries, err := bbs.Property("tasks/max_retries")
 			Expect(err).NotTo(HaveOccurred())
-
 			Expect(maxRetries).To(Equal(3))
+
+			By("configuring TLS to the internal database")
+			requireSSL, err := bbs.Property("diego/bbs/sql/require_ssl")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(requireSSL).To(BeTrue())
+
+			caCert, err := bbs.Property("diego/bbs/sql/ca_cert")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(caCert).To(Equal("fake-ops-manager-ca-certificate"))
 		})
 	})
 

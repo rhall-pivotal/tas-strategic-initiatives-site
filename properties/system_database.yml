@@ -157,6 +157,8 @@
           db_password: ((( diego-db-credentials.password )))
           db_schema: (( .properties.diego_database_name.value ))
           max_open_connections: 100
+          require_ssl: true
+          ca_cert: (( $ops_manager.ca_certificate ))
       - name: locketdb
         manifest: |
           db_host: mysql.service.cf.internal
