@@ -66,5 +66,27 @@ var _ = Describe("System Database", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(property).To(Equal(5432))
 		})
+
+		Context("when the operator provides a CA certificate", func() {
+			BeforeEach(func() {
+				inputProperties[".properties.system_database.external.ca_cert"] = "fake-ca-cert"
+			})
+
+			It("configures jobs to use that CA certificate ", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server")
+				Expect(err).NotTo(HaveOccurred())
+
+				property, err := job.Property("database/require_ssl")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(property).To(BeTrue())
+
+				property, err = job.Property("database/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(property).To(Equal("fake-ca-cert"))
+			})
+		})
 	})
 })

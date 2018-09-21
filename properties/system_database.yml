@@ -338,6 +338,10 @@
         - name: port
           type: port
           configurable: true
+        - name: ca_cert
+          type: text
+          configurable: true
+          optional: true
         - name: account_username
           type: string
           configurable: true
@@ -500,6 +504,8 @@
             type: mysql
             host: (( .properties.system_database.external.host.value ))
             port: (( .properties.system_database.external.port.value ))
+            require_ssl: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
+            ca_cert: (( .properties.system_database.external.ca_cert.value ))
             username: (( .properties.system_database.external.networkpolicyserver_username.value ))
             password: (( .properties.system_database.external.networkpolicyserver_password.value ))
             name: (( .properties.networkpolicyserver_database_name.value ))
