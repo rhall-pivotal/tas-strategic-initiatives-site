@@ -54,17 +54,21 @@ var _ = Describe("System Database", func() {
 			job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server")
 			Expect(err).NotTo(HaveOccurred())
 
-			property, err := job.Property("database/type")
+			requireSSL, err := job.Property("database/require_ssl")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(property).To(Equal("mysql"))
+			Expect(requireSSL).To(BeFalse())
 
-			property, err = job.Property("database/host")
+			dbType, err := job.Property("database/type")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(property).To(Equal("foo.bar"))
+			Expect(dbType).To(Equal("mysql"))
 
-			property, err = job.Property("database/port")
+			host, err := job.Property("database/host")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(property).To(Equal(5432))
+			Expect(host).To(Equal("foo.bar"))
+
+			port, err := job.Property("database/port")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(port).To(Equal(5432))
 		})
 
 		Context("when the operator provides a CA certificate", func() {
