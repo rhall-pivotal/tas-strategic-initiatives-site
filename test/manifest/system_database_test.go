@@ -83,6 +83,7 @@ var _ = Describe("System Database", func() {
 				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
+				// policy-server
 				job, err := manifest.FindInstanceGroupJob(dbInstanceGroup, "policy-server")
 				Expect(err).NotTo(HaveOccurred())
 
@@ -94,6 +95,7 @@ var _ = Describe("System Database", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
 
+				// silk-controller
 				job, err = manifest.FindInstanceGroupJob(dbInstanceGroup, "silk-controller")
 				Expect(err).NotTo(HaveOccurred())
 
@@ -105,6 +107,7 @@ var _ = Describe("System Database", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
 
+				// locket
 				job, err = manifest.FindInstanceGroupJob(dbInstanceGroup, "locket")
 				Expect(err).NotTo(HaveOccurred())
 
@@ -116,6 +119,7 @@ var _ = Describe("System Database", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
 
+				// bbs
 				job, err = manifest.FindInstanceGroupJob(dbInstanceGroup, "bbs")
 				Expect(err).NotTo(HaveOccurred())
 
@@ -127,6 +131,7 @@ var _ = Describe("System Database", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
 
+				// cloud_controller_ng
 				job, err = manifest.FindInstanceGroupJob(ccInstanceGroup, "cloud_controller_ng")
 				Expect(err).NotTo(HaveOccurred())
 

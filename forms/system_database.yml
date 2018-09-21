@@ -181,3 +181,11 @@ property_inputs:
 
       - reference: .properties.system_database.external.silk_password
         label: Silk Database Password
+
+      - reference: .properties.system_database.external.ca_cert
+        label: Database CA Certificate
+        description: |
+          Components require the database to present a valid hostname in order
+          to validate the certificate when terminating TLS.
+          AWS does currently provide a valid hostname, but some other cloud
+          providers do not currently do this (GCP and Azure).
