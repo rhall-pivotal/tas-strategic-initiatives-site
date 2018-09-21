@@ -8,15 +8,15 @@ import (
 var _ = Describe("System Database", func() {
 	Describe("External Database", func() {
 		var (
-			inputProperties         map[string]interface{}
-			controllerInstanceGroup string
+			inputProperties map[string]interface{}
+			instanceGroup   string
 		)
 
 		BeforeEach(func() {
 			if productName == "ert" {
-				controllerInstanceGroup = "diego_database"
+				instanceGroup = "diego_database"
 			} else {
-				controllerInstanceGroup = "control"
+				instanceGroup = "control"
 			}
 			inputProperties = map[string]interface{}{
 				".properties.system_database":                                       "external",
@@ -51,7 +51,7 @@ var _ = Describe("System Database", func() {
 			manifest, err := product.RenderManifest(inputProperties)
 			Expect(err).NotTo(HaveOccurred())
 
-			job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server")
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "policy-server")
 			Expect(err).NotTo(HaveOccurred())
 
 			requireSSL, err := job.Property("database/require_ssl")
@@ -80,16 +80,20 @@ var _ = Describe("System Database", func() {
 				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
-				job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server")
-				Expect(err).NotTo(HaveOccurred())
+				jobs := []string{"policy-server", "silk-controller"}
 
-				property, err := job.Property("database/require_ssl")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(property).To(BeTrue())
+				for _, j := range jobs {
+					job, err := manifest.FindInstanceGroupJob(instanceGroup, j)
+					Expect(err).NotTo(HaveOccurred())
 
-				property, err = job.Property("database/ca_cert")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(property).To(Equal("fake-ca-cert"))
+					requireSSL, err := job.Property("database/require_ssl")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(requireSSL).To(BeTrue())
+
+					caCert, err := job.Property("database/ca_cert")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(caCert).To(Equal("fake-ca-cert"))
+				}
 			})
 		})
 	})

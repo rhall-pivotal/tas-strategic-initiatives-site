@@ -496,6 +496,8 @@
             type: mysql
             host: (( .properties.system_database.external.host.value ))
             port: (( .properties.system_database.external.port.value ))
+            require_ssl: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
+            ca_cert: (( .properties.system_database.external.ca_cert.value ))
             username: (( .properties.system_database.external.silk_username.value ))
             password: (( .properties.system_database.external.silk_password.value ))
             name: (( .properties.silk_database_name.value ))
