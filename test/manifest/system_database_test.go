@@ -11,14 +11,17 @@ var _ = Describe("System Database", func() {
 	Describe("External Database", func() {
 		var (
 			inputProperties map[string]interface{}
-			instanceGroup   string
+			dbInstanceGroup string
+			ccInstanceGroup string
 		)
 
 		BeforeEach(func() {
 			if productName == "ert" {
-				instanceGroup = "diego_database"
+				dbInstanceGroup = "diego_database"
+				ccInstanceGroup = "cloud_controller"
 			} else {
-				instanceGroup = "control"
+				dbInstanceGroup = "control"
+				ccInstanceGroup = "control"
 			}
 			inputProperties = map[string]interface{}{
 				".properties.system_database":                                       "external",
@@ -53,7 +56,7 @@ var _ = Describe("System Database", func() {
 			manifest, err := product.RenderManifest(inputProperties)
 			Expect(err).NotTo(HaveOccurred())
 
-			job, err := manifest.FindInstanceGroupJob(instanceGroup, "policy-server")
+			job, err := manifest.FindInstanceGroupJob(dbInstanceGroup, "policy-server")
 			Expect(err).NotTo(HaveOccurred())
 
 			requireSSL, err := job.Property("database/require_ssl")
@@ -85,7 +88,7 @@ var _ = Describe("System Database", func() {
 				jobs := []string{"policy-server", "silk-controller"}
 
 				for _, j := range jobs {
-					job, err := manifest.FindInstanceGroupJob(instanceGroup, j)
+					job, err := manifest.FindInstanceGroupJob(dbInstanceGroup, j)
 					Expect(err).NotTo(HaveOccurred())
 
 					requireSSL, err := job.Property("database/require_ssl")
@@ -100,7 +103,7 @@ var _ = Describe("System Database", func() {
 				jobs = []string{"locket", "bbs"}
 
 				for _, j := range jobs {
-					job, err := manifest.FindInstanceGroupJob(instanceGroup, j)
+					job, err := manifest.FindInstanceGroupJob(dbInstanceGroup, j)
 					Expect(err).NotTo(HaveOccurred())
 
 					requireSSL, err := job.Property(fmt.Sprintf("diego/%s/sql/require_ssl", j))
@@ -111,6 +114,17 @@ var _ = Describe("System Database", func() {
 					Expect(err).NotTo(HaveOccurred())
 					Expect(caCert).To(Equal("fake-ca-cert"))
 				}
+
+				job, err := manifest.FindInstanceGroupJob(ccInstanceGroup, "cloud_controller_ng")
+				Expect(err).NotTo(HaveOccurred())
+
+				requireSSL, err := job.Property("ccdb/ssl_verify_hostname")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(requireSSL).To(BeTrue())
+
+				caCert, err := job.Property("ccdb/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).To(Equal("fake-ca-cert"))
 			})
 		})
 	})

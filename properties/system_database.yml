@@ -425,6 +425,8 @@
             db_scheme: "mysql"
             address: (( .properties.system_database.external.host.value ))
             port: (( .properties.system_database.external.port.value ))
+            ssl_verify_hostname: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
+            ca_cert: (( .properties.system_database.external.ca_cert.value ))
             roles:
             - tag: admin
               name: (( .properties.system_database.external.ccdb_username.value ))
