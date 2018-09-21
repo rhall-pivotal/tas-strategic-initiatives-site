@@ -1,6 +1,8 @@
 package manifest_test
 
 import (
+	"fmt"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -91,6 +93,21 @@ var _ = Describe("System Database", func() {
 					Expect(requireSSL).To(BeTrue())
 
 					caCert, err := job.Property("database/ca_cert")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(caCert).To(Equal("fake-ca-cert"))
+				}
+
+				jobs = []string{"locket", "bbs"}
+
+				for _, j := range jobs {
+					job, err := manifest.FindInstanceGroupJob(instanceGroup, j)
+					Expect(err).NotTo(HaveOccurred())
+
+					requireSSL, err := job.Property(fmt.Sprintf("diego/%s/sql/require_ssl", j))
+					Expect(err).NotTo(HaveOccurred())
+					Expect(requireSSL).To(BeTrue())
+
+					caCert, err := job.Property(fmt.Sprintf("diego/%s/sql/ca_cert", j))
 					Expect(err).NotTo(HaveOccurred())
 					Expect(caCert).To(Equal("fake-ca-cert"))
 				}
