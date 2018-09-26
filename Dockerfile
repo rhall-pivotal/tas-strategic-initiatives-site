@@ -1,5 +1,4 @@
 FROM pivotalcfreleng/ruby
-MAINTAINER https://github.com/pivotal-cf/p-runtime
 
 # Install ops-manifest
 #   assumes ops-manifest repo was cloned into ./vendor/ops-manifest
