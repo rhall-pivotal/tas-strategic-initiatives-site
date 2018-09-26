@@ -11,5 +11,5 @@ manifest: |
     tags:
       placement_tag: (( .isolated_diego_cell.placement_tag.value ))
       product: $( variable "label" )
-      product_version: $( version )
+      product_version: $( variable "build-version" )
       system_domain: "(( ..cf.cloud_controller.system_domain.value ))"
