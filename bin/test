@@ -25,7 +25,7 @@ function build_docker_image() {
 
 function run_manifest_tests() {
   local go_path ginkgo_args
-  go_path=/go/src/github.com/pivotal-cf/p-runtime
+  go_path=/go/src/github.com/pivotal-cf/p-windows-runtime-2016
 
   ginkgo_args="-p -r -slowSpecThreshold 15 'test/manifest'"
   if [ "$#" -gt 0 ]; then
