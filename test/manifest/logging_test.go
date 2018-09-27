@@ -323,5 +323,52 @@ var _ = Describe("Logging", func() {
 				Expect(syslogConfig).NotTo(ContainSubstring(`if ($msg contains "DEBUG") then stop`))
 			})
 		})
+
+		Context("when iptables logs are enabled", func() {
+			It("adds a kernel rule", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.syslog_host": "example.com",
+					".properties.container_networking_interface_plugin.silk.enable_log_traffic": true,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				syslogForwarder, err := manifest.FindInstanceGroupJob("router", "syslog_forwarder")
+				Expect(err).NotTo(HaveOccurred())
+
+				syslogConfig, err := syslogForwarder.Property("syslog/custom_rule")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(syslogConfig).To(ContainSubstring(`if $programname == 'kernel' and ($msg contains "DENY_" or $msg contains "OK_") then -/var/log/kern.log`))
+				Expect(syslogConfig).To(ContainSubstring(`if $programname == 'kernel' and ($msg contains "DENY_" or $msg contains "OK_") then stop`))
+				Expect(syslogConfig).NotTo(ContainSubstring(`"if`)) // previous regression with extra quote
+			})
+		})
+
+		Context("when a custom rule is specified", func() {
+			It("adds the custom rule", func() {
+				multilineRule := `
+some
+multi
+line
+rule
+`
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.syslog_host": "example.com",
+					".properties.syslog_rule": multilineRule,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				syslogForwarder, err := manifest.FindInstanceGroupJob("router", "syslog_forwarder")
+				Expect(err).NotTo(HaveOccurred())
+
+				syslogConfig, err := syslogForwarder.Property("syslog/custom_rule")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(syslogConfig).To(ContainSubstring(`
+some
+multi
+line
+rule
+`))
+			})
+		})
 	})
 })

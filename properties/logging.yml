@@ -60,13 +60,14 @@
               (( .properties.syslog_rule.value ))
               if ($programname startswith "vcap.") then stop
               (( .properties.syslog_drop_debug.value ? 'if ($msg contains "DEBUG") then stop' : "" ))
-              "(( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ? .properties.system_logging.selected_option.parsed_manifest(iptables_logging_enabled) : .properties.system_logging.selected_option.parsed_manifest(iptables_logging_disabled) ))"
-        - name: iptables_logging_enabled
+              (( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ? .properties.system_logging.selected_option.parsed_manifest(iptables_logging_enabled_part_1) : .properties.system_logging.selected_option.parsed_manifest(iptables_logging_disabled) ))
+              (( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ? .properties.system_logging.selected_option.parsed_manifest(iptables_logging_enabled_part_2) : .properties.system_logging.selected_option.parsed_manifest(iptables_logging_disabled) ))
+        - name: iptables_logging_enabled_part_1
           manifest: |
-            if $programname == 'kernel' and ($msg contains "DENY_" or $msg contains "OK_") then {
-             -/var/log/kern.log
-             stop
-            }
+            if $programname == 'kernel' and ($msg contains "DENY_" or $msg contains "OK_") then -/var/log/kern.log
+        - name: iptables_logging_enabled_part_2
+          manifest: |
+            if $programname == 'kernel' and ($msg contains "DENY_" or $msg contains "OK_") then stop
         - name: iptables_logging_disabled
           manifest: |
             ""
