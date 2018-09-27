@@ -5,7 +5,7 @@ provides_product_versions:
 - name: cf
   version: $( version )
 product_version: $( version )
-pivnet_filename_regex: 'cf-.*\.pivotal'
+pivnet_filename_regex: $( variable "product_regex" )
 minimum_version_for_upgrade: 2.2.0
 label: $( variable "label" )
 description:
