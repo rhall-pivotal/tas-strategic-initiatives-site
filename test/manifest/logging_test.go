@@ -338,7 +338,7 @@ var _ = Describe("Logging", func() {
 				syslogConfig, err := syslogForwarder.Property("syslog/custom_rule")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(syslogConfig).To(ContainSubstring(`if $programname == 'kernel' and ($msg contains "DENY_" or $msg contains "OK_") then -/var/log/kern.log`))
-				Expect(syslogConfig).To(ContainSubstring(`if $programname == 'kernel' and ($msg contains "DENY_" or $msg contains "OK_") then stop`))
+				Expect(syslogConfig).To(ContainSubstring("\n&stop"))
 				Expect(syslogConfig).NotTo(ContainSubstring(`"if`)) // previous regression with extra quote
 			})
 		})

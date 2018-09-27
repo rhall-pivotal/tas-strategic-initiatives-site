@@ -67,7 +67,7 @@
             if $programname == 'kernel' and ($msg contains "DENY_" or $msg contains "OK_") then -/var/log/kern.log
         - name: iptables_logging_enabled_part_2
           manifest: |
-            if $programname == 'kernel' and ($msg contains "DENY_" or $msg contains "OK_") then stop
+            "&stop"
         - name: iptables_logging_disabled
           manifest: |
             ""
