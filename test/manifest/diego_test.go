@@ -24,11 +24,6 @@ var _ = Describe("Diego", func() {
 			bbs, err := manifest.FindInstanceGroupJob(instanceGroup, "bbs")
 			Expect(err).NotTo(HaveOccurred())
 
-			By("retrying tasks to be more resilient to temporarily constrained resources")
-			maxRetries, err := bbs.Property("tasks/max_retries")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(maxRetries).To(Equal(3))
-
 			By("configuring TLS to the internal database")
 			requireSSL, err := bbs.Property("diego/bbs/sql/require_ssl")
 			Expect(err).NotTo(HaveOccurred())
