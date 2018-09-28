@@ -6,16 +6,13 @@ import (
 )
 
 var _ = Describe("Logging", func() {
+
+	var instanceGroups []string = []string{"isolated_diego_cell", "isolated_ha_proxy", "isolated_router"}
+
 	Describe("metron agent", func() {
 		It("sets tags on the metron agent", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
-
-			instanceGroups := []string{
-				"isolated_diego_cell",
-				"isolated_ha_proxy",
-				"isolated_router",
-			}
 
 			for _, ig := range instanceGroups {
 				agent, err := manifest.FindInstanceGroupJob(ig, "metron_agent")
@@ -28,6 +25,59 @@ var _ = Describe("Logging", func() {
 				Expect(tags).To(HaveKeyWithValue("product_version", MatchRegexp(`^\d+\.\d+\.\d+.*`)))
 				Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
 			}
+		})
+	})
+
+	Describe("syslog forwarding", func() {
+
+		It("includes the vcap rule", func() {
+			for _, ig := range instanceGroups {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.system_logging":              "enabled",
+					".properties.system_logging.enabled.host": "example.com",
+					".properties.system_logging.enabled.port": 2514,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				syslogForwarder, err := manifest.FindInstanceGroupJob(ig, "syslog_forwarder")
+				Expect(err).NotTo(HaveOccurred())
+
+				syslogConfig, err := syslogForwarder.Property("syslog/custom_rule")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(syslogConfig).To(ContainSubstring(`if ($programname startswith "vcap.") then stop`))
+			}
+		})
+
+		Context("when a custom rule is specified", func() {
+			It("adds the custom rule", func() {
+				multilineRule := `
+some
+multi
+line
+rule
+`
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.system_logging":                     "enabled",
+					".properties.system_logging.enabled.host":        "example.com",
+					".properties.system_logging.enabled.port":        2514,
+					".properties.system_logging.enabled.syslog_rule": multilineRule,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				for _, ig := range instanceGroups {
+					syslogForwarder, err := manifest.FindInstanceGroupJob(ig, "syslog_forwarder")
+					Expect(err).NotTo(HaveOccurred())
+
+					syslogConfig, err := syslogForwarder.Property("syslog/custom_rule")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(syslogConfig).To(ContainSubstring(`
+some
+multi
+line
+rule
+`))
+				}
+			})
 		})
 	})
 })
