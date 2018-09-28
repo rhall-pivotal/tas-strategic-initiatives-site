@@ -51,5 +51,5 @@ instance_definition:
   name: instances
   type: integer
   label: Instances
-  default: 2
+  default: $( variable "credhub_default_instances" )
   configurable: $( variable "credhub_configurable_state" )
