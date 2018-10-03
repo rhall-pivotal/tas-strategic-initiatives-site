@@ -9,16 +9,16 @@ var _ = Describe("Logging", func() {
 
 	var instanceGroups []string = []string{"isolated_diego_cell", "isolated_ha_proxy", "isolated_router"}
 
-	Describe("metron agent", func() {
-		It("sets tags on the metron agent", func() {
+	Describe("loggregator agent", func() {
+		It("sets tags on the loggregator agent", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			for _, ig := range instanceGroups {
-				agent, err := manifest.FindInstanceGroupJob(ig, "metron_agent")
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
 				Expect(err).NotTo(HaveOccurred())
 
-				tags, err := agent.Property("metron_agent/tags")
+				tags, err := agent.Property("tags")
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
 				Expect(tags).To(HaveKeyWithValue("placement_tag", "isosegtag"))
 				Expect(tags).To(HaveKeyWithValue("product", "PCF Isolation Segment"))
