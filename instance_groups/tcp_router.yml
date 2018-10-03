@@ -6,7 +6,7 @@ description: TCP Routers route TCP traffic.
 templates:
 - $( job "bpm" )
 - $( job "tcp_router" )
-- $( job "metron_agent" )
+- $( job "loggregator_agent" )
 - $( job "syslog_forwarder" )
 resource_definitions:
 - name: ram

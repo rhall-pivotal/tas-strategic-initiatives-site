@@ -12,7 +12,7 @@ templates:
 - $( job "log-cache-expvar-forwarder" )
 - $( job "log-cache-gateway" )
 - $( job "log-cache-nozzle" )
-- $( job "metron_agent" )
+- $( job "loggregator_agent" )
 - $( job "route_registrar_log_cache_reverse_proxy" )
 - $( job "syslog_forwarder" )
 {{else}}
@@ -69,7 +69,7 @@ property_blueprints:
   default:
     domains:
     - doppler
-- name: metron_tls_cert
+- name: loggregator_agent_tls_cert
   type: rsa_cert_credentials
   configurable: false
   default:

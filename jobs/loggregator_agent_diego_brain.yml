@@ -1,0 +1,17 @@
+---
+name: loggregator_agent
+alias: loggregator_agent_diego_brain
+release: loggregator-agent
+manifest: |
+  loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      agent:
+        cert: (( .doppler.loggregator_agent_tls_cert.cert_pem ))
+        key: (( .doppler.loggregator_agent_tls_cert.private_key_pem ))
+  deployment: "(( .properties.enable_cf_metric_name.value ? 'cf' : '' ))"
+  tags:
+    product: $( variable "label" )
+    product_version: $( variable "build-version" )
+    system_domain: "(( .cloud_controller.system_domain.value ))"
+  health_port: 22222

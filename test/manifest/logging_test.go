@@ -6,7 +6,7 @@ import (
 )
 
 var _ = Describe("Logging", func() {
-	Describe("metron agent", func() {
+	Describe("loggregator agent", func() {
 		var (
 			instanceGroups []string
 			productTag     string
@@ -40,26 +40,21 @@ var _ = Describe("Logging", func() {
 			}
 		})
 
-		It("sets defaults on the metron agent", func() {
+		It("sets defaults on the loggregator agent", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			for _, ig := range instanceGroups {
-				agent, err := manifest.FindInstanceGroupJob(ig, "metron_agent")
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
 				Expect(err).NotTo(HaveOccurred())
 
-				By("disabling support for forwarding syslog to metron")
-				syslogForwardingEnabled, err := agent.Property("syslog_daemon_config/enable")
-				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
-				Expect(syslogForwardingEnabled).To(BeFalse(), "Instance Group: %s", ig)
-
 				By("disabling the cf deployment name in emitted metrics")
-				deploymentName, err := agent.Property("metron_agent/deployment")
+				deploymentName, err := agent.Property("deployment")
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
 				Expect(deploymentName).To(Equal(""), "Instance Group: %s", ig)
 
 				By("adding tags to the metrics emitted")
-				tags, err := agent.Property("metron_agent/tags")
+				tags, err := agent.Property("tags")
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
 				Expect(tags).To(HaveKeyWithValue("product", productTag))
 				Expect(tags).To(HaveKeyWithValue("product_version", MatchRegexp(`^\d+\.\d+\.\d+.*`)))
@@ -75,10 +70,10 @@ var _ = Describe("Logging", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				for _, ig := range instanceGroups {
-					agent, err := manifest.FindInstanceGroupJob(ig, "metron_agent")
+					agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
 					Expect(err).NotTo(HaveOccurred())
 
-					deploymentName, err := agent.Property("metron_agent/deployment")
+					deploymentName, err := agent.Property("deployment")
 					Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
 					Expect(deploymentName).To(Equal("cf"), "Instance Group: %s", ig)
 				}

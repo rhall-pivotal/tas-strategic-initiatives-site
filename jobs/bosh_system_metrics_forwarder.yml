@@ -16,5 +16,5 @@ manifest: |
     password: (( $director.bosh_metrics_forwarder_client_secret ))
   loggregator:
     ca_cert: (( $ops_manager.ca_certificate ))
-    cert: (( .doppler.metron_tls_cert.cert_pem ))
-    key: (( .doppler.metron_tls_cert.private_key_pem ))
+    cert: (( .doppler.loggregator_agent_tls_cert.cert_pem ))
+    key: (( .doppler.loggregator_agent_tls_cert.private_key_pem ))

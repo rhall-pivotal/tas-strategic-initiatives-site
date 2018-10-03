@@ -6,7 +6,7 @@ description:
 templates:
 {{if eq tile "ert"}}
 - $( job "consul_server" )
-- $( job "metron_agent" )
+- $( job "loggregator_agent" )
 - $( job "syslog_forwarder" )
 {{else}}
 - $( job "placeholder" )
