@@ -6,21 +6,21 @@ import (
 )
 
 var _ = Describe("Logging", func() {
-	Describe("metron agent", func() {
-		It("sets defaults on the metron agent", func() {
+	Describe("loggregator agent", func() {
+		It("sets defaults on the loggregator agent", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
-			agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "metron_agent_windows")
+			agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggregator_agent_windows")
 			Expect(err).NotTo(HaveOccurred())
 
 			By("disabling the cf deployment name in emitted metrics")
-			deploymentName, err := agent.Property("metron_agent/deployment")
+			deploymentName, err := agent.Property("deployment")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(deploymentName).To(Equal(""))
 
 			By("setting tags on the emitted metrics")
-			tags, err := agent.Property("metron_agent/tags")
+			tags, err := agent.Property("tags")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(tags).To(HaveKeyWithValue("product", "Pivotal Application Service for Windows"))
 			Expect(tags).To(HaveKeyWithValue("product_version", MatchRegexp(`^\d+\.\d+\.\d+.*`)))
@@ -34,10 +34,10 @@ var _ = Describe("Logging", func() {
 				})
 				Expect(err).NotTo(HaveOccurred())
 
-				agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "metron_agent_windows")
+				agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggregator_agent_windows")
 				Expect(err).NotTo(HaveOccurred())
 
-				tags, err := agent.Property("metron_agent/tags")
+				tags, err := agent.Property("tags")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(tags).To(HaveKeyWithValue("placement_tag", "tag1,tag2"))
 			})
@@ -50,10 +50,10 @@ var _ = Describe("Logging", func() {
 				})
 				Expect(err).NotTo(HaveOccurred())
 
-				agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "metron_agent_windows")
+				agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggregator_agent_windows")
 				Expect(err).NotTo(HaveOccurred())
 
-				deploymentName, err := agent.Property("metron_agent/deployment")
+				deploymentName, err := agent.Property("deployment")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(deploymentName).To(Equal("cf"))
 			})

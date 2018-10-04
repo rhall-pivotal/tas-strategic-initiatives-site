@@ -1,0 +1,17 @@
+---
+name: loggregator_agent_windows
+release: loggregator-agent
+manifest: |
+  loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      agent:
+        cert: (( .properties.loggregator_agent_tls_cert.cert_pem ))
+        key: (( .properties.loggregator_agent_tls_cert.private_key_pem ))
+    use_v2_api: true
+  deployment: "(( .properties.enable_cf_metric_name.value ? 'cf' : '' ))"
+  tags:
+    placement_tag: (( .windows_diego_cell.placement_tags.value ))
+    product: $( variable "label" )
+    product_version: $( variable "build-version" )
+    system_domain: "(( ..cf.cloud_controller.system_domain.value ))"
