@@ -142,6 +142,14 @@ var _ = Describe("System Database", func() {
 				caCert, err = job.Property("ccdb/ca_cert")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
+
+				// routing-api
+				job, err = manifest.FindInstanceGroupJob(ccInstanceGroup, "routing-api")
+				Expect(err).NotTo(HaveOccurred())
+
+				caCert, err = job.Property("routing_api/sqldb/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).To(Equal("fake-ca-cert"))
 			})
 		})
 	})

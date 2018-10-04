@@ -178,6 +178,7 @@
           username: ((( routing-db-credentials.username )))
           password: ((( routing-db-credentials.password )))
           schema: (( .properties.routing_database_name.value ))
+          ca_cert: (( $ops_manager.ca_certificate ))
       - name: silkdb
         manifest: |
           type: mysql
@@ -497,6 +498,7 @@
             username: (( .properties.system_database.external.routing_username.value ))
             password: (( .properties.system_database.external.routing_password.value ))
             schema: (( .properties.routing_database_name.value ))
+            ca_cert: (( .properties.system_database.external.ca_cert.value ))
         - name: silkdb
           manifest: |
             type: mysql
