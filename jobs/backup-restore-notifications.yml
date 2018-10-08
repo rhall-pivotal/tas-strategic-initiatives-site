@@ -1,8 +1,6 @@
 ---
 name: backup-restore-notifications
 release: notifications
-consumes: |
-  (( .properties.system_database.selected_option.parsed_manifest(mysql_db_link) ))
 manifest: |
   domain: (( .cloud_controller.system_domain.value ))
   notifications:

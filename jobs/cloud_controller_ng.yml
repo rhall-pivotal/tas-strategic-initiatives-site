@@ -1,8 +1,6 @@
 ---
 name: cloud_controller_ng
 release: capi
-consumes: |
-  (( .properties.system_database.selected_option.parsed_manifest(ccdb_link) ))
 provides: |
   cloud_controller: {as: cloud_controller, shared: true}
 manifest: |

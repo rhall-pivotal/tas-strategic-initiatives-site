@@ -1,8 +1,6 @@
 ---
 name: bbr-usage-servicedb
 release: push-usage-service-release
-consumes: |
-  (( .properties.system_database.selected_option.parsed_manifest(push_app_usage_service_db_link) ))
 manifest: |
   cf:
     admin_password: (( .uaa.push_apps_manager_credentials.password ))

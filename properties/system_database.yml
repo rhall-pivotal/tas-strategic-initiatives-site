@@ -54,37 +54,6 @@
   configurable: false
   default: nfsvolume
 
-- name: system_db_link
-  type: selector
-  configurable: false
-  default: only-option
-  option_templates:
-    - name: doesnt-matter
-      select_value: only-option
-      named_manifests:
-        - name: proxy
-          manifest: |
-            "(( .mysql_proxy.service_hostname.value ? .properties.system_db_link.selected_option.parsed_manifest(proxy_service_hostname) : .properties.system_db_link.selected_option.parsed_manifest(proxy_link) ))"
-        - name: proxy_service_hostname
-          manifest: |
-            database:
-              instances:
-              - address: (( .mysql_proxy.service_hostname.value ))
-        - name: proxy_link
-          manifest: |
-            database: {from: proxy-mysql}
-        - name: app_usage_database_proxy
-          manifest: |
-            "(( .mysql_proxy.service_hostname.value ? .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy_service_hostname) : .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy_link) ))"
-        - name: app_usage_database_proxy_service_hostname
-          manifest: |
-            app-usage-database:
-              instances:
-              - address: (( .mysql_proxy.service_hostname.value ))
-        - name: app_usage_database_proxy_link
-          manifest: |
-            app-usage-database: {from: proxy-mysql}
-
 - name: system_database
   type: selector
   configurable: true
@@ -99,9 +68,6 @@
       - name: enable_internal_mysql
         manifest: |
           false
-      - name: mysql_db_link
-        manifest: |
-          (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
       - name: ccdb
         manifest: |
           connection_validation_timeout: (( .properties.ccdb_connection_validation_timeout.value ))
@@ -119,11 +85,9 @@
           - tag: cc
             name: (( .properties.ccdb_database_name.value ))
             citext: true
-      - name: ccdb_link
-        manifest: |
-          (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
       - name: notifications
         manifest: |
+          host: mysql.service.cf.internal
           port: 3306
           username: ((( notifications-db-credentials.username )))
           password: ((( notifications-db-credentials.password )))
@@ -131,6 +95,7 @@
           max_open_connections: 10
       - name: autoscaling
         manifest: |
+          host: mysql.service.cf.internal
           adapter: mysql
           port: 3306
           username: ((( autoscale-db-credentials.username )))
@@ -138,19 +103,18 @@
           name: (( .properties.autoscale_database_name.value ))
       - name: push-app-usage-service
         manifest: |
+          ip: mysql.service.cf.internal
           port: 3306
           username: ((( app-usage-db-credentials.username )))
           password: ((( app-usage-db-credentials.password )))
           name: (( .properties.app_usage_service_database_name.value ))
       - name: bbr-usage-servicedb
         manifest: |
+          host: mysql.service.cf.internal
           port: 3306
           user: ((( app-usage-db-credentials.username )))
           password: ((( app-usage-db-credentials.password )))
           name: (( .properties.app_usage_service_database_name.value ))
-      - name: push_app_usage_service_db_link
-        manifest: |
-          (( .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy) ))
       - name: diegodb
         manifest: |
           db_host: mysql.service.cf.internal
@@ -203,6 +167,7 @@
           ca_cert: (( $ops_manager.ca_certificate ))
       - name: nfsvolume
         manifest: |
+          host: mysql.service.cf.internal
           username: ((( nfs-volume-db-credentials.username )))
           password: ((( nfs-volume-db-credentials.password )))
           name: (( .properties.nfsvolume_database_name.value ))
@@ -225,9 +190,6 @@
       - name: enable_internal_mysql
         manifest: |
           true
-      - name: mysql_db_link
-        manifest: |
-          (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
       - name: ccdb
         manifest: |
           connection_validation_timeout: (( .properties.ccdb_connection_validation_timeout.value ))
@@ -243,11 +205,9 @@
           - tag: cc
             name: (( .properties.ccdb_database_name.value ))
             citext: true
-      - name: ccdb_link
-        manifest: |
-          (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
       - name: notifications
         manifest: |
+          host: mysql.service.cf.internal
           port: 3306
           username: ((( notifications-db-credentials.username )))
           password: ((( notifications-db-credentials.password )))
@@ -255,6 +215,7 @@
           max_open_connections: 10
       - name: autoscaling
         manifest: |
+          host: mysql.service.cf.internal
           adapter: mysql
           port: 3306
           username: ((( autoscale-db-credentials.username )))
@@ -262,19 +223,18 @@
           name: (( .properties.autoscale_database_name.value ))
       - name: push-app-usage-service
         manifest: |
+          ip: mysql.service.cf.internal
           port: 3306
           username: ((( app-usage-db-credentials.username )))
           password: ((( app-usage-db-credentials.password )))
           name: (( .properties.app_usage_service_database_name.value ))
       - name: bbr-usage-servicedb
         manifest: |
+          host: mysql.service.cf.internal
           port: 3306
           user: ((( app-usage-db-credentials.username )))
           password: ((( app-usage-db-credentials.password )))
           name: (( .properties.app_usage_service_database_name.value ))
-      - name: push_app_usage_service_db_link
-        manifest: |
-          (( .properties.system_db_link.selected_option.parsed_manifest(app_usage_database_proxy) ))
       - name: diegodb
         manifest: |
           db_host: mysql.service.cf.internal
@@ -317,6 +277,7 @@
           connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
       - name: nfsvolume
         manifest: |
+          host: mysql.service.cf.internal
           username: ((( nfs-volume-db-credentials.username )))
           password: ((( nfs-volume-db-credentials.password )))
           name: (( .properties.nfsvolume_database_name.value ))
@@ -416,9 +377,6 @@
         - name: enable_internal_mysql
           manifest: |
             false
-        - name: mysql_db_link
-          manifest: |
-            database: nil
         - name: ccdb
           manifest: |
             connection_validation_timeout: (( .properties.ccdb_connection_validation_timeout.value ))
@@ -435,9 +393,6 @@
             databases:
             - tag: cc
               name: (( .properties.ccdb_database_name.value ))
-        - name: ccdb_link
-          manifest: |
-            database: nil
         - name: notifications
           manifest: |
             host: (( .properties.system_database.external.host.value ))
@@ -468,9 +423,6 @@
             user: (( .properties.system_database.external.app_usage_service_username.value ))
             password: (( .properties.system_database.external.app_usage_service_password.value ))
             name: (( .properties.app_usage_service_database_name.value ))
-        - name: push_app_usage_service_db_link
-          manifest: |
-            app-usage-database: nil
         - name: diegodb
           manifest: |
             db_host: (( .properties.system_database.external.host.value ))

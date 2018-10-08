@@ -26,9 +26,6 @@
           databases:
           - tag: uaa
             name: (( .properties.uaa_database_name.value ))
-      - name: db_link
-        manifest: |
-          (( .properties.system_db_link.selected_option.parsed_manifest(proxy) ))
 
     - name: external
       select_value: external
@@ -58,6 +55,3 @@
           databases:
           - tag: uaa
             name: (( .properties.uaa_database_name.value ))
-      - name: db_link
-        manifest: |
-          database: nil

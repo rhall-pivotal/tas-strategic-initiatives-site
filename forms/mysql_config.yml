@@ -11,22 +11,6 @@ markdown: |
   be configured against port 1936.
 
 property_inputs:
-  - reference: .mysql_proxy.static_ips
-    label: MySQL Proxy IPs
-    description: |
-      Enter the IP address(es) for the MySQL proxy instances configured on
-      your external load balancer.
-
-  - reference: .mysql_proxy.service_hostname
-    label: MySQL Service Hostname
-    description: |
-      To remove a MySQL proxy as a single point of failure, configure your
-      load balancer to route application requests to multiple proxy
-      instances. Then enter the IP or hostname of the load balancer here, so
-      components reach their MySQL databases through the load balancer. If
-      this field is blank, components use the IP of the first MySQL proxy
-      instance.
-
   - reference: .mysql_monitor.poll_frequency
     label: Replication canary time period
     description: |
