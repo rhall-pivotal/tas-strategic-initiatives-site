@@ -1,0 +1,26 @@
+---
+name: metric_registrar_orchestrator
+release: metric-registrar
+consumes: |
+  cloud_controller: {from: cloud_controller}
+  metric_registrar_log_worker: {from: metric_registrar_log_worker}
+manifest: |
+  disabled: (( .properties.metric_registrar_disabled.value ))
+  health_check_port: 8087
+  orchestration_port: 8088
+  loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      agent:
+        cert: (( .doppler.loggregator_agent_tls_cert.cert_pem ))
+        key: (( .doppler.loggregator_agent_tls_cert.private_key_pem ))
+  cloud_controller:
+    tls:
+      ca: (( $ops_manager.ca_certificate ))
+      cert: (( .properties.cloud_controller_mutual_cert.cert_pem ))
+      key: (( .properties.cloud_controller_mutual_cert.private_key_pem ))
+  orchestration:
+    tls:
+      ca: (( $ops_manager.ca_certificate ))
+      cert: (( .properties.metric_registrar_orchestrator_tls.cert_pem ))
+      key: (( .properties.metric_registrar_orchestrator_tls.private_key_pem ))

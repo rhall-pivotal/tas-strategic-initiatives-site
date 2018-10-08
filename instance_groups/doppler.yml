@@ -15,6 +15,8 @@ templates:
 - $( job "loggregator_agent" )
 - $( job "route_registrar_log_cache_reverse_proxy" )
 - $( job "syslog_forwarder" )
+- $( job "metric_registrar_log_worker" )
+- $( job "metric_registrar_endpoint_worker" )
 {{else}}
 - $( job "placeholder" )
 {{end}}

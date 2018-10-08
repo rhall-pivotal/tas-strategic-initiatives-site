@@ -1,0 +1,39 @@
+---
+- name: metric_registrar_rlp_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - reverselogproxy
+
+- name: metric_registrar_orchestrator_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - metric-registrar-orchestration
+
+- name: metric_registrar_worker_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - metric-registrar-orchestration
+
+- name: metric_registrar_scrape_interval_in_seconds
+  type: integer
+  configurable: true
+  constraints:
+    min: 15
+    max: 600
+  default: 35
+
+- name: metric_registrar_blacklisted_tags
+  type: string_list
+  configurable: true
+  default: "deployment,job,index,id"
+
+- name: metric_registrar_disabled
+  type: boolean
+  configurable: true
+  default: true

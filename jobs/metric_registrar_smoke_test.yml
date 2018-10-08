@@ -1,0 +1,14 @@
+---
+name: metric_registrar_smoke_test
+release: metric-registrar
+consumes: |
+  cloud_controller: {from: cloud_controller}
+manifest: |
+  skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+  scrape_interval: (( .properties.metric_registrar_scrape_interval_in_seconds.value ))s
+  cf:
+    password: (( .uaa.admin_credentials.password ))
+    user: (( .uaa.admin_credentials.identity ))
+    dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
+    organization: system
+    space: metric-registrar-monitor

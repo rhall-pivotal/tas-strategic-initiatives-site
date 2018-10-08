@@ -47,6 +47,7 @@ releases:
 - $( release "loggregator" )
 - $( release "loggregator-agent" )
 - $( release "mapfs" )
+- $( release "metric-registrar" )
 - $( release "mysql-monitoring" )
 - $( release "nats" )
 - $( release "nfs-volume" )
@@ -87,6 +88,7 @@ form_types:
 - $( form "cloud_controller" )
 - $( form "smoke_tests" )
 - $( form "advanced_features" )
+- $( form "metric_registrar" )
 
 job_types:
 - $( instance_group "database" ) # SRT only
@@ -180,6 +182,12 @@ property_blueprints:
 - $( property "log_cache_server_tls_cert" )
 - $( property "logger_endpoint_port" )
 - $( property "loggregator_client_cert" )
+- $( property "metric_registrar_blacklisted_tags" )
+- $( property "metric_registrar_disabled" )
+- $( property "metric_registrar_orchestrator_tls" )
+- $( property "metric_registrar_rlp_tls" )
+- $( property "metric_registrar_scrape_interval_in_seconds" )
+- $( property "metric_registrar_worker_tls" )
 - $( property "mysql_activity_logging" )
 - $( property "network_policy_agent_cert" )
 - $( property "network_policy_server_cert" )
@@ -467,6 +475,13 @@ post_deploy_errands:
     description: Runs Smoke Tests against the App Autoscaling Service.
     colocated: true
     run_default: true
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: metric_registrar_smoke_test
+    label: Metric Registrar Smoke Test Errand
+    description: Runs Smoke Tests against the Metric Registrar.
+    colocated: true
+    run_default: false
     instances:
       - $( variable "errand_instance_group" )
   - name: nfsbrokerpush

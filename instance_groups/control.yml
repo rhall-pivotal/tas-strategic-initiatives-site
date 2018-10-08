@@ -62,6 +62,10 @@ templates:
 - $( job "bootstrap" )
 - $( job "service-discovery-controller" )
 - $( job "test-autoscaling" )
+- $( job "metric_registrar_orchestrator" )
+- $( job "metric_registrar_log_worker" )
+- $( job "metric_registrar_endpoint_worker" )
+- $( job "metric_registrar_smoke_test" )
 {{else}}
 - $( job "placeholder" )
 {{end}}

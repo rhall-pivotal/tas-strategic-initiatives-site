@@ -1,0 +1,22 @@
+---
+name: metric_registrar
+label: Metric Registrar
+description: Configure the Metric Registrar
+
+property_inputs:
+- reference: .properties.metric_registrar_disabled
+  label: Disable Metric Registrar
+  description: |
+    Disables the Metric Registrar. Metric Registrar allows the
+    conversion of structured logs into metrics. It also scrapes metrics
+    endpoints and forwards the metrics into Loggregator.
+- reference: .properties.metric_registrar_scrape_interval_in_seconds
+  label: Endpoint Scraping Interval
+  description: |
+    The number of seconds between scrapes of registered metrics endpoints (in
+    seconds, default 35).
+- reference: .properties.metric_registrar_blacklisted_tags
+  label: Blacklisted Tags
+  description: |
+    A comma-separated list of tags that users are not allowed to set on their
+    emitted metrics.
