@@ -16,6 +16,53 @@ var _ = Describe("Apps Manager", func() {
 		}
 	})
 
+	Describe("BPM", func() {
+		var appsManagerJobs []Job
+
+		BeforeEach(func() {
+			if productName == "srt" {
+				appsManagerJobs = []Job{
+					{
+						InstanceGroup: "control",
+						Name:          "push-apps-manager",
+					},
+				}
+			} else {
+				appsManagerJobs = []Job{
+					{
+						InstanceGroup: "clock_global",
+						Name:          "push-apps-manager",
+					},
+				}
+			}
+		})
+
+		It("co-locates the BPM job with all apps manager jobs", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, appsManagerJob := range appsManagerJobs {
+				_, err = manifest.FindInstanceGroupJob(appsManagerJob.InstanceGroup, "bpm")
+				Expect(err).NotTo(HaveOccurred())
+			}
+		})
+
+		It("sets bpm.enabled to true", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, appsManagerJob := range appsManagerJobs {
+				manifestJob, err := manifest.FindInstanceGroupJob(appsManagerJob.InstanceGroup, appsManagerJob.Name)
+				Expect(err).NotTo(HaveOccurred())
+
+				bpmEnabled, err := manifestJob.Property("bpm/enabled")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(bpmEnabled).To(BeTrue())
+			}
+		})
+	})
+
 	Describe("Memory", func() {
 		It("uses the spec defaults", func() {
 			manifest, err := product.RenderManifest(nil)

@@ -5,6 +5,7 @@ resource_label: Clock Global
 description: Schedules asynchronous tasks for cloud controller
 templates:
 {{if eq tile "ert"}}
+- $( job "bpm" )
 - $( job "cloud_controller_clock" )
 - $( job "loggregator_agent" )
 - $( job "syslog_forwarder" )
