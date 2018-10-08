@@ -1,5 +1,5 @@
 require("tap").mochaGlobals()
-const should = require("should")
+const should = require("chai").should()
 const migration = require("../201711071502_credhub_credentials_2_0.js");
 
 input = {
@@ -84,7 +84,7 @@ expectedOutput = {
 describe("initial credhub credentials migration", function() {
   context("when the migration is run", function() {
     it("migrates a subset of credentials to credhub", function(){
-      migration.migrate(input).should.deepEqual(expectedOutput);
+      migration.migrate(input).should.deep.equal(expectedOutput);
     });
   });
 });

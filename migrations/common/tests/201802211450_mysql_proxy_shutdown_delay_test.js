@@ -1,5 +1,5 @@
 require("tap").mochaGlobals()
-const should = require("should")
+const should = require("chai").should()
 const migration = require("../201802211450_mysql_proxy_shutdown_delay.js")
 
 describe("MySQL proxy shutdown delay", function() {
@@ -8,7 +8,7 @@ describe("MySQL proxy shutdown delay", function() {
     it("increases the shutdown delay to 30 seconds", function(){
       migration.migrate(
         { properties: { ".mysql_proxy.shutdown_delay": { "value": 0 } } }
-      ).should.deepEqual(
+      ).should.deep.equal(
         { properties: { ".mysql_proxy.shutdown_delay": { "value": 30 } } }
       );
     });
@@ -18,7 +18,7 @@ describe("MySQL proxy shutdown delay", function() {
     it("retains the existing value", function(){
       migration.migrate(
         { properties: { ".mysql_proxy.shutdown_delay": { "value": 60 } } }
-      ).should.deepEqual(
+      ).should.deep.equal(
         { properties: { ".mysql_proxy.shutdown_delay": { "value": 60 } } }
       );
     });

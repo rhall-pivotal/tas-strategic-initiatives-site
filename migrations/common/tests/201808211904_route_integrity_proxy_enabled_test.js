@@ -1,5 +1,5 @@
 require("tap").mochaGlobals()
-const should = require("should")
+const should = require("chai").should()
 const migration = require("../201808211904_route_integrity_proxy_enabled.js")
 
 describe("Route Integrity", function() {
@@ -7,7 +7,7 @@ describe("Route Integrity", function() {
     it("sets route_integrity to do_not_verify", function(){
       migration.migrate(
         { properties: {} }
-      ).should.deepEqual(
+      ).should.deep.equal(
         { properties: { ".properties.route_integrity": { "value": "do_not_verify" } } }
       );
     });
@@ -16,7 +16,7 @@ describe("Route Integrity", function() {
     it("sets route_integrity to do_not_verify", function(){
       migration.migrate(
         { properties: { ".properties.rep_proxy_enabled": { "value": false } } }
-      ).should.deepEqual(
+      ).should.deep.equal(
         { properties: { ".properties.route_integrity": { "value": "do_not_verify" } } }
       );
     });
@@ -25,7 +25,7 @@ describe("Route Integrity", function() {
     it("sets route_integrity to tls_verify", function(){
       migration.migrate(
         { properties: { ".properties.rep_proxy_enabled": { "value": true } } }
-      ).should.deepEqual(
+      ).should.deep.equal(
         { properties: { ".properties.route_integrity": { "value": "tls_verify" } } }
       );
     });

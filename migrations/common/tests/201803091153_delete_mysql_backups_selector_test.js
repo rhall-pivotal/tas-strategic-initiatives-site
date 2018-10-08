@@ -1,5 +1,5 @@
 require("tap").mochaGlobals()
-const should = require("should")
+const should = require("chai").should()
 const migration = require("../201803091153_delete_mysql_backups_selector.js")
 
 describe("Remove Automated Backup Configuration", function() {
@@ -208,7 +208,7 @@ describe("Remove Automated Backup Configuration", function() {
   };
 
   it("removes mysql_backup", function(){
-    migration.migrate(original_hash).should.deepEqual(migrated_hash);
+    migration.migrate(original_hash).should.deep.equal(migrated_hash);
   });
 
 });
