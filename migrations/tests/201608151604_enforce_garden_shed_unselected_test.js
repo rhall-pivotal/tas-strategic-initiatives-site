@@ -1,5 +1,5 @@
 require("tap").mochaGlobals()
-const should = require("should")
+const should = require("chai").should()
 
 abortMigration = function(msg) {
   throw new Error(msg);

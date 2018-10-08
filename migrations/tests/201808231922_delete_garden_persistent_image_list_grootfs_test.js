@@ -1,5 +1,6 @@
 require("tap").mochaGlobals()
-const should = require("should")
+const should = require("chai").should()
+
 const migration = require("../201808231922_delete_garden_persistent_image_list_grootfs.js")
 
 describe("Remove garden_persistent_image_list_grootfs property", function() {
@@ -16,6 +17,6 @@ describe("Remove garden_persistent_image_list_grootfs property", function() {
   };
 
   it("removes garden_persistent_image_list_grootfs", function() {
-    migration.migrate(original_hash).should.deepEqual(migrated_hash);
+    migration.migrate(original_hash).should.deep.equal(migrated_hash);
   });
 });
