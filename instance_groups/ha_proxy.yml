@@ -7,6 +7,7 @@ description: HAProxy is the default load balancer for SSL termination. Alternati
   Application Service router IP. Self signed certificates will function
   properly.
 templates:
+- $( job "bpm" )
 - $( job "haproxy" )
 - $( job "loggregator_agent" )
 - $( job "syslog_forwarder" )

@@ -5,6 +5,7 @@ resource_label: Consul
 description:
 templates:
 {{if eq tile "ert"}}
+- $( job "bpm" )
 - $( job "consul_server" )
 - $( job "loggregator_agent" )
 - $( job "syslog_forwarder" )

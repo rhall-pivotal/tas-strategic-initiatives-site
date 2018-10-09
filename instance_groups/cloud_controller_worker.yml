@@ -5,6 +5,7 @@ resource_label: Cloud Controller Worker
 description: Worker for cloud controller asynchronous tasks
 templates:
 {{if eq tile "ert"}}
+- $( job "bpm" )
 - $( job "cloud_controller_worker" )
 - $( job "loggregator_agent" )
 - $( job "syslog_forwarder" )
