@@ -191,5 +191,34 @@ var _ = Describe("UAA", func() {
 			Expect(authorizedGrantTypes).To(Equal("client_credentials"))
 		})
 
+		It("tile_installer has the right properties", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			id, err := uaa.Property("uaa/clients/tile_installer/id")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(id).To(Equal("tile_installer"))
+
+			rawAuthorities, err := uaa.Property("uaa/clients/tile_installer/authorities")
+			Expect(err).ToNot(HaveOccurred())
+
+			authorities := strings.Split(rawAuthorities.(string), ",")
+			Expect(authorities).To(ConsistOf([]string{"cloud_controller.admin", "clients.admin", "credhub.read", "credhub.write"}))
+
+			authorizedGrantTypes, err := uaa.Property("uaa/clients/tile_installer/authorized-grant-types")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(authorizedGrantTypes).To(Equal("client_credentials"))
+
+			accessTokenValidity, err := uaa.Property("uaa/clients/tile_installer/access-token-validity")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(accessTokenValidity).To(Equal(3600))
+
+			override, err := uaa.Property("uaa/clients/tile_installer/override")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(override).To(BeTrue())
+		})
 	})
 })

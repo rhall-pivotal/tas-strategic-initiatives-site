@@ -524,6 +524,14 @@ manifest: |
         secret: (( .uaa.credhub_admin_client_client_credentials.password ))
         authorities: credhub.read,credhub.write
         authorized-grant-types: client_credentials
+      tile_installer:
+        id: (( .uaa.tile_installer_client_credentials.identity ))
+        secret: (( .uaa.tile_installer_client_credentials.password ))
+        override: true
+        autoapprove: true
+        authorities: cloud_controller.admin,clients.admin,credhub.read,credhub.write
+        authorized-grant-types: client_credentials
+        access-token-validity: 3600
     servlet:
       session-cookie:
         max-age: (( .properties.uaa_session_cookie_max_age.value ))
