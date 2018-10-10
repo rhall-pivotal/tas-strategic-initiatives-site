@@ -252,6 +252,12 @@ manifest: |
         override: true
         authorities: "cloud_controller.read,uaa.resource,cloud_controller.admin"
         authorized-grant-types: client_credentials
+      (( .uaa.push_usage_service_client_credentials.identity )):
+        id: (( .uaa.push_usage_service_client_credentials.identity ))
+        secret: (( .uaa.push_usage_service_client_credentials.password ))
+        override: true
+        authorities: "cloud_controller.admin"
+        authorized-grant-types: client_credentials
       invitations:
         id: (( .uaa.invitations_client_credentials.identity ))
         secret: (( .uaa.invitations_client_credentials.password ))

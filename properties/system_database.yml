@@ -103,7 +103,7 @@
           name: (( .properties.autoscale_database_name.value ))
       - name: push-app-usage-service
         manifest: |
-          ip: mysql.service.cf.internal
+          address: mysql.service.cf.internal
           port: 3306
           username: ((( app-usage-db-credentials.username )))
           password: ((( app-usage-db-credentials.password )))
@@ -223,7 +223,7 @@
           name: (( .properties.autoscale_database_name.value ))
       - name: push-app-usage-service
         manifest: |
-          ip: mysql.service.cf.internal
+          address: mysql.service.cf.internal
           port: 3306
           username: ((( app-usage-db-credentials.username )))
           password: ((( app-usage-db-credentials.password )))
@@ -411,7 +411,7 @@
             name: (( .properties.autoscale_database_name.value ))
         - name: push-app-usage-service
           manifest: |
-            ip: (( .properties.system_database.external.host.value ))
+            address: (( .properties.system_database.external.host.value ))
             port: (( .properties.system_database.external.port.value ))
             username: (( .properties.system_database.external.app_usage_service_username.value ))
             password: (( .properties.system_database.external.app_usage_service_password.value ))
