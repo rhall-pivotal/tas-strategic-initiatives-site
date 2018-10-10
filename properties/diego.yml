@@ -70,6 +70,11 @@
           manifest: |
             disable: true
 
+- name: enable_smb_volume_driver
+  type: boolean
+  configurable: true
+  default: false
+
 - name: loggregator_client_cert
   type: rsa_cert_credentials
   configurable: false
