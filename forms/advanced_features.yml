@@ -12,3 +12,9 @@ property_inputs:
 
 - reference: .isolated_diego_cell.executor_disk_capacity
   label: Cell Disk Capacity (MB)
+
+- reference: .properties.enable_smb_volume_driver
+  label: Enable SMB volume services
+  description: |
+    Enabling SMB volume services will allow application developers to bind
+    existing SMB shares to their applications for shared file access.
