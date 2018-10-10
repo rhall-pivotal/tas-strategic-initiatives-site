@@ -1,0 +1,20 @@
+---
+name: smbbrokerpush
+release: smb-volume
+manifest: |
+  app_domain: (( .cloud_controller.system_domain.value ))
+  domain: (( .cloud_controller.system_domain.value ))
+  cf:
+    client_id: (( .uaa.smbbroker_client_credentials.identity ))
+    client_secret: (( .uaa.smbbroker_client_credentials.password ))
+  credhub:
+    url: https://credhub.service.cf.internal:8844
+    uaa_client_id: (( .uaa.smbbroker_credhub_client_credentials.identity ))
+    uaa_client_secret: (( .uaa.smbbroker_credhub_client_credentials.password ))
+    store_id: smbbroker
+  organization: system
+  space: smb
+  username: ((( smb-broker-credentials.username )))
+  password: ((( smb-broker-credentials.password )))
+  skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))

@@ -61,6 +61,7 @@ releases:
 - $( release "routing" )
 - $( release "ruby-offline-buildpack" )
 - $( release "silk" )
+- $( release "smb-volume" )
 - $( release "staticfile-offline-buildpack" )
 - $( release "statsd-injector" )
 - $( release "syslog" )
@@ -228,6 +229,7 @@ property_blueprints:
 - $( property "service_discovery_client_tls" )
 - $( property "service_discovery_server_tls" )
 - $( property "silk_database_name" )
+- $( property "smb_volume_driver" )
 - $( property "smoke_tests" )
 - $( property "smtp_address" )
 - $( property "smtp_auth_mechanism" )
@@ -397,6 +399,9 @@ variables:
   type: user
 
 - name: silk-db-credentials
+  type: user
+
+- name: smb-broker-credentials
   type: user
 
 - name: uaa-db-credentials
