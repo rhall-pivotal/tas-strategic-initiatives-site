@@ -108,7 +108,6 @@
           username: ((( app-usage-db-credentials.username )))
           password: ((( app-usage-db-credentials.password )))
           name: (( .properties.app_usage_service_database_name.value ))
-          ca_cert: (( $ops_manager.ca_certificate ))
       - name: bbr-usage-servicedb
         manifest: |
           host: mysql.service.cf.internal
