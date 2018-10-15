@@ -15,7 +15,7 @@ var _ = Describe("Logging", func() {
 		BeforeEach(func() {
 			if productName == "srt" {
 				instanceGroups = []string{"blobstore", "compute", "control", "database"}
-				productTag = "PCF Small Footprint"
+				productTag = "Small Footprint PAS"
 			} else {
 				instanceGroups = []string{
 					"clock_global",
