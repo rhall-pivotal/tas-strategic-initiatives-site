@@ -49,6 +49,10 @@
           type: boolean
           configurable: true
           default: false
+        - name: syslog_drop_debug
+          type: boolean
+          configurable: true
+          default: true
         - name: syslog_rule
           type: text
           configurable: true
@@ -67,6 +71,7 @@
             custom_rule: |
               (( .properties.system_logging.enabled.syslog_rule.value ))
               if ($programname startswith "vcap.") then stop
+              (( .properties.system_logging.enabled.syslog_drop_debug.value ? 'if ($msg contains "DEBUG") then stop' : "" ))
               (( ..cf.properties.container_networking_interface_plugin.silk.enable_log_traffic.value ? .properties.system_logging.selected_option.parsed_manifest(iptables_logging_enabled_part_1) : .properties.system_logging.selected_option.parsed_manifest(iptables_logging_disabled) ))
               (( ..cf.properties.container_networking_interface_plugin.silk.enable_log_traffic.value ? .properties.system_logging.selected_option.parsed_manifest(iptables_logging_enabled_part_2) : .properties.system_logging.selected_option.parsed_manifest(iptables_logging_disabled) ))
         - name: iptables_logging_enabled_part_1
