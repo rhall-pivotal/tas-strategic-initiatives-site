@@ -1,5 +1,4 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
+require("./spec_helper.js");
 
 abortMigration = function(msg) {
   throw new Error(msg);

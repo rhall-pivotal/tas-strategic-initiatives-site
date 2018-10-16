@@ -1,5 +1,4 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
+require("./spec_helper.js");
 
 const migration = require("../201808231922_delete_garden_persistent_image_list_grootfs.js")
 

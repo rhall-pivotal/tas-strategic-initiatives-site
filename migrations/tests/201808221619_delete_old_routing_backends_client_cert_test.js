@@ -1,5 +1,4 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
+require("./spec_helper.js");
 
 const migration = require("../201808221619_delete_old_routing_backends_client_cert")
 
