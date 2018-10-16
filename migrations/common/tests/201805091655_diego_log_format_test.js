@@ -1,6 +1,6 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
-const migration = require("../201805091655_diego_log_format.js")
+require("./spec_helper.js");
+
+const migration = require("../201805091655_diego_log_format.js");
 
 describe("Diego log timestamp format", function() {
 

@@ -1,5 +1,5 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
+require("./spec_helper.js");
+
 const migration = require("../201711071502_credhub_credentials_2_0.js");
 
 input = {

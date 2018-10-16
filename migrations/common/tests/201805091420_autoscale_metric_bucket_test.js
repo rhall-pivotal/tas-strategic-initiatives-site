@@ -1,6 +1,6 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
-const migration = require("../201805091420_autoscale_metric_bucket.js")
+require("./spec_helper.js");
+
+const migration = require("../201805091420_autoscale_metric_bucket.js");
 
 describe("Autoscale Metric Bucket property increase", function() {
 

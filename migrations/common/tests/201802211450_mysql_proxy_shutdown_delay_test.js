@@ -1,6 +1,6 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
-const migration = require("../201802211450_mysql_proxy_shutdown_delay.js")
+require("./spec_helper.js");
+
+const migration = require("../201802211450_mysql_proxy_shutdown_delay.js");
 
 describe("MySQL proxy shutdown delay", function() {
 

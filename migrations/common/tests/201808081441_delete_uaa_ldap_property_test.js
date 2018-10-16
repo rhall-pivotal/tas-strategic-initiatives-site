@@ -1,6 +1,6 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
-const migration = require("../201808081441_delete_uaa_ldap_property.js")
+require("./spec_helper.js");
+
+const migration = require("../201808081441_delete_uaa_ldap_property.js");
 
 describe("Remove UAA LDAP Server SSL Cert Alias", function() {
   original_hash = {

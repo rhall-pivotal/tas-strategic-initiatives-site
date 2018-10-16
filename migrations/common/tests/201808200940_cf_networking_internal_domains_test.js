@@ -1,6 +1,6 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
-const migration = require("../201808200931_cf_networking_internal_domains.js")
+require("./spec_helper.js");
+
+const migration = require("../201808200931_cf_networking_internal_domains.js");
 
 describe("Set internal domains", function() {
   it("sets cf_networking_internal_domains to empty string on upgrade", function(){

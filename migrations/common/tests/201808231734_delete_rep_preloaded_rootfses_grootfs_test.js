@@ -1,6 +1,6 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
-const migration = require("../201808231734_delete_rep_preloaded_rootfses_grootfs.js")
+require("./spec_helper.js");
+
+const migration = require("../201808231734_delete_rep_preloaded_rootfses_grootfs.js");
 
 describe("Remove rep_preloaded_rootfses_grootfs property", function() {
   original_hash = {

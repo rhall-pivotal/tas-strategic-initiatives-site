@@ -1,11 +1,10 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
+require("./spec_helper.js");
 
 abortMigration = function(msg) {
   throw new Error(msg);
 };
 
-const migration = require("../201809141548_require_route_integrity.js")
+const migration = require("../201809141548_require_route_integrity.js");
 
 describe("Ensure route integrity is enabled", function() {
 

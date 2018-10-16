@@ -1,6 +1,6 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
-const migration = require("../201808290855_delete_resources_backup_bucket.js")
+require("./spec_helper.js");
+
+const migration = require("../201808290855_delete_resources_backup_bucket.js");
 
 describe("Remove resources_backup_bucket property", function() {
   original_hash = {

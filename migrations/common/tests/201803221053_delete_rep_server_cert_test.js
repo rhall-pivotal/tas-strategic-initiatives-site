@@ -1,6 +1,6 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
-const migration = require("../201803221053_delete_rep_server_cert.js")
+require("./spec_helper.js");
+
+const migration = require("../201803221053_delete_rep_server_cert.js");
 
 describe("Remove pre-V2 rep agent certificate", function() {
   original_hash = {
