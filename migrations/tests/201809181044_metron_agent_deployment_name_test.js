@@ -1,5 +1,5 @@
-require("tap").mochaGlobals()
-const should = require("chai").should()
+require("./spec_helper.js");
+
 const migration = require("../201809181044_metron_agent_deployment_name.js")
 
 describe("Metron Agent Deployment Name", function() {
