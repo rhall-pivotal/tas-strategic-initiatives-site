@@ -49,6 +49,8 @@ manifest: |
   release_level_backup: true
   uaa:
     sslCertificate: (( .uaa.ssl_credentials.cert_pem ))
+    ca_certs:
+    - (( $ops_manager.ca_certificate ))
     password:
       policy:
         requireUpperCaseCharacter: (( .properties.uaa.internal.password_min_uppercase.value ))
