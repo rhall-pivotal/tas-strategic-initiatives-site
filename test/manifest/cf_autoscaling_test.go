@@ -31,4 +31,20 @@ var _ = Describe("CF Autoscaling", func() {
 		Expect(err).ToNot(HaveOccurred())
 		Expect(org).To(Equal("system"))
 	})
+
+	Context("when the user disables connection pooling", func() {
+		It("sets the autoscale api to disable connection pooling", func() {
+			manifest, err := product.RenderService.RenderManifest(map[string]interface{}{
+				".properties.autoscale_api_disable_connection_pooling": true,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "deploy-autoscaler")
+			Expect(err).NotTo(HaveOccurred())
+
+			property, err := job.Property("autoscale/api/disable_connection_pooling")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(property).To(BeTrue())
+		})
+	})
 })
