@@ -105,3 +105,8 @@ instance_definition:
   default: $( variable "control_default_instances" )
   constraints:
     min: $( variable "control_min_instances" )
+property_blueprints:
+- name: static_ips
+  type: ip_ranges
+  configurable: true
+  optional: true

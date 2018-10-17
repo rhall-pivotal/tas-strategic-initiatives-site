@@ -1,6 +1,8 @@
 package manifest_test
 
 import (
+	"fmt"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -372,6 +374,43 @@ var _ = Describe("Networking", func() {
 							"internal": true,
 						},
 					}))
+				})
+			})
+		})
+
+		Describe("SSH proxy", func() {
+			var instanceGroup string
+			BeforeEach(func() {
+				if productName == "srt" {
+					instanceGroup = "control"
+				} else {
+					instanceGroup = "diego_brain"
+				}
+			})
+
+			Context("when static IPs are set", func() {
+				var inputProperties map[string]interface{}
+
+				It("adds the static_ips", func() {
+					p := ""
+					if instanceGroup == "diego_brain" {
+						p = ".diego_brain.static_ips"
+					} else {
+						p = ".control.static_ips"
+					}
+
+					inputProperties = map[string]interface{}{
+						p: "0.0.0.0",
+					}
+
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					ips, err := manifest.Path(fmt.Sprintf("/instance_groups/name=%s/networks", instanceGroup))
+					Expect(err).NotTo(HaveOccurred())
+
+					key := ips.([]interface{})[0].(map[interface{}]interface{})
+					Expect(key["static_ips"]).To(Equal([]interface{}{"0.0.0.0"}))
 				})
 			})
 		})

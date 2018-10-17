@@ -19,7 +19,7 @@ property_inputs:
       be left blank and the "Load Balancers" field on the "Resource Config"
       tab can be filled out with the correct load balancer assignment.
 
-  - reference: .diego_brain.static_ips
+  - reference: $( variable "ssh_proxy_static_ips" )
     label: SSH Proxy IPs
     description: |
       Enter static IPs for the Diego Brain(s), which will accept requests to
