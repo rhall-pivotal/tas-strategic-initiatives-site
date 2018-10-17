@@ -5,6 +5,7 @@ manifest: |
   autoscale:
     api:
       java_buildpack: 'java_buildpack_offline'
+      disable_connection_pooling: (( .properties.autoscale_api_disable_connection_pooling.value ))
     api_instance_count: (( .properties.autoscale_api_instance_count.value ))
     broker:
       password: ((( deploy-autoscaling-broker-credentials.password )))
