@@ -10,23 +10,23 @@ property_inputs:
   - reference: .router.static_ips
     label: Router IPs
     description: |
-      If you are deploying onto an infrastructure that does not support
-      automated assignment of Routers to load balancers (vSphere), or you are
-      intending to manually configure your load balancer with the IP
-      addresses of the Routers, you should enter static IP addresses here
-      that will be used by the Routers. On infrastructures where automated
-      load balancer assignment is supported (AWS, GCP, Azure), this field can
-      be left blank and the "Load Balancers" field on the "Resource Config"
-      tab can be filled out with the correct load balancer assignment.
+      If you are deploying onto an infrastructure where automated load
+      balancer assignment is not supported (vSphere), enter static IPs for
+      your Routers and configure a load balancer with these IPs. Otherwise,
+      this field can be left blank and the Load Balancers field on the Resource
+      Config tab can be filled out with the correct load balancer assignment
+      for the Router instance group.
 
   - reference: $( variable "ssh_proxy_static_ips" )
     label: SSH Proxy IPs
     description: |
-      Enter static IPs for the Diego Brain(s), which will accept requests to
-      SSH into application containers on port 2222, and register a load
-      balancer with these IPs. If deploying PCF to AWS with an ELB, do not
-      enter IP addresses here. Instead, add the name of your ELB in the
-      Resource Config section, in the ELB Name column for Diego Brain.
+      If you are deploying onto an infrastructure where automated load balancer
+      assignment is not supported (vSphere), enter static IPs which will
+      accept requests to SSH into application containers on port 2222, and
+      configure a load balancer with these IPs. Otherwise, this field can be
+      left blank and the Load Balancers field on the Resource Config tab can
+      be filled out with the correct load balancer assignment for the Diego
+      Brain instance group (the Control instance group on SF-PAS).
 
   - reference: .ha_proxy.static_ips
     label: HAProxy IPs
@@ -38,11 +38,12 @@ property_inputs:
   - reference: .tcp_router.static_ips
     label: TCP Router IPs
     description: |
-      Enter the IP address(es) you would like to designate for the TCP
-      Routers, and point your load balancer to these addresses. If deploying
-      to AWS with an ELB, do not enter IP addresses here. Instead, in the
-      Resource Config section, add your ELB by name to the ELB Name column
-      for TCP Router.
+      If you are deploying onto an infrastructure where automated load balancer
+      assignment is not supported (vSphere), enter static IPs for your TCP
+      Routers and configure a load balancer with these IPs. Otherwise, this
+      field can be left blank and the Load Balancers field on the Resource
+      Config tab can be filled out with the correct load balancer assignment
+      for the TCP Router instance group.
 
   - reference: .properties.networking_poe_ssl_certs
     label: Certificates and Private Keys for HAProxy and Router
