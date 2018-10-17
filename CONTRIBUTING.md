@@ -1,32 +1,42 @@
 ## Contributing changes to PAS
 
-**Note:** this doc is a work-in-progress
+1. <a href='#building-a-tile'>Building a Tile</a>
+1. <a href='#changing-properties'>Changing Properties</a>
+1. <a href='#bumping-releases'>Bumping Releases</a>
+1. <a href='#migrations'>Migrations</a>
 
 p-runtime is used to build `.pivotal` files for all supported versions of PCF,
 as well as future versions.
+
 Each version is represented as a branch, e.g. [rel/2.2](https://github.com/pivotal-cf/p-runtime/tree/rel/2.0), and must be updated independently.
+
 The `master` branch represents the "next" version of PAS and is used to build
 release-candidates for the upcoming release.
+
 If a change is required in more than one version, separate PRs for each branch will be required.
 
-#### Building a tile
 
-To build a PAS tile locally to test your changes:
-1. Download an install the latest
-   [kiln](https://github.com/pivotal-cf/kiln/releases) binary
-1. Make a `./releases` directory in the p-runtime repo
-1. Download all the BOSH releases into `./releases`
-  - This is a manual step for the moment, we usually download a previously built
-    tile and unzip the `./releases` dir from it
-1. To build a Small Footprint PAS run `./bin/build` or `PRODUCT=ert ./bin/build` to
-   build a full PAS tile
+### <a name='building-a-tile'></a>Building a Tile
+
+To build a tile locally to test your changes:
+
+1. Download and install the latest
+   [kiln](https://github.com/pivotal-cf/kiln/releases) binary.
+1. Make a `./releases` directory in this repo.
+1. Download all the BOSH releases into `./releases`. We download a previously built tile and unzip the `./releases` dir from it.
+1. To build a Small Footprint PAS run `./bin/build`.
+1. To build PAS, run `PRODUCT=ert ./bin/build`.
 1. If you only need to test UI changes and don't need to actually deploy the
    tile, you can skip the release downloading with `STUB_RELEASES=true
    ./bin/build`
 
-#### Property Changes
 
-To TDD changes to a PAS tile, use [planitest](https://github.com/pivotal-cf/planitest) and [ops-manifest](https://github.com/pivotal-cf/ops-manifest). `planitest` is a testing library to make assertions against the generated BOSH manifest while `ops-manifest` is extracted Ops Manager code that transforms the tile metadata into a BOSH manifest without the need to stand up a running Ops Manager. 
+
+### <a name='changing-properties'></a>Changing Properties
+
+To TDD changes to a PAS tile, use [planitest](https://github.com/pivotal-cf/planitest) and [ops-manifest](https://github.com/pivotal-cf/ops-manifest).
+`planitest` is a testing library to make assertions against the generated BOSH manifest.
+`ops-manifest` is extracted Ops Manager code that transforms the tile metadata into a BOSH manifest without the need to stand up a running Ops Manager.
 
 When you write tests using `planitest` and `ops-manifest`, you are testing that changes made to the tile will result in the expected changes to the BOSH manifest, such as adding a job to an instance group or ensuring a property value is set. Currently, there is no way to test changes to the tile UI. 
 
@@ -38,17 +48,19 @@ For more information about tile metadata, refer to the [Product Template Referen
 
 **Setting up ops-manifest and running tests**
 
-1. Clone the branch of PAS you want to make changes to
+1. Clone the version branch you want to make changes to.
 1. Generate a Github API token
 1. Run `./bin/test` with your Github username and API token
 1. To add new tests, modify or create an appropriate test file in `tests/manifest`
-1. Implement the code changes in the PAS repo, IST, WRT, etc.
+1. Implement the code changes.
 1. Make a PR!
 
-#### Bumping releases
+
+### <a name='bumping-releases'></a>Bumping Releases
 
 The current process for getting a BOSH release updated in PAS is to open an
 issue on the [lts-pas-issues repo](https://github.com/pivotal-cf/lts-pas-issues/issues) and the PAS RelEng team will make the change for you.
+
 To see which version of your release is currently included in PAS, run this:
 ```
 curl https://releng.ci.cf-app.com/api/v1/teams/main/pipelines/build::2.3/resources
@@ -57,7 +69,7 @@ curl https://releng.ci.cf-app.com/api/v1/teams/main/pipelines/build::2.3/resourc
 We have an upcoming track of work to move towards a more self-service model for teams where the p-runtime repo will contain an `assets.yml` or similar which lists the release versions.
 See more about this epic [here](https://www.pivotaltracker.com/epic/show/4007210).
 
-#### Migrations
+### <a name='migrations'></a>Migrations
 
 **What is a migration?**
 
@@ -65,6 +77,7 @@ Ops Manager allows tile authors to write JavaScript [migration
 files](https://docs.pivotal.io/tiledev/2-2/tile-upgrades.html#import) in order
 to modify the value of selected properties when upgrading from one version of a
 tile to a newer version.
+
 For example, with migrations you can:
 - Introduce a new default value, but have existing environments keep the
   previous default
