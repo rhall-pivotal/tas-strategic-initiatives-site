@@ -79,5 +79,27 @@ rule
 				}
 			})
 		})
+
+		Context("when dropping debug logs", func() {
+			It("does not forward debug logs", func() {
+				for _, ig := range instanceGroups {
+					manifest, err := product.RenderManifest(map[string]interface{}{
+						".properties.system_logging":                           "enabled",
+						".properties.system_logging.enabled.host":              "example.com",
+						".properties.system_logging.enabled.port":              2514,
+						".properties.system_logging.enabled.syslog_drop_debug": true,
+					})
+					Expect(err).NotTo(HaveOccurred())
+
+					syslogForwarder, err := manifest.FindInstanceGroupJob(ig, "syslog_forwarder")
+					Expect(err).NotTo(HaveOccurred())
+
+					syslogConfig, err := syslogForwarder.Property("syslog/custom_rule")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(syslogConfig).To(ContainSubstring(`if ($msg contains "DEBUG") then stop`))
+				}
+			})
+		})
 	})
 })
