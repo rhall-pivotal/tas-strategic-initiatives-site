@@ -20,7 +20,8 @@
           username: ((( credhub-db-credentials.username )))
           password: ((( credhub-db-credentials.password )))
           database: (( .properties.credhub_database_name.value ))
-          require_tls: false
+          require_tls: true
+          tls_ca: (( $ops_manager.ca_certificate ))
 
     - name: external
       select_value: external

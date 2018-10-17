@@ -121,6 +121,35 @@ var _ = Describe("CredHub", func() {
 		})
 	})
 
+	Describe("database configuration", func() {
+		It("configures credhub and bbr-credhubdb to talk to mysql using tls", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+			Expect(err).NotTo(HaveOccurred())
+
+			requireTLS, err := credhub.Property("credhub/data_storage/require_tls")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(requireTLS).To(BeTrue())
+
+			ca, err := credhub.Property("credhub/data_storage/tls_ca")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(ca).NotTo(BeEmpty())
+
+			bbrCredhub, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-credhubdb")
+			Expect(err).NotTo(HaveOccurred())
+
+			requireTLS, err = bbrCredhub.Property("credhub/data_storage/require_tls")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(requireTLS).To(BeTrue())
+
+			ca, err = bbrCredhub.Property("credhub/data_storage/tls_ca")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(ca).NotTo(BeEmpty())
+		})
+	})
+
 	Describe("permissions", func() {
 		It("provides uaa operations rights", func() {
 			manifest, err := product.RenderManifest(nil)
