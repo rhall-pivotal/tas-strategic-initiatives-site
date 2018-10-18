@@ -6,6 +6,53 @@ import (
 )
 
 var _ = Describe("System Database", func() {
+	Describe("Internal PXC", func() {
+		var (
+			inputProperties map[string]interface{}
+			instanceGroup   string
+		)
+
+		BeforeEach(func() {
+			if productName == "ert" {
+				instanceGroup = "clock_global"
+			} else {
+				instanceGroup = "control"
+			}
+			inputProperties = map[string]interface{}{}
+		})
+
+		It("configures the nfsbrokerpush job and nfsbroker-bbr jobs", func() {
+			manifest, err := product.RenderManifest(inputProperties)
+			Expect(err).NotTo(HaveOccurred())
+
+			nfsbrokerpush, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsbrokerpush")
+			Expect(err).NotTo(HaveOccurred())
+
+			host, err := nfsbrokerpush.Property("nfsbrokerpush/db/host")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(host).To(Equal("mysql.service.cf.internal"))
+
+			caCert, err := nfsbrokerpush.Property("nfsbrokerpush/db/ca_cert")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(caCert).ToNot(BeEmpty())
+
+			nfsbrokerbbr, err := manifest.FindInstanceGroupJob("backup_restore", "nfsbroker-bbr")
+			Expect(err).NotTo(HaveOccurred())
+
+			host, err = nfsbrokerbbr.Property("nfsbroker/db_hostname")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(host).To(Equal("mysql.service.cf.internal"))
+
+			backup, err := nfsbrokerbbr.Property("nfsbroker/release_level_backup")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(backup).To(BeTrue())
+
+			caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(caCert).ToNot(BeEmpty())
+		})
+	})
+
 	Describe("External Database", func() {
 		var (
 			inputProperties map[string]interface{}
