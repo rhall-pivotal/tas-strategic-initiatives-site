@@ -5,8 +5,8 @@ provides: |
   metric_registrar_endpoint_worker: {as: metric_registrar_endpoint_worker}
 manifest: |
   disabled: (( .properties.metric_registrar_disabled.value ))
-  health_check_port: 8087
-  orchestration_port: 8088
+  health_check_port: 21542
+  orchestration_port: 21543
   skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
   blacklisted_tags: (( .properties.metric_registrar_blacklisted_tags.parsed_strings ))
   scrape_interval: (( .properties.metric_registrar_scrape_interval_in_seconds.value ))s

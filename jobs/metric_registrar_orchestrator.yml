@@ -6,8 +6,8 @@ consumes: |
   metric_registrar_log_worker: {from: metric_registrar_log_worker}
 manifest: |
   disabled: (( .properties.metric_registrar_disabled.value ))
-  health_check_port: 8087
-  orchestration_port: 8088
+  health_check_port: 21546
+  orchestration_port: 21547
   loggregator:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))

@@ -7,8 +7,8 @@ consumes: |
   reverse_log_proxy: {from: reverse_log_proxy}
 manifest: |
   disabled: (( .properties.metric_registrar_disabled.value ))
-  health_check_port: 8085
-  orchestration_port: 8086
+  health_check_port: 21544
+  orchestration_port: 21545
   blacklisted_tags: (( .properties.metric_registrar_blacklisted_tags.parsed_strings ))
   skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
   loggregator:
