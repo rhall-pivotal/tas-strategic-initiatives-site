@@ -15,7 +15,7 @@
       - name: db_config
         manifest: |
           db_scheme: mysql
-          tls_enabled: true
+          tls_enabled: (( .properties.system_database.selected_option.parsed_manifest(enable_pxc) ))
           tls_protocols: TLSv1.2
           address: mysql.service.cf.internal
           port: 3306

@@ -19,40 +19,60 @@ var _ = Describe("UAA", func() {
 	})
 
 	Describe("database connection", func() {
-		It("configures TLS to the internal database", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
+		Context("when internal pxc is selected (default)", func() {
+			It("configures TLS to the internal database", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
 
-			job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-			Expect(err).NotTo(HaveOccurred())
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+				Expect(err).NotTo(HaveOccurred())
 
-			tlsEnabled, err := job.Property("uaadb/tls_enabled")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(tlsEnabled).To(BeTrue())
+				tlsEnabled, err := job.Property("uaadb/tls_enabled")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(tlsEnabled).To(BeTrue())
+			})
+
+			It("trusts the certificate provided by the server", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+				Expect(err).NotTo(HaveOccurred())
+
+				caCerts, err := job.Property("uaa/ca_certs")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCerts).NotTo(BeEmpty())
+			})
+
+			It("requires TLS 1.2", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+				Expect(err).NotTo(HaveOccurred())
+
+				tlsProtocols, err := job.Property("uaadb/tls_protocols")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(tlsProtocols).To(Equal("TLSv1.2"))
+			})
 		})
 
-		It("trusts the certificate provided by the server", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
+		Context("when internal mariadb is selected", func() {
+			inputProperties := map[string]interface{}{
+				".properties.system_database": "internal_mysql",
+			}
 
-			job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-			Expect(err).NotTo(HaveOccurred())
+			It("does not configure TLS to the internal database", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
 
-			caCerts, err := job.Property("uaa/ca_certs")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(caCerts).NotTo(BeEmpty())
-		})
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+				Expect(err).NotTo(HaveOccurred())
 
-		It("requires TLS 1.2", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-			Expect(err).NotTo(HaveOccurred())
-
-			tlsProtocols, err := job.Property("uaadb/tls_protocols")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(tlsProtocols).To(Equal("TLSv1.2"))
+				tlsEnabled, err := job.Property("uaadb/tls_enabled")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(tlsEnabled).To(BeFalse())
+			})
 		})
 	})
 
