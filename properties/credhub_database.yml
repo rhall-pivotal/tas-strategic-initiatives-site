@@ -41,6 +41,8 @@
         - name: tls_ca
           type: text
           configurable: true
+        - name: require_tls
+          type: boolean
       named_manifests:
       - name: db_config
         manifest: |
@@ -50,4 +52,5 @@
           username: (( .properties.credhub_database.external.username.value ))
           password: (( .properties.credhub_database.external.password.value ))
           database: (( .properties.credhub_database_name.value ))
+          require_tls: true
           tls_ca: (( .properties.credhub_database.external.tls_ca.value ))

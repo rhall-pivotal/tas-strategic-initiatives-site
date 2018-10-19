@@ -198,6 +198,33 @@ var _ = Describe("CredHub", func() {
 				})
 			})
 		})
+
+		Context("external", func() {
+			inputProperties := map[string]interface{}{
+				".properties.credhub_database":                   "external",
+				".properties.credhub_database.external.tls_ca":   "fake-ca",
+				".properties.credhub_database.external.host":     "cred.foo.bar",
+				".properties.credhub_database.external.port":     "2345",
+				".properties.credhub_database.external.username": "credhub_username",
+				".properties.credhub_database.external.password": map[string]interface{}{"secret": "credhub_password"},
+			}
+
+			It("it requires TLS", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+				Expect(err).NotTo(HaveOccurred())
+
+				requireTLS, err := credhub.Property("credhub/data_storage/require_tls")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(requireTLS).To(BeTrue())
+
+				ca, err := credhub.Property("credhub/data_storage/tls_ca")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(ca).NotTo(BeEmpty())
+			})
+		})
 	})
 
 	Describe("permissions", func() {
