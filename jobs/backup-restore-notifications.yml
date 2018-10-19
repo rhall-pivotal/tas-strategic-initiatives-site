@@ -5,9 +5,9 @@ manifest: |
   domain: (( .cloud_controller.system_domain.value ))
   notifications:
     app_domain: (( .cloud_controller.system_domain.value ))
-    cf:
-      admin_password: (( .uaa.admin_credentials.password ))
-      admin_user: (( .uaa.admin_credentials.identity ))
+    uaa:
+      client_id: (( .uaa.notifications_client_credentials.identity ))
+      client_secret: (( .uaa.notifications_client_credentials.password ))
     database: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
     organization: system
     space: notifications-with-ui
