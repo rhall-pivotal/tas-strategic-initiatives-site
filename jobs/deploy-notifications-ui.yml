@@ -12,14 +12,15 @@ manifest: |
     instance_count: 2
     cf:
       dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
-      admin_user: (( .uaa.admin_credentials.identity ))
-      admin_password: (( .uaa.admin_credentials.password ))
     app_domain: (( .cloud_controller.system_domain.value ))
     network: notifications
     encryption_key: ((( deploy-notifications-encryption-key )))
     footer_text: (( .properties.push_apps_manager_footer_text.value || "" ))
     footer_image: (( .properties.push_apps_manager_logo.value ))
     enable_diego: true
+    uaa:
+      deploy_client_id: (( .uaa.notifications_ui_client_credentials.identity ))
+      deploy_client_secret: (( .uaa.notifications_ui_client_credentials.password ))
     uaa:
       client_id: (( .uaa.notifications_ui_client_credentials.identity ))
       client_secret: (( .uaa.notifications_ui_client_credentials.password ))
