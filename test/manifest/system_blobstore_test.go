@@ -21,8 +21,8 @@ var _ = Describe("System Blobstore", func() {
 
 		It("configures the internal blobstore", func() {
 			inputProperties := map[string]interface{}{
-				".properties.system_blobstore_ccpackage_max_valid_packages_stored":  0,
-				".properties.system_blobstore_ccdroplet_max_staged_droplets_stored": 0,
+				".properties.system_blobstore_ccpackage_max_valid_packages_stored":  3,
+				".properties.system_blobstore_ccdroplet_max_staged_droplets_stored": 3,
 			}
 
 			manifest, err := product.RenderManifest(inputProperties)
@@ -34,11 +34,11 @@ var _ = Describe("System Blobstore", func() {
 
 			maxValidPackages, err := job.Property("cc/packages/max_valid_packages_stored")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(maxValidPackages).To(Equal(0))
+			Expect(maxValidPackages).To(Equal(3))
 
 			maxStagedDroplets, err := job.Property("cc/droplets/max_staged_droplets_stored")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(maxStagedDroplets).To(Equal(0))
+			Expect(maxStagedDroplets).To(Equal(3))
 
 			By("not enabling unversioned S3 backups", func() {})
 			bbr, err := manifest.FindInstanceGroupJob("backup_restore", "s3-unversioned-blobstore-backup-restorer")
