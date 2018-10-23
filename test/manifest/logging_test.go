@@ -23,7 +23,7 @@ var _ = Describe("Logging", func() {
 			tags, err := agent.Property("tags")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(tags).To(HaveKeyWithValue("product", "Pivotal Application Service for Windows"))
-			Expect(tags).To(HaveKeyWithValue("product_version", MatchRegexp(`^\d+\.\d+\.\d+.*`)))
+			Expect(tags).NotTo(HaveKey("product_version"))
 			Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
 		})
 
