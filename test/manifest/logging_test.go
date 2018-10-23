@@ -57,7 +57,7 @@ var _ = Describe("Logging", func() {
 				tags, err := agent.Property("tags")
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
 				Expect(tags).To(HaveKeyWithValue("product", productTag))
-				Expect(tags).To(HaveKeyWithValue("product_version", MatchRegexp(`^\d+\.\d+\.\d+.*`)))
+				Expect(tags).NotTo(HaveKey("product_version"))
 				Expect(tags).To(HaveKeyWithValue("system_domain", "sys.example.com"))
 			}
 		})

@@ -12,6 +12,5 @@ manifest: |
   deployment: "(( .properties.enable_cf_metric_name.value ? 'cf' : '' ))"
   tags:
     product: $( variable "label" )
-    product_version: $( variable "build-version" )
     system_domain: "(( .cloud_controller.system_domain.value ))"
   health_port: 22222
