@@ -19,7 +19,7 @@ manifest: |
     footer_image: (( .properties.push_apps_manager_logo.value ))
     enable_diego: true
     uaa:
-      deploy_client_id: (( .uaa.notifications_ui_client_credentials.identity ))
-      deploy_client_secret: (( .uaa.notifications_ui_client_credentials.password ))
+      deploy_client_id: (( .uaa.notifications_client_credentials.identity ))
+      deploy_client_secret: (( .uaa.notifications_client_credentials.password ))
       client_id: (( .uaa.notifications_ui_client_credentials.identity ))
       client_secret: (( .uaa.notifications_ui_client_credentials.password ))
