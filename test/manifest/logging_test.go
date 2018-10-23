@@ -22,7 +22,7 @@ var _ = Describe("Logging", func() {
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
 				Expect(tags).To(HaveKeyWithValue("placement_tag", "isosegtag"))
 				Expect(tags).To(HaveKeyWithValue("product", "PCF Isolation Segment"))
-				Expect(tags).To(HaveKeyWithValue("product_version", MatchRegexp(`^\d+\.\d+\.\d+.*`)))
+				Expect(tags).NotTo(HaveKey("product_version"))
 				Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
 			}
 		})
