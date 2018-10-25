@@ -13,3 +13,7 @@ manifest: |
         component: CloudController
       uris:
       - "api.(( .cloud_controller.system_domain.value ))"
+      health_check:
+        name: api-health-check
+        script_path: "/var/vcap/jobs/cloud_controller_ng/bin/cloud_controller_ng_health_check"
+        timeout: 6s
