@@ -8,7 +8,7 @@ Deploys garden cells (running windows server 2016) for all of your windows app n
 
 ## Is there CI?
 
-Yup, it is located [here](https://releng.ci.cf-app.com/teams/main/pipelines/wrt-2016::2.0)
+Yup, it is located [here](https://releng.ci.cf-app.com/teams/main/pipelines/wrt-2016::next)
 
 ## What you need to deploy it
 
@@ -19,3 +19,7 @@ Yup, it is located [here](https://releng.ci.cf-app.com/teams/main/pipelines/wrt-
 
 - Running [WATs](https://github.com/cloudfoundry/wats)
 - Job currently configured with `skip_cert_verify`, if you don't do this the tests above will fail and the Rep won't be able to talk to Garden
+
+## Contributing
+
+Please refer to [PAS Contribution document](https://github.com/pivotal-cf/p-runtime/blob/master/CONTRIBUTING.md)
