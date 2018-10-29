@@ -140,6 +140,10 @@ manifest: |
         password: (( .uaa.push_apps_manager_credentials.password ))
         groups:
         - cloud_controller.admin
+      - name: (( .uaa.push_usage_service_credentials.identity ))
+        password: (( .uaa.push_usage_service_credentials.password ))
+        groups:
+        - cloud_controller.admin
       - name: (( .uaa.run_smoke_tests_credentials.identity ))
         password: (( .uaa.run_smoke_tests_credentials.password ))
         groups:

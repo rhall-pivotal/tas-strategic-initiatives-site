@@ -110,9 +110,9 @@
           name: (( .properties.app_usage_service_database_name.value ))
       - name: bbr-usage-servicedb
         manifest: |
-          host: mysql.service.cf.internal
+          address: mysql.service.cf.internal
           port: 3306
-          user: ((( app-usage-db-credentials.username )))
+          username: ((( app-usage-db-credentials.username )))
           password: ((( app-usage-db-credentials.password )))
           name: (( .properties.app_usage_service_database_name.value ))
       - name: diegodb
