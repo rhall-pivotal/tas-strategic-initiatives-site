@@ -10,8 +10,10 @@ manifest: |
   declarative_healthcheck_path: /var/vcap/packages/healthcheck_windows/internal
   diego:
     executor:
+      disk_capacity_mb: (( .windows_diego_cell.executor_disk_capacity.value ))
       instance_identity_ca_cert: ((( /cf/diego-instance-identity-intermediate-ca.certificate )))
       instance_identity_key: ((( /cf/diego-instance-identity-intermediate-ca.private_key )))
+      memory_capacity_mb: (( .windows_diego_cell.executor_memory_capacity.value ))
     rep:
       use_azure_fault_domains: true
       open_bindmounts_acl: true

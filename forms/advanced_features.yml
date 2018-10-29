@@ -7,6 +7,12 @@ description: |
   capabilities.
 
 property_inputs:
+  - reference: .windows_diego_cell.executor_memory_capacity
+    label: Cell Memory Capacity (MB)
+
+  - reference: .windows_diego_cell.executor_disk_capacity
+    label: Cell Disk Capacity (MB)
+
   - reference: .properties.enable_cf_metric_name
     label: Use "cf" as deployment name in emitted metrics instead of unique name
     description: |

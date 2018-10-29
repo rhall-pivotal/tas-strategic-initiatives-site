@@ -68,6 +68,21 @@ instance_definition:
     min: 1
 
 property_blueprints:
+  - name: executor_disk_capacity
+    type: integer
+    label: Cell Disk Capacity (in MB)
+    configurable: true
+    optional: true
+    constraints:
+      min: 1
+
+  - name: executor_memory_capacity
+    type: integer
+    label: Cell Memory Capacity (in MB)
+    configurable: true
+    optional: true
+    constraints:
+      min: 1
 
 # We pass placement tags as a list to CF but don't explain the option to configure multiple tags in the UI
   - name: placement_tags
