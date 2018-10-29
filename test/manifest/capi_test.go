@@ -273,8 +273,49 @@ var _ = Describe("CAPI", func() {
 					"name":        "windows2016",
 					"description": "Microsoft Windows 2016",
 				}))
+
+				defaultStack, err := cc.Property("cc/default_stack")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(defaultStack).To(Equal("cflinuxfs3"))
 			})
 
+			Context("when the Operator selects cflinuxfs3", func() {
+				BeforeEach(func() {
+					var err error
+					manifest, err = product.RenderManifest(map[string]interface{}{
+						".properties.cloud_controller_default_stack": "cflinuxfs3",
+					})
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				It("sets the default stack to cflinuxfs3", func() {
+					cc, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+					Expect(err).NotTo(HaveOccurred())
+
+					defaultStack, err := cc.Property("cc/default_stack")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(defaultStack).To(Equal("cflinuxfs3"))
+				})
+			})
+
+			Context("when the Operator selects cflinuxfs2", func() {
+				BeforeEach(func() {
+					var err error
+					manifest, err = product.RenderManifest(map[string]interface{}{
+						".properties.cloud_controller_default_stack": "cflinuxfs2",
+					})
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				It("sets the default stack to cflinuxfs2", func() {
+					cc, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+					Expect(err).NotTo(HaveOccurred())
+
+					defaultStack, err := cc.Property("cc/default_stack")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(defaultStack).To(Equal("cflinuxfs2"))
+				})
+			})
 		})
 	})
 })
