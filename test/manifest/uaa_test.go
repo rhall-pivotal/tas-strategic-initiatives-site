@@ -252,13 +252,11 @@ var _ = Describe("UAA", func() {
 			Expect(err).ToNot(HaveOccurred())
 			scopes := strings.Split(rawScopes.(string), ",")
 			Expect(scopes).To(ContainElement("usage_service.audit"))
-			Expect(scopes).To(ContainElement("usage_service.admin"))
 
 			rawGroups, err := uaa.Property("uaa/scim/groups")
 			groups := rawGroups.(map[interface{}]interface{})
 			Expect(err).ToNot(HaveOccurred())
 			Expect(groups).To(HaveKeyWithValue("usage_service.audit", "View reports for the Usage Service"))
-			Expect(groups).To(HaveKeyWithValue("usage_service.admin", "Full admin access for the Usage Service"))
 		})
 	})
 })

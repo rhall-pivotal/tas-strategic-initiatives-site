@@ -108,7 +108,6 @@ manifest: |
       groups:
         cloud_controller.admin_read_only: "Group that grants global read permissions for the Cloud Controller API"
         usage_service.audit: "View reports for the Usage Service"
-        usage_service.admin: "Full admin access for the Usage Service"
       users:
       - name: (( .uaa.admin_credentials.identity ))
         password: (( .uaa.admin_credentials.password ))
@@ -273,7 +272,7 @@ manifest: |
         override: true
         authorities: "uaa.none"
         authorized-grant-types: "password,refresh_token"
-        scope: "cloud_controller.read,cloud_controller.write,cloud_controller.global_auditor,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user,routing.router_groups.read,routing.router_groups.write,cloud_controller.admin_read_only,network.admin,network.write,usage_service.audit,usage_service.admin"
+        scope: "cloud_controller.read,cloud_controller.write,cloud_controller.global_auditor,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user,routing.router_groups.read,routing.router_groups.write,cloud_controller.admin_read_only,network.admin,network.write,usage_service.audit"
         access-token-validity: (( .uaa.cf_cli_access_token_lifetime.value ))
         refresh-token-validity: (( .uaa.cf_cli_refresh_token_lifetime.value ))
       (( .uaa.network_policy_server_client.identity )):
