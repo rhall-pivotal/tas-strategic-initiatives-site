@@ -240,5 +240,25 @@ var _ = Describe("UAA", func() {
 			Expect(err).ToNot(HaveOccurred())
 			Expect(override).To(BeTrue())
 		})
+
+		It("allows users to login to usage service with token", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			rawScopes, err := uaa.Property("uaa/clients/cf/scope")
+			Expect(err).ToNot(HaveOccurred())
+			scopes := strings.Split(rawScopes.(string), ",")
+			Expect(scopes).To(ContainElement("usage_service.audit"))
+			Expect(scopes).To(ContainElement("usage_service.admin"))
+
+			rawGroups, err := uaa.Property("uaa/scim/groups")
+			groups := rawGroups.(map[interface{}]interface{})
+			Expect(err).ToNot(HaveOccurred())
+			Expect(groups).To(HaveKeyWithValue("usage_service.audit", "View reports for the Usage Service"))
+			Expect(groups).To(HaveKeyWithValue("usage_service.admin", "Full admin access for the Usage Service"))
+		})
 	})
 })
