@@ -1,9 +1,6 @@
 ---
 name: metric_registrar_orchestrator
 release: metric-registrar
-consumes: |
-  cloud_controller: {from: cloud_controller}
-  metric_registrar_log_worker: {from: metric_registrar_log_worker}
 manifest: |
   disabled: (( .properties.metric_registrar_disabled.value ))
   health_check_port: 21546

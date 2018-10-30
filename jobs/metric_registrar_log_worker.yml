@@ -1,10 +1,6 @@
 ---
 name: metric_registrar_log_worker
 release: metric-registrar
-provides: |
-  metric_registrar_log_worker: {as: metric_registrar_log_worker}
-consumes: |
-  reverse_log_proxy: {from: reverse_log_proxy}
 manifest: |
   disabled: (( .properties.metric_registrar_disabled.value ))
   health_check_port: 21544

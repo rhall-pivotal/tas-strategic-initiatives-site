@@ -1,8 +1,6 @@
 ---
 name: metric_registrar_endpoint_worker
 release: metric-registrar
-provides: |
-  metric_registrar_endpoint_worker: {as: metric_registrar_endpoint_worker}
 manifest: |
   disabled: (( .properties.metric_registrar_disabled.value ))
   health_check_port: 21542

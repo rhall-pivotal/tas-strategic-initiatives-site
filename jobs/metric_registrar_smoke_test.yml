@@ -1,8 +1,6 @@
 ---
 name: metric_registrar_smoke_test
 release: metric-registrar
-consumes: |
-  cloud_controller: {from: cloud_controller}
 manifest: |
   skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
   scrape_interval: (( .properties.metric_registrar_scrape_interval_in_seconds.value ))s
