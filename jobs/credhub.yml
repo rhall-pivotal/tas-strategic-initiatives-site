@@ -35,6 +35,9 @@ manifest: |
         - path: /*
           actors: ["uaa-client:tile_installer"]
           operations: [write_acl]
+        - path: /smbbroker/*
+          actors: ["uaa-client:smb-broker-credhub"]
+          operations: ["read", "write", "delete", "read_acl", "write_acl"]
     ca_certificate: (( $ops_manager.ca_certificate ))
     data_storage: (( .properties.credhub_database.selected_option.parsed_manifest(db_config) ))
     encryption:
