@@ -51,14 +51,15 @@ property_inputs:
   - reference: .properties.garden_disk_cleanup.routine
     label: Routinely clean up Cell disk-space
 
-  - reference: .properties.garden_disk_cleanup.threshold
-    label: Clean up disk-space once threshold is reached
+  - reference: .properties.garden_disk_cleanup.reserved
+    label: Clean up disk-space once usage fills disk
     property_inputs:
-      - reference: .properties.garden_disk_cleanup.threshold.cleanup_threshold_in_mb
-        label: Threshold of Disk-Used (MB)
+      - reference: .properties.garden_disk_cleanup.reserved.reserved_space_for_other_jobs_in_mb
+        label: Reserved amount of Disk (MB)
         description: |
-          Disk cleanup will initiate whenever a Cell has exceeded this much
-          disk-space for filesystem layers.
+          Amount of space the GC algorithm should attempt to keep free for other jobs.
+          GC will delete  unneeded layers as needed to keep this space free (but it cannot guarantee this
+           space remains free if more containers are created than disk space allows).
 
 - reference: .diego_brain.starting_container_count_maximum
   label: Max Inflight Container Starts
