@@ -28,4 +28,22 @@ var _ = Describe("Rep Windows", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(diskCapacity).To(Equal(500))
 	})
+
+	Context("instance identity", func() {
+		It("uses an intermediate CA cert from Credhub", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			rep, err := manifest.FindInstanceGroupJob("windows_diego_cell", "rep_windows")
+			Expect(err).NotTo(HaveOccurred())
+
+			caCert, err := rep.Property("diego/executor/instance_identity_ca_cert")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(caCert).To(Equal("((/cf/diego-instance-identity-intermediate-ca-2018.certificate))"))
+
+			caKey, err := rep.Property("diego/executor/instance_identity_key")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(caKey).To(Equal("((/cf/diego-instance-identity-intermediate-ca-2018.private_key))"))
+		})
+	})
 })
