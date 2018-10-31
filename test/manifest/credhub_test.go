@@ -123,79 +123,31 @@ var _ = Describe("CredHub", func() {
 
 	Describe("database configuration", func() {
 		Context("internal", func() {
-			Context("when the system database is internal_mysql", func() {
-				inputProperties := map[string]interface{}{
-					".properties.system_database": "internal_mysql",
-				}
+			It("configures credhub and bbr-credhubdb to talk to mysql with tls", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
 
-				It("configures credhub to talk to mysql without tls", func() {
-					manifest, err := product.RenderManifest(inputProperties)
-					Expect(err).NotTo(HaveOccurred())
+				credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+				Expect(err).NotTo(HaveOccurred())
 
-					credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
-					Expect(err).NotTo(HaveOccurred())
+				requireTLS, err := credhub.Property("credhub/data_storage/require_tls")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(requireTLS).To(BeTrue())
 
-					requireTLS, err := credhub.Property("credhub/data_storage/require_tls")
-					Expect(err).ToNot(HaveOccurred())
-					Expect(requireTLS).To(BeFalse())
+				ca, err := credhub.Property("credhub/data_storage/tls_ca")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(ca).NotTo(BeEmpty())
 
-					ca, err := credhub.Property("credhub/data_storage/tls_ca")
-					Expect(err).ToNot(HaveOccurred())
-					Expect(ca).NotTo(BeEmpty())
-				})
+				bbrCredhub, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-credhubdb")
+				Expect(err).NotTo(HaveOccurred())
 
-				It("configures bbr-credhubdb to talk to mysql without tls", func() {
-					manifest, err := product.RenderManifest(inputProperties)
-					Expect(err).NotTo(HaveOccurred())
+				requireTLS, err = bbrCredhub.Property("credhub/data_storage/require_tls")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(requireTLS).To(BeTrue())
 
-					bbrCredhub, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-credhubdb")
-					Expect(err).NotTo(HaveOccurred())
-
-					requireTLS, err := bbrCredhub.Property("credhub/data_storage/require_tls")
-					Expect(err).ToNot(HaveOccurred())
-					Expect(requireTLS).To(BeFalse())
-
-					ca, err := bbrCredhub.Property("credhub/data_storage/tls_ca")
-					Expect(err).ToNot(HaveOccurred())
-					Expect(ca).NotTo(BeEmpty())
-				})
-			})
-
-			Context("when the system database is internal_pxc", func() {
-				inputProperties := map[string]interface{}{
-					".properties.system_database": "internal_pxc",
-				}
-				It("configures credhub to talk to mysql with tls", func() {
-					manifest, err := product.RenderManifest(inputProperties)
-					Expect(err).NotTo(HaveOccurred())
-
-					credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
-					Expect(err).NotTo(HaveOccurred())
-
-					requireTLS, err := credhub.Property("credhub/data_storage/require_tls")
-					Expect(err).ToNot(HaveOccurred())
-					Expect(requireTLS).To(BeTrue())
-
-					ca, err := credhub.Property("credhub/data_storage/tls_ca")
-					Expect(err).ToNot(HaveOccurred())
-					Expect(ca).NotTo(BeEmpty())
-				})
-
-				It("configures bbr-credhubdb to talk to mysql with tls", func() {
-					manifest, err := product.RenderManifest(inputProperties)
-					Expect(err).NotTo(HaveOccurred())
-
-					bbrCredhub, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-credhubdb")
-					Expect(err).NotTo(HaveOccurred())
-
-					requireTLS, err := bbrCredhub.Property("credhub/data_storage/require_tls")
-					Expect(err).ToNot(HaveOccurred())
-					Expect(requireTLS).To(BeTrue())
-
-					ca, err := bbrCredhub.Property("credhub/data_storage/tls_ca")
-					Expect(err).ToNot(HaveOccurred())
-					Expect(ca).NotTo(BeEmpty())
-				})
+				ca, err = bbrCredhub.Property("credhub/data_storage/tls_ca")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(ca).NotTo(BeEmpty())
 			})
 		})
 

@@ -19,44 +19,6 @@ var _ = Describe("MySQL", func() {
 		}
 	})
 
-	It("configures the max connections for mysql to be the set value", func() {
-		manifest, err := product.RenderManifest(map[string]interface{}{
-			".mysql.max_connections": 10000,
-		})
-		Expect(err).NotTo(HaveOccurred())
-		mysql, err := manifest.FindInstanceGroupJob(instanceGroup, "mysql")
-		Expect(err).NotTo(HaveOccurred())
-
-		maxConnections, err := mysql.Property("cf_mysql/mysql/max_connections")
-		Expect(err).NotTo(HaveOccurred())
-		Expect(maxConnections).To(Equal(10000))
-	})
-
-	It("configures the port", func() {
-		manifest, err := product.RenderManifest(nil)
-		Expect(err).NotTo(HaveOccurred())
-
-		mysql, err := manifest.FindInstanceGroupJob(instanceGroup, "mysql")
-		Expect(err).NotTo(HaveOccurred())
-
-		port, err := mysql.Property("cf_mysql/mysql/port")
-		Expect(err).NotTo(HaveOccurred())
-
-		canary, err := manifest.FindInstanceGroupJob("mysql_monitor", "replication-canary")
-		Expect(err).NotTo(HaveOccurred())
-
-		canaryPort, err := canary.Property("mysql-monitoring/replication-canary/mysql_port")
-		Expect(err).NotTo(HaveOccurred())
-
-		if productName == "srt" {
-			Expect(port).To(Equal(13306))
-			Expect(canaryPort).To(Equal(13306))
-		} else {
-			Expect(port).To(Equal(3306))
-			Expect(canaryPort).To(Equal(3306))
-		}
-	})
-
 	Context("when the operator selects clustered mysql", func() {
 		var (
 			inputProperties map[string]interface{}

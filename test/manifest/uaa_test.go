@@ -56,24 +56,6 @@ var _ = Describe("UAA", func() {
 				Expect(tlsProtocols).To(Equal("TLSv1.2"))
 			})
 		})
-
-		Context("when internal mariadb is selected", func() {
-			inputProperties := map[string]interface{}{
-				".properties.system_database": "internal_mysql",
-			}
-
-			It("does not configure TLS to the internal database", func() {
-				manifest, err := product.RenderManifest(inputProperties)
-				Expect(err).NotTo(HaveOccurred())
-
-				job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-				Expect(err).NotTo(HaveOccurred())
-
-				tlsEnabled, err := job.Property("uaadb/tls_enabled")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(tlsEnabled).To(BeFalse())
-			})
-		})
 	})
 
 	Describe("route registration", func() {
