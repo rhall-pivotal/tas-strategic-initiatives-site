@@ -332,6 +332,31 @@ var _ = Describe("Diego", func() {
 		})
 	})
 
+	Context("garden grootfs garbage collection", func(){
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "compute"
+			} else {
+				instanceGroup = "diego_cell"
+			}
+		})
+
+		It("sets the reserved disk space", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			garden, err := manifest.FindInstanceGroupJob(instanceGroup, "garden")
+			Expect(err).NotTo(HaveOccurred())
+
+			reservedInMB, err := garden.Property("grootfs/reserved_space_for_other_jobs_in_mb")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(reservedInMB).To(Equal(15360))
+		})
+
+
+	})
+
+
 	Context("cflinuxfs2-rootfs and cflinuxfs3-rootfs", func() {
 
 		BeforeEach(func() {
