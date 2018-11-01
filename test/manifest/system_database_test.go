@@ -58,15 +58,18 @@ var _ = Describe("System Database", func() {
 			inputProperties map[string]interface{}
 			dbInstanceGroup string
 			ccInstanceGroup string
+			cgInstanceGroup string
 		)
 
 		BeforeEach(func() {
 			if productName == "ert" {
 				dbInstanceGroup = "diego_database"
 				ccInstanceGroup = "cloud_controller"
+				cgInstanceGroup = "clock_global"
 			} else {
 				dbInstanceGroup = "control"
 				ccInstanceGroup = "control"
+				cgInstanceGroup = "control"
 			}
 			inputProperties = map[string]interface{}{
 				".properties.system_database":                                       "external",
@@ -195,6 +198,21 @@ var _ = Describe("System Database", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				caCert, err = job.Property("routing_api/sqldb/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).To(Equal("fake-ca-cert"))
+
+				// nfsbroker
+				nfsbrokerpush, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "nfsbrokerpush")
+				Expect(err).NotTo(HaveOccurred())
+
+				caCert, err = nfsbrokerpush.Property("nfsbrokerpush/db/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).To(Equal("fake-ca-cert"))
+
+				nfsbrokerbbr, err := manifest.FindInstanceGroupJob("backup_restore", "nfsbroker-bbr")
+				Expect(err).NotTo(HaveOccurred())
+
+				caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
 			})

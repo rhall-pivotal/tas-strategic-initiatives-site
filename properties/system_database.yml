@@ -365,6 +365,7 @@
             username: (( .properties.system_database.external.nfsvolume_username.value ))
             password: (( .properties.system_database.external.nfsvolume_password.value ))
             name: (( .properties.nfsvolume_database_name.value ))
+            ca_cert: (( .properties.system_database.external.ca_cert.value ))
         - name: nfsvolume_bbr
           manifest: |
             db_driver: mysql
@@ -373,6 +374,7 @@
             db_password: (( .properties.system_database.external.nfsvolume_password.value ))
             db_port: (( .properties.system_database.external.port.value ))
             db_username: (( .properties.system_database.external.nfsvolume_username.value ))
+            db_ca_cert: (( .properties.system_database.external.ca_cert.value ))
             release_level_backup: true
 
 - name: mysql_activity_logging
