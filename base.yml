@@ -29,11 +29,13 @@ releases:
 - $( release "loggregator-agent" )
 - $( release "winc" )
 - $( release "windows-utilities" )
+- $( release "cf-smoke-tests" )
 
 form_types:
 - $( form "vm_options" )
 - $( form "application_containers" )
 - $( form "system_logging" )
+- $( form "smoke_tests_windows" )
 - $( form "advanced_features" )
 
 job_types:
@@ -49,6 +51,7 @@ property_blueprints:
 - $( property "rdp_enabled" )
 - $( property "rep_server_cert" )
 - $( property "rep_server_cert_v2" )
+- $( property "smoke_tests_windows" )
 - $( property "system_logging" )
 - $( property "windows_admin_password" )
 
@@ -60,5 +63,12 @@ post_deploy_errands:
       - windows_diego_cell/first
     label: Install HWC Buildpack Errand
     description: Install the HWC buildpack to your Elastic Runtime for Windows installation
+  - name: smoke_tests_windows
+    colocated: true
+    run_default: true
+    instances:
+      - windows_diego_cell/first
+    label: Smoke Test Errand
+    description: Runs Smoke Tests against your Application Service installation
 
 install_time_verifiers: []
