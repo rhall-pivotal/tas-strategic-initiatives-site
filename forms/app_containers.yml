@@ -55,7 +55,7 @@ property_inputs:
     label: Clean up disk-space once usage fills disk
     property_inputs:
       - reference: .properties.garden_disk_cleanup.reserved.reserved_space_for_other_jobs_in_mb
-        label: Reserved amount of Disk (MB)
+        label: Reserved disk space for other jobs(MB)
         description: |
           Amount of space the GC algorithm should attempt to keep free for other jobs.
           GC will delete  unneeded layers as needed to keep this space free (but it cannot guarantee this
