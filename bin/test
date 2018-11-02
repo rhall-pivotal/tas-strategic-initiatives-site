@@ -17,6 +17,8 @@ function build_docker_image() {
 
   pushd ./vendor/ops-manifest > /dev/null
     echo -e "${info_color}Updating github.com/pivotal-cf/installation (send email to ask+cf@pivotal.io for read access if it fails)...${no_color}"
+    git fetch --tags
+    git checkout "$(git describe --tags --long | cut -d '-' -f1)"
     git submodule update --init --recursive
   popd > /dev/null
 
