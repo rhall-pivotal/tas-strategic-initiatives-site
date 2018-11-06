@@ -100,11 +100,13 @@
           name: (( .properties.autoscale_database_name.value ))
       - name: push-app-usage-service
         manifest: |
-          ip: mysql.service.cf.internal
+          address: mysql.service.cf.internal
           port: 3306
           username: ((( app-usage-db-credentials.username )))
           password: ((( app-usage-db-credentials.password )))
           name: (( .properties.app_usage_service_database_name.value ))
+          ca_cert: (( $ops_manager.ca_certificate ))
+          verify_ssl: true
       - name: bbr-usage-servicedb
         manifest: |
           address: mysql.service.cf.internal
@@ -112,6 +114,8 @@
           username: ((( app-usage-db-credentials.username )))
           password: ((( app-usage-db-credentials.password )))
           name: (( .properties.app_usage_service_database_name.value ))
+          ca_cert: (( $ops_manager.ca_certificate ))
+          skip_host_verify: true
       - name: diegodb
         manifest: |
           db_host: mysql.service.cf.internal
@@ -297,11 +301,13 @@
             name: (( .properties.autoscale_database_name.value ))
         - name: push-app-usage-service
           manifest: |
-            ip: (( .properties.system_database.external.host.value ))
+            address: (( .properties.system_database.external.host.value ))
             port: (( .properties.system_database.external.port.value ))
             username: (( .properties.system_database.external.app_usage_service_username.value ))
             password: (( .properties.system_database.external.app_usage_service_password.value ))
             name: (( .properties.app_usage_service_database_name.value ))
+            ca_cert: (( .properties.system_database.external.ca_cert.value ))
+            verify_ssl: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
         - name: bbr-usage-servicedb
           manifest: |
             address: (( .properties.system_database.external.host.value ))
@@ -309,6 +315,8 @@
             username: (( .properties.system_database.external.app_usage_service_username.value ))
             password: (( .properties.system_database.external.app_usage_service_password.value ))
             name: (( .properties.app_usage_service_database_name.value ))
+            ca_cert: (( .properties.system_database.external.ca_cert.value ))
+            skip_host_verify: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
         - name: diegodb
           manifest: |
             db_host: (( .properties.system_database.external.host.value ))

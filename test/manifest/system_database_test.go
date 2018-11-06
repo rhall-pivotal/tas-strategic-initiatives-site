@@ -21,10 +21,11 @@ var _ = Describe("System Database", func() {
 			inputProperties = map[string]interface{}{}
 		})
 
-		It("configures the nfsbrokerpush job and nfsbroker-bbr jobs", func() {
+		It("configures the jobs", func() {
 			manifest, err := product.RenderManifest(inputProperties)
 			Expect(err).NotTo(HaveOccurred())
 
+			// nfsbroker
 			nfsbrokerpush, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsbrokerpush")
 			Expect(err).NotTo(HaveOccurred())
 
@@ -50,6 +51,29 @@ var _ = Describe("System Database", func() {
 			caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(caCert).ToNot(BeEmpty())
+
+			// usage-service
+			pushUsageService, err := manifest.FindInstanceGroupJob(instanceGroup, "push-usage-service")
+			Expect(err).NotTo(HaveOccurred())
+
+			caCert, err = pushUsageService.Property("databases/app_usage_service/ca_cert")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(caCert).NotTo(BeEmpty())
+
+			verifySSL, err := pushUsageService.Property("databases/app_usage_service/verify_ssl")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(verifySSL).To(BeTrue())
+
+			bbrUsageServiceDB, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-usage-servicedb")
+			Expect(err).NotTo(HaveOccurred())
+
+			caCert, err = bbrUsageServiceDB.Property("database/ca_cert")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(caCert).NotTo(BeEmpty())
+
+			verifySSL, err = bbrUsageServiceDB.Property("database/skip_host_verify")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(verifySSL).To(BeTrue())
 		})
 	})
 
@@ -122,6 +146,21 @@ var _ = Describe("System Database", func() {
 			port, err := job.Property("database/port")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(port).To(Equal(5432))
+
+			// usage-service should not verify SSL
+			pushUsageService, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "push-usage-service")
+			Expect(err).NotTo(HaveOccurred())
+
+			verifySSL, err := pushUsageService.Property("databases/app_usage_service/verify_ssl")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(verifySSL).To(BeFalse())
+
+			bbrUsageServiceDB, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-usage-servicedb")
+			Expect(err).NotTo(HaveOccurred())
+
+			skipHostVerify, err := bbrUsageServiceDB.Property("database/skip_host_verify")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(skipHostVerify).To(BeFalse())
 		})
 
 		Context("when the operator provides a CA certificate", func() {
@@ -215,6 +254,29 @@ var _ = Describe("System Database", func() {
 				caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
+
+				// usage-service
+				pushUsageService, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "push-usage-service")
+				Expect(err).NotTo(HaveOccurred())
+
+				caCert, err = pushUsageService.Property("databases/app_usage_service/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).To(Equal("fake-ca-cert"))
+
+				verifySSL, err := pushUsageService.Property("databases/app_usage_service/verify_ssl")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(verifySSL).To(BeTrue())
+
+				bbrUsageServiceDB, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-usage-servicedb")
+				Expect(err).NotTo(HaveOccurred())
+
+				caCert, err = bbrUsageServiceDB.Property("database/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).To(Equal("fake-ca-cert"))
+
+				skipHostVerify, err := bbrUsageServiceDB.Property("database/skip_host_verify")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(skipHostVerify).To(BeTrue())
 			})
 		})
 	})
