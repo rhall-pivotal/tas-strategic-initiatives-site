@@ -30,6 +30,7 @@ preprocess() {
   tile_dir="${1}"
   dest="${2}"
 
+  echo "Copying tile directory to ${dest}..." > /dev/stderr
   cp -Rp "${tile_dir}"/. "${dest}"
 
   # remove test metadata that upsets preprocessing
@@ -81,6 +82,11 @@ pushd "${build_dir}" > /dev/null
     ${optional_flags}
 
   if [ "${METADATA_ONLY}" != "true" ]; then
-    echo "Successfully created tile at ${output_dir}/${PRODUCT}-${version}.pivotal" > /dev/stderr
+    echo "" > /dev/stderr
+    echo "Successfully created tile:" > /dev/stderr
+
+    # tile path is output on stdout so other scripts can consume it, e.g.
+    # om upload-product -p $(./bin/build)
+    echo "${output_dir}/${PRODUCT}-${version}.pivotal"
   fi
 popd > /dev/null
