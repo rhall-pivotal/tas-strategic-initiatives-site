@@ -32,9 +32,9 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 
 	output, err := cmd.Output()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error running bin/build: %s", err.Error())
+		msg := fmt.Sprintf("error running bin/build: %s", err.(*exec.ExitError).Stderr)
+		Expect(err).NotTo(HaveOccurred(), msg)
 	}
-	Expect(err).NotTo(HaveOccurred())
 
 	return []byte(output)
 }, func(metadataContents []byte) {
