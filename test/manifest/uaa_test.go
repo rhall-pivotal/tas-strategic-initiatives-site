@@ -30,30 +30,50 @@ var _ = Describe("UAA", func() {
 				tlsEnabled, err := job.Property("uaadb/tls_enabled")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(tlsEnabled).To(BeTrue())
-			})
-
-			It("trusts the certificate provided by the server", func() {
-				manifest, err := product.RenderManifest(nil)
-				Expect(err).NotTo(HaveOccurred())
-
-				job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-				Expect(err).NotTo(HaveOccurred())
 
 				caCerts, err := job.Property("uaa/ca_certs")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCerts).NotTo(BeEmpty())
-			})
 
-			It("requires TLS 1.2", func() {
-				manifest, err := product.RenderManifest(nil)
+				tlsProtocols, err := job.Property("uaadb/tls_protocols")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(tlsProtocols).To(Equal("TLSv1.2"))
+			})
+		})
+
+		Context("when external is selected", func() {
+			It("configures the database", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.uaa_database":                       "external",
+					".properties.uaa_database.external.host":         "the-host",
+					".properties.uaa_database.external.port":         999,
+					".properties.uaa_database.external.uaa_username": "the-user",
+					".properties.uaa_database.external.uaa_password": map[string]interface{}{"secret": "the-uaa-db-password"},
+				})
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
 				Expect(err).NotTo(HaveOccurred())
 
-				tlsProtocols, err := job.Property("uaadb/tls_protocols")
+				prop, err := job.Property("uaadb/db_scheme")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(tlsProtocols).To(Equal("TLSv1.2"))
+				Expect(prop).To(Equal("mysql"))
+
+				prop, err = job.Property("uaadb/address")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(prop).To(Equal("the-host"))
+
+				prop, err = job.Property("uaadb/port")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(prop).To(Equal(999))
+
+				prop, err = job.Property("uaadb/roles/tag=admin/name")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(prop).To(Equal("the-user"))
+
+				prop, err = job.Property("uaadb/roles/tag=admin/password")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(prop).To(ContainSubstring("uaa_database/external/uaa_password.value"))
 			})
 		})
 	})
