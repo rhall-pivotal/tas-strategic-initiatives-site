@@ -7,8 +7,8 @@ manifest: |
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
       agent:
-        cert: (( .doppler.loggregator_agent_tls_cert.cert_pem ))
-        key: (( .doppler.loggregator_agent_tls_cert.private_key_pem ))
+        cert: (( .doppler.metron_tls_cert.cert_pem ))
+        key: (( .doppler.metron_tls_cert.private_key_pem ))
   deployment: "(( .properties.enable_cf_metric_name.value ? 'cf' : '' ))"
   tags:
     product: $( variable "label" )
