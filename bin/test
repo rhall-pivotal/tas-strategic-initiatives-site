@@ -9,21 +9,18 @@ success_color='\033[0;32m'
 no_color='\033[0m'
 
 function build_docker_image() {
-  if [ ! -f ./vendor/ops-manifest.gem ]; then
-    echo -e "${info_color}Grabbing latest ops-manifest release...${no_color}"
-    echo -e "${info_color}Note: generate a new token at https://github.com/settings/tokens/new with the 'repo' permission checked, ask PAS RelEng team if you don't have read access to ops-manifest repo.${no_color}"
-    github_username="${GITHUB_USERNAME:?}"
-    github_api_token="${GITHUB_API_TOKEN:?}"
-
-    status_code="$(curl --silent -L -u "${github_username}:${github_api_token}" --output /tmp/ops-manifest-assets.json --write-out '%{http_code}' https://api.github.com/repos/pivotal-cf/ops-manifest/releases/latest)"
-    if [[ "${status_code}" -lt 200 || "${status_code}" -gt 299 ]]; then
-      echo "Failed to retrieve latest release for ops-manifest: $(cat /tmp/ops-manifest-assets.json)"
-      exit 1
-    fi
-    gem_url="$(jq -r .assets[0].url /tmp/ops-manifest-assets.json)"
-    mkdir -p vendor
-    curl --silent -u "${github_username}:${github_api_token}" -H "Accept: application/octet-stream" -L -o vendor/ops-manifest.gem "${gem_url}"
+  mkdir -p ./vendor
+  if [ ! -d ./vendor/ops-manifest ]; then
+    echo -e "${info_color}Cloning github.com/pivotal-cf/ops-manifest (ask PAS RelEng team for read access if it fails)...${no_color}"
+    git clone git@github.com:pivotal-cf/ops-manifest ./vendor/ops-manifest
   fi
+
+  pushd ./vendor/ops-manifest > /dev/null
+    echo -e "${info_color}Updating github.com/pivotal-cf/installation (send email to ask+cf@pivotal.io for read access if it fails)...${no_color}"
+    git fetch --tags
+    git checkout "$(git describe --tags --long | cut -d '-' -f1)"
+    git submodule update --init --recursive
+  popd > /dev/null
 
   echo -e "${info_color}Building docker image...${no_color}"
   docker build -t ops-manifest-do-not-push .
