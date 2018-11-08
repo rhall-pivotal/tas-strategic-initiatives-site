@@ -2,29 +2,30 @@
 - name: garden_disk_cleanup
   type: selector
   configurable: true
-  default: threshold
+  default: reserved
   option_templates:
     - name: never
       named_manifests:
-      - name: graph_cleanup_threshold_in_mb
+      - name: reserved_space_for_other_jobs_in_mb
         manifest: |
           -1
       select_value: never
     - name: routine
       named_manifests:
-      - name: graph_cleanup_threshold_in_mb
+      - name: reserved_space_for_other_jobs_in_mb
         manifest: |
           0
       select_value: routine
-    - name: threshold
+    - name: reserved
       named_manifests:
-      - name: graph_cleanup_threshold_in_mb
+      - name: reserved_space_for_other_jobs_in_mb
         manifest: |
-          (( .properties.garden_disk_cleanup.threshold.cleanup_threshold_in_mb.value ))
-      select_value: threshold
+          (( .properties.garden_disk_cleanup.reserved.reserved_space_for_other_jobs_in_mb.value ))
+      select_value: reserved
       property_blueprints:
-        - name: cleanup_threshold_in_mb
+        - name: reserved_space_for_other_jobs_in_mb
           type: integer
-          default: 10_240
+          default: 15360
           constraints:
-            min: 1
+            min: 15360
+

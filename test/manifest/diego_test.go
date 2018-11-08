@@ -183,4 +183,18 @@ var _ = Describe("Diego", func() {
 			Expect(caKey).To(Equal("((/cf/diego-instance-identity-intermediate-ca-2018.private_key))"))
 		})
 	})
+
+	Context("garden grootfs garbage collection", func() {
+		It("sets the reserved disk space", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			garden, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "garden")
+			Expect(err).NotTo(HaveOccurred())
+
+			reservedInMB, err := garden.Property("grootfs/reserved_space_for_other_jobs_in_mb")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(reservedInMB).To(Equal(15360))
+		})
+	})
 })
