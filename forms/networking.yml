@@ -410,14 +410,13 @@ property_inputs:
               TCP Routing Ports (one-time configuration, if you want to
               update this value you can via the CF CLI)
             description: |
-              Enter a single port or a range of ports with dashes between the first and last port
-              number for the load balancer to forward to. This field does not accept a comma-separated 
-              list of ports. To allocate a list of ports, do the following: Enter a single port, 
-              deploy PAS, and use the Routing API to add all desired ports. When using the Routing API, 
-              you can include a comma separated list of ports. Also note that this configuration only 
-              applies the first time you specify it here. For information on using the Routing API to 
-              update your ports, see the Modify Your TCP Ports section of the Enabling TCP Routing topic 
-              in the PCF Documentation.
+              Enter the range of ports reserved for TCP routes. These ports
+              must be available on your load balancer. You can specify a list
+              of ports with commas between each port number and specify
+              ranges of ports with dashes between the first and last port
+              number. This configuration only applies the first time you
+              specify it here, if you later want to update the ports you must
+              do so with the CF CLI.
 
   - reference: .properties.experimental_dynamic_egress_enforcement
     label: Enable Experimental Dynamic Egress Enforcement
