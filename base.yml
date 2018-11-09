@@ -65,7 +65,7 @@ post_deploy_errands:
     description: Install the HWC buildpack to your Elastic Runtime for Windows installation
   - name: smoke_tests_windows
     colocated: true
-    run_default: true
+    run_default: false
     instances:
       - windows_diego_cell/first
     label: Smoke Test Errand
