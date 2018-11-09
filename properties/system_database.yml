@@ -82,6 +82,16 @@
           - tag: cc
             name: (( .properties.ccdb_database_name.value ))
             citext: true
+      - name: credhub
+        manifest: |
+          type: mysql
+          host: mysql.service.cf.internal
+          port: 3306
+          username: ((( credhub-db-credentials.username )))
+          password: ((( credhub-db-credentials.password )))
+          database: (( .properties.credhub_database_name.value ))
+          require_tls: true
+          tls_ca: (( $ops_manager.ca_certificate ))
       - name: notifications
         manifest: |
           host: mysql.service.cf.internal
@@ -221,6 +231,14 @@
         - name: ccdb_password
           type: secret
           configurable: true
+        - name: credhub_username
+          type: string
+          configurable: true
+          optional: true
+        - name: credhub_password
+          type: secret
+          configurable: true
+          optional: true
         - name: diego_username
           type: string
           configurable: true
@@ -283,6 +301,16 @@
             databases:
             - tag: cc
               name: (( .properties.ccdb_database_name.value ))
+        - name: credhub
+          manifest: |
+            type: mysql
+            host: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
+            username: (( .properties.system_database.external.credhub_username.value ))
+            password: (( .properties.system_database.external.credhub_password.value ))
+            database: (( .properties.credhub_database_name.value ))
+            require_tls: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
+            tls_ca: (( .properties.system_database.external.ca_cert.value ))
         - name: notifications
           manifest: |
             host: (( .properties.system_database.external.host.value ))

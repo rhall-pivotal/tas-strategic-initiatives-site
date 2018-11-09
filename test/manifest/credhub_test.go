@@ -123,31 +123,144 @@ var _ = Describe("CredHub", func() {
 
 	Describe("database configuration", func() {
 		Context("internal", func() {
-			It("configures credhub and bbr-credhubdb to talk to mysql with tls", func() {
-				manifest, err := product.RenderManifest(nil)
-				Expect(err).NotTo(HaveOccurred())
+			Context("when the PAS database is set to internal", func() {
+				It("configures credhub and bbr-credhubdb to talk to mysql with tls", func() {
+					manifest, err := product.RenderManifest(nil)
+					Expect(err).NotTo(HaveOccurred())
 
-				credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
-				Expect(err).NotTo(HaveOccurred())
+					credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+					Expect(err).NotTo(HaveOccurred())
 
-				requireTLS, err := credhub.Property("credhub/data_storage/require_tls")
-				Expect(err).ToNot(HaveOccurred())
-				Expect(requireTLS).To(BeTrue())
+					requireTLS, err := credhub.Property("credhub/data_storage/require_tls")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(requireTLS).To(BeTrue())
 
-				ca, err := credhub.Property("credhub/data_storage/tls_ca")
-				Expect(err).ToNot(HaveOccurred())
-				Expect(ca).NotTo(BeEmpty())
+					ca, err := credhub.Property("credhub/data_storage/tls_ca")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(ca).NotTo(BeEmpty())
 
-				bbrCredhub, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-credhubdb")
-				Expect(err).NotTo(HaveOccurred())
+					bbrCredhub, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-credhubdb")
+					Expect(err).NotTo(HaveOccurred())
 
-				requireTLS, err = bbrCredhub.Property("credhub/data_storage/require_tls")
-				Expect(err).ToNot(HaveOccurred())
-				Expect(requireTLS).To(BeTrue())
+					requireTLS, err = bbrCredhub.Property("credhub/data_storage/require_tls")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(requireTLS).To(BeTrue())
 
-				ca, err = bbrCredhub.Property("credhub/data_storage/tls_ca")
-				Expect(err).ToNot(HaveOccurred())
-				Expect(ca).NotTo(BeEmpty())
+					ca, err = bbrCredhub.Property("credhub/data_storage/tls_ca")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(ca).NotTo(BeEmpty())
+				})
+			})
+
+			Context("when the PAS database is set to external", func() {
+				var inputProperties map[string]interface{}
+
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{
+						".properties.system_database":                                       "external",
+						".properties.system_database.external.host":                         "foo.bar",
+						".properties.system_database.external.port":                         5432,
+						".properties.system_database.external.credhub_username":             "some-user",
+						".properties.system_database.external.credhub_password":             map[string]interface{}{"secret": "some-password"},
+						".properties.system_database.external.app_usage_service_username":   "app_usage_service_username",
+						".properties.system_database.external.app_usage_service_password":   map[string]interface{}{"secret": "app_usage_service_password"},
+						".properties.system_database.external.autoscale_username":           "autoscale_username",
+						".properties.system_database.external.autoscale_password":           map[string]interface{}{"secret": "autoscale_password"},
+						".properties.system_database.external.ccdb_username":                "ccdb_username",
+						".properties.system_database.external.ccdb_password":                map[string]interface{}{"secret": "ccdb_password"},
+						".properties.system_database.external.diego_username":               "diego_username",
+						".properties.system_database.external.diego_password":               map[string]interface{}{"secret": "diego_password"},
+						".properties.system_database.external.locket_username":              "locket_username",
+						".properties.system_database.external.locket_password":              map[string]interface{}{"secret": "locket_password"},
+						".properties.system_database.external.networkpolicyserver_username": "networkpolicyserver_username",
+						".properties.system_database.external.networkpolicyserver_password": map[string]interface{}{"secret": "networkpolicyserver_password"},
+						".properties.system_database.external.nfsvolume_username":           "nfsvolume_username",
+						".properties.system_database.external.nfsvolume_password":           map[string]interface{}{"secret": "nfsvolume_password"},
+						".properties.system_database.external.notifications_username":       "notifications_username",
+						".properties.system_database.external.notifications_password":       map[string]interface{}{"secret": "notifications_password"},
+						".properties.system_database.external.account_username":             "account_username",
+						".properties.system_database.external.account_password":             map[string]interface{}{"secret": "account_password"},
+						".properties.system_database.external.routing_username":             "routing_username",
+						".properties.system_database.external.routing_password":             map[string]interface{}{"secret": "routing_password"},
+						".properties.system_database.external.silk_username":                "silk_username",
+						".properties.system_database.external.silk_password":                map[string]interface{}{"secret": "silk_password"},
+					}
+				})
+
+				It("configures credhub and bbr-credhubdb to talk to external PAS DB", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+					Expect(err).NotTo(HaveOccurred())
+
+					host, err := credhub.Property("credhub/data_storage/host")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(host).To(Equal("foo.bar"))
+
+					port, err := credhub.Property("credhub/data_storage/port")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(port).To(Equal(5432))
+
+					dbName, err := credhub.Property("credhub/data_storage/database")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(dbName).To(Equal("credhub"))
+
+					dbUsername, err := credhub.Property("credhub/data_storage/username")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(dbUsername).To(Equal("some-user"))
+
+					dbPassword, err := credhub.Property("credhub/data_storage/password")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(dbPassword).NotTo(BeNil())
+
+					requireTLS, err := credhub.Property("credhub/data_storage/require_tls")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(requireTLS).To(BeFalse())
+
+					ca, err := credhub.Property("credhub/data_storage/tls_ca")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(ca).To(BeNil())
+
+					bbrCredhub, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-credhubdb")
+					Expect(err).NotTo(HaveOccurred())
+
+					requireTLS, err = bbrCredhub.Property("credhub/data_storage/require_tls")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(requireTLS).To(BeFalse())
+
+					ca, err = bbrCredhub.Property("credhub/data_storage/tls_ca")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(ca).To(BeNil())
+				})
+
+				It("configures credhub and bbr-credhubdb to use TLS if PAS CA cert is provided", func() {
+					inputProperties[".properties.system_database.external.ca_cert"] = "some-cert"
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+					Expect(err).NotTo(HaveOccurred())
+
+					requireTLS, err := credhub.Property("credhub/data_storage/require_tls")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(requireTLS).To(BeTrue())
+
+					ca, err := credhub.Property("credhub/data_storage/tls_ca")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(ca).NotTo(BeEmpty())
+
+					bbrCredhub, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-credhubdb")
+					Expect(err).NotTo(HaveOccurred())
+
+					requireTLS, err = bbrCredhub.Property("credhub/data_storage/require_tls")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(requireTLS).To(BeTrue())
+
+					ca, err = bbrCredhub.Property("credhub/data_storage/tls_ca")
+					Expect(err).ToNot(HaveOccurred())
+					Expect(ca).NotTo(BeEmpty())
+				})
 			})
 		})
 

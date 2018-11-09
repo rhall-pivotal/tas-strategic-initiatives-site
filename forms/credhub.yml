@@ -20,11 +20,11 @@ property_inputs:
   selector_property_inputs:
   - reference: .properties.credhub_database.internal_mysql
     label: |
-      Internal MySQL (preferred for complete high-availability)
+      PAS database (configured on the Databases pane)
 
   - reference: .properties.credhub_database.external
     label: |
-      External (preferred if, for example, you use Google Cloud SQL)
+      Other external database
     property_inputs:
       - reference: .properties.credhub_database.external.host
         label: Hostname

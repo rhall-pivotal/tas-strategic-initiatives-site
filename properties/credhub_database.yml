@@ -14,14 +14,7 @@
       named_manifests:
       - name: db_config
         manifest: |
-          type: mysql
-          host: mysql.service.cf.internal
-          port: 3306
-          username: ((( credhub-db-credentials.username )))
-          password: ((( credhub-db-credentials.password )))
-          database: (( .properties.credhub_database_name.value ))
-          require_tls: (( .properties.system_database.selected_option.parsed_manifest(enable_pxc) ))
-          tls_ca: (( $ops_manager.ca_certificate ))
+          (( .properties.system_database.selected_option.parsed_manifest(credhub) ))
 
     - name: external
       select_value: external

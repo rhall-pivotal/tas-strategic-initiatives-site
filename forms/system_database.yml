@@ -41,6 +41,14 @@ verifiers:
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
+      username: .properties.system_database.external.credhub_username
+      password: .properties.system_database.external.credhub_password
+      database: .properties.credhub_database_name
+
+  - name: Verifiers::MysqlDatabaseVerifier
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
       username: .properties.system_database.external.diego_username
       password: .properties.system_database.external.diego_password
       database: .properties.diego_database_name
@@ -129,6 +137,12 @@ property_inputs:
 
       - reference: .properties.system_database.external.ccdb_password
         label: Cloud Controller Database Password
+
+      - reference: .properties.system_database.external.credhub_username
+        label: CredHub Database Username (required if "PAS database" is selected on CredHub tab)
+
+      - reference: .properties.system_database.external.credhub_password
+        label: CredHub Database Password (required if "PAS database" is selected on CredHub tab)
 
       - reference: .properties.system_database.external.diego_username
         label: Diego Database Username
