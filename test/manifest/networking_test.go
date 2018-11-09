@@ -357,14 +357,8 @@ var _ = Describe("Networking", func() {
 				})
 			})
 
-			Context("when disabling network policy", func() {
-				BeforeEach(func() {
-					inputProperties = map[string]interface{}{
-						".properties.container_networking_interface_plugin.silk.disable_policy_enforcement": true,
-					}
-				})
-
-				It("configures the vxlan-policy-agent job", func() {
+			Context("network policy enforcement", func() {
+				It("defaults to false", func() {
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
@@ -373,7 +367,27 @@ var _ = Describe("Networking", func() {
 
 					disabled, err := job.Property("disable_container_network_policy")
 					Expect(err).NotTo(HaveOccurred())
-					Expect(disabled).To(BeTrue())
+					Expect(disabled).To(BeFalse())
+				})
+
+				Context("when setting it disabled", func() {
+					BeforeEach(func() {
+						inputProperties = map[string]interface{}{
+							".properties.container_networking_interface_plugin.silk.disable_policy_enforcement": true,
+						}
+					})
+
+					It("configures the vxlan-policy-agent job", func() {
+						manifest, err := product.RenderManifest(inputProperties)
+						Expect(err).NotTo(HaveOccurred())
+
+						job, err := manifest.FindInstanceGroupJob(cellInstanceGroup, "vxlan-policy-agent")
+						Expect(err).NotTo(HaveOccurred())
+
+						disabled, err := job.Property("disable_container_network_policy")
+						Expect(err).NotTo(HaveOccurred())
+						Expect(disabled).To(BeTrue())
+					})
 				})
 			})
 		})
