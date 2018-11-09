@@ -38,6 +38,14 @@ property_inputs:
       - reference: .properties.uaa_database.external.uaa_password
         label: Password
 
+      - reference: .properties.uaa_database.external.ca_cert
+        label: CA Certificate
+        description: |
+          UAA requires the database to present a valid hostname in order
+          to validate the certificate when terminating TLS.
+          AWS does currently provide a valid hostname, but some other cloud
+          providers do not currently do this (GCP and Azure).
+
 - reference: .uaa.issuer_uri
   label: JWT Issuer URI
   description: When generating tokens, UAA will use this URI as the issuer.

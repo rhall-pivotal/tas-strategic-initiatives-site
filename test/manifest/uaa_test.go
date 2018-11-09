@@ -42,14 +42,19 @@ var _ = Describe("UAA", func() {
 		})
 
 		Context("when external is selected", func() {
-			It("configures the database", func() {
-				manifest, err := product.RenderManifest(map[string]interface{}{
+			var inputProperties map[string]interface{}
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
 					".properties.uaa_database":                       "external",
 					".properties.uaa_database.external.host":         "the-host",
 					".properties.uaa_database.external.port":         999,
 					".properties.uaa_database.external.uaa_username": "the-user",
 					".properties.uaa_database.external.uaa_password": map[string]interface{}{"secret": "the-uaa-db-password"},
-				})
+				}
+			})
+
+			It("configures the database", func() {
+				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
 				job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
@@ -77,11 +82,45 @@ var _ = Describe("UAA", func() {
 
 				prop, err = job.Property("uaadb/tls_enabled")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(prop).To(BeTrue())
+				Expect(prop).To(BeFalse())
 
 				prop, err = job.Property("uaadb/tls_protocols")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(prop).To(Equal("TLSv1.2"))
+
+				certs, err := job.Property("uaa/ca_certs")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(certs).To(HaveLen(2))
+
+				// UAA team told us that it's ok if this second entry is an empty string,
+				// but they would fail if it was the string literal "nil"
+				Expect(certs.([]interface{})[1]).To(Equal(""))
+			})
+
+			Context("when a ca cert is provided", func() {
+				BeforeEach(func() {
+					inputProperties[".properties.uaa_database.external.ca_cert"] = "the-cert"
+				})
+				It("configures the database", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+					Expect(err).NotTo(HaveOccurred())
+
+					certs, err := job.Property("uaa/ca_certs")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(certs).To(HaveLen(2))
+					Expect(certs).To(ContainElement("the-cert"))
+
+					tlsEnabled, err := job.Property("uaadb/tls_enabled")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(tlsEnabled).To(BeTrue())
+
+					tlsProtocols, err := job.Property("uaadb/tls_protocols")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(tlsProtocols).To(Equal("TLSv1.2"))
+				})
 			})
 		})
 	})
