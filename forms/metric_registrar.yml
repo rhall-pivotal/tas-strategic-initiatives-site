@@ -7,9 +7,10 @@ property_inputs:
 - reference: .properties.metric_registrar_disabled
   label: Disable Metric Registrar
   description: |
-    Disables the Metric Registrar. Metric Registrar allows the
-    conversion of structured logs into metrics. It also scrapes metrics
-    endpoints and forwards the metrics into Loggregator.
+    Disables the Metric Registrar. Metric Registrar allows the conversion of
+    structured logs into metrics. It also scrapes metrics endpoints and forwards
+    the metrics into Loggregator. If enabled, it's recommended to also enable the
+    Metric Registrar Smoke Test errand.
 - reference: .properties.metric_registrar_scrape_interval_in_seconds
   label: Endpoint Scraping Interval
   description: |
