@@ -46,6 +46,8 @@
       - name: db_config
         manifest: |
           db_scheme: mysql
+          tls_enabled: true
+          tls_protocols: TLSv1.2
           address: (( .properties.uaa_database.external.host.value ))
           port: (( .properties.uaa_database.external.port.value ))
           roles:

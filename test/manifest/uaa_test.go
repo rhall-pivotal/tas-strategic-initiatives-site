@@ -74,6 +74,14 @@ var _ = Describe("UAA", func() {
 				prop, err = job.Property("uaadb/roles/tag=admin/password")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(prop).To(ContainSubstring("uaa_database/external/uaa_password.value"))
+
+				prop, err = job.Property("uaadb/tls_enabled")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(prop).To(BeTrue())
+
+				prop, err = job.Property("uaadb/tls_protocols")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(prop).To(Equal("TLSv1.2"))
 			})
 		})
 	})
