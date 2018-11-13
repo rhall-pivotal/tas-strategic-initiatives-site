@@ -101,6 +101,14 @@ verifiers:
       password: .properties.system_database.external.silk_password
       database: .properties.silk_database_name
 
+  - name: Verifiers::MysqlDatabaseVerifier
+    properties:
+      host: .properties.system_database.external.host
+      port: .properties.system_database.external.port
+      username: .properties.system_database.external.uaa_username
+      password: .properties.system_database.external.uaa_password
+      database: .properties.uaa_database_name
+
 property_inputs:
 - reference: .properties.system_database
   label: |
@@ -191,6 +199,12 @@ property_inputs:
 
       - reference: .properties.system_database.external.silk_password
         label: Silk Database Password
+
+      - reference: .properties.system_database.external.uaa_username
+        label: UAA Database Username (required if "PAS database" is selected on UAA tab)
+
+      - reference: .properties.system_database.external.uaa_password
+        label: UAA Database Password (required if "PAS database" is selected on UAA tab)
 
       - reference: .properties.system_database.external.ca_cert
         label: Database CA Certificate

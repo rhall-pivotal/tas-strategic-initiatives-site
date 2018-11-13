@@ -19,29 +19,124 @@ var _ = Describe("UAA", func() {
 	})
 
 	Describe("database connection", func() {
-		Context("when internal pxc is selected (default)", func() {
-			It("configures TLS to the internal database", func() {
-				manifest, err := product.RenderManifest(nil)
-				Expect(err).NotTo(HaveOccurred())
+		Context("when PAS Database is selected", func() {
+			Context("and the PAS database is set to internal", func() {
+				It("configures TLS to the internal database", func() {
+					manifest, err := product.RenderManifest(nil)
+					Expect(err).NotTo(HaveOccurred())
 
-				job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-				Expect(err).NotTo(HaveOccurred())
+					job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+					Expect(err).NotTo(HaveOccurred())
 
-				tlsEnabled, err := job.Property("uaadb/tls_enabled")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(tlsEnabled).To(BeTrue())
+					dbAddress, err := job.Property("uaadb/address")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(dbAddress).To(Equal("mysql.service.cf.internal"))
 
-				caCerts, err := job.Property("uaa/ca_certs")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(caCerts).NotTo(BeEmpty())
+					tlsEnabled, err := job.Property("uaadb/tls_enabled")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(tlsEnabled).To(BeTrue())
 
-				tlsProtocols, err := job.Property("uaadb/tls_protocols")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(tlsProtocols).To(Equal("TLSv1.2"))
+					tlsProtocols, err := job.Property("uaadb/tls_protocols")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(tlsProtocols).To(Equal("TLSv1.2"))
+
+					caCerts, err := job.Property("uaa/ca_certs")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(caCerts).To(HaveLen(1)) // OpsMgr root CA
+				})
+			})
+
+			Context("and the PAS database is set to external", func() {
+				var inputProperties map[string]interface{}
+
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{
+						".properties.system_database":                                       "external",
+						".properties.system_database.external.host":                         "foo.bar",
+						".properties.system_database.external.port":                         5432,
+						".properties.system_database.external.uaa_username":                 "some-user",
+						".properties.system_database.external.uaa_password":                 map[string]interface{}{"secret": "some-password"},
+						".properties.system_database.external.app_usage_service_username":   "app_usage_service_username",
+						".properties.system_database.external.app_usage_service_password":   map[string]interface{}{"secret": "app_usage_service_password"},
+						".properties.system_database.external.autoscale_username":           "autoscale_username",
+						".properties.system_database.external.autoscale_password":           map[string]interface{}{"secret": "autoscale_password"},
+						".properties.system_database.external.ccdb_username":                "ccdb_username",
+						".properties.system_database.external.ccdb_password":                map[string]interface{}{"secret": "ccdb_password"},
+						".properties.system_database.external.diego_username":               "diego_username",
+						".properties.system_database.external.diego_password":               map[string]interface{}{"secret": "diego_password"},
+						".properties.system_database.external.locket_username":              "locket_username",
+						".properties.system_database.external.locket_password":              map[string]interface{}{"secret": "locket_password"},
+						".properties.system_database.external.networkpolicyserver_username": "networkpolicyserver_username",
+						".properties.system_database.external.networkpolicyserver_password": map[string]interface{}{"secret": "networkpolicyserver_password"},
+						".properties.system_database.external.nfsvolume_username":           "nfsvolume_username",
+						".properties.system_database.external.nfsvolume_password":           map[string]interface{}{"secret": "nfsvolume_password"},
+						".properties.system_database.external.notifications_username":       "notifications_username",
+						".properties.system_database.external.notifications_password":       map[string]interface{}{"secret": "notifications_password"},
+						".properties.system_database.external.account_username":             "account_username",
+						".properties.system_database.external.account_password":             map[string]interface{}{"secret": "account_password"},
+						".properties.system_database.external.routing_username":             "routing_username",
+						".properties.system_database.external.routing_password":             map[string]interface{}{"secret": "routing_password"},
+						".properties.system_database.external.silk_username":                "silk_username",
+						".properties.system_database.external.silk_password":                map[string]interface{}{"secret": "silk_password"},
+					}
+				})
+
+				It("configures UAA to talk to external PAS DB", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+					Expect(err).NotTo(HaveOccurred())
+
+					dbAddress, err := job.Property("uaadb/address")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(dbAddress).To(Equal("foo.bar"))
+
+					dbPort, err := job.Property("uaadb/port")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(dbPort).To(Equal(5432))
+
+					tlsEnabled, err := job.Property("uaadb/tls_enabled")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(tlsEnabled).To(BeFalse())
+
+					username, err := job.Property("uaadb/roles/0/name")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(username).To(Equal("some-user"))
+
+					password, err := job.Property("uaadb/roles/0/password")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(password).NotTo(BeEmpty())
+
+					certs, err := job.Property("uaa/ca_certs")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(certs).To(HaveLen(2)) // OpsMgr root CA
+					// UAA team told us that it's ok if this second entry is an empty string,
+					// but they would fail if it was the string literal "nil"
+					Expect(certs).To(ContainElement(""))
+				})
+
+				It("configures UAA to talk to DB using TLS if PAS CA cert is provided", func() {
+					inputProperties[".properties.system_database.external.ca_cert"] = "some-cert"
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+					Expect(err).NotTo(HaveOccurred())
+
+					tlsEnabled, err := job.Property("uaadb/tls_enabled")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(tlsEnabled).To(BeTrue())
+
+					caCerts, err := job.Property("uaa/ca_certs")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(caCerts).To(HaveLen(2)) // other is OpsMgr root CA
+					Expect(caCerts).To(ContainElement("some-cert"))
+				})
 			})
 		})
 
-		Context("when external is selected", func() {
+		Context("when External is selected", func() {
 			var inputProperties map[string]interface{}
 			BeforeEach(func() {
 				inputProperties = map[string]interface{}{
@@ -90,11 +185,10 @@ var _ = Describe("UAA", func() {
 
 				certs, err := job.Property("uaa/ca_certs")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(certs).To(HaveLen(2))
-
+				Expect(certs).To(HaveLen(2)) // OpsMgr root CA
 				// UAA team told us that it's ok if this second entry is an empty string,
 				// but they would fail if it was the string literal "nil"
-				Expect(certs.([]interface{})[1]).To(Equal(""))
+				Expect(certs).To(ContainElement(""))
 			})
 
 			Context("when a ca cert is provided", func() {

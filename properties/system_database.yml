@@ -193,6 +193,23 @@
           db_driver: mysql
           db_ca_cert: (( $ops_manager.ca_certificate ))
           release_level_backup: true
+      - name: uaadb
+        manifest: |
+          db_scheme: mysql
+          tls_enabled: (( .properties.system_database.selected_option.parsed_manifest(enable_pxc) ))
+          tls_protocols: TLSv1.2
+          address: mysql.service.cf.internal
+          port: 3306
+          roles:
+          - tag: admin
+            name: ((( uaa-db-credentials.username )))
+            password: ((( uaa-db-credentials.password )))
+          databases:
+          - tag: uaa
+            name: (( .properties.uaa_database_name.value ))
+      - name: uaadb_certs
+        manifest: |
+          - (( $ops_manager.ca_certificate ))
 
     - name: external
       select_value: external
@@ -281,6 +298,14 @@
         - name: silk_password
           type: secret
           configurable: true
+        - name: uaa_username
+          type: string
+          configurable: true
+          optional: true
+        - name: uaa_password
+          type: secret
+          configurable: true
+          optional: true
       named_manifests:
         - name: enable_pxc
           manifest: |
@@ -412,6 +437,24 @@
             db_username: (( .properties.system_database.external.nfsvolume_username.value ))
             db_ca_cert: (( .properties.system_database.external.ca_cert.value ))
             release_level_backup: true
+        - name: uaadb
+          manifest: |
+            db_scheme: mysql
+            tls_enabled: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
+            tls_protocols: TLSv1.2
+            address: (( .properties.system_database.external.host.value ))
+            port: (( .properties.system_database.external.port.value ))
+            roles:
+            - tag: admin
+              name: (( .properties.system_database.external.uaa_username.value ))
+              password: (( .properties.system_database.external.uaa_password.value ))
+            databases:
+            - tag: uaa
+              name: (( .properties.uaa_database_name.value ))
+        - name: uaadb_certs
+          manifest: |
+            - (( $ops_manager.ca_certificate ))
+            - '(( .properties.system_database.external.ca_cert.value ? .properties.system_database.external.ca_cert.value : "" ))'
 
 - name: mysql_activity_logging
   type: selector

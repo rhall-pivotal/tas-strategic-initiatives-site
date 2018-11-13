@@ -20,11 +20,11 @@ property_inputs:
   selector_property_inputs:
   - reference: .properties.uaa_database.internal_mysql
     label: |
-      Internal MySQL (preferred for complete high-availability)
+      PAS database (configured on the Databases pane)
 
   - reference: .properties.uaa_database.external
     label: |
-      External (preferred if, for example, you use AWS RDS)
+      Other external database
     property_inputs:
       - reference: .properties.uaa_database.external.host
         label: Hostname

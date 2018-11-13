@@ -14,21 +14,10 @@
       named_manifests:
       - name: db_config
         manifest: |
-          db_scheme: mysql
-          tls_enabled: (( .properties.system_database.selected_option.parsed_manifest(enable_pxc) ))
-          tls_protocols: TLSv1.2
-          address: mysql.service.cf.internal
-          port: 3306
-          roles:
-          - tag: admin
-            name: ((( uaa-db-credentials.username )))
-            password: ((( uaa-db-credentials.password )))
-          databases:
-          - tag: uaa
-            name: (( .properties.uaa_database_name.value ))
+          (( .properties.system_database.selected_option.parsed_manifest(uaadb) ))
       - name: ca_certs
         manifest: |
-          - (( $ops_manager.ca_certificate ))
+          (( .properties.system_database.selected_option.parsed_manifest(uaadb_certs) ))
 
     - name: external
       select_value: external

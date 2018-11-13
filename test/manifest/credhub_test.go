@@ -122,8 +122,8 @@ var _ = Describe("CredHub", func() {
 	})
 
 	Describe("database configuration", func() {
-		Context("internal", func() {
-			Context("when the PAS database is set to internal", func() {
+		Context("when PAS Database is selected", func() {
+			Context("and the PAS database is set to internal", func() {
 				It("configures credhub and bbr-credhubdb to talk to mysql with tls", func() {
 					manifest, err := product.RenderManifest(nil)
 					Expect(err).NotTo(HaveOccurred())
@@ -152,7 +152,7 @@ var _ = Describe("CredHub", func() {
 				})
 			})
 
-			Context("when the PAS database is set to external", func() {
+			Context("and the PAS database is set to external", func() {
 				var inputProperties map[string]interface{}
 
 				BeforeEach(func() {
@@ -264,7 +264,7 @@ var _ = Describe("CredHub", func() {
 			})
 		})
 
-		Context("external", func() {
+		Context("when External is selected", func() {
 			inputProperties := map[string]interface{}{
 				".properties.credhub_database":                   "external",
 				".properties.credhub_database.external.tls_ca":   "fake-ca",
