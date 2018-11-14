@@ -3,9 +3,31 @@ package manifest_test
 import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/pivotal-cf/planitest"
 )
 
 var _ = Describe("System Database", func() {
+	var (
+		inputProperties      map[string]interface{}
+		dbInstanceGroup      string
+		ccInstanceGroup      string
+		cgInstanceGroup      string
+		credhubInstanceGroup string
+	)
+
+	BeforeEach(func() {
+		if productName == "ert" {
+			dbInstanceGroup = "diego_database"
+			ccInstanceGroup = "cloud_controller"
+			cgInstanceGroup = "clock_global"
+			credhubInstanceGroup = "credhub"
+		} else {
+			dbInstanceGroup = "control"
+			ccInstanceGroup = "control"
+			cgInstanceGroup = "control"
+			credhubInstanceGroup = "control"
+		}
+	})
 	Describe("Internal PXC", func() {
 		var (
 			inputProperties map[string]interface{}
@@ -78,23 +100,7 @@ var _ = Describe("System Database", func() {
 	})
 
 	Describe("External Database", func() {
-		var (
-			inputProperties map[string]interface{}
-			dbInstanceGroup string
-			ccInstanceGroup string
-			cgInstanceGroup string
-		)
-
 		BeforeEach(func() {
-			if productName == "ert" {
-				dbInstanceGroup = "diego_database"
-				ccInstanceGroup = "cloud_controller"
-				cgInstanceGroup = "clock_global"
-			} else {
-				dbInstanceGroup = "control"
-				ccInstanceGroup = "control"
-				cgInstanceGroup = "control"
-			}
 			inputProperties = map[string]interface{}{
 				".properties.system_database":                                       "external",
 				".properties.system_database.external.host":                         "foo.bar",
@@ -280,4 +286,79 @@ var _ = Describe("System Database", func() {
 			})
 		})
 	})
+
+	Describe("consistency of structure of properties between Internal and External", func() {
+		It("keeps the same keys", func() {
+			internalInputProperties := map[string]interface{}{}
+			externalInputProperties := map[string]interface{}{
+				".properties.system_database":                                       "external",
+				".properties.system_database.external.host":                         "foo.bar",
+				".properties.system_database.external.port":                         5432,
+				".properties.system_database.external.app_usage_service_username":   "app_usage_service_username",
+				".properties.system_database.external.app_usage_service_password":   map[string]interface{}{"secret": "app_usage_service_password"},
+				".properties.system_database.external.autoscale_username":           "autoscale_username",
+				".properties.system_database.external.autoscale_password":           map[string]interface{}{"secret": "autoscale_password"},
+				".properties.system_database.external.ccdb_username":                "ccdb_username",
+				".properties.system_database.external.ccdb_password":                map[string]interface{}{"secret": "ccdb_password"},
+				".properties.system_database.external.credhub_username":             "credhub_username",
+				".properties.system_database.external.credhub_password":             map[string]interface{}{"secret": "credhub_password"},
+				".properties.system_database.external.diego_username":               "diego_username",
+				".properties.system_database.external.diego_password":               map[string]interface{}{"secret": "diego_password"},
+				".properties.system_database.external.locket_username":              "locket_username",
+				".properties.system_database.external.locket_password":              map[string]interface{}{"secret": "locket_password"},
+				".properties.system_database.external.networkpolicyserver_username": "networkpolicyserver_username",
+				".properties.system_database.external.networkpolicyserver_password": map[string]interface{}{"secret": "networkpolicyserver_password"},
+				".properties.system_database.external.nfsvolume_username":           "nfsvolume_username",
+				".properties.system_database.external.nfsvolume_password":           map[string]interface{}{"secret": "nfsvolume_password"},
+				".properties.system_database.external.notifications_username":       "notifications_username",
+				".properties.system_database.external.notifications_password":       map[string]interface{}{"secret": "notifications_password"},
+				".properties.system_database.external.account_username":             "account_username",
+				".properties.system_database.external.account_password":             map[string]interface{}{"secret": "account_password"},
+				".properties.system_database.external.routing_username":             "routing_username",
+				".properties.system_database.external.routing_password":             map[string]interface{}{"secret": "routing_password"},
+				".properties.system_database.external.silk_username":                "silk_username",
+				".properties.system_database.external.silk_password":                map[string]interface{}{"secret": "silk_password"},
+			}
+
+			internalManifest, err := product.RenderManifest(internalInputProperties)
+			Expect(err).NotTo(HaveOccurred())
+			externalManifest, err := product.RenderManifest(externalInputProperties)
+			Expect(err).NotTo(HaveOccurred())
+
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, "backup_restore", "bbr-usage-servicedb", "database")
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, "backup_restore", "nfsbroker-bbr", "nfsbroker")
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, ccInstanceGroup, "cloud_controller_ng", "ccdb")
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, ccInstanceGroup, "routing-api", "routing_api/sqldb")
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, cgInstanceGroup, "deploy-notifications", "notifications/database")
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, cgInstanceGroup, "nfsbrokerpush", "nfsbrokerpush/db")
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, cgInstanceGroup, "push-usage-service", "databases/app_usage_service")
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, credhubInstanceGroup, "credhub", "credhub/data_storage")
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, dbInstanceGroup, "bbs", "diego/bbs/sql")
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, dbInstanceGroup, "locket", "diego/locket/sql")
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, dbInstanceGroup, "policy-server", "database")
+		})
+	})
 })
+
+func validateConsistencyOfParsedManifest(internalManifest, externalManifest planitest.Manifest, instanceGroup, job, property string) {
+	By("job " + job)
+
+	internalJob, err := internalManifest.FindInstanceGroupJob(instanceGroup, job)
+	Expect(err).NotTo(HaveOccurred())
+	internalParsedManifest, err := internalJob.Property(property)
+	Expect(err).NotTo(HaveOccurred())
+
+	externalJob, err := externalManifest.FindInstanceGroupJob(instanceGroup, job)
+	Expect(err).NotTo(HaveOccurred())
+	externalParsedManifest, err := externalJob.Property(property)
+	Expect(err).NotTo(HaveOccurred())
+
+	externalMap := externalParsedManifest.(map[interface{}]interface{})
+	internalMap := internalParsedManifest.(map[interface{}]interface{})
+
+	Expect(len(externalMap)).To(Equal(len(internalMap)))
+
+	for k := range externalMap {
+		Expect(internalMap).To(HaveKey(k))
+	}
+}
