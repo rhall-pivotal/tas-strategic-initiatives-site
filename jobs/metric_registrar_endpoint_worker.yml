@@ -14,6 +14,7 @@ manifest: |
       agent:
         cert: (( .doppler.metron_tls_cert.cert_pem ))
         key: (( .doppler.metron_tls_cert.private_key_pem ))
+        common_name: cloud-controller-ng.service.cf.internal
   cloud_controller:
     tls:
       ca: (( $ops_manager.ca_certificate ))
