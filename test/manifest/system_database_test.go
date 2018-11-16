@@ -312,6 +312,14 @@ var _ = Describe("System Database", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
 
+				// notifications
+				notifications, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "deploy-notifications")
+				Expect(err).NotTo(HaveOccurred())
+
+				caCert, err = notifications.Property("notifications/database/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).To(Equal("fake-ca-cert"))
+
 				// usage-service
 				pushUsageService, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "push-usage-service")
 				Expect(err).NotTo(HaveOccurred())
