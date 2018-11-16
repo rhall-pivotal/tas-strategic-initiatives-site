@@ -41,6 +41,31 @@ var _ = Describe("Networking", func() {
 		})
 	})
 
+	Describe("Network Policy Enforcement", func() {
+		It("defaults to false", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+			job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "vxlan-policy-agent")
+			Expect(err).NotTo(HaveOccurred())
+			disabled, err := job.Property("disable_container_network_policy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(disabled).To(BeFalse())
+		})
+
+		It("configures the vxlan-policy-agent job when setting it disabled", func() {
+			inputProperties := map[string]interface{}{
+				".properties.disable_silk_policy_enforcement": true,
+			}
+			manifest, err := product.RenderManifest(inputProperties)
+			Expect(err).NotTo(HaveOccurred())
+			job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "vxlan-policy-agent")
+			Expect(err).NotTo(HaveOccurred())
+			disabled, err := job.Property("disable_container_network_policy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(disabled).To(BeTrue())
+		})
+	})
+
 	Describe("BOSH DNS Adapter for App Service Discovery", func() {
 		It("colocates the dns-adapter and route emitter on the isolated_diego_cell", func() {
 			manifest, err := product.RenderManifest(nil)

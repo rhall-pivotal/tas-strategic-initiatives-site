@@ -285,6 +285,13 @@ property_inputs:
     DNS search domains to be used in containers. A comma-separated list can
     be specified.
 
+- reference: .properties.disable_silk_policy_enforcement
+  label: Disable Silk Policy Enforcement
+  description: |
+    WARNING!!! Disables network policy enforcement. Setting this property to
+    true allows all app containers to access any other app container with no restrictions.
+    Requires "Networking > Enable Silk" to be checked in the PAS tile.
+
 - reference: .properties.routing_table_sharding_mode
   label: |
     Router Sharding Mode: When "Isolation Segment Only" is selected, the
