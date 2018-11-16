@@ -1,0 +1,13 @@
+---
+name: cc_deployment_updater
+release: capi
+manifest: |
+  ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
+  cc:
+    db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
+    mutual_tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      public_cert: (( .properties.cloud_controller_mutual_cert.cert_pem ))
+      private_key: (( .properties.cloud_controller_mutual_cert.private_key_pem ))
+    temporary_disable_deployments: (( .properties.cloud_controller_temporary_disable_deployments.value ))
+  release_level_backup: true
