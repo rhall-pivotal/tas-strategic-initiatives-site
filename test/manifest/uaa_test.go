@@ -20,8 +20,16 @@ var _ = Describe("UAA", func() {
 
 	Describe("database connection", func() {
 		Context("when PAS Database is selected", func() {
+			var (
+				inputProperties map[string]interface{}
+			)
+
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{}
+			})
+
 			Context("and the PAS database is set to internal", func() {
-				It("configures TLS to the internal database", func() {
+				It("disables TLS to the internal database", func() {
 					manifest, err := product.RenderManifest(nil)
 					Expect(err).NotTo(HaveOccurred())
 
@@ -34,15 +42,37 @@ var _ = Describe("UAA", func() {
 
 					tlsEnabled, err := job.Property("uaadb/tls_enabled")
 					Expect(err).NotTo(HaveOccurred())
-					Expect(tlsEnabled).To(BeTrue())
-
-					tlsProtocols, err := job.Property("uaadb/tls_protocols")
-					Expect(err).NotTo(HaveOccurred())
-					Expect(tlsProtocols).To(Equal("TLSv1.2"))
+					Expect(tlsEnabled).To(BeFalse())
 
 					caCerts, err := job.Property("uaa/ca_certs")
 					Expect(err).NotTo(HaveOccurred())
 					Expect(caCerts).To(HaveLen(1)) // OpsMgr root CA
+				})
+
+				Context("and TLS checkbox is checked", func() {
+					BeforeEach(func() {
+						inputProperties = map[string]interface{}{".properties.enable_tls_to_internal_pxc": true}
+					})
+
+					It("configures TLS to the internal database", func() {
+						manifest, err := product.RenderManifest(inputProperties)
+						Expect(err).NotTo(HaveOccurred())
+
+						job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+						Expect(err).NotTo(HaveOccurred())
+
+						tlsEnabled, err := job.Property("uaadb/tls_enabled")
+						Expect(err).NotTo(HaveOccurred())
+						Expect(tlsEnabled).To(BeTrue())
+
+						tlsProtocols, err := job.Property("uaadb/tls_protocols")
+						Expect(err).NotTo(HaveOccurred())
+						Expect(tlsProtocols).To(Equal("TLSv1.2"))
+
+						caCerts, err := job.Property("uaa/ca_certs")
+						Expect(err).NotTo(HaveOccurred())
+						Expect(caCerts).To(HaveLen(1)) // OpsMgr root CA
+					})
 				})
 			})
 

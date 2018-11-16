@@ -54,6 +54,11 @@
   configurable: false
   default: nfsvolume
 
+- name: enable_tls_to_internal_pxc
+  type: boolean
+  configurable: true
+  default: false
+
 - name: system_database
   type: selector
   configurable: true
@@ -73,7 +78,7 @@
           address: mysql.service.cf.internal
           port: 3306
           ssl_verify_hostname: true
-          ca_cert: (( $ops_manager.ca_certificate ))
+          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
           roles:
           - tag: admin
             name: ((( cc-db-credentials.username )))
@@ -90,8 +95,8 @@
           username: ((( credhub-db-credentials.username )))
           password: ((( credhub-db-credentials.password )))
           database: (( .properties.credhub_database_name.value ))
-          require_tls: true
-          tls_ca: (( $ops_manager.ca_certificate ))
+          require_tls: '(( .properties.enable_tls_to_internal_pxc.value ? true : false ))'
+          tls_ca: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
       - name: notifications
         manifest: |
           host: mysql.service.cf.internal
@@ -115,8 +120,8 @@
           username: ((( app-usage-db-credentials.username )))
           password: ((( app-usage-db-credentials.password )))
           name: (( .properties.app_usage_service_database_name.value ))
-          ca_cert: (( $ops_manager.ca_certificate ))
-          verify_ssl: true
+          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
+          verify_ssl: '(( .properties.enable_tls_to_internal_pxc.value ? true : false ))'
       - name: bbr-usage-servicedb
         manifest: |
           address: mysql.service.cf.internal
@@ -124,8 +129,8 @@
           username: ((( app-usage-db-credentials.username )))
           password: ((( app-usage-db-credentials.password )))
           name: (( .properties.app_usage_service_database_name.value ))
-          ca_cert: (( $ops_manager.ca_certificate ))
-          skip_host_verify: true
+          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
+          skip_host_verify: false
       - name: diegodb
         manifest: |
           db_host: mysql.service.cf.internal
@@ -134,8 +139,8 @@
           db_password: ((( diego-db-credentials.password )))
           db_schema: (( .properties.diego_database_name.value ))
           max_open_connections: 100
-          require_ssl: true
-          ca_cert: (( $ops_manager.ca_certificate ))
+          require_ssl: false
+          ca_cert: null
       - name: locketdb
         manifest: |
           db_host: mysql.service.cf.internal
@@ -143,8 +148,8 @@
           db_username: ((( locket-db-credentials.username )))
           db_password: ((( locket-db-credentials.password )))
           db_schema: (( .properties.locket_database_name.value ))
-          require_ssl: true
-          ca_cert: (( $ops_manager.ca_certificate ))
+          require_ssl: false
+          ca_cert: null
       - name: routingdb
         manifest: |
           type: mysql
@@ -153,7 +158,7 @@
           username: ((( routing-db-credentials.username )))
           password: ((( routing-db-credentials.password )))
           schema: (( .properties.routing_database_name.value ))
-          ca_cert: (( $ops_manager.ca_certificate ))
+          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
       - name: silkdb
         manifest: |
           type: mysql
@@ -163,8 +168,8 @@
           password: ((( silk-db-credentials.password )))
           name: (( .properties.silk_database_name.value ))
           connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
-          require_ssl: true
-          ca_cert: (( $ops_manager.ca_certificate ))
+          require_ssl: '(( .properties.enable_tls_to_internal_pxc.value ? true : false ))'
+          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
       - name: networkpolicyserverdb
         manifest: |
           type: mysql
@@ -174,8 +179,8 @@
           password: ((( network-policy-server-db-credentials.password )))
           name: (( .properties.networkpolicyserver_database_name.value ))
           connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
-          require_ssl: true
-          ca_cert: (( $ops_manager.ca_certificate ))
+          require_ssl: '(( .properties.enable_tls_to_internal_pxc.value ? true : false ))'
+          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
       - name: nfsvolume
         manifest: |
           host: mysql.service.cf.internal
@@ -183,7 +188,7 @@
           username: ((( nfs-volume-db-credentials.username )))
           password: ((( nfs-volume-db-credentials.password )))
           name: (( .properties.nfsvolume_database_name.value ))
-          ca_cert: (( $ops_manager.ca_certificate ))
+          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : "" ))'
       - name: nfsvolume_bbr
         manifest: |
           db_username: ((( nfs-volume-db-credentials.username )))
@@ -192,12 +197,12 @@
           db_hostname: mysql.service.cf.internal
           db_port: 3306
           db_driver: mysql
-          db_ca_cert: (( $ops_manager.ca_certificate ))
+          db_ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : "" ))'
           release_level_backup: true
       - name: uaadb
         manifest: |
           db_scheme: mysql
-          tls_enabled: (( .properties.system_database.selected_option.parsed_manifest(enable_pxc) ))
+          tls_enabled: '(( .properties.enable_tls_to_internal_pxc.value ? true : false ))'
           tls_protocols: TLSv1.2
           address: mysql.service.cf.internal
           port: 3306
@@ -211,6 +216,9 @@
       - name: uaadb_certs
         manifest: |
           - (( $ops_manager.ca_certificate ))
+      - name: null_value
+        manifest: |
+          null
 
     - name: external
       select_value: external
@@ -370,7 +378,7 @@
             password: (( .properties.system_database.external.app_usage_service_password.value ))
             name: (( .properties.app_usage_service_database_name.value ))
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
-            skip_host_verify: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
+            skip_host_verify: false
         - name: diegodb
           manifest: |
             db_host: (( .properties.system_database.external.host.value ))

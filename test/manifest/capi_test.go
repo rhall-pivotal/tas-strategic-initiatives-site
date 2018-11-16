@@ -89,6 +89,25 @@ var _ = Describe("CAPI", func() {
 
 					ca, err := manifestJob.Property("ccdb/ca_cert")
 					Expect(err).NotTo(HaveOccurred())
+					Expect(ca).To(BeNil())
+				}
+			})
+		})
+
+		Context("when the TLS checkbox is checked", func() {
+			BeforeEach(func() {
+				var err error
+				manifest, err = product.RenderManifest(map[string]interface{}{".properties.enable_tls_to_internal_pxc": true})
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("enables TLS to CCDB", func() {
+				for _, job := range ccJobs {
+					manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
+					Expect(err).NotTo(HaveOccurred())
+
+					ca, err := manifestJob.Property("ccdb/ca_cert")
+					Expect(err).NotTo(HaveOccurred())
 					Expect(ca).NotTo(BeEmpty())
 				}
 			})

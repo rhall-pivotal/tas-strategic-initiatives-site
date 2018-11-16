@@ -23,6 +23,7 @@ var _ = Describe("Networking", func() {
 				cellInstanceGroup = "compute"
 				controllerInstanceGroup = "control"
 			}
+			inputProperties = map[string]interface{}{}
 		})
 
 		Describe("policy server", func() {
@@ -42,7 +43,7 @@ var _ = Describe("Networking", func() {
 				Expect(databaseLink).To(Equal("nil"))
 			})
 
-			It("configures TLS to the internal database", func() {
+			It("disables TLS to the internal database by default", func() {
 				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
@@ -51,11 +52,33 @@ var _ = Describe("Networking", func() {
 
 				tlsEnabled, err := job.Property("database/require_ssl")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(tlsEnabled).To(BeTrue())
+				Expect(tlsEnabled).To(BeFalse())
 
 				caCert, err := job.Property("database/ca_cert")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(caCert).NotTo(BeEmpty())
+				Expect(caCert).To(BeNil())
+			})
+
+			Context("when the TLS checkbox is checked", func() {
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{".properties.enable_tls_to_internal_pxc": true}
+				})
+
+				It("configures TLS to the internal database", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server")
+					Expect(err).NotTo(HaveOccurred())
+
+					tlsEnabled, err := job.Property("database/require_ssl")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(tlsEnabled).To(BeTrue())
+
+					caCert, err := job.Property("database/ca_cert")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(caCert).NotTo(BeEmpty())
+				})
 			})
 		})
 
@@ -139,7 +162,7 @@ var _ = Describe("Networking", func() {
 				Expect(cniPluginDir).To(Equal("/var/vcap/packages/silk-cni/bin"))
 			})
 
-			It("configures TLS to the internal database", func() {
+			It("disables TLS to the internal database by default", func() {
 				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
@@ -148,11 +171,33 @@ var _ = Describe("Networking", func() {
 
 				tlsEnabled, err := job.Property("database/require_ssl")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(tlsEnabled).To(BeTrue())
+				Expect(tlsEnabled).To(BeFalse())
 
 				caCert, err := job.Property("database/ca_cert")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(caCert).NotTo(BeEmpty())
+				Expect(caCert).To(BeNil())
+			})
+
+			Context("when the TLS checkbox is checked", func() {
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{".properties.enable_tls_to_internal_pxc": true}
+				})
+
+				It("configures TLS to the internal database", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "silk-controller")
+					Expect(err).NotTo(HaveOccurred())
+
+					tlsEnabled, err := job.Property("database/require_ssl")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(tlsEnabled).To(BeTrue())
+
+					caCert, err := job.Property("database/ca_cert")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(caCert).NotTo(BeEmpty())
+				})
 			})
 
 			It("uses the correct database host", func() {

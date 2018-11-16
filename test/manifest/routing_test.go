@@ -343,6 +343,53 @@ var _ = Describe("Routing", func() {
 
 	})
 
+	Describe("Routing DB", func() {
+		var (
+			instanceGroup   string
+			inputProperties map[string]interface{}
+		)
+
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "control"
+			} else {
+				instanceGroup = "cloud_controller"
+			}
+
+			inputProperties = nil
+		})
+
+		It("disables TLS by default", func() {
+			manifest, err := product.RenderManifest(inputProperties)
+			Expect(err).NotTo(HaveOccurred())
+
+			routingAPI, err := manifest.FindInstanceGroupJob(instanceGroup, "routing-api")
+			Expect(err).NotTo(HaveOccurred())
+			caCert, err := routingAPI.Property("routing_api/sqldb/ca_cert")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(caCert).To(BeNil())
+		})
+
+		Context("when TLS checkbox is checked", func() {
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.enable_tls_to_internal_pxc": true,
+				}
+			})
+
+			It("enables TLS to database", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				routingAPI, err := manifest.FindInstanceGroupJob(instanceGroup, "routing-api")
+				Expect(err).NotTo(HaveOccurred())
+				caCert, err := routingAPI.Property("routing_api/sqldb/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).ToNot(BeEmpty())
+			})
+		})
+	})
+
 	Describe("BPM", func() {
 		var routingJobs []Job
 

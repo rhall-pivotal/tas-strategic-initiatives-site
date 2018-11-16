@@ -1,6 +1,8 @@
 package manifest_test
 
 import (
+	"sort"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pivotal-cf/planitest"
@@ -43,7 +45,7 @@ var _ = Describe("System Database", func() {
 			inputProperties = map[string]interface{}{}
 		})
 
-		It("configures the jobs", func() {
+		It("configures the errand jobs without TLS", func() {
 			manifest, err := product.RenderManifest(inputProperties)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -57,7 +59,7 @@ var _ = Describe("System Database", func() {
 
 			caCert, err := nfsbrokerpush.Property("nfsbrokerpush/db/ca_cert")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).ToNot(BeEmpty())
+			Expect(caCert).To(Equal(""))
 
 			nfsbrokerbbr, err := manifest.FindInstanceGroupJob("backup_restore", "nfsbroker-bbr")
 			Expect(err).NotTo(HaveOccurred())
@@ -72,7 +74,7 @@ var _ = Describe("System Database", func() {
 
 			caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).ToNot(BeEmpty())
+			Expect(caCert).To(Equal(""))
 
 			// usage-service
 			pushUsageService, err := manifest.FindInstanceGroupJob(instanceGroup, "push-usage-service")
@@ -80,22 +82,71 @@ var _ = Describe("System Database", func() {
 
 			caCert, err = pushUsageService.Property("databases/app_usage_service/ca_cert")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).NotTo(BeEmpty())
+			Expect(caCert).To(BeNil())
 
 			verifySSL, err := pushUsageService.Property("databases/app_usage_service/verify_ssl")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(verifySSL).To(BeTrue())
+			Expect(verifySSL).To(BeFalse())
 
 			bbrUsageServiceDB, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-usage-servicedb")
 			Expect(err).NotTo(HaveOccurred())
 
 			caCert, err = bbrUsageServiceDB.Property("database/ca_cert")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).NotTo(BeEmpty())
+			Expect(caCert).To(BeNil())
 
-			verifySSL, err = bbrUsageServiceDB.Property("database/skip_host_verify")
+			skipCertVerify, err := bbrUsageServiceDB.Property("database/skip_host_verify")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(verifySSL).To(BeTrue())
+			Expect(skipCertVerify).To(BeFalse())
+		})
+
+		Context("When TLS checkbox is checked", func() {
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{".properties.enable_tls_to_internal_pxc": true}
+			})
+
+			It("enables TLS to pxc", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				// nfsbroker
+				nfsbrokerpush, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsbrokerpush")
+				Expect(err).NotTo(HaveOccurred())
+
+				caCert, err := nfsbrokerpush.Property("nfsbrokerpush/db/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).NotTo(BeEmpty())
+
+				nfsbrokerbbr, err := manifest.FindInstanceGroupJob("backup_restore", "nfsbroker-bbr")
+				Expect(err).NotTo(HaveOccurred())
+
+				caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).NotTo(BeEmpty())
+
+				// usage-service
+				pushUsageService, err := manifest.FindInstanceGroupJob(instanceGroup, "push-usage-service")
+				Expect(err).NotTo(HaveOccurred())
+
+				caCert, err = pushUsageService.Property("databases/app_usage_service/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).NotTo(BeEmpty())
+
+				verifySSL, err := pushUsageService.Property("databases/app_usage_service/verify_ssl")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(verifySSL).To(BeTrue())
+
+				bbrUsageServiceDB, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-usage-servicedb")
+				Expect(err).NotTo(HaveOccurred())
+
+				caCert, err = bbrUsageServiceDB.Property("database/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).NotTo(BeEmpty())
+
+				skipCertVerify, err := bbrUsageServiceDB.Property("database/skip_host_verify")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(skipCertVerify).To(BeFalse())
+			})
 		})
 	})
 
@@ -282,7 +333,7 @@ var _ = Describe("System Database", func() {
 
 				skipHostVerify, err := bbrUsageServiceDB.Property("database/skip_host_verify")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(skipHostVerify).To(BeTrue())
+				Expect(skipHostVerify).To(BeFalse())
 			})
 		})
 	})
@@ -341,8 +392,6 @@ var _ = Describe("System Database", func() {
 })
 
 func validateConsistencyOfParsedManifest(internalManifest, externalManifest planitest.Manifest, instanceGroup, job, property string) {
-	By("job " + job)
-
 	internalJob, err := internalManifest.FindInstanceGroupJob(instanceGroup, job)
 	Expect(err).NotTo(HaveOccurred())
 	internalParsedManifest, err := internalJob.Property(property)
@@ -356,9 +405,22 @@ func validateConsistencyOfParsedManifest(internalManifest, externalManifest plan
 	externalMap := externalParsedManifest.(map[interface{}]interface{})
 	internalMap := internalParsedManifest.(map[interface{}]interface{})
 
-	Expect(len(externalMap)).To(Equal(len(internalMap)))
-
+	externalKeys := make([]string, len(externalMap))
+	i := 0
 	for k := range externalMap {
-		Expect(internalMap).To(HaveKey(k))
+		externalKeys[i] = k.(string)
+		i++
 	}
+	sort.Strings(externalKeys)
+
+	internalKeys := make([]string, len(internalMap))
+	i = 0
+	for k := range internalMap {
+		internalKeys[i] = k.(string)
+		i++
+	}
+	sort.Strings(internalKeys)
+
+	Expect(internalKeys).To(ConsistOf(externalKeys), "DB keys don't match for instance group %s, job %s, property %s", instanceGroup, job, property)
+	Expect(externalKeys).To(ConsistOf(internalKeys), "DB keys don't match for instance group %s, job %s, property %s", instanceGroup, job, property)
 }

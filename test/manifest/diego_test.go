@@ -27,11 +27,7 @@ var _ = Describe("Diego", func() {
 			By("configuring TLS to the internal database")
 			requireSSL, err := bbs.Property("diego/bbs/sql/require_ssl")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(requireSSL).To(BeTrue())
-
-			caCert, err := bbs.Property("diego/bbs/sql/ca_cert")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).NotTo(BeEmpty())
+			Expect(requireSSL).To(BeFalse())
 		})
 	})
 
@@ -53,11 +49,8 @@ var _ = Describe("Diego", func() {
 
 			requireSSL, err := locket.Property("diego/locket/sql/require_ssl")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(requireSSL).To(BeTrue())
+			Expect(requireSSL).To(BeFalse())
 
-			caCert, err := locket.Property("diego/locket/sql/ca_cert")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).NotTo(BeEmpty())
 		})
 	})
 
@@ -332,7 +325,7 @@ var _ = Describe("Diego", func() {
 		})
 	})
 
-	Context("garden grootfs garbage collection", func(){
+	Context("garden grootfs garbage collection", func() {
 		BeforeEach(func() {
 			if productName == "srt" {
 				instanceGroup = "compute"
@@ -353,9 +346,7 @@ var _ = Describe("Diego", func() {
 			Expect(reservedInMB).To(Equal(15360))
 		})
 
-
 	})
-
 
 	Context("cflinuxfs2-rootfs and cflinuxfs3-rootfs", func() {
 
