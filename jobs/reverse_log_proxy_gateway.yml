@@ -1,0 +1,21 @@
+---
+name: reverse_log_proxy_gateway
+release: loggregator
+manifest: |
+  http:
+    address: "0.0.0.0:8088"
+  logs_provider:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    client_cert: (( .properties.reverse_log_proxy_gateway_client_tls_rlp_cert.cert_pem ))
+    client_key: (( .properties.reverse_log_proxy_gateway_client_tls_rlp_cert.private_key_pem ))
+  cc:
+    capi_internal_addr: https://cloud-controller-ng.service.cf.internal:9023
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.reverse_log_proxy_gateway_client_tls_cc_cert.cert_pem ))
+    key: (( .properties.reverse_log_proxy_gateway_client_tls_cc_cert.private_key_pem ))
+    common_name: cloud-controller-ng.service.cf.internal
+  uaa:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    internal_addr: https://uaa.service.cf.internal:8443
+    client_id: (( .uaa.doppler_client_credentials.identity ))
+    client_secret: (( .uaa.doppler_client_credentials.password ))

@@ -285,6 +285,43 @@ var _ = Describe("Logging", func() {
 		})
 	})
 
+	Describe("Traffic Controller", func() {
+		var instanceGroup string
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "control"
+			} else {
+				instanceGroup = "loggregator_trafficcontroller"
+			}
+		})
+
+		It("deploys the reverse_log_proxy_gateway", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			gateway, err := manifest.FindInstanceGroupJob(instanceGroup, "reverse_log_proxy_gateway")
+			Expect(err).NotTo(HaveOccurred())
+
+			// test for a subset of properties
+			capiAddr, err := gateway.Property("cc/capi_internal_addr")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(capiAddr).To(Equal("https://cloud-controller-ng.service.cf.internal:9023"))
+			uaaAddr, err := gateway.Property("uaa/internal_addr")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(uaaAddr).To(Equal("https://uaa.service.cf.internal:8443"))
+
+			routeRegistrar, err := manifest.FindInstanceGroupJob(instanceGroup, "route_registrar")
+			Expect(err).NotTo(HaveOccurred())
+
+			routes, err := routeRegistrar.Property("route_registrar/routes")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(routes).To(ContainElement(HaveKeyWithValue("uris", []interface{}{
+				"log-stream.sys.example.com",
+				"*.log-stream.sys.example.com",
+			})))
+		})
+	})
+
 	Describe("syslog forwarding", func() {
 		It("includes the vcap rule and does not forward debug logs", func() {
 			manifest, err := product.RenderManifest(map[string]interface{}{

@@ -10,3 +10,9 @@ manifest: |
       registration_interval: 20s
       uris:
       - "doppler.(( .cloud_controller.system_domain.value ))"
+    - name: rlp-gateway
+      port: 8088
+      registration_interval: 20s
+      uris:
+      - "log-stream.(( .cloud_controller.system_domain.value ))"
+      - "*.log-stream.(( .cloud_controller.system_domain.value ))"
