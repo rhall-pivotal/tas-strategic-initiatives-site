@@ -59,3 +59,9 @@ property_inputs:
     description: |
       When checked, PAS components which support TLS will connect to the
       internal PXC database using an encrypted TLS connection.
+
+  - reference: .properties.cloud_controller_temporary_disable_deployments
+    label: Disable Zero Downtime App Deployments
+    description: |
+      This option will be removed in a future release. This will disable zero-downtime deployments for applications
+      as well as the cc_deployment_updater job.

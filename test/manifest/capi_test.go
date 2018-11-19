@@ -113,6 +113,76 @@ var _ = Describe("CAPI", func() {
 			})
 		})
 
+		Context("when the Operator accepts the default ZDT deployment updater values", func() {
+			BeforeEach(func() {
+				var err error
+				manifest, err = product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("sets defaults", func() {
+				var cloudControllerInstanceGroup string
+				var clockGlobalInstanceGroup string
+				if productName == "srt" {
+					cloudControllerInstanceGroup = "control"
+					clockGlobalInstanceGroup = "control"
+				} else {
+					cloudControllerInstanceGroup = "cloud_controller"
+					clockGlobalInstanceGroup = "clock_global"
+				}
+
+				manifestCloudControllerNgJob, err := manifest.FindInstanceGroupJob(cloudControllerInstanceGroup, "cloud_controller_ng")
+				Expect(err).NotTo(HaveOccurred())
+
+				temporaryDisableDeployments, err := manifestCloudControllerNgJob.Property("cc/temporary_disable_deployments")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(temporaryDisableDeployments).To(BeFalse())
+
+				manifestCcDeploymentUpdaterJob, err := manifest.FindInstanceGroupJob(clockGlobalInstanceGroup, "cc_deployment_updater")
+				Expect(err).NotTo(HaveOccurred())
+
+				temporaryDisableDeployments, err = manifestCcDeploymentUpdaterJob.Property("cc/temporary_disable_deployments")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(temporaryDisableDeployments).To(BeFalse())
+			})
+		})
+
+		Context("when the Operator sets the temporary disable deployments option to true", func() {
+			BeforeEach(func() {
+				var err error
+				manifest, err = product.RenderManifest(map[string]interface{}{
+					".properties.cloud_controller_temporary_disable_deployments": true,
+				})
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("configures the subsequent property", func() {
+				var cloudControllerInstanceGroup string
+				var clockGlobalInstanceGroup string
+				if productName == "srt" {
+					cloudControllerInstanceGroup = "control"
+					clockGlobalInstanceGroup = "control"
+				} else {
+					cloudControllerInstanceGroup = "cloud_controller"
+					clockGlobalInstanceGroup = "clock_global"
+				}
+
+				manifestCloudControllerNgJob, err := manifest.FindInstanceGroupJob(cloudControllerInstanceGroup, "cloud_controller_ng")
+				Expect(err).NotTo(HaveOccurred())
+
+				temporaryDisableDeployments, err := manifestCloudControllerNgJob.Property("cc/temporary_disable_deployments")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(temporaryDisableDeployments).To(BeTrue())
+
+				manifestCcDeploymentUpdaterJob, err := manifest.FindInstanceGroupJob(clockGlobalInstanceGroup, "cc_deployment_updater")
+				Expect(err).NotTo(HaveOccurred())
+
+				temporaryDisableDeployments, err = manifestCcDeploymentUpdaterJob.Property("cc/temporary_disable_deployments")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(temporaryDisableDeployments).To(BeTrue())
+			})
+		})
+
 		Context("when the Operator sets CC logging level to debug", func() {
 			BeforeEach(func() {
 				var err error
