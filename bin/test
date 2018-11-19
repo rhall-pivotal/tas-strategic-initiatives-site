@@ -9,13 +9,13 @@ success_color='\033[0;32m'
 no_color='\033[0m'
 
 function build_docker_image() {
-  mkdir -p ./vendor
-  if [ ! -d ./vendor/ops-manifest ]; then
+  mkdir -p docker/vendor
+  if [ ! -d docker/vendor/ops-manifest ]; then
     echo -e "${info_color}Cloning github.com/pivotal-cf/ops-manifest (ask PAS RelEng team for read access if it fails)...${no_color}"
-    git clone git@github.com:pivotal-cf/ops-manifest ./vendor/ops-manifest
+    git clone git@github.com:pivotal-cf/ops-manifest docker/vendor/ops-manifest
   fi
 
-  pushd ./vendor/ops-manifest > /dev/null
+  pushd docker/vendor/ops-manifest > /dev/null
     echo -e "${info_color}Updating github.com/pivotal-cf/installation (send email to ask+cf@pivotal.io for read access if it fails)...${no_color}"
     git fetch --tags
     git checkout "$(git describe --tags --long | cut -d '-' -f1)"
@@ -23,7 +23,7 @@ function build_docker_image() {
   popd > /dev/null
 
   echo -e "${info_color}Building docker image...${no_color}"
-  docker build -t ops-manifest-do-not-push .
+  docker build -t ops-manifest-do-not-push docker
 }
 
 function run_manifest_tests() {
