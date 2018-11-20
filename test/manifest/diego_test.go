@@ -109,6 +109,9 @@ var _ = Describe("Diego", func() {
 	})
 
 	Context("route integrity", func() {
+
+		var proxyProperties map[interface{}]interface{}
+
 		It("enables the envoy proxy", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -116,14 +119,20 @@ var _ = Describe("Diego", func() {
 			rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
 			Expect(err).NotTo(HaveOccurred())
 
-			enabled, err := rep.Property("containers/proxy/enabled")
+			rawProxyProperties, err := rep.Property("containers/proxy")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(enabled).To(BeTrue())
+
+			proxyProperties = rawProxyProperties.(map[interface{}]interface{})
+
+			Expect(proxyProperties["enabled"]).To(BeTrue())
+			Expect(proxyProperties["additional_memory_allocation_mb"]).To(Equal(32))
+			Expect(proxyProperties).NotTo(HaveKey("enable_unproxied_port_mappings"))
+			Expect(proxyProperties).NotTo(HaveKey("require_and_verify_client_certificates"))
+			Expect(proxyProperties).NotTo(HaveKey("trusted_ca_certificates"))
+			Expect(proxyProperties).NotTo(HaveKey("verify_subject_alt_name"))
 		})
 
 		Context("when strict route integrity is enabled", func() {
-
-			var proxyProperties map[interface{}]interface{}
 
 			BeforeEach(func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
@@ -157,7 +166,10 @@ var _ = Describe("Diego", func() {
 			})
 
 			It("configures the subject alt name to be verified", func() {
-				Expect(proxyProperties["verify_subject_alt_name"]).To(Equal([]interface{}{"gorouter.service.cf.internal"}))
+				Expect(proxyProperties["verify_subject_alt_name"]).To(Equal([]interface{}{
+					"gorouter.service.cf.internal",
+					"ssh-proxy.service.cf.internal",
+				}))
 			})
 
 			It("disables direct access to container ports", func() {
