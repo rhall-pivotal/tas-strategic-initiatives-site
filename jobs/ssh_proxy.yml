@@ -5,6 +5,7 @@ manifest: |
   bpm:
     enabled: true
   connect_to_instance_address: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(use_container_address) ))
+  backends: (( .properties.route_integrity.selected_option.parsed_manifest(backends_tls) ))
   diego:
     ssh_proxy:
       bbs:

@@ -41,6 +41,13 @@
     - 127.0.0.1
     - localhost
 
+- name: ssh_proxy_backends_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - ssh-proxy.service.cf.internal
+
 - name: tps_client_cert
   type: rsa_cert_credentials
   configurable: false
@@ -133,6 +140,10 @@
           manifest: |
             enabled: true
             additional_memory_allocation_mb: 32
+        - name: backends_tls
+          manifest: |
+            tls:
+              enabled: false
     - name: mutual_tls_verify
       select_value: mutual_tls_verify
       named_manifests:
@@ -146,6 +157,15 @@
             - (( $ops_manager.ca_certificate ))
             verify_subject_alt_name:
             - gorouter.service.cf.internal
+            - ssh-proxy.service.cf.internal
+        - name: backends_tls
+          manifest: |
+            tls:
+              enabled: true
+              ca_certificates:
+              - ((( /cf/diego-instance-identity-root-ca.certificate )))
+              client_certificate: (( .properties.ssh_proxy_backends_tls.cert_pem ))
+              client_private_key: (( .properties.ssh_proxy_backends_tls.private_key_pem ))
 
 - name: diego_log_timestamp_format
   type: selector
