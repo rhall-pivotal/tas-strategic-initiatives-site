@@ -176,11 +176,11 @@ var _ = Describe("Diego", func() {
 
 			caCert, err := rep.Property("diego/executor/instance_identity_ca_cert")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).To(Equal("((/cf/diego-instance-identity-intermediate-ca-2018.certificate))"))
+			Expect(caCert).To(Equal("((diego-instance-identity-intermediate-ca-2018.certificate))"))
 
 			caKey, err := rep.Property("diego/executor/instance_identity_key")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(caKey).To(Equal("((/cf/diego-instance-identity-intermediate-ca-2018.private_key))"))
+			Expect(caKey).To(Equal("((diego-instance-identity-intermediate-ca-2018.private_key))"))
 		})
 	})
 

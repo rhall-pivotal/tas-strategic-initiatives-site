@@ -88,6 +88,16 @@ variables:
 - name: router-route-services-secret
   type: password
 
+- name: diego-instance-identity-intermediate-ca-2018
+  type: certificate
+  options:
+    common_name: 'Diego Instance Identity Intermediate CA'
+    is_ca: true
+    duration: 730
+    ca: /cf/diego-instance-identity-root-ca
+    key_usage:
+    - key_cert_sign
+
 post_deploy_errands: []
 
 install_time_verifiers: []
