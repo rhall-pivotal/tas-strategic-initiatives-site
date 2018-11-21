@@ -90,6 +90,10 @@ var _ = Describe("CAPI", func() {
 					ca, err := manifestJob.Property("ccdb/ca_cert")
 					Expect(err).NotTo(HaveOccurred())
 					Expect(ca).To(BeNil())
+
+					uaaCa, err := manifestJob.Property("uaa/ca_cert")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(uaaCa).NotTo(BeEmpty())
 				}
 			})
 		})

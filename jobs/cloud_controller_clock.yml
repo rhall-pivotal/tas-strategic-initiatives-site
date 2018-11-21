@@ -13,6 +13,7 @@ manifest: |
         secret: (( .uaa.cc_service_dashboards_credentials.password ))
       cc_routing:
         secret: (( .uaa.cc_routing_credentials.password ))
+    ca_cert: (( $ops_manager.ca_certificate ))
   system_domain: (( .cloud_controller.system_domain.value ))
   cc:
     logging_level: (( .properties.cc_logging_level.value ))
