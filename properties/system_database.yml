@@ -419,6 +419,7 @@
             username: (( .properties.system_database.external.silk_username.value ))
             password: (( .properties.system_database.external.silk_password.value ))
             name: (( .properties.silk_database_name.value ))
+            connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
         - name: networkpolicyserverdb
           manifest: |
             type: mysql

@@ -395,6 +395,7 @@ var _ = Describe("System Database", func() {
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, dbInstanceGroup, "bbs", "diego/bbs/sql")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, dbInstanceGroup, "locket", "diego/locket/sql")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, dbInstanceGroup, "policy-server", "database")
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, dbInstanceGroup, "silk-controller", "database")
 		})
 	})
 })
