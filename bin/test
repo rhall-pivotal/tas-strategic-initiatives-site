@@ -9,6 +9,17 @@ success_color='\033[0;32m'
 no_color='\033[0m'
 
 function build_docker_image() {
+  # skip docker build if the image is less than 4 hours old
+  local img_created img_fresh
+  img_created=$(docker image inspect ops-manifest-do-not-push 2> /dev/null | jq '.[].Created')
+  if [ -n "$img_created" ]; then
+    img_fresh=$(echo "$img_created" | jq '(now  - (.|split(".")[0]|strptime("%Y-%m-%dT%H:%M:%S")|mktime)) < 3600*4')
+  fi
+  if [ "$img_fresh" == 'true' ]; then
+    echo -e "${info_color}Skip build docker image${no_color}"
+    return
+  fi
+
   mkdir -p docker/vendor
   if [ ! -d docker/vendor/ops-manifest ]; then
     echo -e "${info_color}Cloning github.com/pivotal-cf/ops-manifest (ask PAS RelEng team for read access if it fails)...${no_color}"
