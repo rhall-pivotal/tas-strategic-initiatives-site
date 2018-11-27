@@ -265,17 +265,12 @@ var _ = Describe("UAA", func() {
 		})
 	})
 
-	Describe("BPM", func() {
-		It("co-locates the BPM job with all diego jobs", func() {
+	Context("BPM", func() {
+		It("co-locates and enables the BPM job with all diego jobs", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			_, err = manifest.FindInstanceGroupJob(instanceGroup, "bpm")
-			Expect(err).NotTo(HaveOccurred())
-		})
-
-		It("sets bpm.enabled to true", func() {
-			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			manifestJob, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
@@ -288,148 +283,104 @@ var _ = Describe("UAA", func() {
 		})
 	})
 
-	Describe("Clients", func() {
-		It("apps_metrics has the expected permission scopes", func() {
+	Context("Clients", func() {
+		It("configures uaa clients", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
 			Expect(err).NotTo(HaveOccurred())
 
-			appMetricsScopes, err := uaa.Property("uaa/clients/apps_metrics/scope")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(appMetricsScopes).To(Equal("cloud_controller.admin,cloud_controller.read,metrics.read,cloud_controller.admin_read_only"))
+			By("providing apps_metrics the expected permission scopes", func() {
+				appMetricsScopes, err := uaa.Property("uaa/clients/apps_metrics/scope")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(appMetricsScopes).To(Equal("cloud_controller.admin,cloud_controller.read,metrics.read,cloud_controller.admin_read_only"))
+			})
 
-		})
+			By("providing apps_metrics has the expected redirect uri", func() {
+				appMetricsRedirectUri, err := uaa.Property("uaa/clients/apps_metrics/redirect-uri")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(appMetricsRedirectUri).To(Equal("https://metrics.sys.example.com,https://metrics.sys.example.com/,https://metrics.sys.example.com/*,https://metrics-previous.sys.example.com,https://metrics-previous.sys.example.com/,https://metrics-previous.sys.example.com/*"))
+			})
 
-		It("apps_metrics has the expected redirect uri", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
+			By("providing apps_metrics_processing  the expected permission scopes", func() {
+				appMetricsProcessingScopes, err := uaa.Property("uaa/clients/apps_metrics_processing/scope")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(appMetricsProcessingScopes).To(Equal("openid,oauth.approvals,doppler.firehose,cloud_controller.admin,cloud_controller.admin_read_only"))
+			})
 
-			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-			Expect(err).NotTo(HaveOccurred())
+			By("providing apps_metrics_processing the expected redirect uri", func() {
+				appMetricsRedirectUri, err := uaa.Property("uaa/clients/apps_metrics_processing/redirect-uri")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(appMetricsRedirectUri).To(Equal("https://metrics.sys.example.com,https://metrics-previous.sys.example.com"))
+			})
 
-			appMetricsRedirectUri, err := uaa.Property("uaa/clients/apps_metrics/redirect-uri")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(appMetricsRedirectUri).To(Equal("https://metrics.sys.example.com,https://metrics.sys.example.com/,https://metrics.sys.example.com/*,https://metrics-previous.sys.example.com,https://metrics-previous.sys.example.com/,https://metrics-previous.sys.example.com/*"))
+			By("providing apps_manager_js client the expected scopes", func() {
+				rawScopes, err := uaa.Property("uaa/clients/apps_manager_js/scope")
+				Expect(err).ToNot(HaveOccurred())
 
-		})
+				scopes := strings.Split(rawScopes.(string), ",")
+				Expect(scopes).To(ContainElement("network.write"))
+				Expect(scopes).To(ContainElement("network.admin"))
 
-		It("apps_metrics_processing has the expected permission scopes", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
+				autoapproveList, err := uaa.Property("uaa/clients/apps_manager_js/autoapprove")
+				Expect(err).ToNot(HaveOccurred())
 
-			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-			Expect(err).NotTo(HaveOccurred())
+				Expect(autoapproveList).To(ContainElement("network.write"))
+				Expect(autoapproveList).To(ContainElement("network.admin"))
+			})
 
-			appMetricsProcessingScopes, err := uaa.Property("uaa/clients/apps_metrics_processing/scope")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(appMetricsProcessingScopes).To(Equal("openid,oauth.approvals,doppler.firehose,cloud_controller.admin,cloud_controller.admin_read_only"))
+			By("providing credhub_admin_client the expected scopes", func() {
+				id, err := uaa.Property("uaa/clients/credhub_admin_client/id")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(id).To(Equal("credhub_admin_client"))
 
-		})
+				rawAuthorities, err := uaa.Property("uaa/clients/credhub_admin_client/authorities")
+				Expect(err).ToNot(HaveOccurred())
 
-		It("apps_metrics_processing has the expected redirect uri", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
+				authorities := strings.Split(rawAuthorities.(string), ",")
+				Expect(authorities).To(ConsistOf([]string{"credhub.read", "credhub.write"}))
 
-			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-			Expect(err).NotTo(HaveOccurred())
+				authorizedGrantTypes, err := uaa.Property("uaa/clients/credhub_admin_client/authorized-grant-types")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(authorizedGrantTypes).To(Equal("client_credentials"))
+			})
 
-			appMetricsRedirectUri, err := uaa.Property("uaa/clients/apps_metrics_processing/redirect-uri")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(appMetricsRedirectUri).To(Equal("https://metrics.sys.example.com,https://metrics-previous.sys.example.com"))
+			By("providing tile_installer with the right properties", func() {
+				id, err := uaa.Property("uaa/clients/tile_installer/id")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(id).To(Equal("tile_installer"))
 
-		})
+				rawAuthorities, err := uaa.Property("uaa/clients/tile_installer/authorities")
+				Expect(err).ToNot(HaveOccurred())
 
-		It("apps_manager_js client includes network.write and network.admin", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
+				authorities := strings.Split(rawAuthorities.(string), ",")
+				Expect(authorities).To(ConsistOf([]string{"cloud_controller.admin", "clients.admin", "credhub.read", "credhub.write"}))
 
-			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-			Expect(err).NotTo(HaveOccurred())
+				authorizedGrantTypes, err := uaa.Property("uaa/clients/tile_installer/authorized-grant-types")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(authorizedGrantTypes).To(Equal("client_credentials"))
 
-			rawScopes, err := uaa.Property("uaa/clients/apps_manager_js/scope")
-			Expect(err).ToNot(HaveOccurred())
+				accessTokenValidity, err := uaa.Property("uaa/clients/tile_installer/access-token-validity")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(accessTokenValidity).To(Equal(3600))
 
-			scopes := strings.Split(rawScopes.(string), ",")
-			Expect(scopes).To(ContainElement("network.write"))
-			Expect(scopes).To(ContainElement("network.admin"))
+				override, err := uaa.Property("uaa/clients/tile_installer/override")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(override).To(BeTrue())
+			})
 
-			autoapproveList, err := uaa.Property("uaa/clients/apps_manager_js/autoapprove")
-			Expect(err).ToNot(HaveOccurred())
+			By("allowing users to login to usage service with token", func() {
+				rawScopes, err := uaa.Property("uaa/clients/cf/scope")
+				Expect(err).ToNot(HaveOccurred())
+				scopes := strings.Split(rawScopes.(string), ",")
+				Expect(scopes).To(ContainElement("usage_service.audit"))
 
-			Expect(autoapproveList).To(ContainElement("network.write"))
-			Expect(autoapproveList).To(ContainElement("network.admin"))
-		})
-
-		It("credhub_admin_client has credhub.read and credhub.write", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-			Expect(err).NotTo(HaveOccurred())
-
-			id, err := uaa.Property("uaa/clients/credhub_admin_client/id")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(id).To(Equal("credhub_admin_client"))
-
-			rawAuthorities, err := uaa.Property("uaa/clients/credhub_admin_client/authorities")
-			Expect(err).ToNot(HaveOccurred())
-
-			authorities := strings.Split(rawAuthorities.(string), ",")
-			Expect(authorities).To(ConsistOf([]string{"credhub.read", "credhub.write"}))
-
-			authorizedGrantTypes, err := uaa.Property("uaa/clients/credhub_admin_client/authorized-grant-types")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(authorizedGrantTypes).To(Equal("client_credentials"))
-		})
-
-		It("tile_installer has the right properties", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-			Expect(err).NotTo(HaveOccurred())
-
-			id, err := uaa.Property("uaa/clients/tile_installer/id")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(id).To(Equal("tile_installer"))
-
-			rawAuthorities, err := uaa.Property("uaa/clients/tile_installer/authorities")
-			Expect(err).ToNot(HaveOccurred())
-
-			authorities := strings.Split(rawAuthorities.(string), ",")
-			Expect(authorities).To(ConsistOf([]string{"cloud_controller.admin", "clients.admin", "credhub.read", "credhub.write"}))
-
-			authorizedGrantTypes, err := uaa.Property("uaa/clients/tile_installer/authorized-grant-types")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(authorizedGrantTypes).To(Equal("client_credentials"))
-
-			accessTokenValidity, err := uaa.Property("uaa/clients/tile_installer/access-token-validity")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(accessTokenValidity).To(Equal(3600))
-
-			override, err := uaa.Property("uaa/clients/tile_installer/override")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(override).To(BeTrue())
-		})
-
-		It("allows users to login to usage service with token", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
-			Expect(err).NotTo(HaveOccurred())
-
-			rawScopes, err := uaa.Property("uaa/clients/cf/scope")
-			Expect(err).ToNot(HaveOccurred())
-			scopes := strings.Split(rawScopes.(string), ",")
-			Expect(scopes).To(ContainElement("usage_service.audit"))
-
-			rawGroups, err := uaa.Property("uaa/scim/groups")
-			groups := rawGroups.(map[interface{}]interface{})
-			Expect(err).ToNot(HaveOccurred())
-			Expect(groups).To(HaveKeyWithValue("usage_service.audit", "View reports for the Usage Service"))
+				rawGroups, err := uaa.Property("uaa/scim/groups")
+				groups := rawGroups.(map[interface{}]interface{})
+				Expect(err).ToNot(HaveOccurred())
+				Expect(groups).To(HaveKeyWithValue("usage_service.audit", "View reports for the Usage Service"))
+			})
 		})
 	})
 })
