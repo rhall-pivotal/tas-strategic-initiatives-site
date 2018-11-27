@@ -76,6 +76,14 @@ var _ = Describe("System Database", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(caCert).To(Equal(""))
 
+			// notifications
+			notifications, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "deploy-notifications")
+			Expect(err).NotTo(HaveOccurred())
+
+			caCert, err = notifications.Property("notifications/database/ca_cert")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(caCert).To(BeNil())
+
 			// usage-service
 			pushUsageService, err := manifest.FindInstanceGroupJob(instanceGroup, "push-usage-service")
 			Expect(err).NotTo(HaveOccurred())
@@ -123,6 +131,18 @@ var _ = Describe("System Database", func() {
 				caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).NotTo(BeEmpty())
+
+				// notifications
+				notifications, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "deploy-notifications")
+				Expect(err).NotTo(HaveOccurred())
+
+				caCert, err = notifications.Property("notifications/database/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).NotTo(BeEmpty())
+
+				commonName, err := notifications.Property("notifications/database/common_name")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(commonName).To(Equal("mysql.service.cf.internal"))
 
 				// usage-service
 				pushUsageService, err := manifest.FindInstanceGroupJob(instanceGroup, "push-usage-service")
@@ -319,6 +339,10 @@ var _ = Describe("System Database", func() {
 				caCert, err = notifications.Property("notifications/database/ca_cert")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
+
+				commonName, err := notifications.Property("notifications/database/common_name")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(commonName).To(Equal("foo.bar"))
 
 				// usage-service
 				pushUsageService, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "push-usage-service")
