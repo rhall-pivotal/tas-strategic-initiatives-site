@@ -1,6 +1,8 @@
 ---
 name: vxlan-policy-agent
 release: silk
+consumes: |
+  cf_network: { from: cf_network, deployment: ((  ..cf.deployment_name  )) }
 manifest: |
   ca_cert: (( $ops_manager.ca_certificate ))
   client_cert: (( ..cf.properties.network_policy_agent_cert.cert_pem ))
