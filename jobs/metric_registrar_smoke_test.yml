@@ -4,9 +4,11 @@ release: metric-registrar
 manifest: |
   skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
   scrape_interval: (( .properties.metric_registrar_scrape_interval_in_seconds.value ))s
+  uaa:
+    client:
+      id: (( .uaa.metric_registrar_smoke_test_credentials.identity ))
+      secret: (( .uaa.metric_registrar_smoke_test_credentials.password ))
   cf:
-    password: (( .uaa.admin_credentials.password ))
-    user: (( .uaa.admin_credentials.identity ))
     dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
     organization: system
     space: metric-registrar-monitor

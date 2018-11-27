@@ -304,6 +304,13 @@ manifest: |
         autoapprove: true
         authorities: cloud_controller.admin_read_only
         authorized-grant-types: client_credentials
+      (( .uaa.metric_registrar_smoke_test_credentials.identity )):
+        id: (( .uaa.metric_registrar_smoke_test_credentials.identity ))
+        secret: (( .uaa.metric_registrar_smoke_test_credentials.password ))
+        override: true
+        autoapprove: true
+        authorities: cloud_controller.admin
+        authorized-grant-types: client_credentials
       system_passwords:
         id: (( .uaa.system_passwords_client_credentials.identity ))
         secret: (( .uaa.system_passwords_client_credentials.password ))

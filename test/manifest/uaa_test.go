@@ -381,6 +381,14 @@ var _ = Describe("UAA", func() {
 				Expect(err).ToNot(HaveOccurred())
 				Expect(groups).To(HaveKeyWithValue("usage_service.audit", "View reports for the Usage Service"))
 			})
+
+			By("metric registrar smoke test using uaa client", func() {
+				rawAuthorities, err := uaa.Property("uaa/clients/metric_registrar_smoke_test/authorities")
+				Expect(err).ToNot(HaveOccurred())
+				authorities := strings.Split(rawAuthorities.(string), ",")
+				Expect(authorities).To(ContainElement("cloud_controller.admin"))
+
+			})
 		})
 	})
 })
