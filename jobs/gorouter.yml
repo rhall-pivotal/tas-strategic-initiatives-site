@@ -47,3 +47,6 @@ manifest: |
     frontend_idle_timeout: (( .router.frontend_idle_timeout.value ))
   routing_api:
     enabled: true
+  http_rewrite:
+    responses:
+      remove_headers: (( .properties.router_headers_remove_if_specified.value ))

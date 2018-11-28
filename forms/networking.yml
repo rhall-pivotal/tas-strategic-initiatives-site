@@ -424,3 +424,13 @@ property_inputs:
       Choose whether to enable experimental dynamic egress policy enforcement.
       Dynamic Egress enables creating network policies to external services
       without restarting the application.
+
+  - reference: .properties.router_headers_remove_if_specified
+    label: Remove Specified Headers
+    description: |
+      A list of headers the gorouter will drop on
+      any response returned by to a client.
+    property_inputs:
+    - reference: name
+      label: Header name
+      description: Header name to remove

@@ -475,3 +475,12 @@
   default:
     domains:
     - gorouter.service.cf.internal
+
+- name: router_headers_remove_if_specified
+  type: collection
+  configurable: true
+  optional: true
+  property_blueprints:
+  - name: name
+    type: string
+    configurable: true
