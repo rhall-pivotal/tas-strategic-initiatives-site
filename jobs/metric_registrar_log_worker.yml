@@ -2,7 +2,7 @@
 name: metric_registrar_log_worker
 release: metric-registrar
 manifest: |
-  disabled: (( .properties.metric_registrar_disabled.value ))
+  disabled: "(( .properties.metric_registrar_enabled.value ? false : true ))"
   health_check_port: 21544
   orchestration_port: 21545
   blacklisted_tags: (( .properties.metric_registrar_blacklisted_tags.parsed_strings ))

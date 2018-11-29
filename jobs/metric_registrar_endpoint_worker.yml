@@ -2,7 +2,7 @@
 name: metric_registrar_endpoint_worker
 release: metric-registrar
 manifest: |
-  disabled: (( .properties.metric_registrar_disabled.value ))
+  disabled: "(( .properties.metric_registrar_enabled.value ? false : true ))"
   health_check_port: 21542
   orchestration_port: 21543
   skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))

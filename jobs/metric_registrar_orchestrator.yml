@@ -2,7 +2,7 @@
 name: metric_registrar_orchestrator
 release: metric-registrar
 manifest: |
-  disabled: (( .properties.metric_registrar_disabled.value ))
+  disabled: "(( .properties.metric_registrar_enabled.value ? false : true ))"
   health_check_port: 21546
   orchestration_port: 21547
   loggregator:
