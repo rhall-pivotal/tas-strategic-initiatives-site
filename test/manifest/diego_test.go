@@ -194,8 +194,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		Context("when TLS between ssh proxy server and backends is enabled", func() {
-
-			BeforeEach(func() {
+			It("enables TLS", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.route_integrity": "mutual_tls_verify",
 				})
@@ -208,21 +207,10 @@ var _ = Describe("Diego", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				backendsTLSProperties = rawBackendsTLSProperties.(map[interface{}]interface{})
-			})
 
-			It("enables TLS", func() {
 				Expect(backendsTLSProperties["enabled"]).To(BeTrue())
-			})
-
-			It("specifies the CA(s) that it trusts", func() {
 				Expect(backendsTLSProperties).To(HaveKey("ca_certificates"))
-			})
-
-			It("specifies the client cert used by the ssh proxy server", func() {
 				Expect(backendsTLSProperties).To(HaveKey("client_certificate"))
-			})
-
-			It("specifies the client private key used by the ssh proxy server", func() {
 				Expect(backendsTLSProperties).To(HaveKey("client_private_key"))
 			})
 		})
@@ -343,8 +331,7 @@ var _ = Describe("Diego", func() {
 		})
 
 		Context("when strict route integrity is enabled", func() {
-
-			BeforeEach(func() {
+			It("enables and configures the envoy proxy with mutual tls", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.route_integrity": "mutual_tls_verify",
 				})
@@ -357,32 +344,16 @@ var _ = Describe("Diego", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				proxyProperties = rawProxyProperties.(map[interface{}]interface{})
-			})
 
-			It("enables the proxy", func() {
 				Expect(proxyProperties["enabled"]).To(BeTrue())
-			})
 
-			It("allocates sufficient RAM for the proxy", func() {
 				Expect(proxyProperties["additional_memory_allocation_mb"]).To(Equal(32))
-			})
-
-			It("requires and verifies client credentials", func() {
 				Expect(proxyProperties["require_and_verify_client_certificates"]).To(BeTrue())
-			})
-
-			It("specifies the CA that it trusts", func() {
 				Expect(proxyProperties).To(HaveKey("trusted_ca_certificates"))
-			})
-
-			It("configures the subject alt name to be verified", func() {
 				Expect(proxyProperties["verify_subject_alt_name"]).To(Equal([]interface{}{
 					"gorouter.service.cf.internal",
 					"ssh-proxy.service.cf.internal",
 				}))
-			})
-
-			It("disables direct access to container ports", func() {
 				Expect(proxyProperties["enable_unproxied_port_mappings"]).To(BeFalse())
 			})
 		})
