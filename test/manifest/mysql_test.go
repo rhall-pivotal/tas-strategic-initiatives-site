@@ -65,5 +65,14 @@ var _ = Describe("MySQL", func() {
 				Expect(canaryPort).To(Equal(3306))
 			}
 		})
+
+		It("configures origin tag for loggregator_agent", func() {
+			mysqlClustered, err := manifest.FindInstanceGroupJob(instanceGroup, "loggregator_agent")
+			Expect(err).NotTo(HaveOccurred())
+
+			tags, err := mysqlClustered.Property("tags")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(tags).To(HaveKeyWithValue("origin", "mysql"))
+		})
 	})
 })

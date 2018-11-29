@@ -1,0 +1,16 @@
+---
+name: loggregator_agent
+alias: loggregator_agent_mysql
+release: loggregator-agent
+manifest: |
+  loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      agent:
+        cert: (( .doppler.metron_tls_cert.cert_pem ))
+        key: (( .doppler.metron_tls_cert.private_key_pem ))
+  deployment: "(( .properties.enable_cf_metric_name.value ? 'cf' : '' ))"
+  tags:
+    product: $( variable "label" )
+    system_domain: "(( .cloud_controller.system_domain.value ))"
+    origin: mysql
