@@ -426,10 +426,11 @@ property_inputs:
       without restarting the application.
 
   - reference: .properties.router_headers_remove_if_specified
-    label: Remove Specified Headers
+    label: Remove Specified HTTP Response Headers
     description: |
-      A list of headers the gorouter will drop on
-      any response returned by to a client.
+      A list of headers the router will remove on any response returned by an
+      application hosted on PAS. This is useful when you want to remove certain
+      HTTP response headers for additional security.
     property_inputs:
     - reference: name
       label: Header name
