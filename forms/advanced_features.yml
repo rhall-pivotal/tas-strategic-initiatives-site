@@ -64,6 +64,22 @@ property_inputs:
       When checked, PAS components which support TLS will connect to the
       internal PXC database using an encrypted TLS connection.
 
+  - reference: .properties.diego_database_max_open_connections
+    label: Maximum number of open connections from the active BBS instance to the SQL database
+    description: |
+      Configures the maximum number of concurrent database connections the
+      active BBS instance is allowed to have. Warning, changing this value may
+      affect the amount of time it takes for the BBS to respond to requests.
+    placeholder: 100
+
+  - reference: .properties.locket_database_max_open_connections
+    label: Maximum number of open connections from each Locket instance to the SQL database
+    description: |
+      Configures the maximum number of concurrent database connections each
+      Locket instance is allowed to have. Warning, changing this value may
+      affect the amount of time it takes for Locket to respond to requests.
+    placeholder: 200
+
   - reference: .properties.cloud_controller_temporary_disable_deployments
     label: Disable Zero Downtime App Deployments
     description: |

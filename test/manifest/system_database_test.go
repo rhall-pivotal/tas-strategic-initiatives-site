@@ -108,6 +108,83 @@ var _ = Describe("System Database", func() {
 			Expect(skipCertVerify).To(BeFalse())
 		})
 
+		It("configures jobs with default values", func() {
+			manifest, err := product.RenderManifest(inputProperties)
+			Expect(err).NotTo(HaveOccurred())
+
+			// bbs
+			job, err := manifest.FindInstanceGroupJob(dbInstanceGroup, "bbs")
+			Expect(err).NotTo(HaveOccurred())
+
+			maxOpenConnections, err := job.Property("diego/bbs/sql/max_open_connections")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(maxOpenConnections).To(Equal(100))
+
+			// locket
+			job, err = manifest.FindInstanceGroupJob(dbInstanceGroup, "locket")
+			Expect(err).NotTo(HaveOccurred())
+
+			maxOpenConnections, err = job.Property("database/max_open_connections")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(maxOpenConnections).To(Equal(200))
+		})
+
+		Context("when the user specifies custom values for diego/locket open database connections", func() {
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.diego_database_max_open_connections":  300,
+					".properties.locket_database_max_open_connections": 250,
+				}
+			})
+
+			It("configures jobs with user provided values", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				// bbs
+				job, err := manifest.FindInstanceGroupJob(dbInstanceGroup, "bbs")
+				Expect(err).NotTo(HaveOccurred())
+
+				maxOpenConnections, err := job.Property("diego/bbs/sql/max_open_connections")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(maxOpenConnections).To(Equal(300))
+
+				// locket
+				job, err = manifest.FindInstanceGroupJob(dbInstanceGroup, "locket")
+				Expect(err).NotTo(HaveOccurred())
+
+				maxOpenConnections, err = job.Property("database/max_open_connections")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(maxOpenConnections).To(Equal(250))
+			})
+
+			Context("when the BBS max open DB connections is out of range", func() {
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{
+						".properties.diego_database_max_open_connections": 0,
+					}
+				})
+
+				It("returns an error", func() {
+					_, err := product.RenderManifest(inputProperties)
+					Expect(err.Error()).To(ContainSubstring("Value must be greater than or equal to 1"))
+				})
+			})
+
+			Context("when the Locket max open DB connections is out of range", func() {
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{
+						".properties.locket_database_max_open_connections": -1,
+					}
+				})
+
+				It("returns an error", func() {
+					_, err := product.RenderManifest(inputProperties)
+					Expect(err.Error()).To(ContainSubstring("Value must be greater than or equal to 1"))
+				})
+			})
+		})
+
 		Context("When TLS checkbox is checked", func() {
 			BeforeEach(func() {
 				inputProperties = map[string]interface{}{".properties.enable_tls_to_internal_pxc": true}
@@ -184,8 +261,10 @@ var _ = Describe("System Database", func() {
 				".properties.system_database.external.ccdb_password":                map[string]interface{}{"secret": "ccdb_password"},
 				".properties.system_database.external.diego_username":               "diego_username",
 				".properties.system_database.external.diego_password":               map[string]interface{}{"secret": "diego_password"},
+				".properties.diego_database_max_open_connections":                   250,
 				".properties.system_database.external.locket_username":              "locket_username",
 				".properties.system_database.external.locket_password":              map[string]interface{}{"secret": "locket_password"},
+				".properties.locket_database_max_open_connections":                  150,
 				".properties.system_database.external.networkpolicyserver_username": "networkpolicyserver_username",
 				".properties.system_database.external.networkpolicyserver_password": map[string]interface{}{"secret": "networkpolicyserver_password"},
 				".properties.system_database.external.nfsvolume_username":           "nfsvolume_username",
@@ -224,6 +303,22 @@ var _ = Describe("System Database", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(port).To(Equal(5432))
 
+			// bbs
+			job, err = manifest.FindInstanceGroupJob(dbInstanceGroup, "bbs")
+			Expect(err).NotTo(HaveOccurred())
+
+			maxOpenConnections, err := job.Property("diego/bbs/sql/max_open_connections")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(maxOpenConnections).To(Equal(250))
+
+			// locket
+			job, err = manifest.FindInstanceGroupJob(dbInstanceGroup, "locket")
+			Expect(err).NotTo(HaveOccurred())
+
+			maxOpenConnections, err = job.Property("database/max_open_connections")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(maxOpenConnections).To(Equal(150))
+
 			// usage-service should not verify SSL
 			pushUsageService, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "push-usage-service")
 			Expect(err).NotTo(HaveOccurred())
@@ -238,6 +333,60 @@ var _ = Describe("System Database", func() {
 			skipHostVerify, err := bbrUsageServiceDB.Property("database/skip_host_verify")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(skipHostVerify).To(BeFalse())
+		})
+
+		Context("when the operator does not set a limit for diego/locket open database connections", func() {
+			BeforeEach(func() {
+				delete(inputProperties, ".properties.diego_database_max_open_connections")
+				delete(inputProperties, ".properties.locket_database_max_open_connections")
+			})
+
+			It("configures jobs with default values", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				// bbs
+				job, err := manifest.FindInstanceGroupJob(dbInstanceGroup, "bbs")
+				Expect(err).NotTo(HaveOccurred())
+
+				maxOpenConnections, err := job.Property("diego/bbs/sql/max_open_connections")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(maxOpenConnections).To(Equal(100))
+
+				// locket
+				job, err = manifest.FindInstanceGroupJob(dbInstanceGroup, "locket")
+				Expect(err).NotTo(HaveOccurred())
+
+				maxOpenConnections, err = job.Property("database/max_open_connections")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(maxOpenConnections).To(Equal(200))
+			})
+		})
+
+		Context("when the BBS max open DB connections is out of range", func() {
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.diego_database_max_open_connections": -1,
+				}
+			})
+
+			It("returns an error", func() {
+				_, err := product.RenderManifest(inputProperties)
+				Expect(err.Error()).To(ContainSubstring("Value must be greater than or equal to 1"))
+			})
+		})
+
+		Context("when the Locket max open DB connections is out of range", func() {
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.locket_database_max_open_connections": 0,
+				}
+			})
+
+			It("returns an error", func() {
+				_, err := product.RenderManifest(inputProperties)
+				Expect(err.Error()).To(ContainSubstring("Value must be greater than or equal to 1"))
+			})
 		})
 
 		Context("when the operator provides a CA certificate", func() {

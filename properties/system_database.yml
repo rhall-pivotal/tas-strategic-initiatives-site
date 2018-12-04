@@ -24,10 +24,24 @@
   configurable: false
   default: diego
 
+- name: diego_database_max_open_connections
+  type: integer
+  configurable: true
+  default: 100
+  constraints:
+    min: 1
+
 - name: locket_database_name
   type: string
   configurable: false
   default: locket
+
+- name: locket_database_max_open_connections
+  type: integer
+  configurable: true
+  default: 200
+  constraints:
+    min: 1
 
 - name: networkpolicyserver_database_name
   type: string
@@ -140,7 +154,7 @@
           db_username: ((( diego-db-credentials.username )))
           db_password: ((( diego-db-credentials.password )))
           db_schema: (( .properties.diego_database_name.value ))
-          max_open_connections: 100
+          max_open_connections: (( .properties.diego_database_max_open_connections.value ))
           require_ssl: false
           ca_cert: null
       - name: locketdb
@@ -390,7 +404,7 @@
             db_username: (( .properties.system_database.external.diego_username.value ))
             db_password: (( .properties.system_database.external.diego_password.value ))
             db_schema: (( .properties.diego_database_name.value ))
-            max_open_connections: 100
+            max_open_connections: (( .properties.diego_database_max_open_connections.value ))
             require_ssl: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
         - name: locketdb

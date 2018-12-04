@@ -11,6 +11,8 @@ manifest: |
   diego:
     locket:
       sql: (( .properties.system_database.selected_option.parsed_manifest(locketdb) ))
+  database:
+    max_open_connections: (( .properties.locket_database_max_open_connections.value ))
   enable_consul_service_registration: false
   logging:
     format:
