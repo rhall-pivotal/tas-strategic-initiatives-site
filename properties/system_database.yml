@@ -63,6 +63,13 @@
   configurable: false
   default: silk
 
+- name: silk_database_max_open_connections
+  type: integer
+  configurable: true
+  default: 200
+  constraints:
+    min: 1
+
 - name: nfsvolume_database_name
   type: string
   configurable: false

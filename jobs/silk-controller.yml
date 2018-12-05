@@ -12,3 +12,4 @@ manifest: |
   network: (( .properties.container_networking_interface_plugin.silk.network_cidr.value || "10.255.0.0/16" ))
   server_cert: (( .diego_database.silk_controller_server_cert.cert_pem ))
   server_key: (( .diego_database.silk_controller_server_cert.private_key_pem ))
+  max_open_connections: (( .properties.silk_database_max_open_connections.value ))

@@ -80,6 +80,14 @@ property_inputs:
       affect the amount of time it takes for Locket to respond to requests.
     placeholder: 200
 
+  - reference: .properties.silk_database_max_open_connections
+    label: Maximum number of open connections from each Silk Controller instance to the SQL database
+    description: |
+      Configures the maximum number of concurrent database connections each
+      Silk Controller instance is allowed to have. Warning, changing this value may
+      affect the amount of time it takes for the Silk Controller to respond to requests.
+    placeholder: 200
+
   - reference: .properties.cloud_controller_temporary_disable_deployments
     label: Disable Zero Downtime App Deployments
     description: |

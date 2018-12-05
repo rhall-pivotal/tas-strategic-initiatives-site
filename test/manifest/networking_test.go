@@ -216,6 +216,52 @@ var _ = Describe("Networking", func() {
 				Expect(databaseLink).To(Equal("nil"))
 			})
 
+			Context("when the operator does not set a limit for silk-controller open database connections", func() {
+				It("configures jobs with default values", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "silk-controller")
+					Expect(err).NotTo(HaveOccurred())
+
+					maxOpenConnections, err := job.Property("max_open_connections")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(maxOpenConnections).To(Equal(200))
+				})
+			})
+
+			Context("when the user specifies custom values for silk-controller max open database connections", func() {
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{
+						".properties.silk_database_max_open_connections": 300,
+					}
+				})
+
+				It("configures jobs with user provided values", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "silk-controller")
+					Expect(err).NotTo(HaveOccurred())
+
+					maxOpenConnections, err := job.Property("max_open_connections")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(maxOpenConnections).To(Equal(300))
+				})
+
+				Context("when the silk-controller max open DB connections is out of range", func() {
+					BeforeEach(func() {
+						inputProperties = map[string]interface{}{
+							".properties.silk_database_max_open_connections": 0,
+						}
+					})
+
+					It("returns an error", func() {
+						_, err := product.RenderManifest(inputProperties)
+						Expect(err.Error()).To(ContainSubstring("Value must be greater than or equal to 1"))
+					})
+				})
+			})
 		})
 
 		Context("when External is enabled", func() {
