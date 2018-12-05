@@ -89,11 +89,21 @@ property_inputs:
     placeholder: 200
 
   - reference: .properties.networkpolicyserver_database_max_open_connections
-    label: Maximum number of open connections from the Network Policy Server to the SQL database
+    label: Maximum number of open connections from the Network Policy Server instance to the SQL database
     description: |
       Configures the maximum number of concurrent database connections the
-      Network Policy Server is allowed to have. Warning, changing this value may
-      affect the amount of time it takes for the Network Policy Server to respond to requests.
+      Network Policy Server instance is allowed to have. Warning, changing
+      this value may affect the amount of time it takes for the Network
+      Policy Server to respond to requests.
+    placeholder: 200
+
+  - reference: .properties.networkpolicyserverinternal_database_max_open_connections
+    label: Maximum number of open connections from each Network Policy Server Internal instance to the SQL database
+    description: |
+      Configures the maximum number of concurrent database connections each
+      Network Policy Server Internal instance is allowed to have. Warning,
+      changing this value may affect the amount of time it takes for Network
+      Policy Server Internal to respond to requests.
     placeholder: 200
 
   - reference: .properties.cloud_controller_temporary_disable_deployments

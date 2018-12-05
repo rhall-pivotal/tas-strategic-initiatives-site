@@ -149,6 +149,53 @@ var _ = Describe("Networking", func() {
 					Expect(enabled).To(BeTrue())
 				})
 			})
+
+			Context("when the operator does not set a limit for policy server internal open database connections", func() {
+				It("configures jobs with default values", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server-internal")
+					Expect(err).NotTo(HaveOccurred())
+
+					maxOpenConnections, err := job.Property("max_open_connections")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(maxOpenConnections).To(Equal(200))
+				})
+			})
+
+			Context("when the user specifies custom values for policy server internal max open database connections", func() {
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{
+						".properties.networkpolicyserverinternal_database_max_open_connections": 300,
+					}
+				})
+
+				It("configures jobs with user provided values", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server-internal")
+					Expect(err).NotTo(HaveOccurred())
+
+					maxOpenConnections, err := job.Property("max_open_connections")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(maxOpenConnections).To(Equal(300))
+				})
+
+				Context("when the policy server internal max open DB connections is out of range", func() {
+					BeforeEach(func() {
+						inputProperties = map[string]interface{}{
+							".properties.networkpolicyserverinternal_database_max_open_connections": 0,
+						}
+					})
+
+					It("returns an error", func() {
+						_, err := product.RenderManifest(inputProperties)
+						Expect(err.Error()).To(ContainSubstring("Value must be greater than or equal to 1"))
+					})
+				})
+			})
 		})
 
 		Context("when the operator configures database connection timeout for CNI plugin", func() {
