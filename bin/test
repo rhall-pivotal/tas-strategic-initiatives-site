@@ -34,7 +34,7 @@ function build_docker_image() {
   popd > /dev/null
 
   echo -e "${info_color}Building docker image...${no_color}"
-  docker build -t ops-manifest-do-not-push docker
+  docker build --pull -t ops-manifest-do-not-push docker
 }
 
 function run_manifest_tests() {

@@ -32,6 +32,18 @@ var _ = Describe("CF Autoscaling", func() {
 		Expect(org).To(Equal("system"))
 	})
 
+	It("keeps the doc link up-to-date", func() {
+		manifest, err := product.RenderManifest(nil)
+		Expect(err).NotTo(HaveOccurred())
+
+		job, err := manifest.FindInstanceGroupJob(instanceGroup, "deploy-autoscaler")
+		Expect(err).NotTo(HaveOccurred())
+
+		url, err := job.Property("autoscale/marketplace_documentation_url")
+		Expect(err).ToNot(HaveOccurred())
+		Expect(url).To(MatchRegexp(`https://docs.pivotal.io/pivotalcf/\d+-\d+/appsman-services/autoscaler/using-autoscaler.html`))
+	})
+
 	Context("when the user disables connection pooling", func() {
 		It("sets the autoscale api to disable connection pooling", func() {
 			manifest, err := product.RenderManifest(map[string]interface{}{

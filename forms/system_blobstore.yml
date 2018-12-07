@@ -42,6 +42,13 @@ verifiers:
       region: .properties.system_blobstore.external.region
       signature_version: .properties.system_blobstore.external.signature_version
 
+# go-yaml wraps lines that are longer than 80 characters,
+# this breaks templating as $( ) helpers cannot have newlines in the middle.
+# The key '_hack' also needs to start with underscore as keys in output are alpha-sorted and
+# the variable '$v' must be declared before it is used
+# Possible future fix: https://github.com/go-yaml/yaml/issues/387
+_hack: '$( $v := regexReplaceAll "^\"?(\\d+)\\.(\\d+).*$" version "${1}-${2}" )'
+
 property_inputs:
 - reference: .properties.system_blobstore_ccpackage_max_valid_packages_stored
   label: Max Valid Packages per App
@@ -124,9 +131,10 @@ property_inputs:
 
       - reference: .properties.system_blobstore.external.versioning
         label: Use versioning for backup and restore. (All of the above buckets must have versioning enabled and use the V4 S3 Signature Version).
+        # $v is declared higher up under '_hack'
         description: |
           If versioning is not enabled or supported, you can configure separate buckets below for backups.
-          More information at https://docs.pivotal.io/pivotalcf/2-1/customizing/backup-restore/backup-pcf-bbr.html.
+          More information at https://docs.pivotal.io/pivotalcf/$($v)/customizing/backup-restore/backup-pcf-bbr.html.
 
       - reference: .properties.system_blobstore.external.backup_region
         label: Backup Region

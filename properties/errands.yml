@@ -67,11 +67,18 @@
     type: string
   - name: href
     type: string
+  # HACK: work around YAML wrapping issue
+  # go-yaml wraps lines that are longer than 80 characters,
+  # this breaks templating as $( ) helpers cannot have newlines in the middle.
+  # The key '_hack' also needs to start with underscore as keys in output are alpha-sorted and
+  # the variable '$v' must be declared before it is used
+  # Possible future fix: https://github.com/go-yaml/yaml/issues/387
+  _hack: '$( $v := regexReplaceAll "^\"?(\\d+)\\.(\\d+).*$" version "${1}-${2}" )'
   default:
   - name: Marketplace
     href: /marketplace
   - name: Docs
-    href: https://docs.pivotal.io/pivotalcf/2-5/pas/intro.html
+    href: https://docs.pivotal.io/pivotalcf/$($v)/pas/intro.html
   - name: Tools
     href: /tools
 

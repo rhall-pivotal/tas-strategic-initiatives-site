@@ -3,10 +3,17 @@ name: cloud_controller_ng
 release: capi
 provides: |
   cloud_controller: {as: cloud_controller, shared: true}
+# go-yaml wraps lines that are longer than 80 characters,
+# this breaks templating as $( ) helpers cannot have newlines in the middle.
+# The key '_hack' also needs to start with underscore as keys in output are alpha-sorted and
+# the variable '$v' must be declared before it is used
+# Possible future fix: https://github.com/go-yaml/yaml/issues/387
+_hack: '$( $v := regexReplaceAll "^\"?(\\d+)\\.(\\d+).*$" version "${1}-${2}" )'
 manifest: |
   name: $( variable "label" )
   build: $( variable "build-version" )
-  description: https://docs.pivotal.io/pivotalcf/2-3/pcf-release-notes/runtime-rn.html
+  # $v is defined higher up
+  description: https://docs.pivotal.io/pivotalcf/$($v)/pcf-release-notes/runtime-rn.html
   uaa:
     url: https://uaa.(( .cloud_controller.system_domain.value ))
     clients:

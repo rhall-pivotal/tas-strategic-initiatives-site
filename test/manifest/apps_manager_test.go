@@ -63,6 +63,19 @@ var _ = Describe("Apps Manager", func() {
 		})
 	})
 
+	It("keeps the version number in docs link up-to-date", func() {
+		manifest, err := product.RenderManifest(nil)
+		Expect(err).NotTo(HaveOccurred())
+
+		appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+		Expect(err).NotTo(HaveOccurred())
+
+		navLinks, err := appsManager.Property("apps_manager/white_labeling/nav_links")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(navLinks).To(ContainElement(
+			HaveKeyWithValue("href", MatchRegexp(`https://docs.pivotal.io/pivotalcf/\d+-\d+/pas/intro.html`))))
+	})
+
 	Describe("Memory", func() {
 		It("uses the spec defaults", func() {
 			manifest, err := product.RenderManifest(nil)

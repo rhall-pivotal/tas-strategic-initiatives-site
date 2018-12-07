@@ -317,6 +317,15 @@ var _ = Describe("CAPI", func() {
 			Expect(err).NotTo(HaveOccurred())
 		})
 
+		It("keeps the docs link up-to-date", func() {
+			api, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+			Expect(err).NotTo(HaveOccurred())
+
+			description, err := api.Property("description")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(description).To(MatchRegexp(`https://docs.pivotal.io/pivotalcf/\d+-\d+/pcf-release-notes/runtime-rn.html`))
+		})
+
 		Describe("tls routing", func() {
 			It("configures the route registrar to use tls", func() {
 				routeRegistrarJob, err := manifest.FindInstanceGroupJob(instanceGroup, "route_registrar")
