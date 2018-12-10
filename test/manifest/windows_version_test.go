@@ -50,6 +50,7 @@ var _ = Describe("WindowsVersion", func() {
 			args, err := job.Property("diego/rep/preloaded_rootfses")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(args).To(ContainElement("windows2016:oci:///C:/var/vcap/packages/windows1803fs"))
+			Expect(args).To(ContainElement("windows:oci:///C:/var/vcap/packages/windows1803fs"))
 		})
 
 		By("configuring the groot cached_image_uris to point to /var/vcap/packages/windows1803fs", func() {
