@@ -410,13 +410,11 @@ property_inputs:
               TCP Routing Ports (one-time configuration, if you want to
               update this value you can via the CF CLI)
             description: |
-              Enter the range of ports reserved for TCP routes. These ports
-              must be available on your load balancer. You can specify a list
-              of ports with commas between each port number and specify
-              ranges of ports with dashes between the first and last port
-              number. This configuration only applies the first time you
-              specify it here, if you later want to update the ports you must
-              do so with the CF CLI.
+              Enter a single port number or a single range of ports in the
+              format (0-65535) reserved for TCP routes. These ports must be
+              available on your load balancer. To configure multiple ranges or
+              to change this configuration later see:
+              https://docs.pivotal.io/pivotalcf/adminguide/enabling-tcp-routing.html#modify-ports
 
   - reference: .properties.experimental_dynamic_egress_enforcement
     label: Enable Dynamic Egress Enforcement (Beta)
