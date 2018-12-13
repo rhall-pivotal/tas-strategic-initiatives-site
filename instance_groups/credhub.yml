@@ -6,8 +6,10 @@ description: CredHub
 templates:
 {{if eq tile "ert"}}
 - $( job "bpm" )
+- $( job "loggregator_agent" )
 - $( job "credhub" )
 - $( job "database-backup-restorer" )
+- $( job "syslog_forwarder" )
 {{else}}
 - $( job "placeholder" )
 {{end}}

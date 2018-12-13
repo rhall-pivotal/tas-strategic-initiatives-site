@@ -5,6 +5,7 @@ resource_label: MySQL Monitor
 description: Monitors the MySQL Cluster
 templates:
 - $( job "bpm" )
+- $( job "loggregator_agent" )
 - $( job "mysql-diag" )
 - $( job "replication-canary" )
 - $( job "syslog_forwarder" )

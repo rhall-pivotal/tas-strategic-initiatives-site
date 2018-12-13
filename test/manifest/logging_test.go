@@ -1,41 +1,49 @@
 package manifest_test
 
 import (
+	"fmt"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/pivotal-cf/planitest"
 )
 
 var _ = Describe("Logging", func() {
+	var (
+		getAllInstanceGroups func(planitest.Manifest) []string
+	)
+
+	getAllInstanceGroups = func(manifest planitest.Manifest) []string {
+		groups, err := manifest.Path("/instance_groups")
+		Expect(err).NotTo(HaveOccurred())
+
+		groupList, ok := groups.([]interface{})
+		Expect(ok).To(BeTrue())
+
+		names := []string{}
+		for _, group := range groupList {
+			groupName := group.(map[interface{}]interface{})["name"].(string)
+
+			// ignore VMs that only contain a single placeholder job, i.e. SF-PAS only VMs that are present but non-configurable in PAS build
+			jobs, err := manifest.Path(fmt.Sprintf("/instance_groups/name=%s/jobs", groupName))
+			Expect(err).NotTo(HaveOccurred())
+			if len(jobs.([]interface{})) > 1 {
+				names = append(names, groupName)
+			}
+		}
+		Expect(names).NotTo(BeEmpty())
+		return names
+	}
+
 	Describe("loggregator agent", func() {
 		var (
-			instanceGroups []string
-			productTag     string
+			productTag string
 		)
 
 		BeforeEach(func() {
 			if productName == "srt" {
-				instanceGroups = []string{"blobstore", "compute", "control", "database"}
 				productTag = "Small Footprint PAS"
 			} else {
-				instanceGroups = []string{
-					"clock_global",
-					"cloud_controller",
-					"cloud_controller_worker",
-					"diego_brain",
-					"diego_cell",
-					"diego_database",
-					"doppler",
-					"ha_proxy",
-					"loggregator_trafficcontroller",
-					"mysql",
-					"nats",
-					"nfs_server",
-					"router",
-					"syslog_adapter",
-					"syslog_scheduler",
-					"tcp_router",
-					"uaa",
-				}
 				productTag = "Pivotal Application Service"
 			}
 		})
@@ -43,6 +51,8 @@ var _ = Describe("Logging", func() {
 		It("sets defaults on the loggregator agent", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
+
+			instanceGroups := getAllInstanceGroups(manifest)
 
 			for _, ig := range instanceGroups {
 				agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
@@ -68,6 +78,8 @@ var _ = Describe("Logging", func() {
 					".properties.enable_cf_metric_name": true,
 				})
 				Expect(err).NotTo(HaveOccurred())
+
+				instanceGroups := getAllInstanceGroups(manifest)
 
 				for _, ig := range instanceGroups {
 					agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
@@ -329,13 +341,16 @@ var _ = Describe("Logging", func() {
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			syslogForwarder, err := manifest.FindInstanceGroupJob("router", "syslog_forwarder")
-			Expect(err).NotTo(HaveOccurred())
+			instanceGroups := getAllInstanceGroups(manifest)
+			for _, instanceGroup := range instanceGroups {
+				syslogForwarder, err := manifest.FindInstanceGroupJob(instanceGroup, "syslog_forwarder")
+				Expect(err).NotTo(HaveOccurred())
 
-			syslogConfig, err := syslogForwarder.Property("syslog/custom_rule")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(syslogConfig).To(ContainSubstring(`if ($programname startswith "vcap.") then stop`))
-			Expect(syslogConfig).To(ContainSubstring(`if ($msg contains "DEBUG") then stop`))
+				syslogConfig, err := syslogForwarder.Property("syslog/custom_rule")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(syslogConfig).To(ContainSubstring(`if ($programname startswith "vcap.") then stop`))
+				Expect(syslogConfig).To(ContainSubstring(`if ($msg contains "DEBUG") then stop`))
+			}
 		})
 
 		Context("when debug logs are enabled", func() {
