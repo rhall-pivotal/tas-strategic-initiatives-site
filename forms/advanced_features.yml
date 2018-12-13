@@ -44,8 +44,12 @@ property_inputs:
   - reference: .properties.enable_cf_metric_name
     label: Use "cf" as deployment name in emitted metrics instead of unique name
     description: |
-      This option will be removed in a future release. Only enable this when
-      it is required for backward compatibility with previous versions of PCF.
+      This option will be removed in a future release. Only enable this when it
+      is required for backward compatibility with previous versions of PCF.  If
+      this option is toggled and PCF Healthwatch is installed, enable the PCF
+      Healthwatch Push Monitoring Components Errand to ensure correct PCF
+      Healthwatch configuration. Refer to the Known Issues section of PCF
+      Healthwatch Release Notes for details.
 
   - reference: .properties.enable_smb_volume_driver
     label: Enable SMB volume services
