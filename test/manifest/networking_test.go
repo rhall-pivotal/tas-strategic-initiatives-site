@@ -54,7 +54,7 @@ var _ = Describe("Networking", func() {
 
 		It("configures the vxlan-policy-agent job when setting it disabled", func() {
 			inputProperties := map[string]interface{}{
-				".properties.disable_silk_policy_enforcement": true,
+				".properties.enable_silk_policy_enforcement": true,
 			}
 			manifest, err := product.RenderManifest(inputProperties)
 			Expect(err).NotTo(HaveOccurred())
@@ -62,7 +62,7 @@ var _ = Describe("Networking", func() {
 			Expect(err).NotTo(HaveOccurred())
 			disabled, err := job.Property("disable_container_network_policy")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(disabled).To(BeTrue())
+			Expect(disabled).To(BeFalse())
 		})
 	})
 
