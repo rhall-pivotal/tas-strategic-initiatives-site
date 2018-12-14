@@ -357,8 +357,8 @@ var _ = Describe("Networking", func() {
 				})
 			})
 
-			Context("network policy enforcement", func() {
-				It("defaults to false", func() {
+			Context("silk network policy", func() {
+				It("continues to be enforced", func() {
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
@@ -370,14 +370,14 @@ var _ = Describe("Networking", func() {
 					Expect(disabled).To(BeFalse())
 				})
 
-				Context("when setting it disabled", func() {
+				Context("setting is disabled", func() {
 					BeforeEach(func() {
 						inputProperties = map[string]interface{}{
-							".properties.container_networking_interface_plugin.silk.disable_policy_enforcement": true,
+							".properties.container_networking_interface_plugin.silk.enable_policy_enforcement": false,
 						}
 					})
 
-					It("configures the vxlan-policy-agent job", func() {
+					It("disables silk network policy enforcement", func() {
 						manifest, err := product.RenderManifest(inputProperties)
 						Expect(err).NotTo(HaveOccurred())
 

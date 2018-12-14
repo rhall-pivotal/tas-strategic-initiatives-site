@@ -375,11 +375,11 @@ property_inputs:
             description: |
               Override DNS servers to be used in containers. Defaults to the same as
               the host. A comma-separated list of servers can be specified.
-          - reference: .properties.container_networking_interface_plugin.silk.disable_policy_enforcement
-            label: Disable Policy Enforcement
+          - reference: .properties.container_networking_interface_plugin.silk.enable_policy_enforcement
+            label: Enable Silk Network Policy Enforcement
             description: |
-              WARNING!!! Disables network policy enforcement. Setting this property to
-              true allows all app containers to access any other app container with no restrictions.
+              WARNING!!! Disabling this feature will allow all application containers
+              to access any other application container with no restrictions.
 
       - reference: .properties.container_networking_interface_plugin.external
         label: External

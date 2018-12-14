@@ -8,6 +8,6 @@ manifest: |
   disable: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(disable_silk) ))
   iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
   iptables_logging: (( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ))
-  disable_container_network_policy: (( .properties.container_networking_interface_plugin.silk.disable_policy_enforcement.value ))
+  disable_container_network_policy: "(( .properties.container_networking_interface_plugin.silk.enable_policy_enforcement.value ? false : true ))"
   policy_server:
     hostname: network-policy-server.service.cf.internal
