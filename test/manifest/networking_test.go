@@ -42,7 +42,7 @@ var _ = Describe("Networking", func() {
 	})
 
 	Describe("Network Policy Enforcement", func() {
-		It("defaults to false", func() {
+		It("defaults the rendered manifest job property to false", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 			job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "vxlan-policy-agent")
@@ -52,7 +52,20 @@ var _ = Describe("Networking", func() {
 			Expect(disabled).To(BeFalse())
 		})
 
-		It("configures the vxlan-policy-agent job when setting it disabled", func() {
+		It("configures the vxlan-policy-agent job when setting it disabled in the UI", func() {
+			inputProperties := map[string]interface{}{
+				".properties.enable_silk_policy_enforcement": false,
+			}
+			manifest, err := product.RenderManifest(inputProperties)
+			Expect(err).NotTo(HaveOccurred())
+			job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "vxlan-policy-agent")
+			Expect(err).NotTo(HaveOccurred())
+			disabled, err := job.Property("disable_container_network_policy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(disabled).To(BeTrue())
+		})
+
+		It("configures the vxlan-policy-agent job when setting it enabled in the UI", func() {
 			inputProperties := map[string]interface{}{
 				".properties.enable_silk_policy_enforcement": true,
 			}
