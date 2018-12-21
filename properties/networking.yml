@@ -479,3 +479,24 @@
   default:
     domains:
     - gorouter.service.cf.internal
+
+- name: copilot_server_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - copilot.service.cf.internal
+
+- name: pilot_server_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - pilot.service.cf.internal
+
+- name: copilot_client_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - copilot.service.cf.internal

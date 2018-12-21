@@ -1,0 +1,32 @@
+---
+name: networking_service_mesh
+label: Networking - Service Mesh
+description: |
+  Service Mesh is currently only enabled for Ingress and not for inter
+  mesh traffic.
+
+property_inputs:
+  - reference: .properties.istio
+    label: Experimental Istio Router
+    description: |
+      Enable this only for deployments with 10,000 or fewer routes and
+      applications on a single deployment. Highly experimental!
+    selector_property_inputs:
+      - reference: .properties.istio.disable
+        label: |
+          Disable
+      - reference: .properties.istio.enable
+        label: |
+          Enable
+
+  - reference: .properties.istio_frontend_tls_keypairs
+    label: Frontend TLS Keypairs
+    description: |
+      Array of private keys and certificates used for TLS handshakes with
+      downstream clients. Each element in the array is an object containing
+      fields 'private_key' and 'cert_chain', each of which supports a PEM block.
+    property_inputs:
+      - reference: private_key
+        label: Private Key
+      - reference: cert_chain
+        label: Certificate Chain

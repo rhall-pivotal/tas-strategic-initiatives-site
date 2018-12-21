@@ -1,0 +1,22 @@
+---
+- name: istio
+  type: selector
+  configurable: true
+  default: disable
+  option_templates:
+    - name: disable
+      select_value: disable
+    - name: enable
+      select_value: enable
+
+- name: istio_frontend_tls_keypairs
+  type: collection
+  configurable: true
+  optional: true
+  property_blueprints:
+  - name: private_key
+    type: text
+    configurable: true
+  - name: cert_chain
+    type: text
+    configurable: true

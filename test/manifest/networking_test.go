@@ -582,6 +582,7 @@ var _ = Describe("Networking", func() {
 
 					Expect(internalDomains).To(Equal([]interface{}{
 						"apps.example.com",
+						"mesh.apps.example.com",
 						map[interface{}]interface{}{
 							"name":     "apps.internal",
 							"internal": true,
@@ -610,6 +611,7 @@ var _ = Describe("Networking", func() {
 
 					Expect(internalDomains).To(Equal([]interface{}{
 						"apps.example.com",
+						"mesh.apps.example.com",
 						map[interface{}]interface{}{
 							"name":     "some-internal-domain",
 							"internal": true,
@@ -652,6 +654,90 @@ var _ = Describe("Networking", func() {
 
 					key := ips.([]interface{})[0].(map[interface{}]interface{})
 					Expect(key["static_ips"]).To(Equal([]interface{}{"0.0.0.0"}))
+				})
+			})
+		})
+
+		Describe("Istio", func() {
+			BeforeEach(func() {
+				if productName == "srt" {
+					Skip("istio can only be enabled in ERT, skipping...")
+				}
+			})
+
+			Context("when it is enabled", func() {
+				It("adds does not zero out istio-control, istio-router, or cc_route_syncer", func() {
+					inputProperties := map[string]interface{}{
+						".properties.istio": "enable",
+					}
+
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					instanceCount, err := manifest.Path("/instance_groups/name=istio_control/instances")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(instanceCount).To(Equal(1))
+
+					instanceCount, err = manifest.Path("/instance_groups/name=istio_router/instances")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(instanceCount).To(Equal(2))
+
+					instanceCount, err = manifest.Path("/instance_groups/name=route_syncer/instances")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(instanceCount).To(Equal(1))
+				})
+
+				Describe("when frontend TLS keypairs are configured", func() {
+					It("populates the frontend TLS keypairs", func() {
+						inputProperties := map[string]interface{}{
+							".properties.istio": "enable",
+							".properties.istio_frontend_tls_keypairs": []map[string]interface{}{
+								{"cert_chain": "fake-cert-chain", "private_key": "fake-private-key"},
+								{"cert_chain": "fake-cert-chain-2", "private_key": "fake-private-key-2"}},
+						}
+						manifest, err := product.RenderManifest(inputProperties)
+						Expect(err).NotTo(HaveOccurred())
+
+						copilot, err := manifest.FindInstanceGroupJob("istio_control", "copilot")
+						Expect(err).NotTo(HaveOccurred())
+						keyPairsInterface, err := copilot.Property("frontend_tls_keypairs")
+						keyPairs := keyPairsInterface.([]interface{})
+						Expect(err).NotTo(HaveOccurred())
+						Expect(len(keyPairs)).To(Equal(2))
+						kp := keyPairs[0].(map[interface{}]interface{})
+						Expect(kp["cert_chain"]).To(Equal("fake-cert-chain"))
+						Expect(kp["private_key"]).To(Equal("fake-private-key"))
+						kp = keyPairs[1].(map[interface{}]interface{})
+						Expect(kp["cert_chain"]).To(Equal("fake-cert-chain-2"))
+						Expect(kp["private_key"]).To(Equal("fake-private-key-2"))
+					})
+				})
+			})
+
+			Context("when it is disabled", func() {
+				It("zeros out istio-control, istio-router, and cc_route_syncer", func() {
+					inputProperties := map[string]interface{}{}
+
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					instanceCount, err := manifest.Path("/instance_groups/name=istio_control/instances")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(instanceCount).To(Equal(0))
+
+					instanceCount, err = manifest.Path("/instance_groups/name=istio_router/instances")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(instanceCount).To(Equal(0))
+
+					instanceCount, err = manifest.Path("/instance_groups/name=route_syncer/instances")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(instanceCount).To(Equal(0))
 				})
 			})
 		})
