@@ -8,7 +8,7 @@ Deploys garden cells (running windows server 2016) for all of your windows app n
 
 ## Is there CI?
 
-Yup, it is located [here](https://releng.ci.cf-app.com/teams/main/pipelines/wrt-2016::next)
+Yup, it is located [here](https://releng.ci.cf-app.com/?search=wrt)
 
 ## What you need to deploy it
 
