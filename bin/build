@@ -8,10 +8,11 @@ set -eu
 : "${STUB_RELEASES:=false}"
 
 tile_dir="$( cd "$( dirname "$0" )/.." && pwd )"
-build_dir="$(mktemp -d -t "p-runtime.XXXXXXXXX")"
+build_dir="$(mktemp -d /tmp/p-runtime.XXXXXXXXX)"
+docker_run_flag=""
 trap '{ rm -rf "${build_dir}"; }' EXIT
 
-output_dir="$(mktemp -d -t "p-runtime.XXXXXXXXX")"
+output_dir="$(mktemp -d /tmp/p-runtime.XXXXXXXXX)"
 
 if [[ (! -d "${tile_dir}/releases") && ("${STUB_RELEASES}" != "true") ]]; then
   echo "Missing required directory '${tile_dir}/releases'. Use STUB_RELEASES=true or create this directory and download all required release tarballs into it." > /dev/stderr
@@ -23,6 +24,9 @@ if [ -z "${STEMCELL_PATH}" ]; then
   STEMCELL_PATH="${build_dir}/stemcell.tgz"
   light_stemcell_url="$(curl -L --silent 'https://bosh.io/api/v1/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent' | jq -r 'map(select(.light))[0].light.url')"
   wget --quiet -O "${STEMCELL_PATH}" "${light_stemcell_url}"
+else
+  stemcell_dir=$(dirname ${STEMCELL_PATH})
+  docker_run_flag+="-v ${stemcell_dir}:${stemcell_dir}"
 fi
 
 preprocess() {
@@ -36,7 +40,7 @@ preprocess() {
   # remove test metadata that upsets preprocessing
   rm -rf ${dest}/bin/fixtures
 
-  go run "${tile_dir}"/bin/preprocess.go \
+  docker run -it -v "${tile_dir}:${tile_dir}" -v "${dest}:${dest}" -w "${tile_dir}" pivotalcfreleng/golang go run bin/preprocess.go \
     --tile-name "${PRODUCT}" \
     --input-path "${dest}" \
     --output-path "${dest}"
@@ -63,7 +67,7 @@ pushd "${build_dir}" > /dev/null
   fi
 
   echo "Baking ${PRODUCT} ${version} in the kiln..." > /dev/stderr
-  kiln bake \
+  docker run -it ${docker_run_flag} -v "${build_dir}:${build_dir}" -v "${output_dir}:${output_dir}" -w "${build_dir}" pivotalcfreleng/kiln kiln bake \
     --forms-directory ./forms \
     --icon icon.png \
     --instance-groups-directory ./instance_groups \
