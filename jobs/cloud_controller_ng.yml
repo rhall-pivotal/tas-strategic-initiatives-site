@@ -64,6 +64,8 @@ manifest: |
       description: Microsoft Windows / .Net 64 bit
     - name: windows2016
       description: Microsoft Windows 2016
+    - name: windows
+      description: Windows Server
     default_stack: (( .properties.cloud_controller_default_stack.selected_option.parsed_manifest(stack) ))
     min_cli_version: 6.23.0
     bulk_api_password: ((( cloud-controller-bulk-api-credentials.password )))

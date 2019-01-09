@@ -375,6 +375,10 @@ var _ = Describe("CAPI", func() {
 					"name":        "windows2016",
 					"description": "Microsoft Windows 2016",
 				}))
+				Expect(stacks).To(ContainElement(map[interface{}]interface{}{
+					"name":        "windows",
+					"description": "Windows Server",
+				}))
 
 				defaultStack, err := cc.Property("cc/default_stack")
 				Expect(err).NotTo(HaveOccurred())
