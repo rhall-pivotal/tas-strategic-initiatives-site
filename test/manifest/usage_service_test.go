@@ -60,23 +60,5 @@ var _ = Describe("Usage Service", func() {
 			_, err = pushUsageService.Property("cf/push_client_secret")
 			Expect(err).NotTo(HaveOccurred())
 		})
-
-		By("configuring the bbr-usage-servicedb", func() {
-			bbrUsageServiceDB, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-usage-servicedb")
-			Expect(err).NotTo(HaveOccurred())
-
-			_, err = bbrUsageServiceDB.Property("cf/admin_username")
-			Expect(err).To(HaveOccurred())
-
-			_, err = bbrUsageServiceDB.Property("cf/admin_password")
-			Expect(err).To(HaveOccurred())
-
-			clientID, err := bbrUsageServiceDB.Property("cf/client_id")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(clientID).To(Equal(pushUsageServiceClientID))
-
-			_, err = bbrUsageServiceDB.Property("cf/client_secret")
-			Expect(err).NotTo(HaveOccurred())
-		})
 	})
 })

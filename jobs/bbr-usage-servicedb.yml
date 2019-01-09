@@ -2,9 +2,5 @@
 name: bbr-usage-servicedb
 release: push-usage-service-release
 manifest: |
-  cf:
-    client_id: (( .uaa.push_usage_service_client_credentials.identity ))
-    client_secret: (( .uaa.push_usage_service_client_credentials.password ))
-    api_url: "https://api.(( .cloud_controller.system_domain.value ))"
   database: (( .properties.system_database.selected_option.parsed_manifest(bbr-usage-servicedb) ))
   release_level_backup: true
