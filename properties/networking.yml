@@ -376,11 +376,6 @@
   - name: disable
     select_value: disable
 
-- name: bosh_dns_servers
-  type: string_list
-  configurable: false
-  default: "169.254.0.2"
-
 - name: container_networking_interface_plugin
   type: selector
   configurable: true
@@ -413,10 +408,6 @@
       type: boolean
       configurable: true
       default: false
-    - name: dns_servers
-      type: string_list
-      configurable: true
-      optional: true
     - name: enable_policy_enforcement
       type: boolean
       configurable: true
