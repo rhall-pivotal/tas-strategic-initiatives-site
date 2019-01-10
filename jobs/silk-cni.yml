@@ -3,7 +3,6 @@ name: silk-cni
 release: silk
 manifest: |
   disable: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(disable_silk) ))
-  dns_servers: (( .properties.bosh_dns_servers.parsed_strings ))
   mtu: (( .properties.container_networking_interface_plugin.silk.network_mtu.value ))
   iptables_logging: (( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ))
   iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
