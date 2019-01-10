@@ -13,3 +13,4 @@ manifest: |
   consul_enabled: true
   startup_delay: (( .mysql_proxy.startup_delay.value ))
   shutdown_delay: (( .mysql_proxy.shutdown_delay.value ))
+  max_open_files: 1048576
