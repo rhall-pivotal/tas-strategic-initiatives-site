@@ -1,1 +1,87 @@
-../p-runtime-bin/test
+#!/bin/bash
+
+set -eu
+
+: "${RENDERER:=ops-manifest}"
+
+info_color='\033[0;34m'
+success_color='\033[0;32m'
+no_color='\033[0m'
+
+function build_docker_image() {
+  # skip docker build if the image is less than 4 hours old
+  local img_created img_fresh
+  img_created=$(docker image inspect ops-manifest-do-not-push 2> /dev/null | jq '.[].Created')
+  if [ -n "$img_created" ]; then
+    img_fresh=$(echo "$img_created" | jq '(now  - (.|split(".")[0]|strptime("%Y-%m-%dT%H:%M:%S")|mktime)) < 3600*4')
+  fi
+  if [ "$img_fresh" == 'true' ]; then
+    echo -e "${info_color}Skip build docker image${no_color}"
+    return
+  fi
+
+  mkdir -p docker/vendor
+  if [ ! -d docker/vendor/ops-manifest ]; then
+    echo -e "${info_color}Cloning github.com/pivotal-cf/ops-manifest (ask PAS RelEng team for read access if it fails)...${no_color}"
+    git clone git@github.com:pivotal-cf/ops-manifest docker/vendor/ops-manifest
+  fi
+
+  pushd docker/vendor/ops-manifest > /dev/null
+    echo -e "${info_color}Updating github.com/pivotal-cf/installation (send email to ask+cf@pivotal.io for read access if it fails)...${no_color}"
+    git fetch --tags
+    git checkout "$(git describe --tags --long | cut -d '-' -f1)"
+    git submodule update --init --recursive
+  popd > /dev/null
+
+  echo -e "${info_color}Building docker image...${no_color}"
+  docker build --pull -t ops-manifest-do-not-push docker
+}
+
+function run_manifest_tests() {
+  local go_path ginkgo_args
+  go_path=/go/src/github.com/pivotal-cf/p-runtime
+
+  ginkgo_args="-p -r -slowSpecThreshold 15 'test/manifest'"
+  if [ "$#" -gt 0 ]; then
+    ginkgo_args="$( printf "'%s' " "$@") ${ginkgo_args}"
+  fi
+
+  echo -e "${info_color}Running manifest tests for PAS...${no_color}"
+  docker run \
+    -e "PRODUCT=ert" -e "RENDERER=${RENDERER}" \
+    -v "$PWD:${go_path}" -w "${go_path}" \
+    -it ops-manifest-do-not-push \
+    /bin/bash -c "ginkgo ${ginkgo_args}"
+
+  echo -e "${info_color}Running manifest tests for Small Footprint PAS...${no_color}"
+  docker run \
+    -e "PRODUCT=srt" -e "RENDERER=${RENDERER}" \
+    -v "$PWD:${go_path}" -w "${go_path}" \
+    -it ops-manifest-do-not-push \
+    /bin/bash -c "ginkgo ${ginkgo_args}"
+}
+
+function run_migration_tests() {
+  local go_path
+  go_path=/go/src/github.com/pivotal-cf/p-runtime
+  echo -e "${info_color}Running migration tests...${no_color}"
+  docker run \
+    -v "$PWD:${go_path}" -w "${go_path}/migrations" \
+    -it node \
+    /bin/bash -c "npm install && npm test"
+}
+
+function main() {
+  local tile_repo
+  tile_repo=$( cd "$( dirname "$( dirname "$0" )")" && pwd )
+
+  pushd "${tile_repo}" > /dev/null
+    build_docker_image
+    run_manifest_tests "$@"
+    run_migration_tests
+  popd > /dev/null
+
+  echo -e "\n${success_color}SUCCESS!${no_color}"
+}
+
+main "$@"
