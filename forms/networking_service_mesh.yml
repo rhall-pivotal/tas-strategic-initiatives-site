@@ -2,16 +2,13 @@
 name: networking_service_mesh
 label: Networking - Service Mesh
 description: |
-  Service Mesh is currently only enabled for Ingress and not for inter
-  mesh traffic.
+  Service Mesh currently only supports ingress routing to applications; support for management of egress communications (including app-to-app) will be offered in future releases.
 
 property_inputs:
   - reference: .properties.istio
-    label: Enable Service Mesh (Beta)
+    label: Service Mesh (Beta)
     description: |
-      Enable this for deployments with 20,000 or fewer routes and applications
-      in a single deployment. This is a beta feature and has been tested
-      successfully to scale to 20,000 routes and applications per deployment.
+      When enabled, a new kind of platform ingress router will be deployed, in parallel to the existing HTTP and TCP routers, offering new capabilities. Enable this only for deployments with fewer than 20,000 routes; core platform functions will be impacted at greater scale.
     selector_property_inputs:
       - reference: .properties.istio.disable
         label: |
@@ -21,11 +18,9 @@ property_inputs:
           Enable
 
   - reference: .properties.istio_frontend_tls_keypairs
-    label: Frontend TLS Keypairs
+    label: Ingress Router TLS Keypairs
     description: |
-      Array of private keys and certificates used for TLS handshakes with
-      downstream clients. Each element in the array is an object containing
-      fields 'private_key' and 'cert_chain', each of which supports a PEM block.
+      Private keys and certificates in PEM block format used for TLS handshakes with clients. 
     property_inputs:
       - reference: private_key
         label: Private Key
