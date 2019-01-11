@@ -4,14 +4,10 @@ label: Route Syncer
 resource_label: Route Syncer
 description: Does bulk syncing of Cloud Controller routes with Copilot.
 templates:
-{{if eq tile "srt"}}
-- $( job "placeholder" )
-{{else}}
 - $( job "bpm" )
 - $( job "cc_route_syncer" )
 - $( job "loggregator_agent" )
 - $( job "syslog_forwarder" )
-{{end}}
 resource_definitions:
 - name: ram
   type: integer

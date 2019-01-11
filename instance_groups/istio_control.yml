@@ -4,15 +4,11 @@ label: Istio Control
 resource_label: Istio Control
 description: This configures the istio routers to serve routes
 templates:
-{{if eq tile "srt"}}
-- $( job "placeholder" )
-{{else}}
 - $( job "bpm" )
 - $( job "copilot" )
 - $( job "pilot-discovery" )
 - $( job "loggregator_agent" )
 - $( job "syslog_forwarder" )
-{{end}}
 resource_definitions:
 - name: ram
   type: integer
@@ -53,6 +49,7 @@ instance_definition:
   default: 1
   constraints:
     min: 0
+    max: 1
   zero_if:
     property_reference: ".properties.istio"
     property_values:

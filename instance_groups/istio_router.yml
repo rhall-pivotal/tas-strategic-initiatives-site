@@ -4,15 +4,10 @@ label: Istio Router
 resource_label: Istio Router
 description: Istio based replacement for Gorouter
 templates:
-{{if eq tile "srt"}}
-- $( job "placeholder" )
-{{else}}
 - $( job "bpm" )
 - $( job "envoy" )
-- $( job "silk-daemon" )
 - $( job "loggregator_agent" )
 - $( job "syslog_forwarder" )
-{{end}}
 resource_definitions:
 - name: ram
   type: integer
