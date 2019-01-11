@@ -99,7 +99,7 @@ runtime_config: |
         - domain: copilot.service.cf.internal
           targets:
           - query: "*"
-            instance_group: $( variable "bosh_dns_copilot_instance_group" )
+            instance_group: "istio_control"
             deployment: (( ..cf.deployment_name ))
             network: (( ..cf.network_name ))
             domain: bosh
@@ -155,7 +155,7 @@ runtime_config: |
         - domain: pilot.service.cf.internal
           targets:
           - query: "*"
-            instance_group: $( variable "bosh_dns_pilot_instance_group" )
+            instance_group: "istio_control"
             deployment: (( ..cf.deployment_name ))
             network: (( ..cf.network_name ))
             domain: bosh
