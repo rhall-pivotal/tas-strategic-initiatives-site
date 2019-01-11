@@ -54,6 +54,12 @@ property_inputs:
     The number of log messages the buffer holds before dropping messages. A
     larger buffer size might overload the system.
 
+- reference: .properties.syslog_scheduler_batch_size
+  label: Number of syslog drain addresses to retrieve
+  description: |
+    The number of apps with syslog drain addresses to retrieve from cloud
+    controller per request.
+
 - reference: .properties.syslog_metrics_to_syslog_enabled
   label: Include container metrics in SysLog Drains
   description: |

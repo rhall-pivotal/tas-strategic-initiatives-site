@@ -72,6 +72,26 @@ var _ = Describe("Logging", func() {
 			}
 		})
 
+		It("sets batch size property on the syslog scheduler", func() {
+			instanceGroup := "syslog_scheduler"
+			if productName == "srt" {
+				instanceGroup = "control"
+			}
+
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.syslog_scheduler_batch_size": 500,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			syslogScheduler, err := manifest.FindInstanceGroupJob(instanceGroup, "scheduler")
+
+			Expect(err).NotTo(HaveOccurred())
+
+			batchSize, err := syslogScheduler.Property("scalablesyslog/scheduler/api/batch_size")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(batchSize).To(Equal(500))
+		})
+
 		Context("when the enable cf metric name is set to true (migration during upgrades)", func() {
 			It("sets the metric deployment name to cf", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
