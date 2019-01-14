@@ -686,11 +686,14 @@ var _ = Describe("Networking", func() {
 
 				Describe("when frontend TLS keypairs are configured", func() {
 					It("populates the frontend TLS keypairs", func() {
+						fakeCert1 := generateTLSKeypair("some-hostname")
+						fakeCert2 := generateTLSKeypair("another-hostname")
 						inputProperties := map[string]interface{}{
 							".properties.istio": "enable",
 							".properties.istio_frontend_tls_keypairs": []map[string]interface{}{
-								{"cert_chain": "fake-cert-chain", "private_key": "fake-private-key"},
-								{"cert_chain": "fake-cert-chain-2", "private_key": "fake-private-key-2"}},
+								{"name": "cert-1", "certificate": map[string]interface{}{"cert_pem": fakeCert1.Certificate, "private_key_pem": fakeCert1.PrivateKey}},
+								{"name": "cert-2", "certificate": map[string]interface{}{"cert_pem": fakeCert2.Certificate, "private_key_pem": fakeCert2.PrivateKey}},
+							},
 						}
 						manifest, err := product.RenderManifest(inputProperties)
 						Expect(err).NotTo(HaveOccurred())
@@ -702,11 +705,11 @@ var _ = Describe("Networking", func() {
 						Expect(err).NotTo(HaveOccurred())
 						Expect(len(keyPairs)).To(Equal(2))
 						kp := keyPairs[0].(map[interface{}]interface{})
-						Expect(kp["cert_chain"]).To(Equal("fake-cert-chain"))
-						Expect(kp["private_key"]).To(Equal("fake-private-key"))
+						Expect(kp["cert_chain"]).NotTo(BeEmpty())
+						Expect(kp["private_key"]).NotTo(BeEmpty())
 						kp = keyPairs[1].(map[interface{}]interface{})
-						Expect(kp["cert_chain"]).To(Equal("fake-cert-chain-2"))
-						Expect(kp["private_key"]).To(Equal("fake-private-key-2"))
+						Expect(kp["cert_chain"]).NotTo(BeEmpty())
+						Expect(kp["private_key"]).NotTo(BeEmpty())
 					})
 				})
 			})

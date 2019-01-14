@@ -19,10 +19,11 @@ property_inputs:
 
   - reference: .properties.istio_frontend_tls_keypairs
     label: Ingress Router TLS Keypairs
-    description: |
-      Private keys and certificates in PEM block format used for TLS handshakes with clients. 
     property_inputs:
-      - reference: private_key
-        label: Private Key
-      - reference: cert_chain
-        label: Certificate Chain
+    - reference: name
+      label: Name
+      description: A human-readable name describing the use of this certificate.
+    - reference: certificate
+      label: Certificate and Private Key for Istio Router
+      description: |
+        Private keys and certificates in PEM block format used for TLS handshakes with clients.

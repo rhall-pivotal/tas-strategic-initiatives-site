@@ -10,4 +10,4 @@ manifest: |
     server_ca_cert: (( $ops_manager.ca_certificate ))
     client_cert: (( .properties.bbs_client_cert.cert_pem ))
     client_key: (( .properties.bbs_client_cert.private_key_pem ))
-  frontend_tls_keypairs: (( .properties.istio_frontend_tls_keypairs.value ))
+  frontend_tls_keypairs: (( .properties.istio_frontend_tls_keypairs.parsed_manifest(istio_certificates_and_private_keys) ))
