@@ -58,11 +58,6 @@ var _ = Describe("Logging", func() {
 				agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
 				Expect(err).NotTo(HaveOccurred())
 
-				By("disabling the cf deployment name in emitted metrics")
-				deploymentName, err := agent.Property("deployment")
-				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
-				Expect(deploymentName).To(Equal(""), "Instance Group: %s", ig)
-
 				By("adding tags to the metrics emitted")
 				tags, err := agent.Property("tags")
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
@@ -70,26 +65,6 @@ var _ = Describe("Logging", func() {
 				Expect(tags).NotTo(HaveKey("product_version"))
 				Expect(tags).To(HaveKeyWithValue("system_domain", "sys.example.com"))
 			}
-		})
-
-		Context("when the enable cf metric name is set to true (migration during upgrades)", func() {
-			It("sets the metric deployment name to cf", func() {
-				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.enable_cf_metric_name": true,
-				})
-				Expect(err).NotTo(HaveOccurred())
-
-				instanceGroups := getAllInstanceGroups(manifest)
-
-				for _, ig := range instanceGroups {
-					agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
-					Expect(err).NotTo(HaveOccurred())
-
-					deploymentName, err := agent.Property("deployment")
-					Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
-					Expect(deploymentName).To(Equal("cf"), "Instance Group: %s", ig)
-				}
-			})
 		})
 	})
 
