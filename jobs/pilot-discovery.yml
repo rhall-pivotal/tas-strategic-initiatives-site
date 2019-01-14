@@ -1,0 +1,10 @@
+---
+name: pilot-discovery
+release: istio
+manifest: |
+  copilot:
+    server_ca_cert: (( $ops_manager.ca_certificate ))
+    client_cert: (( .properties.pilot_server_cert.cert_pem ))
+    client_key: (( .properties.pilot_server_cert.private_key_pem ))
+  bpm:
+    enable: true

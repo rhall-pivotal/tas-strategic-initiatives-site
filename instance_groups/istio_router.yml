@@ -1,0 +1,54 @@
+---
+name: istio_router
+label: Istio Router
+resource_label: Istio Router
+description: Istio based replacement for Gorouter
+templates:
+- $( job "bpm" )
+- $( job "envoy" )
+- $( job "loggregator_agent" )
+- $( job "syslog_forwarder" )
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 8192
+  constraints:
+    min: 8192
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 2048
+  constraints:
+    min: 2048
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 2
+  constraints:
+    min: 2
+static_ip: 1
+dynamic_ip: 0
+max_in_flight: 1
+single_az_only: false
+serial: true
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 2
+  constraints:
+    min: 0
+  zero_if:
+    property_reference: ".properties.istio"
+    property_values:
+    - disable

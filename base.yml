@@ -67,10 +67,12 @@ releases:
 - $( release "statsd-injector" )
 - $( release "syslog" )
 - $( release "uaa" )
+- $( release "istio" )
 
 form_types:
 - $( form "domains" )
 - $( form "networking" )
+- $( form "networking_service_mesh" )
 - $( form "app_containers" )
 - $( form "application_dev_controls" )
 - $( form "application_security_groups" )
@@ -118,6 +120,9 @@ job_types:
 - $( instance_group "tcp_router" ) # ERT & SRT
 - $( instance_group "credhub" ) # ERT only
 - $( instance_group "push-apps-manager" ) # ERT & SRT
+- $( instance_group "istio_control" ) # ERT & SRT
+- $( instance_group "istio_router" ) # ERT & SRT
+- $( instance_group "route_syncer" ) # ERT only
 
 property_blueprints:
 - $( property "account_database_name" )
@@ -153,6 +158,8 @@ property_blueprints:
 - $( property "consul_server_cert" )
 - $( property "container_networking" )
 - $( property "container_networking_interface_plugin" )
+- $( property "copilot_client_cert" )
+- $( property "copilot_server_cert" )
 - $( property "credhub_database" )
 - $( property "credhub_database_name" )
 - $( property "credhub_hsm_provider_client_certificate" )
@@ -177,6 +184,8 @@ property_blueprints:
 - $( property "haproxy_hsts_support" )
 - $( property "haproxy_max_buffer_size" )
 - $( property "haproxy_ssl_ciphers" )
+- $( property "istio" )
+- $( property "istio_frontend_tls_keypairs" )
 - $( property "locket_database_name" )
 - $( property "locket_database_max_open_connections" )
 - $( property "log_cache_auth_proxy_client_tls_cert" )
@@ -201,6 +210,7 @@ property_blueprints:
 - $( property "nfs_volume_driver" )
 - $( property "nfsvolume_database_name" )
 - $( property "notifications_database_name" )
+- $( property "pilot_server_cert" )
 - $( property "push_apps_manager_accent_color" )
 - $( property "push_apps_manager_app_poll_interval" )
 - $( property "push_apps_manager_poll_interval" )

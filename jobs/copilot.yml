@@ -1,0 +1,13 @@
+---
+name: copilot
+release: istio
+manifest: |
+  cloud_controller_client_ca_cert: (( $ops_manager.ca_certificate ))
+  pilot_client_ca_cert: (( $ops_manager.ca_certificate ))
+  server_cert: (( .properties.copilot_server_cert.cert_pem ))
+  server_key: (( .properties.copilot_server_cert.private_key_pem ))
+  bbs:
+    server_ca_cert: (( $ops_manager.ca_certificate ))
+    client_cert: (( .properties.bbs_client_cert.cert_pem ))
+    client_key: (( .properties.bbs_client_cert.private_key_pem ))
+  frontend_tls_keypairs: (( .properties.istio_frontend_tls_keypairs.value ))

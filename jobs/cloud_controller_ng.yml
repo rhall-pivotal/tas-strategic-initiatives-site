@@ -31,12 +31,22 @@ manifest: |
     staging_disk_limit_mb: 6144
   app_domains:
   - (( .cloud_controller.apps_domain.value ))
+  - "mesh.(( .cloud_controller.apps_domain.value ))"
   - name: (( .properties.cf_networking_internal_domain.value ))
     internal: true
   login:
     url: https://login.(( .cloud_controller.system_domain.value ))
   domain: (( .cloud_controller.system_domain.value ))
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
+  copilot:
+    enabled: true
+    host: "copilot.service.cf.internal"
+    port: 9001
+    client_ca_file: (( $ops_manager.ca_certificate ))
+    client_chain_file: (( .properties.copilot_client_cert.cert_pem ))
+    client_key_file: (( .properties.copilot_client_cert.private_key_pem ))
+    temporary_istio_domains:
+    - "mesh.(( .cloud_controller.apps_domain.value ))"
   cc:
     temporary_disable_deployments: (( .properties.cloud_controller_temporary_disable_deployments.value ))
     default_health_check_timeout: (( .properties.cloud_controller_default_health_check_timeout.value ))
