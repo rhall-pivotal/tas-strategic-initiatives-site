@@ -8,7 +8,6 @@ manifest: |
       agent:
         cert: (( .doppler.metron_tls_cert.cert_pem ))
         key: (( .doppler.metron_tls_cert.private_key_pem ))
-  deployment: "(( .properties.enable_cf_metric_name.value ? 'cf' : '' ))"
   tags:
     product: $( variable "label" )
     system_domain: "(( .cloud_controller.system_domain.value ))"
