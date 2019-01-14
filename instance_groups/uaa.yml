@@ -105,10 +105,6 @@ property_blueprints:
   type: simple_credentials
   default:
     identity: opentsdb-firehose-nozzle
-- name: apps_manager_client_credentials
-  type: simple_credentials
-  default:
-    identity: portal
 - name: push_usage_service_client_credentials
   type: simple_credentials
   default:
@@ -233,11 +229,7 @@ property_blueprints:
 - name: apps_manager_access_token_lifetime
   type: integer
   configurable: true
-  default: 1209600
-- name: apps_manager_refresh_token_lifetime
-  type: integer
-  configurable: true
-  default: 1209600
+  default: 3600
 - name: cf_cli_access_token_lifetime
   type: integer
   configurable: true
