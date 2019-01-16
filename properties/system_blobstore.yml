@@ -74,9 +74,6 @@
         - name: enable_versioned_s3_backup
           manifest: |
             false
-        - name: enable_gcs_backup
-          manifest: |
-            false
     - name: external
       select_value: external
       named_manifests:
@@ -260,9 +257,6 @@
         - name: enable_versioned_s3_backup
           manifest: |
             (( .properties.system_blobstore.external.versioning.value ))
-        - name: enable_gcs_backup
-          manifest: |
-            false
 
       property_blueprints:
         - name: endpoint
@@ -392,9 +386,6 @@
         - name: enable_versioned_s3_backup
           manifest: |
             false
-        - name: enable_gcs_backup
-          manifest: |
-            false
       property_blueprints:
         - name: buildpacks_bucket
           type: string
@@ -455,31 +446,6 @@
               google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
               google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
               google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
-        - name: backup_bucket
-          manifest: |
-            enabled: true
-            gcp_service_account_key: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
-            bpm:
-              enabled: true
-            buckets:
-              droplet:
-                bucket_name: (( .properties.system_blobstore.external_gcs_service_account.droplets_bucket.value ))
-                backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
-              buildpack:
-                bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
-                backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
-              package:
-                bucket_name: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
-                backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
-        - name: enable_gcs_backup
-          manifest: |
-            true
-        - name: enable_unversioned_s3_backup
-          manifest: |
-            false
-        - name: enable_versioned_s3_backup
-          manifest: |
-            false
         - name: backup_buildpack
           manifest: null
         - name: backup_buildpack_iam
@@ -492,7 +458,12 @@
           manifest: null
         - name: backup_package_iam
           manifest: null
-
+        - name: enable_unversioned_s3_backup
+          manifest: |
+            false
+        - name: enable_versioned_s3_backup
+          manifest: |
+            false
       property_blueprints:
         - name: buildpacks_bucket
           type: string
@@ -504,9 +475,6 @@
           type: string
           configurable: true
         - name: resources_bucket
-          type: string
-          configurable: true
-        - name: backup_bucket
           type: string
           configurable: true
         - name: project_id
@@ -577,9 +545,6 @@
           manifest: |
             false
         - name: enable_versioned_s3_backup
-          manifest: |
-            false
-        - name: enable_gcs_backup
           manifest: |
             false
       property_blueprints:
