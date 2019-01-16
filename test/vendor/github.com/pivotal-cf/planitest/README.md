@@ -24,9 +24,9 @@ renderer or using a generator tool to provide faster feedback.
 ### Use `om` as renderer
 1. Set environment variable `RENDERER` to `om`
 1. An [Ops Manager](https://docs.pivotal.io/pivotalcf/1-12/customizing/) instance to test against. It should have the BOSH tile deployed.
-1. The [om](https://github.com/pivotal-cf/om) CLI
+1. The [om](https://github.com/pivotal-cf/om) CLI, n.b. requires `om` 0.42.0+
 1. The [bosh](https://bosh.io/docs/cli-v2.html#install) CLI
-1. A config file usable by `om configure-product` (refer to example config file below)
+1. A config file usable by `om configure-product`, see `om` [documentation](https://github.com/pivotal-cf/om/tree/master/docs/configure-product#example-yaml)
 1. The tile you want to test. It should be already uploaded to Ops Manager, along with the stemcell it depends on.
 #### Rough Edges for `om`:
 1. Don't attempt to run tests in parallel as different examples will step on each other
