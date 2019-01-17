@@ -109,7 +109,6 @@ func (o OMRunner) ResetAndConfigure(productName string, productVersion string, c
 		"om",
 		"--skip-ssl-validation",
 		"configure-product",
-		"--product-name", productName,
 		"--config", configFile.Name(),
 	)
 
