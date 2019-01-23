@@ -153,4 +153,34 @@ var _ = Describe("Apps Manager", func() {
 			})
 		})
 	})
+
+	Describe("Foundations", func() {
+		It("uses the spec defaults", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+			Expect(err).NotTo(HaveOccurred())
+
+			foundations, err := appsManager.Property("apps_manager/foundations")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(foundations).To(BeNil())
+		})
+
+		Context("when the operator specifies foundations", func() {
+			It("applies them", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.push_apps_manager_foundations": `{"foundation1": {"ccUrl": "api.foundation.my-env.com"}}`,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+				Expect(err).NotTo(HaveOccurred())
+
+				foundations, err := appsManager.Property("apps_manager/foundations")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(foundations).To(Equal(`{"foundation1": {"ccUrl": "api.foundation.my-env.com"}}`))
+			})
+		})
+	})
 })
