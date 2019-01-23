@@ -46,3 +46,6 @@ manifest: |
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
     disable_http_for_links: (( .properties.routing_disable_http.value ))
+  login:
+    saml:
+      providers: (( .properties.uaa.selected_option.parsed_manifest(saml_provider) ))
