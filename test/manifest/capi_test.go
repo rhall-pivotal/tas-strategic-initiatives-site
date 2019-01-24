@@ -96,6 +96,25 @@ var _ = Describe("CAPI", func() {
 					Expect(uaaCa).NotTo(BeEmpty())
 				}
 			})
+
+			It("sets log-cache properties on the cloud_controller_ng job", func() {
+				var cloudControllerInstanceGroup string
+				if productName == "srt" {
+					cloudControllerInstanceGroup = "control"
+				} else {
+					cloudControllerInstanceGroup = "cloud_controller"
+				}
+
+				manifestJob, err := manifest.FindInstanceGroupJob(cloudControllerInstanceGroup, "cloud_controller_ng")
+				Expect(err).NotTo(HaveOccurred())
+
+				temporaryUseLogcache, err := manifestJob.Property("cc/temporary_use_logcache")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(temporaryUseLogcache).To(Equal(bool(true)))
+
+				Expect(manifestJob.Property("cc/logcache_tls")).Should(HaveKey("certificate"))
+				Expect(manifestJob.Property("cc/logcache_tls")).Should(HaveKey("private_key"))
+			})
 		})
 
 		Context("when the TLS checkbox is checked", func() {

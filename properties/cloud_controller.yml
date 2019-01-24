@@ -75,3 +75,11 @@
   default: 3600
   constraints:
     min: 1
+
+- name: cloud_controller_logcache_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - api.(( .cloud_controller.system_domain.value ))
+    - cloud-controller-ng.service.cf.internal
