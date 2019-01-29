@@ -46,7 +46,7 @@ func (o OpsManifestRunner) GetManifest(productProperties, metadataFilePath strin
 	var manifest map[string]interface{}
 	err = yaml.Unmarshal([]byte(response), &manifest)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to unmarshal yaml", err)
+		return nil, fmt.Errorf("Unable to unmarshal yaml: %s", err)
 	}
 
 	return manifest, nil
