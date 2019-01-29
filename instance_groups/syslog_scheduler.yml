@@ -8,6 +8,8 @@ templates:
 {{if eq tile "ert"}}
 - $( job "bpm" )
 - $( job "loggregator_agent" )
+- $( job "loggr-metric-scraper" )
+- $( job "loggr-system-metrics-agent" )
 - $( job "scheduler" )
 - $( job "syslog_forwarder" )
 {{else}}
