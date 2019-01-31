@@ -1,5 +1,9 @@
-# PCF Isolation Segment
+# p-isolation-segment
 
-![scream](http://i.giphy.com/14i3O76jZdfEkg.gif)
+This repository is used to generate the PCF Isolation Segment Ops Manager tile.
 
-[What is the IST?](https://content.pivotal.io/blog/tutorial-using-isolation-segments-in-pcf-for-hub-and-spoke-isolation)
+[![scream](http://i.giphy.com/14i3O76jZdfEkg.gif)](http://lmgtfy.com/?q=dancing+isolations)
+
+## Contributing
+
+See [CONTRIBUTING.md](https://github.com/pivotal-cf/p-runtime/blob/master/CONTRIBUTING.md) for information on how to use our tooling.
