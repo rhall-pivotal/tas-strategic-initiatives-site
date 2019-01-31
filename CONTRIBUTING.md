@@ -1,30 +1,39 @@
-## Contributing changes to PAS
+## Contributing changes to PAS, Isolation Segment, and Windows Runtime Tiles
 
-1. <a href='#changing-properties'>Changing Properties via TDD</a>
+1. <a href='#prerequisites'>Prerequisites</a>
+1. <a href='#changing-properties'>TDDing Property Changes</a>
 1. <a href='#building-a-tile'>Building a Tile</a>
 1. <a href='#bumping-releases'>Bumping Releases</a>
 1. <a href='#migrations'>Migrations</a>
 
-p-runtime is used to build `.pivotal` files for all versions of Pivotal Application Service (PAS).
-
-Each published version has its own branch: `rel/${MAJOR}.${MINOR}` e.g. `rel/2.4`.
+Each published version of each tile has its own branch: `rel/${MAJOR}.${MINOR}` e.g. `rel/2.4`.
 
 The next version is developed on the `master` branch.  It is used to build release candidates for the upcoming release.
 
 You must update each branch independently: if a change is required in more than one version, separate PRs for each branch will be required.
 
-To get started, clone this repo.
+### <a name='prerequisites'></a>Prerequisites
 
-### Build-time Dependencies
+#### p-runtime-bin submodule
+
+All tile git repositories share a common set of tooling for building and
+testing: [`p-runtime-bin`](https://github.com/pivotal/p-runtime-bin).  Before
+you begin, ensure you update this repository's submodule:
+
+```sh
+$ git submodule update --init --recursive
+```
+
+#### Docker
 
 We have encapsulated the build-time dependencies needed to build a tile into a simple
 docker-enabled workflow via the `./bin/build` script.
 
 **Ensure that you have Docker installed.**
 
-### <a name='changing-properties'></a>Changing Properties via TDD
+### <a name='changing-properties'></a>TDDing Property Changes
 
-To TDD changes to a PAS tile, use [planitest](https://github.com/pivotal-cf/planitest). `planitest` is a testing library to make assertions against a BOSH manifest generated from tile metadata and configuration.
+To TDD changes to a tile, use [planitest](https://github.com/pivotal-cf/planitest). `planitest` is a testing library to make assertions against a BOSH manifest generated from tile metadata and configuration.
 
 When you write tests using `planitest`, you are testing that changes made to the tile will result in the expected changes to the BOSH manifest, such as adding a job to an instance group or ensuring a property value is set. Currently, there is no way to test changes to the tile UI.
 
@@ -63,11 +72,14 @@ To prepare your tile repo:
 
 To build a tile locally to test your changes:
 
-1. To build a Small Footprint PAS run `./bin/build`.
-1. To build PAS, run `PRODUCT=ert ./bin/build`.
+1. To build a deployable tile, run `./bin/build`
 1. If you only need to test UI changes and don't need to actually deploy the
    tile, you can skip the release downloading with `STUB_RELEASES=true
    ./bin/build`
+
+#### Building a Full Footprint PAS
+
+By default, in the `p-runtime` repo `./bin/build` builds a Small Footprint PAS. To build a Full Footprint PAS, run `PRODUCT=ert ./bin/build`.
 
 
 ### <a name='bumping-releases'></a>Bumping Releases
