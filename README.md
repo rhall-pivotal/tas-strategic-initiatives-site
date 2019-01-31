@@ -5,10 +5,17 @@ Service (see [Creating a Pivotal Cloud Foundry Product
 Tile](https://docs.pivotal.io/partners/creating.html)), to be consumed by
 Operations Manager&trade;.
 
-## Building a PAS tile with this repo
-The CLI tool [kiln](https://github.com/pivotal-cf/kiln) is used to build the .pivotal file.
-See [kiln's Docs](https://github.com/pivotal-cf/kiln/blob/master/README.md) for more details.
+## Preprequisites
+
+All tile git repositories share a common set of tooling for building and
+testing: [`p-runtime-bin`](https://github.com/pivotal/p-runtime-bin).  Before
+you begin, ensure you update this repository's submodule:
+
+```sh
+$ git submodule update --init --recursive
+```
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+See [CONTRIBUTING.md](CONTRIBUTING.md) for information on how to use our tooling.
+

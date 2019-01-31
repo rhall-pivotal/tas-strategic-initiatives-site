@@ -1,59 +1,73 @@
 ## Contributing changes to PAS
 
+1. <a href='#changing-properties'>Changing Properties via TDD</a>
 1. <a href='#building-a-tile'>Building a Tile</a>
-1. <a href='#changing-properties'>Changing Properties</a>
 1. <a href='#bumping-releases'>Bumping Releases</a>
 1. <a href='#migrations'>Migrations</a>
 
-p-runtime is used to build `.pivotal` files for all supported versions of PCF,
-as well as future versions.
+p-runtime is used to build `.pivotal` files for all versions of Pivotal Application Service (PAS).
 
-Each version is represented as a branch, e.g. [rel/2.2](https://github.com/pivotal-cf/p-runtime/tree/rel/2.0), and must be updated independently.
+Each published version has its own branch: `rel/${MAJOR}.${MINOR}` e.g. `rel/2.4`.
 
-The `master` branch represents the "next" version of PAS and is used to build
-release-candidates for the upcoming release.
+The next version is developed on the `master` branch.  It is used to build release candidates for the upcoming release.
 
-If a change is required in more than one version, separate PRs for each branch will be required.
+You must update each branch independently: if a change is required in more than one version, separate PRs for each branch will be required.
 
+To get started, clone this repo.
 
-### <a name='building-a-tile'></a>Building a Tile
+### Build-time Dependencies
 
-To build a tile locally to test your changes:
+We have encapsulated the build-time dependencies needed to build a tile into a simple
+docker-enabled workflow via the `./bin/build` script.
 
-1. Download and install the latest
-   [kiln](https://github.com/pivotal-cf/kiln/releases) binary.
-1. Make a `./releases` directory in this repo.
-1. Download all the BOSH releases into `./releases`. We download a previously built tile and unzip the `./releases` dir from it.
-1. To build a Small Footprint PAS run `./bin/build`.
-1. To build PAS, run `PRODUCT=ert ./bin/build`.
-1. If you only need to test UI changes and don't need to actually deploy the
-   tile, you can skip the release downloading with `STUB_RELEASES=true
-   ./bin/build`
+**Ensure that you have Docker installed.**
 
+### <a name='changing-properties'></a>Changing Properties via TDD
 
+To TDD changes to a PAS tile, use [planitest](https://github.com/pivotal-cf/planitest). `planitest` is a testing library to make assertions against a BOSH manifest generated from tile metadata and configuration.
 
-### <a name='changing-properties'></a>Changing Properties
-
-To TDD changes to a PAS tile, use [planitest](https://github.com/pivotal-cf/planitest) and [ops-manifest](https://github.com/pivotal-cf/ops-manifest).
-`planitest` is a testing library to make assertions against the generated BOSH manifest.
-`ops-manifest` is extracted Ops Manager code that transforms the tile metadata into a BOSH manifest without the need to stand up a running Ops Manager.
-
-When you write tests using `planitest` and `ops-manifest`, you are testing that changes made to the tile will result in the expected changes to the BOSH manifest, such as adding a job to an instance group or ensuring a property value is set. Currently, there is no way to test changes to the tile UI. 
+When you write tests using `planitest`, you are testing that changes made to the tile will result in the expected changes to the BOSH manifest, such as adding a job to an instance group or ensuring a property value is set. Currently, there is no way to test changes to the tile UI.
 
 [See example code here](https://github.com/pivotal-cf/planitest/blob/master/example_product_service_test.go).
+
+#### Instructions
+
+1. Write your tests in `./test/manifest/`
+1. Run `./bin/test`
+1. Implement the code changes.
+
+#### Background
+
+Our TDD workflow by default uses [ops-manifest](https://github.com/pivotal-cf/ops-manifest). `ops-manifest` is extracted Ops Manager code that transforms tile metadata into a BOSH manifest without the need to stand up a running Ops Manager.
 
 If you want more confidence in your tile changes, you can use [om](https://github.com/pivotal-cf/om/) as the renderer for `planitest` and run your tests against a real Ops Manager.
 
 For more information about tile metadata, refer to the [Product Template Reference](https://docs.pivotal.io/tiledev/2-2/product-template-reference.html).
 
-**Setting up ops-manifest and running tests**
 
-1. Clone the version branch you want to make changes to.
-1. Generate a Github API token
-1. Run `./bin/test` with your Github username and API token
-1. To add new tests, modify or create an appropriate test file in `tests/manifest`
-1. Implement the code changes.
-1. Make a PR!
+### <a name='building-a-tile'></a>Building a Tile
+
+You might come up against a scenario where you want to build a tile. You may want to test the UI changes by uploading a tile to a real Ops Manager. You may want to actually perform a tile deployment.
+
+#### Fetch Releases
+
+If you need to generate a real tile, you will have to supply all of this tile's component BOSH releases. Our tooling expects that these releases exist in a gitignored `./releases` directory.
+
+To prepare your tile repo:
+
+1. Make a `./releases` directory in this repo.
+1. Download all this tile's component BOSH releases into `./releases`. (Note:
+   The PAS RelEng team does this by downloading a previously built tile and unzipping the `./releases` dir from it.)
+
+#### Instructions
+
+To build a tile locally to test your changes:
+
+1. To build a Small Footprint PAS run `./bin/build`.
+1. To build PAS, run `PRODUCT=ert ./bin/build`.
+1. If you only need to test UI changes and don't need to actually deploy the
+   tile, you can skip the release downloading with `STUB_RELEASES=true
+   ./bin/build`
 
 
 ### <a name='bumping-releases'></a>Bumping Releases
@@ -139,13 +153,7 @@ describe("Diego log timestamp format", function() {
 });
 ```
 
-To run the migration tests:
-
-```
-cd ./migrations
-npm install
-npm test
-```
+Then run `./bin/test`.
 
 **Are there any gotchas?**
 
