@@ -474,10 +474,22 @@
   configurable: true
   optional: true
 
-- name: cf_networking_internal_domain
-  type: string
+- name: cf_networking_internal_domains
+  type: collection
   configurable: true
-  default: apps.internal
+  default:
+  - name: apps.internal
+  property_blueprints:
+  - name: name
+    type: string
+  named_manifests:
+  - name: for_bosh_dns_adapter
+    manifest: |
+      (( current_record.name.value ))
+  - name: for_cloud_controller_ng
+    manifest: |
+      name: (( current_record.name.value ))
+      internal: true
 
 - name: routing_backends_client_cert_with_san
   type: rsa_cert_credentials
