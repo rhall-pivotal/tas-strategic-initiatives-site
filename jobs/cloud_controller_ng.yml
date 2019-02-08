@@ -33,8 +33,7 @@ manifest: |
   app_domains:
   - (( .cloud_controller.apps_domain.value ))
   - '(( .properties.istio_domain.value ? "" : "mesh."))(( .properties.istio_domain.value ? .properties.istio_domain.value : .cloud_controller.apps_domain.value ))'
-  - name: (( .properties.cf_networking_internal_domain.value ))
-    internal: true
+  - (( .properties.cf_networking_internal_domains.parsed_manifest(for_cloud_controller_ng) ))
   login:
     url: https://login.(( .cloud_controller.system_domain.value ))
   domain: (( .cloud_controller.system_domain.value ))

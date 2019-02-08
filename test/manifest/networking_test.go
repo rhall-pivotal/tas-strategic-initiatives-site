@@ -534,14 +534,21 @@ var _ = Describe("Networking", func() {
 				})
 			})
 
-			Context("when internal domain is configured", func() {
+			Context("when internal domains are configured", func() {
 				var (
 					inputProperties map[string]interface{}
 				)
 
 				It("sets internal domains to the provided internal domains", func() {
 					inputProperties = map[string]interface{}{
-						".properties.cf_networking_internal_domain": "some-internal-domain",
+						".properties.cf_networking_internal_domains": []map[string]interface{}{
+							{
+								"name": "some-internal-domain",
+							},
+							{
+								"name": "some-other-internal-domain",
+							},
+						},
 					}
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
@@ -554,6 +561,7 @@ var _ = Describe("Networking", func() {
 
 					Expect(internalDomains).To(Equal([]interface{}{
 						"some-internal-domain",
+						"some-other-internal-domain",
 					}))
 				})
 			})
@@ -583,22 +591,31 @@ var _ = Describe("Networking", func() {
 					Expect(internalDomains).To(Equal([]interface{}{
 						"apps.example.com",
 						"mesh.apps.example.com",
-						map[interface{}]interface{}{
-							"name":     "apps.internal",
-							"internal": true,
+						[]interface{}{
+							map[interface{}]interface{}{
+								"internal": true,
+								"name":     "apps.internal",
+							},
 						},
 					}))
 				})
 			})
 
-			Context("when internal domain is configured", func() {
+			Context("when internal domains are configured", func() {
 				var (
 					inputProperties map[string]interface{}
 				)
 
 				It("adds internal domains to app domains", func() {
 					inputProperties = map[string]interface{}{
-						".properties.cf_networking_internal_domain": "some-internal-domain",
+						".properties.cf_networking_internal_domains": []map[string]interface{}{
+							{
+								"name": "some-internal-domain",
+							},
+							{
+								"name": "some-other-internal-domain",
+							},
+						},
 					}
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
@@ -612,9 +629,15 @@ var _ = Describe("Networking", func() {
 					Expect(internalDomains).To(Equal([]interface{}{
 						"apps.example.com",
 						"mesh.apps.example.com",
-						map[interface{}]interface{}{
-							"name":     "some-internal-domain",
-							"internal": true,
+						[]interface{}{
+							map[interface{}]interface{}{
+								"name":     "some-internal-domain",
+								"internal": true,
+							},
+							map[interface{}]interface{}{
+								"name":     "some-other-internal-domain",
+								"internal": true,
+							},
 						},
 					}))
 				})
@@ -756,9 +779,11 @@ var _ = Describe("Networking", func() {
 								Expect(internalDomains).To(Equal([]interface{}{
 									"apps.example.com",
 									"mesh.apps.example.com",
-									map[interface{}]interface{}{
-										"name":     "apps.internal",
-										"internal": true,
+									[]interface{}{
+										map[interface{}]interface{}{
+											"name":     "apps.internal",
+											"internal": true,
+										},
 									},
 								}))
 							})
@@ -792,9 +817,11 @@ var _ = Describe("Networking", func() {
 							Expect(internalDomains).To(Equal([]interface{}{
 								"apps.example.com",
 								"superspecial.istio.domain.com",
-								map[interface{}]interface{}{
-									"name":     "apps.internal",
-									"internal": true,
+								[]interface{}{
+									map[interface{}]interface{}{
+										"name":     "apps.internal",
+										"internal": true,
+									},
 								},
 							}))
 						})
