@@ -53,10 +53,13 @@ property_inputs:
       Controller.
     placeholder: 900
 
-  - reference: .properties.cf_networking_internal_domain
-    label: Internal domain
-    description: |
-      Internal domain for app service discovery.
+  - reference: .properties.cf_networking_internal_domains
+    label: Internal Domains
+    property_inputs:
+    - reference: name
+      label: Name
+      description: |
+        Internal domains for app service discovery.
 
   - reference: .properties.cf_networking_enable_space_developer_self_service
     label: Allow space developers to manage network policies
