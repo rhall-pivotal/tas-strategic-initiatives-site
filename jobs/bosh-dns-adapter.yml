@@ -12,5 +12,4 @@ manifest: |
         private_key: (( .properties.service_discovery_client_tls.private_key_pem ))
     server:
       ca: (( $ops_manager.ca_certificate ))
-  internal_domains:
-    - (( ..cf.properties.cf_networking_internal_domain.value ))
+  internal_domains: (( ..cf.properties.cf_networking_internal_domains.parsed_manifest(for_bosh_dns_adapter) ))
