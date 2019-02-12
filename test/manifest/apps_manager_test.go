@@ -183,4 +183,23 @@ var _ = Describe("Apps Manager", func() {
 			})
 		})
 	})
+
+	Describe("Identity Providers", func() {
+		It("fetches the SAML providers", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.uaa":                                "saml",
+				".properties.uaa.saml.display_name":              "Some Display Name",
+				".properties.uaa.saml.sso_name":                  "Okta",
+				".properties.uaa.saml.require_signed_assertions": true,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+			Expect(err).NotTo(HaveOccurred())
+
+			samlProviders, err := appsManager.Property("login/saml/providers")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(samlProviders).To(HaveKey("Okta"))
+		})
+	})
 })
