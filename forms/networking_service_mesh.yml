@@ -10,12 +10,22 @@ property_inputs:
     description: |
       When enabled, a new kind of platform ingress router will be deployed, in parallel to the existing HTTP and TCP routers, offering new capabilities. Enable this only for deployments with fewer than 20,000 routes; core platform functions will be impacted at greater scale.
     selector_property_inputs:
-      - reference: .properties.istio.disable
-        label: |
-          Disable
-      - reference: .properties.istio.enable
-        label: |
-          Enable
+    - reference: .properties.istio.disable
+      label: |
+        Disable
+    - reference: .properties.istio.enable
+      label: |
+        Enable
+
+  - reference: .istio_router.static_ips
+    label: IP Addresses for Ingress Router
+    description: |
+      If you are deploying onto an infrastructure where automated load
+      balancer assignment is not supported (vSphere), enter static IPs for
+      your Istio Routers and configure a load balancer with these IPs. Otherwise,
+      this field can be left blank and the Load Balancers field on the Resource
+      Config tab can be filled out with the correct load balancer assignment
+      for the Istio Router instance group.
 
   - reference: .properties.istio_frontend_tls_keypairs
     label: Ingress Router TLS Keypairs

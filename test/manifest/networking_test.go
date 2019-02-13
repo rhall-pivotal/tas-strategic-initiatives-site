@@ -684,6 +684,24 @@ var _ = Describe("Networking", func() {
 					Expect(instanceCount).To(Equal(1))
 				})
 
+				Context("when static IPs are set", func() {
+					It("adds the static_ips", func() {
+						inputProperties := map[string]interface{}{
+							".properties.istio":        "enable",
+							".istio_router.static_ips": "0.0.0.0",
+						}
+
+						manifest, err := product.RenderManifest(inputProperties)
+						Expect(err).NotTo(HaveOccurred())
+
+						ips, err := manifest.Path("/instance_groups/name=istio_router/networks")
+						Expect(err).NotTo(HaveOccurred())
+
+						key := ips.([]interface{})[0].(map[interface{}]interface{})
+						Expect(key["static_ips"]).To(Equal([]interface{}{"0.0.0.0"}))
+					})
+				})
+
 				Describe("when frontend TLS keypairs are configured", func() {
 					It("populates the frontend TLS keypairs", func() {
 						fakeCert1 := generateTLSKeypair("some-hostname")
