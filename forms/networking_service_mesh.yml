@@ -27,6 +27,11 @@ property_inputs:
       Config tab can be filled out with the correct load balancer assignment
       for the Istio Router instance group.
 
+  - reference: .properties.istio_domain
+    label: External Domain
+    description: |
+      Configure DNS to resolve this domain to a load balancer in front of the Ingress Routers, and create the domain in CF so that developers can create routes from it.
+
   - reference: .properties.istio_frontend_tls_keypairs
     label: Ingress Router TLS Keypairs
     property_inputs:
