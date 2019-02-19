@@ -1,3 +1,9 @@
 ---
 name: windows1803fs
 release: windows1803fs
+manifest: |
+  windows-rootfs:
+    trusted_certs:
+      - ((( /cf/diego-instance-identity-root-ca.certificate )))
+      - (( $ops_manager.ca_certificate ))
+      - (( $ops_manager.trusted_certificates ))
