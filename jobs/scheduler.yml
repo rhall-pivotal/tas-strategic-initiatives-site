@@ -6,6 +6,7 @@ manifest: |
     scheduler:
       api:
         url: https://cloud-controller-ng.service.cf.internal:9023
+        batch_size: (( .properties.syslog_scheduler_batch_size.value ))
       health: $( variable "scheduler_health_port" )
       tls:
         client:
