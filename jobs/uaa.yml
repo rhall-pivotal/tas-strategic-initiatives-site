@@ -382,7 +382,7 @@ manifest: |
         override: true
         autoapprove: true
         authorized-grant-types: authorization_code,refresh_token,client_credentials,password
-        redirect-uri: "https://metrics.(( .cloud_controller.system_domain.value )),https://metrics.(( .cloud_controller.system_domain.value ))/,https://metrics.(( .cloud_controller.system_domain.value ))/*,https://metrics-previous.(( .cloud_controller.system_domain.value )),https://metrics-previous.(( .cloud_controller.system_domain.value ))/,https://metrics-previous.(( .cloud_controller.system_domain.value ))/*"
+        redirect-uri: "https://metrics.(( .cloud_controller.system_domain.value ))/**,https://metrics-previous.(( .cloud_controller.system_domain.value ))/**"
         authorities: uaa.resource
         scope: cloud_controller.admin,cloud_controller.read,metrics.read,cloud_controller.admin_read_only
         access-token-validity: 900
@@ -396,6 +396,14 @@ manifest: |
         scope: openid,oauth.approvals,doppler.firehose,cloud_controller.admin,cloud_controller.admin_read_only
         access-token-validity: 1209600
         redirect-uri: "https://metrics.(( .cloud_controller.system_domain.value )),https://metrics-previous.(( .cloud_controller.system_domain.value ))"
+      catalyst:
+        id: (( .uaa.catalyst_credentials.identity ))
+        secret: (( .uaa.catalyst_credentials.password ))
+        override: true
+        authorized-grant-types: authorization_code
+        autoapprove: true
+        scope: uaa.user,cloud_controller.read,cloud_controller.admin_read_only,logs.admin,doppler.firehose
+        redirect-uri: "https://metrics.(( .cloud_controller.system_domain.value ))/**,https://appwatch.(( .cloud_controller.system_domain.value ))/**,https://appmetrics.(( .cloud_controller.system_domain.value ))/**,https://applogs.(( .cloud_controller.system_domain.value ))/**"
       healthwatch_ui:
         id: "(( .uaa.healthwatch_ui_credentials.identity ))"
         secret: "(( .uaa.healthwatch_ui_credentials.password ))"

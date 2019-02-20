@@ -300,7 +300,7 @@ var _ = Describe("UAA", func() {
 			By("providing apps_metrics has the expected redirect uri", func() {
 				appMetricsRedirectUri, err := uaa.Property("uaa/clients/apps_metrics/redirect-uri")
 				Expect(err).ToNot(HaveOccurred())
-				Expect(appMetricsRedirectUri).To(Equal("https://metrics.sys.example.com,https://metrics.sys.example.com/,https://metrics.sys.example.com/*,https://metrics-previous.sys.example.com,https://metrics-previous.sys.example.com/,https://metrics-previous.sys.example.com/*"))
+				Expect(appMetricsRedirectUri).To(Equal("https://metrics.sys.example.com/**,https://metrics-previous.sys.example.com/**"))
 			})
 
 			By("providing apps_metrics_processing  the expected permission scopes", func() {
@@ -313,6 +313,22 @@ var _ = Describe("UAA", func() {
 				appMetricsRedirectUri, err := uaa.Property("uaa/clients/apps_metrics_processing/redirect-uri")
 				Expect(err).ToNot(HaveOccurred())
 				Expect(appMetricsRedirectUri).To(Equal("https://metrics.sys.example.com,https://metrics-previous.sys.example.com"))
+			})
+
+			By("providing catalyst the expected permission scopes", func() {
+				catalystScopes, err := uaa.Property("uaa/clients/catalyst/scope")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(catalystScopes).To(Equal("uaa.user,cloud_controller.read,cloud_controller.admin_read_only,logs.admin,doppler.firehose"))
+			})
+
+			By("providing catalyst has the expected redirect uri", func() {
+				catalystRedirectUri, err := uaa.Property("uaa/clients/catalyst/redirect-uri")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(catalystRedirectUri).To(Equal("" +
+					"https://metrics.sys.example.com/**," +
+					"https://appwatch.sys.example.com/**," +
+					"https://appmetrics.sys.example.com/**," +
+					"https://applogs.sys.example.com/**"))
 			})
 
 			By("providing apps_manager_js client the expected scopes", func() {
