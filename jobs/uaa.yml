@@ -510,7 +510,7 @@ manifest: |
         id: (( .uaa.cloudcache_broker_client_credentials.identity ))
         secret: (( .uaa.cloudcache_broker_client_credentials.password ))
         scope: "uaa.none"
-        authorities: "cloud_controller.admin"
+        authorities: "cloud_controller.admin,zones.write,zones.read,zones.pcc.admin"
         authorized-grant-types: "refresh_token,client_credentials"
       dedicated-mysql-notifications:
         id: (( .uaa.dedicated_mysql_notifications_client_credentials.identity ))
