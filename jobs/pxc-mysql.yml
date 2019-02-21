@@ -14,6 +14,7 @@ manifest: |
     galera:
       enabled: true
     innodb_buffer_pool_size: 2147483648
+    innodb_flush_log_at_trx_commit: 2
     innodb_strict_mode: true
     max_connections: (( .mysql.max_connections.value ))
     audit_logs:
