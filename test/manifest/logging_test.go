@@ -102,4 +102,20 @@ rule
 			})
 		})
 	})
+
+	Describe("system metrics agent", func() {
+		It("sets defaults on the system-metrics agent", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, ig := range instanceGroups {
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggr-system-metrics-agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				enabled, err := agent.Property("enabled")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(enabled).To(BeTrue())
+			}
+		})
+	})
 })

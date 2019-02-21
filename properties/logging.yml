@@ -83,3 +83,15 @@
         - name: iptables_logging_disabled
           manifest: |
             ""
+
+- name: system_metrics_tls_scraper_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - system-metrics
+
+- name: system_metrics_enabled
+  type: boolean
+  configurable: true
+  default: true
