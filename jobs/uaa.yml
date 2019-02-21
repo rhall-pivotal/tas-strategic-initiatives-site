@@ -546,6 +546,11 @@ manifest: |
         authorities: cloud_controller.admin,clients.admin,credhub.read,credhub.write
         authorized-grant-types: client_credentials
         access-token-validity: 3600
+      (( .uaa.nfsbroker_credhub_client_credentials.identity )):
+        id: (( .uaa.nfsbroker_credhub_client_credentials.identity ))
+        authorities: credhub.read,credhub.write
+        authorized-grant-types: client_credentials
+        secret: (( .uaa.nfsbroker_credhub_client_credentials.password ))
       (( .uaa.smbbroker_client_credentials.identity )):
         id: (( .uaa.smbbroker_client_credentials.identity ))
         authorities: cloud_controller.admin
