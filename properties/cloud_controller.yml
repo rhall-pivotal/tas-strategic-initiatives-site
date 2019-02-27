@@ -75,27 +75,3 @@
   default: 3600
   constraints:
     min: 1
-
-- name: cloud_controller_default_stack
-  type: selector
-  configurable: true
-  default: default
-  option_templates:
-    - name: default
-      select_value: default
-      named_manifests:
-        - name: stack
-          manifest: |
-            cflinuxfs3
-    - name: cflinuxfs3
-      select_value: cflinuxfs3
-      named_manifests:
-        - name: stack
-          manifest: |
-            cflinuxfs3
-    - name: cflinuxfs2
-      select_value: cflinuxfs2
-      named_manifests:
-        - name: stack
-          manifest: |
-            cflinuxfs2

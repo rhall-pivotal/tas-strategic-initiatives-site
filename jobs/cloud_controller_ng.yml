@@ -74,7 +74,7 @@ manifest: |
       description: Microsoft Windows 2016
     - name: windows
       description: Windows Server
-    default_stack: (( .properties.cloud_controller_default_stack.selected_option.parsed_manifest(stack) ))
+    default_stack: cflinuxfs3
     min_cli_version: 6.23.0
     bulk_api_password: ((( cloud-controller-bulk-api-credentials.password )))
     default_running_security_groups:

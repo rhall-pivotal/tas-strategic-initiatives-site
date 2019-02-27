@@ -46,14 +46,3 @@ property_inputs:
     label: Database Read Timeout
     description: |
       The read timeout for query responses in seconds.
-
-  - reference: .properties.cloud_controller_default_stack
-    label: |
-      Default stack (rootfs) for newly created apps
-    selector_property_inputs:
-      - reference: .properties.cloud_controller_default_stack.default
-        label: Platform default (currently 'cflinuxfs3')
-      - reference: .properties.cloud_controller_default_stack.cflinuxfs3
-        label: cflinuxfs3
-      - reference: .properties.cloud_controller_default_stack.cflinuxfs2
-        label: cflinuxfs2
