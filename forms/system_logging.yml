@@ -48,12 +48,6 @@ property_inputs:
         This certificate will ensure that logs get securely transported to
         the syslog destination.
 
-- reference: .doppler.message_drain_buffer_size
-  label: Syslog Drain Buffer Size (# of messages)
-  description: |
-    The number of log messages the buffer holds before dropping messages. A
-    larger buffer size might overload the system.
-
 - reference: .properties.syslog_scheduler_batch_size
   label: Number of syslog drain addresses to retrieve
   description: |

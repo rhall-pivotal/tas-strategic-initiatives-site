@@ -61,10 +61,6 @@ instance_definition:
   constraints:
     min: $( variable "doppler_min_instances" )
 property_blueprints:
-- name: message_drain_buffer_size
-  type: integer
-  default: 10000
-  configurable: true
 - name: doppler_tls_cert
   type: rsa_cert_credentials
   configurable: false
