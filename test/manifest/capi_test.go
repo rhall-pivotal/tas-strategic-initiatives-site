@@ -359,7 +359,7 @@ var _ = Describe("CAPI", func() {
 				stacks, err := cc.Property("cc/stacks")
 				Expect(err).NotTo(HaveOccurred())
 
-				Expect(stacks).To(ContainElement(map[interface{}]interface{}{
+				Expect(stacks).NotTo(ContainElement(map[interface{}]interface{}{
 					"name":        "cflinuxfs2",
 					"description": "Cloud Foundry Linux-based filesystem - Ubuntu Trusty 14.04 LTS",
 				}))

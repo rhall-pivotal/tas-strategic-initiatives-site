@@ -246,17 +246,6 @@ var _ = Describe("Diego", func() {
 			}
 		})
 
-		It("colocates the cflinuxfs2-rootfs-setup job", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			setup, err := manifest.FindInstanceGroupJob(instanceGroup, "cflinuxfs2-rootfs-setup")
-			Expect(err).NotTo(HaveOccurred())
-
-			trustedCerts, err := setup.Property("cflinuxfs2-rootfs/trusted_certs")
-			Expect(trustedCerts).NotTo(BeEmpty())
-		})
-
 		It("colocates the cflinuxfs3-rootfs-setup job", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -278,7 +267,6 @@ var _ = Describe("Diego", func() {
 			preloadedRootfses, err := rep.Property("diego/rep/preloaded_rootfses")
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(preloadedRootfses).To(ContainElement("cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar"))
 			Expect(preloadedRootfses).To(ContainElement("cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar"))
 		})
 
@@ -292,7 +280,6 @@ var _ = Describe("Diego", func() {
 			persistentImageList, err := garden.Property("garden/persistent_image_list")
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs2/rootfs.tar"))
 			Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs3/rootfs.tar"))
 		})
 	})
@@ -382,7 +369,7 @@ var _ = Describe("Diego", func() {
 
 	})
 
-	Context("cflinuxfs2-rootfs and cflinuxfs3-rootfs", func() {
+	Context("cflinuxfs3-rootfs", func() {
 
 		BeforeEach(func() {
 			if productName == "srt" {
@@ -396,17 +383,10 @@ var _ = Describe("Diego", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
-			cflinuxfs2RootfsSetup, err := manifest.FindInstanceGroupJob(instanceGroup, "cflinuxfs2-rootfs-setup")
-			Expect(err).NotTo(HaveOccurred())
-
-			trustedCerts, err := cflinuxfs2RootfsSetup.Property("cflinuxfs2-rootfs/trusted_certs")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(trustedCerts).NotTo(BeNil())
-
 			cflinuxfs3RootfsSetup, err := manifest.FindInstanceGroupJob(instanceGroup, "cflinuxfs3-rootfs-setup")
 			Expect(err).NotTo(HaveOccurred())
 
-			trustedCerts, err = cflinuxfs3RootfsSetup.Property("cflinuxfs3-rootfs/trusted_certs")
+			trustedCerts, err := cflinuxfs3RootfsSetup.Property("cflinuxfs3-rootfs/trusted_certs")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(trustedCerts).NotTo(BeNil())
 		})
