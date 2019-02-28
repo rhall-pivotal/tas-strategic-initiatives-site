@@ -14,11 +14,6 @@ var _ = Describe("Logging", func() {
 			agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggregator_agent_windows")
 			Expect(err).NotTo(HaveOccurred())
 
-			By("disabling the cf deployment name in emitted metrics")
-			deploymentName, err := agent.Property("deployment")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(deploymentName).To(Equal(""))
-
 			By("setting tags on the emitted metrics")
 			tags, err := agent.Property("tags")
 			Expect(err).NotTo(HaveOccurred())
@@ -40,22 +35,6 @@ var _ = Describe("Logging", func() {
 				tags, err := agent.Property("tags")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(tags).To(HaveKeyWithValue("placement_tag", "tag1,tag2"))
-			})
-		})
-
-		Context("when the enable cf metric name is set to true (migration during upgrades)", func() {
-			It("sets the metric deployment name to cf", func() {
-				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.enable_cf_metric_name": true,
-				})
-				Expect(err).NotTo(HaveOccurred())
-
-				agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggregator_agent_windows")
-				Expect(err).NotTo(HaveOccurred())
-
-				deploymentName, err := agent.Property("deployment")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(deploymentName).To(Equal("cf"))
 			})
 		})
 	})
