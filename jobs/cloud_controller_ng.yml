@@ -49,6 +49,8 @@ manifest: |
     - "mesh.(( .cloud_controller.apps_domain.value ))"
   cc:
     temporary_use_logcache: true
+    logcache:
+      port: $( variable "log_cache_port" )
     logcache_tls:
       private_key: (( .properties.cloud_controller_logcache_tls_cert.private_key_pem ))
       certificate: (( .properties.cloud_controller_logcache_tls_cert.cert_pem ))
