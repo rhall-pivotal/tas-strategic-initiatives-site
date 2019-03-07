@@ -124,6 +124,7 @@ manifest: |
       package: binary-buildpack-windows2016
     broker_client_default_async_poll_interval_seconds: 10
     diego:
+      docker_staging_stack: cflinuxfs3
       file_server_url: http://file-server.service.cf.internal:$( variable "diego_fileserver_port" )
       insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
       pid_limit: 0

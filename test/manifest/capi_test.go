@@ -345,6 +345,15 @@ var _ = Describe("CAPI", func() {
 			Expect(description).To(MatchRegexp(`https://docs.pivotal.io/pivotalcf/\d+-\d+/pcf-release-notes/runtime-rn.html`))
 		})
 
+		It("uses cflinuxfs3 for the docker staging stack", func() {
+			api, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+			Expect(err).NotTo(HaveOccurred())
+
+			description, err := api.Property("cc/diego/docker_staging_stack")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(description).To(Equal("cflinuxfs3"))
+		})
+
 		Describe("tls routing", func() {
 			It("configures the route registrar to use tls", func() {
 				routeRegistrarJob, err := manifest.FindInstanceGroupJob(instanceGroup, "route_registrar")
