@@ -1,5 +1,7 @@
 name: loggregator_agent
 release: loggregator-agent
+consumes: |
+  doppler: {from: doppler, deployment: (( ..cf.deployment_name )) }
 manifest: |
   loggregator:
     tls:
