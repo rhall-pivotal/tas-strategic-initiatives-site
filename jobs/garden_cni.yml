@@ -1,5 +1,7 @@
 name: garden-cni
 release: cf-networking
+consumes: |
+  cloud_controller_container_networking_info: {from: cloud_controller_container_networking_info, deployment: (( ..cf.deployment_name )) }
 manifest: |
   cni_config_dir: (( ..cf.properties.container_networking_interface_plugin.selected_option.parsed_manifest(cni_config_dir) ))
   cni_plugin_dir: (( ..cf.properties.container_networking_interface_plugin.selected_option.parsed_manifest(cni_plugin_dir) ))
