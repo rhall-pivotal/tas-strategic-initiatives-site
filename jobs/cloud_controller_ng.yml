@@ -3,6 +3,7 @@ name: cloud_controller_ng
 release: capi
 provides: |
   cloud_controller: {as: cloud_controller, shared: true}
+  cloud_controller_container_networking_info: {as: cloud_controller_container_networking_info, shared: true}
 # go-yaml wraps lines that are longer than 80 characters,
 # this breaks templating as $( ) helpers cannot have newlines in the middle.
 # The key '_hack' also needs to start with underscore as keys in output are alpha-sorted and
