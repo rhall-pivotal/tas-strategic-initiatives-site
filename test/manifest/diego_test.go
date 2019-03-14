@@ -175,6 +175,19 @@ var _ = Describe("Diego", func() {
 			Expect(uaaProperties).NotTo(HaveKey("port"))
 		})
 
+		It("disables the HTTP healthcheck server", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			sshProxy, err := manifest.FindInstanceGroupJob(instanceGroup, "ssh_proxy")
+			Expect(err).NotTo(HaveOccurred())
+
+			disableHealthcheckProperty, err := sshProxy.Property("diego/ssh_proxy/disable_healthcheck_server")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(disableHealthcheckProperty).To(BeTrue())
+		})
+
 		It("disables TLS between ssh proxy server and backends", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())

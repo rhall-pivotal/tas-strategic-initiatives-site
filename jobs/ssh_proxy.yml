@@ -8,6 +8,7 @@ manifest: |
   backends: (( .properties.route_integrity.selected_option.parsed_manifest(backends_tls) ))
   diego:
     ssh_proxy:
+      disable_healthcheck_server: true
       bbs:
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.bbs_client_cert.cert_pem ))
