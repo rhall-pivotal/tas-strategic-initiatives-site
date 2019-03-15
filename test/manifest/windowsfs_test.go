@@ -5,11 +5,11 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("windows1803fs", func() {
+var _ = Describe("windows2019fs", func() {
 	It("accepts trusted certs", func() {
 		manifest, err := product.RenderManifest(map[string]interface{}{})
 
-		fs, err := manifest.FindInstanceGroupJob("windows_diego_cell", "windows1803fs")
+		fs, err := manifest.FindInstanceGroupJob("windows_diego_cell", "windows2019fs")
 		Expect(err).NotTo(HaveOccurred())
 
 		trustedCerts, err := fs.Property("windows-rootfs/trusted_certs")
