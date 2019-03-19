@@ -8,10 +8,10 @@ manifest: |
     image_plugin_extra_args:
     - "--driver-store=/var/vcap/data/groot"
     - "--config=/var/vcap/jobs/groot/config/groot.yml"
-    network_plugin: "/var/vcap/packages/winc-network-1803/winc-network.exe"
+    network_plugin: "/var/vcap/packages/winc-network-hns-acls/winc-network.exe"
     network_plugin_extra_args:
-    - "--configFile=/var/vcap/jobs/winc-network-1803/config/interface.json"
-    - "--log=/var/vcap/sys/log/winc-network-1803/winc-network.log"
+    - "--configFile=/var/vcap/jobs/winc-network-hns-acls/config/interface.json"
+    - "--log=/var/vcap/sys/log/winc-network-hns-acls/winc-network.log"
     runtime_plugin: "/var/vcap/packages/winc/winc.exe"
     nstar_bin: "/var/vcap/packages/nstar/nstar.exe"
     destroy_containers_on_start: true

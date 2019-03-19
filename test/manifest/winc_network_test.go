@@ -9,7 +9,7 @@ var _ = Describe("winc_network", func() {
 	It("sets dns_servers and mtu", func() {
 		manifest, err := product.RenderManifest(map[string]interface{}{})
 
-		winc, err := manifest.FindInstanceGroupJob("windows_diego_cell", "winc-network-1803")
+		winc, err := manifest.FindInstanceGroupJob("windows_diego_cell", "winc-network-hns-acls")
 		Expect(err).NotTo(HaveOccurred())
 
 		dnsServers, err := winc.Property("winc_network/dns_servers")
