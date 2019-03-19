@@ -6,4 +6,5 @@ This repository is used to generate the PCF Isolation Segment Ops Manager tile.
 
 ## Contributing
 
-See [CONTRIBUTING.md](https://github.com/pivotal-cf/p-runtime/blob/master/CONTRIBUTING.md) for information on how to use our tooling.
+See [CONTRIBUTING.md](https://github.com/pivotal-cf/p-runtime/blob/master/CONTRIBUTING.md)
+for information on how to use our tooling.
