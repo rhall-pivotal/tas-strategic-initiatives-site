@@ -785,7 +785,7 @@ var _ = Describe("Networking", func() {
 				job, err := manifest.FindInstanceGroupJob(routerInstanceGroup, "gorouter")
 				Expect(err).NotTo(HaveOccurred())
 
-				removeHeaders, err := job.Property("http_rewrite/responses/remove_headers")
+				removeHeaders, err := job.Property("router/http_rewrite/responses/remove_headers")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(removeHeaders.([]interface{})[0].(map[interface{}]interface{})["name"]).To(Equal("header1"))
 				Expect(removeHeaders.([]interface{})[1].(map[interface{}]interface{})["name"]).To(Equal("header2"))
