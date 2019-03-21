@@ -11,9 +11,6 @@ manifest: |
       port: 8443
   request_timeout_in_seconds: (( .router.request_timeout_in_seconds.value ))
   router:
-    http_rewrite:
-      responses:
-        remove_headers: (( .properties.router_headers_remove_if_specified.value ))
     backends:
       max_conns: (( .properties.router_backend_max_conn.value ))
       enable_tls: true
@@ -50,3 +47,6 @@ manifest: |
     frontend_idle_timeout: (( .router.frontend_idle_timeout.value ))
   routing_api:
     enabled: true
+  http_rewrite:
+    responses:
+      remove_headers: (( .properties.router_headers_remove_if_specified.value ))
