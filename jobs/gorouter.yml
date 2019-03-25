@@ -5,6 +5,9 @@ consumes: |
 manifest: |
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   router:
+    http_rewrite:
+      responses:
+        remove_headers: (( .properties.router_headers_remove_if_specified.value ))
     backends:
       enable_tls: true
       max_conns: (( .properties.router_backend_max_conn.value ))

@@ -305,3 +305,14 @@ property_inputs:
     label: Isolation Segment Only
   - reference: .properties.routing_table_sharding_mode.no_isolation_segment
     label: No Isolation Segment
+
+  - reference: .properties.router_headers_remove_if_specified
+    label: Remove Specified HTTP Response Headers
+    description: |
+      A list of headers the router will remove on any response returned by an
+      application hosted on this isolation segment. This is useful when you want to remove certain
+      HTTP response headers for additional security.
+    property_inputs:
+    - reference: name
+      label: Header name
+      description: Header name to remove
