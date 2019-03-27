@@ -367,6 +367,22 @@ var _ = Describe("Diego", func() {
 			Expect(reservedInMB).To(Equal(15360))
 		})
 
+		When("reserved_space_for_other_jobs_in_mb is set", func() {
+			It("sets the reserved disk space", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.garden_disk_cleanup":                                              "reserved",
+					".properties.garden_disk_cleanup.reserved.reserved_space_for_other_jobs_in_mb": 15361,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				garden, err := manifest.FindInstanceGroupJob(instanceGroup, "garden")
+				Expect(err).NotTo(HaveOccurred())
+
+				reservedInMB, err := garden.Property("grootfs/reserved_space_for_other_jobs_in_mb")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(reservedInMB).To(Equal(15361))
+			})
+		})
 	})
 
 	Context("cflinuxfs3-rootfs", func() {
