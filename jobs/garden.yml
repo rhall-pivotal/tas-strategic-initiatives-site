@@ -3,6 +3,7 @@ name: garden
 release: garden-runc
 manifest: |
   garden:
+    containerd_mode: "(( .properties.garden_containerd_opt_out.value ? false : true ))"
     cleanup_process_dirs_on_wait: true
     debug_listen_address: 127.0.0.1:17019
     deny_networks:
