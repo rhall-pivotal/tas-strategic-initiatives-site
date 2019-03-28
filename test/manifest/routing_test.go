@@ -6,6 +6,38 @@ import (
 )
 
 var _ = Describe("Routing", func() {
+	Describe("router_headers_remove_if_specified", func() {
+		var (
+			inputProperties     map[string]interface{}
+			routerInstanceGroup string
+		)
+
+		BeforeEach(func() {
+			routerInstanceGroup = "isolated_router"
+			inputProperties = map[string]interface{}{
+				".properties.router_headers_remove_if_specified": []map[string]interface{}{
+					{
+						"name": "header1",
+					},
+					{
+						"name": "header2",
+					},
+				}}
+		})
+
+		It("sets the headers to be removed for http responses", func() {
+			manifest, err := product.RenderManifest(inputProperties)
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob(routerInstanceGroup, "gorouter")
+			Expect(err).NotTo(HaveOccurred())
+
+			removeHeaders, err := job.Property("router/http_rewrite/responses/remove_headers")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(removeHeaders.([]interface{})[0].(map[interface{}]interface{})["name"]).To(Equal("header1"))
+			Expect(removeHeaders.([]interface{})[1].(map[interface{}]interface{})["name"]).To(Equal("header2"))
+		})
+	})
 
 	Describe("Gorouter provides client certs in request to Diego cells", func() {
 
