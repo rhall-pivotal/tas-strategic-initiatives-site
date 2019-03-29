@@ -269,19 +269,6 @@ var _ = Describe("Diego", func() {
 
 			Expect(preloadedRootfses).To(ContainElement("cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar"))
 		})
-
-		It("ensures the standard root filesystems remain in the layer cache", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			garden, err := manifest.FindInstanceGroupJob(instanceGroup, "garden")
-			Expect(err).NotTo(HaveOccurred())
-
-			persistentImageList, err := garden.Property("garden/persistent_image_list")
-			Expect(err).NotTo(HaveOccurred())
-
-			Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs3/rootfs.tar"))
-		})
 	})
 
 	Context("route integrity", func() {
@@ -342,45 +329,6 @@ var _ = Describe("Diego", func() {
 					"ssh-proxy.service.cf.internal",
 				}))
 				Expect(proxyProperties["enable_unproxied_port_mappings"]).To(BeFalse())
-			})
-		})
-	})
-
-	Context("garden grootfs garbage collection", func() {
-		BeforeEach(func() {
-			if productName == "srt" {
-				instanceGroup = "compute"
-			} else {
-				instanceGroup = "diego_cell"
-			}
-		})
-
-		It("sets the reserved disk space", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			garden, err := manifest.FindInstanceGroupJob(instanceGroup, "garden")
-			Expect(err).NotTo(HaveOccurred())
-
-			reservedInMB, err := garden.Property("grootfs/reserved_space_for_other_jobs_in_mb")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(reservedInMB).To(Equal(15360))
-		})
-
-		When("reserved_space_for_other_jobs_in_mb is set", func() {
-			It("sets the reserved disk space", func() {
-				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.garden_disk_cleanup":                                              "reserved",
-					".properties.garden_disk_cleanup.reserved.reserved_space_for_other_jobs_in_mb": 15361,
-				})
-				Expect(err).NotTo(HaveOccurred())
-
-				garden, err := manifest.FindInstanceGroupJob(instanceGroup, "garden")
-				Expect(err).NotTo(HaveOccurred())
-
-				reservedInMB, err := garden.Property("grootfs/reserved_space_for_other_jobs_in_mb")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(reservedInMB).To(Equal(15361))
 			})
 		})
 	})

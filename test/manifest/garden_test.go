@@ -38,6 +38,40 @@ var _ = Describe("Garden", func() {
 			Expect(containerdMode).To(BeFalse())
 		})
 	})
+
+	Describe("grootfs garbage collection", func() {
+		It("sets the reserved disk space", func() {
+			manifest := renderProductManifest(product, nil)
+			garden := findManifestInstanceGroupJob(manifest, instanceGroup, "garden")
+
+			reservedInMB, err := garden.Property("grootfs/reserved_space_for_other_jobs_in_mb")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(reservedInMB).To(Equal(15360))
+		})
+
+		When("reserved_space_for_other_jobs_in_mb is set", func() {
+			It("sets the reserved disk space", func() {
+				manifest := renderProductManifest(product, map[string]interface{}{
+					".properties.garden_disk_cleanup":                                              "reserved",
+					".properties.garden_disk_cleanup.reserved.reserved_space_for_other_jobs_in_mb": 15361,
+				})
+				garden := findManifestInstanceGroupJob(manifest, instanceGroup, "garden")
+
+				reservedInMB, err := garden.Property("grootfs/reserved_space_for_other_jobs_in_mb")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(reservedInMB).To(Equal(15361))
+			})
+		})
+	})
+
+	It("ensures the standard root filesystems remain in the layer cache", func() {
+		manifest := renderProductManifest(product, nil)
+		garden := findManifestInstanceGroupJob(manifest, instanceGroup, "garden")
+
+		persistentImageList, err := garden.Property("garden/persistent_image_list")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs3/rootfs.tar"))
+	})
 })
 
 func renderProductManifest(p *planitest.ProductService, c map[string]interface{}) planitest.Manifest {
