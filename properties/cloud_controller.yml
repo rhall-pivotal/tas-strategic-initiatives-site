@@ -83,3 +83,8 @@
     domains:
     - api.(( .cloud_controller.system_domain.value ))
     - cloud-controller-ng.service.cf.internal
+
+- name: cloud_controller_completed_tasks_cutoff_age_in_days
+  type: integer
+  configurable: true
+  default: 31

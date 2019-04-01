@@ -37,6 +37,8 @@ manifest: |
     - default_security_group
     allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
     maximum_health_check_timeout: 600
+    completed_tasks:
+      cutoff_age_in_days: (( .properties.cloud_controller_completed_tasks_cutoff_age_in_days.value ))
     security_group_definitions:
     - name: default_security_group
       rules:
