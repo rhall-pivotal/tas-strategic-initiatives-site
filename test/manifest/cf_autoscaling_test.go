@@ -44,6 +44,18 @@ var _ = Describe("CF Autoscaling", func() {
 		Expect(url).To(MatchRegexp(`https://docs.pivotal.io/pivotalcf/\d+-\d+/appsman-services/autoscaler/using-autoscaler.html`))
 	})
 
+	It("enables notifications by default", func() {
+		manifest, err := product.RenderManifest(nil)
+		Expect(err).NotTo(HaveOccurred())
+
+		job, err := manifest.FindInstanceGroupJob(instanceGroup, "deploy-autoscaler")
+		Expect(err).NotTo(HaveOccurred())
+
+		property, err := job.Property("autoscale/enable_notifications")
+		Expect(err).ToNot(HaveOccurred())
+		Expect(property).To(BeTrue())
+	})
+
 	Context("when the user disables connection pooling", func() {
 		It("sets the autoscale api to disable connection pooling", func() {
 			manifest, err := product.RenderManifest(map[string]interface{}{
@@ -57,6 +69,22 @@ var _ = Describe("CF Autoscaling", func() {
 			property, err := job.Property("autoscale/api/disable_connection_pooling")
 			Expect(err).ToNot(HaveOccurred())
 			Expect(property).To(BeTrue())
+		})
+	})
+
+	Context("when the user disables notifications", func() {
+		It("sets the autoscale api to disable connection pooling", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.autoscale_enable_notifications": false,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "deploy-autoscaler")
+			Expect(err).NotTo(HaveOccurred())
+
+			property, err := job.Property("autoscale/enable_notifications")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(property).To(BeFalse())
 		})
 	})
 })
