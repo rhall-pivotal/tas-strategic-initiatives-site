@@ -250,6 +250,15 @@ property_inputs:
     selector_property_inputs:
       - reference: .properties.route_services.enable
         label: Enable route services
+        property_inputs:
+        - reference: .properties.route_services.enable.internal_lookup
+          label: Bypass security checks for route service lookup
+          description: |
+            When enabled, route service traffic hosted internally will
+            not be routed to the load balancer first. This can introduce the
+            ability for route service traffic to be intercepted. Please see
+            detailed information in the Pivotal Cloud Foundry documentation
+            before enabling.
       - reference: .properties.route_services.disable
         label: Disable route services
 

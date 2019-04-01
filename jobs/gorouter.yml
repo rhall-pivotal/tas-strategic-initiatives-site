@@ -30,6 +30,7 @@ manifest: |
     client_cert_validation: (( .properties.router_client_cert_validation.selected_option.parsed_manifest(client_cert_validation) ))
     enable_proxy: (( .properties.router_enable_proxy.value ))
     route_services_secret: (( .properties.route_services.selected_option.parsed_manifest(secret) ))
+    route_services_internal_lookup: (( .properties.route_services.selected_option.parsed_manifest(internal_lookup) ))
     ssl_skip_validation: (( .ha_proxy.skip_cert_verify.value ))
     drain_wait: (( .router.drain_wait.value ))
     tracing:

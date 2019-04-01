@@ -335,8 +335,15 @@
         - name: secret
           manifest: |
             ((( router-route-services-secret )))
+        - name: internal_lookup
+          manifest: |
+            (( .properties.route_services.enable.internal_lookup.value ))
       property_blueprints:
         - name: ignore_ssl_cert_verification
+          type: boolean
+          configurable: true
+          default: false
+        - name: internal_lookup
           type: boolean
           configurable: true
           default: false
@@ -345,6 +352,9 @@
       named_manifests:
         - name: secret
           manifest: |
+        - name: internal_lookup
+          manifest: |
+            false
 
 - name: experimental_dynamic_egress_enforcement
   type: boolean
