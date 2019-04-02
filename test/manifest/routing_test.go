@@ -87,4 +87,28 @@ var _ = Describe("Routing", func() {
 			Expect(err).NotTo(HaveOccurred())
 		})
 	})
+
+	Describe("Route Services", func() {
+		It("disables route services internal lookup when internal_lookup is false", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.route_services_internal_lookup": false,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(router.Property("router/route_services_internal_lookup")).To(Equal(false))
+		})
+
+		It("enables route services internal lookup when internal_lookup is true", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.route_services_internal_lookup": true,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(router.Property("router/route_services_internal_lookup")).To(Equal(true))
+		})
+	})
 })
