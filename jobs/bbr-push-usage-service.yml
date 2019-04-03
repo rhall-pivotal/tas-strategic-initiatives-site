@@ -1,8 +1,9 @@
 ---
 name: push-usage-service
-release: push-usage-service-release
+alias: bbr-push-usage-service
 provides: |
-  app-usage-internal: {as: app-usage-internal}
+  app-usage-internal: {as: ignore-me}
+release: push-usage-service-release
 manifest: |
   cf:
     api_url: "https://api.(( .cloud_controller.system_domain.value ))"

@@ -3,6 +3,7 @@ package manifest_test
 import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega/types"
 )
 
 var _ = Describe("Apps Manager", func() {
@@ -55,10 +56,7 @@ var _ = Describe("Apps Manager", func() {
 				manifestJob, err := manifest.FindInstanceGroupJob(appsManagerJob.InstanceGroup, appsManagerJob.Name)
 				Expect(err).NotTo(HaveOccurred())
 
-				bpmEnabled, err := manifestJob.Property("bpm/enabled")
-				Expect(err).NotTo(HaveOccurred())
-
-				Expect(bpmEnabled).To(BeTrue())
+				Expect(manifestJob.Property("bpm/enabled")).To(BeTrue())
 			}
 		})
 	})
@@ -70,10 +68,10 @@ var _ = Describe("Apps Manager", func() {
 		appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
 		Expect(err).NotTo(HaveOccurred())
 
-		navLinks, err := appsManager.Property("apps_manager/white_labeling/nav_links")
-		Expect(err).NotTo(HaveOccurred())
-		Expect(navLinks).To(ContainElement(
-			HaveKeyWithValue("href", MatchRegexp(`https://docs.pivotal.io/pivotalcf/\d+-\d+/pas/intro.html`))))
+		Expect(appsManager.Property("apps_manager/white_labeling/nav_links")).To(ContainElement(HaveKeyWithValue(
+			"href",
+			MatchRegexp(`https://docs.pivotal.io/pivotalcf/\d+-\d+/pas/intro.html`),
+		)))
 	})
 
 	Describe("Memory", func() {
@@ -81,16 +79,11 @@ var _ = Describe("Apps Manager", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
-			appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
 			Expect(err).NotTo(HaveOccurred())
 
-			appsManagerMemory, err := appsManager.Property("apps_manager/memory")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(appsManagerMemory).To(BeNil())
-
-			invitationsMemory, err := appsManager.Property("invitations/memory")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(invitationsMemory).To(BeNil())
+			Expect(job.Property("apps_manager/memory")).To(BeNil())
+			Expect(job.Property("invitations/memory")).To(BeNil())
 		})
 
 		Context("when the operator specifies memory limits", func() {
@@ -101,16 +94,11 @@ var _ = Describe("Apps Manager", func() {
 				})
 				Expect(err).NotTo(HaveOccurred())
 
-				appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
 				Expect(err).NotTo(HaveOccurred())
 
-				appsManagerMemory, err := appsManager.Property("apps_manager/memory")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(appsManagerMemory).To(Equal(1024))
-
-				invitationsMemory, err := appsManager.Property("invitations/memory")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(invitationsMemory).To(Equal(2048))
+				Expect(job.Property("apps_manager/memory")).To(Equal(1024))
+				Expect(job.Property("invitations/memory")).To(Equal(2048))
 			})
 		})
 	})
@@ -120,16 +108,11 @@ var _ = Describe("Apps Manager", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
-			appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
 			Expect(err).NotTo(HaveOccurred())
 
-			pollInterval, err := appsManager.Property("apps_manager/poll_interval")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(pollInterval).To(Equal(30))
-
-			appPollInterval, err := appsManager.Property("apps_manager/app_poll_interval")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(appPollInterval).To(Equal(10))
+			Expect(job.Property("apps_manager/poll_interval")).To(Equal(30))
+			Expect(job.Property("apps_manager/app_poll_interval")).To(Equal(10))
 		})
 
 		Context("when the operator specifies a poll interval", func() {
@@ -140,16 +123,11 @@ var _ = Describe("Apps Manager", func() {
 				})
 				Expect(err).NotTo(HaveOccurred())
 
-				appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
 				Expect(err).NotTo(HaveOccurred())
 
-				pollInterval, err := appsManager.Property("apps_manager/poll_interval")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(pollInterval).To(Equal(666))
-
-				appPollInterval, err := appsManager.Property("apps_manager/app_poll_interval")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(appPollInterval).To(Equal(333))
+				Expect(job.Property("apps_manager/poll_interval")).To(Equal(666))
+				Expect(job.Property("apps_manager/app_poll_interval")).To(Equal(333))
 			})
 		})
 	})
@@ -200,6 +178,66 @@ var _ = Describe("Apps Manager", func() {
 			samlProviders, err := appsManager.Property("login/saml/providers")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(samlProviders).To(HaveKey("Okta"))
+		})
+	})
+
+	Describe("Backup and Restore", func() {
+		Context("on the backup_restore instance group", func() {
+			It("wires configurable fields for bbr-apps-manager", func() {
+				expectations := []struct{
+					uiReference  string
+					uiValue      interface{}
+					propertyPath string
+					match        types.GomegaMatcher
+				}{
+					{".cloud_controller.system_domain", "example.com", "cf/api_url", Equal("https://api.example.com")},
+					{".cloud_controller.system_domain", "example.com", "cf/uaa_url", Equal("https://login.example.com")},
+					{".cloud_controller.system_domain", "example.com", "cf/notifications_service_url", Equal("https://notifications.example.com")},
+					{".cloud_controller.system_domain", "example.com", "cf/system_domain", Equal("example.com")},
+					{".cloud_controller.apps_domain", "example.com", "cf/apps_domain", Equal("example.com")},
+					{".ha_proxy.skip_cert_verify", true, "ssl/skip_cert_verify", BeTrue()},
+					{".properties.cf_dial_timeout_in_seconds", 10, "apps_manager/cf_dial_timeout", Equal(10)},
+				}
+
+				uiConfig := make(map[string]interface{})
+				for _, expectation := range expectations {
+					uiConfig[expectation.uiReference] = expectation.uiValue
+				}
+
+				manifest, err := product.RenderManifest(uiConfig)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-apps-manager")
+				Expect(err).NotTo(HaveOccurred())
+
+				for _, expectation := range expectations {
+					Expect(job.Property(expectation.propertyPath)).To(expectation.match)
+				}
+			})
+
+			It("wires non-configurable fields for bbr-apps-manager", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-apps-manager")
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = job.Property("cf/admin_username")
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = job.Property("cf/admin_password")
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("templates the push-apps-manager job", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("templating the push-apps-manager", func() {
+					_, err := manifest.FindInstanceGroupJob("backup_restore", "push-apps-manager")
+					Expect(err).NotTo(HaveOccurred())
+				})
+			})
 		})
 	})
 })

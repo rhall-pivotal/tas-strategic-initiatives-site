@@ -87,4 +87,16 @@ var _ = Describe("CF Autoscaling", func() {
 			Expect(property).To(BeFalse())
 		})
 	})
+
+	Describe("Backup and Restore", func() {
+		Context("on the backup_restore instance group", func() {
+			It("templates the deploy-autoscaler job", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = manifest.FindInstanceGroupJob("backup_restore", "deploy-autoscaler")
+				Expect(err).NotTo(HaveOccurred())
+			})
+		})
+	})
 })

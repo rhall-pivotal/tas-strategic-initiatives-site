@@ -3,6 +3,7 @@ package manifest_test
 import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/pivotal-cf/planitest"
 )
 
 var _ = Describe("NFS volume service", func() {
@@ -159,4 +160,71 @@ var _ = Describe("NFS volume service", func() {
 			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("disable", BeTrue()))
 		})
 	})
+
+	Context("when the NFS volumes services are enabled", func() {
+		It("configures the nfsbrokerpush job", func() {
+			if productName == "srt" {
+				instanceGroup = "control"
+			} else {
+				instanceGroup = "clock_global"
+			}
+
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.nfs_volume_driver": "enable",
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsbrokerpush")
+			Expect(err).NotTo(HaveOccurred())
+
+			testNfsBrokerPushProperties(job)
+			Expect(job.Path("/provides/nfsbrokerpush")).To(Equal(map[interface{}]interface{}{"as": "ignore-me"}))
+		})
+	})
+
+	Describe("Backup and Restore", func() {
+		Context("on the backup_restore instance group", func() {
+			instanceGroup := "backup_restore"
+
+			It("configures the nfsbrokerpush job", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsbrokerpush")
+				Expect(err).NotTo(HaveOccurred())
+
+				testNfsBrokerPushProperties(job)
+				Expect(job.Path("/provides/nfsbrokerpush")).To(Equal(map[interface{}]interface{}{"as": "nfsbrokerpush"}))
+			})
+
+			It("configures the nfsbroker-bbr-lock job", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsbroker-bbr-lock")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(job.Path("/consumes/nfsbrokerpush")).To(Equal(map[interface{}]interface{}{"from": "nfsbrokerpush"}))
+			})
+		})
+	})
 })
+
+func testNfsBrokerPushProperties(nfsBrokerPush planitest.Manifest) {
+	nfsBrokerPushProperties, err := nfsBrokerPush.Path("/properties/nfsbrokerpush")
+	Expect(err).NotTo(HaveOccurred())
+	Expect(nfsBrokerPushProperties).To(HaveKeyWithValue("domain", "sys.example.com"))
+	Expect(nfsBrokerPushProperties).To(HaveKey("db"))
+	Expect(nfsBrokerPushProperties).To(HaveKey("cf"))
+	nfsBrokerCFProperties := (nfsBrokerPushProperties.(map[interface{}]interface{}))["cf"]
+	Expect(nfsBrokerCFProperties).To(HaveKeyWithValue("admin_user", "admin"))
+	Expect(nfsBrokerCFProperties).To(HaveKey("admin_password"))
+	Expect(nfsBrokerCFProperties).To(HaveKey("dial_timeout"))
+	Expect(nfsBrokerPushProperties).To(HaveKeyWithValue("organization", "system"))
+	Expect(nfsBrokerPushProperties).To(HaveKeyWithValue("skip_cert_verify", BeFalse()))
+	Expect(nfsBrokerPushProperties).To(HaveKeyWithValue("app_domain", "sys.example.com"))
+	Expect(nfsBrokerPushProperties).To(HaveKeyWithValue("space", "nfs"))
+	Expect(nfsBrokerPushProperties).To(HaveKeyWithValue("username", "((nfs-broker-push-db-credentials.username))"))
+	Expect(nfsBrokerPushProperties).To(HaveKeyWithValue("password", "((nfs-broker-push-db-credentials.password))"))
+	Expect(nfsBrokerPushProperties).To(HaveKeyWithValue("syslog_url", ""))
+	Expect(nfsBrokerPushProperties).To(HaveKey("ldap_enabled"))
+}
