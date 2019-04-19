@@ -102,6 +102,12 @@ var _ = Describe("Logging", func() {
 				enabled, err := agent.Property("enabled")
 				Expect(err).ToNot(HaveOccurred())
 				Expect(enabled).To(BeTrue())
+
+				tlsProps, err := agent.Property("system_metrics/tls")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(tlsProps).To(HaveKey("ca_cert"))
+				Expect(tlsProps).To(HaveKey("cert"))
+				Expect(tlsProps).To(HaveKey("key"))
 			}
 		})
 	})
@@ -116,12 +122,18 @@ var _ = Describe("Logging", func() {
 			}
 		})
 
-		It("sets defaults on the system-metric-scraper", func() {
+		It("configures the system-metric-scraper", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
-			_, err = manifest.FindInstanceGroupJob(instanceGroup, "loggr-metric-scraper")
+			metricScraper, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-metric-scraper")
 			Expect(err).NotTo(HaveOccurred())
+
+			tlsProps, err := metricScraper.Property("system_metrics/tls")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(tlsProps).To(HaveKey("ca_cert"))
+			Expect(tlsProps).To(HaveKey("cert"))
+			Expect(tlsProps).To(HaveKey("key"))
 		})
 	})
 
