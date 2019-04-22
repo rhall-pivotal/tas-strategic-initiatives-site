@@ -38,3 +38,20 @@
     - name: syslog
       manifest: |
         enabled: false
+
+- name: enable_cf_metric_name
+  type: boolean
+  configurable: true
+  default: false
+
+- name: system_metrics_tls_scraper_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - system-metrics
+    
+- name: system_metrics_enabled
+  type: boolean
+  configurable: true
+  default: true
