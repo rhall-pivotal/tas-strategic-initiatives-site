@@ -48,7 +48,7 @@ var _ = Describe("Metric Registrar", func() {
 
 				disabled, err := getOrchestrator(manifest).Property("disabled")
 				Expect(err).ToNot(HaveOccurred())
-				Expect(disabled).To(Equal(true))
+				Expect(disabled).To(Equal(false))
 			})
 
 			It("sets log worker defaults", func() {
@@ -58,7 +58,7 @@ var _ = Describe("Metric Registrar", func() {
 
 				disabled, err := logWorker.Property("disabled")
 				Expect(err).ToNot(HaveOccurred())
-				Expect(disabled).To(Equal(true))
+				Expect(disabled).To(Equal(false))
 
 				blacklistedTags, err := logWorker.Property("blacklisted_tags")
 				Expect(err).ToNot(HaveOccurred())
@@ -73,7 +73,7 @@ var _ = Describe("Metric Registrar", func() {
 
 				disabled, err := endpointWorker.Property("disabled")
 				Expect(err).ToNot(HaveOccurred())
-				Expect(disabled).To(Equal(true))
+				Expect(disabled).To(Equal(false))
 
 				blacklistedTags, err := endpointWorker.Property("blacklisted_tags")
 				Expect(err).ToNot(HaveOccurred())
@@ -85,24 +85,24 @@ var _ = Describe("Metric Registrar", func() {
 			})
 		})
 
-		When("operator enables metric registrar", func() {
-			It("enables the orchestrator and workers", func() {
+		When("operator disables metric registrar", func() {
+			It("disables the orchestrator and workers", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.metric_registrar_enabled": true,
+					".properties.metric_registrar_enabled": false,
 				})
 				Expect(err).ToNot(HaveOccurred())
 
 				disabled, err := getOrchestrator(manifest).Property("disabled")
 				Expect(err).ToNot(HaveOccurred())
-				Expect(disabled).To(Equal(false))
+				Expect(disabled).To(Equal(true))
 
 				disabled, err = getLogWorker(manifest).Property("disabled")
 				Expect(err).ToNot(HaveOccurred())
-				Expect(disabled).To(Equal(false))
+				Expect(disabled).To(Equal(true))
 
 				disabled, err = getEndpointWorker(manifest).Property("disabled")
 				Expect(err).ToNot(HaveOccurred())
-				Expect(disabled).To(Equal(false))
+				Expect(disabled).To(Equal(true))
 			})
 		})
 
