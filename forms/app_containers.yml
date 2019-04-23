@@ -61,8 +61,8 @@ property_inputs:
           GC will delete  unneeded layers as needed to keep this space free (but it cannot guarantee this
            space remains free if more containers are created than disk space allows).
 
-- reference: .properties.garden_containerd_opt_out
-  label: Opt-out of Containerd Delegation
+- reference: .properties.enable_garden_containerd_mode
+  label: Enable Containerd Delegation
   description: |
     Garden delegates container create and destroy operations to containerd
     in an effort to use more industry standard container runtime tooling. This
