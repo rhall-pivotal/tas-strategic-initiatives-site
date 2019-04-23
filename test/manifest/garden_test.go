@@ -21,7 +21,7 @@ var _ = Describe("Garden", func() {
 	Context("opted out of containerd mode", func() {
 		It("disables containerd_mode", func() {
 			manifest := renderProductManifest(product, map[string]interface{}{
-				".properties.garden_containerd_opt_out": true,
+				".properties.enable_garden_containerd_mode": false,
 			})
 			garden := findManifestInstanceGroupJob(manifest, instanceGroup, "garden")
 
