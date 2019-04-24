@@ -161,6 +161,18 @@ var _ = Describe("Logging", func() {
 			Expect(tlsProps).To(HaveKey("cert"))
 			Expect(tlsProps).To(HaveKey("key"))
 		})
+
+		It("has a leadership-election job collocated", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			le, err := manifest.FindInstanceGroupJob(instanceGroup, "leadership-election")
+			Expect(err).NotTo(HaveOccurred())
+
+			enabled, err := le.Property("port")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(enabled).To(Equal(7100))
+		})
 	})
 
 	Describe("log cache", func() {
