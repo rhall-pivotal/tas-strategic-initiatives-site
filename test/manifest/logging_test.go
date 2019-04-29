@@ -1,13 +1,40 @@
 package manifest_test
 
 import (
+	"fmt"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/pivotal-cf/planitest"
 )
 
 var _ = Describe("Logging", func() {
+	var (
+		instanceGroups       []string = []string{"isolated_diego_cell", "isolated_ha_proxy", "isolated_router"}
+		getAllInstanceGroups func(planitest.Manifest) []string
+	)
 
-	var instanceGroups []string = []string{"isolated_diego_cell", "isolated_ha_proxy", "isolated_router"}
+	getAllInstanceGroups = func(manifest planitest.Manifest) []string {
+		groups, err := manifest.Path("/instance_groups")
+		Expect(err).NotTo(HaveOccurred())
+
+		groupList, ok := groups.([]interface{})
+		Expect(ok).To(BeTrue())
+
+		names := []string{}
+		for _, group := range groupList {
+			groupName := group.(map[interface{}]interface{})["name"].(string)
+
+			// ignore VMs that only contain a single placeholder job, i.e. SF-PAS only VMs that are present but non-configurable in PAS build
+			jobs, err := manifest.Path(fmt.Sprintf("/instance_groups/name=%s/jobs", groupName))
+			Expect(err).NotTo(HaveOccurred())
+			if len(jobs.([]interface{})) > 1 {
+				names = append(names, groupName)
+			}
+		}
+		Expect(names).NotTo(BeEmpty())
+		return names
+	}
 
 	Describe("loggregator agent", func() {
 		It("sets tags on the loggregator agent", func() {
@@ -127,7 +154,7 @@ rule
 		Context("when the Operator disables the system-metrics agent", func() {
 			It("sets enabled to false", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.system_metrics_enabled.value": false,
+					".properties.system_metrics_enabled": false,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
