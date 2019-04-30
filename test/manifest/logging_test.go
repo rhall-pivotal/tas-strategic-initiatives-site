@@ -330,6 +330,42 @@ var _ = Describe("Logging", func() {
 			Expect(uaaProperties).To(HaveKey("client_secret"))
 
 		})
+
+		It("has a default max per source", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			logCache, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache")
+			Expect(err).NotTo(HaveOccurred())
+
+			maxPerSource, err := logCache.Property("max_per_source")
+			Expect(err).ToNot(HaveOccurred())
+
+			if productName == "srt" {
+				Expect(maxPerSource).To(Equal(100000))
+			} else {
+				Expect(maxPerSource).To(Equal(100000))
+			}
+		})
+
+		It("has a configurable max per source", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.log_cache_max_per_source": 200000,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			logCache, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache")
+			Expect(err).NotTo(HaveOccurred())
+
+			maxPerSource, err := logCache.Property("max_per_source")
+			Expect(err).ToNot(HaveOccurred())
+
+			if productName == "srt" {
+				Expect(maxPerSource).To(Equal(200000))
+			} else {
+				Expect(maxPerSource).To(Equal(200000))
+			}
+		})
 	})
 
 	Describe("log cache scheduler", func() {

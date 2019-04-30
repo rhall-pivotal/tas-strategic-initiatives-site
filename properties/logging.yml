@@ -190,6 +190,13 @@
     domains:
     - rlp_gateway
 
+- name: log_cache_max_per_source
+  type: integer
+  configurable: true
+  default: 100000
+  constraints:
+    min: 100000
+
 - name: system_metrics_tls_scraper_cert
   type: rsa_cert_credentials
   configurable: false
