@@ -44,7 +44,7 @@ var _ = Describe("Logging", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
-			agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggr-system-metrics-agent")
+			agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggr-system-metrics-agent-windows")
 			Expect(err).NotTo(HaveOccurred())
 
 			enabled, err := agent.Property("enabled")
@@ -65,7 +65,7 @@ var _ = Describe("Logging", func() {
 				})
 				Expect(err).NotTo(HaveOccurred())
 
-				agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggr-system-metrics-agent")
+				agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggr-system-metrics-agent-windows")
 				Expect(err).NotTo(HaveOccurred())
 
 				enabled, err := agent.Property("enabled")
