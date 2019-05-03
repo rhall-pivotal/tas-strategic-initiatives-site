@@ -87,3 +87,25 @@
   type: integer
   configurable: true
   default: 31
+
+- name: cloud_controller_encryption_keys
+  type: collection
+  configurable: true
+  optional: true
+  property_blueprints:
+    - name: label
+      type: string
+      configurable: true
+    - name: encryption_key
+      configurable: true
+      type: secret
+    - name: primary
+      type: boolean
+      configurable: true
+      default: false
+  named_manifests:
+    - name: keys
+      manifest: |
+        label: (( current_record.label.value ))
+        encryption_key: (( current_record.encryption_key.value ))
+        active: (( current_record.primary.value ))

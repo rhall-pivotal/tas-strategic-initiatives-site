@@ -154,6 +154,7 @@ property_blueprints:
 - $( property "cloud_controller_public_tls_cert" )
 - $( property "cloud_controller_temporary_disable_deployments" )
 - $( property "cloud_controller_completed_tasks_cutoff_age_in_days" )
+- $( property "cloud_controller_encryption_keys" )
 - $( property "container_networking" )
 - $( property "container_networking_interface_plugin" )
 - $( property "copilot_client_cert" )
@@ -526,6 +527,13 @@ post_deploy_errands:
     description: Pushes the SMB Broker application to your Application Service installation
     colocated: true
     run_default: false
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: rotate_cc_database_key
+    label: Rotate CC Database Key
+    description: Re-encrypts credentials in Cloud Controller DB with selected encryption key
+    run_default: false
+    colocated: true
     instances:
       - $( variable "errand_instance_group" )
 

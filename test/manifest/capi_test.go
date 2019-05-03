@@ -230,7 +230,7 @@ var _ = Describe("CAPI", func() {
 			BeforeEach(func() {
 				var err error
 				manifest, err = product.RenderManifest(map[string]interface{}{
-					".properties.cloud_controller_completed_tasks_cutoff_age_in_days" : 32,
+					".properties.cloud_controller_completed_tasks_cutoff_age_in_days": 32,
 				})
 				Expect(err).NotTo(HaveOccurred())
 			})
@@ -492,6 +492,47 @@ var _ = Describe("CAPI", func() {
 				defaultStack, err := cc.Property("cc/default_stack")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(defaultStack).To(Equal("cflinuxfs3"))
+			})
+		})
+
+		Describe("Database Encryption Keys", func() {
+			It("sets the encryption keys in cloud controller job", func() {
+				cloudControllerJob, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+				Expect(err).NotTo(HaveOccurred())
+
+				databaseEncryptionKeys, err := cloudControllerJob.Property("cc/database_encryption/keys")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(databaseEncryptionKeys).To(Equal([]interface{}{}))
+			})
+
+			Context("when the encryption keys are provided", func() {
+				It("sets the encryption keys in cloud controller job", func() {
+					manifest, err := product.RenderManifest((map[string]interface{}{
+						".properties.cloud_controller_encryption_keys": []map[string]interface{}{
+							{
+								"encryption_key": map[string]interface{}{
+									"secret": "some-encryption-key",
+								},
+								"label":   "some internal key display name",
+								"primary": true,
+							},
+							{
+								"encryption_key": map[string]interface{}{
+									"secret": "old-encryption-key",
+								},
+								"label":   "old internal key display name",
+								"primary": false,
+							},
+						},
+					}))
+					Expect(err).NotTo(HaveOccurred())
+					cloudControllerJob, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+					Expect(err).NotTo(HaveOccurred())
+
+					databaseEncryptionKeys, err := cloudControllerJob.Property("cc/database_encryption/keys")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(databaseEncryptionKeys).To(HaveLen(2))
+				})
 			})
 		})
 	})

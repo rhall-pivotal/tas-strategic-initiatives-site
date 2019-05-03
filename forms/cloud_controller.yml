@@ -50,3 +50,20 @@ property_inputs:
   - reference: .properties.cloud_controller_completed_tasks_cutoff_age_in_days
     label: |
       Age in days after which completed tasks will be pruned from the Cloud Controller Database.
+
+  - reference: .properties.cloud_controller_encryption_keys
+    label: |
+      Encryption Key Ledger
+    description: |-
+      Each Label & Key pair entered here is a key that the CC will know how to encrypt and decrypt in the CCDB.
+      These should not be deleted.
+    property_inputs:
+      - reference: label
+        label: Encryption Key Label
+      - reference: encryption_key
+        label: Encryption Key
+      - reference: primary
+        label: Primary
+        description: |
+          Checking this checkbox marks this key as the primary encryption key.
+          Only one key can be marked as primary.

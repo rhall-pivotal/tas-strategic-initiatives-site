@@ -90,6 +90,8 @@ manifest: |
     default_app_disk_in_mb: (( .cloud_controller.default_disk_quota_app.value ))
     app_bits_max_body_size: "(( .cloud_controller.max_file_size.value ))M"
     db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
+    database_encryption:
+      keys: (( .properties.cloud_controller_encryption_keys.parsed_manifest(keys) ))
     maximum_health_check_timeout: 600
     security_group_definitions:
     - name: default_security_group
