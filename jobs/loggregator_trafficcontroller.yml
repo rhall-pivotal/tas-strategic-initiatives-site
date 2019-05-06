@@ -2,6 +2,8 @@
 name: loggregator_trafficcontroller
 release: loggregator
 manifest: |
+  traffic_controller:
+    enabled: (( .properties.enable_v1_firehose.value ))
   system_domain: (( .cloud_controller.system_domain.value ))
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))

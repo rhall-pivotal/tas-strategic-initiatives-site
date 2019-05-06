@@ -631,6 +631,18 @@ var _ = Describe("Logging", func() {
 				"*.log-stream.sys.example.com",
 			}))
 		})
+
+		It("can be disabled", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.enable_v1_firehose": false,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			trafficController, err := manifest.FindInstanceGroupJob(instanceGroup, "loggregator_trafficcontroller")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(trafficController.Property("traffic_controller/enabled")).To(BeFalse())
+		})
 	})
 
 	Describe("syslog forwarding", func() {

@@ -104,3 +104,9 @@ property_inputs:
   description: |
     When enabled, will emit system-level metrics about all vms
     in this deployment
+
+- reference: .properties.enable_v1_firehose
+  label: Enable V1 Firehose
+  description: |
+    When enabled, logs and metrics will flow to the V1 firehose. Disabling
+    this will disable the traffic controller.
