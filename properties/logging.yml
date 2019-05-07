@@ -158,8 +158,7 @@
   configurable: false
   default:
     domains:
-    - log-cache.(( .cloud_controller.system_domain.value ))
-    - "*.log-cache.(( .cloud_controller.system_domain.value ))"
+    - log-cache
 
 - name: log_cache_server_tls_cert
   type: rsa_cert_credentials
