@@ -2,8 +2,6 @@
 name: log-cache-cf-auth-proxy
 release: log-cache
 manifest: |
-  external_cert: (( .properties.log_cache_auth_proxy_external_cert.cert_pem ))
-  external_key: (( .properties.log_cache_auth_proxy_external_cert.private_key_pem ))
   cc:
     ca_cert: (( $ops_manager.ca_certificate ))
     capi_internal_addr: https://cloud-controller-ng.service.cf.internal:9023
