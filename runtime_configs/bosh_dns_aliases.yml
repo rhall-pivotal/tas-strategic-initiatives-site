@@ -89,13 +89,6 @@ runtime_config: |
             deployment: (( ..cf.deployment_name ))
             network: (( ..cf.network_name ))
             domain: bosh
-        - domain: consul.service.cf.internal
-          targets:
-          - query: "*"
-            instance_group: $( variable "bosh_dns_consul_instance_group" )
-            deployment: (( ..cf.deployment_name ))
-            network: (( ..cf.network_name ))
-            domain: bosh
         - domain: copilot.service.cf.internal
           targets:
           - query: "*"

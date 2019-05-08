@@ -33,8 +33,6 @@ releases:
 - $( release "cf-smoke-tests" )
 - $( release "cf-syslog-drain" )
 - $( release "cflinuxfs3" )
-- $( release "consul" )
-- $( release "consul-drain" )
 - $( release "credhub" )
 - $( release "diego" )
 - $( release "dotnet-core-offline-buildpack" )
@@ -99,7 +97,6 @@ job_types:
 - $( instance_group "blobstore" ) # SRT only
 - $( instance_group "control" ) # SRT only
 - $( instance_group "compute" ) # SRT only
-- $( instance_group "consul_server" ) # ERT only
 - $( instance_group "nats" ) # ERT only
 - $( instance_group "nfs_server" ) # ERT only
 - $( instance_group "mysql_proxy" ) # ERT only
@@ -158,8 +155,6 @@ property_blueprints:
 - $( property "cloud_controller_public_tls_cert" )
 - $( property "cloud_controller_temporary_disable_deployments" )
 - $( property "cloud_controller_completed_tasks_cutoff_age_in_days" )
-- $( property "consul_agent_cert" )
-- $( property "consul_server_cert" )
 - $( property "container_networking" )
 - $( property "container_networking_interface_plugin" )
 - $( property "copilot_client_cert" )
@@ -343,9 +338,6 @@ variables:
   type: user
   options:
     username: staging_upload_user
-
-- name: consul-encryption-key
-  type: password
 
 - name: credhub-db-credentials
   type: user

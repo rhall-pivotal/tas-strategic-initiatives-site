@@ -7,7 +7,6 @@ description: Database
 templates:
 {{if eq tile "srt"}}
 - $( job "bpm" )
-- $( job "consul_server" )
 - $( job "loggregator_agent_mysql" )
 - $( job "loggr-system-metrics-agent" )
 - $( job "syslog_forwarder" )
