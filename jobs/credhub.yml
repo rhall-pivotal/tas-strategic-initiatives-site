@@ -11,7 +11,7 @@ manifest: |
       mutual_tls:
         trusted_cas:
         - ((( /cf/diego-instance-identity-root-ca.certificate )))
-        - ((( /cf/diego-instance-identity-root-ca-2018.certificate )))
+        - ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
       uaa:
         ca_certs:
         - (( $ops_manager.ca_certificate ))

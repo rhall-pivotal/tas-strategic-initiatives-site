@@ -8,7 +8,7 @@ manifest: |
     proxy: (( .properties.route_integrity.selected_option.parsed_manifest(proxy) ))
     trusted_ca_certificates:
       - ((( /cf/diego-instance-identity-root-ca.certificate )))
-      - ((( /cf/diego-instance-identity-root-ca-2018.certificate )))
+      - ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
       - (( $ops_manager.ca_certificate ))
       - (( $ops_manager.trusted_certificates ))
   diego:
