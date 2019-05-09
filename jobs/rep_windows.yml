@@ -5,6 +5,7 @@ manifest: |
   containers:
     trusted_ca_certificates:
       - ((( /cf/diego-instance-identity-root-ca.certificate )))
+      - ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
       - (( $ops_manager.ca_certificate ))
       - (( $ops_manager.trusted_certificates ))
   declarative_healthcheck_path: /var/vcap/packages/healthcheck_windows/internal
