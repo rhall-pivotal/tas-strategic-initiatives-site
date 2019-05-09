@@ -79,22 +79,6 @@ var _ = Describe("Diego", func() {
 		})
 	})
 
-	Describe("Garden", func() {
-
-		It("ensures the standard root filesystem remains in the layer cache", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			garden, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "garden")
-			Expect(err).NotTo(HaveOccurred())
-
-			persistentImageList, err := garden.Property("garden/persistent_image_list")
-			Expect(err).NotTo(HaveOccurred())
-
-			Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs3/rootfs.tar"))
-		})
-	})
-
 	Context("route integrity", func() {
 
 		var proxyProperties map[interface{}]interface{}
@@ -180,20 +164,6 @@ var _ = Describe("Diego", func() {
 			caKey, err := rep.Property("diego/executor/instance_identity_key")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(caKey).To(Equal("((diego-instance-identity-intermediate-ca-2018.private_key))"))
-		})
-	})
-
-	Context("garden grootfs garbage collection", func() {
-		It("sets the reserved disk space", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			garden, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "garden")
-			Expect(err).NotTo(HaveOccurred())
-
-			reservedInMB, err := garden.Property("grootfs/reserved_space_for_other_jobs_in_mb")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(reservedInMB).To(Equal(15360))
 		})
 	})
 })

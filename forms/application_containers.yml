@@ -41,6 +41,14 @@ property_inputs:
           GC will delete  unneeded layers as needed to keep this space free (but it cannot guarantee this
            space remains free if more containers are created than disk space allows).
 
+- reference: .properties.enable_garden_containerd_mode
+  label: Enable Containerd Delegation
+  description: |
+    Garden delegates container create and destroy operations to containerd
+    in an effort to use more industry standard container runtime tooling. This
+    may be opted-out of. In the future garden will delegate all container
+    operations to containerd.
+
 - reference: .properties.nfs_volume_driver
   label: |
     Enabling NFSv3 volume services will allow application developers to bind
