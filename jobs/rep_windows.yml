@@ -12,8 +12,8 @@ manifest: |
   diego:
     executor:
       disk_capacity_mb: (( .windows_diego_cell.executor_disk_capacity.value ))
-      instance_identity_ca_cert: ((( diego-instance-identity-intermediate-ca-2018.certificate )))
-      instance_identity_key: ((( diego-instance-identity-intermediate-ca-2018.private_key )))
+      instance_identity_ca_cert: ((( diego-instance-identity-intermediate-ca-2-7.certificate )))
+      instance_identity_key: ((( diego-instance-identity-intermediate-ca-2-7.private_key )))
       memory_capacity_mb: (( .windows_diego_cell.executor_memory_capacity.value ))
     rep:
       use_azure_fault_domains: true
