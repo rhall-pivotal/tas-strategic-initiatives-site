@@ -1,0 +1,9 @@
+---
+name: loggr-udp-forwarder
+release: loggregator-agent
+manifest: |
+  loggregator:
+    tls:
+      ca: (( $ops_manager.ca_certificate ))
+      cert: (( .doppler.metron_tls_cert.cert_pem ))
+      key: (( .doppler.metron_tls_cert.private_key_pem ))

@@ -190,6 +190,13 @@
     domains:
     - rlp_gateway
 
+- name: reverse_log_proxy_gateway_server_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - "reverse-log-proxy.service.cf.internal"
+
 - name: log_cache_max_per_source
   type: integer
   configurable: true
@@ -204,7 +211,24 @@
     domains:
     - system-metrics
 
+- name: trafficcontroller_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - "doppler.service.cf.internal"
+
 - name: system_metrics_enabled
   type: boolean
   configurable: true
   default: true
+
+- name: syslog_agent_enabled
+  type: boolean
+  configurable: true
+  default: false
+
+- name: syslog_agent_additional_downstream_ingress_ports
+  type: string_list
+  configurable: true
+  optional: true

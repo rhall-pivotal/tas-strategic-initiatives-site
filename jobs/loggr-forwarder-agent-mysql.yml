@@ -1,0 +1,15 @@
+---
+name: loggr-forwarder-agent
+alias: loggr-forwarder-agent-mysql
+release: loggregator-agent
+manifest: |
+  port: 3458
+  deployment: $( variable "label" )
+  tls:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .doppler.metron_tls_cert.cert_pem ))
+    key: (( .doppler.metron_tls_cert.private_key_pem ))
+  tags:
+    product: $( variable "label" )
+    system_domain: "(( .cloud_controller.system_domain.value ))"
+    origin: mysql

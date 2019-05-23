@@ -6,10 +6,12 @@ manifest: |
   route_registrar:
     routes:
     - name: doppler
-      port: 8081
+      tls_port: 8081
       registration_interval: 20s
+      server_cert_domain_san: "doppler.service.cf.internal"
       uris:
       - "doppler.(( .cloud_controller.system_domain.value ))"
+      - "*.doppler.(( .cloud_controller.system_domain.value ))"
     - name: uaa
       port: 8080
       registration_interval: 4s
@@ -48,8 +50,9 @@ manifest: |
       uris:
       - "log-cache.(( .cloud_controller.system_domain.value ))"
     - name: rlp-gateway
-      port: 8088
+      tls_port: 8088
       registration_interval: 20s
+      server_cert_domain_san: "reverse-log-proxy.service.cf.internal"
       uris:
       - "log-stream.(( .cloud_controller.system_domain.value ))"
       - "*.log-stream.(( .cloud_controller.system_domain.value ))"

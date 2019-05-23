@@ -60,6 +60,12 @@ property_inputs:
     Receive container metrics delivered in create-user-provided-service
     (CUPS) Syslog Drain bindings.
 
+- reference: .properties.syslog_agent_enabled
+  label: Enable agent-based syslog egress for app logs
+  description: |
+    Enables agent-based syslog egress for app logs.
+    Disables scalable syslog to prevent log duplication.
+
 - reference: .cloud_controller.security_event_logging_enabled
   label: Enable Cloud Controller security event logging
   description: |
@@ -96,5 +102,5 @@ property_inputs:
 - reference: .properties.system_metrics_enabled
   label: Enable System Metrics
   description: |
-    When enabled, will emit system-level metrics about all vms 
+    When enabled, will emit system-level metrics about all vms
     in this deployment

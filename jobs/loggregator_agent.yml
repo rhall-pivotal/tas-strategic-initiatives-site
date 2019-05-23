@@ -8,6 +8,8 @@ manifest: |
       agent:
         cert: (( .doppler.metron_tls_cert.cert_pem ))
         key: (( .doppler.metron_tls_cert.private_key_pem ))
+  grpc_port: 3459
+  disable_udp: true
   tags:
     product: $( variable "label" )
     system_domain: "(( .cloud_controller.system_domain.value ))"

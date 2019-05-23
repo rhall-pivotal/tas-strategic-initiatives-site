@@ -390,6 +390,32 @@ var _ = Describe("Routing", func() {
 		})
 	})
 
+	Describe("logging", func() {
+		It("sets defaults on the udp forwarder for the router", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			udpForwarder, err := manifest.FindInstanceGroupJob("router", "loggr-udp-forwarder")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("ca"))
+			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("cert"))
+			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("key"))
+		})
+
+		It("sets defaults on the udp forwarder for the tcp_router", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			udpForwarder, err := manifest.FindInstanceGroupJob("router", "loggr-udp-forwarder")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("ca"))
+			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("cert"))
+			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("key"))
+		})
+	})
+
 	Describe("BPM", func() {
 		var routingJobs []Job
 

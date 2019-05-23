@@ -9,6 +9,10 @@ templates:
 - $( job "bpm" )
 - $( job "leadership-election" )
 - $( job "loggregator_agent" )
+- $( job "loggr-syslog-agent" )
+- $( job "loggr-syslog-binding-cache" )
+- $( job "loggr-forwarder-agent" )
+- $( job "prom_scraper" )
 - $( job "loggr-metric-scraper" )
 - $( job "loggr-system-metrics-agent" )
 - $( job "scheduler" )
@@ -70,3 +74,15 @@ property_blueprints:
   default:
     domains:
     - ss-adapter
+- name: syslog_agent_api_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - syslog-agent
+- name: binding_cache_api_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - binding-cache

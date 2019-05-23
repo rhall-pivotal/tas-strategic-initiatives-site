@@ -10,7 +10,7 @@ var _ = Describe("MySQL", func() {
 	var (
 		instanceGroup string
 	)
-	Context("when the operator selects clustered mysql", func(){
+	Context("when the operator selects clustered mysql", func() {
 		BeforeEach(func() {
 			if productName == "srt" {
 				instanceGroup = "database"
@@ -68,6 +68,15 @@ var _ = Describe("MySQL", func() {
 
 			It("configures origin tag for loggregator_agent", func() {
 				mysqlClustered, err := manifest.FindInstanceGroupJob(instanceGroup, "loggregator_agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				tags, err := mysqlClustered.Property("tags")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(tags).To(HaveKeyWithValue("origin", "mysql"))
+			})
+
+			It("configures origin tag for loggr-forwarder-agent", func() {
+				mysqlClustered, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-forwarder-agent")
 				Expect(err).NotTo(HaveOccurred())
 
 				tags, err := mysqlClustered.Property("tags")

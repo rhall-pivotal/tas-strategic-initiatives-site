@@ -1,16 +1,16 @@
 package manifest_test
 
 import (
-. "github.com/onsi/ginkgo"
-. "github.com/onsi/gomega"
-"github.com/pivotal-cf/planitest"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+	"github.com/pivotal-cf/planitest"
 )
 
 var _ = Describe("MySQL Proxy", func() {
 	var (
 		instanceGroup string
 	)
-	Context("when the operator selects mysql proxy", func(){
+	Context("when the operator selects mysql proxy", func() {
 		BeforeEach(func() {
 			if productName == "srt" {
 				instanceGroup = "database"

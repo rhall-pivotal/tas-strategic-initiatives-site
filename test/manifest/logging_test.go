@@ -58,6 +58,23 @@ var _ = Describe("Logging", func() {
 				agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
 				Expect(err).NotTo(HaveOccurred())
 
+				tlsProps, err := agent.Property("loggregator/tls")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(tlsProps).To(HaveKey("ca_cert"))
+
+				tlsAgentProps, err := agent.Property("loggregator/tls/agent")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(tlsAgentProps).To(HaveKey("cert"))
+				Expect(tlsAgentProps).To(HaveKey("key"))
+
+				grpcPort, err := agent.Property("grpc_port")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(grpcPort).To(Equal(3459))
+
+				udpDisabled, err := agent.Property("disable_udp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(udpDisabled).To(BeTrue())
+
 				By("adding tags to the metrics emitted")
 				tags, err := agent.Property("tags")
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
@@ -65,6 +82,48 @@ var _ = Describe("Logging", func() {
 				Expect(tags).NotTo(HaveKey("product_version"))
 				Expect(tags).To(HaveKeyWithValue("system_domain", "sys.example.com"))
 			}
+		})
+	})
+
+	Describe("scalable syslog", func() {
+		It("adapter and scheduler are disabled when syslog agent is enabled", func() {
+			adapterGroup := "syslog_adapter"
+			schedulerGroup := "syslog_scheduler"
+			if productName == "srt" {
+				adapterGroup = "control"
+				schedulerGroup = "control"
+			}
+
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.syslog_agent_enabled": true,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			adapterEnabled := findProperty(manifest, adapterGroup, "adapter", "scalablesyslog/enabled")
+			Expect(adapterEnabled).To(BeFalse())
+
+			schedulerEnabled := findProperty(manifest, schedulerGroup, "scheduler", "scalablesyslog/enabled")
+			Expect(schedulerEnabled).To(BeFalse())
+		})
+
+		It("adapter and scheduler are enabled when syslog agent is disabled", func() {
+			adapterGroup := "syslog_adapter"
+			schedulerGroup := "syslog_scheduler"
+			if productName == "srt" {
+				adapterGroup = "control"
+				schedulerGroup = "control"
+			}
+
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.syslog_agent_enabled": false,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			adapterEnabled := findProperty(manifest, adapterGroup, "adapter", "scalablesyslog/enabled")
+			Expect(adapterEnabled).To(BeTrue())
+
+			schedulerEnabled := findProperty(manifest, schedulerGroup, "scheduler", "scalablesyslog/enabled")
+			Expect(schedulerEnabled).To(BeTrue())
 		})
 
 		It("sets batch size property on the syslog scheduler", func() {
@@ -172,6 +231,121 @@ var _ = Describe("Logging", func() {
 			enabled, err := le.Property("port")
 			Expect(err).ToNot(HaveOccurred())
 			Expect(enabled).To(Equal(7100))
+		})
+	})
+
+	Describe("prom scraper", func() {
+		It("configures the prom scraper on all VMs", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			instanceGroups := getAllInstanceGroups(manifest)
+
+			for _, ig := range instanceGroups {
+				_, err := manifest.FindInstanceGroupJob(ig, "prom_scraper")
+				Expect(err).NotTo(HaveOccurred())
+			}
+		})
+	})
+
+	Describe("forwarder agent", func() {
+		var (
+			productTag string
+		)
+
+		BeforeEach(func() {
+			if productName == "srt" {
+				productTag = "Small Footprint PAS"
+			} else {
+				productTag = "Pivotal Application Service"
+			}
+		})
+
+		It("sets defaults on the forwarder agent", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			instanceGroups := getAllInstanceGroups(manifest)
+
+			for _, ig := range instanceGroups {
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggr-forwarder-agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				port, err := agent.Property("port")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(port).To(Equal(3458))
+
+				deployment, err := agent.Property("deployment")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(deployment).To(Equal(productTag))
+
+				By("adding tags to the metrics emitted")
+				tags, err := agent.Property("tags")
+				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
+				Expect(tags).To(HaveKeyWithValue("product", productTag))
+				Expect(tags).NotTo(HaveKey("product_version"))
+				Expect(tags).To(HaveKeyWithValue("system_domain", "sys.example.com"))
+			}
+		})
+	})
+
+	Describe("syslog agent", func() {
+		It("sets defaults on the syslog agent", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			instanceGroups := getAllInstanceGroups(manifest)
+
+			for _, ig := range instanceGroups {
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggr-syslog-agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				port, err := agent.Property("port")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(port).To(Equal(3460))
+
+				enabled, err := agent.Property("enabled")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(enabled).To(BeFalse())
+
+				tlsProps, err := agent.Property("tls")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(tlsProps).To(HaveKey("ca_cert"))
+				Expect(tlsProps).To(HaveKey("cert"))
+				Expect(tlsProps).To(HaveKey("key"))
+
+				cacheTlsProps, err := agent.Property("cache/tls")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(cacheTlsProps).To(HaveKey("ca_cert"))
+				Expect(cacheTlsProps).To(HaveKey("cert"))
+				Expect(cacheTlsProps).To(HaveKey("key"))
+				Expect(cacheTlsProps).To(HaveKeyWithValue("cn", "binding-cache"))
+			}
+		})
+	})
+
+	Describe("syslog binding cache", func() {
+		It("sets defaults on the syslog binding cache", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			var instanceGroup string
+			if productName == "srt" {
+				instanceGroup = "control"
+			} else {
+				instanceGroup = "syslog_scheduler"
+			}
+
+			agent, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-syslog-binding-cache")
+			Expect(err).NotTo(HaveOccurred())
+
+			port, err := agent.Property("external_port")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(port).To(Equal(9000))
+
+			enabled, err := agent.Property("enabled")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(enabled).To(BeFalse())
 		})
 	})
 
@@ -397,12 +571,44 @@ var _ = Describe("Logging", func() {
 			}
 		})
 
+		It("configures TLS for egress", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			trafficcontroller, err := manifest.FindInstanceGroupJob(instanceGroup, "loggregator_trafficcontroller")
+			Expect(err).NotTo(HaveOccurred())
+
+			loggrProps, err := trafficcontroller.Property("loggregator")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(loggrProps).To(HaveKey("outgoing_cert"))
+			Expect(loggrProps).To(HaveKey("outgoing_key"))
+
+			routeRegistrar, err := manifest.FindInstanceGroupJob(instanceGroup, "route_registrar")
+			Expect(err).NotTo(HaveOccurred())
+
+			dopplerRoute, err := routeRegistrar.Property("route_registrar/routes/name=doppler")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(dopplerRoute).To(HaveKeyWithValue("tls_port", 8081))
+			Expect(dopplerRoute).To(HaveKeyWithValue("server_cert_domain_san", "doppler.service.cf.internal"))
+			Expect(dopplerRoute).To(HaveKeyWithValue("uris", []interface{}{
+				"doppler.sys.example.com",
+				"*.doppler.sys.example.com",
+			}))
+		})
+
 		It("deploys the reverse_log_proxy_gateway", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			gateway, err := manifest.FindInstanceGroupJob(instanceGroup, "reverse_log_proxy_gateway")
 			Expect(err).NotTo(HaveOccurred())
+
+			// test for TLS configuration
+			httpConfig, err := gateway.Property("http")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(httpConfig).To(HaveKeyWithValue("address", "0.0.0.0:8088"))
+			Expect(httpConfig).To(HaveKey("cert"))
+			Expect(httpConfig).To(HaveKey("key"))
 
 			// test for a subset of properties
 			capiAddr, err := gateway.Property("cc/capi_internal_addr")
@@ -415,12 +621,15 @@ var _ = Describe("Logging", func() {
 			routeRegistrar, err := manifest.FindInstanceGroupJob(instanceGroup, "route_registrar")
 			Expect(err).NotTo(HaveOccurred())
 
-			routes, err := routeRegistrar.Property("route_registrar/routes")
+			rlpGatewayRoute, err := routeRegistrar.Property("route_registrar/routes/name=rlp-gateway")
 			Expect(err).ToNot(HaveOccurred())
-			Expect(routes).To(ContainElement(HaveKeyWithValue("uris", []interface{}{
+
+			Expect(rlpGatewayRoute).To(HaveKeyWithValue("tls_port", 8088))
+			Expect(rlpGatewayRoute).To(HaveKeyWithValue("server_cert_domain_san", "reverse-log-proxy.service.cf.internal"))
+			Expect(rlpGatewayRoute).To(HaveKeyWithValue("uris", []interface{}{
 				"log-stream.sys.example.com",
 				"*.log-stream.sys.example.com",
-			})))
+			}))
 		})
 	})
 
@@ -509,3 +718,13 @@ rule
 		})
 	})
 })
+
+func findProperty(manifest planitest.Manifest, instanceGroupName, jobName, propertyName string) interface{} {
+	job, err := manifest.FindInstanceGroupJob(instanceGroupName, jobName)
+	Expect(err).NotTo(HaveOccurred())
+
+	property, err := job.Property(propertyName)
+	Expect(err).NotTo(HaveOccurred())
+
+	return property
+}

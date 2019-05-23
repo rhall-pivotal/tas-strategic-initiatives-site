@@ -8,6 +8,9 @@ templates:
 {{if eq tile "srt"}}
 - $( job "bpm" )
 - $( job "loggregator_agent_mysql" )
+- $( job "loggr-syslog-agent" )
+- $( job "loggr-forwarder-agent-mysql" )
+- $( job "prom_scraper" )
 - $( job "loggr-system-metrics-agent" )
 - $( job "syslog_forwarder" )
 - $( job "nats" )

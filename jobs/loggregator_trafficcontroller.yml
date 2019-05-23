@@ -22,6 +22,8 @@ manifest: |
       trafficcontroller:
         cert: (( .loggregator_trafficcontroller.trafficcontroller_tls_cert.cert_pem ))
         key: (( .loggregator_trafficcontroller.trafficcontroller_tls_cert.private_key_pem ))
+    outgoing_cert: (( .properties.trafficcontroller_tls_cert.cert_pem ))
+    outgoing_key: (( .properties.trafficcontroller_tls_cert.private_key_pem ))
     uaa:
       client: (( .uaa.doppler_client_credentials.identity ))
       client_secret: (( .uaa.doppler_client_credentials.password ))

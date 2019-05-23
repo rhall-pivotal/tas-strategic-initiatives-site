@@ -3,6 +3,7 @@ name: adapter
 release: cf-syslog-drain
 manifest: |
   scalablesyslog:
+    enabled: "(( .properties.syslog_agent_enabled.value ? false: true ))"
     adapter:
       health: $( variable "scalablesyslog_adapter_health_port" )
       logs:

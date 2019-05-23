@@ -3,6 +3,7 @@ name: scheduler
 release: cf-syslog-drain
 manifest: |
   scalablesyslog:
+    enabled: "(( .properties.syslog_agent_enabled.value ? false : true ))"
     scheduler:
       api:
         url: https://cloud-controller-ng.service.cf.internal:9023

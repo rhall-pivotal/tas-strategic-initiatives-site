@@ -387,6 +387,18 @@ var _ = Describe("CAPI", func() {
 			Expect(description).To(MatchRegexp(`https://docs.pivotal.io/pivotalcf/\d+-\d+/pcf-release-notes/runtime-rn.html`))
 		})
 
+		It("sets defaults on the udp forwarder", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			udpForwarder, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-udp-forwarder")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("ca"))
+			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("cert"))
+			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("key"))
+		})
+
 		It("uses cflinuxfs3 for the docker staging stack", func() {
 			api, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
 			Expect(err).NotTo(HaveOccurred())
@@ -395,6 +407,7 @@ var _ = Describe("CAPI", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(description).To(Equal("cflinuxfs3"))
 		})
+
 
 		Describe("tls routing", func() {
 			It("configures the route registrar to use tls", func() {

@@ -6,7 +6,10 @@ description: Contains the backup and restore scripts for use with BBR CLI. This 
 templates:
 - $( job "bpm" )
 - $( job "loggregator_agent" )
+- $( job "loggr-syslog-agent" )
+- $( job "loggr-forwarder-agent" )
 - $( job "loggr-system-metrics-agent" )
+- $( job "prom_scraper" )
 - $( job "backup-restore-notifications" )
 - $( job "backup-restore-pcf-autoscaling" )
 - $( job "bbr-cfnetworkingdb" )
