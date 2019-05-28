@@ -1,6 +1,8 @@
 ---
 name: loggr-syslog-binding-cache
 release: loggregator-agent
+provides: |
+  binding_cache: {as: binding_cache, shared: true}
 manifest: |
   enabled:  (( .properties.syslog_agent_enabled.value ))
   external_port: 9000
