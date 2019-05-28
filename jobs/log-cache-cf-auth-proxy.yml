@@ -8,6 +8,7 @@ manifest: |
     cert: (( .properties.log_cache_auth_proxy_client_tls_cert.cert_pem ))
     common_name: cloud-controller-ng.service.cf.internal
     key: (( .properties.log_cache_auth_proxy_client_tls_cert.private_key_pem ))
+  proxy_ca_cert: (( $ops_manager.ca_certificate ))
   proxy_port: $( variable "log_cache_cf_auth_proxy_port" )
   uaa:
     ca_cert: (( $ops_manager.ca_certificate ))

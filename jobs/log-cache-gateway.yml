@@ -3,3 +3,5 @@ name: log-cache-gateway
 release: log-cache
 manifest: |
   gateway_addr: localhost:$( variable "log_cache_gateway_port" )
+  proxy_cert: (( .properties.log_cache_gateway_auth_proxy_tls_cert.cert_pem ))
+  proxy_key: (( .properties.log_cache_gateway_auth_proxy_tls_cert.private_key_pem ))
