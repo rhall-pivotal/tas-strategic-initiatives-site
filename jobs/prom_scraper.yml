@@ -1,0 +1,6 @@
+---
+name: prom_scraper
+release: loggregator-agent
+consumes: |
+  loggregator: {from: loggregator, deployment: (( ..cf.deployment_name ))}
+

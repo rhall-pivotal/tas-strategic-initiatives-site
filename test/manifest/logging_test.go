@@ -45,6 +45,23 @@ var _ = Describe("Logging", func() {
 				agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
 				Expect(err).NotTo(HaveOccurred())
 
+				tlsProps, err := agent.Property("loggregator/tls")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(tlsProps).To(HaveKey("ca_cert"))
+
+				tlsAgentProps, err := agent.Property("loggregator/tls/agent")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(tlsAgentProps).To(HaveKey("cert"))
+				Expect(tlsAgentProps).To(HaveKey("key"))
+
+				port, err := agent.Property("grpc_port")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(port).To(Equal(3459))
+
+				udpDisabled, err := agent.Property("disable_udp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(udpDisabled).To(BeTrue())
+
 				tags, err := agent.Property("tags")
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
 				Expect(tags).To(HaveKeyWithValue("placement_tag", "isosegtag"))
@@ -52,6 +69,76 @@ var _ = Describe("Logging", func() {
 				Expect(tags).NotTo(HaveKey("product_version"))
 				Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
 			}
+		})
+	})
+
+	Describe("syslog agent", func() {
+		It("sets defaults on the syslog agent", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, ig := range instanceGroups {
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggr-syslog-agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				port, err := agent.Property("port")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(port).To(Equal(3460))
+
+				enabled, err := agent.Property("enabled")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(enabled).To(BeTrue())
+
+				tlsProps, err := agent.Property("tls")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(tlsProps).To(HaveKey("ca_cert"))
+				Expect(tlsProps).To(HaveKey("cert"))
+				Expect(tlsProps).To(HaveKey("key"))
+
+				cacheTlsProps, err := agent.Property("cache/tls")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(cacheTlsProps).To(HaveKey("ca_cert"))
+				Expect(cacheTlsProps).To(HaveKey("cert"))
+				Expect(cacheTlsProps).To(HaveKey("key"))
+				Expect(cacheTlsProps).To(HaveKeyWithValue("cn", "binding-cache"))
+			}
+		})
+	})
+
+	Describe("prom scraper", func() {
+		It("configures the prom scraper on all VMs", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, ig := range instanceGroups {
+				_, err := manifest.FindInstanceGroupJob(ig, "prom_scraper")
+				Expect(err).NotTo(HaveOccurred())
+			}
+		})
+
+		Describe("forwarder agent", func() {
+			It("sets defaults on the forwarder agent", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				for _, ig := range instanceGroups {
+					agent, err := manifest.FindInstanceGroupJob(ig, "loggr-forwarder-agent")
+					Expect(err).NotTo(HaveOccurred())
+
+					By("getting the grpc port")
+					port, err := agent.Property("port")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(port).To(Equal(3458))
+
+					By("setting tags on the emitted metrics")
+					tags, err := agent.Property("tags")
+					Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", agent)
+					Expect(tags).To(HaveKeyWithValue("placement_tag", "isosegtag"))
+					Expect(tags).To(HaveKeyWithValue("product", "PCF Isolation Segment"))
+					Expect(tags).NotTo(HaveKey("product_version"))
+					Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
+				}
+			})
 		})
 	})
 

@@ -23,3 +23,9 @@
     - cell.service.cf.internal
     - 127.0.0.1
     - localhost
+- name: scheduler_binding_cache_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - binding-cache

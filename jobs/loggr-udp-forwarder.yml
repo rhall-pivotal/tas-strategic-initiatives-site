@@ -1,0 +1,13 @@
+---
+name: loggr-udp-forwarder
+release: loggregator-agent
+consumes: |
+  cloud_controller:
+    from: cloud_controller
+    deployment: (( ..cf.deployment_name ))
+manifest: |
+  loggregator:
+    tls:
+      ca: (( $ops_manager.ca_certificate ))
+      cert: (( .properties.loggregator_agent_tls_cert.cert_pem ))
+      key: (( .properties.loggregator_agent_tls_cert.private_key_pem ))

@@ -84,6 +84,11 @@
           manifest: |
             ""
 
+- name: syslog_agent_enabled
+  type: boolean
+  configurable: true
+  default: true
+
 - name: system_metrics_tls_scraper_cert
   type: rsa_cert_credentials
   configurable: false

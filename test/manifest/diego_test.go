@@ -166,4 +166,18 @@ var _ = Describe("Diego", func() {
 			Expect(caKey).To(Equal("((diego-instance-identity-intermediate-ca-2-7.private_key))"))
 		})
 	})
+
+	Describe("logging", func() {
+		It("sets defaults on the udp forwarder for the router", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			udpForwarder, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "loggr-udp-forwarder")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("ca"))
+			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("cert"))
+			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("key"))
+		})
+	})
 })
