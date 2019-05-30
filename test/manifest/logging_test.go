@@ -87,7 +87,7 @@ var _ = Describe("Logging", func() {
 
 				enabled, err := agent.Property("enabled")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(enabled).To(BeTrue())
+				Expect(enabled).To(BeFalse())
 
 				tlsProps, err := agent.Property("tls")
 				Expect(err).ToNot(HaveOccurred())
