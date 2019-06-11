@@ -3,7 +3,6 @@ name: loggr-forwarder-agent
 release: loggregator-agent
 manifest: |
   port: 3458
-  deployment: $( variable "label" )
   tls:
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( .doppler.metron_tls_cert.cert_pem ))
