@@ -275,10 +275,6 @@ var _ = Describe("Logging", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(port).To(Equal(3458))
 
-				deployment, err := agent.Property("deployment")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(deployment).To(Equal(productTag))
-
 				By("adding tags to the metrics emitted")
 				tags, err := agent.Property("tags")
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
