@@ -632,6 +632,16 @@ var _ = Describe("Logging", func() {
 			}))
 		})
 
+		It("is enabled by default", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			trafficController, err := manifest.FindInstanceGroupJob(instanceGroup, "loggregator_trafficcontroller")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(trafficController.Property("traffic_controller/enabled")).To(BeTrue())
+		})
+
 		It("can be disabled", func() {
 			manifest, err := product.RenderManifest(map[string]interface{}{
 				".properties.enable_v1_firehose": false,
