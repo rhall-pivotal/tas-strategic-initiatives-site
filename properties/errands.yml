@@ -79,8 +79,6 @@
   # Possible future fix: https://github.com/go-yaml/yaml/issues/387
   _hack: '$( $v := regexReplaceAll "^\"?(\\d+)\\.(\\d+).*$" version "${1}-${2}" )'
   default:
-  - name: Marketplace
-    href: /marketplace
   - name: Docs
     href: https://docs.pivotal.io/pivotalcf/$($v)/pas/intro.html
   - name: Tools
@@ -92,6 +90,11 @@
   optional: true
 
 - name: push_apps_manager_marketplace_name
+  type: string
+  configurable: true
+  optional: true
+
+- name: push_apps_manager_marketplace_url
   type: string
   configurable: true
   optional: true

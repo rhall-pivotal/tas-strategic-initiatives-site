@@ -29,9 +29,14 @@ property_inputs:
     label: Marketplace name
     description: Enter a custom Marketplace name.
 
+  - reference: .properties.push_apps_manager_marketplace_url
+    label: Marketplace URL
+    description: Replaces "/marketplace" as the Marketplace Page in Apps Manager.
+
   - reference: .properties.push_apps_manager_nav_links
-    label: Customize sidebar links
-    description: Configure up to 10 links in the Apps Manager sidebar.
+    label: Customize Secondary Navigation Links
+    description: |
+      Up to 10 links configured here will appear in the secondary navigation of Apps Manager
     property_inputs:
       - reference: name
         label: Link text

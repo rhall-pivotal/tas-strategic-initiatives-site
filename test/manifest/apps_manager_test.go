@@ -74,6 +74,99 @@ var _ = Describe("Apps Manager", func() {
 		)))
 	})
 
+	Describe("Marketplace Url", func() {
+		It("uses the spec defaults", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+			Expect(err).NotTo(HaveOccurred())
+
+			appsManagerMarketplaceUrl, err := appsManager.Property("apps_manager/white_labeling/marketplace_url")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(appsManagerMarketplaceUrl).To(BeNil())
+		})
+
+		Context("when the operator specifies a marketplace url", func() {
+			It("applies it", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.push_apps_manager_marketplace_url": `custom-marketplace-url.com`,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+				Expect(err).NotTo(HaveOccurred())
+
+				appsManagerMarketplaceUrl, err := appsManager.Property("apps_manager/white_labeling/marketplace_url")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(appsManagerMarketplaceUrl).To(Equal(`custom-marketplace-url.com`))
+			})
+		})
+	})
+
+	Describe("Secondary Navigation Links", func() {
+		It("uses the spec defaults", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+			Expect(err).NotTo(HaveOccurred())
+
+			navLinksDocsName, err := appsManager.Property("apps_manager/white_labeling/nav_links/0/name")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(navLinksDocsName).To(Equal("Docs"))
+
+			navLinksDocsHref, err := appsManager.Property("apps_manager/white_labeling/nav_links/0/href")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(navLinksDocsHref).To(MatchRegexp(`https://docs.pivotal.io/pivotalcf/\d+-\d+/pas/intro.html`))
+
+			navLinksToolsName, err := appsManager.Property("apps_manager/white_labeling/nav_links/1/name")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(navLinksToolsName).To(Equal("Tools"))
+
+			navLinksToolsHref, err := appsManager.Property("apps_manager/white_labeling/nav_links/1/href")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(navLinksToolsHref).To(Equal("/tools"))
+		})
+
+		Context("when the operator specifies secondary navigation links", func() {
+			It("applies them", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.push_apps_manager_nav_links": []map[string]interface{}{
+						{
+							"name": "custom-nav-1",
+							"href": "custom-nav-1.com",
+						},
+						{
+							"name": "custom-nav-2",
+							"href": "custom-nav-2.com",
+						},
+					},
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+				Expect(err).NotTo(HaveOccurred())
+
+				navLinksCustomName1, err := appsManager.Property("apps_manager/white_labeling/nav_links/0/name")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(navLinksCustomName1).To(Equal(`custom-nav-1`))
+
+				navLinksCustomHref1, err := appsManager.Property("apps_manager/white_labeling/nav_links/0/href")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(navLinksCustomHref1).To(Equal("custom-nav-1.com"))
+
+				navLinksCustomName2, err := appsManager.Property("apps_manager/white_labeling/nav_links/1/name")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(navLinksCustomName2).To(Equal(`custom-nav-2`))
+
+				navLinksCustomHref2, err := appsManager.Property("apps_manager/white_labeling/nav_links/1/href")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(navLinksCustomHref2).To(Equal("custom-nav-2.com"))
+			})
+		})
+	})
+
 	Describe("Memory", func() {
 		It("uses the spec defaults", func() {
 			manifest, err := product.RenderManifest(nil)
