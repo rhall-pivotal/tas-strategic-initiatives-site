@@ -56,8 +56,10 @@
   property_blueprints:
     - name: name
       type: string
+      configurable: true
     - name: href
       type: string
+      configurable: true
 
 - name: push_apps_manager_nav_links
   type: collection
@@ -65,8 +67,10 @@
   property_blueprints:
   - name: name
     type: string
+    configurable: true
   - name: href
     type: string
+    configurable: true
   # HACK: work around YAML wrapping issue
   # go-yaml wraps lines that are longer than 80 characters,
   # this breaks templating as $( ) helpers cannot have newlines in the middle.
