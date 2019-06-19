@@ -240,4 +240,32 @@ var _ = Describe("Apps Manager", func() {
 			})
 		})
 	})
+
+	Describe("Networking", func() {
+		It("uses the spec defaults", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+			Expect(err).NotTo(HaveOccurred())
+
+			networkingSelfService, err := appsManager.Property("networking/enable_space_developer_self_service")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(networkingSelfService).To(BeFalse())
+		})
+
+		It("fetches the state of the networking space developer self-service checkbox", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.cf_networking_enable_space_developer_self_service": true,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+			Expect(err).NotTo(HaveOccurred())
+
+			networkingSelfService, err := appsManager.Property("networking/enable_space_developer_self_service")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(networkingSelfService).To(BeTrue())
+		})
+	})
 })
