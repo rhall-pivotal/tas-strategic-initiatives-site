@@ -7,12 +7,4 @@ manifest: |
   bpm:
     enabled: true
   buckets:
-    droplet:
-      bucket_name: (( .properties.system_blobstore.external_gcs_service_account.droplets_bucket.value ))
-      backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
-    buildpack:
-      bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
-      backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
-    package:
-      bucket_name: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
-      backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+    '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_all) ? .properties.system_blobstore.selected_option.parsed_manifest(all_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_buckets) ))'

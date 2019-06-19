@@ -9,13 +9,16 @@ import (
 
 var _ = Describe("System Blobstore", func() {
 	Describe("internal blobstore", func() {
-		var instanceGroup string
+		var ccInstanceGroup string
+		var blobstoreInstanceGroup string
 
 		BeforeEach(func() {
 			if productName == "srt" {
-				instanceGroup = "control"
+				ccInstanceGroup = "control"
+				blobstoreInstanceGroup = "blobstore"
 			} else {
-				instanceGroup = "cloud_controller"
+				ccInstanceGroup = "cloud_controller"
+				blobstoreInstanceGroup = "nfs_server"
 			}
 		})
 
@@ -29,7 +32,7 @@ var _ = Describe("System Blobstore", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			By("setting properties on cloud_controller_ng")
-			job, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+			job, err := manifest.FindInstanceGroupJob(ccInstanceGroup, "cloud_controller_ng")
 			Expect(err).NotTo(HaveOccurred())
 
 			maxValidPackages, err := job.Property("cc/packages/max_valid_packages_stored")
@@ -47,6 +50,50 @@ var _ = Describe("System Blobstore", func() {
 			jobEnabled, err := bbr.Property("enabled")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(jobEnabled).To(BeFalse())
+
+			By("setting properties on blobstore")
+			job, err = manifest.FindInstanceGroupJob(blobstoreInstanceGroup, "blobstore")
+			Expect(err).NotTo(HaveOccurred())
+
+			selectDirectoriesToBackup, err := job.Property("select_directories_to_backup")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(selectDirectoriesToBackup).To(ConsistOf("buildpacks", "packages", "droplets"))
+		})
+
+		Context("when backup level skip_droplets is selected", func() {
+			It("configures the select_directories_to_backup without droplets", func() {
+				inputProperties := map[string]interface{}{
+					".properties.system_blobstore_backup_level":  "skip_droplets",
+				}
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("setting properties on blobstore")
+				job, err := manifest.FindInstanceGroupJob(blobstoreInstanceGroup, "blobstore")
+				Expect(err).NotTo(HaveOccurred())
+
+				selectDirectoriesToBackup, err := job.Property("select_directories_to_backup")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(selectDirectoriesToBackup).To(ConsistOf("buildpacks", "packages"))
+			})
+		})
+
+		Context("when backup level skip_droplets_packages is selected", func() {
+			It("configures the select_directories_to_backup without droplets", func() {
+				inputProperties := map[string]interface{}{
+					".properties.system_blobstore_backup_level":  "skip_droplets_packages",
+				}
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("setting properties on blobstore")
+				job, err := manifest.FindInstanceGroupJob(blobstoreInstanceGroup, "blobstore")
+				Expect(err).NotTo(HaveOccurred())
+
+				selectDirectoriesToBackup, err := job.Property("select_directories_to_backup")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(selectDirectoriesToBackup).To(ConsistOf("buildpacks"))
+			})
 		})
 	})
 
@@ -136,6 +183,52 @@ var _ = Describe("System Blobstore", func() {
 						Expect(err).NotTo(HaveOccurred())
 						Expect(bucketProperties).NotTo(HaveKey("aws_access_key_id"))
 						Expect(bucketProperties).NotTo(HaveKey("aws_access_secret_key"))
+					}
+				})
+			})
+
+			When("backup level skip_droplets is selected", func() {
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external.iam_instance_profile_authentication"] = true
+					inputProperties[".properties.system_blobstore_backup_level"] =  "skip_droplets"
+				})
+
+				It("only templates the buildpacks and packages buckets", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-versioned-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, bucket := range []string{"buildpacks", "packages"} {
+						_, err = job.Property(fmt.Sprintf("buckets/%s", bucket))
+						Expect(err).NotTo(HaveOccurred())
+					}
+
+					_, err = job.Property("buckets/droplets")
+					Expect(err).To(HaveOccurred())
+				})
+			})
+
+			When("backup level skip_droplets_packages is selected", func() {
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external.iam_instance_profile_authentication"] = true
+					inputProperties[".properties.system_blobstore_backup_level"] =  "skip_droplets_packages"
+				})
+
+				It("only templates the buildpacks bucket", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-versioned-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					_, err = job.Property("buckets/buildpacks")
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, bucket := range []string{"packages", "droplets"} {
+						_, err := job.Property(fmt.Sprintf("buckets/%s", bucket))
+						Expect(err).To(HaveOccurred())
 					}
 				})
 			})
@@ -242,6 +335,52 @@ var _ = Describe("System Blobstore", func() {
 					}
 				})
 			})
+
+			When("backup level skip_droplets is selected", func() {
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external.iam_instance_profile_authentication"] = true
+					inputProperties[".properties.system_blobstore_backup_level"] =  "skip_droplets"
+				})
+
+				It("only templates the buildpacks and packages buckets", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-unversioned-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, bucket := range []string{"buildpacks", "packages"} {
+						_, err = job.Property(fmt.Sprintf("buckets/%s", bucket))
+						Expect(err).NotTo(HaveOccurred())
+					}
+
+					_, err = job.Property("buckets/droplets")
+					Expect(err).To(HaveOccurred())
+				})
+			})
+
+			When("backup level skip_droplets_packages is selected", func() {
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external.iam_instance_profile_authentication"] = true
+					inputProperties[".properties.system_blobstore_backup_level"] =  "skip_droplets_packages"
+				})
+
+				It("only templates the buildpacks bucket", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-unversioned-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					_, err = job.Property("buckets/buildpacks")
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, bucket := range []string{"packages", "droplets"} {
+						_, err := job.Property(fmt.Sprintf("buckets/%s", bucket))
+						Expect(err).To(HaveOccurred())
+					}
+				})
+			})
 		})
 	})
 
@@ -326,55 +465,178 @@ var _ = Describe("System Blobstore", func() {
 					}
 				})
 			})
+
+			When("backup level skip_droplets is selected", func() {
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external_azure.restore_from_account_name"] = "some-restore-account-name"
+					inputProperties[".properties.system_blobstore.external_azure.restore_from_access_key"] = map[string]string{
+						"secret": "some-restore-access-key",
+					}
+
+					inputProperties[".properties.system_blobstore_backup_level"] =  "skip_droplets"
+				})
+
+				It("only templates the buildpacks and packages containers", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "azure-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, container := range []string{"buildpacks", "packages"} {
+						_, err = job.Property(fmt.Sprintf("containers/%s", container))
+						Expect(err).NotTo(HaveOccurred())
+					}
+
+					_, err = job.Property("containers/droplets")
+					Expect(err).To(HaveOccurred())
+				})
+			})
+
+			When("backup level skip_droplets_packages is selected", func() {
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external_azure.restore_from_account_name"] = "some-restore-account-name"
+					inputProperties[".properties.system_blobstore.external_azure.restore_from_access_key"] = map[string]string{
+						"secret": "some-restore-access-key",
+					}
+
+					inputProperties[".properties.system_blobstore_backup_level"] =  "skip_droplets_packages"
+				})
+
+				It("only templates the buildpacks container", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "azure-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					_, err = job.Property("containers/buildpacks")
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, container := range []string{"packages", "droplets"} {
+						_, err := job.Property(fmt.Sprintf("containers/%s", container))
+						Expect(err).To(HaveOccurred())
+					}
+				})
+			})
 		})
 	})
 
 	Describe("gcs compatible", func() {
 		var inputProperties map[string]interface{}
 
-		BeforeEach(func() {
-			inputProperties = map[string]interface{}{
-				".properties.system_blobstore": "external_gcs_service_account",
-				".properties.system_blobstore.external_gcs_service_account.buildpacks_bucket":        "some-buildpacks-bucket",
-				".properties.system_blobstore.external_gcs_service_account.droplets_bucket":          "some-droplets-bucket",
-				".properties.system_blobstore.external_gcs_service_account.packages_bucket":          "some-packages-bucket",
-				".properties.system_blobstore.external_gcs_service_account.resources_bucket":         "some-resources-bucket",
-				".properties.system_blobstore.external_gcs_service_account.service_account_json_key": "service-account-json-key",
-				".properties.system_blobstore.external_gcs_service_account.project_id":               "dontcare",
-				".properties.system_blobstore.external_gcs_service_account.service_account_email":    "dontcare",
-				".properties.system_blobstore.external_gcs_service_account.backup_bucket":            "my-backup-bucket",
-			}
+		When("backup level all is selected", func() {
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.system_blobstore": "external_gcs_service_account",
+					".properties.system_blobstore.external_gcs_service_account.buildpacks_bucket":        "some-buildpacks-bucket",
+					".properties.system_blobstore.external_gcs_service_account.droplets_bucket":          "some-droplets-bucket",
+					".properties.system_blobstore.external_gcs_service_account.packages_bucket":          "some-packages-bucket",
+					".properties.system_blobstore.external_gcs_service_account.resources_bucket":         "some-resources-bucket",
+					".properties.system_blobstore.external_gcs_service_account.service_account_json_key": "service-account-json-key",
+					".properties.system_blobstore.external_gcs_service_account.project_id":               "dontcare",
+					".properties.system_blobstore.external_gcs_service_account.service_account_email":    "dontcare",
+					".properties.system_blobstore.external_gcs_service_account.backup_bucket":            "my-backup-bucket",
+				}
+			})
+
+			It("enables the gcs-blobstore-backup-restorer", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob("backup_restore", "gcs-blobstore-backup-restorer")
+				Expect(err).NotTo(HaveOccurred())
+
+				jobEnabled, err := job.Property("gcp_service_account_key")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(jobEnabled).To(Equal("service-account-json-key"))
+
+				job, err = manifest.FindInstanceGroupJob("backup_restore", "gcs-blobstore-backup-restorer")
+				Expect(err).NotTo(HaveOccurred())
+
+				jobEnabled, err = job.Property("enabled")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(jobEnabled).To(BeTrue())
+
+				buildpacksBackupName, err := job.Property("buckets/buildpack/backup_bucket_name")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(buildpacksBackupName).To(Equal("my-backup-bucket"))
+
+				dropletsBackupName, err := job.Property("buckets/droplet/backup_bucket_name")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(dropletsBackupName).To(Equal("my-backup-bucket"))
+
+				packagesBackupName, err := job.Property("buckets/package/backup_bucket_name")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(packagesBackupName).To(Equal("my-backup-bucket"))
+			})
+
 		})
 
-		It("enables the gcs-blobstore-backup-restorer", func() {
-			manifest, err := product.RenderManifest(inputProperties)
-			Expect(err).NotTo(HaveOccurred())
+		When("backup level skip_droplets is selected", func() {
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.system_blobstore": "external_gcs_service_account",
+					".properties.system_blobstore.external_gcs_service_account.buildpacks_bucket":        "some-buildpacks-bucket",
+					".properties.system_blobstore.external_gcs_service_account.droplets_bucket":          "some-droplets-bucket",
+					".properties.system_blobstore.external_gcs_service_account.packages_bucket":          "some-packages-bucket",
+					".properties.system_blobstore.external_gcs_service_account.resources_bucket":         "some-resources-bucket",
+					".properties.system_blobstore.external_gcs_service_account.service_account_json_key": "service-account-json-key",
+					".properties.system_blobstore.external_gcs_service_account.project_id":               "dontcare",
+					".properties.system_blobstore.external_gcs_service_account.service_account_email":    "dontcare",
+					".properties.system_blobstore.external_gcs_service_account.backup_bucket":            "my-backup-bucket",
+					".properties.system_blobstore_backup_level": "skip_droplets",
+				}
+			})
 
-			job, err := manifest.FindInstanceGroupJob("backup_restore", "gcs-blobstore-backup-restorer")
-			Expect(err).NotTo(HaveOccurred())
+			It("only templates the buildpacks and packages buckets", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
 
-			jobEnabled, err := job.Property("gcp_service_account_key")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(jobEnabled).To(Equal("service-account-json-key"))
+				job, err := manifest.FindInstanceGroupJob("backup_restore", "gcs-blobstore-backup-restorer")
+				Expect(err).NotTo(HaveOccurred())
 
-			job, err = manifest.FindInstanceGroupJob("backup_restore", "gcs-blobstore-backup-restorer")
-			Expect(err).NotTo(HaveOccurred())
+				for _, container := range []string{"buildpack", "package"} {
+					_, err = job.Property(fmt.Sprintf("buckets/%s", container))
+					Expect(err).NotTo(HaveOccurred())
+				}
 
-			jobEnabled, err = job.Property("enabled")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(jobEnabled).To(BeTrue())
+				_, err = job.Property("buckets/droplet")
+				Expect(err).To(HaveOccurred())
+			})
+		})
 
-			buildpacksBackupName, err := job.Property("buckets/buildpack/backup_bucket_name")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(buildpacksBackupName).To(Equal("my-backup-bucket"))
+		When("backup level skip_droplets_packages is selected", func() {
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.system_blobstore": "external_gcs_service_account",
+					".properties.system_blobstore.external_gcs_service_account.buildpacks_bucket":        "some-buildpacks-bucket",
+					".properties.system_blobstore.external_gcs_service_account.droplets_bucket":          "some-droplets-bucket",
+					".properties.system_blobstore.external_gcs_service_account.packages_bucket":          "some-packages-bucket",
+					".properties.system_blobstore.external_gcs_service_account.resources_bucket":         "some-resources-bucket",
+					".properties.system_blobstore.external_gcs_service_account.service_account_json_key": "service-account-json-key",
+					".properties.system_blobstore.external_gcs_service_account.project_id":               "dontcare",
+					".properties.system_blobstore.external_gcs_service_account.service_account_email":    "dontcare",
+					".properties.system_blobstore.external_gcs_service_account.backup_bucket":            "my-backup-bucket",
+					".properties.system_blobstore_backup_level": "skip_droplets_packages",
+				}
+			})
 
-			dropletsBackupName, err := job.Property("buckets/droplet/backup_bucket_name")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(dropletsBackupName).To(Equal("my-backup-bucket"))
+			It("only templates the buildpacks bucket", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
 
-			packagesBackupName, err := job.Property("buckets/package/backup_bucket_name")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(packagesBackupName).To(Equal("my-backup-bucket"))
+				job, err := manifest.FindInstanceGroupJob("backup_restore", "gcs-blobstore-backup-restorer")
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = job.Property("buckets/buildpack")
+				Expect(err).NotTo(HaveOccurred())
+
+				for _, container := range []string{"package", "droplet"} {
+					_, err := job.Property(fmt.Sprintf("buckets/%s", container))
+					Expect(err).To(HaveOccurred())
+				}
+			})
 		})
 	})
 })

@@ -4,6 +4,4 @@ release: backup-and-restore-sdk
 manifest: |
   enabled: (( .properties.system_blobstore.selected_option.parsed_manifest(enable_versioned_s3_backup) ))
   buckets:
-    buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack) ))'
-    droplets: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_droplet_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_droplet) ))'
-    packages: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_package_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_package) ))'
+    '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_all) ? .properties.system_blobstore.selected_option.parsed_manifest(all_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_buckets) ))'

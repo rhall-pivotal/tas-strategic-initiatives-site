@@ -13,14 +13,72 @@
   constraints:
     min: 1
 
+- name: system_blobstore_backup_level
+  type: selector
+  configurable: true
+  default: all
+  option_templates:
+    - name: all
+      select_value: all
+      named_manifests:
+        - name: backup_all
+          manifest: |
+            true
+        - name: backup_skip_droplets
+          manifest: |
+            false
+        - name: backup_skip_droplets_packages
+          manifest: |
+            false
+    - name: skip_droplets
+      select_value: skip_droplets
+      named_manifests:
+        - name: backup_all
+          manifest: |
+            false
+        - name: backup_skip_droplets
+          manifest: |
+            true
+        - name: backup_skip_droplets_packages
+          manifest: |
+            false
+    - name: skip_droplets_packages
+      select_value: skip_droplets_packages
+      named_manifests:
+        - name: backup_all
+          manifest: |
+            false
+        - name: backup_skip_droplets
+          manifest: |
+            false
+        - name: backup_skip_droplets_packages
+          manifest: |
+            true
+
 - name: system_blobstore
   type: selector
   configurable: true
   default: internal
   option_templates:
+
     - name: internal
       select_value: internal
       named_manifests:
+        - name: all_buckets
+          manifest: |
+            - "buildpacks"
+            - "packages"
+            - "droplets"
+        - name: skip_buckets
+          manifest: |
+            '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_skip_droplets) ? .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_packages_buckets) ))'
+        - name: skip_droplets_buckets
+          manifest: |
+            - "buildpacks"
+            - "packages"
+        - name: skip_droplets_packages_buckets
+          manifest: |
+            - "buildpacks"
         - name: ccbuildpack
           manifest: |
             blobstore_type: webdav
@@ -77,6 +135,7 @@
         - name: enable_gcs_backup
           manifest: |
             false
+
     - name: external
       select_value: external
       named_manifests:
@@ -92,6 +151,21 @@
             "(( .properties.system_blobstore.external.encryption_kms_key_id.value ? .properties.system_blobstore.selected_option.parsed_manifest(kms_hash) : .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) ))"
         - name: empty_hash
           manifest: '{}'
+        - name: all_buckets
+          manifest: |
+            buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack) ))'
+            droplets: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_droplet_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_droplet) ))'
+            packages: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_package_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_package) ))'
+        - name: skip_buckets
+          manifest: |
+            '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_skip_droplets) ? .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_packages_buckets) ))'
+        - name: skip_droplets_buckets
+          manifest: |
+            buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack) ))'
+            packages: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_package_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_package) ))'
+        - name: skip_droplets_packages_buckets
+          manifest: |
+            buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack) ))'
         - name: ccbuildpack
           manifest: |
             blobstore_type: fog
@@ -336,9 +410,37 @@
           type: boolean
           configurable: true
           default: false
+
     - name: external_gcs
       select_value: external_gcs
       named_manifests:
+        - name: all_buckets
+          manifest: |
+            droplet:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.droplets_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+            buildpack:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+            package:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+        - name: skip_buckets
+          manifest: |
+            '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_skip_droplets) ? .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_packages_buckets) ))'
+        - name: skip_droplets_buckets
+          manifest: |
+            buildpack:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+            package:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+        - name: skip_droplets_packages_buckets
+          manifest: |
+            buildpack:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
         - name: ccbuildpack
           manifest: |
             blobstore_type: fog
@@ -414,9 +516,37 @@
         - name: secret_key
           type: secret
           configurable: true
+
     - name: external_gcs_service_account
       select_value: external_gcs_service_account
       named_manifests:
+        - name: all_buckets
+          manifest: |
+            droplet:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.droplets_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+            buildpack:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+            package:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+        - name: skip_buckets
+          manifest: |
+            '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_skip_droplets) ? .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_packages_buckets) ))'
+        - name: skip_droplets_buckets
+          manifest: |
+            buildpack:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+            package:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+        - name: skip_droplets_packages_buckets
+          manifest: |
+            buildpack:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
         - name: ccbuildpack
           manifest: |
             blobstore_type: fog
@@ -522,6 +652,57 @@
     - name: external_azure
       select_value: external_azure
       named_manifests:
+        - name: all_buckets
+          manifest: |
+            buildpacks:
+              name: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
+              azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+              restore_from:
+                azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+                azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
+            droplets:
+              name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
+              azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+              restore_from:
+                azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+                azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
+            packages:
+              name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
+              azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+              restore_from:
+                azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+                azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
+        - name: skip_buckets
+          manifest: |
+            '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_skip_droplets) ? .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_packages_buckets) ))'
+        - name: skip_droplets_buckets
+          manifest: |
+            buildpacks:
+              name: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
+              azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+              restore_from:
+                azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+                azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
+            packages:
+              name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
+              azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+              restore_from:
+                azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+                azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
+        - name: skip_droplets_packages_buckets
+          manifest: |
+            buildpacks:
+              name: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
+              azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+              restore_from:
+                azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+                azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
         - name: ccbuildpack
           manifest: |
             blobstore_type: fog
