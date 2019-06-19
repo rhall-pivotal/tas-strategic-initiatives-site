@@ -159,6 +159,14 @@
           type: string
           configurable: true
           optional: true
+        - name: group_max_search_depth
+          type: integer
+          configurable: true
+          optional: true
+          default: 1
+          constraints:
+            min: 1
+            max: 10
         - name: group_search_filter
           type: string
           configurable: true

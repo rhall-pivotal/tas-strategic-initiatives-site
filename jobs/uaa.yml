@@ -98,6 +98,7 @@ manifest: |
         profile_type: '(( .properties.uaa.ldap.group_search_base.value_present? ? "groups-map-to-scopes": "no-groups" ))'
         searchBase: (( .properties.uaa.ldap.group_search_base.value ))
         groupSearchFilter: (( .properties.uaa.ldap.group_search_filter.value ))
+        maxSearchDepth: (( .properties.uaa.ldap.group_max_search_depth.value ))
       userDN: (( .properties.uaa.ldap.credentials.identity ))
       userPassword: (( .properties.uaa.ldap.credentials.password ))
     admin:

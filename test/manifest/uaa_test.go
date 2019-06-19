@@ -265,6 +265,67 @@ var _ = Describe("UAA", func() {
 		})
 	})
 
+	Context("LDAP", func() {
+		Describe("LDAP Group MaxSearchDepth", func() {
+			var inputProperties map[string]interface{}
+
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.uaa":          "ldap",
+					".properties.uaa.ldap.url": "ldap://example.com",
+					".properties.uaa.ldap.credentials": map[string]string{
+						"identity": "blah",
+						"password": "blah1234",
+					},
+					".properties.uaa.ldap.search_base":         "ou=Groups",
+					".properties.uaa.ldap.search_filter":       "cn={0}",
+					".properties.uaa.ldap.mail_attribute_name": "mail",
+					".properties.uaa.ldap.ldap_referrals":      "follow",
+					".properties.uaa.ldap.group_search_filter": "member={0}",
+				}
+			})
+
+			It("defaults to 1 if not configured", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+				Expect(err).NotTo(HaveOccurred())
+
+				ldapMaxSearchDepth, err := uaa.Property("uaa/ldap/groups/maxSearchDepth")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(ldapMaxSearchDepth).To(Equal(1))
+			})
+
+			It("can be configured", func() {
+				inputProperties[".properties.uaa.ldap.group_max_search_depth"] = "5"
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+				Expect(err).NotTo(HaveOccurred())
+
+				ldapMaxSearchDepth, err := uaa.Property("uaa/ldap/groups/maxSearchDepth")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(ldapMaxSearchDepth).To(Equal(5))
+			})
+
+			It("rejects values greater than the allowed maximum", func() {
+				inputProperties[".properties.uaa.ldap.group_max_search_depth"] = "11"
+
+				_, err := product.RenderManifest(inputProperties)
+				Expect(err).To(HaveOccurred())
+			})
+
+			It("rejects values less than the allowed minimum", func() {
+				inputProperties[".properties.uaa.ldap.group_max_search_depth"] = "0"
+
+				_, err := product.RenderManifest(inputProperties)
+				Expect(err).To(HaveOccurred())
+			})
+		})
+	})
+
 	Context("BPM", func() {
 		It("co-locates and enables the BPM job with all diego jobs", func() {
 			manifest, err := product.RenderManifest(nil)

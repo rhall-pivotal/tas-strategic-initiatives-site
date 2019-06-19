@@ -159,6 +159,13 @@ property_inputs:
               Required if mapping LDAP groups to Admin role. Replace `{0}`
               with user DN.
 
+          - reference: .properties.uaa.ldap.group_max_search_depth
+            label: Group Max Search Depth
+            placeholder: 1
+            description: |
+              Sets the LDAP group search depth. Allowed values are between 1 and 10.
+              The default value is 1, which will turn off the nested group search.
+
           - reference: .properties.uaa.ldap.server_ssl_cert
             label: Server SSL Cert
             description: |
