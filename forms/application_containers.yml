@@ -102,3 +102,6 @@ property_inputs:
     label: Router uses TLS to verify application identity (Default)
   - reference: .properties.route_integrity.mutual_tls_verify
     label: Router and applications use mutual TLS to verify each other's identity (incompatible with TCP Routing)
+
+- reference: .properties.router_prune_all_stale_routes
+  label: Prune Routes on TTL Expiry for TLS Backends
