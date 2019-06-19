@@ -33,6 +33,9 @@ property_inputs:
   - reference: .properties.route_integrity.mutual_tls_verify
     label: Router and applications use mutual TLS to verify each other's identity (incompatible with TCP Routing)
 
+- reference: .properties.router_prune_all_stale_routes
+  label: Prune Routes on TTL Expiry for TLS Backends
+
 - reference: .diego_cell.insecure_docker_registry_list
   label: Private Docker Insecure Registry Whitelist
   description: |
