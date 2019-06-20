@@ -6,7 +6,8 @@ manifest: |
   route_registrar:
     routes:
     - name: uaa
-      port: 8080
+      tls_port: 8443
+      server_cert_domain_san: "uaa.service.cf.internal"
       registration_interval: 4s
       tags:
         component: uaa
