@@ -40,9 +40,9 @@ var _ = Describe("UAA", func() {
 					Expect(err).NotTo(HaveOccurred())
 					Expect(dbAddress).To(Equal("mysql.service.cf.internal"))
 
-					tlsEnabled, err := job.Property("uaadb/tls_enabled")
+					tlsEnabled, err := job.Property("uaadb/tls")
 					Expect(err).NotTo(HaveOccurred())
-					Expect(tlsEnabled).To(BeFalse())
+					Expect(tlsEnabled).To(Equal("disabled"))
 
 					caCerts, err := job.Property("uaa/ca_certs")
 					Expect(err).NotTo(HaveOccurred())
@@ -61,9 +61,9 @@ var _ = Describe("UAA", func() {
 						job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
 						Expect(err).NotTo(HaveOccurred())
 
-						tlsEnabled, err := job.Property("uaadb/tls_enabled")
+						tlsEnabled, err := job.Property("uaadb/tls")
 						Expect(err).NotTo(HaveOccurred())
-						Expect(tlsEnabled).To(BeTrue())
+						Expect(tlsEnabled).To(Equal("enabled"))
 
 						tlsProtocols, err := job.Property("uaadb/tls_protocols")
 						Expect(err).NotTo(HaveOccurred())
@@ -126,9 +126,9 @@ var _ = Describe("UAA", func() {
 					Expect(err).NotTo(HaveOccurred())
 					Expect(dbPort).To(Equal(5432))
 
-					tlsEnabled, err := job.Property("uaadb/tls_enabled")
+					tlsEnabled, err := job.Property("uaadb/tls")
 					Expect(err).NotTo(HaveOccurred())
-					Expect(tlsEnabled).To(BeFalse())
+					Expect(tlsEnabled).To(Equal("disabled"))
 
 					username, err := job.Property("uaadb/roles/0/name")
 					Expect(err).NotTo(HaveOccurred())
@@ -154,9 +154,9 @@ var _ = Describe("UAA", func() {
 					job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
 					Expect(err).NotTo(HaveOccurred())
 
-					tlsEnabled, err := job.Property("uaadb/tls_enabled")
+					tlsEnabled, err := job.Property("uaadb/tls")
 					Expect(err).NotTo(HaveOccurred())
-					Expect(tlsEnabled).To(BeTrue())
+					Expect(tlsEnabled).To(Equal("enabled_skip_hostname_validation"))
 
 					caCerts, err := job.Property("uaa/ca_certs")
 					Expect(err).NotTo(HaveOccurred())
@@ -205,9 +205,9 @@ var _ = Describe("UAA", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(prop).To(ContainSubstring("uaa_database/external/uaa_password.value"))
 
-				prop, err = job.Property("uaadb/tls_enabled")
+				prop, err = job.Property("uaadb/tls")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(prop).To(BeFalse())
+				Expect(prop).To(Equal("disabled"))
 
 				prop, err = job.Property("uaadb/tls_protocols")
 				Expect(err).NotTo(HaveOccurred())
@@ -237,9 +237,9 @@ var _ = Describe("UAA", func() {
 					Expect(certs).To(HaveLen(2))
 					Expect(certs).To(ContainElement("the-cert"))
 
-					tlsEnabled, err := job.Property("uaadb/tls_enabled")
+					tlsEnabled, err := job.Property("uaadb/tls")
 					Expect(err).NotTo(HaveOccurred())
-					Expect(tlsEnabled).To(BeTrue())
+					Expect(tlsEnabled).To(Equal("enabled_skip_hostname_validation"))
 
 					tlsProtocols, err := job.Property("uaadb/tls_protocols")
 					Expect(err).NotTo(HaveOccurred())
