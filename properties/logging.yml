@@ -218,6 +218,20 @@
   configurable: true
   optional: true
 
+- name: syslog_agent_api_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - syslog-agent
+
+- name: binding_cache_api_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - binding-cache
+
 - name: enable_v1_firehose
   type: boolean
   configurable: true

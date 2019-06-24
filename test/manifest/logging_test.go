@@ -141,7 +141,7 @@ var _ = Describe("Logging", func() {
 			if productName == "srt" {
 				instanceGroup = "control"
 			} else {
-				instanceGroup = "syslog_scheduler"
+				instanceGroup = "clock_global"
 			}
 		})
 
@@ -267,7 +267,7 @@ var _ = Describe("Logging", func() {
 			if productName == "srt" {
 				instanceGroup = "control"
 			} else {
-				instanceGroup = "syslog_scheduler"
+				instanceGroup = "clock_global"
 			}
 
 			agent, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-syslog-binding-cache")
