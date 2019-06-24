@@ -238,10 +238,6 @@ var _ = Describe("Logging", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(port).To(Equal(3460))
 
-				enabled, err := agent.Property("enabled")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(enabled).To(BeTrue())
-
 				tlsProps, err := agent.Property("tls")
 				Expect(err).ToNot(HaveOccurred())
 				Expect(tlsProps).To(HaveKey("ca_cert"))
@@ -276,10 +272,6 @@ var _ = Describe("Logging", func() {
 			port, err := agent.Property("external_port")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(port).To(Equal(9000))
-
-			enabled, err := agent.Property("enabled")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(enabled).To(BeTrue())
 		})
 	})
 
@@ -674,13 +666,3 @@ rule
 		})
 	})
 })
-
-func findProperty(manifest planitest.Manifest, instanceGroupName, jobName, propertyName string) interface{} {
-	job, err := manifest.FindInstanceGroupJob(instanceGroupName, jobName)
-	Expect(err).NotTo(HaveOccurred())
-
-	property, err := job.Property(propertyName)
-	Expect(err).NotTo(HaveOccurred())
-
-	return property
-}
