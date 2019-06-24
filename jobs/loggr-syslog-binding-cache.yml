@@ -4,7 +4,7 @@ release: loggregator-agent
 provides: |
   binding_cache: {as: binding_cache, shared: true}
 manifest: |
-  enabled:  (( .properties.syslog_agent_enabled.value ))
+  enabled: true
   external_port: 9000
   tls:
     ca_cert: (( $ops_manager.ca_certificate ))

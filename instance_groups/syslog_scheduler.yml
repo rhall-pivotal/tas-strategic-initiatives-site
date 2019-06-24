@@ -15,7 +15,6 @@ templates:
 - $( job "prom_scraper" )
 - $( job "loggr-metric-scraper" )
 - $( job "loggr-system-metrics-agent" )
-- $( job "scheduler" )
 - $( job "syslog_forwarder" )
 {{else}}
 - $( job "placeholder" )
@@ -62,18 +61,6 @@ instance_definition:
     min: $( variable "syslog_scheduler_min_instances" )
     max: $( variable "syslog_scheduler_max_instances" )
 property_blueprints:
-- name: scheduler_api_tls
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-    - cloud-controller-ng.service.cf.internal
-- name: scheduler_client_tls
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-    - ss-adapter
 - name: syslog_agent_api_tls
   type: rsa_cert_credentials
   configurable: false
