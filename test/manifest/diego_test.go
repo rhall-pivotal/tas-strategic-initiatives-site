@@ -227,6 +227,38 @@ var _ = Describe("Diego", func() {
 				Expect(backendsTLSProperties).To(HaveKey("client_private_key"))
 			})
 		})
+
+		Context("when container networking plugin is external", func() {
+			It("sets connect_to_instance address to true", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.container_networking_interface_plugin": "external",
+				})
+				Expect(err).NotTo(HaveOccurred())
+				sshProxy, err := manifest.FindInstanceGroupJob(instanceGroup, "ssh_proxy")
+				Expect(err).NotTo(HaveOccurred())
+
+				property, err := sshProxy.Property("connect_to_instance_address")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(property).To(BeTrue())
+			})
+		})
+
+		Context("when container networking plugin is silk", func() {
+			It("sets connect_to_instance address to false", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.container_networking_interface_plugin": "silk",
+				})
+				Expect(err).NotTo(HaveOccurred())
+				sshProxy, err := manifest.FindInstanceGroupJob(instanceGroup, "ssh_proxy")
+				Expect(err).NotTo(HaveOccurred())
+
+				property, err := sshProxy.Property("connect_to_instance_address")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(property).To(BeFalse())
+			})
+		})
 	})
 
 	Context("Persistence", func() {
@@ -393,6 +425,50 @@ var _ = Describe("Diego", func() {
 			caKey, err := rep.Property("diego/executor/instance_identity_key")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(caKey).To(Equal("((diego-instance-identity-intermediate-ca-2-7.private_key))"))
+		})
+	})
+
+	Context("advertising instance address", func() {
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "compute"
+			} else {
+				instanceGroup = "diego_cell"
+			}
+		})
+
+		Context("when container networking plugin is external", func() {
+			It("sets advertise_preference_for_instance_address to true", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.container_networking_interface_plugin": "external",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
+				Expect(err).NotTo(HaveOccurred())
+
+				property, err := rep.Property("diego/rep/advertise_preference_for_instance_address")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(property).To(BeTrue())
+			})
+		})
+
+		Context("when container networking plugin is silk", func() {
+			It("sets advertise_preference_for_instance_address to false", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.container_networking_interface_plugin": "silk",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
+				Expect(err).NotTo(HaveOccurred())
+
+				property, err := rep.Property("diego/rep/advertise_preference_for_instance_address")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(property).To(BeFalse())
+			})
 		})
 	})
 })
