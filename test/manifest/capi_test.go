@@ -94,6 +94,10 @@ var _ = Describe("CAPI", func() {
 					uaaCa, err := manifestJob.Property("uaa/ca_cert")
 					Expect(err).NotTo(HaveOccurred())
 					Expect(uaaCa).NotTo(BeEmpty())
+
+					maxPackageSize, err := manifestJob.Property("cc/packages/max_package_size")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(maxPackageSize).To(Equal(2147483648))
 				}
 			})
 
@@ -357,6 +361,28 @@ var _ = Describe("CAPI", func() {
 					Expect(err).NotTo(HaveOccurred())
 
 					Expect(insecureDockerRegistryList).To(Equal(1000))
+				}
+			})
+		})
+
+		Context("when the Operator sets a max package size", func() {
+			BeforeEach(func() {
+				var err error
+				manifest, err = product.RenderManifest(map[string]interface{}{
+					".cloud_controller.max_package_size": 5368709120,
+				})
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("passes the value to CC jobs", func() {
+				for _, job := range ccJobs {
+					manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
+					Expect(err).NotTo(HaveOccurred())
+
+					maxPackageSize, err := manifestJob.Property("cc/packages/max_package_size")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(maxPackageSize).To(Equal(5368709120))
 				}
 			})
 		})

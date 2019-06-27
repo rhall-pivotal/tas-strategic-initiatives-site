@@ -98,7 +98,7 @@
               ca_cert: (( $ops_manager.ca_certificate ))
         - name: ccpackage
           manifest: |
-            max_package_size: 2147483648
+            max_package_size: (( .cloud_controller.max_package_size.value ))
             max_valid_packages_stored: (( .properties.system_blobstore_ccpackage_max_valid_packages_stored.value ))
             blobstore_type: webdav
             webdav_config:
@@ -220,7 +220,7 @@
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccpackage
           manifest: |
-            max_package_size: 2147483648
+            max_package_size: (( .cloud_controller.max_package_size.value ))
             max_valid_packages_stored: (( .properties.system_blobstore_ccpackage_max_valid_packages_stored.value ))
             app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
             blobstore_type: fog
@@ -235,7 +235,7 @@
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccpackage_iam
           manifest: |
-            max_package_size: 2147483648
+            max_package_size: (( .cloud_controller.max_package_size.value ))
             app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
             blobstore_type: fog
             fog_connection:
@@ -460,7 +460,7 @@
               google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
         - name: ccpackage
           manifest: |
-            max_package_size: 2147483648
+            max_package_size: (( .cloud_controller.max_package_size.value ))
             max_valid_packages_stored: (( .properties.system_blobstore_ccpackage_max_valid_packages_stored.value ))
             blobstore_type: fog
             app_package_directory_key: (( .properties.system_blobstore.external_gcs.packages_bucket.value ))
@@ -568,7 +568,7 @@
               google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
         - name: ccpackage
           manifest: |
-            max_package_size: 2147483648
+            max_package_size: (( .cloud_controller.max_package_size.value ))
             blobstore_type: fog
             app_package_directory_key: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
             fog_connection:
@@ -724,7 +724,7 @@
               azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
         - name: ccpackage
           manifest: |
-            max_package_size: 2147483648
+            max_package_size: (( .cloud_controller.max_package_size.value ))
             max_valid_packages_stored: (( .properties.system_blobstore_ccpackage_max_valid_packages_stored.value ))
             blobstore_type: fog
             app_package_directory_key: (( .properties.system_blobstore.external_azure.packages_container.value ))

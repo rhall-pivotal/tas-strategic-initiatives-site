@@ -90,6 +90,13 @@ property_blueprints:
   constraints:
     min: 1024
     max: 2048
+- name: max_package_size
+  type: integer
+  configurable: true
+  optional: false
+  default: 2147483648
+  constraints:
+    min: 2147483648
 - name: default_app_memory
   type: integer
   configurable: true
