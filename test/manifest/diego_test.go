@@ -180,4 +180,43 @@ var _ = Describe("Diego", func() {
 			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("key"))
 		})
 	})
+
+	//TODO: Testing inheritance from PAS requires manual additions to ops-manifest fixture.
+	// Unpend this test when we can render the manifest with inheritance properties like
+	// `..cf.properties.cf_networking_interface_plugin`.
+	PDescribe("connecting to instance address", func() {
+		Context("when container networking plugin is external", func() {
+			It("sets advertise_preference_for_instance_address to true", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					"..cf.properties.container_networking_interface_plugin": "external",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
+				Expect(err).NotTo(HaveOccurred())
+
+				property, err := rep.Property("diego/rep/advertise_preference_for_instance_address")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(property).To(BeTrue())
+			})
+		})
+
+		Context("when container networking plugin is silk", func() {
+			It("sets advertise_preference_for_instance_address to false", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					"..cf.properties.container_networking_interface_plugin": "silk",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
+				Expect(err).NotTo(HaveOccurred())
+
+				property, err := rep.Property("diego/rep/advertise_preference_for_instance_address")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(property).To(BeFalse())
+			})
+		})
+	})
 })
