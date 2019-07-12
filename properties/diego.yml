@@ -140,6 +140,7 @@
           manifest: |
             enabled: true
             additional_memory_allocation_mb: 32
+            ads_addresses: '(( .properties.istio.selected_option.parsed_manifest(ads_addresses) ))'
         - name: backends_tls
           manifest: |
             tls:
@@ -158,6 +159,7 @@
             verify_subject_alt_name:
             - gorouter.service.cf.internal
             - ssh-proxy.service.cf.internal
+            ads_addresses: '(( .properties.istio.selected_option.parsed_manifest(ads_addresses) ))'
         - name: backends_tls
           manifest: |
             tls:
