@@ -8,6 +8,12 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
   routing_api:
     log_level: debug
+    enable_api_endpoints: "both"
+    mtls_ca: (( $ops_manager.ca_certificate ))
+    mtls_server_cert: (( .properties.routing_api_server_cert.cert_pem ))
+    mtls_server_key: (( .properties.routing_api_server_cert.private_key_pem ))
+    mtls_client_cert: (( .properties.routing_api_client_cert.cert_pem ))
+    mtls_client_key: (( .properties.routing_api_client_cert.private_key_pem ))
     router_groups: (( .properties.tcp_routing.selected_option.parsed_manifest(default_router_group) ))
     skip_consul_lock: true
     system_domain: (( .cloud_controller.system_domain.value ))

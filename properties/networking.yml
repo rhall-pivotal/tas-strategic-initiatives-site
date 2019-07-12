@@ -515,6 +515,20 @@
     domains:
     - copilot.service.cf.internal
 
+- name: routing_api_server_cert
+  type: rsa_cert_credentials
+  configureable: false
+  default:
+    domains:
+    - routing-api.service.cf.internal
+
+- name: routing_api_client_cert
+  type: rsa_cert_credentials
+  configureable: false
+  default:
+    domains:
+    - routing-api.service.cf.internal
+
 - name: router_headers_remove_if_specified
   type: collection
   configurable: true
