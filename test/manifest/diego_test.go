@@ -46,4 +46,62 @@ var _ = Describe("Rep Windows", func() {
 			Expect(caKey).To(Equal("((diego-instance-identity-intermediate-ca-2-7.private_key))"))
 		})
 	})
+
+	Context("containers", func() {
+		It("sets defaults properties", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			rep, err := manifest.FindInstanceGroupJob("windows_diego_cell", "rep_windows")
+			Expect(err).NotTo(HaveOccurred())
+
+			caCerts, err := rep.Property("containers/trusted_ca_certificates")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(caCerts).NotTo(BeEmpty())
+
+			proxyEnabled, err := rep.Property("containers/proxy/enabled")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(proxyEnabled).To(BeFalse())
+		})
+	})
+
+	Context("when tls verify is selected", func() {
+		It("enables container proxy", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.route_integrity": "tls_verify",
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			rep, err := manifest.FindInstanceGroupJob("windows_diego_cell", "rep_windows")
+			Expect(err).NotTo(HaveOccurred())
+
+			proxyEnabled, err := rep.Property("containers/proxy/enabled")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(proxyEnabled).To(BeTrue())
+		})
+	})
+
+	Context("when mutual tls verify is selected", func() {
+		It("enables container proxy and requires client cert verification", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.route_integrity": "mutual_tls_verify",
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			rep, err := manifest.FindInstanceGroupJob("windows_diego_cell", "rep_windows")
+			Expect(err).NotTo(HaveOccurred())
+
+			proxyEnabled, err := rep.Property("containers/proxy/enabled")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(proxyEnabled).To(BeTrue())
+
+			mtlsEnabled, err := rep.Property("containers/proxy/require_and_verify_client_certificates")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(mtlsEnabled).To(BeTrue())
+
+			proxyCaCerts, err := rep.Property("containers/proxy/trusted_ca_certificates")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(proxyCaCerts).NotTo(BeEmpty())
+		})
+	})
 })
