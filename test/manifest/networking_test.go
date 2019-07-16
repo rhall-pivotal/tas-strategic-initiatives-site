@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = FDescribe("Networking", func() {
+var _ = Describe("Networking", func() {
 	Describe("Container networking", func() {
 		var (
 			inputProperties         map[string]interface{}
@@ -534,21 +534,14 @@ var _ = FDescribe("Networking", func() {
 				})
 			})
 
-			Context("when internal domains are configured", func() {
+			Context("when internal domain is configured", func() {
 				var (
 					inputProperties map[string]interface{}
 				)
 
 				It("sets internal domains to the provided internal domains", func() {
 					inputProperties = map[string]interface{}{
-						".properties.cf_networking_internal_domains": []map[string]interface{}{
-							{
-								"name": "some-internal-domain",
-							},
-							{
-								"name": "some-other-internal-domain",
-							},
-						},
+						".properties.cf_networking_internal_domain": "some-internal-domain",
 					}
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
@@ -561,7 +554,6 @@ var _ = FDescribe("Networking", func() {
 
 					Expect(internalDomains).To(Equal([]interface{}{
 						"some-internal-domain",
-						"some-other-internal-domain",
 					}))
 				})
 			})
@@ -591,31 +583,22 @@ var _ = FDescribe("Networking", func() {
 					Expect(internalDomains).To(Equal([]interface{}{
 						"apps.example.com",
 						"mesh.apps.example.com",
-						[]map[interface{}]interface{}{
-							{
-								"internal": true,
-								"name":     "apps.internal",
-							},
+						map[interface{}]interface{}{
+							"name":     "apps.internal",
+							"internal": true,
 						},
 					}))
 				})
 			})
 
-			Context("when internal domains are configured", func() {
+			Context("when internal domain is configured", func() {
 				var (
 					inputProperties map[string]interface{}
 				)
 
 				It("adds internal domains to app domains", func() {
 					inputProperties = map[string]interface{}{
-						".properties.cf_networking_internal_domains": []map[string]interface{}{
-							{
-								"name": "some-internal-domain",
-							},
-							{
-								"name": "some-other-internal-domain",
-							},
-						},
+						".properties.cf_networking_internal_domain": "some-internal-domain",
 					}
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
@@ -629,15 +612,9 @@ var _ = FDescribe("Networking", func() {
 					Expect(internalDomains).To(Equal([]interface{}{
 						"apps.example.com",
 						"mesh.apps.example.com",
-						[]interface{}{
-							map[interface{}]interface{}{
-								"name":     "some-internal-domain",
-								"internal": true,
-							},
-							map[interface{}]interface{}{
-								"name":     "some-other-internal-domain",
-								"internal": true,
-							},
+						map[interface{}]interface{}{
+							"name":     "some-internal-domain",
+							"internal": true,
 						},
 					}))
 				})

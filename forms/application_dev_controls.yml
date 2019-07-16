@@ -56,15 +56,12 @@ property_inputs:
       Controller.
     placeholder: 900
 
-  - reference: .properties.cf_networking_internal_domains
-    label: Internal Domains
-    property_inputs:
-    - reference: name
-      label: Name
-      description: |
-        Internal Domain for application service discovery. Internal routes can
-        be registered for this domain to be queried by other applications on
-        the platform.
+  - reference: .properties.cf_networking_internal_domain
+    label: Internal Domain
+    description: |
+      Internal Domain for application service discovery. Internal routes can
+      be registered for this domain to be queried by other applications on
+      the platform.
 
   - reference: .properties.cf_networking_enable_space_developer_self_service
     label: Allow Space Developers to manage network policies
