@@ -1,11 +1,15 @@
 ---
+language: python
+
+install:
+- pip install yq
+
 git:
   submodules: true
 
 addons:
   apt:
     packages:
-    - yq
     - jq
 
 services:
