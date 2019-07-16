@@ -151,6 +151,8 @@ var _ = Describe("CredHub", func() {
 			Expect(kmsProvider["name"]).To(Equal("some-kms-instance-name-provider"))
 			Expect(kmsProvider["type"]).To(Equal("kms-plugin"))
 			Expect(kmsProvider["connection_properties"]).To(HaveKeyWithValue("endpoint", "some-endpoint"))
+			Expect(kmsProvider["connection_properties"]).To(HaveKeyWithValue("host", "credhub-kms"))
+			Expect(kmsProvider["connection_properties"]).To(HaveKeyWithValue("ca", "((/services/tls_ca))"))
 		})
 	})
 
