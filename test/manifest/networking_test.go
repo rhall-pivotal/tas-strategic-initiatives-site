@@ -591,7 +591,7 @@ var _ = Describe("Networking", func() {
 					Expect(internalDomains).To(Equal([]interface{}{
 						"apps.example.com",
 						"mesh.apps.example.com",
-						[]map[string]interface{}{
+						[]map[interface{}]interface{}{
 							{
 								"internal": true,
 								"name":     "apps.internal",
@@ -629,12 +629,12 @@ var _ = Describe("Networking", func() {
 					Expect(internalDomains).To(Equal([]interface{}{
 						"apps.example.com",
 						"mesh.apps.example.com",
-						[]map[string]interface{}{
-							{
+						[]interface{}{
+							map[interface{}]interface{}{
 								"name":     "some-internal-domain",
 								"internal": true,
 							},
-							{
+							map[interface{}]interface{}{
 								"name":     "some-other-internal-domain",
 								"internal": true,
 							},
