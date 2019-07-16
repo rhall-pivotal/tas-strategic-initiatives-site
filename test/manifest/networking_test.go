@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Networking", func() {
+var _ = FDescribe("Networking", func() {
 	Describe("Container networking", func() {
 		var (
 			inputProperties         map[string]interface{}
