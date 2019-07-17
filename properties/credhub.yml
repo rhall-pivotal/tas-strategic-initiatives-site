@@ -103,8 +103,6 @@
         type: kms-plugin
         connection_properties:
           endpoint: (( current_record.endpoint.value ))
-          host: credhub-kms
-          ca: (((/services/tls_ca)))
 
 - name: credhub_hsm_provider_partition
   type: string
