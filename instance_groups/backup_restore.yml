@@ -27,6 +27,15 @@ templates:
 - $( job "gcs-blobstore-backup-restorer" )
 - $( job "azure-blobstore-backup-restorer" )
 - $( job "syslog_forwarder" )
+- $( job "bbr-push-usage-service" )
+- $( job "push-apps-manager" )
+- $( job "deploy-autoscaler" )
+- $( job "deploy-notifications" )
+- $( job "bbr-nfsbrokerpush" )
+- $( job "bbr-smbbrokerpush" )
+- $( job "bbr-apps-manager" )
+- $( job "bbr-smbbroker" )
+- $( job "nfsbroker-bbr-lock" )
 resource_definitions:
 - name: ram
   type: integer

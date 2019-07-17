@@ -15,6 +15,7 @@ var _ = Describe("System Database", func() {
 		ccInstanceGroup      string
 		cgInstanceGroup      string
 		credhubInstanceGroup string
+		uaaInstanceGroup     string
 	)
 
 	BeforeEach(func() {
@@ -23,13 +24,16 @@ var _ = Describe("System Database", func() {
 			ccInstanceGroup = "cloud_controller"
 			cgInstanceGroup = "clock_global"
 			credhubInstanceGroup = "credhub"
+			uaaInstanceGroup = "uaa"
 		} else {
 			dbInstanceGroup = "control"
 			ccInstanceGroup = "control"
 			cgInstanceGroup = "control"
 			credhubInstanceGroup = "control"
+			uaaInstanceGroup = "control"
 		}
 	})
+
 	Describe("Internal PXC", func() {
 		var (
 			inputProperties map[string]interface{}
@@ -515,6 +519,19 @@ var _ = Describe("System Database", func() {
 				skipHostVerify, err := bbrUsageServiceDB.Property("database/skip_host_verify")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(skipHostVerify).To(BeFalse())
+
+				// uaa
+				job, err = manifest.FindInstanceGroupJob(uaaInstanceGroup, "uaa")
+				Expect(err).NotTo(HaveOccurred())
+
+				requireSSL, err = job.Property("uaadb/tls")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(requireSSL).To(Equal("enabled_skip_hostname_validation"))
+
+				caCert, err = job.Property("uaa/ca_certs")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).To(ContainElement("fake-ca-cert"))
+
 			})
 		})
 	})
@@ -569,6 +586,7 @@ var _ = Describe("System Database", func() {
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, dbInstanceGroup, "locket", "diego/locket/sql")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, dbInstanceGroup, "policy-server", "database")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, dbInstanceGroup, "silk-controller", "database")
+			validateConsistencyOfParsedManifest(internalManifest, externalManifest, uaaInstanceGroup, "uaa", "uaadb")
 		})
 	})
 })

@@ -1,8 +1,9 @@
 ---
 name: nfsbrokerpush
+alias: bbr-nfsbrokerpush
 release: nfs-volume
 provides: |
-  nfsbrokerpush: {as: ignore-me}
+  nfsbrokerpush: {as: nfsbrokerpush}
 manifest: |
   nfsbrokerpush:
     domain: (( .cloud_controller.system_domain.value ))

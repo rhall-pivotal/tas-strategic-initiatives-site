@@ -1,6 +1,8 @@
 ---
 name: bbr-usage-servicedb
 release: push-usage-service-release
+consumes: |
+  app-usage-internal: {from: app-usage-internal}
 manifest: |
   database: (( .properties.system_database.selected_option.parsed_manifest(bbr-usage-servicedb) ))
   release_level_backup: true

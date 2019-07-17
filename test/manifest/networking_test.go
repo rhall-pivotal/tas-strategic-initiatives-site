@@ -730,6 +730,77 @@ var _ = Describe("Networking", func() {
 						Expect(kp["private_key"]).NotTo(BeEmpty())
 					})
 				})
+
+				Describe("istio_domain", func() {
+					Describe("default", func() {
+						var instanceGroup string
+						BeforeEach(func() {
+							if productName == "ert" {
+								instanceGroup = "cloud_controller"
+							} else {
+								instanceGroup = "control"
+							}
+						})
+
+						Context("when internal domain is empty", func() {
+							It("adds apps.internal to app domains", func() {
+								manifest, err := product.RenderManifest(nil)
+								Expect(err).NotTo(HaveOccurred())
+
+								job, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+								Expect(err).NotTo(HaveOccurred())
+
+								internalDomains, err := job.Property("app_domains")
+								Expect(err).NotTo(HaveOccurred())
+
+								Expect(internalDomains).To(Equal([]interface{}{
+									"apps.example.com",
+									"mesh.apps.example.com",
+									map[interface{}]interface{}{
+										"name":     "apps.internal",
+										"internal": true,
+									},
+								}))
+							})
+						})
+					})
+
+					Describe("configured", func() {
+						var instanceGroup string
+						BeforeEach(func() {
+							if productName == "ert" {
+								instanceGroup = "cloud_controller"
+							} else {
+								instanceGroup = "control"
+							}
+						})
+
+						It("is properly set", func() {
+							inputProperties := map[string]interface{}{
+								".properties.istio_domain": "superspecial.istio.domain.com",
+							}
+
+							manifest, err := product.RenderManifest(inputProperties)
+							Expect(err).NotTo(HaveOccurred())
+
+							job, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+							Expect(err).NotTo(HaveOccurred())
+
+							internalDomains, err := job.Property("app_domains")
+							Expect(err).NotTo(HaveOccurred())
+
+							Expect(internalDomains).To(Equal([]interface{}{
+								"apps.example.com",
+								"superspecial.istio.domain.com",
+								map[interface{}]interface{}{
+									"name":     "apps.internal",
+									"internal": true,
+								},
+							}))
+						})
+					})
+
+				})
 			})
 
 			Context("when it is disabled", func() {

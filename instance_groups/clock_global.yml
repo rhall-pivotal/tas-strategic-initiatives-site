@@ -7,6 +7,7 @@ templates:
 {{if eq tile "ert"}}
 - $( job "bpm" )
 - $( job "cloud_controller_clock" )
+- $( job "rotate_cc_database_key" )
 - $( job "cc_deployment_updater" )
 - $( job "loggregator_agent" )
 - $( job "loggr-syslog-agent" )

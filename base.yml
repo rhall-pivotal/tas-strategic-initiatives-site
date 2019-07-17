@@ -105,11 +105,11 @@ job_types:
 - $( instance_group "uaa" ) # ERT only
 - $( instance_group "cloud_controller" ) # ERT only
 - $( instance_group "ha_proxy" ) # ERT & SRT
+- $( instance_group "diego_brain" ) # ERT only
 - $( instance_group "router" ) # ERT & SRT
 - $( instance_group "mysql_monitor" ) # ERT & SRT
 - $( instance_group "clock_global" ) # ERT only
 - $( instance_group "cloud_controller_worker" ) # ERT only
-- $( instance_group "diego_brain" ) # ERT only
 - $( instance_group "diego_cell" ) # ERT only
 - $( instance_group "loggregator_trafficcontroller" ) # ERT only
 - $( instance_group "doppler" ) # ERT only
@@ -151,6 +151,7 @@ property_blueprints:
 - $( property "cloud_controller_public_tls_cert" )
 - $( property "cloud_controller_temporary_disable_deployments" )
 - $( property "cloud_controller_completed_tasks_cutoff_age_in_days" )
+- $( property "cloud_controller_encryption_keys" )
 - $( property "container_networking" )
 - $( property "container_networking_interface_plugin" )
 - $( property "copilot_client_cert" )
@@ -181,6 +182,7 @@ property_blueprints:
 - $( property "haproxy_ssl_ciphers" )
 - $( property "istio" )
 - $( property "istio_frontend_tls_keypairs" )
+- $( property "istio_domain" )
 - $( property "locket_database_name" )
 - $( property "locket_database_max_open_connections" )
 - $( property "log_cache_auth_proxy_client_tls_cert" )
@@ -275,6 +277,7 @@ property_blueprints:
 - $( property "syslog_tls" )
 - $( property "syslog_use_tcp_for_file_forwarding_local_transport" )
 - $( property "system_blobstore" )
+- $( property "system_blobstore_backup_level" )
 - $( property "system_blobstore_ccpackage_max_valid_packages_stored" )
 - $( property "system_blobstore_ccdroplet_max_staged_droplets_stored" )
 - $( property "system_database" )
@@ -521,6 +524,13 @@ post_deploy_errands:
     description: Pushes the SMB Broker application to your Application Service installation
     colocated: true
     run_default: false
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: rotate_cc_database_key
+    label: Rotate CC Database Key
+    description: Re-encrypts credentials in Cloud Controller DB with selected encryption key
+    run_default: false
+    colocated: true
     instances:
       - $( variable "errand_instance_group" )
 

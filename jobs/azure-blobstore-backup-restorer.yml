@@ -4,24 +4,4 @@ release: backup-and-restore-sdk
 manifest: |
   enabled: (( .properties.system_blobstore.external_azure.enable_bbr.value ))
   containers:
-    buildpacks:
-      name: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
-      azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
-      azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
-      restore_from:
-        azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
-        azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
-    droplets:
-      name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
-      azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
-      azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
-      restore_from:
-        azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
-        azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
-    packages:
-      name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
-      azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
-      azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
-      restore_from:
-        azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
-        azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
+    '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_all) ? .properties.system_blobstore.selected_option.parsed_manifest(all_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_buckets) ))'

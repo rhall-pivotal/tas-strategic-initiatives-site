@@ -2,10 +2,11 @@
 name: domains
 label: Domains
 description: |
-  Application Service hosts applications at subdomains under its apps domain and
-  assigns system components to subdomains under its system domain. You need
-  to configure a wildcard DNS for both the apps domain and system domain. The
-  two domains can be the same, although this is not recommended.
+  Domains
+markdown: |
+  To configure this pane, see the
+  [Configure Domains](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#domains)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 verifiers:
   - name: Verifiers::WildcardDomainVerifier
     properties:
@@ -17,17 +18,11 @@ property_inputs:
   - reference: .cloud_controller.system_domain
     label: System Domain
     description: |
-      This domain is for system-level PCF components, such as the API, UAA,
-      or Apps Manager. You must set up a wildcard DNS record for this domain
-      that points to your entry point load balancer or HAProxy as configured
-      on the Networking tab.
+      The domain for system-level PCF components.
     placeholder: system.example.com
 
   - reference: .cloud_controller.apps_domain
     label: Apps Domain
     description: |
-      This domain is the default domain that applications will use for their
-      hostnames. This domain also requires a wildcard DNS record. Use the
-      Cloud Foundry command line interface (cf CLI) to add or delete
-      subdomains assigned to individual apps.
+      The default domain that apps use for their hostnames.
     placeholder: apps.example.com

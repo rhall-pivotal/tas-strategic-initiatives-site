@@ -42,7 +42,7 @@
       - name: db_config
         manifest: |
           db_scheme: mysql
-          tls_enabled: '(( .properties.uaa_database.external.ca_cert.value ? true : false ))'
+          tls: '(( .properties.uaa_database.external.ca_cert.value ? "enabled_skip_hostname_validation" : "disabled" ))'
           tls_protocols: TLSv1.2
           address: (( .properties.uaa_database.external.host.value ))
           port: (( .properties.uaa_database.external.port.value ))

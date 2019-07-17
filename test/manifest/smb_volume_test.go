@@ -3,6 +3,7 @@ package manifest_test
 import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/pivotal-cf/planitest"
 )
 
 var _ = Describe("SMB volume service", func() {
@@ -124,27 +125,61 @@ var _ = Describe("SMB volume service", func() {
 			smbBrokerPush, err := manifest.FindInstanceGroupJob(instanceGroup, "smbbrokerpush")
 			Expect(err).NotTo(HaveOccurred())
 
-			smbBrokerProperties, err := smbBrokerPush.Path("/properties")
-			Expect(err).NotTo(HaveOccurred())
+			testSmbBrokerPushProperties(smbBrokerPush)
+			Expect(smbBrokerPush.Path("/provides/smbbrokerpush")).To(Equal(map[interface{}]interface{}{"as": "ignore-me"}))
+		})
 
-			Expect(smbBrokerProperties).To(HaveKeyWithValue("app_domain", "sys.example.com"))
-			Expect(smbBrokerProperties).To(HaveKeyWithValue("domain", "sys.example.com"))
-			Expect(smbBrokerProperties).To(HaveKey("cf"))
-			smbBrokerCFProperties := (smbBrokerProperties.(map[interface{}]interface{}))["cf"]
-			Expect(smbBrokerCFProperties).To(HaveKeyWithValue("client_id", "smb-broker"))
-			Expect(smbBrokerCFProperties).To(HaveKey("client_secret"))
-			Expect(smbBrokerProperties).To(HaveKey("credhub"))
-			smbBrokerCredhubProperties := (smbBrokerProperties.(map[interface{}]interface{}))["credhub"]
-			Expect(smbBrokerCredhubProperties).To(HaveKeyWithValue("url", "https://credhub.service.cf.internal:8844"))
-			Expect(smbBrokerCredhubProperties).To(HaveKeyWithValue("uaa_client_id", "smb-broker-credhub"))
-			Expect(smbBrokerCredhubProperties).To(HaveKey("uaa_client_secret"))
-			Expect(smbBrokerCredhubProperties).To(HaveKeyWithValue("store_id", "smbbroker"))
-			Expect(smbBrokerProperties).To(HaveKeyWithValue("organization", "system"))
-			Expect(smbBrokerProperties).To(HaveKeyWithValue("space", "smb"))
-			Expect(smbBrokerProperties).To(HaveKeyWithValue("username", "((smb-broker-credentials.username))"))
-			Expect(smbBrokerProperties).To(HaveKeyWithValue("password", "((smb-broker-credentials.password))"))
-			Expect(smbBrokerProperties).To(HaveKeyWithValue("skip_cert_verify", BeFalse()))
-			Expect(smbBrokerProperties).To(HaveKeyWithValue("syslog_url", ""))
+		Describe("Backup and Restore", func() {
+			Context("on the backup_restore instance group", func() {
+				instanceGroup := "backup_restore"
+
+				It("configures the smbbrokerpush job", func() {
+					manifest, err := product.RenderManifest(map[string]interface{}{
+						".properties.enable_smb_volume_driver": true,
+					})
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(instanceGroup, "smbbrokerpush")
+					Expect(err).NotTo(HaveOccurred())
+
+					testSmbBrokerPushProperties(job)
+					Expect(job.Path("/provides/smbbrokerpush")).To(Equal(map[interface{}]interface{}{"as": "smbbrokerpush"}))
+				})
+
+				It("configures the bbr-smbbroker job", func() {
+					manifest, err := product.RenderManifest(map[string]interface{}{
+						".properties.enable_smb_volume_driver": true,
+					})
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(instanceGroup, "bbr-smbbroker")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(job.Path("/consumes/smbbrokerpush")).To(Equal(map[interface{}]interface{}{"from": "smbbrokerpush"}))
+				})
+			})
 		})
 	})
 })
+
+func testSmbBrokerPushProperties(smbBrokerPush planitest.Manifest) {
+	smbBrokerProperties, err := smbBrokerPush.Path("/properties")
+	Expect(err).NotTo(HaveOccurred())
+	Expect(smbBrokerProperties).To(HaveKeyWithValue("app_domain", "sys.example.com"))
+	Expect(smbBrokerProperties).To(HaveKeyWithValue("domain", "sys.example.com"))
+	Expect(smbBrokerProperties).To(HaveKey("cf"))
+	smbBrokerCFProperties := (smbBrokerProperties.(map[interface{}]interface{}))["cf"]
+	Expect(smbBrokerCFProperties).To(HaveKeyWithValue("client_id", "smb-broker"))
+	Expect(smbBrokerCFProperties).To(HaveKey("client_secret"))
+	Expect(smbBrokerProperties).To(HaveKey("credhub"))
+	smbBrokerCredhubProperties := (smbBrokerProperties.(map[interface{}]interface{}))["credhub"]
+	Expect(smbBrokerCredhubProperties).To(HaveKeyWithValue("url", "https://credhub.service.cf.internal:8844"))
+	Expect(smbBrokerCredhubProperties).To(HaveKeyWithValue("uaa_client_id", "smb-broker-credhub"))
+	Expect(smbBrokerCredhubProperties).To(HaveKey("uaa_client_secret"))
+	Expect(smbBrokerCredhubProperties).To(HaveKeyWithValue("store_id", "smbbroker"))
+	Expect(smbBrokerProperties).To(HaveKeyWithValue("organization", "system"))
+	Expect(smbBrokerProperties).To(HaveKeyWithValue("space", "smb"))
+	Expect(smbBrokerProperties).To(HaveKeyWithValue("username", "((smb-broker-credentials.username))"))
+	Expect(smbBrokerProperties).To(HaveKeyWithValue("password", "((smb-broker-credentials.password))"))
+	Expect(smbBrokerProperties).To(HaveKeyWithValue("skip_cert_verify", BeFalse()))
+	Expect(smbBrokerProperties).To(HaveKeyWithValue("syslog_url", ""))
+}

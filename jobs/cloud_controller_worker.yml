@@ -12,6 +12,8 @@ manifest: |
     resource_pool:  '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccresource_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))'
     bulk_api_password: ((( cloud-controller-bulk-api-credentials.password )))
     db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
+    database_encryption:
+      keys: (( .properties.cloud_controller_encryption_keys.parsed_manifest(keys) ))
     allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
     internal_api_user: ((( cloud-controller-internal-api-user-credentials.username )))
     internal_api_password: ((( cloud-controller-internal-api-user-credentials.password )))

@@ -58,6 +58,16 @@ property_inputs:
   label: Max Staged Droplets per App
   description: Number of recent, staged droplets stored per app (not including current droplet)
 
+- reference: .properties.system_blobstore_backup_level
+  label: Configure File Storage Backup Level
+  selector_property_inputs:
+  - reference: .properties.system_blobstore_backup_level.all
+    label: Complete File Storage Backup
+  - reference: .properties.system_blobstore_backup_level.skip_droplets
+    label: Exclude Droplets from File Storage Backup (Restore Requires CF Restage)
+  - reference: .properties.system_blobstore_backup_level.skip_droplets_packages
+    label: Exclude Droplets and Packages from File Storage Backup (Restore Requires CF Push)
+
 - reference: .properties.system_blobstore
   label: Configure your Cloud Controller's filesystem
   selector_property_inputs:

@@ -1,8 +1,9 @@
 ---
 name: smbbrokerpush
+alias: bbr-smbbrokerpush
 release: smb-volume
 provides: |
-  smbbrokerpush: {as: ignore-me}
+  smbbrokerpush: {as: smbbrokerpush}
 manifest: |
   app_domain: (( .cloud_controller.system_domain.value ))
   domain: (( .cloud_controller.system_domain.value ))

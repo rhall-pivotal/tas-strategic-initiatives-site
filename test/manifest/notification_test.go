@@ -55,4 +55,16 @@ var _ = Describe("Notifications", func() {
 			Expect(caCert).NotTo(BeEmpty())
 		})
 	})
+
+	Describe("Backup and Restore", func() {
+		Context("on the backup_restore instance group", func() {
+			It("templates the deploy-notifications job", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = manifest.FindInstanceGroupJob("backup_restore", "deploy-notifications")
+				Expect(err).NotTo(HaveOccurred())
+			})
+		})
+	})
 })

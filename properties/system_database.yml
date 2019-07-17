@@ -239,7 +239,7 @@
       - name: uaadb
         manifest: |
           db_scheme: mysql
-          tls_enabled: '(( .properties.enable_tls_to_internal_pxc.value ? true : false ))'
+          tls: '(( .properties.enable_tls_to_internal_pxc.value ? "enabled" : "disabled" ))'
           tls_protocols: TLSv1.2
           address: mysql.service.cf.internal
           port: 3306
@@ -489,7 +489,7 @@
         - name: uaadb
           manifest: |
             db_scheme: mysql
-            tls_enabled: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
+            tls: '(( .properties.system_database.external.ca_cert.value ? "enabled_skip_hostname_validation" : "disabled" ))'
             tls_protocols: TLSv1.2
             address: (( .properties.system_database.external.host.value ))
             port: (( .properties.system_database.external.port.value ))

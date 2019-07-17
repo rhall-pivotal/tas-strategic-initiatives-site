@@ -43,6 +43,8 @@ manifest: |
     instances: $( variable "push_apps_manager_invitations_instances" )
     memory: (( .properties.push_apps_manager_invitations_memory.value ))
     uaa_client_secret: (( .uaa.invitations_client_credentials.password ))
+  networking:
+    enable_space_developer_self_service: (( .properties.cf_networking_enable_space_developer_self_service.value ))
   ssl:
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
     disable_http_for_links: (( .properties.routing_disable_http.value ))
