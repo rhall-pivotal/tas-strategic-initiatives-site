@@ -44,8 +44,8 @@ manifest: |
     ca_certificate: (( $ops_manager.ca_certificate ))
     data_storage: (( .properties.credhub_database.selected_option.parsed_manifest(db_config) ))
     encryption:
-      keys: (( .properties.credhub_encryption_keys.selected_option.parsed_manifest(list) ))
-      providers: (( .properties.credhub_providers.selected_option.parsed_manifest(providers) ))
+      keys: (( .properties.credhub_key_encryption_passwords.parsed_manifest(keys) ))
+      providers: (( .properties.credhub_hsm_provider_list.selected_option.parsed_manifest(list) ))
     internal_url: credhub.service.cf.internal
     tls:
       certificate: (( .properties.credhub_tls.cert_pem ))

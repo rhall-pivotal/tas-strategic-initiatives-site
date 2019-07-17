@@ -28,14 +28,15 @@
     ".mysql_monitor.recipient_email": {
       "value": "cf-release-engineering@pivotal.io"
     },
-    ".properties.credhub_internal_provider_keys": {
+    ".properties.credhub_key_encryption_passwords": {
       "value": [
         {
           "key": {
             "secret": "some-really-long-crazy-credhub-password"
           },
           "name": "Key",
-          "primary": true
+          "primary": true,
+          "provider": "internal"
         }
       ]
     },
