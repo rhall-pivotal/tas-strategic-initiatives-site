@@ -2,7 +2,6 @@
 name: loggr-syslog-agent
 release: loggregator-agent
 manifest: |
-  enabled:  (( .properties.syslog_agent_enabled.value ))
   port: 3460
   tls:
     ca_cert: (( $ops_manager.ca_certificate ))
@@ -11,6 +10,6 @@ manifest: |
   cache:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
-      cert: (( .syslog_scheduler.syslog_agent_api_tls.cert_pem ))
-      key: (( .syslog_scheduler.syslog_agent_api_tls.private_key_pem ))
+      cert: (( .properties.syslog_agent_api_tls.cert_pem ))
+      key: (( .properties.syslog_agent_api_tls.private_key_pem ))
       cn: binding-cache

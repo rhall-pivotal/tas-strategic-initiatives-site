@@ -85,68 +85,6 @@ var _ = Describe("Logging", func() {
 		})
 	})
 
-	Describe("scalable syslog", func() {
-		It("adapter and scheduler are disabled when syslog agent is enabled", func() {
-			adapterGroup := "syslog_adapter"
-			schedulerGroup := "syslog_scheduler"
-			if productName == "srt" {
-				adapterGroup = "control"
-				schedulerGroup = "control"
-			}
-
-			manifest, err := product.RenderManifest(map[string]interface{}{
-				".properties.syslog_agent_enabled": true,
-			})
-			Expect(err).NotTo(HaveOccurred())
-
-			adapterEnabled := findProperty(manifest, adapterGroup, "adapter", "scalablesyslog/enabled")
-			Expect(adapterEnabled).To(BeFalse())
-
-			schedulerEnabled := findProperty(manifest, schedulerGroup, "scheduler", "scalablesyslog/enabled")
-			Expect(schedulerEnabled).To(BeFalse())
-		})
-
-		It("adapter and scheduler are enabled when syslog agent is disabled", func() {
-			adapterGroup := "syslog_adapter"
-			schedulerGroup := "syslog_scheduler"
-			if productName == "srt" {
-				adapterGroup = "control"
-				schedulerGroup = "control"
-			}
-
-			manifest, err := product.RenderManifest(map[string]interface{}{
-				".properties.syslog_agent_enabled": false,
-			})
-			Expect(err).NotTo(HaveOccurred())
-
-			adapterEnabled := findProperty(manifest, adapterGroup, "adapter", "scalablesyslog/enabled")
-			Expect(adapterEnabled).To(BeTrue())
-
-			schedulerEnabled := findProperty(manifest, schedulerGroup, "scheduler", "scalablesyslog/enabled")
-			Expect(schedulerEnabled).To(BeTrue())
-		})
-
-		It("sets batch size property on the syslog scheduler", func() {
-			instanceGroup := "syslog_scheduler"
-			if productName == "srt" {
-				instanceGroup = "control"
-			}
-
-			manifest, err := product.RenderManifest(map[string]interface{}{
-				".properties.syslog_scheduler_batch_size": 500,
-			})
-			Expect(err).NotTo(HaveOccurred())
-
-			syslogScheduler, err := manifest.FindInstanceGroupJob(instanceGroup, "scheduler")
-
-			Expect(err).NotTo(HaveOccurred())
-
-			batchSize, err := syslogScheduler.Property("scalablesyslog/scheduler/api/batch_size")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(batchSize).To(Equal(500))
-		})
-	})
-
 	Describe("system metrics agent", func() {
 		It("sets defaults on the system-metrics agent", func() {
 			manifest, err := product.RenderManifest(nil)
@@ -203,7 +141,7 @@ var _ = Describe("Logging", func() {
 			if productName == "srt" {
 				instanceGroup = "control"
 			} else {
-				instanceGroup = "syslog_scheduler"
+				instanceGroup = "clock_global"
 			}
 		})
 
@@ -300,10 +238,6 @@ var _ = Describe("Logging", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(port).To(Equal(3460))
 
-				enabled, err := agent.Property("enabled")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(enabled).To(BeFalse())
-
 				tlsProps, err := agent.Property("tls")
 				Expect(err).ToNot(HaveOccurred())
 				Expect(tlsProps).To(HaveKey("ca_cert"))
@@ -329,7 +263,7 @@ var _ = Describe("Logging", func() {
 			if productName == "srt" {
 				instanceGroup = "control"
 			} else {
-				instanceGroup = "syslog_scheduler"
+				instanceGroup = "clock_global"
 			}
 
 			agent, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-syslog-binding-cache")
@@ -338,10 +272,6 @@ var _ = Describe("Logging", func() {
 			port, err := agent.Property("external_port")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(port).To(Equal(9000))
-
-			enabled, err := agent.Property("enabled")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(enabled).To(BeFalse())
 		})
 	})
 
@@ -736,13 +666,3 @@ rule
 		})
 	})
 })
-
-func findProperty(manifest planitest.Manifest, instanceGroupName, jobName, propertyName string) interface{} {
-	job, err := manifest.FindInstanceGroupJob(instanceGroupName, jobName)
-	Expect(err).NotTo(HaveOccurred())
-
-	property, err := job.Property(propertyName)
-	Expect(err).NotTo(HaveOccurred())
-
-	return property
-}

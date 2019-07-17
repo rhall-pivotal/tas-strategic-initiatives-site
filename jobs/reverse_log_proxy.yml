@@ -8,8 +8,8 @@ manifest: |
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
       reverse_log_proxy:
-        cert: (( .syslog_adapter.adapter_rlp_tls.cert_pem ))
-        key: (( .syslog_adapter.adapter_rlp_tls.private_key_pem ))
+        cert: (( .loggregator_trafficcontroller.rlp_tls_cert.cert_pem ))
+        key: (( .loggregator_trafficcontroller.rlp_tls_cert.private_key_pem ))
   reverse_log_proxy:
     egress:
       port: $( variable "reverse_log_proxy_port" )
