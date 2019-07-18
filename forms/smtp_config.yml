@@ -1,37 +1,38 @@
 ---
 name: smtp_config
 label: Email Notifications
-description: |
-  Configure Simple Mail Transfer Protocol for the Notifications application
-  to send email notifications about your deployment. This application is
-  deployed as an errand in Application Service. If you do not need this service,
-  leave this section blank and disable the Notifications and Notifications UI
-  errands.
+description: Email Notifications
+markdown: |
+  To configure this pane, see the
+  [(Optional) Configure Email Notifications](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#smtp)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .properties.smtp_from
-    label: From Email
+    label: From email
     description: The email address from which emails are sent.
 
   - reference: .properties.smtp_address
-    label: SMTP Server Address
+    label: SMTP server address
     description: The SMTP address of the server that sends emails.
 
   - reference: .properties.smtp_port
-    label: SMTP Server Port
+    label: SMTP server port
     description: The port of the SMTP server that sends emails.
 
   - reference: .properties.smtp_credentials
-    label: SMTP Server Credentials
-    description: |
-      The credentials for the SMTP server that sends emails. Note: Operators
-      should take care to escape any special characters included here.
+    label: SMTP server credentials
+    description: The credentials for the SMTP server that sends emails.
 
   - reference: .properties.smtp_enable_starttls_auto
-    label: SMTP Enable Automatic STARTTLS
+    label: SMTP enable automatic STARTTLS
+    description: |
+      Automatically creates a secure TLS connection
+      when sending emails.
 
   - reference: .properties.smtp_auth_mechanism
-    label: SMTP Authentication Mechanism
+    label: SMTP authentication mechanism
+    description: Select your SMTP authentication mechanism.
 
   - reference: .properties.smtp_crammd5_secret
     label: SMTP CRAMMD5 secret
