@@ -9,16 +9,16 @@ markdown: |
 
 property_inputs:
   - reference: .mysql_monitor.poll_frequency
-    label: Replication canary time period
+    label: Replication canary time period (in seconds)
     description: |
-      How frequently (in seconds) the canary checks for
-      replication failure.
+      How frequently the canary checks for replication
+      failure.
 
   - reference: .mysql_monitor.write_read_delay
-    label: Replication canary read delay
+    label: Replication canary read delay (in seconds)
     description: |
-      How long (in seconds) the canary waits to verify
-      data is replicating across each MySQL node.
+      How long the canary waits to verify data is replicating
+      across each MySQL node.
 
   - reference: .mysql_monitor.recipient_email
     label: Email address
@@ -39,11 +39,11 @@ property_inputs:
       Admin and roadmin can connect from any remote host.
 
   - reference: .mysql.cluster_probe_timeout
-    label: Cluster probe timeout
+    label: Cluster probe timeout (in seconds)
     description: |
-      The maximum amount of time (in seconds) that a new node
-      searches for existing cluster nodes. The default value
-      is 10 seconds.
+      The maximum amount of time that a new node searches
+      for existing cluster nodes. The default value is 10
+      seconds.
 
   - reference: .mysql.max_connections
     label: Max connections
@@ -63,16 +63,16 @@ property_inputs:
             label: Event types
 
   - reference: .mysql_proxy.startup_delay
-    label: Load balancer healthy threshold
+    label: Load balancer healthy threshold (in seconds)
     description: |
-      Specifies the amount of time (in seconds) to wait until
-      reporting the MySQL Proxy instance has started.
+      Specifies the amount of time to wait until reporting the
+      MySQL Proxy instance has started.
 
   - reference: .mysql_proxy.shutdown_delay
-    label: Load Balancer Unhealthy Threshold
+    label: Load balancer unhealthy threshold (in seconds)
     description: |
-      Specifies the amount of time (in seconds) that the MySQL
-      Proxy continues to accept connections before shutting down.
+      Specifies the amount of time that the MySQL Proxy continues
+      to accept connections before shutting down.
 
   - reference: .mysql.prevent_node_auto_rejoin
     label: Prevent node auto re-join
