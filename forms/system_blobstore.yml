@@ -2,8 +2,11 @@
 name: system_blobstore
 label: File Storage
 description: |
-  This section determines where you would like to place your Application Service
-  Cloud Controller's file storage.
+  File Storage
+markdown: |
+  To configure this pane, see the
+  [Configure File Storage](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#file-storage)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 verifiers:
   - name: Verifiers::BlobstoreVerifier
@@ -51,269 +54,216 @@ _hack: '$( $v := regexReplaceAll "^\"?(\\d+)\\.(\\d+).*$" version "${1}-${2}" )'
 
 property_inputs:
 - reference: .properties.system_blobstore_ccpackage_max_valid_packages_stored
-  label: Max Valid Packages per App
+  label: Max valid packages per app
   description: Number of recent, valid packages stored per app (not including package for current droplet)
 
 - reference: .properties.system_blobstore_ccdroplet_max_staged_droplets_stored
-  label: Max Staged Droplets per App
+  label: Max staged droplets per app
   description: Number of recent, staged droplets stored per app (not including current droplet)
 
 - reference: .properties.system_blobstore_backup_level
-  label: Configure File Storage Backup Level
+  label: Configure file storage backup level:
   selector_property_inputs:
   - reference: .properties.system_blobstore_backup_level.all
-    label: Complete File Storage Backup
+    label: Complete file storage backup
   - reference: .properties.system_blobstore_backup_level.skip_droplets
-    label: Exclude Droplets from File Storage Backup (Restore Requires CF Restage)
+    label: Exclude droplets from file storage backup (requires restaging Cloud Foundry)
   - reference: .properties.system_blobstore_backup_level.skip_droplets_packages
-    label: Exclude Droplets and Packages from File Storage Backup (Restore Requires CF Push)
+    label: Exclude droplets and packages from file storage backup (requires `cf push`)
 
 - reference: .properties.system_blobstore
-  label: Configure your Cloud Controller's filesystem
+  label: Configure your Cloud Controller's filesystem:
   selector_property_inputs:
   - reference: .properties.system_blobstore.internal
-    label: Internal WebDAV (provided by Application Service)
+    label: Internal WebDAV
 
   - reference: .properties.system_blobstore.external
     label: |
-      External S3-Compatible File Store (if you want to use a service like S3
-      or Ceph)
+      External S3-compatible file store
     property_inputs:
       - reference: .properties.system_blobstore.external.endpoint
-        label: URL Endpoint
-        description: URL endpoint of your S3-compatible file store
+        label: URL endpoint
+        description: The URL endpoint of your S3-compatible file store.
 
       - reference: .properties.system_blobstore.external.iam_instance_profile_authentication
-        label: S3 AWS with Instance Profile
-        description: |
-          Use instance profile for S3 authentication. This must have been associated with
-          your resource config as a VM extension.
+        label: S3 AWS with instance profile
+        description: Use instance profile for S3 authentication.
 
       - reference: .properties.system_blobstore.external.access_key
-        label: Access Key (required if not using S3 AWS with Instance Profile)
+        label: Access key
+        description: Required if not using S3 AWS with instance profile.
 
       - reference: .properties.system_blobstore.external.secret_key
-        label: Secret Key (required if not using S3 AWS with Instance Profile)
+        label: Secret key
+        description: Required if not using S3 AWS with instance profile.
 
       - reference: .properties.system_blobstore.external.signature_version
-        label: S3 Signature Version
+        label: S3 signature version
 
       - reference: .properties.system_blobstore.external.region
         label: Region
         description: |
-          The AWS Region where the buckets are located, e.g. "us-east-1"
+          The AWS region where the buckets are located, e.g. "us-east-1"
           or "ap-northeast-1".
         placeholder: "us-east-1"
 
       - reference: .properties.system_blobstore.external.encryption
-        label: Server-side Encryption (available for AWS S3 only)
+        label: Server-side encryption
+        description: Available for AWS S3 only.
 
       - reference: .properties.system_blobstore.external.encryption_kms_key_id
-        label: KMS Key ID (requires Server-side Encryption to be checked)
+        label: KMS key ID
         description: |
-          The files uploaded to the blobstore will be encrypted using the given KMS key.
-          If Server-side Encryption is enabled and a KMS Key ID is not provided, the default AWS key is used.
+          Encrypts files uploaded to the blobstore using the given KMS key.
+          If server-side encryption is enabled and a KMS key ID is not provided,
+          the default AWS key is used.
 
       - reference: .properties.system_blobstore.external.buildpacks_bucket
-        label: Buildpacks Bucket Name
-        description: S3 bucket for storing app buildpacks.
+        label: Buildpacks bucket name
+        description: The S3 bucket for storing app buildpacks.
 
       - reference: .properties.system_blobstore.external.droplets_bucket
-        label: Droplets Bucket Name
-        description: |
-          S3 bucket for storing app droplets. Pivotal recommends that you use
-          a unique bucket name for droplets, but you can also use the same
-          name as above.
+        label: Droplets bucket name
+        description: The S3 bucket for storing app droplets.
 
       - reference: .properties.system_blobstore.external.packages_bucket
-        label: Packages Bucket Name
-        description: |
-          S3 bucket for storing app packages. Pivotal recommends that you use
-          a unique bucket name for packages, but you can also use the same
-          name as above.
+        label: Packages bucket name
+        description: The S3 bucket for storing app packages.
 
       - reference: .properties.system_blobstore.external.resources_bucket
-        label: Resources Bucket Name
-        description: |
-          S3 bucket for storing app resources. Pivotal recommends that you
-          use a unique bucket name for app resources, but you can also use
-          the same name as above.
+        label: Resources bucket name
+        description: The S3 bucket for storing app resources.
 
       - reference: .properties.system_blobstore.external.versioning
-        label: Use versioning for backup and restore. (All of the above buckets must have versioning enabled and use the V4 S3 Signature Version).
+        label: Use versioning for backup and restore
         # $v is declared higher up under '_hack'
-        description: |
-          If versioning is not enabled or supported, you can configure separate buckets below for backups.
-          More information at https://docs.pivotal.io/pivotalcf/$($v)/customizing/backup-restore/backup-pcf-bbr.html.
 
       - reference: .properties.system_blobstore.external.backup_region
-        label: Backup Region
+        label: Backup region
         description: |
-          The AWS Region where the buckets are located, e.g. "us-east-1"
+          The AWS region where the buckets are located, e.g. "us-east-1"
           or "ap-northeast-1".
         placeholder: "us-east-1"
 
       - reference: .properties.system_blobstore.external.buildpacks_backup_bucket
-        label: Backup Buildpacks Bucket Name
-        description: S3 bucket for storing app buildpacks.
+        label: Backup buildpacks bucket name
+        description: The S3 bucket for storing app buildpacks.
 
       - reference: .properties.system_blobstore.external.droplets_backup_bucket
-        label: Backup Droplets Bucket Name
-        description: |
-          S3 bucket for storing app droplets. Pivotal recommends that you use
-          a unique bucket name for droplets, but you can also use the same
-          name as above.
+        label: Backup broplets bucket name
+        description: The S3 bucket for storing app droplets.
 
       - reference: .properties.system_blobstore.external.packages_backup_bucket
-        label: Backup Packages Bucket Name
-        description: |
-          S3 bucket for storing app packages. Pivotal recommends that you use
-          a unique bucket name for packages, but you can also use the same
-          name as above.
+        label: Backup packages bucket name
+        description: The S3 bucket for storing app packages.
 
   - reference: .properties.system_blobstore.external_gcs
-    label: External Google Cloud Storage with Access Key and Secret Key
+    label: External Google Cloud Storage with access key and secret key
     description:
     property_inputs:
       - reference: .properties.system_blobstore.external_gcs.access_key
-        label: Access Key
+        label: Access key
 
       - reference: .properties.system_blobstore.external_gcs.secret_key
-        label: Secret Key
+        label: Secret key
 
       - reference: .properties.system_blobstore.external_gcs.buildpacks_bucket
-        label: Buildpacks Bucket Name
-        description: Bucket for storing app buildpacks.
+        label: Buildpacks bucket name
+        description: The bucket for storing app buildpacks.
 
       - reference: .properties.system_blobstore.external_gcs.droplets_bucket
-        label: Droplets Bucket Name
-        description: |
-          Bucket for storing app droplets. Pivotal recommends that you use a
-          unique bucket name for droplets, but you can also use the same name
-          as above.
+        label: Droplets bucket name
+        description: The bucket for storing app droplets.
 
       - reference: .properties.system_blobstore.external_gcs.packages_bucket
-        label: Packages Bucket Name
-        description: |
-          Bucket for storing app packages. Pivotal recommends that you use a
-          unique bucket name for packages, but you can also use the same name
-          as above.
+        label: Packages bucket name
+        description: The bucket for storing app packages.
 
       - reference: .properties.system_blobstore.external_gcs.resources_bucket
-        label: Resources Bucket Name
-        description: |
-          Bucket for storing app resources. Pivotal recommends that you use a
-          unique bucket name for app resources, but you can also use the same
-          name as above.
+        label: Resources bucket name
+        description: The bucket for storing app resources.
 
   - reference: .properties.system_blobstore.external_gcs_service_account
-    label: External Google Cloud Storage with Service Account
+    label: External Google Cloud Storage with service account
     description:
     property_inputs:
       - reference: .properties.system_blobstore.external_gcs_service_account.project_id
-        label: GCP Project ID
-        description: |
-          Your Google Cloud Platform Project ID. The Project ID can be found
-          on the Dashboard of the GCP Console.
+        label: GCP project ID
+        description: Your Google Cloud Platform project ID.
 
       - reference: .properties.system_blobstore.external_gcs_service_account.service_account_email
-        label: GCP Service Account Email
-        description: |
-          Your Google Cloud Platform Service Account Email.
+        label: GCP service account email
+        description: Your Google Cloud Platform service account email.
 
       - reference: .properties.system_blobstore.external_gcs_service_account.service_account_json_key
-        label: GCP Service Account Key JSON
+        label: GCP service account key JSON
         description: |
-          Your Google Cloud Platform Service Account Key with access to the specified
+          Your Google Cloud Platform service account key with access to the specified
           project and bucket in JSON format.
 
       - reference: .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket
-        label: Buildpacks Bucket Name
-        description: Bucket for storing app buildpacks.
+        label: Buildpacks bucket name
+        description: The ucket for storing app buildpacks.
 
       - reference: .properties.system_blobstore.external_gcs_service_account.droplets_bucket
-        label: Droplets Bucket Name
-        description: |
-          Bucket for storing app droplets. Pivotal recommends that you use a
-          unique bucket name for droplets, but you can also use the same name
-          as above.
+        label: Droplets bucket name
+        description: The bucket for storing app droplets.
 
       - reference: .properties.system_blobstore.external_gcs_service_account.packages_bucket
-        label: Packages Bucket Name
-        description: |
-          Bucket for storing app packages. Pivotal recommends that you use a
-          unique bucket name for packages, but you can also use the same name
-          as above.
+        label: Packages bucket name
+        description: The bucket for storing app packages.
 
       - reference: .properties.system_blobstore.external_gcs_service_account.resources_bucket
-        label: Resources Bucket Name
-        description: |
-          Bucket for storing app resources. Pivotal recommends that you use a
-          unique bucket name for app resources, but you can also use the same
-          name as above.
+        label: Resources bucket name
+        description: The bucket for storing app resources.
 
       - reference: .properties.system_blobstore.external_gcs_service_account.backup_bucket
-        label: Backup Bucket Name
-        description: |
-          Bucket for your Buildpacks, Droplets and Packages backup artifacts.
+        label: Backup bucket name
+        description: The bucket for your buildpack, droplet, and package backup artifacts.
 
   - reference: .properties.system_blobstore.external_azure
-    label: External Azure Storage
+    label: External Azure storage
     description:
     property_inputs:
       - reference: .properties.system_blobstore.external_azure.account_name
-        label: Account Name
+        label: Account name
 
       - reference: .properties.system_blobstore.external_azure.access_key
-        label: Access Key
+        label: Access key
 
       - reference: .properties.system_blobstore.external_azure.environment
         label: Environment
         description: |
-          This is the canonical name for the Azure Cloud environment where
-          your storage resides. The default value is AzureCloud, but other options
-          include AzureChinaCloud, AzureUSGovernment, and AzureGermanCloud.
+          The canonical name for the Azure Cloud environment where
+          your storage resides.
 
       - reference: .properties.system_blobstore.external_azure.buildpacks_container
-        label: Buildpacks Container Name
-        description: Container for storing app buildpacks.
+        label: Buildpacks container name
+        description: The container for storing app buildpacks.
 
       - reference: .properties.system_blobstore.external_azure.droplets_container
-        label: Droplets Container Name
-        description: |
-          Container for storing app droplets. Pivotal recommends that you use
-          a unique container name for droplets, but you can also use the same
-          name as above.
+        label: Droplets container name
+        description: The container for storing app droplets.
 
       - reference: .properties.system_blobstore.external_azure.packages_container
-        label: Packages Container Name
-        description: |
-          Container for storing app packages. Pivotal recommends that you use
-          a unique container name for packages, but you can also use the same
-          name as above.
+        label: Packages container name
+        description: The container for storing app packages.
 
       - reference: .properties.system_blobstore.external_azure.resources_container
-        label: Resources Container Name
-        description: |
-          Container for storing app resources. Pivotal recommends that you
-          use a unique container name for app resources, but you can also use
-          the same name as above.
+        label: Resources container name
+        description: The container for storing app resources.
 
       - reference: .properties.system_blobstore.external_azure.enable_bbr
-        label: |
-          Enable backup and restore (Soft deletes must be enabled for
-          all storage containers listed above).
+        label: Enable backup and restore
 
       - reference: .properties.system_blobstore.external_azure.restore_from_account_name
-        label: Restore from Storage Account
+        label: Restore from storage account
         description: |
-          Add a separate Storage Account and Access Key to restore from files from
-          containers in a different storage account. Leave blank if restoring from
-          the same Storage Account where backups are taken.
+          Add a separate storage account and access key to restore from files from
+          containers in a different storage account.
 
       - reference: .properties.system_blobstore.external_azure.restore_from_access_key
-        label: Restore using Access Key
+        label: Restore using access key
         description: |
-          Add a separate Storage Account and Access Key to restore from files from
-          containers in a different storage account. Leave blank if restoring from
-          the same Storage Account where backups are taken.
+          Add a separate storage account and access key to restore from files from
+          containers in a different storage account.
