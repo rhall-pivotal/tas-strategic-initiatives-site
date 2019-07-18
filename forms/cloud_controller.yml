@@ -1,69 +1,61 @@
 ---
 name: cloud_controller
 label: Cloud Controller
-description: Configure the Cloud Controller
+description: Cloud Controller
+markdown: |
+  To configure this pane, see the
+  [Configure Cloud Controller](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#config-cc)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .cloud_controller.encrypt_key
-    label: Cloud Controller DB Encryption Key
+    label: Cloud Controller database encryption key
     description: |
-      Leave blank unless restoring a Cloud Controller Database exported from
+      Leave blank unless restoring a Cloud Controller database exported from
       a previous installation.
 
   - reference: .properties.cc_api_rate_limit
-    label: |
-      Enabling CF API Rate Limiting will prevent API consumers from
-      overwhelming the platform API servers. Limits are imposed on a per-user
-      or per-client basis and reset on an hourly interval.
+    label: Cloud Foundry API rate limiting
     selector_property_inputs:
       - reference: .properties.cc_api_rate_limit.enable
         label: Enable
         property_inputs:
           - reference: .properties.cc_api_rate_limit.enable.general_limit
-            label: General Limit
+            label: General limit
             description: |
               The number of requests a user or client is allowed to make for
-              all endpoints that do not have a custom limit over an hour
+              all endpoints that do not have a custom limit over an hour-long
               interval.
 
           - reference: .properties.cc_api_rate_limit.enable.unauthenticated_limit
-            label: Unauthenticated Limit
+            label: Unauthenticated limit
             description: |
               The number of requests an unauthenticated client is allowed to
-              make over an hour interval.
+              make over an hour-long interval.
 
       - reference: .properties.cc_api_rate_limit.disable
         label: Disable
 
   - reference: .properties.ccdb_connection_validation_timeout
-    label: Database Connection Validation Timeout
-    description: |
-      The connection validation timeout in seconds. Note that setting this to -1 results
-      in an additional query whenever connections are checked out from the pool, which
-      can have performance implications.
+    label: Database connection validation timeout (in seconds)
+    description: The connection validation timeout.
 
   - reference: .properties.ccdb_read_timeout
-    label: Database Read Timeout
-    description: |
-      The read timeout for query responses in seconds.
+    label: Database read timeout (in seconds)
+    description: The read timeout for query responses.
 
   - reference: .properties.cloud_controller_completed_tasks_cutoff_age_in_days
     label: |
-      Age in days after which completed tasks will be pruned from the Cloud Controller Database.
+      Age of completed tasks pruned from Cloud Controller database (in days)
+    description: The number of days after which completed tasks are pruned from the Cloud Controller Database.
 
   - reference: .properties.cloud_controller_encryption_keys
     label: |
-      Encryption Key Ledger
-    description: |-
-      Each Label & Key pair entered here is a key that the CC will know how to encrypt and decrypt in the CCDB.
-      These should not be deleted.
+      Encryption key ledger
     property_inputs:
       - reference: label
-        label: Encryption Key Label
+        label: Encryption key label
       - reference: encryption_key
-        label: Encryption Key
+        label: Encryption key
       - reference: primary
         label: Primary
-        description: |
-          Checking this checkbox marks this key as the primary encryption key.
-          Only one key can be marked as primary.
