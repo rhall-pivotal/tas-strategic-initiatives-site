@@ -1,34 +1,36 @@
 ---
 name: apps_manager_config
 label: Apps Manager
-description: Configure Apps Manager
+description: Apps Manager
+markdown: |
+  To configure this pane, see the
+  [(Optional) Configure Custom Branding and Apps Manager](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#customize-apps-man)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .properties.push_apps_manager_enable_invitations
-    label: Enable Invitations
+    label: Enable invitations
 
   - reference: .properties.push_apps_manager_display_plan_prices
-    label: Display Marketplace Service Plan Prices
+    label: Display Marketplace service plan prices
 
   - reference: .properties.push_apps_manager_currency_lookup
     label: Supported currencies as JSON
     description: |
-      Define the currency codes and associated symbols (defaults to { "usd": "$", "eur": "€" })
+      Define currency codes and associated symbols. Defaults to { "usd": "$", "eur": "€" }.
 
   - reference: .properties.push_apps_manager_product_name
-    label: Product Name
+    label: Product name
     description: |
-      Replace "Apps Manager" in the header with a custom product name
-      (defaults to "Apps Manager" if blank)
+      Enter a custom product name. Defaults to "Apps Manager".
 
   - reference: .properties.push_apps_manager_marketplace_name
-    label: Marketplace Name
-    description: Replaces "Marketplace" on the Apps Manager Marketplace Pages.
+    label: Marketplace name
+    description: Enter a custom Marketplace name.
 
   - reference: .properties.push_apps_manager_nav_links
-    label: Customize Sidebar Links
-    description: |
-      You may configure up to 10 links in the Apps Manager sidebar.
+    label: Customize sidebar links
+    description: Configure up to 10 links in the Apps Manager sidebar.
     property_inputs:
       - reference: name
         label: Link text
@@ -37,33 +39,31 @@ property_inputs:
         label: URL
 
   - reference: .properties.push_apps_manager_memory
-    label: Apps Manager Memory Usage (MB)
+    label: Apps Manager memory usage (in MB)
     description: |
-      Memory limit with which to deploy the Apps Manager app. Leave blank
-      to use the default value.
+      The memory limit with which to deploy the Apps Manager app.
+      Leave blank to use the default value.
 
   - reference: .properties.push_apps_manager_invitations_memory
-    label: Invitations Memory Usage (MB)
+    label: Invitations memory usage (in MB)
     description: |
-      Memory limit with which to deploy the Invitations app. Leave blank
-      to use the default value.
+      The memory limit with which to deploy the Invitations app.
+      Leave blank to use the default value.
 
   - reference: .properties.push_apps_manager_poll_interval
-    label: Apps Manager Polling Interval
+    label: Apps Manager polling interval (in seconds)
     description: |
-      Apps manager polling interval in seconds. As a workaround to reduce
-      load on the Cloud Controller API, increase the polling interval or
-      set to 0 to stop polling. Values between 0 and 30 will default to 30 seconds.
+      The Apps Manager polling interval. Values between 0 and 30
+      default to 30 seconds.
 
   - reference: .properties.push_apps_manager_app_poll_interval
-    label: App Details Polling Interval
+    label: App details polling interval (in seconds)
     description: |
-      App details polling interval in seconds. As a workaround to reduce load
-      on the Cloud Controller API, and if adjusting the apps manager polling
-      interval is not sufficient, increase the app details polling interval
-      or set to 0 to stop polling. Values between 0 and 10 will default to 10 seconds.
+      App details polling interval in seconds. Values between 0
+      and 10 default to 10 seconds.
 
   - reference: .properties.push_apps_manager_foundations
-    label: Multi-Foundation Configuration (BETA)
+    label: Multi-foundation configuration (beta)
     description: |
-      JSON string containing foundations to which this Apps Manager should be connected.
+      A JSON string containing all the foundations Apps Manager
+      manages.
