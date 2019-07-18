@@ -4,42 +4,45 @@ label: Custom Branding
 description: |
   Customize colors, images, and text for Apps Manager and the Cloud Foundry
   login portal.
+markdown: |
+  To configure this pane, see the
+  [(Optional) Configure Custom Branding and Apps Manager](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#customize-apps-man)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .properties.push_apps_manager_company_name
-    label: Company Name
-    description: Defaults to 'Pivotal'
+    label: Company name
+    description: The default is 'Pivotal'.
 
   - reference: .properties.push_apps_manager_accent_color
-    label: Accent Color
-    description: Enter a hexadecimal color code like '#71ffda'
+    label: Accent color
+    description: Enter a hexadecimal color code (e.g. '#71ffda').
 
   - reference: .properties.push_apps_manager_logo
-    label: Main Logo (PNGs only)
+    label: Main logo
     description: |
-      Enter a base64-encoded PNG image string, but leave out the mime-type
-      (data:image/png;base64,) string. Only enter the base64 encoded data.
+      Enter a base64-encoded PNG image string, leaving out the mime-type
+      (data:image/png;base64,) string.
 
   - reference: .properties.push_apps_manager_square_logo
-    label: Square Logo (PNGs only)
+    label: Square logo
     description: |
-      Enter a base64-encoded PNG image string, but leave out the mime-type
-      (data:image/png;base64,) string. Only enter the base64 encoded data.
+      Enter a base64-encoded PNG image string, leaving out the mime-type
+      (data:image/png;base64,) string.
 
   - reference: .properties.push_apps_manager_favicon
-    label: Favicon (PNGs only)
+    label: Favicon
     description: |
-      Enter a base64-encoded PNG image string, but leave out the mime-type
-      (data:image/png;base64,) string. Only enter the base64 encoded data.
+      Enter a base64-encoded PNG image string, leaving out the mime-type
+      (data:image/png;base64,) string.
 
   - reference: .properties.push_apps_manager_footer_text
-    label: Footer Text
-    description: Defaults to 'Pivotal Software Inc. All rights reserved.'
+    label: Footer text
+    description: The default is 'Pivotal Software, Inc; All rights reserved.'
 
   - reference: .properties.push_apps_manager_footer_links
-    label: Footer Links
-    description: |
-      You may configure up to three links in the Apps Manager footer.
+    label: Footer links
+    description: Configure up to three links in the Apps Manager footer.
     property_inputs:
       - reference: name
         label: Link text
@@ -48,17 +51,17 @@ property_inputs:
         label: URL
 
   - reference: .properties.push_apps_manager_global_wrapper_bg_color
-    label: Classification Header/Footer Background Color
-    description: Enter a hexadecimal color code like '#71ffda'
+    label: Classification header/footer background color
+    description: Enter a hexadecimal color code (e.g. '#71ffda').
 
   - reference: .properties.push_apps_manager_global_wrapper_text_color
-    label: Classification Header/Footer Text Color
-    description: Enter a hexadecimal color code like '#71ffda'
+    label: Classification header/footer text color
+    description: Enter a hexadecimal color code (e.g. '#71ffda').
 
   - reference: .properties.push_apps_manager_global_wrapper_header_content
-    label: Classification Header Content
-    description: Plain text or HTML Markup
+    label: Classification header content
+    description: Enter plain text or HTML markup.
 
   - reference: .properties.push_apps_manager_global_wrapper_footer_content
-    label: Classification Footer Content
-    description: Plain text or HTML Markup
+    label: Classification footer content
+    description: Enter plain text or HTML markup.
