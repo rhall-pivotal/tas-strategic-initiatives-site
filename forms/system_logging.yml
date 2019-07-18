@@ -1,30 +1,23 @@
 ---
 name: system_logging
 label: System Logging
-description: |
-  Optionally configure rsyslog to forward platform component logs
-  to an external service.
-  If you do not fill these fields,
-  platform logs will not be forwarded
-  but will remain available on the component VMs
-  and for download via Ops Manager.
+description: System Logging
+markdown: |
+  To configure this pane, see the
+  [(Optional) Configure System Logging](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#sys-logging)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
 - reference: .properties.syslog_host
   label: Address
-  description: |
-    The aggregator must be reachable from the Application Service network, accept
-    TCP, UDP or RELP connections, and use the RELP protocol (e.g. rsyslogd).
-    You can also configure this with an IP address.
+  description: The IP address of the syslog server.
 
 - reference: .properties.syslog_port
   label: Port
-  description: |
-    The typical syslogd port is 514. Ensure syslogd is listening on external
-    interfaces.
+  description: The port of the syslog server. The default is 514.
 
 - reference: .properties.syslog_protocol
-  label: Transport Protocol
+  label: Transport protocol
   description: Select the transport protocol for forwarding logs.
 
 - reference: .properties.syslog_tls
@@ -37,58 +30,45 @@ property_inputs:
     label: "Yes"
     property_inputs:
     - reference: .properties.syslog_tls.enabled.tls_permitted_peer
-      label: Permitted Peer
+      label: Permitted peer
       description: |
         Either the accepted fingerprint (SHA1) or name of remote peer, e.g.
         *.example.com.
 
     - reference: .properties.syslog_tls.enabled.tls_ca_cert
-      label: TLS CA Certificate
+      label: TLS CA certificate
       description: |
-        This certificate will ensure that logs get securely transported to
+        This certificate ensures that logs are securely transported to
         the syslog destination.
 
 - reference: .cloud_controller.security_event_logging_enabled
   label: Enable Cloud Controller security event logging
   description: |
-    When enabled, all requests to Cloud Controller will be captured in the
-    syslog
+    All requests to Cloud Controller are captured in the
+    syslog.
 
 - reference: .properties.syslog_use_tcp_for_file_forwarding_local_transport
   label: Use TCP for file forwarding local transport
   description: |
     Workaround to avoid truncation of very long
-    (> 1024 bytes)
-    log lines.
-    May negatively impact performance.
+    (> 1024 bytes) log lines.
 
 - reference: .properties.syslog_drop_debug
-  label: Don't Forward Debug Logs
-  description: |
-    Some components produce voluminous debug logs.
-    This option prevents them from being forwarded.
-    They will still be written to local disk.
+  label: Don't forward debug logs
+  description: Prevents large debug logs from being forwarded.
 
 - reference: .properties.syslog_rule
-  label: Custom rsyslog Configuration
+  label: Custom rsyslog configuration
   description: |
-    Accepts configuration for rsyslog
-    in the rainerscript syntax.
-    For example,
-    'if ($app-name startswith "exampleComponent") then stop'
-    can be used to drop all traffic
-    from a particular component.
-    Entered configuration will be applied
-    prior to the forwarding rule.
+    Accepts configuration for rsyslog in the rainerscript syntax.
+    Entered configuration is applied prior to the forwarding rule.
 
 - reference: .properties.system_metrics_enabled
-  label: Enable System Metrics
+  label: Enable system metrics
   description: |
-    When enabled, will emit system-level metrics about all vms
-    in this deployment
+    Emits system-level metrics about all VMs in
+    this deployment.
 
 - reference: .properties.enable_v1_firehose
-  label: Enable V1 Firehose
-  description: |
-    When enabled, logs and metrics will flow to the V1 firehose. Disabling
-    this will disable the traffic controller.
+  label: Enable V1 firehose
+  description: Logs and metrics flow to the V1 firehose.
