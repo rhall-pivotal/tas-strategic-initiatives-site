@@ -1,23 +1,22 @@
 ---
 name: metric_registrar
 label: Metric Registrar
-description: Configure the Metric Registrar
+description: Metric Registrar
+markdown: |
+  To configure this pane, see the
+  [(Optional) Configure Metric Registrar](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#metric-registrar)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
 - reference: .properties.metric_registrar_enabled
   label: Enable Metric Registrar
-  description: |
-    Enables the Metric Registrar. Metric Registrar allows the conversion of
-    structured logs into metrics. It also scrapes metrics endpoints and forwards
-    the metrics into Loggregator. If enabled, it's recommended to also enable the
-    Metric Registrar Smoke Test errand.
 - reference: .properties.metric_registrar_scrape_interval_in_seconds
-  label: Endpoint Scraping Interval
+  label: Endpoint scraping interval (in seconds)
   description: |
-    The number of seconds between scrapes of registered metrics endpoints (in
-    seconds, default 35).
+    The amount of time between scrapes of registered metrics endpoints.
+    The default is 35.
 - reference: .properties.metric_registrar_blacklisted_tags
-  label: Blacklisted Tags
+  label: Blacklisted tags
   description: |
-    A comma-separated list of tags that users are not allowed to set on their
+    A comma-separated list of tags that users cannot set on their
     emitted metrics.
