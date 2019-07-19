@@ -10,7 +10,7 @@ markdown: |
 property_inputs:
 - reference: .properties.syslog_host
   label: Address
-  description: The IP address of the syslog server.
+  description: The hostname or IP address of the syslog server.
 
 - reference: .properties.syslog_port
   label: Port
@@ -32,8 +32,8 @@ property_inputs:
     - reference: .properties.syslog_tls.enabled.tls_permitted_peer
       label: Permitted peer
       description: |
-        Either the accepted fingerprint (SHA1) or name of remote peer, e.g.
-        *.example.com.
+        Either the accepted fingerprint (SHA1) or name of remote peer (e.g.
+        "*.example.com").
 
     - reference: .properties.syslog_tls.enabled.tls_ca_cert
       label: TLS CA certificate
@@ -49,19 +49,16 @@ property_inputs:
 
 - reference: .properties.syslog_use_tcp_for_file_forwarding_local_transport
   label: Use TCP for file forwarding local transport
-  description: |
-    Workaround to avoid truncation of very long
-    (> 1024 bytes) log lines.
 
 - reference: .properties.syslog_drop_debug
-  label: Don't forward debug logs
+  label: Do not forward debug logs
   description: Prevents large debug logs from being forwarded.
 
 - reference: .properties.syslog_rule
   label: Custom rsyslog configuration
   description: |
     Accepts configuration for rsyslog in the rainerscript syntax.
-    Entered configuration is applied prior to the forwarding rule.
+    Applied prior to the forwarding rule.
 
 - reference: .properties.system_metrics_enabled
   label: Enable system metrics
