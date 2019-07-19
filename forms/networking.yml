@@ -2,30 +2,25 @@
 name: networking
 label: Networking
 description: |
-  Configure security and routing services for your isolation segment.
+  Networking
+markdown: |
+  To configure this pane, see the
+  [Networking](https://docs.pivotal.io/pivotalcf/2-7/customizing/installing-pcf-is.html#networking)
+  section of the _Installing PCF Isolation Segment_ topic in the PCF documentation.
 
 property_inputs:
 - reference: .isolated_router.static_ips
   label: Router IPs
   description: |
-    If you are deploying onto an infrastructure that does not support
-    automated assignment of routers to load balancers (vSphere), or you are
-    intending to manually configure your load balancer with the IP
-    addresses of the routers, you should enter static IP addresses here
-    that will be used by the routers. On infrastructures where automated
-    load balancer assignment is supported (AWS, GCP, Azure), this field can
-    be left blank and the "Load Balancers" field on the "Resource Config"
-    tab can be filled out with the correct load balancer assignment.
+    A comma-separated list of router IPs.
 
 - reference: .isolated_ha_proxy.static_ips
   label: HAProxy IPs
   description: |
-    If you are using HAProxy, enter its IP address(es). The addresses must
-    be within your subnet CIDR block. Point your DNS to this IP address
-    unless you are using your own load balancer.
+    A comma-separated list of HAProxy IPs.
 
 - reference: .properties.networking_poe_ssl_certs
-  label: Certificates and Private Keys for HAProxy and Router
+  label: Certificates and private keys for HAProxy and Router
   property_inputs:
   - reference: name
     label: Name
@@ -33,19 +28,14 @@ property_inputs:
   - reference: certificate
     label: Certificate and Private Key for HAProxy and Router
     description: |
-      This certificate is used to terminate SSL traffic at either the
-      HAProxy or Router. The certificate can have multiple domains
-      attributed to it, for example if you have separate system and
-      application domains.
+      The certificate used to terminate SSL traffic at either the HAProxy or
+      Router.
 
 - reference: .properties.routing_custom_ca_certificates
-  label: Certificate Authorities Trusted by Router and HAProxy
+  label: Certificate Authorities trusted by Router and HAProxy
   description: |
-    In addition to well-known, public CAs, and those trusted via the BOSH
-    trusted certificates collection, these certificates can be used to
-    validate the certificates from incoming client requests. All CA
-    certificates should be appended together into a single collection of
-    PEM-encoded entries.
+    Additional Certificate Authorities used to validate certificates from
+    incoming requests.
 
 - reference: .properties.routing_minimum_tls_version
   label: Minimum version of TLS supported by HAProxy and Router
@@ -58,13 +48,10 @@ property_inputs:
       label: TLSv1.2
 
 - reference: .properties.routing_log_client_ips
-  label: Logging of Client IPs in CF Router
+  label: Logging of client IPs in Router
   description: |
     To comply with GDPR, select one of the options to disable logging
-    of client IPs. If the source IP exposed by your load balancer is
-    its own, choose to disable logging of XFF header only. If the
-    source IP exposed by your load balancer is that of the downstream
-    client, choose to disable logging of the source IP also.
+    of client IPs.
   selector_property_inputs:
     - reference: .properties.routing_log_client_ips.log_client_ips
       label: Log client IPs
@@ -74,86 +61,55 @@ property_inputs:
       label: Disable logging of both source IP and X-Forwarded-For header
 
 - reference: .properties.routing_tls_termination
-  label: |
-    Configure support for the X-Forwarded-Client-Cert header. This header
-    can be used by applications to verify the requester via mutual TLS.
-    The option you should select depends upon where you will be terminating
-    the TLS connection for the first time.
+  label: TLS termination point
   selector_property_inputs:
     - reference: .properties.routing_tls_termination.load_balancer
-      label: |
-        TLS terminated for the first time at infrastructure load balancer
+      label: Infrastructure load balancer
     - reference: .properties.routing_tls_termination.ha_proxy
-      label: |
-        TLS terminated for the first time at HAProxy
+      label: HAProxy
     - reference: .properties.routing_tls_termination.router
-      label: |
-        TLS terminated for the first time at the Router
+      label: Router
 
 - reference: .properties.haproxy_client_cert_validation
-  label: HAProxy behavior for Client Certificate Validation
+  label: HAProxy behavior for client certificate validation
   selector_property_inputs:
     - reference: .properties.haproxy_client_cert_validation.none
-      label: |
-        HAProxy does not request client certificates.
+      label: HAProxy does not request client certificates
     - reference: .properties.haproxy_client_cert_validation.request
-      label: |
-        HAProxy requests but does not require client certificates.
-        This option is necessary if you want to enable mTLS for applications
-        and TLS is terminated for the first time at HAProxy
+      label: HAProxy requests but does not require client certificates
 
 - reference: .properties.router_client_cert_validation
-  label: Router behavior for Client Certificate Validation
+  label: Router behavior for client certificate validation
   selector_property_inputs:
     - reference: .properties.router_client_cert_validation.none
-      label: |
-        Router does not request client certificates. When used in combination
-        with "TLS terminated for the first time at the Router", a XFCC header
-        will not be forwarded to applications.
+      label: Router does not request client certificates
     - reference: .properties.router_client_cert_validation.request
-      label: |
-        Router requests but does not require client certificates.
+      label: Router requests but does not require client certificates
     - reference: .properties.router_client_cert_validation.require
-      label: |
-        Router requires client certificates.
+      label: Router requires client certificates
 
 - reference: .properties.gorouter_ssl_ciphers
-  label: TLS Cipher Suites for Router
+  label: TLS cipher suites for Router
   description: |
-    An ordered, colon-delimited list of Golang supported TLS cipher suites
-    in OpenSSL format. The recommended setting is
-    "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384".
-    Operators should verify that these are supported by any clients or
-    downstream components that will initiate TLS handshakes with the Router.
+    An ordered, colon-separated list of Golang supported TLS cipher suites
+    in OpenSSL format.
 
 - reference: .properties.haproxy_ssl_ciphers
-  label: TLS Cipher Suites for HAProxy
+  label: TLS cipher suites for HAProxy
   description: |
-    An ordered, colon-delimited list of TLS cipher suites in OpenSSL format.
-    The recommended setting is
-    "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384".
-    Operators should verify that these are supported by any clients or downstream
-    components that will initiate TLS handshakes with the HAProxy.
+    An ordered, colon-separated list of TLS cipher suites in OpenSSL format.
 
 - reference: .properties.haproxy_forward_tls
-  label: |
-    HAProxy forwards requests to Router over TLS. When enabled, HAProxy
-    will forward all requests to the Router over TLS. HAProxy will use
-    the CA provided  to verify the certificates provided by the Router.
+  label: HAProxy forwards requests to Router over TLS
   selector_property_inputs:
     - reference: .properties.haproxy_forward_tls.enable
       label: Enable
       property_inputs:
       - reference: .properties.haproxy_forward_tls.enable.backend_ca
-        label: Certificate Authority for HAProxy Backend
+        label: Certificate Authority for HAProxy back end
         description: |
-          You need to provide a certificate authority for the certificate
-          and key provided in the "Certificate and Private Key for HAProxy
-          and Router" field. HAProxy will verify those certificates using
-          this CA when establishing a connection. If you generated that
-          certificate and key using the "Generate RSA Certificate" feature,
-          then your CA is the Ops Manager CA, and can be found by visiting
-          the "/api/v0/certificate_authorities" API endpoint.
+          Provide a Certificate Authority for the certificate and key provided
+          in the Certificate and Private Key for HAProxy and Router field.
     - reference: .properties.haproxy_forward_tls.disable
       label: Disable
 
@@ -164,70 +120,43 @@ property_inputs:
       label: Enable
       property_inputs:
       - reference: .properties.haproxy_hsts_support.enable.max_age
-        label: Max Age in Seconds
+        label: Maximum age (in seconds)
       - reference: .properties.haproxy_hsts_support.enable.include_subdomains
-        label: Include Subdomains
+        label: Include subdomains
       - reference: .properties.haproxy_hsts_support.enable.enable_preload
-        label: Enable Preload
+        label: Enable preload
     - reference: .properties.haproxy_hsts_support.disable
       label: Disable
 
 - reference: .properties.skip_cert_verify
   label: Disable SSL certificate verification for this environment
-  description: |
-    You can disable SSL verification if you are using your own self-signed
-    certificates that are not from a trusted CA.
 
 - reference: .properties.routing_disable_http
   label: Disable HTTP on HAProxy and Gorouter
-  description: When checked, HAProxy and Gorouter will not listen on port 80.
 
 - reference: .isolated_router.disable_insecure_cookies
   label: Disable insecure cookies on the Router
-  description: |
-    If checked, this turns on the secure flag for cookies generated by
-    router.
 
 - reference: .isolated_router.enable_zipkin
   label: Enable Zipkin tracing headers on the router
-  description: |
-    If checked, the router will include Zipkin tracing headers on all
-    incoming requests.
 
 - reference: .isolated_router.enable_write_access_logs
   label: Enable Router to write access logs locally
-  description: |
-    When enabled, the Router will write access logs to the local disk.
-    Under some circumstances, it is advisable to disable this feature
-    to prevent Router from filling the local disk entirely with the
-    contents of access logs.
 
 - reference: .properties.router_enable_proxy
-  label: Enable support for PROXY protocol in CF Router
-  description: |
-    When enabled, Gorouter will parse each request for the presence
-    of PROXY metadata. This comes with a performance penalty.
-    If a client IP is sent this way, as when a load balancer
-    terminates TLS but doesn't support HTTP, Gorouter will set
-    the X-Forwarded-For header to this value.
+  label: Enable support for PROXY protocol in Router
 
 - reference: .properties.route_services_internal_lookup
   label: Bypass security checks for route service lookup
-  description: |
-    When enabled, route service traffic hosted internally will
-    not be routed to the load balancer first. This can introduce the
-    ability for route service traffic to be intercepted. Please see
-    detailed information in the Pivotal Cloud Foundry documentation
-    before enabling.
 
 - reference: .properties.router_backend_max_conn
-  label: Max Connections Per Backend
+  label: Maximum connections per back end
   description: |
-    Maximum concurrent TCP connections per backend for each instance of
-    the Router. A value of 0 means unlimited.
+    Maximum concurrent TCP connections per back end for each instance of
+    the Router. A value of 0 sets no limit.
 
 - reference: .properties.router_keepalive_connections
-  label: Enable Keepalive Connections for Router
+  label: Keep-alive connections for Router
   selector_property_inputs:
   - reference: .properties.router_keepalive_connections.enable
     label: Enable
@@ -235,92 +164,66 @@ property_inputs:
     label: Disable
 
 - reference: .isolated_router.request_timeout_in_seconds
-  label: Router Timeout to Backends (in seconds)
+  label: Router timeout to back ends (in seconds)
   description: |
-    Timeout for connections from Router (and HAProxy, if you use it) to
-    applications and system components. Increase this to accommodate larger
-    uploads over connections with high latency.
+    Timeout for connections from Router (and HAProxy, if in use) to
+    apps and system components.
 
 - reference: .isolated_router.drain_wait
-  label: Load Balancer Unhealthy Threshold
+  label: Load balancer unhealthy threshold (in seconds)
   description: |
-    Specifies the amount of time, in seconds, that the Router will continue
-    to accept connections before shutting down. During this period the
-    healthcheck will report unhealthy to cause load balancers to fail over
-    to other Routers. This value should be greater than or equal to the max
-    time it could take your load balancer to consider a Router instance
-    unhealthy, given contiguous failed healthchecks.
+    The amount of time that the Router continues
+    to accept connections before shutting down.
 
 - reference: .isolated_router.lb_healthy_threshold
-  label: Load Balancer Healthy Threshold
+  label: Load balancer healthy threshold (in seconds)
   description: |
-    Specifies the amount of time, in seconds, to wait until declaring the
-    router instance started. This allows an external load balancer time to
-    register the instance as healthy.
+    The amount of time to wait until reporting the
+    Router instance has started.
 
 - reference: .isolated_router.extra_headers_to_log
-  label: HTTP Headers to Log
+  label: HTTP headers to log
   description: |
-    A comma-separated list of HTTP headers that will annotate access log
-    events on the GoRouter.
+    A comma-separated list of HTTP headers that annotate access log
+    events on the Router.
 
 - reference: .properties.haproxy_max_buffer_size
-  label: HAProxy Request Max Buffer Size
+  label: HAProxy request max buffer size (in bytes)
   description: |
-    Buffer size (in bytes) to use for requests, any requests larger
-    than this (large cookies or query strings) will result in a
-    gateway error. The default value is 16384.
+    Buffer size to use for requests.
 
 - reference: .isolated_ha_proxy.internal_only_domains
-  label: HAProxy Protected Domains
+  label: HAProxy protected domains
   description: |
-    A comma-separated list of domains to protect from requests from
-    unknown sources.  Use this property in conjunction with
-    "Trusted CIDRs" to protect these domains from requests from
-    unknown sources.
+    A comma-separated list of domains to protect from requests from unknown
+    sources.
 
 - reference: .isolated_ha_proxy.trusted_domain_cidrs
-  label: HAProxy Trusted CIDRs
+  label: HAProxy trusted CIDRs
   description: |
-    A space-separated list of CIDRs allowed to make requests
-    to the domains listed in the "Protected Domains" field. For example,
-    specifying 10.0.1.0/24 would allow any requests originating at a host IP
-    in that range to reach applications or services hosted on the
-    "Protected Domains" list.
+    A space-separated list of CIDRs allowed to make requests to the domains
+    listed in the Protected Domains field.
 
 - reference: .properties.cf_networking_search_domains
-  label: DNS Search Domains
+  label: DNS search domains
   description: |
-    DNS search domains to be used in containers. A comma-separated list can
-    be specified.
+    A comma-separated list of DNS search domains used in containers.
 
 - reference: .properties.enable_silk_policy_enforcement
-  label: Enable Silk Policy Enforcement
-  description: |
-    WARNING!!! Disabling this feature will allow all application containers
-    to access any other application container with no restrictions.
+  label: Enable Silk policy enforcement
 
 - reference: .properties.routing_table_sharding_mode
-  label: |
-    Router Sharding Mode: When "Isolation Segment Only" is selected, the
-    routers of this tile will only have knowledge of applications deployed to
-    the Cells of this tile; all other requests will receive a 404 response.
-    When "No Isolation Segment" is selected, the routers of this tile will
-    reject requests for any isolation segment. Choose "No Isolation Segments"
-    to add a group of routers for the Pivotal Application Service tile, as when a private
-    point of entry for the system domain is desired."
+  label: Router sharding mode
   selector_property_inputs:
   - reference: .properties.routing_table_sharding_mode.isolation_segment_only
-    label: Isolation Segment Only
+    label: Isolation Segment only
   - reference: .properties.routing_table_sharding_mode.no_isolation_segment
     label: No Isolation Segment
 
 - reference: .properties.router_headers_remove_if_specified
-  label: Remove Specified HTTP Response Headers
+  label: Remove specified HTTP response headers
   description: |
-    A list of headers the router will remove on any response returned by an
-    application hosted on this isolation segment. This is useful when you want to remove certain
-    HTTP response headers for additional security.
+    A list of headers the Router removes on any response from an app.
   property_inputs:
   - reference: name
     label: Header name
