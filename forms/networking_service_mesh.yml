@@ -2,13 +2,16 @@
 name: networking_service_mesh
 label: Networking - Service Mesh
 description: |
-  Service Mesh currently only supports ingress routing to applications; support for management of egress communications (including app-to-app) will be offered in future releases.
+  Enabling Service Mesh allows optional ingress routing to applications through service mesh components. It also configures
+  all container to container networking to route through sidecar proxies.
 
 property_inputs:
   - reference: .properties.istio
     label: Service Mesh (Beta)
     description: |
-      When enabled, a new kind of platform ingress router will be deployed, in parallel to the existing HTTP and TCP routers, offering new capabilities. Enable this only for deployments with fewer than 20,000 routes; core platform functions will be impacted at greater scale.
+      When enabled, a new kind of platform ingress router will be deployed, in parallel to the existing HTTP and TCP routers,
+      offering new capabilities. Enable this only for deployments with fewer than 20,000 service mesh ingress routes and fewer than
+      300 internal routes; core platform functions will be impacted at greater scale.
     selector_property_inputs:
     - reference: .properties.istio.disable
       label: |
