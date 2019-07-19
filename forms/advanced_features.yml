@@ -1,21 +1,20 @@
 ---
 name: advanced_features
 label: Advanced Features
-description: |
-  These are several features that may require a greater understanding of
-  Cloud Foundry system components and their more recently introduced
-  capabilities.
+markdown: |
+  To configure this pane, see the
+  [Advanced Features](https://docs.pivotal.io/pivotalcf/2-7/customizing/installing-pcf-is.html#advanced_features)
+  section of the _Installing PCF Isolation Segment_ topic in the PCF documentation.
 
 property_inputs:
 - reference: .isolated_diego_cell.executor_memory_capacity
-  label: Cell Memory Capacity (MB)
+  label: Cell memory capacity (in MB)
 
 - reference: .isolated_diego_cell.executor_disk_capacity
-  label: Cell Disk Capacity (MB)
+  label: Cell disk capacity (in MB)
 
 - reference: .properties.enable_smb_volume_driver
   label: Enable SMB volume services
   description: |
-    Enabling SMB volume services will allow application developers to bind
-    existing SMB shares to their applications for shared file access.
-    Also requires enabling the SMB Broker Errand in the PAS tile as it is disabled by default.
+    Allow app developers to bind existing SMB shares to apps
+    for shared file access.
