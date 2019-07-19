@@ -15,13 +15,13 @@ property_inputs:
     label: Autoscaler API instance count
 
   - reference: .properties.autoscale_metric_bucket_count
-    label: Metric collection interval (min: 60, max: 3600)
+    label: "Metric collection interval (min: 60, max: 3600)"
     description: |
       The size (in seconds) of the window of metrics that
       App Autoscaler uses to make scaling decisions.
 
   - reference: .properties.autoscale_scaling_interval_in_seconds
-    label: Scaling interval (min: 15, max: 120)
+    label: "Scaling interval (min: 15, max: 120)"
     description: |
       How frequently (in seconds) App Autoscaler evaluates
       an app for scaling.
