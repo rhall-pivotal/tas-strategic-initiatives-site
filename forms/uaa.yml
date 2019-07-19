@@ -20,7 +20,7 @@ verifiers:
 property_inputs:
 - reference: .properties.uaa_database
   label: |
-    Choose the location of your UAA database:
+    UAA database location
   selector_property_inputs:
   - reference: .properties.uaa_database.internal_mysql
     label: |
@@ -59,13 +59,11 @@ property_inputs:
 
 - reference: .properties.saml_entity_id_override
   label: SAML Entity ID override
-  description: |
-    Overrides the default Entity ID value.
+  description: Overrides the default Entity ID value.
 
 - reference: .properties.saml_signature_algorithm
   label: Signature algorithm
-  description: |
-    The supported algorithm for signed requests and assertions.
+  description: The supported algorithm for signed requests and assertions.
 
 - reference: .uaa.apps_manager_access_token_lifetime
   label: Apps Manager access token lifetime (in seconds)
@@ -81,11 +79,11 @@ property_inputs:
 
 - reference: .properties.uaa_session_cookie_max_age
   label: Global login session max timeout (in seconds)
-  description: The max timeout for a global login session.
+  description: The maximum timeout for a global login session.
 
 - reference: .properties.uaa_session_idle_timeout
   label: Global login session idle timeout (in seconds)
-  description: The max timeout for idle global login sessions.
+  description: The maximum timeout for idle global login sessions.
 
 - reference: .uaa.customize_username_label
   label: Customize username label
