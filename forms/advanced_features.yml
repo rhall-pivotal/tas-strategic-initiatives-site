@@ -15,7 +15,7 @@ property_inputs:
     label: Cell disk capacity (in MB)
 
   - reference: .nfs_server.blobstore_internal_access_rules
-    label: Whitelist for non-RFC-1918 private networks
+    label: Allow list for non-RFC-1918 private networks
     placeholder: |
       e.g.: allow 172.99.0.0/24;,allow 172.55.0.0/24;
 
@@ -26,7 +26,7 @@ property_inputs:
       name resolution.
 
   - reference: .properties.enable_tls_to_internal_pxc
-    label: "Beta: Enable TLS for internal system database"
+    label: Enable TLS for internal system database (beta)
     description: |
       PAS components that support TLS connect to the internal
       PXC database using an encrypted TLS connection.
