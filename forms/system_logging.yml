@@ -1,18 +1,16 @@
 ---
 name: system_logging
 label: System Logging
-description: |
-  Optionally configure rsyslog to forward platform component logs
-  to an external service.
-  If you do not fill these fields,
-  platform logs will not be forwarded
-  but will remain available on the component VMs
-  and for download via Ops Manager.
+description: System Logging
+markdown: |
+  To configure this pane, see the
+  [System Logging](https://docs.pivotal.io/pivotalcf/2-7/customizing/installing-pcf-is.html#syslog)
+  section of the _Installing PCF Isolation Segment_ topic in the PCF documentation.
 
 property_inputs:
 - reference: .properties.system_logging
   label: |
-    Do you want to configure syslog for system components?
+    Configure syslog for system components?
 
   selector_property_inputs:
   - reference: .properties.system_logging.disabled
@@ -24,67 +22,46 @@ property_inputs:
     - reference: .properties.system_logging.enabled.host
       label: Address
       description: |
-        The aggregator must be reachable from the Isolation Segment network,
-        accept TCP, UDP or RELP connections, and use the RELP protocol (e.g.
-        rsyslogd). You can also configure this with an IP address.
+        The hostname or IP address of the syslog server.
 
     - reference: .properties.system_logging.enabled.port
       label: Port
-      description: |
-        The typical syslogd port is 514. Ensure syslogd is listening on
-        external interfaces.
+      description: The port of the syslog server. The default is 514.
 
     - reference: .properties.system_logging.enabled.protocol
-      label: Transport Protocol
-      description: |
-        Select the transport protocol for forwarding logs.
+      label: Transport protocol
+      description: Select the transport protocol for forwarding logs.
 
     - reference: .properties.system_logging.enabled.tls_enabled
       label: Enable TLS
-      description: |
-        When checked both Permitted Peer and TLS CA Certificate are required.
 
     - reference: .properties.system_logging.enabled.tls_permitted_peer
-      label: Permitted Peer
+      label: Permitted peer
       description: |
-        Either the accepted fingerprint (SHA1) or name of remote peer, e.g.
-        *.example.com
+        Either the accepted fingerprint (SHA1) or name of remote peer (e.g.
+        "*.example.com").
 
     - reference: .properties.system_logging.enabled.tls_ca_cert
-      label: TLS CA Certificate
+      label: TLS CA certificate
       description: |
-        This certificate will ensure that logs get securely transported to
-        the syslog destination
+        This certificate ensures that logs are securely transported to
+        the syslog destination.
 
     - reference: .properties.system_logging.enabled.use_tcp_for_file_forwarding_local_transport
       label: Use TCP for file forwarding local transport
-      description: |
-        Workaround to avoid truncation of very long
-        (> 1024 bytes)
-        log lines.
-        May negatively impact performance.
 
     - reference: .properties.system_logging.enabled.syslog_drop_debug
-      label: Don't Forward Debug Logs
-      description: |
-        Some components produce voluminous debug logs.
-        This option prevents them from being forwarded.
-        They will still be written to local disk.
+      label: Do not forward debug logs
+      description: Prevents large debug logs from being forwarded.
 
     - reference: .properties.system_logging.enabled.syslog_rule
-      label: Custom rsyslog Configuration
+      label: Custom rsyslog configuration
       description: |
-        Accepts configuration for rsyslog
-        in the rainerscript syntax.
-        For example,
-        'if ($app-name startswith "exampleComponent") then stop'
-        can be used to drop all traffic
-        from a particular component.
-        Entered configuration will be applied
-        prior to the forwarding rule.
+        Accepts configuration for rsyslog in the rainerscript syntax.
+        Applied prior to the forwarding rule.
 
 - reference: .properties.system_metrics_enabled
-  label: Enable System Metrics
+  label: Enable system metrics
   description: |
-    When enabled, will emit system-level metrics about all vms
-    in this deployment
+    Emits system-level metrics about all VMs in
+    this deployment.
