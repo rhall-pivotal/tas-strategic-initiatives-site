@@ -1,107 +1,92 @@
 ---
 name: application_containers
 label: Application Containers
-description: |
-  Enable custom configuration that supports your applications at a container
-  level.
-
-property_inputs:
-- reference: .isolated_diego_cell.insecure_docker_registry_list
-  label: Private Docker Insecure Registry Whitelist
-  description: |
-    If you use private Docker image registries that are secured with
-    self-signed certificates, enter them here as a comma-delimited list. List
-    each registry as either an IP:Port tuple or a Hostname:Port tuple.
-  placeholder: |
-    10.10.10.10:8888,example.com:8888
-
-- reference: .isolated_diego_cell.placement_tag
-  label: Segment Name
-  description: |
-    This field is used as the placement tag for your Diego Cells. It should
-    be unique. Use this name to configure an Isolation Segment with the Cloud
-    Controller.
-
-- reference: .properties.garden_disk_cleanup
-  label: Docker Images Disk-Cleanup Scheduling on Cell VMs
-  selector_property_inputs:
-  - reference: .properties.garden_disk_cleanup.never
-    label: Never clean up Cell disk-space
-
-  - reference: .properties.garden_disk_cleanup.routine
-    label: Routinely clean up Cell disk-space
-
-  - reference: .properties.garden_disk_cleanup.reserved
-    label: Clean up disk-space once usage fills disk
-    property_inputs:
-      - reference: .properties.garden_disk_cleanup.reserved.reserved_space_for_other_jobs_in_mb
-        label: Reserved disk space for other jobs(MB)
-        description: |
-          Amount of space the GC algorithm should attempt to keep free for other jobs.
-          GC will delete  unneeded layers as needed to keep this space free (but it cannot guarantee this
-           space remains free if more containers are created than disk space allows).
-
-- reference: .properties.enable_garden_containerd_mode
-  label: Enable Containerd Delegation
-  description: |
-    Garden delegates container create and destroy operations to containerd
-    in an effort to use more industry standard container runtime tooling. This
-    may be opted-out of. In the future garden will delegate all container
-    operations to containerd.
-
-- reference: .properties.nfs_volume_driver
-  label: |
-    Enabling NFSv3 volume services will allow application developers to bind
-    existing NFS volumes to their applications for shared file access.
-  selector_property_inputs:
-    - reference: .properties.nfs_volume_driver.enable
-      label: Enable
-      property_inputs:
-        - reference: .properties.nfs_volume_driver.enable.ldap_service_account_user
-          label: LDAP Service Account User
-          description : |
-            Service Account User name (required for LDAP integration only)
-
-        - reference: .properties.nfs_volume_driver.enable.ldap_service_account_password
-          label: LDAP Service Account Password
-          description: |
-            Service Account Password (required for LDAP integration only)
-
-        - reference: .properties.nfs_volume_driver.enable.ldap_server_host
-          label: LDAP Server Host
-          description: |
-            Server hostname or IP address (required for LDAP integration only)
-
-        - reference: .properties.nfs_volume_driver.enable.ldap_server_port
-          label: LDAP Server Port
-          description: |
-            Server port (required for LDAP integration only). Defaults to 389.
-
-        - reference: .properties.nfs_volume_driver.enable.ldap_user_fqdn
-          label: LDAP User Search Base
-          description: |
-            The location in the LDAP directory tree from which any LDAP User
-            search begins. The typical LDAP Search Base matches your domain
-            name. For example, it can be specified as
-            "cn=Users,dc=corp,dc=test,dc=com". Required for LDAP integration
-            only.
-          placeholder: "cn=Users,dc=corp,dc=test,dc=com"
-
-        - reference: .properties.nfs_volume_driver.enable.ldap_ca_cert
-          label: LDAP Server CA Cert
-          description: |
-            Server CA certificate (required for LDAP integration with SSL only)
-
-    - reference: .properties.nfs_volume_driver.disable
-      label: Disable
+description: Application Containers
+markdown: |
+  To configure this pane, see the
+  [Application Containers](https://docs.pivotal.io/pivotalcf/2-7/customizing/installing-pcf-is.html#application_containers)
+  section of the _Installing PCF Isolation Segment_ topic in the PCF documentation.
 
 - reference: .properties.route_integrity
   label: Router application identity verification
   selector_property_inputs:
   - reference: .properties.route_integrity.tls_verify
-    label: Router uses TLS to verify application identity (Default)
+    label: Router uses TLS to verify application identity
   - reference: .properties.route_integrity.mutual_tls_verify
-    label: Router and applications use mutual TLS to verify each other's identity (incompatible with TCP Routing)
+    label: Router and applications use mutual TLS to verify each other's identity
 
 - reference: .properties.router_prune_all_stale_routes
-  label: Prune Routes on TTL Expiry for TLS Backends
+  label: Prune routes on TTL expiry for TLS back ends
+
+property_inputs:
+- reference: .isolated_diego_cell.insecure_docker_registry_list
+  label: Private Docker insecure registry allow list
+  description: |
+    A comma-separated list of private Docker image registries that are secured with
+    self-signed certificates.
+  placeholder: |
+    10.10.10.10:8888,example.com:8888
+
+- reference: .isolated_diego_cell.placement_tag
+  label: Segment name
+  description: The placement tag for your Diego Cells.
+
+- reference: .properties.garden_disk_cleanup
+  label: Docker images disk cleanup scheduling on Diego Cell VMs
+  selector_property_inputs:
+  - reference: .properties.garden_disk_cleanup.never
+    label: Never clean up Diego Cell disk space
+
+  - reference: .properties.garden_disk_cleanup.routine
+    label: Routinely clean up Diego Cell disk space
+
+  - reference: .properties.garden_disk_cleanup.reserved
+    label: Clean up disk space once usage fills disk
+    property_inputs:
+      - reference: .properties.garden_disk_cleanup.reserved.reserved_space_for_other_jobs_in_mb
+        label: Reserved disk space for other jobs (in MB)
+        description: |
+          Amount of space the GC algorithm should attempt to keep free for other jobs.
+
+- reference: .properties.enable_garden_containerd_mode
+  label: Enable containerd delegation
+  description: |
+    Garden delegates container create and destroy operations to containerd.
+
+- reference: .properties.nfs_volume_driver
+  label: NFSv3 volume services
+  description: |
+    Allows app developers to bind existing NFS volumes to apps
+    for shared file access.
+  selector_property_inputs:
+    - reference: .properties.nfs_volume_driver.enable
+      label: Enable
+      property_inputs:
+        - reference: .properties.nfs_volume_driver.enable.ldap_service_account_user
+          label: LDAP service account user
+
+        - reference: .properties.nfs_volume_driver.enable.ldap_service_account_password
+          label: LDAP service account password
+
+        - reference: .properties.nfs_volume_driver.enable.ldap_server_host
+          label: LDAP server host
+
+        - reference: .properties.nfs_volume_driver.enable.ldap_server_port
+          label: LDAP server port
+          description: |
+            The default is 389.
+
+        - reference: .properties.nfs_volume_driver.enable.ldap_user_fqdn
+          label: LDAP user search base
+          description: |
+            The location in the LDAP directory tree from which any LDAP user
+            search begins.
+          placeholder: "cn=Users,dc=corp,dc=test,dc=com"
+
+        - reference: .properties.nfs_volume_driver.enable.ldap_ca_cert
+          label: LDAP server CA certificate
+          description: |
+            Only required for LDAP integration with SSL.
+
+    - reference: .properties.nfs_volume_driver.disable
+      label: Disable
