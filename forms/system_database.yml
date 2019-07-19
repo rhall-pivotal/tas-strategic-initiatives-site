@@ -1,8 +1,7 @@
 ---
 name: system_database
 label: Databases
-description: |
-  Databases
+description: Databases
 markdown: |
   To configure this pane, see the
   [Configure System Databases](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#sys-db)
@@ -116,7 +115,7 @@ verifiers:
 property_inputs:
 - reference: .properties.system_database
   label: |
-    Choose the location of your system databases:
+    System databases location
   selector_property_inputs:
   - reference: .properties.system_database.internal_pxc
     label: |
@@ -151,15 +150,11 @@ property_inputs:
 
       - reference: .properties.system_database.external.credhub_username
         label: CredHub database username
-        description: |
-          Required if "PAS database" is selected in
-          CredHub tab.
+        description: Required if "PAS database" is selected in the CredHub tab.
 
       - reference: .properties.system_database.external.credhub_password
         label: CredHub database password
-        description: |
-          Required if "PAS database" is selected in
-          CredHub tab.
+        description: Required if "PAS database" is selected in the CredHub tab.
 
       - reference: .properties.system_database.external.diego_username
         label: Diego database username
@@ -211,11 +206,11 @@ property_inputs:
 
       - reference: .properties.system_database.external.uaa_username
         label: UAA database username
-        description: Required if "PAS database" is selected in UAA tab.
+        description: Required if "PAS database" is selected in the UAA tab.
 
       - reference: .properties.system_database.external.uaa_password
         label: UAA database password
-        description: Required if "PAS database" is selected in UAA tab.
+        description: Required if "PAS database" is selected in the UAA tab.
 
       - reference: .properties.system_database.external.ca_cert
         label: Database CA certificate
