@@ -1,8 +1,7 @@
 ---
 name: sso
 label: Authentication and Enterprise SSO
-description: |
-  Authentication and Enterprise SSO
+description: Authentication and Enterprise SSO
 markdown: |
   To configure this pane, see the
   [Configure Authentication and Enterprise SSO](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#auth-config)
@@ -12,7 +11,7 @@ property_inputs:
   - reference: .properties.uaa
     label: |
       Configure your UAA user account store with either internal or external
-      authentication mechanisms
+      authentication mechanisms:
     selector_property_inputs:
       - reference: .properties.uaa.internal
         label: Internal UAA
@@ -31,7 +30,7 @@ property_inputs:
             label: Minimum lowercase characters
             description: |
               Minimum number of lowercase characters required for a valid
-              password
+              password.
 
           - reference: .properties.uaa.internal.password_min_numeric
             label: Minimum numerical digits
@@ -48,7 +47,7 @@ property_inputs:
             label: Maximum password entry attempts allowed
             description: |
               Maximum allowed password entry attempts within a five-minute
-              timespan before the account is locked
+              timespan before the account is locked.
 
       - reference: .properties.uaa.saml
         label: SAML Identity Provider
