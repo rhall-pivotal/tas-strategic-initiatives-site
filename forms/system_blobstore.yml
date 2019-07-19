@@ -1,8 +1,7 @@
 ---
 name: system_blobstore
 label: File Storage
-description: |
-  File Storage
+description: File Storage
 markdown: |
   To configure this pane, see the
   [Configure File Storage](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#file-storage)
@@ -54,12 +53,16 @@ _hack: '$( $v := regexReplaceAll "^\"?(\\d+)\\.(\\d+).*$" version "${1}-${2}" )'
 
 property_inputs:
 - reference: .properties.system_blobstore_ccpackage_max_valid_packages_stored
-  label: Max valid packages per app
-  description: Number of recent, valid packages stored per app (not including package for current droplet)
+  label: Maximum valid packages per app
+  description: |
+    The number of recent, valid packages stored per app
+    (not including package for current droplet)
 
 - reference: .properties.system_blobstore_ccdroplet_max_staged_droplets_stored
-  label: Max staged droplets per app
-  description: Number of recent, staged droplets stored per app (not including current droplet)
+  label: Maximum staged droplets per app
+  description: |
+    The number of recent, staged droplets stored per app
+    (not including current droplet)
 
 - reference: .properties.system_blobstore_backup_level
   label: Configure file storage backup level
@@ -87,7 +90,7 @@ property_inputs:
 
       - reference: .properties.system_blobstore.external.iam_instance_profile_authentication
         label: S3 AWS with instance profile
-        description: Use instance profile for S3 authentication.
+        description: The instance profile used for S3 authentication.
 
       - reference: .properties.system_blobstore.external.access_key
         label: Access key
@@ -259,11 +262,11 @@ property_inputs:
       - reference: .properties.system_blobstore.external_azure.restore_from_account_name
         label: Restore from storage account
         description: |
-          Add a separate storage account and access key to restore from files from
+          Adds a separate storage account and access key to restore from files from
           containers in a different storage account.
 
       - reference: .properties.system_blobstore.external_azure.restore_from_access_key
         label: Restore using access key
         description: |
-          Add a separate storage account and access key to restore from files from
+          Adds a separate storage account and access key to restore from files from
           containers in a different storage account.
