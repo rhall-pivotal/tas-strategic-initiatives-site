@@ -1,8 +1,7 @@
 ---
 name: credhub
 label: CredHub
-description: |
-  CredHub
+description: CredHub
 markdown: |
   To configure this pane, see the
   [Configure CredHub](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#credhub)
@@ -19,16 +18,13 @@ verifiers:
 
 property_inputs:
 - reference: .properties.credhub_database
-  label: |
-    Choose the location of your CredHub database:
+  label: CredHub database location
   selector_property_inputs:
   - reference: .properties.credhub_database.internal_mysql
-    label: |
-      PAS database (configured in the Databases pane)
+    label: PAS database (configured in the Databases pane)
 
   - reference: .properties.credhub_database.external
-    label: |
-      Other external database
+    label: Other external database
     property_inputs:
       - reference: .properties.credhub_database.external.host
         label: Hostname
@@ -59,38 +55,31 @@ property_inputs:
 
 - reference: .properties.credhub_hsm_provider_partition
   label: HSM provider partition
-  description: |
-    The name of the HSM provider partition.
+  description: The name of the HSM provider partition.
 
 - reference: .properties.credhub_hsm_provider_partition_password
   label: HSM provider partition password
-  description: |
-    The password used to access the HSM provider partition.
+  description: The password used to access the HSM provider partition.
 
 - reference: .properties.credhub_hsm_provider_client_certificate
   label: HSM provider client certificate
-  description: |
-    The client certificate for the HSM provider.
+  description: The client certificate for the HSM provider.
 
 - reference: .properties.credhub_hsm_provider_servers
   label: HSM provider servers
   property_inputs:
   - reference: host_address
     label: Host address
-    description: |
-      The host name or IP address of the HSM server.
+    description: The host name or IP address of the HSM server.
   - reference: port
     label: Port
-    description: |
-      The port of the HSM server.
+    description: The port of the HSM server.
   - reference: partition_serial_number
     label: HSM provider partition serial number
-    description: |
-      The serial number of the HSM partition.
+    description: The serial number of the HSM partition.
   - reference: hsm_certificate
     label: HSM certificate
-    description: |
-      The certificate for the HSM server.
+    description: The certificate for the HSM server.
 
 - reference: .properties.secure_service_instance_credentials
   label: Secure service instance credentials
