@@ -1,8 +1,7 @@
 ---
 name: app_containers
 label: Application Containers
-description: |
-  Application Containers
+description: Application Containers
 markdown: |
   To configure this pane, see the
   [Configure Application Containers](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#application-containers-config)
@@ -22,15 +21,15 @@ property_inputs:
   label: Router application identity verification
   selector_property_inputs:
   - reference: .properties.route_integrity.tls_verify
-    label: Router uses TLS to verify application identity (Default)
+    label: Router uses TLS to verify application identity
   - reference: .properties.route_integrity.mutual_tls_verify
-    label: Router and applications use mutual TLS to verify each other's identity (incompatible with TCP Routing)
+    label: Router and applications use mutual TLS to verify each other's identity
 
 - reference: .properties.router_prune_all_stale_routes
   label: Prune routes on TTL expiry for TLS back ends
 
 - reference: .diego_cell.insecure_docker_registry_list
-  label: Private Docker Insecure Registry Whitelist
+  label: Private Docker insecure registry allow list
   description: |
     A comma-separated list of private Docker image registries that are secured with
     self-signed certificates.
@@ -41,7 +40,7 @@ property_inputs:
   label: Docker images disk cleanup scheduling on Diego Cell VMs
   selector_property_inputs:
   - reference: .properties.garden_disk_cleanup.never
-    label: Never clean up Diego cell disk space
+    label: Never clean up Diego Cell disk space
 
   - reference: .properties.garden_disk_cleanup.routine
     label: Routinely clean up Diego Cell disk space
@@ -66,7 +65,7 @@ property_inputs:
     A value of 0 sets no limit.
 
 - reference: .properties.nfs_volume_driver
-  label: Enable NFSv3 volume services
+  label: NFSv3 volume services
   description: |
     Allows app developers to bind existing NFS volumes to apps
     for shared file access.
