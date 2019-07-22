@@ -1,28 +1,26 @@
 ---
 name: system_logging
 label: System Logging
-description: |
-  Configure system logging.
+description: System Logging
+markdown: |
+  To configure this pane, see the
+  [Step 3: Configure the Tile](https://docs.pivotal.io/pivotalcf/2-7/windows/installing.html#config)
+  section of the _Installing and Configuring PASW_ topic in the PCF documentation.
 
 property_inputs:
 - reference: .properties.system_logging
-  label: Enable Syslog for VM logs?
+  label: Enable syslog for VM logs?
   selector_property_inputs:
   - reference: .properties.system_logging.enable
     label: Enable
     property_inputs:
     - reference: .properties.system_logging.enable.syslog_host
       label: Address
-      description: |
-        The aggregator must be reachable from the network this tile is deployed
-        into and accept TCP or UDP connections. You can also configure this with
-        an IP address.
+      description: The hostname or IP address of the syslog server.
 
     - reference: .properties.system_logging.enable.syslog_port
       label: Port
-      description: |
-        The typical syslogd port is 514. Ensure syslogd is listening on external
-        interfaces.
+      description: The port of the syslog server. The default is 514.
 
     - reference: .properties.system_logging.enable.syslog_protocol
       label: Protocol
@@ -32,7 +30,5 @@ property_inputs:
     label: Disable
 
 - reference: .properties.system_metrics_enabled
-  label: Enable System Metrics
-  description: |
-    When enabled, will emit system-level metrics about all vms
-    in this deployment
+  label: Enable system metrics
+  description: Emits system-level metrics about all VMs in this deployment.
