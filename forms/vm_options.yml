@@ -2,9 +2,14 @@
 name: vm_options
 description: VM Options
 label: VM Options
+markdown: |
+  To configure this pane, see the
+  [Step 3: Configure the Tile](https://docs.pivotal.io/pivotalcf/2-7/windows/installing.html#config)
+  section of the _Installing and Configuring PASW_ topic in the PCF documentation.
+
 property_inputs:
 - reference: .properties.windows_admin_password
-  label: Manage Administrator Password
+  label: Manage administrator password
   selector_property_inputs:
     - reference: .properties.windows_admin_password.use_default
       label: Use random password
@@ -15,17 +20,15 @@ property_inputs:
         - reference: .properties.windows_admin_password.set_password.password
           label: Password
           description: |
-            The password set here will override the Windows default password
-            for all VMs. The password must meet the complexity requirements
-            outlined in the Windows documentation:
-            https://technet.microsoft.com/en-us/library/cc956977.aspx.
+            Overrides the Windows default password
+            for all VMs.
 
 - reference: .properties.bosh_ssh_enabled
-  label: "BETA: Enable BOSH-native SSH support on all VMs."
+  label: "Enable BOSH-native SSH support on all VMs (beta)"
   description: |
-    When this checkbox is checked, all VMs will start the Microsoft beta port
-    of the OpenSSH daemon on port 22, allowing access via the BOSH ssh
-    command. This feature is not considered production-ready.
+    All VMs start the Microsoft beta port of the OpenSSH daemon
+    on port 22, allowing access through the BOSH `ssh` command.
+    This feature is not considered production-ready.
 
 - reference: .properties.kms
   label: Key Management Service
@@ -35,9 +38,9 @@ property_inputs:
       property_inputs:
         - reference: .properties.kms.enable.host
           label: Host
-          description: Hostname of the KMS server
+          description: The hostname of the KMS server.
         - reference: .properties.kms.enable.port
           label: Port
-          description: Port of the KMS server. Defaults to 1688.
+          description: The port of the KMS server. Defaults to 1688.
     - reference: .properties.kms.disable
       label: Disable
