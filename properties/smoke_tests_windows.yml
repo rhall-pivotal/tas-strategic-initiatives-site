@@ -20,6 +20,7 @@
             use_existing_space: false
             cf_dial_timeout_in_seconds: (( ..cf.properties.cf_dial_timeout_in_seconds.value ))
             enable_windows_tests: true
+            windows_stack: windows
 
     - name: specified
       select_value: specified
@@ -37,6 +38,8 @@
             use_existing_space: true
             cf_dial_timeout_in_seconds: (( ..cf.properties.cf_dial_timeout_in_seconds.value ))
             enable_windows_tests: true
+            windows_stack: windows
+
       property_blueprints:
         - name: org_name
           type: string
