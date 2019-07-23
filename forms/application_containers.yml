@@ -1,8 +1,13 @@
 ---
 name: application_containers
 label: Application Containers
-description: "Enable custom configuration that supports your applications at a container level."
+description: Application Containers
+markdown: |
+  To configure this pane, see the
+  [Step 3: Configure the Tile](https://docs.pivotal.io/pivotalcf/2-7/windows/installing.html#config)
+  section of the _Installing and Configuring PASW_ topic in the PCF documentation.
+
 property_inputs:
 - reference: .windows_diego_cell.placement_tags
-  label: Segment Name
-  description: This field is used as the placement tag for your Diego Cells. It should be unique. Use this name to configure an Isolation Segment with the Cloud Controller.
+  label: Segment name
+  description: The placement tag for your Diego Cells.
