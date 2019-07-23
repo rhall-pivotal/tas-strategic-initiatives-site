@@ -85,6 +85,10 @@
             ldap_user_fqdn: (( .properties.nfs_volume_driver.enable.ldap_user_fqdn.value ))
             ldap_ca_cert: (( .properties.nfs_volume_driver.enable.ldap_ca_cert.value ))
 
+        - name: mapfs_properties
+          manifest: |
+            disable: false
+
       property_blueprints:
         - name: ldap_service_account_user
           type: string
@@ -120,6 +124,10 @@
       select_value: disable
       named_manifests:
         - name: nfsv3driver_properties
+          manifest: |
+            disable: true
+
+        - name: mapfs_properties
           manifest: |
             disable: true
 

@@ -244,6 +244,14 @@ var _ = Describe("NFS volume service", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(nfsV3DriverProperties).To(HaveKeyWithValue("disable", BeTrue()))
+
+			mapfsJob, err := manifest.FindInstanceGroupJob(instanceGroup, "mapfs")
+			Expect(err).NotTo(HaveOccurred())
+
+			mapfsDisableProperty, err := mapfsJob.Property("disable")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(mapfsDisableProperty).To(BeTrue())
 		})
 	})
 
