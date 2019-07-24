@@ -261,6 +261,39 @@ var _ = Describe("Diego", func() {
 		})
 	})
 
+	Context("File server", func() {
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "control"
+			} else {
+				instanceGroup = "diego_brain"
+			}
+		})
+
+		It("enables the HTTPS server", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			fileServer, err := manifest.FindInstanceGroupJob(instanceGroup, "file_server")
+			Expect(err).NotTo(HaveOccurred())
+
+			httpsEnabled, err := fileServer.Property("https_server_enabled")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(httpsEnabled).To(BeTrue())
+
+			httpsAddress, err := fileServer.Property("https_listen_addr")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(httpsAddress).To(Equal("0.0.0.0:8447"))
+
+			rawFileServerTLS, err := fileServer.Property("tls")
+			Expect(err).NotTo(HaveOccurred())
+			fileServerTLS, ok := rawFileServerTLS.(map[interface{}]interface{})
+			Expect(ok).To(BeTrue())
+			Expect(fileServerTLS).To(HaveKey("cert"))
+			Expect(fileServerTLS).To(HaveKey("key"))
+		})
+	})
+
 	Context("Persistence", func() {
 		BeforeEach(func() {
 			if productName == "srt" {

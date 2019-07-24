@@ -23,6 +23,13 @@
     - bbs.service.cf.internal
     - "*.bbs.service.cf.internal"
 
+- name: file_server_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - file-server.service.cf.internal
+
 - name: loggregator_client_cert
   type: rsa_cert_credentials
   configurable: false
