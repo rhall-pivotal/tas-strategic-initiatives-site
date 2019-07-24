@@ -16,8 +16,3 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( .properties.loggregator_client_cert.cert_pem ))
     key: (( .properties.loggregator_client_cert.private_key_pem ))
-  https_server_enabled: true
-  https_listen_addr: 0.0.0.0:8447
-  tls:
-    cert: (( .properties.file_server_cert.cert_pem ))
-    key: (( .properties.file_server_cert.private_key_pem ))
