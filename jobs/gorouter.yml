@@ -37,7 +37,6 @@ manifest: |
     tracing:
       enable_zipkin: (( .router.enable_zipkin.value ))
     write_access_logs_locally: (( .router.enable_write_access_logs.value ))
-    prune_all_stale_routes: (( .properties.router_prune_all_stale_routes.value ))
     secure_cookies: (( .router.disable_insecure_cookies.value ))
     load_balancer_healthy_threshold: (( .router.lb_healthy_threshold.value ))
     extra_headers_to_log: (( .router.extra_headers_to_log.parsed_strings ))
