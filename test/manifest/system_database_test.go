@@ -63,7 +63,7 @@ var _ = Describe("System Database", func() {
 
 			caCert, err := nfsbrokerpush.Property("nfsbrokerpush/db/ca_cert")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).To(Equal(""))
+			Expect(caCert).To(BeNil())
 
 			nfsbrokerbbr, err := manifest.FindInstanceGroupJob("backup_restore", "nfsbroker-bbr")
 			Expect(err).NotTo(HaveOccurred())
@@ -78,7 +78,7 @@ var _ = Describe("System Database", func() {
 
 			caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).To(Equal(""))
+			Expect(caCert).To(BeNil())
 
 			// notifications
 			notifications, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "deploy-notifications")
