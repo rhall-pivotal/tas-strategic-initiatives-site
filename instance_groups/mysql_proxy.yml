@@ -74,3 +74,16 @@ property_blueprints:
   default: 30
   constraints:
     min: 0
+- name: enable_inactive_mysql_port
+  type: boolean
+  configurable: true
+  default: false
+- name: inactive_mysql_port
+  type: integer
+  configurable: false
+  default: 3336
+# This exists because we can't specify null as a value in a
+# ternary operator, we can only reference property values
+- name: inactive_mysql_port_null_value
+  type: integer
+  configurable: false

@@ -74,6 +74,14 @@ property_inputs:
       Specifies the amount of time that the MySQL Proxy continues
       to accept connections before shutting down.
 
+  - reference: .mysql_proxy.enable_inactive_mysql_port
+    label: Enable inactive mysql port
+    description: |
+      When checked the MySQL proxy will expose an additional port (3336) which
+      points to a node in the cluster which is not receiving traffic from
+      PAS components. If the cluster is a single node it will point to the same
+      node as the regular MySQL port (3306).
+
   - reference: .mysql.prevent_node_auto_rejoin
     label: Prevent node auto re-join
     description: |

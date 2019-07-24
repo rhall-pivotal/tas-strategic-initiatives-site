@@ -12,4 +12,5 @@ manifest: |
   api_username: ((( mysql-proxy-dashboard-credentials.username )))
   startup_delay: (( .mysql_proxy.startup_delay.value ))
   shutdown_delay: (( .mysql_proxy.shutdown_delay.value ))
+  inactive_mysql_port: '(( .mysql_proxy.enable_inactive_mysql_port.value ? .mysql_proxy.inactive_mysql_port.value : .mysql_proxy.inactive_mysql_port_null_value.value ))'
   max_open_files: 1048576
