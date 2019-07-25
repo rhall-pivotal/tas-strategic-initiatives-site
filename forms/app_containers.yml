@@ -1,125 +1,103 @@
 ---
 name: app_containers
 label: Application Containers
-description: |
-  Enable microservice frameworks, private Docker registries, and other
-  services that support your applications at a container level.
+description: Application Containers
+markdown: |
+  To configure this pane, see the
+  [Configure Application Containers](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#application-containers-config)
+  section of the _Configuring PAS_ topic in the PCF documentation.
+
 property_inputs:
 - reference: .cloud_controller.enable_custom_buildpacks
-  label: Enable Custom Buildpacks
-  description: Enable custom-built application runtime buildpacks.
+  label: Enable custom buildpacks
 
 - reference: .cloud_controller.allow_app_ssh_access
   label: Allow SSH access to app containers
-  description: |
-    If you are using a load balancer instead of HAProxy, to enable SSH
-    traffic ensure that your load balancer has port 2222 open. PCF users can
-    give SSH access to an app only if an admin assigns them a Space Developer
-    role in the space that the app runs in. Admins can grant this role in
-    Apps Manager or via the cf CLI.
 
 - reference: .cloud_controller.default_app_ssh_access
   label: Enable SSH when an app is created
-  description: |
-    When enabled and the space has SSH enabled, a new app will have SSH
-    enabled. Turning this feature off will disable SSH for new apps but allow
-    developers to enable it when necessary.
 
 - reference: .properties.route_integrity
   label: Router application identity verification
   selector_property_inputs:
   - reference: .properties.route_integrity.tls_verify
-    label: Router uses TLS to verify application identity (Default)
+    label: Router uses TLS to verify application identity
   - reference: .properties.route_integrity.mutual_tls_verify
-    label: Router and applications use mutual TLS to verify each other's identity (incompatible with TCP Routing)
+    label: Router and applications use mutual TLS to verify each other's identity
 
 - reference: .properties.router_prune_all_stale_routes
-  label: Prune Routes on TTL Expiry for TLS Backends
+  label: Prune routes on TTL expiry for TLS back ends
 
 - reference: .diego_cell.insecure_docker_registry_list
-  label: Private Docker Insecure Registry Whitelist
+  label: Private Docker insecure registry allow list
   description: |
-    If you use private Docker image registries that are secured with
-    self-signed certificates, enter them here as a comma-delimited list. List
-    each registry as either an IP:Port tuple or a Hostname:Port tuple.
+    A comma-separated list of private Docker image registries that are secured with
+    self-signed certificates.
   placeholder: |
     10.10.10.10:8888,example.com:8888
 
 - reference: .properties.garden_disk_cleanup
-  label: Docker Images Disk-Cleanup Scheduling on Cell VMs
+  label: Docker images disk cleanup scheduling on Diego Cell VMs
   selector_property_inputs:
   - reference: .properties.garden_disk_cleanup.never
-    label: Never clean up Cell disk-space
+    label: Never clean up Diego Cell disk space
 
   - reference: .properties.garden_disk_cleanup.routine
-    label: Routinely clean up Cell disk-space
+    label: Routinely clean up Diego Cell disk space
 
   - reference: .properties.garden_disk_cleanup.reserved
-    label: Clean up disk-space once usage fills disk
+    label: Clean up disk space once usage fills disk
     property_inputs:
       - reference: .properties.garden_disk_cleanup.reserved.reserved_space_for_other_jobs_in_mb
-        label: Reserved disk space for other jobs(MB)
+        label: Reserved disk space for other jobs (in MB)
         description: |
           Amount of space the GC algorithm should attempt to keep free for other jobs.
-          GC will delete  unneeded layers as needed to keep this space free (but it cannot guarantee this
-           space remains free if more containers are created than disk space allows).
 
 - reference: .properties.enable_garden_containerd_mode
-  label: Enable Containerd Delegation
+  label: Enable containerd delegation
   description: |
-    Garden delegates container create and destroy operations to containerd
-    in an effort to use more industry standard container runtime tooling. This
-    may be opted-out of. In the future garden will delegate all container
-    operations to containerd.
+    Garden delegates container create and destroy operations to containerd.
 
 - reference: .diego_brain.starting_container_count_maximum
-  label: Max Inflight Container Starts
+  label: Max-in-flight container starts
   description: |
-    Maximum number of inflight container starts allowed globally. Value of 0
-    or less indicates no limit.
+    Maximum number of in-flight container starts allowed globally.
+    A value of 0 sets no limit.
 
 - reference: .properties.nfs_volume_driver
-  label: |
-    Enabling NFSv3 volume services will allow application developers to bind
-    existing NFS volumes to their applications for shared file access.
+  label: NFSv3 volume services
+  description: |
+    Allows app developers to bind existing NFS volumes to apps
+    for shared file access.
   selector_property_inputs:
     - reference: .properties.nfs_volume_driver.enable
       label: Enable
       property_inputs:
         - reference: .properties.nfs_volume_driver.enable.ldap_service_account_user
-          label: LDAP Service Account User
-          description : |
-            Service Account User name (required for LDAP integration only)
+          label: LDAP service account user
 
         - reference: .properties.nfs_volume_driver.enable.ldap_service_account_password
-          label: LDAP Service Account Password
-          description: |
-            Service Account Password (required for LDAP integration only)
+          label: LDAP service account password
 
         - reference: .properties.nfs_volume_driver.enable.ldap_server_host
-          label: LDAP Server Host
-          description: |
-            Server hostname or IP address (required for LDAP integration only)
+          label: LDAP server host
 
         - reference: .properties.nfs_volume_driver.enable.ldap_server_port
-          label: LDAP Server Port
+          label: LDAP server port
           description: |
-            Server port (required for LDAP integration only). Defaults to 389.
+            The default is 389.
 
         - reference: .properties.nfs_volume_driver.enable.ldap_user_fqdn
-          label: LDAP User Search Base
+          label: LDAP user search base
           description: |
-            The location in the LDAP directory tree from which any LDAP User
-            search begins. The typical LDAP Search Base matches your domain
-            name. For example, it can be specified as
-            "cn=Users,dc=corp,dc=test,dc=com". Required for LDAP integration
-            only.
+            The location in the LDAP directory tree from which any LDAP user
+            search begins.
           placeholder: "cn=Users,dc=corp,dc=test,dc=com"
 
         - reference: .properties.nfs_volume_driver.enable.ldap_ca_cert
-          label: LDAP Server CA Cert
+          label: LDAP server CA certificate
           description: |
-            Server CA certificate (required for LDAP integration with SSL only)
+            Only required for LDAP integration with SSL.
 
     - reference: .properties.nfs_volume_driver.disable
       label: Disable
@@ -127,9 +105,8 @@ property_inputs:
 - reference: .properties.enable_smb_volume_driver
   label: Enable SMB volume services
   description: |
-    Enabling SMB volume services will allow application developers to bind
-    existing SMB shares to their applications for shared file access.
-    Also requires enabling the SMB Broker Errand as it is disabled by default.
+    Allows app developers to bind existing SMB shares to apps
+    for shared file access.
 
 - reference: .properties.diego_log_timestamp_format
   label: Format of timestamps in Diego logs
@@ -142,5 +119,3 @@ property_inputs:
 
 - reference: .properties.cloud_controller_default_health_check_timeout
   label: Default health check timeout
-  description: |
-    Warning: Decreasing this below it's current value may cause existing applications with startup times greater than the new value to fail to start up.

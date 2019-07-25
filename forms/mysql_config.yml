@@ -1,92 +1,89 @@
 ---
 name: mysql_config
 label: Internal MySQL
-description: |
-  Only configure this section if you selected Internal Databases - MySQL
-  in the previous Databases section.
+description: Internal MySQL
+markdown: |
+  To configure this pane, see the
+  [(Optional) Configure Internal MySQL](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#internal-mysql)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .mysql_monitor.poll_frequency
-    label: Replication canary time period
+    label: Replication canary time period (in seconds)
     description: |
-      How frequently the canary checks for replication failure, in seconds.
-      Lower numbers will cause the canary to run more frequently, adding load
-      to the database.
+      How frequently the canary checks for replication
+      failure.
 
   - reference: .mysql_monitor.write_read_delay
-    label: Replication canary read delay
+    label: Replication canary read delay (in seconds)
     description: |
-      How long the canary waits to verify data is replicating across each
-      MySQL node, in seconds. Clusters under heavily load will experience
-      some small replication lag as writesets are committed across the nodes.
+      How long the canary waits to verify data is replicating
+      across each MySQL node.
 
   - reference: .mysql_monitor.recipient_email
-    label: E-mail address (required)
+    label: Email address
     description: |
-      The MySQL service will send alerts when the cluster experiences a
-      replication issue or a node is not allowed to auto-rejoin the cluster.
-    placeholder: Fill in your desired email address
+      The email to which MySQL sends alerts when the
+      cluster experiences a replication issue or a node
+      is not allowed to auto-rejoin the cluster.
 
   - reference: .mysql.cli_history
-    label: Allow Command History
+    label: Allow command history
     description: |
-      When disabled, prohibits the creation of command line history files on
-      the MySQL nodes.
+      Allows the creation of command line history files on
+      MySQL nodes.
 
   - reference: .mysql.remote_admin_access
-    label: Allow Remote Admin Access
+    label: Allow remote admin access
     description: |
-      When enabled, admin and roadmin will be able to connect from any remote host.
+      Admin and roadmin can connect from any remote host.
 
   - reference: .mysql.cluster_probe_timeout
-    label: Cluster Probe Timeout
+    label: Cluster probe timeout (in seconds)
     description: |
-      The maximum amount of time, in seconds, that a new node will search
-      for existing cluster nodes. The default value is 10 seconds.
+      The maximum amount of time that a new node searches
+      for existing cluster nodes. The default value is 10
+      seconds.
 
   - reference: .mysql.max_connections
-    label: Max Connections
+    label: Maximum connections
     description: |
       The maximum number of connections allowed to the database.
 
   - reference: .properties.mysql_activity_logging
-    label: Server Activity Logging
+    label: Server activity logging
     selector_property_inputs:
       - reference: .properties.mysql_activity_logging.disable
         label: Disable server activity logging
-        description: Disable server activity logging
 
       - reference: .properties.mysql_activity_logging.enable
         label: Enable server activity logging
-        description: Enable server activity logging
         property_inputs:
           - reference: .properties.mysql_activity_logging.enable.audit_logging_events
             label: Event types
-            description: |
-              The MySQL service will keep a record of server activity. The
-              default setting tracks who connected to the system and what
-              queries were processed. For more information, see:
-              https://www.percona.com/doc/percona-server/5.7/management/audit_log_plugin.html
 
   - reference: .mysql_proxy.startup_delay
-    label: Load Balancer Healthy Threshold
+    label: Load balancer healthy threshold (in seconds)
     description: |
-      Specifies the amount of time, in seconds, to wait until declaring the
-      Proxy instance started. This allows an external load balancer time to
-      register the instance as healthy.
+      Specifies the amount of time to wait until reporting the
+      MySQL Proxy instance has started.
 
   - reference: .mysql_proxy.shutdown_delay
-    label: Load Balancer Unhealthy Threshold
+    label: Load balancer unhealthy threshold (in seconds)
     description: |
-      Specifies the amount of time, in seconds, that the MySQL Proxy will
-      continue to accept connections before shutting down. During this
-      period, the healthcheck will report unhealthy to cause load balancers
-      to fail over to other Proxies. This value should be greater than or
-      equal to the max time it could take your load balancer to consider a
-      Proxy instance unhealthy, given contiguous failed healthchecks.
+      Specifies the amount of time that the MySQL Proxy continues
+      to accept connections before shutting down.
+
+  - reference: .mysql_proxy.enable_inactive_mysql_port
+    label: Enable inactive mysql port
+    description: |
+      When checked the MySQL proxy will expose an additional port (3336) which
+      points to a node in the cluster which is not receiving traffic from
+      PAS components. If the cluster is a single node it will point to the same
+      node as the regular MySQL port (3306).
 
   - reference: .mysql.prevent_node_auto_rejoin
     label: Prevent node auto re-join
     description: |
-      When checked, nodes unable to IST will be prevented from automatically
-      deleting their data and performing an SST.
+      Enables MySQL Interruptor to prevent nodes with inconsistent
+      data from writing to the MySQL database.

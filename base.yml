@@ -31,7 +31,6 @@ releases:
 - $( release "cf-cli" )
 - $( release "cf-networking" )
 - $( release "cf-smoke-tests" )
-- $( release "cf-syslog-drain" )
 - $( release "cflinuxfs3" )
 - $( release "credhub" )
 - $( release "diego" )
@@ -113,8 +112,6 @@ job_types:
 - $( instance_group "cloud_controller_worker" ) # ERT only
 - $( instance_group "diego_cell" ) # ERT only
 - $( instance_group "loggregator_trafficcontroller" ) # ERT only
-- $( instance_group "syslog_adapter" ) # ERT only
-- $( instance_group "syslog_scheduler" ) # ERT only
 - $( instance_group "doppler" ) # ERT only
 - $( instance_group "tcp_router" ) # ERT & SRT
 - $( instance_group "credhub" ) # ERT only
@@ -161,15 +158,12 @@ property_blueprints:
 - $( property "copilot_server_cert" )
 - $( property "credhub_database" )
 - $( property "credhub_database_name" )
-- $( property "credhub_providers" )
-- $( property "credhub_encryption_keys" )
-- $( property "credhub_internal_provider_keys" )
-- $( property "credhub_kms_providers" )
+- $( property "credhub_hsm_provider_client_certificate" )
+- $( property "credhub_hsm_provider_list" )
 - $( property "credhub_hsm_provider_partition" )
 - $( property "credhub_hsm_provider_partition_password" )
-- $( property "credhub_hsm_provider_client_certificate" )
-- $( property "credhub_hsm_provider_encryption_keys" )
 - $( property "credhub_hsm_provider_servers" )
+- $( property "credhub_key_encryption_passwords" )
 - $( property "credhub_tls" )
 - $( property "diego_database_name" )
 - $( property "diego_database_max_open_connections" )
@@ -277,12 +271,9 @@ property_blueprints:
 - $( property "ssh_proxy_backends_tls" )
 - $( property "syslog_drop_debug" )
 - $( property "syslog_host" )
-- $( property "syslog_metrics_to_syslog_enabled" )
 - $( property "syslog_port" )
 - $( property "syslog_protocol" )
 - $( property "syslog_rule" )
-- $( property "syslog_scheduler_batch_size" )
-- $( property "syslog_agent_enabled" )
 - $( property "syslog_tls" )
 - $( property "syslog_use_tcp_for_file_forwarding_local_transport" )
 - $( property "system_blobstore" )
@@ -304,6 +295,8 @@ property_blueprints:
 - $( property "system_metrics_enabled" )
 - $( property "system_metrics_tls_scraper_cert" )
 - $( property "enable_v1_firehose" )
+- $( property "syslog_agent_api_tls" )
+- $( property "binding_cache_api_tls" )
 
 runtime_configs:
 - $( runtime_config "bosh-dns-aliases" )
@@ -685,6 +678,3 @@ install_time_verifiers:
     username: .properties.uaa_database.external.uaa_username
     password: .properties.uaa_database.external.uaa_password
     database: .properties.uaa_database_name
-
-
-

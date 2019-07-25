@@ -1,111 +1,4 @@
 ---
-- name: credhub_providers
-  type: selector
-  configurable: false
-  default: only-option
-  option_templates:
-  - name: doesnt-matter
-    select_value: only-option
-    named_manifests:
-    - name: providers
-      manifest: |
-        '(( .properties.credhub_hsm_provider_partition.value ? .properties.credhub_providers.selected_option.parsed_manifest(hsm_and_internal_and_maybe_kms) : .properties.credhub_providers.selected_option.parsed_manifest(internal_and_maybe_kms) ))'
-    - name: internal_and_maybe_kms
-      manifest: |
-        - (( .properties.credhub_internal_provider_keys.parsed_manifest(providers) ))
-        - (( .properties.credhub_kms_providers.parsed_manifest(providers) ))
-    - name: hsm_and_internal_and_maybe_kms
-      manifest: |
-        - (( .properties.credhub_internal_provider_keys.parsed_manifest(providers) ))
-        - (( .properties.credhub_kms_providers.parsed_manifest(providers) ))
-        - name: hsm-provider
-          type: hsm
-          connection_properties:
-            partition: (( .properties.credhub_hsm_provider_partition.value ))
-            partition_password: ((  .properties.credhub_hsm_provider_partition_password.value ))
-            client_certificate: (( .properties.credhub_hsm_provider_client_certificate.cert_pem ))
-            client_key: (( .properties.credhub_hsm_provider_client_certificate.private_key_pem ))
-            servers: (( .properties.credhub_hsm_provider_servers.parsed_manifest(servers) ))
-
-- name: credhub_encryption_keys
-  type: selector
-  configurable: false
-  default: only-option
-  option_templates:
-  - name: doesnt-matter
-    select_value: only-option
-    named_manifests:
-    - name: list
-      manifest: |
-        '(( .properties.credhub_hsm_provider_partition.value ? .properties.credhub_encryption_keys.selected_option.parsed_manifest(hsm_and_internal_and_maybe_kms) : .properties.credhub_encryption_keys.selected_option.parsed_manifest(internal_and_maybe_kms) ))'
-    - name: internal_and_maybe_kms
-      manifest: |
-        - (( .properties.credhub_internal_provider_keys.parsed_manifest(keys) ))
-        - (( .properties.credhub_kms_providers.parsed_manifest(keys) ))
-    - name: hsm_and_internal_and_maybe_kms
-      manifest: |
-        - (( .properties.credhub_internal_provider_keys.parsed_manifest(keys) ))
-        - (( .properties.credhub_kms_providers.parsed_manifest(keys) ))
-        - (( .properties.credhub_hsm_provider_encryption_keys.parsed_manifest(keys) ))
-
-- name: credhub_internal_provider_keys
-  type: collection
-  configurable: true
-  property_blueprints:
-  - name: name
-    type: string
-    configurable: true
-  - name: key
-    type: secret
-    configurable: true
-  - name: primary
-    type: boolean
-    configurable: true
-    default: false
-  named_manifests:
-    - name: providers
-      manifest: |
-        name: internal-provider
-        type: internal
-    - name: keys
-      manifest: |
-        provider_name: internal-provider
-        key_properties:
-          encryption_key_name: (( current_record.name.value ))
-          encryption_password: (( current_record.key.value ))
-        active: (( current_record.primary.value ))
-
-- name: credhub_kms_providers
-  type: collection
-  configurable: true
-  optional: true
-  property_blueprints:
-  - name: instance_name
-    type: string
-    configurable: true
-  - name: endpoint
-    type: string
-    configurable: true
-  - name: primary
-    type: boolean
-    configurable: true
-    default: false
-  named_manifests:
-    - name: keys
-      manifest: |
-        provider_name: (( current_record.instance_name.value ))
-        key_properties:
-          encryption_key_name: kms-plugin-key-name
-        active: (( current_record.primary.value ))
-    - name: providers
-      manifest: |
-        name: (( current_record.instance_name.value ))
-        type: kms-plugin
-        connection_properties:
-          endpoint: (( current_record.endpoint.value ))
-          host: credhub-kms
-          ca: (((/services/tls_ca)))
-
 - name: credhub_hsm_provider_partition
   type: string
   configurable: true
@@ -121,26 +14,6 @@
   configurable: true
   optional: true
 
-- name: credhub_hsm_provider_encryption_keys
-  type: collection
-  configurable: true
-  optional: true
-  property_blueprints:
-  - name: name
-    type: string
-    configurable: true
-  - name: primary
-    type: boolean
-    configurable: true
-    default: false
-  named_manifests:
-  - name: keys
-    manifest: |
-      provider_name: hsm-provider
-      key_properties:
-        encryption_key_name: (( current_record.name.value ))
-      active: (( current_record.primary.value ))
-
 - name: credhub_hsm_provider_servers
   type: collection
   configurable: true
@@ -155,7 +28,7 @@
   - name: partition_serial_number
     type: string
     configurable: true
-  - name: certificate
+  - name: hsm_certificate
     type: text
     configurable: true
   named_manifests:
@@ -164,16 +37,76 @@
       host: (( current_record.host_address.value ))
       port: (( current_record.port.value ))
       partition_serial_number: (( current_record.partition_serial_number.value ))
-      certificate: (( current_record.certificate.value ))
+      certificate: (( current_record.hsm_certificate.value ))
 
-- name: secure_service_instance_credentials
-  type: boolean
+- name: credhub_hsm_provider_list
+  type: selector
+  configurable: false
+  default: only-option
+  option_templates:
+    - name: doesnt-matter
+      select_value: only-option
+      named_manifests:
+      - name: list
+        manifest: |
+          "(( .properties.credhub_hsm_provider_partition.value ? .properties.credhub_hsm_provider_list.selected_option.parsed_manifest(internal_hsm) : .properties.credhub_hsm_provider_list.selected_option.parsed_manifest(internal_only) ))"
+      - name: internal_hsm
+        manifest: |
+          - name: internal-provider
+            type: internal
+          - name: hsm-provider
+            type: hsm
+            connection_properties:
+              partition: (( .properties.credhub_hsm_provider_partition.value ))
+              partition_password: ((  .properties.credhub_hsm_provider_partition_password.value ))
+              client_certificate: (( .properties.credhub_hsm_provider_client_certificate.cert_pem ))
+              client_key: (( .properties.credhub_hsm_provider_client_certificate.private_key_pem ))
+              servers: (( .properties.credhub_hsm_provider_servers.parsed_manifest(servers) ))
+      - name: internal_only
+        manifest: |
+          - name: internal-provider
+            type: internal
+
+- name: credhub_key_encryption_passwords
+  type: collection
   configurable: true
-  default: false
+  property_blueprints:
+  - name: name
+    type: string
+    configurable: true
+  - name: provider
+    type: dropdown_select
+    configurable: true
+    default: internal
+    options:
+    - name: internal
+      label: Internal
+    - name: hsm
+      label: HSM
+  - name: key
+    type: secret
+    configurable: true
+  - name: primary
+    type: boolean
+    configurable: true
+    default: false
+  named_manifests:
+  - name: keys
+    manifest: |
+      provider_name: (( current_record.provider.value ))-provider
+      key_properties:
+        encryption_key_name: (( current_record.key.value ))
+        encryption_password: (( current_record.key.value ))
+      active: (( current_record.primary.value ))
 
 - name: credhub_tls
   type: rsa_cert_credentials
   configurable: false
   default:
     domains:
-      - credhub.service.cf.internal
+    - credhub.service.cf.internal
+
+- name: secure_service_instance_credentials
+  type: boolean
+  configurable: true
+  default: false

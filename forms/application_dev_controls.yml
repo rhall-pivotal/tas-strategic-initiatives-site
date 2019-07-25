@@ -2,57 +2,54 @@
 name: application_dev_controls
 label: Application Developer Controls
 description: |
-  Configure restrictions and default settings for applications pushed to
-  Application Service.
+  Application Developer Controls
+markdown: |
+  To configure this pane, see the
+  [Configure Application Developer Controls](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#appdevctrl-config)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .cloud_controller.max_file_size
-    label: Maximum File Upload Size (MB)
+    label: Maximum file upload size (in MB)
     description: |
-      Maximum size of an application upload droplet.
+      Maximum size of an app upload droplet.
 
   - reference: .cloud_controller.max_package_size
-    label: Maximum Package Size (B)
-    description: Maximum total size of an application's files.
+    label: Maximum package size (in MB)
+    description: Maximum total size of an app's files.
 
   - reference: .cloud_controller.default_app_memory
-    label: Default App Memory (MB)
+    label: Default app memory (in MB)
     description: |
       Memory allocated to a newly-pushed app when no value is specified at `cf
       push`.
 
   - reference: .cloud_controller.default_quota_memory_limit_mb
-    label: Default App Memory Quota per Org (MB)
+    label: Default app memory quota per org (in MB)
     description: |
-      Default memory limit for all apps in an org. This default only applies
-      for the first installation of Application Service. After initial
-      installation, use the CLI to manage quotas.
+      Default memory limit for all apps in an org for the first installation of
+      PAS.
 
   - reference: .cloud_controller.max_disk_quota_app
-    label: Maximum Disk Quota per App (MB)
+    label: Maximum disk quota per app (in MB)
     description: |
-      Maximum disk allocated per app. In the event of a system upgrade or
-      outage that causes a rolling deploy, larger apps may not successfully
-      re-deploy if there is insufficient disk capacity.
+      Maximum disk allocated per app.
 
   - reference: .cloud_controller.default_disk_quota_app
-    label: Default Disk Quota per App (MB)
+    label: Default disk quota per app (in MB)
     description: |
-      Default disk allocated per app. In the event of a system upgrade or
-      outage that causes a rolling deploy, larger apps may not re-deploy
-      successfully if there is insufficient disk capacity.
+      Default disk allocated per app.
 
   - reference: .cloud_controller.default_quota_max_number_services
-    label: Default Service Instances Quota per Org
+    label: Default service instance quota per org
     description: |
-      Default maximum number of service instances in an org. This default
-      only applies for the first installation of Application Service, otherwise
-      use the CLI to manage quotas
+      Default maximum number of service instances in an org for the first
+      installation of PAS.
 
   - reference: .cloud_controller.staging_timeout_in_seconds
-    label: Staging Timeout (Seconds)
+    label: Staging timeout (in seconds)
     description: |
-      Server-side timeout for staging an application droplet with Cloud
+      Server-side timeout for staging an app droplet with Cloud
       Controller.
     placeholder: 900
 
@@ -62,12 +59,7 @@ property_inputs:
     - reference: name
       label: Name
       description: |
-        Internal Domain for application service discovery. Internal routes can
-        be registered for this domain to be queried by other applications on
-        the platform.
+        Internal domains for app service discovery.
 
   - reference: .properties.cf_networking_enable_space_developer_self_service
-    label: Allow Space Developers to manage network policies
-    description: |
-      Enabling this feature will allow Space Developers to manage the
-      network policies for their applications.
+    label: Allow space developers to manage network policies

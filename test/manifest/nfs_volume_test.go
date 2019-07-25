@@ -9,6 +9,92 @@ import (
 var _ = Describe("NFS volume service", func() {
 	var instanceGroup string
 
+	It("verifies that the nfsbrokerpush errand is configured correctly", func() {
+		if productName == "srt" {
+			instanceGroup = "control"
+		} else {
+			instanceGroup = "clock_global"
+		}
+
+		manifest, err := product.RenderManifest(nil)
+		Expect(err).NotTo(HaveOccurred())
+
+		nfsBrokerPush, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsbrokerpush")
+		Expect(err).NotTo(HaveOccurred())
+
+		appDomain, err := nfsBrokerPush.Property("nfsbrokerpush/app_domain")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(appDomain).To(Equal("sys.example.com"))
+
+		nfsBrokerPushDatabaseProperties, err := nfsBrokerPush.Property("nfsbrokerpush/db")
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("ca_cert", BeNil()))
+		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("host", "mysql.service.cf.internal"))
+		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("port", 3306))
+		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("username", "((nfs-volume-db-credentials.username))"))
+		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("password", "((nfs-volume-db-credentials.password))"))
+		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("name", "nfsvolume"))
+
+		domain, err := nfsBrokerPush.Property("nfsbrokerpush/domain")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(domain).To(Equal("sys.example.com"))
+
+		org, err := nfsBrokerPush.Property("nfsbrokerpush/organization")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(org).To(Equal("system"))
+
+		password, err := nfsBrokerPush.Property("nfsbrokerpush/password")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(password).To(Equal("((nfs-broker-push-db-credentials.password))"))
+
+		skipCertVerify, err := nfsBrokerPush.Property("nfsbrokerpush/skip_cert_verify")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(skipCertVerify).To(BeFalse())
+
+		space, err := nfsBrokerPush.Property("nfsbrokerpush/space")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(space).To(Equal("nfs"))
+
+		syslogUrl, err := nfsBrokerPush.Property("nfsbrokerpush/syslog_url")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(syslogUrl).To(BeEmpty())
+
+		username, err := nfsBrokerPush.Property("nfsbrokerpush/username")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(username).To(Equal("((nfs-broker-push-db-credentials.username))"))
+	})
+
+	Context("when the syslog properties are configured", func() {
+		var syslogConfiguration map[string]interface{}
+
+		BeforeEach(func() {
+			syslogConfiguration = map[string]interface{}{
+				".properties.syslog_host":     "example.com",
+				".properties.syslog_port":     12345,
+				".properties.syslog_protocol": "tcp",
+			}
+		})
+
+		It("configures the syslog_url property", func() {
+			if productName == "srt" {
+				instanceGroup = "control"
+			} else {
+				instanceGroup = "clock_global"
+			}
+
+			manifest, err := product.RenderManifest(syslogConfiguration)
+			Expect(err).NotTo(HaveOccurred())
+
+			nfsBrokerPush, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsbrokerpush")
+			Expect(err).NotTo(HaveOccurred())
+
+			syslogUrl, err := nfsBrokerPush.Property("nfsbrokerpush/syslog_url")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(syslogUrl).To(Equal("tcp://example.com:12345"))
+		})
+	})
+
 	Context("when the NFS V3 driver is enabled without LDAP configuration", func() {
 		It("disables LDAP on the nfsbrokerpush job", func() {
 			if productName == "srt" {

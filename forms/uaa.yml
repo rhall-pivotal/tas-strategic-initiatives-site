@@ -3,6 +3,10 @@ name: uaa
 label: UAA
 description: |
   Configure the User Account and Authentication Server
+markdown: |
+  To configure this pane, see the
+  [Configure UAA](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#uaa)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 verifiers:
 - name: Verifiers::MysqlDatabaseVerifier
@@ -16,11 +20,11 @@ verifiers:
 property_inputs:
 - reference: .properties.uaa_database
   label: |
-    Choose the location of your UAA database
+    UAA database location
   selector_property_inputs:
   - reference: .properties.uaa_database.internal_mysql
     label: |
-      PAS database (configured on the Databases pane)
+      PAS database (configured in the Databases pane)
 
   - reference: .properties.uaa_database.external
     label: |
@@ -30,7 +34,7 @@ property_inputs:
         label: Hostname
 
       - reference: .properties.uaa_database.external.port
-        label: TCP Port
+        label: TCP port
 
       - reference: .properties.uaa_database.external.uaa_username
         label: Username
@@ -39,68 +43,58 @@ property_inputs:
         label: Password
 
       - reference: .properties.uaa_database.external.ca_cert
-        label: CA Certificate
-        description: |
-          UAA requires the database to present a valid hostname in order
-          to validate the certificate when terminating TLS.
-          AWS does currently provide a valid hostname, but some other cloud
-          providers do not currently do this (GCP and Azure).
+        label: CA certificate
 
 - reference: .uaa.issuer_uri
-  label: JWT Issuer URI
-  description: When generating tokens, UAA will use this URI as the issuer.
+  label: JWT issuer URI
+  description: When generating tokens, UAA uses this URI as the issuer.
 
 - reference: .uaa.service_provider_key_credentials
-  label: SAML Service Provider Credentials
+  label: SAML service provider credentials
   description: Private key and certificate for the service provider.
 
 - reference: .uaa.service_provider_key_password
-  label: SAML Service Provider Key Password
-  description: Passphrase for the service provider private key.
+  label: SAML service provider key password
+  description: Password for the service provider private key.
 
 - reference: .properties.saml_entity_id_override
-  label: SAML Entity ID Override
-  description: |
-    An entry in this field overrides the default Entity ID value of
-    "http://login.<system-domain>". The <system-domain> portion of
-    that default is configured on the "Domains" tab.
+  label: SAML Entity ID override
+  description: Overrides the default Entity ID value.
 
 - reference: .properties.saml_signature_algorithm
-  label: Signature Algorithm
-  description: |
-    The supported algorithm for signed requests and assertions.
+  label: Signature algorithm
+  description: The supported algorithm for signed requests and assertions.
 
 - reference: .uaa.apps_manager_access_token_lifetime
-  label: Apps Manager Access Token Lifetime (in seconds)
-  description: Set the lifetime of the access token for Apps Manager.
+  label: Apps Manager access token lifetime (in seconds)
+  description: The lifetime of the access token for Apps Manager.
 
 - reference: .uaa.cf_cli_access_token_lifetime
-  label: Cloud Foundry CLI Access Token Lifetime (in seconds)
-  description: Set the lifetime of the access token for the `cf` CLI.
+  label: Cloud Foundry CLI access token lifetime (in seconds)
+  description: The lifetime of the access token for the cf CLI.
 
 - reference: .uaa.cf_cli_refresh_token_lifetime
-  label: Cloud Foundry CLI Refresh Token Lifetime (in seconds)
-  description: Set the lifetime of the refresh token for the `cf` CLI.
+  label: Cloud Foundry CLI refresh token lifetime (in seconds)
+  description: The lifetime of the refresh token for the cf CLI.
 
 - reference: .properties.uaa_session_cookie_max_age
-  label: Global Login Session Max Timeout (in seconds)
-  description: Set the max timeout for a global login session.
+  label: Global login session max timeout (in seconds)
+  description: The maximum timeout for a global login session.
 
 - reference: .properties.uaa_session_idle_timeout
-  label: Global Login Session Idle Timeout (in seconds)
-  description: Set the max timeout for idle global login sessions.
+  label: Global login session idle timeout (in seconds)
+  description: The maximum timeout for idle global login sessions.
 
 - reference: .uaa.customize_username_label
-  label: Customize Username Label (on login page)
-  description: The text used to prompt for a username during login
+  label: Customize username label
+  description: The text used to prompt for a username on the login page.
 
 - reference: .uaa.customize_password_label
-  label: Customize Password Label (on login page)
-  description: The text used to prompt for a password during login
+  label: Customize password label
+  description: The text used to prompt for a password on the login page.
 
 - reference: .uaa.proxy_ips_regex
-  label: Proxy IPs Regular Expression
+  label: Proxy IPs regular expression
   description: |
-    A pipe ("|") delimited set of regular expressions of IP addresses that are
-    considered reverse proxies. When a request from these IP addresses come
-    in, the X-FORWARDED-FOR and X-FORWARDED-PROTO headers will be respected.
+    A pipe-delimited set of regular expressions of IP addresses that are
+    considered reverse proxies.

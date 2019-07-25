@@ -2,8 +2,11 @@
 name: networking_service_mesh
 label: Networking - Service Mesh
 description: |
-  Enabling Service Mesh allows optional ingress routing to applications through service mesh components. It also configures
-  all container to container networking to route through sidecar proxies.
+  Networking Service Mesh (Beta)
+markdown: |
+  To configure this pane, see the
+  [Configure Networking - Service Mesh (Beta)](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#networking-service-mesh)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .properties.istio
@@ -21,27 +24,22 @@ property_inputs:
         Enable
 
   - reference: .istio_router.static_ips
-    label: IP Addresses for Ingress Router
+    label: IP addresses for ingress router
     description: |
-      If you are deploying onto an infrastructure where automated load
-      balancer assignment is not supported (vSphere), enter static IPs for
-      your Istio Routers and configure a load balancer with these IPs. Otherwise,
-      this field can be left blank and the Load Balancers field on the Resource
-      Config tab can be filled out with the correct load balancer assignment
-      for the Istio Router instance group.
+      A comma-separated list of static IPs for your Istio routers.
 
   - reference: .properties.istio_domain
-    label: External Domain
+    label: External domain
     description: |
-      Configure DNS to resolve this domain to a load balancer in front of the Ingress Routers, and create the domain in CF so that developers can create routes from it.
+      A domain name that resolves to a load balancer in front of Istio routers.
 
   - reference: .properties.istio_frontend_tls_keypairs
-    label: Ingress Router TLS Keypairs
+    label: Ingress router TLS keypairs
     property_inputs:
     - reference: name
       label: Name
       description: A human-readable name describing the use of this certificate.
     - reference: certificate
-      label: Certificate and Private Key for Istio Router
+      label: Certificate and private key for Istio router
       description: |
         Private keys and certificates in PEM block format used for TLS handshakes with clients.

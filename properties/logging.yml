@@ -4,18 +4,8 @@
   configurable: true
   optional: true
 
-- name: syslog_metrics_to_syslog_enabled
-  type: boolean
-  configurable: true
-  default: true
-
 - name: syslog_host
   type: network_address
-  configurable: true
-  optional: true
-
-- name: syslog_scheduler_batch_size
-  type: integer
   configurable: true
   optional: true
 
@@ -223,15 +213,24 @@
   configurable: true
   default: true
 
-- name: syslog_agent_enabled
-  type: boolean
-  configurable: true
-  default: false
-
 - name: syslog_agent_additional_downstream_ingress_ports
   type: string_list
   configurable: true
   optional: true
+
+- name: syslog_agent_api_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - syslog-agent
+
+- name: binding_cache_api_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - binding-cache
 
 - name: enable_v1_firehose
   type: boolean

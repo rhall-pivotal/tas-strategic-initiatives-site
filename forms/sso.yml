@@ -1,199 +1,181 @@
 ---
 name: sso
 label: Authentication and Enterprise SSO
-description: |
-  Configure your user store access, which can be an internal user store
-  (managed by Cloud Foundry's UAA) or an external user store (LDAP or SAML).
+description: Authentication and Enterprise SSO
+markdown: |
+  To configure this pane, see the
+  [Configure Authentication and Enterprise SSO](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#auth-config)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .properties.uaa
     label: |
       Configure your UAA user account store with either internal or external
-      authentication mechanisms
+      authentication mechanisms:
     selector_property_inputs:
       - reference: .properties.uaa.internal
-        label: |
-          Internal UAA (provided by Application Service; configure your password
-          policy below)
+        label: Internal UAA
         property_inputs:
           - reference: .properties.uaa.internal.password_min_length
-            label: Minimum Password Length
+            label: Minimum password length
             description: Minimum number of characters for a valid password.
 
           - reference: .properties.uaa.internal.password_min_uppercase
-            label: Minimum Uppercase Characters Required for Password
+            label: Minimum uppercase characters
             description: |
               Minimum number of uppercase characters required for a valid
               password.
 
           - reference: .properties.uaa.internal.password_min_lowercase
-            label: Minimum Lowercase Characters Required for Password
+            label: Minimum lowercase characters
             description: |
               Minimum number of lowercase characters required for a valid
-              password
+              password.
 
           - reference: .properties.uaa.internal.password_min_numeric
-            label: Minimum Numerical Digits Required for Password
+            label: Minimum numerical digits
             description: |
               Minimum number of digits required for a valid password.
 
           - reference: .properties.uaa.internal.password_min_special
-            label: Minimum Special Characters Required for Password
+            label: Minimum special characters
             description: |
               Minimum number of special characters required for a valid
               password.
 
           - reference: .properties.uaa.internal.password_max_retry
-            label: Maximum Password Entry Attempts Allowed
+            label: Maximum password entry attempts allowed
             description: |
-              Maximum allowed password entry attempts (within a five minute
-              timespan) before the account is locked
+              Maximum allowed password entry attempts within a five-minute
+              timespan before the account is locked.
 
       - reference: .properties.uaa.saml
-        label: |
-          SAML Identity Provider (SAML Identity Providers created by PAS must
-          be manually disabled when you no longer require them.)
+        label: SAML Identity Provider
         property_inputs:
           - reference: .properties.uaa.saml.sso_name
-            label: Provider Name
-            description: |
-              Name of Identity Provider. Allowed characters are alphanumeric,
-              plus `_`, and `-`. Do not change this name once deployed.
+            label: Provider name
+            description: Create a unique name for your Identity Provider.
 
           - reference: .properties.uaa.saml.display_name
-            label: Display Name
-            description: Shows as a link on the login page.
+            label: Display name
+            description: Create a display name.
 
           - reference: .properties.uaa.saml.sso_xml
-            label: |
-              Provider Metadata (if you would rather provide an SSO endpoint
-              URL, skip to the next field)
-            description: Metadata XML content for the Identity Provider.
+            label: Provider metadata
+            description: The metadata XML content for the Identity Provider.
 
           - reference: .properties.uaa.saml.sso_url
-            label: (OR) Provider Metadata URL
-            description: |
-              If you did not provide metadata above, enter an SSO endpoint
-              that returns the metadata.
+            label: Provider metadata URL
+            description: The SSO endpoint URL that returns the metadata.
 
           - reference: .properties.uaa.saml.name_id_format
-            label: Name ID Format
+            label: Name ID format
             description: |
-              Select the name identifier format configured for the identity
-              provider. This translates to the username on Pivotal Cloud
-              Foundry.
+              Select the name identifier format configured for the Identity
+              Provider.
 
           - reference: .properties.uaa.saml.email_domains
-            label: Email Domain(s)
+            label: Email domain(s)
             description: |
-              Comma-separated list of domains, e.g. example.com. This is used
-              for inviting external users to Apps Manager.
+              A comma-separated list of email domains for inviting external users
+              to Apps Manager.
 
           - reference: .properties.uaa.saml.first_name_attribute
-            label: First Name Attribute
-            description: Map the first name attribute from the SAML assertion.
+            label: First name attribute
+            description: Set the first name attribute for the SAML assertion.
 
           - reference: .properties.uaa.saml.last_name_attribute
-            label: Last Name Attribute
-            description: Map the last name attribute from the SAML assertion.
+            label: Last name attribute
+            description: Set the last name attribute for the SAML assertion.
 
           - reference: .properties.uaa.saml.email_attribute
-            label: Email Attribute
-            description: Map the email attribute from the SAML assertion.
+            label: Email attribute
+            description: Set the email attribute for the SAML assertion.
 
           - reference: .properties.uaa.saml.external_groups_attribute
-            label: External Groups Attribute
-            description: |
-              Map the external groups attribute from the SAML assertion.
+            label: External groups attribute
+            description: Set the external groups attribute for the SAML assertion.
 
           - reference: .properties.uaa.saml.sign_auth_requests
-            label: Sign Authentication Requests
+            label: Sign authentication requests
             description: |
-              If enabled, signed authentication requests will be sent to the
+              Signed authentication requests are sent to the
               SAML identity provider.
 
           - reference: .properties.uaa.saml.require_signed_assertions
-            label: Require Signed Assertions
-            description: |
-              If enabled, the SAML identity provider should always send
-              signed assertions.
+            label: Require signed assertions
+            description: The SAML identity provider requires signed assertions.
 
       - reference: .properties.uaa.ldap
-        label: LDAP Server
+        label: LDAP server
         description:
         property_inputs:
           - reference: .properties.uaa.ldap.url
-            label: Server URL
-            description: |
-              Required for LDAP. Must start with `ldap://` or `ldaps://`.
-              Multiple entries can be separated by spaces.
-            placeholder: |
-              ldaps://example.com
+            label: Server URL(s)
+            description: The URL(s) that point to the LDAP server.
+            placeholder: ldaps://example.com
 
           - reference: .properties.uaa.ldap.credentials
-            label: LDAP Credentials
+            label: LDAP credentials
             description: |
-              Required for LDAP. This is the unique username and password for
-              binding to the server.
+              The unique distinguished name and password for binding
+              to the server.
 
           - reference: .properties.uaa.ldap.search_base
-            label: User Search Base
+            label: User search base
             description: |
-              Required for LDAP. Example: `ou=Users,dc=example,dc=com`.
+              The location in the LDAP directory tree from which any
+              LDAP user search begins.
             placeholder: ou=Groups,dc=example,dc=com
 
           - reference: .properties.uaa.ldap.search_filter
-            label: User Search Filter
-            description: Required for LDAP. Replace `{0}` with username.
+            label: User search filter
+            description: A string that defines LDAP user search criteria.
 
           - reference: .properties.uaa.ldap.group_search_base
-            label: Group Search Base
+            label: Group search base
             description: |
-              Required if mapping LDAP groups to Admin role. Example:
-              `ou=Groups,dc=example,dc=com`.
+              The location in the LDAP directory tree from which the
+              LDAP group search begins.
             placeholder: ou=Groups,dc=example,dc=com
 
           - reference: .properties.uaa.ldap.group_search_filter
-            label: Group Search Filter
-            description: |
-              Required if mapping LDAP groups to Admin role. Replace `{0}`
-              with user DN.
+            label: Group search filter
+            description: A string that defines LDAP group search criteria.
 
           - reference: .properties.uaa.ldap.group_max_search_depth
-            label: Group Max Search Depth
-            placeholder: 1
+            label: Group maximum search depth
             description: |
-              Sets the LDAP group search depth. Allowed values are between 1 and 10.
-              The default value is 1, which will turn off the nested group search.
+              The LDAP group search depth. Allowed values are
+              between 1 and 10. The default value is 1, which turns
+              off the nested group search.
+            placeholder: 1
 
           - reference: .properties.uaa.ldap.server_ssl_cert
-            label: Server SSL Cert
+            label: Server SSL certificate
             description: |
-              Required only for ldaps://. This is the server certificate if
-              using a Self Signed Certificate. If using a CA certificate,
-              this must be the root certificate from your CA.
+              The root certificate from your CA certificate or your
+              self-signed certificate.
 
           - reference: .properties.uaa.ldap.first_name_attribute
-            label: First Name Attribute
-            description: |
-              The name of the attribute that contains the first name.
+            label: First name attribute
+            description: Set the first name attribute for your LDAP directory.
 
           - reference: .properties.uaa.ldap.last_name_attribute
-            label: Last Name Attribute
-            description: |
-              The name of the attribute that contains the last name.
+            label: Last name attribute
+            description: Set the last name attribute for your LDAP directory.
 
           - reference: .properties.uaa.ldap.mail_attribute_name
-            label: Email Attribute
-            description: |
-              The name of the attribute that contains the user's email
-              address.
+            label: Email attribute
+            description: Set the email attribute for your LDAP directory.
 
           - reference: .properties.uaa.ldap.email_domains
-            label: Email Domain(s)
+            label: Email domain(s)
             description: |
-              Comma-separated list of domains, e.g. example.com. This is used
-              for inviting external users to Apps Manager.
+              A comma-separated list of email domains for inviting
+              external users to Apps Manager.
 
           - reference: .properties.uaa.ldap.ldap_referrals
-            label: LDAP Referrals
+            label: LDAP referrals
+            description: |
+              Select how the UAA handles LDAP server referrals to other external user stores. 

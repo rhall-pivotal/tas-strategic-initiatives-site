@@ -1,8 +1,11 @@
 ---
 name: system_database
 label: Databases
-description: |
-  Place the databases used by Application Service components.
+description: Databases
+markdown: |
+  To configure this pane, see the
+  [Configure System Databases](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#sys-db)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 verifiers:
   - name: Verifiers::MysqlDatabaseVerifier
@@ -112,104 +115,103 @@ verifiers:
 property_inputs:
 - reference: .properties.system_database
   label: |
-    Choose the location of your system databases.
-    Please consult the documentation for migrating existing installations from MariaDB to Percona.
+    System databases location
   selector_property_inputs:
   - reference: .properties.system_database.internal_pxc
     label: |
-      Internal Databases - MySQL - Percona XtraDB Cluster
+      Internal databases - MySQL - Percona XtraDB Cluster
 
   - reference: .properties.system_database.external
-    label: External Databases - (e.g. AWS RDS)
+    label: External databases (e.g. AWS RDS)
     property_inputs:
       - reference: .properties.system_database.external.host
         label: Hostname
 
       - reference: .properties.system_database.external.port
-        label: TCP Port
+        label: TCP port
 
       - reference: .properties.system_database.external.app_usage_service_username
-        label: App Usage Service Database Username
+        label: App usage service database username
 
       - reference: .properties.system_database.external.app_usage_service_password
-        label: App Usage Service Database Password
+        label: App usage service database password
 
       - reference: .properties.system_database.external.autoscale_username
-        label: Autoscaling Service Database Username
+        label: Autoscaling service database username
 
       - reference: .properties.system_database.external.autoscale_password
-        label: Autoscaling Service Database Password
+        label: Autoscaling service database password
 
       - reference: .properties.system_database.external.ccdb_username
-        label: Cloud Controller Database Username
+        label: Cloud Controller database username
 
       - reference: .properties.system_database.external.ccdb_password
-        label: Cloud Controller Database Password
+        label: Cloud Controller database password
 
       - reference: .properties.system_database.external.credhub_username
-        label: CredHub Database Username (required if "PAS database" is selected on CredHub tab)
+        label: CredHub database username
+        description: Required if "PAS database" is selected in the CredHub tab.
 
       - reference: .properties.system_database.external.credhub_password
-        label: CredHub Database Password (required if "PAS database" is selected on CredHub tab)
+        label: CredHub database password
+        description: Required if "PAS database" is selected in the CredHub tab.
 
       - reference: .properties.system_database.external.diego_username
-        label: Diego Database Username
+        label: Diego database username
 
       - reference: .properties.system_database.external.diego_password
-        label: Diego Database Password
+        label: Diego database password
 
       - reference: .properties.system_database.external.locket_username
-        label: Locket Database Username
+        label: Locket database username
 
       - reference: .properties.system_database.external.locket_password
-        label: Locket Database Password
+        label: Locket database password
 
       - reference: .properties.system_database.external.networkpolicyserver_username
-        label: Network Policy Server Database Username
+        label: Network policy server database username
 
       - reference: .properties.system_database.external.networkpolicyserver_password
-        label: Network Policy Server Database Password
+        label: Network policy server database password
 
       - reference: .properties.system_database.external.nfsvolume_username
-        label: NFS Volume Services Database Username
+        label: NFS volume services database username
 
       - reference: .properties.system_database.external.nfsvolume_password
-        label: NFS Volume Services Database Password
+        label: NFS volume services database password
 
       - reference: .properties.system_database.external.notifications_username
-        label: Notifications Service Database Username
+        label: Notifications service database username
 
       - reference: .properties.system_database.external.notifications_password
-        label: Notifications Service Database Password
+        label: Notifications service database password
 
       - reference: .properties.system_database.external.account_username
-        label: Pivotal Account Database Username
+        label: Pivotal account database username
 
       - reference: .properties.system_database.external.account_password
-        label: Pivotal Account Database Password
+        label: Pivotal account database password
 
       - reference: .properties.system_database.external.routing_username
-        label: Routing API Database Username
+        label: Routing API database username
 
       - reference: .properties.system_database.external.routing_password
-        label: Routing API Database Password
+        label: Routing API database password
 
       - reference: .properties.system_database.external.silk_username
-        label: Silk Database Username
+        label: Silk database username
 
       - reference: .properties.system_database.external.silk_password
-        label: Silk Database Password
+        label: Silk database password
 
       - reference: .properties.system_database.external.uaa_username
-        label: UAA Database Username (required if "PAS database" is selected on UAA tab)
+        label: UAA database username
+        description: Required if "PAS database" is selected in the UAA tab.
 
       - reference: .properties.system_database.external.uaa_password
-        label: UAA Database Password (required if "PAS database" is selected on UAA tab)
+        label: UAA database password
+        description: Required if "PAS database" is selected in the UAA tab.
 
       - reference: .properties.system_database.external.ca_cert
-        label: Database CA Certificate
-        description: |
-          Components require the database to present a valid hostname in order
-          to validate the certificate when terminating TLS.
-          AWS does currently provide a valid hostname, but some other cloud
-          providers do not currently do this (GCP and Azure).
+        label: Database CA certificate
+        description: Enables TLS for your external databases.

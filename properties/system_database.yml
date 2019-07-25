@@ -225,7 +225,7 @@
           username: ((( nfs-volume-db-credentials.username )))
           password: ((( nfs-volume-db-credentials.password )))
           name: (( .properties.nfsvolume_database_name.value ))
-          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : "" ))'
+          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
       - name: nfsvolume_bbr
         manifest: |
           db_username: ((( nfs-volume-db-credentials.username )))
@@ -234,7 +234,7 @@
           db_hostname: mysql.service.cf.internal
           db_port: 3306
           db_driver: mysql
-          db_ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : "" ))'
+          db_ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
           release_level_backup: true
       - name: uaadb
         manifest: |

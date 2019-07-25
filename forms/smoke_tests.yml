@@ -1,34 +1,34 @@
 ---
 name: smoke_tests
 label: Smoke Tests
-description: |
-  Specify a Cloud Foundry organization and space where smoke tests can run if
-  in the future you delete your Application Service deployment domains.
+description: Smoke Tests
+markdown: |
+  To configure this pane, see the
+  [Configure Smoke Tests](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#config-smoke-test)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .properties.smoke_tests
     label: |
-      Choose where to deploy applications when running the smoke tests
+      Choose where to deploy apps when running smoke tests:
     selector_property_inputs:
     - reference: .properties.smoke_tests.on_demand
       label: |
-        Temporary space within the system organization (This is deleted after
-        smoke tests finish.)
+        Temporary space within the system organization
 
     - reference: .properties.smoke_tests.specified
       label: |
-        Specified org and space (The org and space must have a domain
-        available for routing.)
+        Specified organization and space
       property_inputs:
         - reference: .properties.smoke_tests.specified.org_name
           label: Organization
           description: |
-            The Application Service organization to use when running tests
+            The PAS organization to use when running tests.
 
         - reference: .properties.smoke_tests.specified.space_name
           label: Space
-          description: The Application Service space to use when running tests
+          description: The PAS space to use when running tests.
 
         - reference: .properties.smoke_tests.specified.apps_domain
           label: Domain
-          description: Must be accessible to the organization
+          description: The domain to which the organization is routed.

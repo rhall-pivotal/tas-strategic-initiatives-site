@@ -1,8 +1,11 @@
 ---
 name: credhub
 label: CredHub
-description: |
-  Configure the CredHub Server
+description: CredHub
+markdown: |
+  To configure this pane, see the
+  [Configure CredHub](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#credhub)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 verifiers:
 - name: Verifiers::MysqlDatabaseVerifier
@@ -14,118 +17,72 @@ verifiers:
     database: .properties.credhub_database_name
 
 property_inputs:
- - reference: .properties.credhub_database
-   label: |
-     Choose the location of your CredHub database
-   selector_property_inputs:
-   - reference: .properties.credhub_database.internal_mysql
-     label: |
-       PAS database (configured on the Databases pane)
+- reference: .properties.credhub_database
+  label: CredHub database location
+  selector_property_inputs:
+  - reference: .properties.credhub_database.internal_mysql
+    label: PAS database (configured in the Databases pane)
 
-   - reference: .properties.credhub_database.external
-     label: |
-       Other external database
-     property_inputs:
-       - reference: .properties.credhub_database.external.host
-         label: Hostname
+  - reference: .properties.credhub_database.external
+    label: Other external database
+    property_inputs:
+      - reference: .properties.credhub_database.external.host
+        label: Hostname
 
-       - reference: .properties.credhub_database.external.port
-         label: TCP Port
+      - reference: .properties.credhub_database.external.port
+        label: TCP port
 
-       - reference: .properties.credhub_database.external.username
-         label: Username
+      - reference: .properties.credhub_database.external.username
+        label: Username
 
-       - reference: .properties.credhub_database.external.password
-         label: Password
+      - reference: .properties.credhub_database.external.password
+        label: Password
 
-       - reference: .properties.credhub_database.external.tls_ca
-         label: Database CA Certificate
+      - reference: .properties.credhub_database.external.tls_ca
+        label: Database CA certificate
 
- - reference: .properties.credhub_internal_provider_keys
-   label: Internal Encryption Provider Keys
-   property_inputs:
-   - reference: name
-     label: Name
-     description: |
-       Name of the encryption key.
-   - reference: key
-     label: Key
-     description: |
-       The encryption key will be used to encrypt all data. The key must be
-       at least 20 characters long.
-   - reference: primary
-     label: Primary
-     description: |
-       Checking this checkbox marks this key as the primary encryption key.
-       Only one key should be marked as primary.
+- reference: .properties.credhub_key_encryption_passwords
+  label: Encryption keys
+  property_inputs:
+  - reference: name
+    label: Name
+  - reference: provider
+    label: Provider
+  - reference: key
+    label: Key
+  - reference: primary
+    label: Primary
 
- - reference: .properties.credhub_kms_providers
-   label: KMS Plugin Providers
-   property_inputs:
-   - reference: instance_name
-     label: Instance Name
-     description: |
-       Name of the KMS Provider instance.
-   - reference: endpoint
-     label: Endpoint
-     description: |
-       The unix socket address at which the provider is running.
-   - reference: primary
-     label: Primary
-     description: |
-       Checking this checkbox marks this key as the primary encryption key.
-       Only one key should be marked as primary.
+- reference: .properties.credhub_hsm_provider_partition
+  label: HSM provider partition
+  description: The name of the HSM provider partition.
 
- - reference: .properties.credhub_hsm_provider_partition
-   label: HSM Provider Partition
-   description: |
-     The name of the HSM provider partition.
+- reference: .properties.credhub_hsm_provider_partition_password
+  label: HSM provider partition password
+  description: The password used to access the HSM provider partition.
 
- - reference: .properties.credhub_hsm_provider_partition_password
-   label: HSM Provider Partition Password
-   description: |
-     The password used to access the HSM provider partition.
+- reference: .properties.credhub_hsm_provider_client_certificate
+  label: HSM provider client certificate
+  description: The client certificate for the HSM provider.
 
- - reference: .properties.credhub_hsm_provider_client_certificate
-   label: HSM Provider Client Certificate
-   description: |
-     The client certificate for the HSM.
+- reference: .properties.credhub_hsm_provider_servers
+  label: HSM provider servers
+  property_inputs:
+  - reference: host_address
+    label: Host address
+    description: The host name or IP address of the HSM server.
+  - reference: port
+    label: Port
+    description: The port of the HSM server.
+  - reference: partition_serial_number
+    label: HSM provider partition serial number
+    description: The serial number of the HSM partition.
+  - reference: hsm_certificate
+    label: HSM certificate
+    description: The certificate for the HSM server.
 
- - reference: .properties.credhub_hsm_provider_encryption_keys
-   label: HSM Provider Encryption Keys
-   property_inputs:
-   - reference: name
-     label: Name
-     description: |
-       Name of the encryption key.
-   - reference: primary
-     label: Primary
-     description: |
-       Checking this checkbox marks this key as the primary encryption key.
-       Only one key should be marked as primary.
-
- - reference: .properties.credhub_hsm_provider_servers
-   label: HSM Provider Servers
-   property_inputs:
-   - reference: host_address
-     label: Host Address
-     description: |
-       The host name or IP address of the HSM server.
-   - reference: port
-     label: Port
-     description: |
-       The port of the HSM server.
-   - reference: partition_serial_number
-     label: Partition Serial Number
-     description: |
-       The serial number of the HSM partition.
-   - reference: certificate
-     label: HSM Certificate
-     description: |
-       The certificate for the HSM server.
-
- - reference: .properties.secure_service_instance_credentials
-   label: Secure Service Instance Credentials
-   description: |
-     When checked, service brokers that support storing their service
-     instance credentials in CredHub will do so.
+- reference: .properties.secure_service_instance_credentials
+  label: Secure service instance credentials
+  description: |
+    Service brokers can store their service instance
+    credentials in CredHub.

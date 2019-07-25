@@ -43,5 +43,57 @@ var _ = Describe("MySQL Proxy", func() {
 				Expect(maxConnections).To(Equal(1048576))
 			})
 		})
+
+		Context("when the operator chooses to expose the inactive node port", func() {
+			var (
+				inputProperties map[string]interface{}
+				manifest        planitest.Manifest
+			)
+
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.system_database":             "internal_pxc",
+					".mysql_proxy.enable_inactive_mysql_port": true,
+				}
+				var err error
+				manifest, err = product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("enables the inactive node port on the proxy", func() {
+				proxyManifest, err := manifest.FindInstanceGroupJob(instanceGroup, "proxy")
+				Expect(err).NotTo(HaveOccurred())
+
+				inactiveMySQLPort, err := proxyManifest.Property("inactive_mysql_port")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(inactiveMySQLPort).To(Equal(3336))
+			})
+		})
+
+		Context("when the operator does not expose the inactive node port", func() {
+			var (
+				inputProperties map[string]interface{}
+				manifest        planitest.Manifest
+			)
+
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.system_database":             "internal_pxc",
+					".mysql_proxy.enable_inactive_mysql_port": false,
+				}
+				var err error
+				manifest, err = product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("leaves the property empty", func() {
+				proxyManifest, err := manifest.FindInstanceGroupJob(instanceGroup, "proxy")
+				Expect(err).NotTo(HaveOccurred())
+
+				inactiveMySQLPort, err := proxyManifest.Property("inactive_mysql_port")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(inactiveMySQLPort).To(BeNil())
+			})
+		})
 	})
 })

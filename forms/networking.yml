@@ -1,8 +1,7 @@
 ---
 name: networking
 label: Networking
-description: |
-  Networking
+description: Networking
 markdown: |
   To configure this pane, see the
   [Configure Networking](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#networking)
@@ -11,23 +10,19 @@ markdown: |
 property_inputs:
   - reference: .router.static_ips
     label: Router IPs
-    description: |
-      A comma-separated list of router IPs.
+    description: A comma-separated list of router IPs.
 
   - reference: $( variable "ssh_proxy_static_ips" )
     label: SSH Proxy IPs
-    description: |
-      A comma-separated list of SSH Proxy IPs.
+    description: A comma-separated list of SSH Proxy IPs.
 
   - reference: .ha_proxy.static_ips
     label: HAProxy IPs
-    description: |
-      A comma-separated list of HAProxy IPs.
+    description: A comma-separated list of HAProxy IPs.
 
   - reference: .tcp_router.static_ips
     label: TCP Router IPs
-    description: |
-      A comma-separated list of TCP Router IPs.
+    description: A comma-separated list of TCP Router IPs.
 
   - reference: .properties.networking_poe_ssl_certs
     label: Certificates and private keys for HAProxy and Router
@@ -74,52 +69,43 @@ property_inputs:
     label: TLS termination point
     selector_property_inputs:
       - reference: .properties.routing_tls_termination.load_balancer
-        label: |
-          Infrastructure load balancer
+        label: Infrastructure load balancer
       - reference: .properties.routing_tls_termination.ha_proxy
-        label: |
-          HAProxy
+        label: HAProxy
       - reference: .properties.routing_tls_termination.router
-        label: |
-          Router
+        label: Router
 
   - reference: .properties.haproxy_client_cert_validation
     label: HAProxy behavior for client certificate validation
     selector_property_inputs:
       - reference: .properties.haproxy_client_cert_validation.none
-        label: |
-          HAProxy does not request client certificates
+        label: HAProxy does not request client certificates
       - reference: .properties.haproxy_client_cert_validation.request
-        label: |
-          HAProxy requests but does not require client certificates
+        label: HAProxy requests but does not require client certificates
 
   - reference: .properties.router_client_cert_validation
     label: Router behavior for client certificate validation
     selector_property_inputs:
       - reference: .properties.router_client_cert_validation.none
-        label: |
-          Router does not request client certificates
+        label: Router does not request client certificates
       - reference: .properties.router_client_cert_validation.request
-        label: |
-          Router requests but does not require client certificates
+        label: Router requests but does not require client certificates
       - reference: .properties.router_client_cert_validation.require
-        label: |
-          Router requires client certificates
+        label: Router requires client certificates
 
   - reference: .properties.gorouter_ssl_ciphers
-    label: TLS Cipher Suites for Router
+    label: TLS cipher suites for Router
     description: |
       An ordered, colon-separated list of Golang supported TLS cipher suites
       in OpenSSL format.
 
   - reference: .properties.haproxy_ssl_ciphers
-    label: TLS Cipher Suites for HAProxy
+    label: TLS cipher suites for HAProxy
     description: |
       An ordered, colon-separated list of TLS cipher suites in OpenSSL format.
 
   - reference: .properties.haproxy_forward_tls
-    label: |
-      HAProxy forwards all requests to Router over TLS
+    label: HAProxy forwards all requests to Router over TLS
     selector_property_inputs:
       - reference: .properties.haproxy_forward_tls.enable
         label: Enable
@@ -139,7 +125,7 @@ property_inputs:
         label: Enable
         property_inputs:
         - reference: .properties.haproxy_hsts_support.enable.max_age
-          label: Max age in seconds
+          label: Maximum age (in seconds)
         - reference: .properties.haproxy_hsts_support.enable.include_subdomains
           label: Include subdomains
         - reference: .properties.haproxy_hsts_support.enable.enable_preload
@@ -163,32 +149,30 @@ property_inputs:
     label: Enable Router to write access logs locally
 
   - reference: .router.enable_isolated_routing
-    label: |
-      Routers reject requests for Isolation Segments
+    label: Routers reject requests for Isolation Segments
 
   - reference: .properties.router_enable_proxy
     label: Enable support for PROXY protocol in Router
 
   - reference: .properties.route_services
-    label: |
-      Choose whether to enable route services.
+    label: Route services
     selector_property_inputs:
       - reference: .properties.route_services.enable
-        label: Enable route services
+        label: Enable
         property_inputs:
         - reference: .properties.route_services.enable.internal_lookup
           label: Bypass security checks for route service lookup
       - reference: .properties.route_services.disable
-        label: Disable route services
+        label: Disable
 
   - reference: .properties.router_backend_max_conn
-    label: Max connections per back end
+    label: Maximum connections per back end
     description: |
       Maximum concurrent TCP connections per back end for each instance of
       the Router. A value of 0 sets no limit.
 
   - reference: .properties.router_keepalive_connections
-    label: Enable keep-alive connections for Router
+    label: Keep-alive connections for Router
     selector_property_inputs:
     - reference: .properties.router_keepalive_connections.enable
       label: Enable
@@ -202,21 +186,21 @@ property_inputs:
       apps and system components.
 
   - reference: .router.frontend_idle_timeout
-    label: Front end idle timeout for Router and HAProxy
+    label: Front end idle timeout for Router and HAProxy (in seconds)
     description: |
-      Duration in seconds to maintain an open connection when client supports
+      Duration to maintain an open connection when client supports
       keep-alive connections.
 
   - reference: .router.drain_wait
-    label: Load balancer unhealthy threshold
+    label: Load balancer unhealthy threshold (in seconds)
     description: |
-      Specifies the amount of time (in seconds) that the Router continues
+      The amount of time that the Router continues
       to accept connections before shutting down.
 
   - reference: .router.lb_healthy_threshold
-    label: Load balancer healthy threshold
+    label: Load balancer healthy threshold (in seconds)
     description: |
-      Specifies the amount of time (in seconds) to wait until reporting the
+      The amount of time to wait until reporting the
       Router instance has started.
 
   - reference: .router.extra_headers_to_log
@@ -226,9 +210,8 @@ property_inputs:
       events on the Router.
 
   - reference: .properties.haproxy_max_buffer_size
-    label: HAProxy request max buffer size
-    description: |
-      Buffer size (in bytes) to use for requests.
+    label: HAProxy request max buffer size (in bytes)
+    description: Buffer size to use for requests.
 
   - reference: .ha_proxy.internal_only_domains
     label: HAProxy protected domains
@@ -244,8 +227,7 @@ property_inputs:
 
   - reference: .properties.logger_endpoint_port
     label: Loggregator port
-    description: |
-      The default is 443.
+    description: The default is 443.
 
   - reference: .properties.container_networking_interface_plugin
     label: Container network interface plugin
@@ -254,13 +236,12 @@ property_inputs:
         label: Silk
         property_inputs:
           - reference: .properties.container_networking_interface_plugin.silk.network_mtu
-            label: App network maximum transmission unit (MTU)
+            label: App network maximum transmission unit (MTU) (in bytes)
             description: |
-              The maximum size (in bytes) of a protocol data unit that can be
+              The maximum size of a protocol data unit that can be
               sent in a single network transaction. The default is 1454 bytes.
           - reference: .properties.container_networking_interface_plugin.silk.network_cidr
-            label: |
-              Overlay subnet
+            label: Overlay subnet
             description: |
               The range of the overlay network. The default is 10.255.0.0/16.
             placeholder: 10.255.0.0/16
@@ -269,15 +250,15 @@ property_inputs:
             description: |
               Host port used for receiving VXLAN packets. The default is 4789.
           - reference: .properties.container_networking_interface_plugin.silk.iptables_denied_logs_per_sec
-            label: Denied logging interval
+            label: Denied logging interval (in packets per second)
             description: |
-              The rate (in packets per second) at which traffic logging is
-              denied. The default is 1 packet per second.
+              The rate at which traffic logging is denied. The default is 1
+              packet per second.
           - reference: .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec
-            label: UDP logging interval
+            label: UDP logging interval (in packets per second)
             description: |
-              The rate (in packets per second) at which UDP traffic logging is
-              denied. The default is 100 packets per second.
+              The rate at which UDP traffic logging is denied. The default is
+              100 packets per second.
           - reference: .properties.container_networking_interface_plugin.silk.enable_log_traffic
             label: Log traffic for all accepted and denied app packets
           - reference: .properties.container_networking_interface_plugin.silk.enable_policy_enforcement
@@ -301,17 +282,14 @@ property_inputs:
       Enable TCP requests to apps through specific ports on the TCP Router
     selector_property_inputs:
       - reference: .properties.tcp_routing.disable
-        label: |
-          Disable TCP routing
+        label: Disable TCP routing
 
       - reference: .properties.tcp_routing.enable
         label: Enable TCP routing
         property_inputs:
           - reference: .properties.tcp_routing.enable.reservable_ports
-            label: |
-              TCP routing ports
-            description: |
-              A single port number or a single range of ports.
+            label: TCP routing ports
+            description: A single port number or a single range of ports.
 
   - reference: .properties.experimental_dynamic_egress_enforcement
     label: Enable dynamic egress enforcement (beta)

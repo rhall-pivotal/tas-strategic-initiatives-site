@@ -2,7 +2,7 @@
 branches:
   only:
   - master
-  - rel/.*
+  - /rel\/.*/
 
 language: python
 
@@ -21,4 +21,4 @@ services:
 - docker
 
 script:
-- bin/test
+- git diff --name-only --exit-code HEAD^ -- . ':(exclude)*version' > /dev/null && echo "skipping tests for version bump" && exit || bin/test

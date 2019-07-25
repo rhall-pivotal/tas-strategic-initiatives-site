@@ -1,36 +1,36 @@
 ---
 name: app_autoscaler
 label: App Autoscaler
-description: Configure the App Autoscaler
+description: App Autoscaler
+markdown: |
+  To configure this pane, see the
+  [(Optional) Configure App Autoscaler](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#config-autoscaler)
+  section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .properties.autoscale_instance_count
-    label: Autoscaler Instance Count
+    label: Autoscaler instance count
 
   - reference: .properties.autoscale_api_instance_count
-    label: Autoscaler API Instance Count
+    label: Autoscaler API instance count
 
   - reference: .properties.autoscale_metric_bucket_count
-    label: "Metric Collection Interval (min: 60, max: 3600)"
+    label: "Metric collection interval (min: 60, max: 3600)"
     description: |
-      The size of the window of metrics that the autoscaler uses to make scaling decisions (in seconds)
+      The size (in seconds) of the window of metrics that
+      App Autoscaler uses to make scaling decisions.
 
   - reference: .properties.autoscale_scaling_interval_in_seconds
-    label: "Scaling Interval (min: 15, max: 120)"
+    label: "Scaling interval (min: 15, max: 120)"
     description: |
-      How frequently the autoscaler evaluates an application for scaling (in seconds)
+      How frequently (in seconds) App Autoscaler evaluates
+      an app for scaling.
 
   - reference: .properties.autoscale_enable_verbose_logging
-    label: "Verbose Logging"
-    description: |
-      Enable verbose Autoscaler logging
+    label: Enable verbose logging
 
   - reference: .properties.autoscale_api_disable_connection_pooling
-    label: "Disable API Connection Pooling"
-    description: |
-      Disables connection reuse in Autoscale API
+    label: Disable API connection pooling
 
   - reference: .properties.autoscale_enable_notifications
-    label: "Enable Notifications"
-    description: |
-      Whether to send email notifications of Autoscale events
+    label: Enable email notifications
