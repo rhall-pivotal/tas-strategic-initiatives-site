@@ -9,7 +9,6 @@ consumes: |
     from: cloud_controller
     deployment: (( ..cf.deployment_name ))
 manifest: |
-  enabled:  (( ..cf.properties.syslog_agent_enabled.value ))
   port: 3460
   tls:
     ca_cert: (( $ops_manager.ca_certificate ))

@@ -150,10 +150,6 @@ var _ = Describe("Logging", func() {
 			agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggr-syslog-agent-windows")
 			Expect(err).NotTo(HaveOccurred())
 
-			enabled, err := agent.Property("enabled")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(enabled).To(BeFalse())
-
 			port, err := agent.Property("port")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(port).To(Equal(3460))

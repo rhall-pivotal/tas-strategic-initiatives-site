@@ -1,23 +1,18 @@
 ---
 name: advanced_features
 label: Advanced Features
-description: |
-  These are features that may require a greater understanding of
-  Cloud Foundry system components and their more recently introduced
-  capabilities.
+description: Advanced Features
 markdown: |
-  You can specify how much memory or disk you want to set as the Diego Cells'
-  available capacity. You can overcommit these resources with values that
-  exceed the Diego Cell VM sizes configured in the Resource Config section.
-  You can also opt in to enable TLS connections between the router and applications
-  (this feature is in beta).
+  To configure this pane, see the
+  [Step 3: Configure the Tile](https://docs.pivotal.io/pivotalcf/2-7/windows/installing.html#config)
+  section of the _Installing and Configuring PASW_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .windows_diego_cell.executor_memory_capacity
-    label: Cell Memory Capacity (MB)
+    label: Cell memory capacity (in MB)
 
   - reference: .windows_diego_cell.executor_disk_capacity
-    label: Cell Disk Capacity (MB)
+    label: Cell disk capacity (in MB)
 
   - reference: .properties.route_integrity
     label: (Beta) Enable TLS Connections From Router To Applications

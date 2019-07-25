@@ -1,0 +1,24 @@
+---
+branches:
+  only:
+  - master
+  - /rel\/.*/
+
+language: python
+
+install:
+- pip install yq
+
+git:
+  submodules: true
+
+addons:
+  apt:
+    packages:
+    - jq
+
+services:
+- docker
+
+script:
+- git diff --name-only --exit-code HEAD^ -- . ':(exclude)*version' > /dev/null && echo "skipping tests for version bump" && exit || bin/test
