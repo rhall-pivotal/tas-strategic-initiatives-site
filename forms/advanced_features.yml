@@ -14,3 +14,12 @@ property_inputs:
   - reference: .windows_diego_cell.executor_disk_capacity
     label: Cell disk capacity (in MB)
 
+  - reference: .properties.route_integrity
+    label: (Beta) Enable TLS Connections From Router To Applications
+    selector_property_inputs:
+    - reference: .properties.route_integrity.disable
+      label: Disable route integrity and mutual TLS (Default)
+    - reference: .properties.route_integrity.tls_verify
+      label: Router uses TLS to verify application identity
+    - reference: .properties.route_integrity.mutual_tls_verify
+      label: Router and applications use mutual TLS to verify each other's identity (incompatible with TCP Routing)

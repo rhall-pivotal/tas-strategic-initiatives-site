@@ -3,6 +3,7 @@ name: rep_windows
 release: diego
 manifest: |
   containers:
+    proxy: (( .properties.route_integrity.selected_option.parsed_manifest(proxy) ))
     trusted_ca_certificates:
       - ((( /cf/diego-instance-identity-root-ca.certificate )))
       - ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))

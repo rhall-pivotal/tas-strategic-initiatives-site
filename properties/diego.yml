@@ -1,0 +1,27 @@
+---
+- name: route_integrity
+  type: selector
+  configurable: true
+  default: disable
+  option_templates:
+  - name: disable
+    select_value: disable
+    named_manifests:
+    - name: proxy
+      manifest: |
+        enabled: false
+  - name: tls_verify
+    select_value: tls_verify
+    named_manifests:
+    - name: proxy
+      manifest: |
+        enabled: true
+  - name: mutual_tls_verify
+    select_value: mutual_tls_verify
+    named_manifests:
+    - name: proxy
+      manifest: |
+        enabled: true
+        require_and_verify_client_certificates: true
+        trusted_ca_certificates:
+        - (( $ops_manager.ca_certificate ))
