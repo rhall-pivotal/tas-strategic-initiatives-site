@@ -72,7 +72,7 @@ var _ = Describe("CredHub", func() {
 							"host_address":            "some-hsm-host",
 							"hsm_certificate":         fakeServerKeypair.Certificate,
 							"partition_serial_number": "some-hsm-partition-serial",
-							"port":                    9999,
+							"port": 9999,
 						},
 					},
 				})
@@ -317,6 +317,31 @@ var _ = Describe("CredHub", func() {
 				ca, err := credhub.Property("credhub/data_storage/tls_ca")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(ca).NotTo(BeEmpty())
+			})
+			Context("disable_hostname_verification", func() {
+				It("disables hostname_verification when selected", func() {
+					inputProperties[".properties.credhub_database.external.disable_hostname_verification"] = true
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+					Expect(err).NotTo(HaveOccurred())
+
+					hostnameVerification, err := credhub.Property("credhub/data_storage/hostname_verification/enabled")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(hostnameVerification).To(BeFalse())
+				})
+				It("does not disable hostname_verification by default", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+					Expect(err).NotTo(HaveOccurred())
+
+					hostnameVerification, err := credhub.Property("credhub/data_storage/hostname_verification/enabled")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(hostnameVerification).To(BeTrue())
+				})
 			})
 		})
 	})

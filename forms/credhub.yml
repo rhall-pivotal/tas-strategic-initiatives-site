@@ -41,6 +41,10 @@ property_inputs:
       - reference: .properties.credhub_database.external.tls_ca
         label: Database CA certificate
 
+      - reference: .properties.credhub_database.external.disable_hostname_verification
+        label: Disable Hostname Verification
+        description: Disables hostname verification for TLS connections to targeted database server. This property is only respected when targeting a MariaDB database. Hostname verification cannot be disabled for TLS connections to postgres databases.
+
 - reference: .properties.credhub_key_encryption_passwords
   label: Encryption keys
   property_inputs:

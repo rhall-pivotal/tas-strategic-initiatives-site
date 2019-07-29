@@ -36,6 +36,10 @@
           configurable: true
         - name: require_tls
           type: boolean
+        - name: disable_hostname_verification
+          type: boolean
+          configurable: true
+          default: false
       named_manifests:
       - name: db_config
         manifest: |
@@ -47,3 +51,5 @@
           database: (( .properties.credhub_database_name.value ))
           require_tls: true
           tls_ca: (( .properties.credhub_database.external.tls_ca.value ))
+          hostname_verification:
+            enabled: "(( .properties.credhub_database.external.disable_hostname_verification.value ? false : true ))"
