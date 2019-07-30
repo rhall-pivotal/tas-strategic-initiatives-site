@@ -1,14 +1,14 @@
 ---
 name: pas-windows
-metadata_version: '2.6' # When a 2.7 Ops Manager appears, this value should be updated to be equal to the product version
+metadata_version: '2.7' # When a 2.8 Ops Manager appears, this value should be updated to be equal to the product version
 provides_product_versions:
 - name: pas-windows
   version: $( version )
 product_version: $( version )
-minimum_version_for_upgrade: 2.6.0
+minimum_version_for_upgrade: 2.7.0
 requires_product_versions:
 - name: cf
-  version: "~> 2.7.0"
+  version: "~> 2.8.0"
 label: $( variable "label" )
 description: "Gives developers the ability to push apps to compute instances powered by the .NET Framework and the Windows® Operating System"
 icon_image: $( icon )
