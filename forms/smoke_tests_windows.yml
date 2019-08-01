@@ -3,7 +3,7 @@ name: smoke_tests_windows
 label: Smoke Tests
 description: Smoke Tests
 markdown: |
-  To configure this pane, see the
+  For help configuring these fields, see the
   [Step 3: Configure the Tile](https://docs.pivotal.io/pivotalcf/2-7/windows/installing.html#config)
   section of the _Installing and Configuring PASW_ topic in the PCF documentation.
 
@@ -13,14 +13,14 @@ property_inputs:
       Choose where to deploy apps when running smoke tests:
     selector_property_inputs:
     - reference: .properties.smoke_tests_windows.on_demand
-      label: Temporary space within the system organization
+      label: A temporary space within the system org
 
     - reference: .properties.smoke_tests_windows.specified
-      label: Specified organization and space
+      label: A specified org and space
       property_inputs:
         - reference: .properties.smoke_tests_windows.specified.org_name
-          label: Organization
-          description: The PAS organization to use when running tests.
+          label: Org
+          description: The PAS org to use when running tests.
 
         - reference: .properties.smoke_tests_windows.specified.space_name
           label: Space
@@ -28,4 +28,4 @@ property_inputs:
 
         - reference: .properties.smoke_tests_windows.specified.apps_domain
           label: Domain
-          description: The domain to which the organization is routed.
+          description: The domain to which the org is routed.
