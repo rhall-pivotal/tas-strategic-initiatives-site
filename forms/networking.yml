@@ -1,23 +1,20 @@
 ---
 name: networking
 label: Networking
-description: |
-  Networking
+description: Networking
 markdown: |
-  To configure this pane, see the
+  For help configuring these fields, see the
   [Networking](https://docs.pivotal.io/pivotalcf/2-7/customizing/installing-pcf-is.html#networking)
   section of the _Installing PCF Isolation Segment_ topic in the PCF documentation.
 
 property_inputs:
 - reference: .isolated_router.static_ips
   label: Router IPs
-  description: |
-    A comma-separated list of router IPs.
+  description: A comma-separated list of router IPs.
 
 - reference: .isolated_ha_proxy.static_ips
   label: HAProxy IPs
-  description: |
-    A comma-separated list of HAProxy IPs.
+  description: A comma-separated list of HAProxy IPs.
 
 - reference: .properties.networking_poe_ssl_certs
   label: Certificates and private keys for HAProxy and Router
@@ -26,7 +23,7 @@ property_inputs:
     label: Name
     description: A human-readable name describing the use of this certificate.
   - reference: certificate
-    label: Certificate and Private Key for HAProxy and Router
+    label: Certificate and private key for HAProxy and Router
     description: |
       The certificate used to terminate SSL traffic at either the HAProxy or
       Router.
@@ -109,7 +106,7 @@ property_inputs:
         label: Certificate Authority for HAProxy back end
         description: |
           Provide a Certificate Authority for the certificate and key provided
-          in the Certificate and Private Key for HAProxy and Router field.
+          in the "Certificate and private key for HAProxy and Router" field.
     - reference: .properties.haproxy_forward_tls.disable
       label: Disable
 
@@ -120,7 +117,8 @@ property_inputs:
       label: Enable
       property_inputs:
       - reference: .properties.haproxy_hsts_support.enable.max_age
-        label: Maximum age (in seconds)
+        label: Maximum age
+        description: Enter value in seconds.
       - reference: .properties.haproxy_hsts_support.enable.include_subdomains
         label: Include subdomains
       - reference: .properties.haproxy_hsts_support.enable.enable_preload
@@ -164,22 +162,22 @@ property_inputs:
     label: Disable
 
 - reference: .isolated_router.request_timeout_in_seconds
-  label: Router timeout to back ends (in seconds)
+  label: Router timeout to back ends
   description: |
-    Timeout for connections from Router (and HAProxy, if in use) to
-    apps and system components.
+    Timeout for connections from Router and HAProxy to apps and system
+    components. Enter value in seconds.
 
 - reference: .isolated_router.drain_wait
-  label: Load balancer unhealthy threshold (in seconds)
+  label: Load balancer unhealthy threshold
   description: |
-    The amount of time that the Router continues
-    to accept connections before shutting down.
+    The amount of time that the Router continues to accept connections
+    before shutting down. Enter value in seconds.
 
 - reference: .isolated_router.lb_healthy_threshold
-  label: Load balancer healthy threshold (in seconds)
+  label: Load balancer healthy threshold
   description: |
-    The amount of time to wait until reporting the
-    Router instance has started.
+    The amount of time to wait until reporting the Router instance has
+    started. Enter value in seconds.
 
 - reference: .isolated_router.extra_headers_to_log
   label: HTTP headers to log
@@ -188,9 +186,8 @@ property_inputs:
     events on the Router.
 
 - reference: .properties.haproxy_max_buffer_size
-  label: HAProxy request max buffer size (in bytes)
-  description: |
-    Buffer size to use for requests.
+  label: HAProxy request maximum buffer size
+  description: Buffer size to use for requests. Enter value in bytes.
 
 - reference: .isolated_ha_proxy.internal_only_domains
   label: HAProxy protected domains
@@ -202,7 +199,7 @@ property_inputs:
   label: HAProxy trusted CIDRs
   description: |
     A space-separated list of CIDRs allowed to make requests to the domains
-    listed in the Protected Domains field.
+    listed in the "Protected domains" field.
 
 - reference: .properties.cf_networking_search_domains
   label: DNS search domains
