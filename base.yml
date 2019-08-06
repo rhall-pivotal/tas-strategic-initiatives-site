@@ -158,15 +158,12 @@ property_blueprints:
 - $( property "copilot_server_cert" )
 - $( property "credhub_database" )
 - $( property "credhub_database_name" )
-- $( property "credhub_providers" )
-- $( property "credhub_encryption_keys" )
-- $( property "credhub_internal_provider_keys" )
-- $( property "credhub_kms_providers" )
+- $( property "credhub_hsm_provider_client_certificate" )
+- $( property "credhub_hsm_provider_list" )
 - $( property "credhub_hsm_provider_partition" )
 - $( property "credhub_hsm_provider_partition_password" )
-- $( property "credhub_hsm_provider_client_certificate" )
-- $( property "credhub_hsm_provider_encryption_keys" )
 - $( property "credhub_hsm_provider_servers" )
+- $( property "credhub_key_encryption_passwords" )
 - $( property "credhub_tls" )
 - $( property "diego_database_name" )
 - $( property "diego_database_max_open_connections" )
@@ -682,6 +679,3 @@ install_time_verifiers:
     username: .properties.uaa_database.external.uaa_username
     password: .properties.uaa_database.external.uaa_password
     database: .properties.uaa_database_name
-
-
-
