@@ -2,6 +2,7 @@ name: gorouter
 release: routing
 consumes: |
   nats: {from: nats, deployment: ((  ..cf.deployment_name  )) }
+  routing_api: {from: routing_api, deployment: ((  ..cf.deployment_name  )) }
 manifest: |
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   router:
