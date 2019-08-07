@@ -515,7 +515,7 @@ var _ = Describe("Routing", func() {
 	Describe("Route Services", func() {
 		It("disables route services internal lookup when internal_lookup is false", func() {
 			manifest, err := product.RenderManifest(map[string]interface{}{
-				".properties.route_services": "enable",
+				".properties.route_services":                        "enable",
 				".properties.route_services.enable.internal_lookup": false,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -527,7 +527,7 @@ var _ = Describe("Routing", func() {
 
 		It("enables route services internal lookup when internal_lookup is true", func() {
 			manifest, err := product.RenderManifest(map[string]interface{}{
-				".properties.route_services": "enable",
+				".properties.route_services":                        "enable",
 				".properties.route_services.enable.internal_lookup": true,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -535,6 +535,48 @@ var _ = Describe("Routing", func() {
 			router, err := manifest.FindInstanceGroupJob("router", "gorouter")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(router.Property("router/route_services_internal_lookup")).To(Equal(true))
+		})
+	})
+
+	Describe("Routing API", func() {
+		var (
+			instanceGroup string
+		)
+
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "control"
+			} else {
+				instanceGroup = "cloud_controller"
+			}
+		})
+
+		It("populates MTLS certs and keys with default values", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "routing-api")
+			Expect(err).NotTo(HaveOccurred())
+
+			mtlsServerCert, err := job.Property("routing_api/mtls_server_cert")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(mtlsServerCert).To(BeNil())
+
+			mtlsServerKey, err := job.Property("routing_api/mtls_server_key")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(mtlsServerKey).To(BeNil())
+
+			mtlsClientCert, err := job.Property("routing_api/mtls_client_cert")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(mtlsClientCert).To(BeNil())
+
+			mtlsClientKey, err := job.Property("routing_api/mtls_client_key")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(mtlsClientKey).To(BeNil())
+
+			ca, err := job.Property("routing_api/mtls_ca")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(ca).To(Equal("fake-ops-manager-ca-certificate"))
 		})
 	})
 })

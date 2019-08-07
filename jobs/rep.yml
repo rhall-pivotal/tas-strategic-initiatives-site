@@ -16,6 +16,7 @@ manifest: |
       preloaded_rootfses:
         - "cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar"
       use_azure_fault_domains: true
+      advertise_preference_for_instance_address: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(use_container_address) ))
     executor:
       disk_capacity_mb: (( .diego_cell.executor_disk_capacity.value ))
       instance_identity_ca_cert: ((( diego-instance-identity-intermediate-ca-2-7.certificate )))

@@ -1,12 +1,12 @@
 ---
 name: cf
-metadata_version: '2.6' # When a 2.7 Ops Manager appears, this value should be updated to be equal to the product version
+metadata_version: '2.7' # When a 2.8 Ops Manager appears, this value should be updated to be equal to the product version
 provides_product_versions:
 - name: cf
   version: $( version )
 product_version: $( version )
 pivnet_filename_regex: $( variable "product_regex" )
-minimum_version_for_upgrade: 2.6.0
+minimum_version_for_upgrade: 2.7.0
 label: $( variable "label" )
 description:
   Gives developers the ability to push apps on a dynamically-configured software stack
@@ -158,12 +158,15 @@ property_blueprints:
 - $( property "copilot_server_cert" )
 - $( property "credhub_database" )
 - $( property "credhub_database_name" )
-- $( property "credhub_hsm_provider_client_certificate" )
-- $( property "credhub_hsm_provider_list" )
+- $( property "credhub_providers" )
+- $( property "credhub_encryption_keys" )
+- $( property "credhub_internal_provider_keys" )
+- $( property "credhub_kms_providers" )
 - $( property "credhub_hsm_provider_partition" )
 - $( property "credhub_hsm_provider_partition_password" )
+- $( property "credhub_hsm_provider_client_certificate" )
+- $( property "credhub_hsm_provider_encryption_keys" )
 - $( property "credhub_hsm_provider_servers" )
-- $( property "credhub_key_encryption_passwords" )
 - $( property "credhub_tls" )
 - $( property "diego_database_name" )
 - $( property "diego_database_max_open_connections" )
@@ -244,10 +247,11 @@ property_blueprints:
 - $( property "router_client_cert_validation" )
 - $( property "router_enable_proxy" )
 - $( property "router_keepalive_connections" )
+- $( property "routing_api_client_cert" )
+- $( property "routing_api_server_cert" )
 - $( property "routing_backends_client_cert_with_san" )
 - $( property "routing_custom_ca_certificates" )
 - $( property "routing_database_name" )
-- $( property "router_prune_all_stale_routes" )
 - $( property "routing_minimum_tls_version" )
 - $( property "routing_log_client_ips" )
 - $( property "routing_disable_http" )
@@ -678,3 +682,6 @@ install_time_verifiers:
     username: .properties.uaa_database.external.uaa_username
     password: .properties.uaa_database.external.uaa_password
     database: .properties.uaa_database_name
+
+
+

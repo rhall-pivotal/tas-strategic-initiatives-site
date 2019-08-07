@@ -16,7 +16,7 @@ var _ = Describe("CredHub", func() {
 		}
 	})
 
-	Describe("encryption keys", func() {
+	Describe("internal-provider", func() {
 		Context("when there is a single internal key", func() {
 			It("configures credhub with the key", func() {
 				manifest, err := product.RenderManifest(nil)
@@ -27,36 +27,155 @@ var _ = Describe("CredHub", func() {
 
 				keys, err := credhub.Property("credhub/encryption/keys")
 				Expect(err).ToNot(HaveOccurred())
-				Expect(keys).To(HaveLen(1))
+				Expect(keys).To(HaveLen(2))
 
-				key := keys.([]interface{})[0].(map[interface{}]interface{})
+				key := keys.([]interface{})[0].([]interface{})[0].(map[interface{}]interface{})
 				Expect(key["provider_name"]).To(Equal("internal-provider"))
-				Expect(key["key_properties"]).To(HaveKeyWithValue("encryption_password", ContainSubstring("credhub_key_encryption_passwords/0/key.value")))
+				Expect(key["key_properties"]).To(HaveKeyWithValue("encryption_password",
+					ContainSubstring("credhub_internal_provider_keys/0/key.value")))
 				Expect(key["active"]).To(BeTrue())
+
+				providers, err := credhub.Property("credhub/encryption/providers")
+
+				Expect(providers).To(HaveLen(2))
+				Expect(err).ToNot(HaveOccurred())
+
+				internalProvider := providers.([]interface{})[0].([]interface{})[0].(map[interface{}]interface{})
+				Expect(internalProvider["name"]).To(Equal("internal-provider"))
+				Expect(internalProvider["type"]).To(Equal("internal"))
 			})
 		})
 
+		Context("when there are multiple internal keys", func() {
+			It("configures credhub with multiple keys", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.credhub_internal_provider_keys": []map[string]interface{}{
+						{
+							"key": map[string]interface{}{
+								"secret": "passwordA",
+							},
+							"name":    "KeyA",
+							"primary": true,
+						},
+						{
+							"key": map[string]interface{}{
+								"secret": "passwordB",
+							},
+							"name":    "KeyB",
+							"primary": false,
+						},
+					},
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+				Expect(err).NotTo(HaveOccurred())
+
+				keys, err := credhub.Property("credhub/encryption/keys")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(keys).To(HaveLen(2))
+
+				firstKey := keys.([]interface{})[0].([]interface{})[0].(map[interface{}]interface{})
+				Expect(firstKey["provider_name"]).To(Equal("internal-provider"))
+				Expect(firstKey["key_properties"]).To(HaveKeyWithValue("encryption_password",
+					ContainSubstring("credhub_internal_provider_keys/0/key.value")))
+				Expect(firstKey["active"]).To(BeTrue())
+
+				secondKey := keys.([]interface{})[0].([]interface{})[1].(map[interface{}]interface{})
+				Expect(secondKey["provider_name"]).To(Equal("internal-provider"))
+				Expect(secondKey["key_properties"]).To(HaveKeyWithValue("encryption_password",
+					ContainSubstring("credhub_internal_provider_keys/1/key.value")))
+				Expect(secondKey["active"]).To(BeFalse())
+
+				providers, err := credhub.Property("credhub/encryption/providers")
+				Expect(providers).To(HaveLen(2))
+				Expect(err).ToNot(HaveOccurred())
+
+				internalProvider := providers.([]interface{})[0].([]interface{})[0].(map[interface{}]interface{})
+				Expect(internalProvider["name"]).To(Equal("internal-provider"))
+				Expect(internalProvider["type"]).To(Equal("internal"))
+			})
+		})
+	})
+
+	Describe("kms provider", func() {
+		It("configures credhub with multiple keys", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.credhub_kms_providers": []map[string]interface{}{
+					{
+						"instance_name": "some-kms-instance-name-provider",
+						"endpoint":      "some-endpoint",
+						"primary":       true,
+					},
+				},
+				".properties.credhub_internal_provider_keys": []map[string]interface{}{
+					{
+						"key": map[string]interface{}{
+							"secret": "passwordA",
+						},
+						"name":    "KeyA",
+						"primary": false,
+					},
+				},
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+			Expect(err).NotTo(HaveOccurred())
+
+			keys, err := credhub.Property("credhub/encryption/keys")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(keys).To(HaveLen(2))
+
+			internalProviderKey := keys.([]interface{})[0].([]interface{})[0].(map[interface{}]interface{})
+			Expect(internalProviderKey["provider_name"]).To(Equal("internal-provider"))
+			Expect(internalProviderKey["key_properties"]).To(HaveKeyWithValue("encryption_password",
+				ContainSubstring("credhub_internal_provider_keys/0/key.value")))
+			Expect(internalProviderKey["active"]).To(BeFalse())
+
+			kmsPluginProviderKey := keys.([]interface{})[1].([]interface{})[0].(map[interface{}]interface{})
+			Expect(kmsPluginProviderKey["provider_name"]).To(Equal("some-kms-instance-name-provider"))
+			Expect(kmsPluginProviderKey["key_properties"]).To(HaveKeyWithValue("encryption_key_name",
+				ContainSubstring("kms-plugin-key-name")))
+			Expect(kmsPluginProviderKey["active"]).To(BeTrue())
+
+			providers, err := credhub.Property("credhub/encryption/providers")
+			Expect(providers).To(HaveLen(2))
+			Expect(err).ToNot(HaveOccurred())
+
+			internalProvider := providers.([]interface{})[0].([]interface{})[0].(map[interface{}]interface{})
+			Expect(internalProvider["name"]).To(Equal("internal-provider"))
+			Expect(internalProvider["type"]).To(Equal("internal"))
+
+			kmsProvider := providers.([]interface{})[1].([]interface{})[0].(map[interface{}]interface{})
+			Expect(kmsProvider["name"]).To(Equal("some-kms-instance-name-provider"))
+			Expect(kmsProvider["type"]).To(Equal("kms-plugin"))
+			Expect(kmsProvider["connection_properties"]).To(HaveKeyWithValue("endpoint", "some-endpoint"))
+			Expect(kmsProvider["connection_properties"]).To(HaveKeyWithValue("host", "credhub-kms"))
+			Expect(kmsProvider["connection_properties"]).To(HaveKeyWithValue("ca", "((/services/tls_ca))"))
+		})
+	})
+
+	Describe("encryption keys", func() {
 		Context("when there is an additional HSM key set as primary", func() {
 			It("configures credhub with the keys, with the HSM key marked as active", func() {
 				fakeClientKeypair := generateTLSKeypair("some-hsm-client")
 				fakeServerKeypair := generateTLSKeypair("some-hsm-host")
 				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.credhub_key_encryption_passwords": []map[string]interface{}{
+					".properties.credhub_internal_provider_keys": []map[string]interface{}{
 						{
 							"key": map[string]interface{}{
-								"secret": "some-credhub-password",
+								"secret": "passwordA",
 							},
-							"name":     "internal key display name",
-							"primary":  false,
-							"provider": "internal",
+							"name":    "KeyA",
+							"primary": false,
 						},
 						{
 							"key": map[string]interface{}{
-								"secret": "hsm-provider-key-name",
+								"secret": "passwordB",
 							},
-							"name":     "hsm key display name",
-							"primary":  true,
-							"provider": "hsm",
+							"name":    "KeyB",
+							"primary": false,
 						},
 					},
 					".properties.credhub_hsm_provider_client_certificate": map[string]interface{}{
@@ -70,9 +189,15 @@ var _ = Describe("CredHub", func() {
 					".properties.credhub_hsm_provider_servers": []map[string]interface{}{
 						{
 							"host_address":            "some-hsm-host",
-							"hsm_certificate":         fakeServerKeypair.Certificate,
+							"certificate":             fakeServerKeypair.Certificate,
 							"partition_serial_number": "some-hsm-partition-serial",
-							"port":                    9999,
+							"port": 9999,
+						},
+					},
+					".properties.credhub_hsm_provider_encryption_keys": []map[string]interface{}{
+						{
+							"name":    "some-hsm-key-name",
+							"primary": true,
 						},
 					},
 				})
@@ -83,26 +208,32 @@ var _ = Describe("CredHub", func() {
 
 				keys, err := credhub.Property("credhub/encryption/keys")
 				Expect(err).ToNot(HaveOccurred())
-				Expect(keys).To(HaveLen(2))
+				Expect(keys).To(HaveLen(3))
 
-				internalKey := keys.([]interface{})[0].(map[interface{}]interface{})
-				Expect(internalKey["provider_name"]).To(Equal("internal-provider"))
-				Expect(internalKey["key_properties"]).To(HaveKeyWithValue("encryption_password", ContainSubstring("credhub_key_encryption_passwords/0/key.value")))
-				Expect(internalKey["active"]).To(BeFalse())
+				firstInternalKey := keys.([]interface{})[0].([]interface{})[0].(map[interface{}]interface{})
+				Expect(firstInternalKey["provider_name"]).To(Equal("internal-provider"))
+				Expect(firstInternalKey["key_properties"]).To(HaveKeyWithValue("encryption_password", ContainSubstring("credhub_internal_provider_keys/0/key.value")))
+				Expect(firstInternalKey["active"]).To(BeFalse())
 
-				hsmKey := keys.([]interface{})[1].(map[interface{}]interface{})
+				secondInternalKey := keys.([]interface{})[0].([]interface{})[1].(map[interface{}]interface{})
+				Expect(secondInternalKey["provider_name"]).To(Equal("internal-provider"))
+				Expect(secondInternalKey["key_properties"]).To(HaveKeyWithValue("encryption_password", ContainSubstring("credhub_internal_provider_keys/1/key.value")))
+				Expect(secondInternalKey["active"]).To(BeFalse())
+
+				hsmKey := keys.([]interface{})[2].([]interface{})[0].(map[interface{}]interface{})
 				Expect(hsmKey["provider_name"]).To(Equal("hsm-provider"))
-				Expect(hsmKey["key_properties"]).To(HaveKeyWithValue("encryption_key_name", ContainSubstring("credhub_key_encryption_passwords/1/key.value")))
+				Expect(hsmKey["key_properties"]).To(HaveKeyWithValue("encryption_key_name", "some-hsm-key-name"))
 				Expect(hsmKey["active"]).To(BeTrue())
 
 				providers, err := credhub.Property("credhub/encryption/providers")
 				Expect(err).ToNot(HaveOccurred())
+				Expect(providers).To(HaveLen(3))
 
-				internalProvider := providers.([]interface{})[0].(map[interface{}]interface{})
+				internalProvider := providers.([]interface{})[0].([]interface{})[0].(map[interface{}]interface{})
 				Expect(internalProvider["name"]).To(Equal("internal-provider"))
 				Expect(internalProvider["type"]).To(Equal("internal"))
 
-				hsmProvider := providers.([]interface{})[1].(map[interface{}]interface{})
+				hsmProvider := providers.([]interface{})[2].(map[interface{}]interface{})
 				Expect(hsmProvider["name"]).To(Equal("hsm-provider"))
 				Expect(hsmProvider["type"]).To(Equal("hsm"))
 
@@ -317,6 +448,31 @@ var _ = Describe("CredHub", func() {
 				ca, err := credhub.Property("credhub/data_storage/tls_ca")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(ca).NotTo(BeEmpty())
+			})
+			Context("disable_hostname_verification", func() {
+				It("disables hostname_verification when selected", func() {
+					inputProperties[".properties.credhub_database.external.disable_hostname_verification"] = true
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+					Expect(err).NotTo(HaveOccurred())
+
+					hostnameVerification, err := credhub.Property("credhub/data_storage/hostname_verification/enabled")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(hostnameVerification).To(BeFalse())
+				})
+				It("does not disable hostname_verification by default", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+					Expect(err).NotTo(HaveOccurred())
+
+					hostnameVerification, err := credhub.Property("credhub/data_storage/hostname_verification/enabled")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(hostnameVerification).To(BeTrue())
+				})
 			})
 		})
 	})

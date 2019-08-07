@@ -324,11 +324,6 @@
           manifest: |
             0
 
-- name: router_prune_all_stale_routes
-  type: boolean
-  configurable: true
-  default: false
-
 - name: route_services
   type: selector
   configurable: true
@@ -482,6 +477,7 @@
   property_blueprints:
   - name: name
     type: string
+    configurable: true
   named_manifests:
   - name: for_bosh_dns_adapter
     manifest: |
@@ -518,6 +514,20 @@
   default:
     domains:
     - copilot.service.cf.internal
+
+- name: routing_api_server_cert
+  type: rsa_cert_credentials
+  configureable: false
+  default:
+    domains:
+    - routing-api.service.cf.internal
+
+- name: routing_api_client_cert
+  type: rsa_cert_credentials
+  configureable: false
+  default:
+    domains:
+    - routing-api.service.cf.internal
 
 - name: router_headers_remove_if_specified
   type: collection
