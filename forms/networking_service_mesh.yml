@@ -12,7 +12,9 @@ property_inputs:
   - reference: .properties.istio
     label: Service Mesh (Beta)
     description: |
-      An Istio ingress router, in addition to existing HTTP and TCP routers.
+      When enabled, a new kind of platform ingress router will be deployed, in parallel to the existing HTTP and TCP routers,
+      offering new capabilities. Enable this only for deployments with fewer than 20,000 service mesh ingress routes and fewer than
+      300 internal routes; core platform functions will be impacted at greater scale.
     selector_property_inputs:
     - reference: .properties.istio.disable
       label: |
