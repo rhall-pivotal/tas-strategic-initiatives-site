@@ -92,7 +92,7 @@ var _ = Describe("Routing", func() {
 			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("ca"))
 			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("cert"))
 			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("key"))
-			})
+		})
 	})
 
 	Describe("bpm", func() {
@@ -128,4 +128,18 @@ var _ = Describe("Routing", func() {
 			Expect(router.Property("router/route_services_internal_lookup")).To(Equal(true))
 		})
 	})
+
+	Describe("Route Balancer", func() {
+		It("set balancing_algorithm to the value of router_balancing_algorithm property", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.router_balancing_algorithm": "least-connection",
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(router.Property("router/balancing_algorithm")).To(Equal("least-connection"))
+		})
+	})
+
 })

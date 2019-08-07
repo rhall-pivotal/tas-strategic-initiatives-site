@@ -44,6 +44,14 @@ property_inputs:
     - reference: .properties.routing_minimum_tls_version.tls_v1_2
       label: TLSv1.2
 
+- reference: .properties.router_balancing_algorithm
+  label: Balancing algorithm used by Router
+  selector_property_inputs:
+    - reference: .properties.router_balancing_algorithm.round_robin
+      label: Round robin
+    - reference: .properties.router_balancing_algorithm.least_connection
+      label: Least connections
+
 - reference: .properties.routing_log_client_ips
   label: Logging of client IPs in Router
   description: |

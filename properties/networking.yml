@@ -229,6 +229,16 @@
   configurable: true
   default: false
 
+- name: router_balancing_algorithm
+  type: selector
+  configurable: true
+  default: round-robin
+  option_templates:
+    - name: round_robin
+      select_value: round-robin
+    - name: least_connection
+      select_value: least-connection
+
 - name: gorouter_ssl_ciphers
   type: text
   configurable: true

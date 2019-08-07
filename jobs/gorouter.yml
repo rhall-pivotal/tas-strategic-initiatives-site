@@ -9,6 +9,7 @@ manifest: |
     http_rewrite:
       responses:
         remove_headers: (( .properties.router_headers_remove_if_specified.value ))
+    balancing_algorithm: (( .properties.router_balancing_algorithm.value ))
     backends:
       enable_tls: true
       max_conns: (( .properties.router_backend_max_conn.value ))
