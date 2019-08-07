@@ -579,4 +579,17 @@ var _ = Describe("Routing", func() {
 			Expect(ca).To(Equal("fake-ops-manager-ca-certificate"))
 		})
 	})
+
+	Describe("Route Balancer", func() {
+		It("set balancing_algorithm to the value of router_balancing_algorithm property", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.router_balancing_algorithm": "least-connection",
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			router, err := manifest.FindInstanceGroupJob("router", "gorouter")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(router.Property("router/balancing_algorithm")).To(Equal("least-connection"))
+		})
+	})
 })
