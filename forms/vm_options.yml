@@ -3,7 +3,7 @@ name: vm_options
 description: VM Options
 label: VM Options
 markdown: |
-  To configure this pane, see the
+  For help configuring these fields, see the
   [Step 3: Configure the Tile](https://docs.pivotal.io/pivotalcf/2-7/windows/installing.html#config)
   section of the _Installing and Configuring PASW_ topic in the PCF documentation.
 
@@ -19,9 +19,7 @@ property_inputs:
       property_inputs:
         - reference: .properties.windows_admin_password.set_password.password
           label: Password
-          description: |
-            Overrides the Windows default password
-            for all VMs.
+          description: Overrides the Windows default password for all VMs.
 
 - reference: .properties.bosh_ssh_enabled
   label: "Enable BOSH-native SSH support on all VMs (beta)"
