@@ -3,8 +3,8 @@ name: app_autoscaler
 label: App Autoscaler
 description: App Autoscaler
 markdown: |
-  To configure this pane, see the
-  [(Optional) Configure App Autoscaler](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#config-autoscaler)
+  For help configuring these fields, see the
+  [Configure App Autoscaler](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#config-autoscaler)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
@@ -15,16 +15,16 @@ property_inputs:
     label: Autoscaler API instance count
 
   - reference: .properties.autoscale_metric_bucket_count
-    label: "Metric collection interval (min: 60, max: 3600)"
+    label: Metric collection interval
     description: |
-      The size (in seconds) of the window of metrics that
-      App Autoscaler uses to make scaling decisions.
+      The size of the window of metrics that App Autoscaler uses
+      to make scaling decisions. Enter value in seconds.
 
   - reference: .properties.autoscale_scaling_interval_in_seconds
-    label: "Scaling interval (min: 15, max: 120)"
+    label: Scaling interval
     description: |
-      How frequently (in seconds) App Autoscaler evaluates
-      an app for scaling.
+      How frequently App Autoscaler evaluates an app for scaling.
+      Enter value in seconds.
 
   - reference: .properties.autoscale_enable_verbose_logging
     label: Enable verbose logging

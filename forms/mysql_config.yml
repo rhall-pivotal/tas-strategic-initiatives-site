@@ -3,29 +3,26 @@ name: mysql_config
 label: Internal MySQL
 description: Internal MySQL
 markdown: |
-  To configure this pane, see the
-  [(Optional) Configure Internal MySQL](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#internal-mysql)
+  For help configuring these fields, see the
+  [Configure Internal MySQL](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#internal-mysql)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .mysql_monitor.poll_frequency
-    label: Replication canary time period (in seconds)
+    label: Replication canary time period
     description: |
       How frequently the canary checks for replication
-      failure.
+      failure. Enter value in seconds.
 
   - reference: .mysql_monitor.write_read_delay
-    label: Replication canary read delay (in seconds)
+    label: Replication canary read delay
     description: |
       How long the canary waits to verify data is replicating
-      across each MySQL node.
+      across each MySQL node. Enter value in seconds.
 
   - reference: .mysql_monitor.recipient_email
     label: Email address
-    description: |
-      The email to which MySQL sends alerts when the
-      cluster experiences a replication issue or a node
-      is not allowed to auto-rejoin the cluster.
+    description: The email to which MySQL sends alerts.
 
   - reference: .mysql.cli_history
     label: Allow command history
@@ -36,14 +33,15 @@ property_inputs:
   - reference: .mysql.remote_admin_access
     label: Allow remote admin access
     description: |
-      Admin and roadmin can connect from any remote host.
+      Admin and read-only admin users can connect to MySQL
+      nodes from any remote host.
 
   - reference: .mysql.cluster_probe_timeout
-    label: Cluster probe timeout (in seconds)
+    label: Cluster probe timeout
     description: |
       The maximum amount of time that a new node searches
-      for existing cluster nodes. The default value is 10
-      seconds.
+      for existing cluster nodes. Enter value in seconds.
+      The default value is 10 seconds.
 
   - reference: .mysql.max_connections
     label: Maximum connections
@@ -63,24 +61,24 @@ property_inputs:
             label: Event types
 
   - reference: .mysql_proxy.startup_delay
-    label: Load balancer healthy threshold (in seconds)
+    label: Load balancer healthy threshold
     description: |
       Specifies the amount of time to wait until reporting the
-      MySQL Proxy instance has started.
+      MySQL Proxy instance has started. Enter value in seconds.
 
   - reference: .mysql_proxy.shutdown_delay
-    label: Load balancer unhealthy threshold (in seconds)
+    label: Load balancer unhealthy threshold
     description: |
-      Specifies the amount of time that the MySQL Proxy continues
-      to accept connections before shutting down.
+      Specifies the amount of time that MySQL Proxy continues to
+      accept connections before shutting down. Enter value in
+      seconds.
 
   - reference: .mysql_proxy.enable_inactive_mysql_port
-    label: Enable inactive mysql port
+    label: Enable inactive MySQL port
     description: |
-      When checked the MySQL proxy will expose an additional port (3336) which
-      points to a node in the cluster which is not receiving traffic from
-      PAS components. If the cluster is a single node it will point to the same
-      node as the regular MySQL port (3306).
+      MySQL Proxy exposes an additional port, 3336, that points
+      to a node in the cluster that is not receiving traffic from
+      PAS components.
 
   - reference: .mysql.prevent_node_auto_rejoin
     label: Prevent node auto re-join

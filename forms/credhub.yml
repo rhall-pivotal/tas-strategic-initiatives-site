@@ -3,7 +3,7 @@ name: credhub
 label: CredHub
 description: CredHub
 markdown: |
-  To configure this pane, see the
+  For help configuring these fields, see the
   [Configure CredHub](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#credhub)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
@@ -21,7 +21,8 @@ property_inputs:
   label: CredHub database location
   selector_property_inputs:
   - reference: .properties.credhub_database.internal_mysql
-    label: PAS database (configured in the Databases pane)
+    label: PAS database
+    description: This is configured in the Databases pane.
 
   - reference: .properties.credhub_database.external
     label: Other external database

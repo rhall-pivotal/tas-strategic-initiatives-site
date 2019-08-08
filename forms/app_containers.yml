@@ -1,10 +1,10 @@
 ---
 name: app_containers
-label: Application Containers
-description: Application Containers
+label: App Containers
+description: App Containers
 markdown: |
-  To configure this pane, see the
-  [Configure Application Containers](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#application-containers-config)
+  For help configuring these fields, see the
+  [Configure App Containers](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#application-containers-config)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
@@ -18,12 +18,12 @@ property_inputs:
   label: Enable SSH when an app is created
 
 - reference: .properties.route_integrity
-  label: Router application identity verification
+  label: Router app identity verification
   selector_property_inputs:
   - reference: .properties.route_integrity.tls_verify
-    label: Router uses TLS to verify application identity
+    label: Router uses TLS to verify app identity
   - reference: .properties.route_integrity.mutual_tls_verify
-    label: Router and applications use mutual TLS to verify each other's identity
+    label: Router and apps use mutual TLS to verify each other's identity
 
 - reference: .diego_cell.insecure_docker_registry_list
   label: Private Docker insecure registry allow list
@@ -46,9 +46,10 @@ property_inputs:
     label: Clean up disk space once usage fills disk
     property_inputs:
       - reference: .properties.garden_disk_cleanup.reserved.reserved_space_for_other_jobs_in_mb
-        label: Reserved disk space for other jobs (in MB)
+        label: Reserved disk space for other jobs
         description: |
-          Amount of space the GC algorithm should attempt to keep free for other jobs.
+          Amount of space the garbage collection algorithm should attempt to
+          keep free for other jobs. Enter value in MB.
 
 - reference: .properties.enable_garden_containerd_mode
   label: Enable containerd delegation

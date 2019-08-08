@@ -3,8 +3,8 @@ name: apps_manager_config
 label: Apps Manager
 description: Apps Manager
 markdown: |
-  To configure this pane, see the
-  [(Optional) Configure Custom Branding and Apps Manager](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#customize-apps-man)
+  For help configuring these fields, see the
+  [Configure Custom Branding and Apps Manager](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#customize-apps-man)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
@@ -17,7 +17,8 @@ property_inputs:
   - reference: .properties.push_apps_manager_currency_lookup
     label: Supported currencies as JSON
     description: |
-      Define currency codes and associated symbols. Defaults to { "usd": "$", "eur": "€" }.
+      Define currency codes and associated symbols.
+      Defaults to { "usd": "$", "eur": "€" }.
 
   - reference: .properties.push_apps_manager_product_name
     label: Product name
@@ -39,28 +40,28 @@ property_inputs:
         label: URL
 
   - reference: .properties.push_apps_manager_memory
-    label: Apps Manager memory usage (in MB)
+    label: Apps Manager memory usage
     description: |
-      The memory limit with which to deploy the Apps Manager app.
-      Leave blank to use the default value.
+      The memory limit for the Apps Manager app.
+      Enter value in MB. Leave blank to use the default value.
 
   - reference: .properties.push_apps_manager_invitations_memory
-    label: Invitations memory usage (in MB)
+    label: Invitations memory usage
     description: |
-      The memory limit with which to deploy the Invitations app.
-      Leave blank to use the default value.
+      The memory limit for the Invitations app. Enter value in MB.
+      Leave blank to use the default value of 256 MB.
 
   - reference: .properties.push_apps_manager_poll_interval
-    label: Apps Manager polling interval (in seconds)
+    label: Apps Manager polling interval
     description: |
-      The Apps Manager polling interval. Values between 0 and 30
-      default to 30 seconds.
+      The Apps Manager polling interval. Enter value in seconds.
+      Leave blank to use the default value of 30 seconds.
 
   - reference: .properties.push_apps_manager_app_poll_interval
-    label: App details polling interval (in seconds)
+    label: App details polling interval
     description: |
-      App details polling interval. Values between 0 and 10 default
-      to 10 seconds.
+      App details polling interval. Enter value in seconds.
+      Leave blank to use the default value of 10 seconds.
 
   - reference: .properties.push_apps_manager_foundations
     label: Multi-foundation configuration (beta)

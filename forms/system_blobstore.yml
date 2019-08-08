@@ -3,7 +3,7 @@ name: system_blobstore
 label: File Storage
 description: File Storage
 markdown: |
-  To configure this pane, see the
+  For help configuring these fields, see the
   [Configure File Storage](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#file-storage)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
@@ -55,14 +55,14 @@ property_inputs:
 - reference: .properties.system_blobstore_ccpackage_max_valid_packages_stored
   label: Maximum valid packages per app
   description: |
-    The number of recent, valid packages stored per app
-    (not including package for current droplet).
+    The number of recent, valid packages stored per app,
+    not including the package for the current droplet.
 
 - reference: .properties.system_blobstore_ccdroplet_max_staged_droplets_stored
   label: Maximum staged droplets per app
   description: |
-    The number of recent, staged droplets stored per app
-    (not including current droplet).
+    The number of recent, staged droplets stored per app,
+    not including the current droplet.
 
 - reference: .properties.system_blobstore_backup_level
   label: Configure file storage backup level
@@ -70,9 +70,11 @@ property_inputs:
   - reference: .properties.system_blobstore_backup_level.all
     label: Complete file storage backup
   - reference: .properties.system_blobstore_backup_level.skip_droplets
-    label: Exclude droplets from file storage backup (requires restaging Cloud Foundry)
+    label: Exclude droplets from file storage backup
+    description: This option requires restaging Cloud Foundry.
   - reference: .properties.system_blobstore_backup_level.skip_droplets_packages
-    label: Exclude droplets and packages from file storage backup (requires `cf push`)
+    label: Exclude droplets and packages from file storage backup
+    description: This option requires `cf push`.
 
 - reference: .properties.system_blobstore
   label: "Configure your Cloud Controller's filesystem:"
@@ -81,8 +83,7 @@ property_inputs:
     label: Internal WebDAV
 
   - reference: .properties.system_blobstore.external
-    label: |
-      External S3-compatible file store
+    label: External S3-compatible file store
     property_inputs:
       - reference: .properties.system_blobstore.external.endpoint
         label: URL endpoint
@@ -106,8 +107,8 @@ property_inputs:
       - reference: .properties.system_blobstore.external.region
         label: Region
         description: |
-          The AWS region where the buckets are located, e.g. "us-east-1"
-          or "ap-northeast-1".
+          The AWS region where the buckets are located. For example,
+          "us-east-1" or "ap-northeast-1".
         placeholder: "us-east-1"
 
       - reference: .properties.system_blobstore.external.encryption
@@ -144,8 +145,8 @@ property_inputs:
       - reference: .properties.system_blobstore.external.backup_region
         label: Backup region
         description: |
-          The AWS region where the buckets are located, e.g. "us-east-1"
-          or "ap-northeast-1".
+          The AWS region where the buckets are located. For example,
+          "us-east-1" or "ap-northeast-1".
         placeholder: "us-east-1"
 
       - reference: .properties.system_blobstore.external.buildpacks_backup_bucket
@@ -206,7 +207,7 @@ property_inputs:
 
       - reference: .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket
         label: Buildpacks bucket name
-        description: The ucket for storing app buildpacks.
+        description: The bucket for storing app buildpacks.
 
       - reference: .properties.system_blobstore.external_gcs_service_account.droplets_bucket
         label: Droplets bucket name

@@ -3,16 +3,18 @@ name: advanced_features
 label: Advanced Features
 description: Advanced Features
 markdown: |
-  To configure this pane, see the
-  [(Optional) Configure Advanced Features](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#advanced)
+  For help configuring these fields, see the
+  [Configure Advanced Features](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#advanced)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .diego_cell.executor_memory_capacity
-    label: Cell memory capacity (in MB)
+    label: Cell memory capacity
+    description: Enter value in MB.
 
   - reference: .diego_cell.executor_disk_capacity
-    label: Cell disk capacity (in MB)
+    label: Cell disk capacity
+    description: Enter value in MB.
 
   - reference: .nfs_server.blobstore_internal_access_rules
     label: Non-RFC-1918 private network allow list
@@ -68,9 +70,6 @@ property_inputs:
 
   - reference: .properties.cloud_controller_temporary_disable_deployments
     label: Disable zero-downtime app deployments
-    description: |
-      Disables zero-downtime deployments for apps and the
-      cc_deployment_updater job.
 
   - reference: .properties.log_cache_max_per_source
     label: Maximum number of envelopes stored in Log Cache per source

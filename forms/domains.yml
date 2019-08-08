@@ -1,10 +1,9 @@
 ---
 name: domains
 label: Domains
-description: |
-  Domains
+description: Domains
 markdown: |
-  To configure this pane, see the
+  For help configuring these fields, see the
   [Configure Domains](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#domains)
   section of the _Configuring PAS_ topic in the PCF documentation.
 verifiers:
@@ -16,13 +15,11 @@ verifiers:
       domain: .cloud_controller.apps_domain
 property_inputs:
   - reference: .cloud_controller.system_domain
-    label: System Domain
-    description: |
-      The domain for system-level PCF components.
+    label: System domain
+    description: The domain for system-level PCF components.
     placeholder: system.example.com
 
   - reference: .cloud_controller.apps_domain
-    label: Apps Domain
-    description: |
-      The default domain that apps use for their hostnames.
+    label: Apps domain
+    description: The default domain that apps use for their hostnames.
     placeholder: apps.example.com

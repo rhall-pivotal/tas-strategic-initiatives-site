@@ -3,7 +3,7 @@ name: sso
 label: Authentication and Enterprise SSO
 description: Authentication and Enterprise SSO
 markdown: |
-  To configure this pane, see the
+  For help configuring these fields, see the
   [Configure Authentication and Enterprise SSO](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#auth-config)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
@@ -50,11 +50,11 @@ property_inputs:
               timespan before the account is locked.
 
       - reference: .properties.uaa.saml
-        label: SAML Identity Provider
+        label: SAML identity provider
         property_inputs:
           - reference: .properties.uaa.saml.sso_name
             label: Provider name
-            description: Create a unique name for your Identity Provider.
+            description: Create a unique name for your identity provider.
 
           - reference: .properties.uaa.saml.display_name
             label: Display name
@@ -62,7 +62,7 @@ property_inputs:
 
           - reference: .properties.uaa.saml.sso_xml
             label: Provider metadata
-            description: The metadata XML content for the Identity Provider.
+            description: The metadata XML content for the identity provider.
 
           - reference: .properties.uaa.saml.sso_url
             label: Provider metadata URL
@@ -71,8 +71,8 @@ property_inputs:
           - reference: .properties.uaa.saml.name_id_format
             label: Name ID format
             description: |
-              Select the name identifier format configured for the Identity
-              Provider.
+              Select the name identifier format configured for the identity
+              provider.
 
           - reference: .properties.uaa.saml.email_domains
             label: Email domain(s)
@@ -99,8 +99,7 @@ property_inputs:
           - reference: .properties.uaa.saml.sign_auth_requests
             label: Sign authentication requests
             description: |
-              Signed authentication requests are sent to the
-              SAML identity provider.
+              Signed authentication requests are sent to the SAML identity provider.
 
           - reference: .properties.uaa.saml.require_signed_assertions
             label: Require signed assertions

@@ -1,10 +1,9 @@
 ---
 name: uaa
 label: UAA
-description: |
-  Configure the User Account and Authentication Server
+description: UAA
 markdown: |
-  To configure this pane, see the
+  For help configuring these fields, see the
   [Configure UAA](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#uaa)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
@@ -19,16 +18,14 @@ verifiers:
 
 property_inputs:
 - reference: .properties.uaa_database
-  label: |
-    UAA database location
+  label: UAA database location
   selector_property_inputs:
   - reference: .properties.uaa_database.internal_mysql
-    label: |
-      PAS database (configured in the Databases pane)
+    label: PAS database
+    description: This is configured in the Databases pane.
 
   - reference: .properties.uaa_database.external
-    label: |
-      Other external database
+    label: Other external database
     property_inputs:
       - reference: .properties.uaa_database.external.host
         label: Hostname
@@ -66,24 +63,34 @@ property_inputs:
   description: The supported algorithm for signed requests and assertions.
 
 - reference: .uaa.apps_manager_access_token_lifetime
-  label: Apps Manager access token lifetime (in seconds)
-  description: The lifetime of the access token for Apps Manager.
+  label: Apps Manager access token lifetime
+  description: |
+    The lifetime of the access token for Apps Manager.
+    Enter value in seconds.
 
 - reference: .uaa.cf_cli_access_token_lifetime
-  label: Cloud Foundry CLI access token lifetime (in seconds)
-  description: The lifetime of the access token for the cf CLI.
+  label: Cloud Foundry CLI access token lifetime
+  description: |
+    The lifetime of the access token for the cf CLI.
+    Enter value in seconds.
 
 - reference: .uaa.cf_cli_refresh_token_lifetime
-  label: Cloud Foundry CLI refresh token lifetime (in seconds)
-  description: The lifetime of the refresh token for the cf CLI.
+  label: Cloud Foundry CLI refresh token lifetime
+  description: |
+    The lifetime of the refresh token for the cf CLI.
+    Enter value in seconds.
 
 - reference: .properties.uaa_session_cookie_max_age
-  label: Global login session max timeout (in seconds)
-  description: The maximum timeout for a global login session.
+  label: Global login session maximum timeout
+  description: |
+    The maximum timeout for a global login session.
+    Enter value in seconds.
 
 - reference: .properties.uaa_session_idle_timeout
-  label: Global login session idle timeout (in seconds)
-  description: The maximum timeout for idle global login sessions.
+  label: Global login session idle timeout
+  description: |
+    The maximum timeout for idle global login sessions.
+    Enter value in seconds.
 
 - reference: .uaa.customize_username_label
   label: Customize username label

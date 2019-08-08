@@ -3,7 +3,7 @@ name: cloud_controller
 label: Cloud Controller
 description: Cloud Controller
 markdown: |
-  To configure this pane, see the
+  For help configuring these fields, see the
   [Configure Cloud Controller](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#config-cc)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
@@ -37,21 +37,22 @@ property_inputs:
         label: Disable
 
   - reference: .properties.ccdb_connection_validation_timeout
-    label: Database connection validation timeout (in seconds)
-    description: The connection validation timeout.
+    label: Database connection validation timeout
+    description: The connection validation timeout. Enter value in seconds.
 
   - reference: .properties.ccdb_read_timeout
-    label: Database read timeout (in seconds)
-    description: The read timeout for query responses.
+    label: Database read timeout
+    description: The read timeout for query responses. Enter value in seconds.
 
   - reference: .properties.cloud_controller_completed_tasks_cutoff_age_in_days
     label: |
-      Age of completed tasks pruned from Cloud Controller database (in days)
-    description: The number of days after which completed tasks are pruned from the Cloud Controller Database.
+      Age of completed tasks pruned from Cloud Controller database
+    description: |
+      The number of days after which completed tasks are pruned from the Cloud
+      Controller Database. Enter value in days.
 
   - reference: .properties.cloud_controller_encryption_keys
-    label: |
-      Encryption key ledger
+    label: Encryption key ledger
     property_inputs:
       - reference: label
         label: Encryption key label
