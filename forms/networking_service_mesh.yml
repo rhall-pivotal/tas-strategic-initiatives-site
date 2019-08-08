@@ -1,40 +1,35 @@
 ---
 name: networking_service_mesh
 label: Networking - Service Mesh
-description: |
-  Networking Service Mesh (Beta)
+description: Networking Service Mesh (Beta)
 markdown: |
-  To configure this pane, see the
+  For help configuring these fields, see the
   [Configure Networking - Service Mesh (Beta)](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#networking-service-mesh)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .properties.istio
     label: Service Mesh (Beta)
+    label: Service mesh (beta)
     description: |
-      When enabled, a new kind of platform ingress router will be deployed, in parallel to the existing HTTP and TCP routers,
-      offering new capabilities. Enable this only for deployments with fewer than 20,000 service mesh ingress routes and fewer than
-      300 internal routes; core platform functions will be impacted at greater scale.
+      Uses an Istio router in addition to existing HTTP and TCP routers.
     selector_property_inputs:
     - reference: .properties.istio.disable
-      label: |
-        Disable
+      label: Disable
     - reference: .properties.istio.enable
-      label: |
-        Enable
+      label: Enable
 
   - reference: .istio_router.static_ips
-    label: IP addresses for ingress router
-    description: |
-      A comma-separated list of static IPs for your Istio routers.
+    label: IP addresses for Istio router
+    description: A comma-separated list of static IPs for your Istio router.
 
   - reference: .properties.istio_domain
     label: External domain
     description: |
-      A domain name that resolves to a load balancer in front of Istio routers.
+      A domain name that resolves to a load balancer in front of your Istio router.
 
   - reference: .properties.istio_frontend_tls_keypairs
-    label: Ingress router TLS keypairs
+    label: Istio router TLS keypairs
     property_inputs:
     - reference: name
       label: Name

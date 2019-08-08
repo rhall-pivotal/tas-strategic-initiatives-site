@@ -3,7 +3,7 @@ name: networking
 label: Networking
 description: Networking
 markdown: |
-  To configure this pane, see the
+  For help configuring these fields, see the
   [Configure Networking](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#networking)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
@@ -21,8 +21,8 @@ property_inputs:
     description: A comma-separated list of HAProxy IPs.
 
   - reference: .tcp_router.static_ips
-    label: TCP Router IPs
-    description: A comma-separated list of TCP Router IPs.
+    label: TCP router IPs
+    description: A comma-separated list of TCP router IPs.
 
   - reference: .properties.networking_poe_ssl_certs
     label: Certificates and private keys for HAProxy and Router
@@ -114,7 +114,7 @@ property_inputs:
           label: Certificate Authority for HAProxy back end
           description: |
             Provide a Certificate Authority for the certificate and key provided
-            in the Certificate and Private Key for HAProxy and Router field.
+            in the "Certificate and private key for HAProxy and Router" field.
       - reference: .properties.haproxy_forward_tls.disable
         label: Disable
 
@@ -125,7 +125,8 @@ property_inputs:
         label: Enable
         property_inputs:
         - reference: .properties.haproxy_hsts_support.enable.max_age
-          label: Maximum age (in seconds)
+          label: Maximum age
+          description: Enter value in seconds.
         - reference: .properties.haproxy_hsts_support.enable.include_subdomains
           label: Include subdomains
         - reference: .properties.haproxy_hsts_support.enable.enable_preload
@@ -180,28 +181,28 @@ property_inputs:
       label: Disable
 
   - reference: .router.request_timeout_in_seconds
-    label: Router timeout to back ends (in seconds)
+    label: Router timeout to back ends
     description: |
-      Timeout for connections from Router (and HAProxy, if in use) to
-      apps and system components.
+      Timeout for connections from Router and HAProxy to apps and system
+      components. Enter value in seconds.
 
   - reference: .router.frontend_idle_timeout
-    label: Front end idle timeout for Router and HAProxy (in seconds)
+    label: Front end idle timeout for Router and HAProxy
     description: |
       Duration to maintain an open connection when client supports
-      keep-alive connections.
+      keep-alive connections. Enter value in seconds.
 
   - reference: .router.drain_wait
-    label: Load balancer unhealthy threshold (in seconds)
+    label: Load balancer unhealthy threshold
     description: |
-      The amount of time that the Router continues
-      to accept connections before shutting down.
+      The amount of time that the Router continues to accept connections
+      before shutting down. Enter value in seconds.
 
   - reference: .router.lb_healthy_threshold
-    label: Load balancer healthy threshold (in seconds)
+    label: Load balancer healthy threshold
     description: |
-      The amount of time to wait until reporting the
-      Router instance has started.
+      The amount of time to wait until reporting the Router instance has
+      started. Enter value in seconds.
 
   - reference: .router.extra_headers_to_log
     label: HTTP headers to log
@@ -210,8 +211,8 @@ property_inputs:
       events on the Router.
 
   - reference: .properties.haproxy_max_buffer_size
-    label: HAProxy request max buffer size (in bytes)
-    description: Buffer size to use for requests.
+    label: HAProxy request maximum buffer size
+    description: Buffer size to use for requests. Enter value in bytes.
 
   - reference: .ha_proxy.internal_only_domains
     label: HAProxy protected domains
@@ -223,7 +224,7 @@ property_inputs:
     label: HAProxy trusted CIDRs
     description: |
       A space-separated list of CIDRs allowed to make requests to the domains
-      listed in the Protected Domains field.
+      listed in the "HAProxy protected domains" field.
 
   - reference: .properties.logger_endpoint_port
     label: Loggregator port
@@ -236,10 +237,11 @@ property_inputs:
         label: Silk
         property_inputs:
           - reference: .properties.container_networking_interface_plugin.silk.network_mtu
-            label: App network maximum transmission unit (MTU) (in bytes)
+            label: App network maximum transmission unit
             description: |
               The maximum size of a protocol data unit that can be
-              sent in a single network transaction. The default is 1454 bytes.
+              sent in a single network transaction. Enter value in bytes.
+              The default is 1454 bytes.
           - reference: .properties.container_networking_interface_plugin.silk.network_cidr
             label: Overlay subnet
             description: |
@@ -250,15 +252,15 @@ property_inputs:
             description: |
               Host port used for receiving VXLAN packets. The default is 4789.
           - reference: .properties.container_networking_interface_plugin.silk.iptables_denied_logs_per_sec
-            label: Denied logging interval (in packets per second)
+            label: Denied logging interval
             description: |
-              The rate at which traffic logging is denied. The default is 1
-              packet per second.
+              The rate at which traffic logging is denied. Enter value in
+              packets per second. The default is 1 packet per second.
           - reference: .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec
-            label: UDP logging interval (in packets per second)
+            label: UDP logging interval
             description: |
-              The rate at which UDP traffic logging is denied. The default is
-              100 packets per second.
+              The rate at which UDP traffic logging is denied. Enter value in
+              packets per second. The default is 100 packets per second.
           - reference: .properties.container_networking_interface_plugin.silk.enable_log_traffic
             label: Log traffic for all accepted and denied app packets
           - reference: .properties.container_networking_interface_plugin.silk.enable_policy_enforcement
@@ -276,10 +278,11 @@ property_inputs:
     label: Database connection timeout
     description: |
       Connection timeout for clients of the policy server and Silk databases.
+      Enter value in seconds.
 
   - reference: .properties.tcp_routing
     label: |
-      Enable TCP requests to apps through specific ports on the TCP Router
+      Enable TCP requests to apps through specific ports on the TCP router
     selector_property_inputs:
       - reference: .properties.tcp_routing.disable
         label: Disable TCP routing
