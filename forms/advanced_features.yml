@@ -3,23 +3,25 @@ name: advanced_features
 label: Advanced Features
 description: Advanced Features
 markdown: |
-  To configure this pane, see the
+  For help configuring these fields, see the
   [Step 3: Configure the Tile](https://docs.pivotal.io/pivotalcf/2-7/windows/installing.html#config)
   section of the _Installing and Configuring PASW_ topic in the PCF documentation.
 
 property_inputs:
   - reference: .windows_diego_cell.executor_memory_capacity
-    label: Cell memory capacity (in MB)
+    label: Cell memory capacity
+    description: Enter value in MB.
 
   - reference: .windows_diego_cell.executor_disk_capacity
-    label: Cell disk capacity (in MB)
+    label: Cell disk capacity
+    description: Enter value in MB.
 
   - reference: .properties.route_integrity
-    label: (Beta) Enable TLS Connections From Router To Applications
+    label: TLS connections from Router to apps (beta)
     selector_property_inputs:
     - reference: .properties.route_integrity.disable
-      label: Disable route integrity and mutual TLS (Default)
+      label: Disable route integrity and mutual TLS
     - reference: .properties.route_integrity.tls_verify
-      label: Router uses TLS to verify application identity
+      label: Router uses TLS to verify app identity
     - reference: .properties.route_integrity.mutual_tls_verify
-      label: Router and applications use mutual TLS to verify each other's identity (incompatible with TCP Routing)
+      label: Router and apps use mutual TLS to verify each other's identity
