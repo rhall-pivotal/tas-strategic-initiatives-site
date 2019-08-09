@@ -97,7 +97,7 @@ property_inputs:
     An ordered, colon-separated list of TLS cipher suites in OpenSSL format.
 
 - reference: .properties.haproxy_forward_tls
-  label: HAProxy forwards requests to Router over TLS
+  label: HAProxy forwards all requests to Router over TLS
   selector_property_inputs:
     - reference: .properties.haproxy_forward_tls.enable
       label: Enable
@@ -130,13 +130,13 @@ property_inputs:
   label: Disable SSL certificate verification for this environment
 
 - reference: .properties.routing_disable_http
-  label: Disable HTTP on HAProxy and Gorouter
+  label: Disable HTTP on HAProxy and Router
 
 - reference: .isolated_router.disable_insecure_cookies
   label: Disable insecure cookies on the Router
 
 - reference: .isolated_router.enable_zipkin
-  label: Enable Zipkin tracing headers on the router
+  label: Enable Zipkin tracing headers on the Router
 
 - reference: .isolated_router.enable_write_access_logs
   label: Enable Router to write access logs locally
