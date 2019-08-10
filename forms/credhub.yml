@@ -43,42 +43,41 @@ property_inputs:
         label: Database CA certificate
 
       - reference: .properties.credhub_database.external.disable_hostname_verification
-        label: Disable Hostname Verification
-        description: Disables hostname verification for TLS connections to targeted database server. This property is only respected when targeting a MariaDB database. Hostname verification cannot be disabled for TLS connections to postgres databases.
+        label: Disable hostname verification
+        description: |
+          Disables hostname verification for TLS connections to 
+          the targeted database server.
 
 - reference: .properties.credhub_internal_provider_keys
-  label: Internal Encryption Provider Keys
+  label: Internal encryption provider keys
   property_inputs:
   - reference: name
     label: Name
-    description: |
-      Name of the encryption key.
+    description: Name of the encryption key.
   - reference: key
     label: Key
-    description: |
-      The encryption key will be used to encrypt all data. The key must be
-      at least 20 characters long.
+    description: The key used to encrypt all data.
   - reference: primary
     label: Primary
     description: |
-      Checking this checkbox marks this key as the primary encryption key.
+      Marks this key as the primary encryption key.
       Only one key should be marked as primary.
 
 - reference: .properties.credhub_kms_providers
-  label: KMS Plugin Providers
+  label: KMS plugin providers
   property_inputs:
   - reference: instance_name
-    label: Instance Name
+    label: Instance name
     description: |
-      Name of the KMS Provider instance.
+      Name of the KMS provider instance.
   - reference: endpoint
     label: Endpoint
     description: |
-      The unix socket address at which the provider is running.
+      The Unix socket address at which the provider is running.
   - reference: primary
     label: Primary
     description: |
-      Checking this checkbox marks this key as the primary encryption key.
+      Marks this key as the primary encryption key.
       Only one key should be marked as primary.
 
 - reference: .properties.credhub_hsm_provider_partition
@@ -94,16 +93,15 @@ property_inputs:
   description: The client certificate for the HSM provider.
 
 - reference: .properties.credhub_hsm_provider_encryption_keys
-  label: HSM Provider Encryption Keys
+  label: HSM provider encryption keys
   property_inputs:
   - reference: name
     label: Name
-    description: |
-      Name of the encryption key.
+    description: Name of the encryption key.
   - reference: primary
     label: Primary
     description: |
-      Checking this checkbox marks this key as the primary encryption key.
+      Marks this key as the primary encryption key.
       Only one key should be marked as primary.
 
 - reference: .properties.credhub_hsm_provider_servers
@@ -116,13 +114,11 @@ property_inputs:
     label: Port
     description: The port of the HSM server.
   - reference: partition_serial_number
-    label: Partition Serial Number
-    description: |
-      The serial number of the HSM partition.
+    label: Partition serial number
+    description: The serial number of the HSM partition.
   - reference: certificate
-    label: HSM Certificate
-    description: |
-      The certificate for the HSM server.
+    label: HSM certificate
+    description: The certificate for the HSM server.
 
 - reference: .properties.secure_service_instance_credentials
   label: Secure service instance credentials
