@@ -332,6 +332,30 @@ var _ = Describe("Logging", func() {
 			}
 		})
 
+		It("has internal tls certs log-cache-gateway <-> log-cache-cf-auth-proxy", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			gateway, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-gateway")
+			Expect(err).NotTo(HaveOccurred())
+
+			gatewayProperties, err := gateway.Path("/properties")
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(gatewayProperties).To(HaveKey("proxy_cert"))
+			Expect(gatewayProperties).To(HaveKey("proxy_key"))
+
+			authProxy, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-cf-auth-proxy")
+			Expect(err).NotTo(HaveOccurred())
+
+			authProxyProperties, err := authProxy.Path("/properties")
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(authProxyProperties).To(HaveKey("proxy_ca_cert"))
+			Expect(authProxyProperties).To(HaveKey("external_cert"))
+			Expect(authProxyProperties).To(HaveKey("external_key"))
+		})
+
 		It("has a log-cache-nozzle with tls certs", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
