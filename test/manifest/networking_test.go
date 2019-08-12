@@ -590,7 +590,7 @@ var _ = Describe("Networking", func() {
 
 					Expect(internalDomains).To(Equal([]interface{}{
 						"apps.example.com",
-						[]interface{}{},
+						"mesh.apps.example.com",
 						[]interface{}{
 							map[interface{}]interface{}{
 								"internal": true,
@@ -627,7 +627,7 @@ var _ = Describe("Networking", func() {
 
 					Expect(internalDomains).To(Equal([]interface{}{
 						"apps.example.com",
-						[]interface{}{},
+						"mesh.apps.example.com",
 						[]interface{}{
 							map[interface{}]interface{}{
 								"name":     "some-internal-domain",
@@ -693,6 +693,7 @@ var _ = Describe("Networking", func() {
 			})
 
 			Context("when it is enabled", func() {
+
 				Context("when route integrity is set to mutual_tls_verify", func(){
 					It("enables egress sidecar proxying", func(){
 						inputProperties := map[string]interface{}{
@@ -857,37 +858,28 @@ var _ = Describe("Networking", func() {
 							}
 						})
 
-						It("adds default domains to both app domains and temporary istio domains", func() {
-							inputProperties := map[string]interface{}{
-								".properties.istio": "enable",
-							}
-							manifest, err := product.RenderManifest(inputProperties)
-							Expect(err).NotTo(HaveOccurred())
+						Context("when internal domain is empty", func() {
+							It("adds apps.internal to app domains", func() {
+								manifest, err := product.RenderManifest(nil)
+								Expect(err).NotTo(HaveOccurred())
 
-							job, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
-							Expect(err).NotTo(HaveOccurred())
+								job, err := manifest.FindInstanceGroupJob(instanceGroup, "cloud_controller_ng")
+								Expect(err).NotTo(HaveOccurred())
 
-							internalDomains, err := job.Property("app_domains")
-							Expect(err).NotTo(HaveOccurred())
+								internalDomains, err := job.Property("app_domains")
+								Expect(err).NotTo(HaveOccurred())
 
-							Expect(internalDomains).To(Equal([]interface{}{
-								"apps.example.com",
-								"mesh.apps.example.com",
-								[]interface{}{
-									map[interface{}]interface{}{
-										"name":     "apps.internal",
-										"internal": true,
+								Expect(internalDomains).To(Equal([]interface{}{
+									"apps.example.com",
+									"mesh.apps.example.com",
+									[]interface{}{
+										map[interface{}]interface{}{
+											"name":     "apps.internal",
+											"internal": true,
+										},
 									},
-								},
-							}))
-
-							temporaryIstioDomains, err := job.Property("copilot/temporary_istio_domains")
-							Expect(err).NotTo(HaveOccurred())
-
-							Expect(temporaryIstioDomains).To(Equal([]interface{}{
-								"mesh.apps.example.com",
-								[]interface{}{"apps.internal"},
-							}))
+								}))
+							})
 						})
 					})
 
@@ -903,7 +895,6 @@ var _ = Describe("Networking", func() {
 
 						It("is properly set", func() {
 							inputProperties := map[string]interface{}{
-								".properties.istio": "enable",
 								".properties.istio_domain": "superspecial.istio.domain.com",
 							}
 
@@ -926,16 +917,9 @@ var _ = Describe("Networking", func() {
 									},
 								},
 							}))
-
-							temporaryIstioDomains, err := job.Property("copilot/temporary_istio_domains")
-							Expect(err).NotTo(HaveOccurred())
-
-							Expect(temporaryIstioDomains).To(Equal([]interface{}{
-								"superspecial.istio.domain.com",
-								[]interface{}{"apps.internal"},
-							}))
 						})
 					})
+
 				})
 			})
 
@@ -973,10 +957,9 @@ var _ = Describe("Networking", func() {
 
 						temporaryIstioDomains, err := cloudController.Property("copilot/temporary_istio_domains")
 						Expect(err).NotTo(HaveOccurred())
-						Expect(temporaryIstioDomains).To(Equal([]interface{}{
-							[]interface{}{},
-							[]interface{}{},
-						}))
+						Expect(temporaryIstioDomains).To(HaveLen(2))
+						Expect(temporaryIstioDomains).To(ContainElement("mesh.apps.example.com"))
+						Expect(temporaryIstioDomains).To(ContainElement([]interface{}{})) // it gets an empty array, which capi should flatten
 					})
 				})
 
@@ -1013,11 +996,11 @@ var _ = Describe("Networking", func() {
 
 						temporaryIstioDomains, err := cloudController.Property("copilot/temporary_istio_domains")
 						Expect(err).NotTo(HaveOccurred())
-						Expect(temporaryIstioDomains).To(Equal([]interface{}{
-							[]interface{}{},
-							[]interface{}{},
-						}))
+						Expect(temporaryIstioDomains).To(HaveLen(2))
+						Expect(temporaryIstioDomains).To(ContainElement("mesh.apps.example.com"))
+						Expect(temporaryIstioDomains).To(ContainElement([]interface{}{})) // it gets an empty array, which capi should flatten
 					})
+
 				})
 
 
@@ -1041,38 +1024,6 @@ var _ = Describe("Networking", func() {
 					Expect(err).NotTo(HaveOccurred())
 
 					Expect(instanceCount).To(Equal(0))
-				})
-
-				It("Does not make an istio domain", func() {
-					inputProperties := map[string]interface{}{}
-
-					manifest, err := product.RenderManifest(inputProperties)
-					Expect(err).NotTo(HaveOccurred())
-
-					job, err := manifest.FindInstanceGroupJob(capiInstanceGroup, "cloud_controller_ng")
-					Expect(err).NotTo(HaveOccurred())
-
-					internalDomains, err := job.Property("app_domains")
-					Expect(err).NotTo(HaveOccurred())
-
-					Expect(internalDomains).To(Equal([]interface{}{
-						"apps.example.com",
-						[]interface{}{},
-						[]interface{}{
-							map[interface{}]interface{}{
-								"name":     "apps.internal",
-								"internal": true,
-							},
-						},
-					}))
-
-					temporaryIstioDomains, err := job.Property("copilot/temporary_istio_domains")
-					Expect(err).NotTo(HaveOccurred())
-
-					Expect(temporaryIstioDomains).To(Equal([]interface{}{
-						[]interface{}{},
-						[]interface{}{},
-					}))
 				})
 			})
 		})

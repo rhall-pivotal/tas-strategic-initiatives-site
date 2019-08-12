@@ -13,9 +13,6 @@
       - name: internal_service_mesh_domains
         manifest: |
           []
-      - name: ingress_istio_domain
-        manifest: |
-          []
     - name: enable
       select_value: enable
       named_manifests:
@@ -25,9 +22,6 @@
       - name: internal_service_mesh_domains
         manifest: |
           (( .properties.cf_networking_internal_domains.parsed_manifest(for_bosh_dns_adapter) ))
-      - name: ingress_istio_domain
-        manifest: |
-          '(( .properties.istio_domain.value ? "" : "mesh."))(( .properties.istio_domain.value ? .properties.istio_domain.value : .cloud_controller.apps_domain.value ))'
 
 - name: istio_domain
   type: string
