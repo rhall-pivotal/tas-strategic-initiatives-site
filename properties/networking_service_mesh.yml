@@ -6,22 +6,8 @@
   option_templates:
     - name: disable
       select_value: disable
-      named_manifests:
-      - name: ads_addresses
-        manifest: |
-           []
-      - name: internal_service_mesh_domains
-        manifest: |
-          []
     - name: enable
       select_value: enable
-      named_manifests:
-      - name: ads_addresses
-        manifest: |
-          ["169.254.0.2:15010"]
-      - name: internal_service_mesh_domains
-        manifest: |
-          (( .properties.cf_networking_internal_domains.parsed_manifest(for_bosh_dns_adapter) ))
 
 - name: istio_domain
   type: string

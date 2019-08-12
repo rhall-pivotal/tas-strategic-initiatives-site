@@ -10,4 +10,3 @@ manifest: |
     server:
       ca: (( $ops_manager.ca_certificate ))
   internal_domains: (( .properties.cf_networking_internal_domains.parsed_manifest(for_bosh_dns_adapter) ))
-  internal_service_mesh_domains: (( .properties.istio.selected_option.parsed_manifest(internal_service_mesh_domains) ))

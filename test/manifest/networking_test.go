@@ -600,6 +600,7 @@ var _ = Describe("Networking", func() {
 					}))
 				})
 			})
+
 			Context("when internal domains are configured", func() {
 				var (
 					inputProperties map[string]interface{}
@@ -681,101 +682,7 @@ var _ = Describe("Networking", func() {
 		})
 
 		Describe("Istio", func() {
-			var capiInstanceGroup, diegoCellInstanceGroup string
-			BeforeEach(func() {
-				if productName == "srt" {
-					diegoCellInstanceGroup = "compute"
-					capiInstanceGroup = "control"
-				} else {
-					diegoCellInstanceGroup = "diego_cell"
-					capiInstanceGroup = "cloud_controller"
-				}
-			})
-
 			Context("when it is enabled", func() {
-
-				Context("when route integrity is set to mutual_tls_verify", func(){
-					It("enables egress sidecar proxying", func(){
-						inputProperties := map[string]interface{}{
-							".properties.istio": "enable",
-							".properties.route_integrity": "mutual_tls_verify",
-							".properties.cf_networking_internal_domains": []map[string]interface{}{
-								{"name": "some-internal-domain"},
-								{"name": "some-other-internal-domain"},
-							},
-						}
-
-						manifest, err := product.RenderManifest(inputProperties)
-						Expect(err).NotTo(HaveOccurred())
-
-						rep, err := manifest.FindInstanceGroupJob(diegoCellInstanceGroup, "rep")
-						Expect(err).NotTo(HaveOccurred())
-
-						adsAddresses, err := rep.Property("containers/proxy/ads_addresses")
-						Expect(err).NotTo(HaveOccurred())
-						Expect(adsAddresses).To(ContainElement("169.254.0.2:15010"))
-
-						boshDNSAdapter, err := manifest.FindInstanceGroupJob(diegoCellInstanceGroup, "bosh-dns-adapter")
-						Expect(err).NotTo(HaveOccurred())
-
-						internalServiceMeshDomains, err := boshDNSAdapter.Property("internal_service_mesh_domains")
-						Expect(err).NotTo(HaveOccurred())
-						Expect(internalServiceMeshDomains).To(ContainElement("some-internal-domain"))
-						Expect(internalServiceMeshDomains).To(ContainElement("some-other-internal-domain"))
-
-						cloudController, err := manifest.FindInstanceGroupJob(capiInstanceGroup, "cloud_controller_ng")
-						Expect(err).NotTo(HaveOccurred())
-
-						temporaryIstioDomains, err := cloudController.Property("copilot/temporary_istio_domains")
-						Expect(err).NotTo(HaveOccurred())
-						Expect(temporaryIstioDomains).To(ContainElement([]interface{}{
-							"some-internal-domain",
-							"some-other-internal-domain",
-						}))
-					})
-				})
-
-				Context("when route integrity is set to tls_verify", func(){
-					It("enables egress sidecar proxying", func(){
-						inputProperties := map[string]interface{}{
-							".properties.istio": "enable",
-							".properties.route_integrity": "tls_verify",
-							".properties.cf_networking_internal_domains": []map[string]interface{}{
-								{"name": "some-internal-domain"},
-								{"name": "some-other-internal-domain"},
-							},
-						}
-
-						manifest, err := product.RenderManifest(inputProperties)
-						Expect(err).NotTo(HaveOccurred())
-
-						rep, err := manifest.FindInstanceGroupJob(diegoCellInstanceGroup, "rep")
-						Expect(err).NotTo(HaveOccurred())
-
-						adsAddresses, err := rep.Property("containers/proxy/ads_addresses")
-						Expect(err).NotTo(HaveOccurred())
-						Expect(adsAddresses).To(ContainElement("169.254.0.2:15010"))
-
-						boshDNSAdapter, err := manifest.FindInstanceGroupJob(diegoCellInstanceGroup, "bosh-dns-adapter")
-						Expect(err).NotTo(HaveOccurred())
-
-						internalServiceMeshDomains, err := boshDNSAdapter.Property("internal_service_mesh_domains")
-						Expect(err).NotTo(HaveOccurred())
-						Expect(internalServiceMeshDomains).To(ContainElement("some-internal-domain"))
-						Expect(internalServiceMeshDomains).To(ContainElement("some-other-internal-domain"))
-
-						cloudController, err := manifest.FindInstanceGroupJob(capiInstanceGroup, "cloud_controller_ng")
-						Expect(err).NotTo(HaveOccurred())
-
-						temporaryIstioDomains, err := cloudController.Property("copilot/temporary_istio_domains")
-						Expect(err).NotTo(HaveOccurred())
-						Expect(temporaryIstioDomains).To(ContainElement([]interface{}{
-							"some-internal-domain",
-							"some-other-internal-domain",
-						}))
-					})
-				})
-
 				It("adds does not zero out istio-control, istio-router, or cc_route_syncer", func() {
 					inputProperties := map[string]interface{}{
 						".properties.istio": "enable",
@@ -924,86 +831,6 @@ var _ = Describe("Networking", func() {
 			})
 
 			Context("when it is disabled", func() {
-				Context("when route integrity is set to mutual_tls_verify", func(){
-					It("enables egress sidecar proxying", func(){
-						inputProperties := map[string]interface{}{
-							".properties.istio": "disable",
-							".properties.route_integrity": "mutual_tls_verify",
-							".properties.cf_networking_internal_domains": []map[string]interface{}{
-								{"name": "some-internal-domain"},
-								{"name": "some-other-internal-domain"},
-							},
-						}
-
-						manifest, err := product.RenderManifest(inputProperties)
-						Expect(err).NotTo(HaveOccurred())
-
-						rep, err := manifest.FindInstanceGroupJob(diegoCellInstanceGroup, "rep")
-						Expect(err).NotTo(HaveOccurred())
-
-						adsAddresses, err := rep.Property("containers/proxy/ads_addresses")
-						Expect(err).NotTo(HaveOccurred())
-						Expect(adsAddresses).To(BeEmpty())
-
-						boshDNSAdapter, err := manifest.FindInstanceGroupJob(diegoCellInstanceGroup, "bosh-dns-adapter")
-						Expect(err).NotTo(HaveOccurred())
-
-						internalServiceMeshDomains, err := boshDNSAdapter.Property("internal_service_mesh_domains")
-						Expect(err).NotTo(HaveOccurred())
-						Expect(internalServiceMeshDomains).To(BeEmpty())
-
-						cloudController, err := manifest.FindInstanceGroupJob(capiInstanceGroup, "cloud_controller_ng")
-						Expect(err).NotTo(HaveOccurred())
-
-						temporaryIstioDomains, err := cloudController.Property("copilot/temporary_istio_domains")
-						Expect(err).NotTo(HaveOccurred())
-						Expect(temporaryIstioDomains).To(HaveLen(2))
-						Expect(temporaryIstioDomains).To(ContainElement("mesh.apps.example.com"))
-						Expect(temporaryIstioDomains).To(ContainElement([]interface{}{})) // it gets an empty array, which capi should flatten
-					})
-				})
-
-				Context("when route integrity is set to tls_verify", func(){
-					It("enables egress sidecar proxying", func(){
-						inputProperties := map[string]interface{}{
-							".properties.istio": "disable",
-							".properties.route_integrity": "tls_verify",
-							".properties.cf_networking_internal_domains": []map[string]interface{}{
-								{"name": "some-internal-domain"},
-								{"name": "some-other-internal-domain"},
-							},
-						}
-
-						manifest, err := product.RenderManifest(inputProperties)
-						Expect(err).NotTo(HaveOccurred())
-
-						rep, err := manifest.FindInstanceGroupJob(diegoCellInstanceGroup, "rep")
-						Expect(err).NotTo(HaveOccurred())
-
-						adsAddresses, err := rep.Property("containers/proxy/ads_addresses")
-						Expect(err).NotTo(HaveOccurred())
-						Expect(adsAddresses).To(BeEmpty())
-
-						boshDNSAdapter, err := manifest.FindInstanceGroupJob(diegoCellInstanceGroup, "bosh-dns-adapter")
-						Expect(err).NotTo(HaveOccurred())
-
-						internalServiceMeshDomains, err := boshDNSAdapter.Property("internal_service_mesh_domains")
-						Expect(err).NotTo(HaveOccurred())
-						Expect(internalServiceMeshDomains).To(BeEmpty())
-
-						cloudController, err := manifest.FindInstanceGroupJob(capiInstanceGroup, "cloud_controller_ng")
-						Expect(err).NotTo(HaveOccurred())
-
-						temporaryIstioDomains, err := cloudController.Property("copilot/temporary_istio_domains")
-						Expect(err).NotTo(HaveOccurred())
-						Expect(temporaryIstioDomains).To(HaveLen(2))
-						Expect(temporaryIstioDomains).To(ContainElement("mesh.apps.example.com"))
-						Expect(temporaryIstioDomains).To(ContainElement([]interface{}{})) // it gets an empty array, which capi should flatten
-					})
-
-				})
-
-
 				It("zeros out istio-control, istio-router, and cc_route_syncer", func() {
 					inputProperties := map[string]interface{}{}
 

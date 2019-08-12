@@ -47,7 +47,6 @@ manifest: |
     client_key_file: (( .properties.copilot_client_cert.private_key_pem ))
     temporary_istio_domains:
     - '(( .properties.istio_domain.value ? "" : "mesh."))(( .properties.istio_domain.value ? .properties.istio_domain.value : .cloud_controller.apps_domain.value ))'
-    - (( .properties.istio.selected_option.parsed_manifest(internal_service_mesh_domains) ))
   cc:
     temporary_use_logcache: true
     logcache:
