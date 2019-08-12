@@ -32,7 +32,7 @@ manifest: |
     staging_disk_limit_mb: 6144
   app_domains:
   - (( .cloud_controller.apps_domain.value ))
-  - '(( .properties.istio_domain.value ? "" : "mesh."))(( .properties.istio_domain.value ? .properties.istio_domain.value : .cloud_controller.apps_domain.value ))'
+  - (( .properties.istio.selected_option.parsed_manifest(ingress_istio_domain) ))
   - (( .properties.cf_networking_internal_domains.parsed_manifest(for_cloud_controller_ng) ))
   login:
     url: https://login.(( .cloud_controller.system_domain.value ))
@@ -46,7 +46,7 @@ manifest: |
     client_chain_file: (( .properties.copilot_client_cert.cert_pem ))
     client_key_file: (( .properties.copilot_client_cert.private_key_pem ))
     temporary_istio_domains:
-    - '(( .properties.istio_domain.value ? "" : "mesh."))(( .properties.istio_domain.value ? .properties.istio_domain.value : .cloud_controller.apps_domain.value ))'
+    - (( .properties.istio.selected_option.parsed_manifest(ingress_istio_domain) ))
   cc:
     temporary_use_logcache: true
     logcache:

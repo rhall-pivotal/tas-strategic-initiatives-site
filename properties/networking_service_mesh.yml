@@ -6,8 +6,16 @@
   option_templates:
     - name: disable
       select_value: disable
+      named_manifests:
+      - name: ingress_istio_domain
+        manifest: |
+          []
     - name: enable
       select_value: enable
+      named_manifests:
+      - name: ingress_istio_domain
+        manifest: |
+          '(( .properties.istio_domain.value ? "" : "mesh."))(( .properties.istio_domain.value ? .properties.istio_domain.value : .cloud_controller.apps_domain.value ))'
 
 - name: istio_domain
   type: string
