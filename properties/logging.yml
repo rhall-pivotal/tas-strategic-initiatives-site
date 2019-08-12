@@ -152,6 +152,13 @@
     - log-cache
     - logcache
 
+- name: log_cache_gateway_auth_proxy_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - localhost
+
 - name: log_cache_nozzle_client_tls_cert
   type: rsa_cert_credentials
   configurable: false
