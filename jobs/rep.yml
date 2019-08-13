@@ -10,6 +10,7 @@ manifest: |
       - ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
       - (( $ops_manager.ca_certificate ))
       - (( $ops_manager.trusted_certificates ))
+    set_cpu_weight: true
   diego:
     executor:
       disk_capacity_mb: (( executor_disk_capacity.value ))

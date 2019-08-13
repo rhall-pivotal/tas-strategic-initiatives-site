@@ -219,4 +219,16 @@ var _ = Describe("Diego", func() {
 			})
 		})
 	})
+
+	Context("Metrics", func() {
+		It("sets cpu weight on", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+			rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
+			Expect(err).NotTo(HaveOccurred())
+			setCPUWeight, err := rep.Property("containers/set_cpu_weight")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(setCPUWeight).To(BeTrue())
+		})
+	})
 })
