@@ -285,10 +285,6 @@ var _ = Describe("Diego", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(httpsAddress).To(Equal("0.0.0.0:8447"))
 
-			httpsLinkURL, err := fileServer.Property("https_url")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(httpsLinkURL).To(Equal("https://file-server.service.cf.internal:8447"))
-
 			rawFileServerTLS, err := fileServer.Property("tls")
 			Expect(err).NotTo(HaveOccurred())
 			fileServerTLS, ok := rawFileServerTLS.(map[interface{}]interface{})
