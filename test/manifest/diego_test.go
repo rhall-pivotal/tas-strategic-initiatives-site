@@ -149,6 +149,26 @@ var _ = Describe("Diego", func() {
 		})
 	})
 
+	Context("Metrics", func() {
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "compute"
+			} else {
+				instanceGroup = "diego_cell"
+			}
+		})
+
+		It("sets cpu weight on", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+			rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
+			Expect(err).NotTo(HaveOccurred())
+			setCPUWeight, err := rep.Property("containers/set_cpu_weight")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(setCPUWeight).To(BeTrue())
+		})
+	})
+
 	Context("SSH Proxy", func() {
 
 		var backendsTLSProperties map[interface{}]interface{}
