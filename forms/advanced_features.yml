@@ -19,13 +19,13 @@ property_inputs:
   - reference: .nfs_server.blobstore_internal_access_rules
     label: Non-RFC-1918 private network allow list
     placeholder: |
-      e.g.: allow 172.99.0.0/24;,allow 172.55.0.0/24;
+      For example, `allow 172.99.0.0/24;,allow 172.55.0.0/24;`.
 
   - reference: .properties.cf_dial_timeout_in_seconds
-    label: CF CLI connection timeout (in seconds)
+    label: CF CLI connection timeout
     description: |
       Maximum wait time to establish a connection, including
-      name resolution.
+      name resolution. Enter value in seconds.
 
   - reference: .properties.enable_tls_to_internal_pxc
     label: Enable TLS for internal system database (beta)
