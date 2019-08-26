@@ -352,6 +352,18 @@ var _ = Describe("NFS volume service", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				testNfsBrokerPushProperties(job)
+
+				nfsBrokerPushCredhubProperties, err := job.Property("nfsbrokerpush/credhub")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(nfsBrokerPushCredhubProperties).To(HaveKeyWithValue("uaa_ca_cert", "fake-ops-manager-ca-certificate"))
+				Expect(nfsBrokerPushCredhubProperties).To(HaveKeyWithValue("uaa_client_id", "nfs-broker-credhub"))
+				Expect(nfsBrokerPushCredhubProperties).To(HaveKey("uaa_client_secret"))
+
+				storeID, err := job.Property("nfsbrokerpush/store_id")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(storeID).To(Equal("nfsbroker"))
+
 				Expect(job.Path("/provides/nfsbrokerpush")).To(Equal(map[interface{}]interface{}{"as": "nfsbrokerpush"}))
 			})
 
