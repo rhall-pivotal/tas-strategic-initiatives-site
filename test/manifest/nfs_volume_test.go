@@ -1,6 +1,8 @@
 package manifest_test
 
 import (
+	"strings"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pivotal-cf/planitest"
@@ -25,6 +27,13 @@ var _ = Describe("NFS volume service", func() {
 		appDomain, err := nfsBrokerPush.Property("nfsbrokerpush/app_domain")
 		Expect(err).NotTo(HaveOccurred())
 		Expect(appDomain).To(Equal("sys.example.com"))
+
+		nfsBrokerPushCredhubProperties, err := nfsBrokerPush.Property("nfsbrokerpush/credhub")
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(nfsBrokerPushCredhubProperties).To(HaveKeyWithValue("uaa_ca_cert", "fake-ops-manager-ca-certificate"))
+		Expect(nfsBrokerPushCredhubProperties).To(HaveKeyWithValue("uaa_client_id", "nfs-broker-credhub"))
+		Expect(nfsBrokerPushCredhubProperties).To(HaveKey("uaa_client_secret"))
 
 		nfsBrokerPushDatabaseProperties, err := nfsBrokerPush.Property("nfsbrokerpush/db")
 		Expect(err).NotTo(HaveOccurred())
@@ -56,6 +65,10 @@ var _ = Describe("NFS volume service", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(space).To(Equal("nfs"))
 
+		storeID, err := nfsBrokerPush.Property("nfsbrokerpush/store_id")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(storeID).To(Equal("nfsbroker"))
+
 		syslogUrl, err := nfsBrokerPush.Property("nfsbrokerpush/syslog_url")
 		Expect(err).NotTo(HaveOccurred())
 		Expect(syslogUrl).To(BeEmpty())
@@ -63,6 +76,57 @@ var _ = Describe("NFS volume service", func() {
 		username, err := nfsBrokerPush.Property("nfsbrokerpush/username")
 		Expect(err).NotTo(HaveOccurred())
 		Expect(username).To(Equal("((nfs-broker-push-db-credentials.username))"))
+	})
+
+	It("creates a UAA client for the nfsbroker to use to access Credhub", func() {
+		if productName == "srt" {
+			instanceGroup = "control"
+		} else {
+			instanceGroup = "uaa"
+		}
+
+		manifest, err := product.RenderManifest(nil)
+		Expect(err).NotTo(HaveOccurred())
+
+		uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+		Expect(err).NotTo(HaveOccurred())
+
+		nfsBrokerCredhubUaaClientProperties, err := uaa.Property("uaa/clients/nfs-broker-credhub")
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(nfsBrokerCredhubUaaClientProperties).To(HaveKeyWithValue("id", "nfs-broker-credhub"))
+		Expect(nfsBrokerCredhubUaaClientProperties).To(HaveKey("authorities"))
+		Expect(nfsBrokerCredhubUaaClientProperties).To(HaveKeyWithValue("authorized-grant-types", "client_credentials"))
+		Expect(nfsBrokerCredhubUaaClientProperties).To(HaveKey("secret"))
+
+		rawAuthorities, err := uaa.Property("uaa/clients/nfs-broker-credhub/authorities")
+		Expect(err).ToNot(HaveOccurred())
+
+		authorities := strings.Split(rawAuthorities.(string), ",")
+		Expect(authorities).To(ConsistOf([]string{"credhub.read", "credhub.write"}))
+	})
+
+	It("grants permissions to the nfs-broker-credhub client", func() {
+		if productName == "srt" {
+			instanceGroup = "control"
+		} else {
+			instanceGroup = "credhub"
+		}
+
+		manifest, err := product.RenderManifest(nil)
+		Expect(err).NotTo(HaveOccurred())
+
+		credhub, err := manifest.FindInstanceGroupJob(instanceGroup, "credhub")
+		Expect(err).NotTo(HaveOccurred())
+
+		permissions, err := credhub.Property("credhub/authorization/permissions")
+		Expect(err).ToNot(HaveOccurred())
+
+		Expect(permissions).To(ContainElement(map[interface{}]interface{}{
+			"path":       "/nfsbroker/*",
+			"actors":     []interface{}{"uaa-client:nfs-broker-credhub"},
+			"operations": []interface{}{"read", "write", "delete", "read_acl", "write_acl"},
+		}))
 	})
 
 	Context("when the syslog properties are configured", func() {

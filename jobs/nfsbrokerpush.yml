@@ -11,6 +11,10 @@ manifest: |
       admin_user: (( .uaa.admin_credentials.identity ))
       admin_password: (( .uaa.admin_credentials.password ))
       dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
+    credhub:
+      uaa_ca_cert: (( $ops_manager.ca_certificate ))
+      uaa_client_id: (( .uaa.nfsbroker_credhub_client_credentials.identity ))
+      uaa_client_secret: (( .uaa.nfsbroker_credhub_client_credentials.password ))
     organization: system
     skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
     app_domain: (( .cloud_controller.system_domain.value ))
@@ -19,3 +23,4 @@ manifest: |
     password: ((( nfs-broker-push-db-credentials.password )))
     syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))
     ldap_enabled: (( .properties.nfs_volume_driver.enable.ldap_server_host.value_present? ))
+    store_id: nfsbroker

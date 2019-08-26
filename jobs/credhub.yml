@@ -38,6 +38,9 @@ manifest: |
         - path: /*
           actors: ["uaa-client:tile_installer"]
           operations: [write_acl]
+        - path: /nfsbroker/*
+          actors: ["uaa-client:nfs-broker-credhub"]
+          operations: ["read", "write", "delete", "read_acl", "write_acl"]
         - path: /smbbroker/*
           actors: ["uaa-client:smb-broker-credhub"]
           operations: ["read", "write", "delete", "read_acl", "write_acl"]
