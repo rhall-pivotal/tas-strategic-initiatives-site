@@ -29,7 +29,7 @@ var _ = Describe("NFS volume service", func() {
 		nfsBrokerPushDatabaseProperties, err := nfsBrokerPush.Property("nfsbrokerpush/db")
 		Expect(err).NotTo(HaveOccurred())
 
-		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("ca_cert", BeNil()))
+		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("ca_cert", BeEmpty()))
 		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("host", "mysql.service.cf.internal"))
 		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("port", 3306))
 		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("username", "((nfs-volume-db-credentials.username))"))
