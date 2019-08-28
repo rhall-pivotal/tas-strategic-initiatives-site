@@ -512,7 +512,7 @@ post_deploy_errands:
       - $( variable "errand_instance_group" )
   - name: metric_registrar_smoke_test
     label: Metric Registrar Smoke Test Errand
-    description: Runs Smoke Tests against the Metric Registrar. Requires that "Disable Metric Registrar" is unchecked in the Metric Registrar tab.
+    description: Runs Smoke Tests against the Metric Registrar. Requires that "Enable Metric Registrar" is checked in the Metric Registrar tab.
     colocated: true
     run_default: false
     instances:
