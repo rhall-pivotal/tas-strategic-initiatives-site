@@ -48,21 +48,6 @@ property_inputs:
           Disables hostname verification for TLS connections to 
           the targeted database server.
 
-- reference: .properties.credhub_internal_provider_keys
-  label: Internal encryption provider keys
-  property_inputs:
-  - reference: name
-    label: Name
-    description: Name of the encryption key.
-  - reference: key
-    label: Key
-    description: The key used to encrypt all data.
-  - reference: primary
-    label: Primary
-    description: |
-      Marks this key as the primary encryption key.
-      Only one key should be marked as primary.
-
 - reference: .properties.credhub_kms_providers
   label: KMS plugin providers
   property_inputs:
@@ -74,6 +59,21 @@ property_inputs:
     label: Endpoint
     description: |
       The Unix socket address at which the provider is running.
+  - reference: primary
+    label: Primary
+    description: |
+      Marks this key as the primary encryption key.
+      Only one key should be marked as primary.
+
+- reference: .properties.credhub_internal_provider_keys
+  label: Internal encryption provider keys
+  property_inputs:
+  - reference: name
+    label: Name
+    description: Name of the encryption key.
+  - reference: key
+    label: Key
+    description: The key used to encrypt all data.
   - reference: primary
     label: Primary
     description: |
