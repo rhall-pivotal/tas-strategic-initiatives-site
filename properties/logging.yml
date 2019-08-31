@@ -159,6 +159,13 @@
     domains:
     - localhost
 
+- name: log_cache_expvar_forwarder_client_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - expvar-forwarder
+
 - name: log_cache_nozzle_client_tls_cert
   type: rsa_cert_credentials
   configurable: false
