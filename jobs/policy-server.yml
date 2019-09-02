@@ -8,9 +8,6 @@ manifest: |
   max_open_connections: (( .properties.networkpolicyserver_database_max_open_connections.value ))
   debug_port: 22223
   enable_space_developer_self_service: (( .properties.cf_networking_enable_space_developer_self_service.value ))
-  enable_tls: true
-  server_cert: (( .properties.network_policy_server_external_cert.cert_pem ))
-  server_key: (( .properties.network_policy_server_external_cert.private_key_pem ))
   skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
   uaa_ca: (( $ops_manager.ca_certificate ))
   uaa_client: (( .uaa.network_policy_server_client.identity ))
