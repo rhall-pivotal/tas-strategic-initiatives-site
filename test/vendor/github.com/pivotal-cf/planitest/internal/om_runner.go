@@ -74,7 +74,8 @@ func (o OMRunner) ResetAndConfigure(productName string, productVersion string, c
 	_, errOutput, err := o.cmdRunner.Run(
 		"om",
 		"--skip-ssl-validation",
-		"revert-staged-changes",
+		"unstage-product",
+		"--product-name", productName,
 	)
 
 	if err != nil {

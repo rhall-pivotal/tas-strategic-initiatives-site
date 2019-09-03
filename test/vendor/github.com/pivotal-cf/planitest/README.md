@@ -1,11 +1,5 @@
 # planitest
 
-## Warning! Breaking Changes Ahead!
-
-Planitest is still very early in development (pre-alpha).
-
-Expect breaking changes!
-
 ## What is it?
 
 Test helpers for Ops Manager tile developers. Given the set of tile options selected by the operator, what should the generated BOSH manifest look like?
