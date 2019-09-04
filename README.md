@@ -1,7 +1,7 @@
 # p-runtime
 
-This repository is used to generate a .pivotal file for Pivotal's Application
-Service (see [Creating a Pivotal Cloud Foundry Product
+This repository is used to generate a .pivotal file for Pivotal Application
+Service (see [Creating a Pivotal Application Service Product
 Tile](https://docs.pivotal.io/partners/creating.html)), to be consumed by
 Operations Manager&trade;.
 
