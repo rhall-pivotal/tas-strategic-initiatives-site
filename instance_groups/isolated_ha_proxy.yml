@@ -2,9 +2,10 @@
 name: isolated_ha_proxy
 label: HAProxy
 resource_label: HAProxy
-description: HAProxy is the default load balancer for SSL termination. Alternatively,
-  you can use your own load balancer and forward traffic to the Pivotal CF Elastic
-  Runtime router IP. Self signed certificates will function properly.
+description: |
+  HAProxy is the default load balancer for SSL termination. Alternatively, you
+  can use your own load balancer and forward traffic to the Pivotal Application
+  Service router IP. Self signed certificates will function properly.
 templates:
   - $( job "bpm" )
   - $( job "haproxy" )

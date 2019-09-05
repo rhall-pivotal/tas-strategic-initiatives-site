@@ -65,7 +65,7 @@ var _ = Describe("Logging", func() {
 				tags, err := agent.Property("tags")
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
 				Expect(tags).To(HaveKeyWithValue("placement_tag", "isosegtag"))
-				Expect(tags).To(HaveKeyWithValue("product", "PCF Isolation Segment"))
+				Expect(tags).To(HaveKeyWithValue("product", "Pivotal Isolation Segment"))
 				Expect(tags).NotTo(HaveKey("product_version"))
 				Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
 			}
@@ -130,7 +130,7 @@ var _ = Describe("Logging", func() {
 					tags, err := agent.Property("tags")
 					Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", agent)
 					Expect(tags).To(HaveKeyWithValue("placement_tag", "isosegtag"))
-					Expect(tags).To(HaveKeyWithValue("product", "PCF Isolation Segment"))
+					Expect(tags).To(HaveKeyWithValue("product", "Pivotal Isolation Segment"))
 					Expect(tags).NotTo(HaveKey("product_version"))
 					Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
 				}

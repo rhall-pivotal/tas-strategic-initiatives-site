@@ -1,6 +1,6 @@
 # p-isolation-segment
 
-This repository is used to generate the PCF Isolation Segment Ops Manager tile.
+This repository is used to generate the Pivotal Isolation Segment Ops Manager tile.
 
 [![scream](http://i.giphy.com/14i3O76jZdfEkg.gif)](http://lmgtfy.com/?q=dancing+isolations)
 
