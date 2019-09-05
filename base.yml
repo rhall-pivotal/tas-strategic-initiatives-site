@@ -65,14 +65,14 @@ post_deploy_errands:
     instances:
       - windows_diego_cell/first
     label: Install HWC Buildpack Errand
-    description: Install the HWC buildpack to your Elastic Runtime for Windows installation
+    description: Install the HWC buildpack to your Pivotal Application Service for Windows installation
   - name: smoke_tests_windows
     colocated: true
     run_default: false
     instances:
       - windows_diego_cell/first
     label: Smoke Test Errand
-    description: Runs Smoke Tests against your Application Service installation
+    description: Runs Smoke Tests against your Pivotal Application Service installation
 
 install_time_verifiers: []
 
