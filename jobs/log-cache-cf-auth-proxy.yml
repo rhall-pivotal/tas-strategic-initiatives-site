@@ -14,3 +14,8 @@ manifest: |
     client_id: (( .uaa.doppler_client_credentials.identity ))
     client_secret: (( .uaa.doppler_client_credentials.password ))
     internal_addr: https://uaa.service.cf.internal:8443
+  metrics:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.log_cache_cf_auth_proxy_metrics_tls.cert_pem ))
+    key: (( .properties.log_cache_cf_auth_proxy_metrics_tls.private_key_pem ))
+    server_name: log_cache_cf_auth_proxy_metrics

@@ -8,6 +8,11 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( .doppler.metron_tls_cert.cert_pem ))
     key: (( .doppler.metron_tls_cert.private_key_pem ))
+  metrics:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.forwarder_agent_metrics_tls.cert_pem ))
+    key: (( .properties.forwarder_agent_metrics_tls.private_key_pem ))
+    server_name: forwarder_agent_metrics
   tags:
     product: $( variable "label" )
     system_domain: "(( .cloud_controller.system_domain.value ))"

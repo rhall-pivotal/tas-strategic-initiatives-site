@@ -10,6 +10,11 @@ manifest: |
     cert: (( .properties.binding_cache_api_tls.cert_pem ))
     key: (( .properties.binding_cache_api_tls.private_key_pem ))
     cn: binding-cache
+  metrics:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.loggr_syslog_binding_cache_metrics_tls.cert_pem ))
+    key: (( .properties.loggr_syslog_binding_cache_metrics_tls.private_key_pem ))
+    server_name: loggr_syslog_binding_cache_metrics
   api:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))

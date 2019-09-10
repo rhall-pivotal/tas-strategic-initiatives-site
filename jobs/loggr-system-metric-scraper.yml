@@ -2,9 +2,18 @@
 name: loggr-metric-scraper
 release: loggregator-agent
 manifest: |
-  debug_port: 14827
   system_metrics:
     tls:
       ca_cert: "(( $ops_manager.ca_certificate ))"
       cert: "((.properties.system_metrics_tls_scraper_cert.cert_pem))"
       key: "((.properties.system_metrics_tls_scraper_cert.private_key_pem))"
+  metrics:
+    port: 14827
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.loggr_metric_scraper_metrics_tls.cert_pem ))
+    key: (( .properties.loggr_metric_scraper_metrics_tls.private_key_pem ))
+    server_name: loggr_metric_scraper_metrics
+  leadership_election:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.leadership_election_tls.cert_pem ))
+    key: (( .properties.leadership_election_tls.private_key_pem ))

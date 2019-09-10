@@ -4,3 +4,12 @@ release: leadership-election
 manifest: |
   port: 7100
   health_port: 7101
+  metrics:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.leadership_election_metrics_tls.cert_pem ))
+    key: (( .properties.leadership_election_metrics_tls.private_key_pem ))
+    server_name: leadership_election_metrics
+  tls:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.leadership_election_tls.cert_pem ))
+    key: (( .properties.leadership_election_tls.private_key_pem ))

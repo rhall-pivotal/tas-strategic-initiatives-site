@@ -62,6 +62,8 @@ var _ = Describe("Logging", func() {
 				Expect(err).ToNot(HaveOccurred())
 				Expect(tlsProps).To(HaveKey("ca_cert"))
 
+				expectSecureMetrics(agent)
+
 				tlsAgentProps, err := agent.Property("loggregator/tls/agent")
 				Expect(err).ToNot(HaveOccurred())
 				Expect(tlsAgentProps).To(HaveKey("cert"))
@@ -157,6 +159,8 @@ var _ = Describe("Logging", func() {
 			Expect(tlsProps).To(HaveKey("ca_cert"))
 			Expect(tlsProps).To(HaveKey("cert"))
 			Expect(tlsProps).To(HaveKey("key"))
+
+			expectSecureMetrics(metricScraper)
 		})
 
 		It("has a leadership-election job collocated", func() {
@@ -180,8 +184,10 @@ var _ = Describe("Logging", func() {
 			instanceGroups := getAllInstanceGroups(manifest)
 
 			for _, ig := range instanceGroups {
-				_, err := manifest.FindInstanceGroupJob(ig, "prom_scraper")
+				scraper, err := manifest.FindInstanceGroupJob(ig, "prom_scraper")
 				Expect(err).NotTo(HaveOccurred())
+
+				expectSecureMetrics(scraper)
 			}
 		})
 	})
@@ -212,6 +218,8 @@ var _ = Describe("Logging", func() {
 				port, err := agent.Property("port")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(port).To(Equal(3458))
+
+				expectSecureMetrics(agent)
 
 				By("adding tags to the metrics emitted")
 				tags, err := agent.Property("tags")
@@ -244,12 +252,28 @@ var _ = Describe("Logging", func() {
 				Expect(tlsProps).To(HaveKey("cert"))
 				Expect(tlsProps).To(HaveKey("key"))
 
+				expectSecureMetrics(agent)
+
 				cacheTlsProps, err := agent.Property("cache/tls")
 				Expect(err).ToNot(HaveOccurred())
 				Expect(cacheTlsProps).To(HaveKey("ca_cert"))
 				Expect(cacheTlsProps).To(HaveKey("cert"))
 				Expect(cacheTlsProps).To(HaveKey("key"))
 				Expect(cacheTlsProps).To(HaveKeyWithValue("cn", "binding-cache"))
+			}
+		})
+
+		It("has aggreate drain url", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			instanceGroups := getAllInstanceGroups(manifest)
+			for _, ig := range instanceGroups {
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggr-syslog-agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = agent.Property("aggregate_drains")
+				Expect(err).NotTo(HaveOccurred())
 			}
 		})
 	})
@@ -266,12 +290,14 @@ var _ = Describe("Logging", func() {
 				instanceGroup = "clock_global"
 			}
 
-			agent, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-syslog-binding-cache")
+			cache, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-syslog-binding-cache")
 			Expect(err).NotTo(HaveOccurred())
 
-			port, err := agent.Property("external_port")
+			port, err := cache.Property("external_port")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(port).To(Equal(9000))
+
+			expectSecureMetrics(cache)
 		})
 	})
 
@@ -297,6 +323,8 @@ var _ = Describe("Logging", func() {
 			Expect(tlsProps).To(HaveKey("ca_cert"))
 			Expect(tlsProps).To(HaveKey("cert"))
 			Expect(tlsProps).To(HaveKey("key"))
+
+			expectSecureMetrics(logCache)
 		})
 
 		It("specifies the port to listen on", func() {
@@ -555,6 +583,8 @@ var _ = Describe("Logging", func() {
 			gateway, err := manifest.FindInstanceGroupJob(instanceGroup, "reverse_log_proxy_gateway")
 			Expect(err).NotTo(HaveOccurred())
 
+			expectSecureMetrics(gateway)
+
 			// test for TLS configuration
 			httpConfig, err := gateway.Property("http")
 			Expect(err).NotTo(HaveOccurred())
@@ -692,3 +722,12 @@ rule
 		})
 	})
 })
+
+func expectSecureMetrics(job planitest.Manifest) {
+	metricsProps, err := job.Property("metrics")
+	Expect(err).ToNot(HaveOccurred())
+	Expect(metricsProps).To(HaveKey("ca_cert"))
+	Expect(metricsProps).To(HaveKey("cert"))
+	Expect(metricsProps).To(HaveKey("key"))
+	Expect(metricsProps).To(HaveKey("server_name"))
+}

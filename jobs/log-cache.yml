@@ -8,3 +8,8 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( .properties.log_cache_server_tls_cert.cert_pem ))
     key: (( .properties.log_cache_server_tls_cert.private_key_pem ))
+  metrics:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.log_cache_metrics_tls.cert_pem ))
+    key: (( .properties.log_cache_metrics_tls.private_key_pem ))
+    server_name: log_cache_metrics

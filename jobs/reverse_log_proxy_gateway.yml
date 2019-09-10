@@ -21,3 +21,8 @@ manifest: |
     internal_addr: https://uaa.service.cf.internal:8443
     client_id: (( .uaa.doppler_client_credentials.identity ))
     client_secret: (( .uaa.doppler_client_credentials.password ))
+  metrics:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.rlp_gateway_metrics_tls.cert_pem ))
+    key: (( .properties.rlp_gateway_metrics_tls.private_key_pem ))
+    server_name: rlp_gateway_metrics

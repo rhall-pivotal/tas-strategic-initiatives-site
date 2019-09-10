@@ -69,3 +69,9 @@ property_inputs:
 - reference: .properties.enable_v1_firehose
   label: Enable V1 firehose
   description: Logs and metrics flow to the V1 firehose.
+
+- reference: .properties.syslog_agent_aggregate_drains
+  label: Enable app log egress to external aggregator
+  description: |
+    A comma-separated list of destinations to external
+    syslog locations where all app logs and metrics will be sent.

@@ -213,7 +213,7 @@
   configurable: true
   default: true
 
-- name: syslog_agent_additional_downstream_ingress_ports
+- name: syslog_agent_aggregate_drains
   type: string_list
   configurable: true
   optional: true
@@ -236,3 +236,101 @@
   type: boolean
   configurable: true
   default: true
+
+- name: log_cache_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - log-cache-metrics
+
+- name: log_cache_cf_auth_proxy_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - log-cache-cf-auth-proxy-metrics
+
+- name: log_cache_gateway_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - log-cache-gateway-metrics
+
+- name: forwarder_agent_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - forwarder-agent-metrics
+
+- name: loggregator_agent_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - loggregator-agent-metrics
+
+- name: loggr_udp_forwarder_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - loggr-udp-forwarder-metrics
+
+- name: prom_scraper_scrape_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - prom-scraper
+
+- name: prom_scraper_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - prom-scraper-metrics
+
+- name: syslog_agent_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - syslog-agent-metrics
+
+- name: loggr_syslog_binding_cache_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - loggr-syslog-binding-cache-metrics
+
+- name: loggr_metric_scraper_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - loggr-metric-scraper-metrics
+
+- name: leadership_election_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - leadership-election-metrics
+
+- name: leadership_election_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - leadership-election
+
+- name: rlp_gateway_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - rlp_gateway_metrics
