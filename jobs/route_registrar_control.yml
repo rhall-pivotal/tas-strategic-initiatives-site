@@ -46,8 +46,7 @@ manifest: |
         script_path: "/var/vcap/jobs/cloud_controller_ng/bin/cloud_controller_ng_health_check"
         timeout: 6s
     - name: log-cache-reverse-proxy
-      tls_port: $( variable "log_cache_cf_auth_proxy_port" )
-      server_cert_domain_san: "log-cache.service.cf.internal"
+      port: $( variable "log_cache_cf_auth_proxy_port" )
       registration_interval: 20s
       uris:
       - "log-cache.(( .cloud_controller.system_domain.value ))"
