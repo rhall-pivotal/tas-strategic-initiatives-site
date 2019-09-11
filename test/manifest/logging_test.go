@@ -370,6 +370,32 @@ var _ = Describe("Logging", func() {
 			Expect(tlsProps).To(HaveKey("key"))
 		})
 
+		It("has a log-cache-expvar-forwarder job with templated counters/gauges", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			forwarder, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-expvar-forwarder")
+			Expect(err).NotTo(HaveOccurred())
+
+			counters, err := forwarder.Property("counters")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(counters).To(ContainElement(map[interface{}]interface{}{
+				"addr":      "http://localhost:6060/debug/vars",
+				"name":      "egress",
+				"source_id": "log-cache",
+				"template":  "{{.LogCache.Egress}}",
+			}))
+
+			gauges, err := forwarder.Property("gauges")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(gauges).To(ContainElement(map[interface{}]interface{}{
+				"addr":      "http://localhost:6060/debug/vars",
+				"name":      "cache-period",
+				"source_id": "log-cache",
+				"template":  "{{.LogCache.CachePeriod}}",
+			}))
+		})
+
 		It("registers the log-cache route", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
