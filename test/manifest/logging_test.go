@@ -332,30 +332,6 @@ var _ = Describe("Logging", func() {
 			}
 		})
 
-		It("has internal tls certs log-cache-gateway <-> log-cache-cf-auth-proxy", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			gateway, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-gateway")
-			Expect(err).NotTo(HaveOccurred())
-
-			gatewayProperties, err := gateway.Path("/properties")
-			Expect(err).ToNot(HaveOccurred())
-
-			Expect(gatewayProperties).To(HaveKey("proxy_cert"))
-			Expect(gatewayProperties).To(HaveKey("proxy_key"))
-
-			authProxy, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-cf-auth-proxy")
-			Expect(err).NotTo(HaveOccurred())
-
-			authProxyProperties, err := authProxy.Path("/properties")
-			Expect(err).ToNot(HaveOccurred())
-
-			Expect(authProxyProperties).To(HaveKey("proxy_ca_cert"))
-			Expect(authProxyProperties).To(HaveKey("external_cert"))
-			Expect(authProxyProperties).To(HaveKey("external_key"))
-		})
-
 		It("has a log-cache-nozzle with tls certs", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -368,6 +344,32 @@ var _ = Describe("Logging", func() {
 			Expect(tlsProps).To(HaveKey("ca_cert"))
 			Expect(tlsProps).To(HaveKey("cert"))
 			Expect(tlsProps).To(HaveKey("key"))
+		})
+
+		It("has a log-cache-expvar-forwarder job with templated counters/gauges", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			forwarder, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-expvar-forwarder")
+			Expect(err).NotTo(HaveOccurred())
+
+			counters, err := forwarder.Property("counters")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(counters).To(ContainElement(map[interface{}]interface{}{
+				"addr":      "http://localhost:6060/debug/vars",
+				"name":      "egress",
+				"source_id": "log-cache",
+				"template":  "{{.LogCache.Egress}}",
+			}))
+
+			gauges, err := forwarder.Property("gauges")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(gauges).To(ContainElement(map[interface{}]interface{}{
+				"addr":      "http://localhost:6060/debug/vars",
+				"name":      "cache-period",
+				"source_id": "log-cache",
+				"template":  "{{.LogCache.CachePeriod}}",
+			}))
 		})
 
 		It("has a log-cache-expvar-forwarder job with templated counters/gauges", func() {

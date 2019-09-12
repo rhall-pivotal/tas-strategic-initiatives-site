@@ -6,7 +6,7 @@ manifest: |
   route_registrar:
     routes:
     - name: log-cache-reverse-proxy
-      port: 8083
+      port: $( variable "log_cache_cf_auth_proxy_port" )
       registration_interval: 20s
       uris:
       - "log-cache.(( .cloud_controller.system_domain.value ))"
