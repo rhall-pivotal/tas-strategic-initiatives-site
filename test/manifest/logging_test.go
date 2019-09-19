@@ -42,7 +42,7 @@ var _ = Describe("Logging", func() {
 
 		BeforeEach(func() {
 			if productName == "srt" {
-				productTag = "Small Footprint PAS"
+				productTag = "Small Footprint Pivotal Application Service"
 			} else {
 				productTag = "Pivotal Application Service"
 			}
@@ -193,7 +193,7 @@ var _ = Describe("Logging", func() {
 
 		BeforeEach(func() {
 			if productName == "srt" {
-				productTag = "Small Footprint PAS"
+				productTag = "Small Footprint Pivotal Application Service"
 			} else {
 				productTag = "Pivotal Application Service"
 			}
