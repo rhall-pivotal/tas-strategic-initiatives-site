@@ -3,6 +3,11 @@ release: loggregator-agent
 consumes: |
   doppler: {from: doppler, deployment: (( ..cf.deployment_name )) }
 manifest: |
+  metrics:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.loggregator_agent_metrics_tls.cert_pem ))
+    key: (( .properties.loggregator_agent_metrics_tls.private_key_pem ))
+    server_name: loggregator_agent_metrics
   grpc_port: 3459
   disable_udp: true
   loggregator:

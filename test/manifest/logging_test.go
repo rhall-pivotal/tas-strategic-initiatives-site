@@ -49,6 +49,8 @@ var _ = Describe("Logging", func() {
 				Expect(err).ToNot(HaveOccurred())
 				Expect(tlsProps).To(HaveKey("ca_cert"))
 
+				expectSecureMetrics(agent)
+
 				tlsAgentProps, err := agent.Property("loggregator/tls/agent")
 				Expect(err).ToNot(HaveOccurred())
 				Expect(tlsAgentProps).To(HaveKey("cert"))
@@ -91,6 +93,8 @@ var _ = Describe("Logging", func() {
 				Expect(tlsProps).To(HaveKey("cert"))
 				Expect(tlsProps).To(HaveKey("key"))
 
+				expectSecureMetrics(agent)
+
 				cacheTlsProps, err := agent.Property("cache/tls")
 				Expect(err).ToNot(HaveOccurred())
 				Expect(cacheTlsProps).To(HaveKey("ca_cert"))
@@ -107,8 +111,10 @@ var _ = Describe("Logging", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			for _, ig := range instanceGroups {
-				_, err := manifest.FindInstanceGroupJob(ig, "prom_scraper")
+				scraper, err := manifest.FindInstanceGroupJob(ig, "prom_scraper")
 				Expect(err).NotTo(HaveOccurred())
+
+				expectSecureMetrics(scraper)
 			}
 		})
 
@@ -125,6 +131,8 @@ var _ = Describe("Logging", func() {
 					port, err := agent.Property("port")
 					Expect(err).NotTo(HaveOccurred())
 					Expect(port).To(Equal(3458))
+
+					expectSecureMetrics(agent)
 
 					By("setting tags on the emitted metrics")
 					tags, err := agent.Property("tags")
@@ -261,3 +269,12 @@ rule
 		})
 	})
 })
+
+func expectSecureMetrics(job planitest.Manifest) {
+	metricsProps, err := job.Property("metrics")
+	Expect(err).ToNot(HaveOccurred())
+	Expect(metricsProps).To(HaveKey("ca_cert"))
+	Expect(metricsProps).To(HaveKey("cert"))
+	Expect(metricsProps).To(HaveKey("key"))
+	Expect(metricsProps).To(HaveKey("server_name"))
+}
