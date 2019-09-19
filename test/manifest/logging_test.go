@@ -439,11 +439,7 @@ var _ = Describe("Logging", func() {
 				"log-cache.sys.example.com",
 			})))
 
-			if productName == "srt" {
-				Expect(routes).To(ContainElement(HaveKeyWithValue("port", 8089)))
-			} else {
-				Expect(routes).To(ContainElement(HaveKeyWithValue("port", 8083)))
-			}
+			Expect(routes).To(ContainElement(HaveKeyWithValue("port", 8083)))
 		})
 
 		It("has an auth proxy", func() {
@@ -468,11 +464,7 @@ var _ = Describe("Logging", func() {
 			proxyPort, err := proxy.Property("proxy_port")
 			Expect(err).ToNot(HaveOccurred())
 
-			if productName == "srt" {
-				Expect(proxyPort).To(Equal(8089))
-			} else {
-				Expect(proxyPort).To(Equal(8083))
-			}
+			Expect(proxyPort).To(Equal(8083))
 
 			uaaProperties, err := proxy.Property("uaa")
 			Expect(err).ToNot(HaveOccurred())
