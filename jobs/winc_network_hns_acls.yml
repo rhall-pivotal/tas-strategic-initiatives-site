@@ -5,3 +5,4 @@ manifest: |
   winc_network:
     dns_servers: ["172.30.0.1"]
     mtu: (( ..cf.properties.container_networking_interface_plugin.silk.network_mtu.value ))
+    search_domains: (( ..cf.properties.cf_networking_search_domains.parsed_strings ))
