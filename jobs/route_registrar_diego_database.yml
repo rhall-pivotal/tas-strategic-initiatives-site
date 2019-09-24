@@ -6,7 +6,8 @@ manifest: |
   route_registrar:
     routes:
     - name: network-policy-server
-      port: 4002
+      tls_port: 4002
+      server_cert_domain_san: "network-policy-server.service.cf.internal"
       registration_interval: 20s
       tags:
         component: NetworkPolicyServer
