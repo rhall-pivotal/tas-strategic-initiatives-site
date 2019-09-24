@@ -102,6 +102,10 @@ var _ = Describe("Rep Windows", func() {
 			proxyCaCerts, err := rep.Property("containers/proxy/trusted_ca_certificates")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(proxyCaCerts).NotTo(BeEmpty())
+
+			unproxiedPortMappings, err := rep.Property("containers/proxy/enable_unproxied_port_mappings")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(unproxiedPortMappings).To(BeFalse())
 		})
 	})
 })

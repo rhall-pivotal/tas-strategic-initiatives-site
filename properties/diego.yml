@@ -22,6 +22,7 @@
     - name: proxy
       manifest: |
         enabled: true
+        enable_unproxied_port_mappings: false
         require_and_verify_client_certificates: true
         trusted_ca_certificates:
         - (( $ops_manager.ca_certificate ))

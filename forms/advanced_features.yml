@@ -18,10 +18,13 @@ property_inputs:
 
   - reference: .properties.route_integrity
     label: TLS connections from Router to apps (beta)
+    description: |
+      If you have mutual TLS app identity verification enabled, app containers
+      accept incoming communication only from the Gorouter. This disables TCP routing.
     selector_property_inputs:
     - reference: .properties.route_integrity.disable
       label: Disable route integrity and mutual TLS
     - reference: .properties.route_integrity.tls_verify
       label: Router uses TLS to verify app identity
     - reference: .properties.route_integrity.mutual_tls_verify
-      label: Router and apps use mutual TLS to verify each other's identity
+      label: Router and apps use mutual TLS to verify each other's identity.
