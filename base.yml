@@ -528,7 +528,7 @@ post_deploy_errands:
     label: SMB Broker Errand
     description: Pushes the SMB Broker application to your Pivotal Application Service installation
     colocated: true
-    run_default: false
+    run_default: true
     instances:
       - $( variable "errand_instance_group" )
   - name: rotate_cc_database_key

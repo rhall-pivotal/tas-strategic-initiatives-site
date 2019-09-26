@@ -9,8 +9,8 @@ import (
 var _ = Describe("SMB volume service", func() {
 	var instanceGroup string
 
-	Context("when SMB volume services are disabled", func() {
-		It("disables the smbdriver job", func() {
+	Context("when SMB volume services are enabled", func() {
+		It("enables the smbdriver job", func() {
 			if productName == "srt" {
 				instanceGroup = "compute"
 			} else {
@@ -26,12 +26,12 @@ var _ = Describe("SMB volume service", func() {
 			smbDriverDisabled, err := smbDriver.Property("disable")
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(smbDriverDisabled).To(BeTrue())
+			Expect(smbDriverDisabled).To(BeFalse())
 		})
 	})
 
-	Context("when SMB volume services are enabled", func() {
-		It("enables the smbdriver job", func() {
+	Context("when SMB volume services are disabled", func() {
+		It("disables the smbdriver job", func() {
 			if productName == "srt" {
 				instanceGroup = "compute"
 			} else {
@@ -39,7 +39,7 @@ var _ = Describe("SMB volume service", func() {
 			}
 
 			manifest, err := product.RenderManifest(map[string]interface{}{
-				".properties.enable_smb_volume_driver": true,
+				".properties.enable_smb_volume_driver": false,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -49,7 +49,7 @@ var _ = Describe("SMB volume service", func() {
 			smbDriverDisabled, err := smbDriver.Property("disable")
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(smbDriverDisabled).To(BeFalse())
+			Expect(smbDriverDisabled).To(BeTrue())
 		})
 
 		It("configures new UAA clients", func() {
