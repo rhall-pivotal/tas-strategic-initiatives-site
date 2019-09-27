@@ -8,7 +8,7 @@ manifest: |
       cert: "((.properties.system_metrics_tls_scraper_cert.cert_pem))"
       key: "((.properties.system_metrics_tls_scraper_cert.private_key_pem))"
   metrics:
-    port: 14827
+    port: $( variable "service_metrics_scraper_health_port" )
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( .properties.loggr_metric_scraper_metrics_tls.cert_pem ))
     key: (( .properties.loggr_metric_scraper_metrics_tls.private_key_pem ))
