@@ -287,6 +287,9 @@
       - name: default_router_group
         manifest: |
           []
+      - name: tcp_router_request_timeout_in_seconds
+        manifest: |
+          (( .properties.tcp_routing.enable.request_timeout_in_seconds.value ))
   - name: enable
     select_value: enable
     named_manifests:
@@ -295,11 +298,20 @@
           - name: default-tcp
             reservable_ports: (( .properties.tcp_routing.enable.reservable_ports.value ))
             type: tcp
+      - name: tcp_router_request_timeout_in_seconds
+        manifest: |
+          (( .properties.tcp_routing.enable.request_timeout_in_seconds.value ))
     property_blueprints:
       - name: reservable_ports
         type: string
         configurable: true
         placeholder: "e.g: 1024-10000,65535"
+      - name: request_timeout_in_seconds
+        type: integer
+        configurable: true
+        default: 300
+        constraints:
+          min: 0
 
 - name: router_backend_max_conn
   type: integer

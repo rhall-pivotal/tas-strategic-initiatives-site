@@ -592,4 +592,40 @@ var _ = Describe("Routing", func() {
 			Expect(router.Property("router/balancing_algorithm")).To(Equal("least-connection"))
 		})
 	})
+
+	Describe("TCP Routing", func(){
+		Context("when TCP Routing is enabled", func(){
+			var properties map[string]interface{}
+			BeforeEach(func(){
+				properties = map[string]interface{}{
+					".properties.tcp_routing": "enable",
+				}
+			})
+			It("tcp_router.request_timeout_in_seconds should default to 300", func(){
+				manifest, err := product.RenderManifest(properties)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob("tcp_router", "tcp_router")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(job.Property("tcp_router/request_timeout_in_seconds")).To(Equal(300))
+			})
+			Context("when the user provides a value for tcp_router.request_timeout_in_seconds", func(){
+
+				BeforeEach(func(){
+					properties = map[string]interface{}{
+						".properties.tcp_routing": "enable",
+						".properties.tcp_routing.enable.request_timeout_in_seconds": 100,
+					}
+				})
+				It("tcp_router.request_timeout_in_seconds is updated accordingly", func(){
+					manifest, err := product.RenderManifest(properties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("tcp_router", "tcp_router")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(job.Property("tcp_router/request_timeout_in_seconds")).To(Equal(100))
+				})
+			})
+		})
+	})
 })

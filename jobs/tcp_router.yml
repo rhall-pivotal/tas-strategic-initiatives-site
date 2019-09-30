@@ -8,3 +8,4 @@ manifest: |
   tcp_router:
     oauth_secret: (( .uaa.tcp_router_credentials.password ))
     log_level: debug
+    request_timeout_in_seconds: (( .properties.tcp_routing.selected_option.parsed_manifest(tcp_router_request_timeout_in_seconds) ))
