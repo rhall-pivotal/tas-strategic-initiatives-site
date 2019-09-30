@@ -103,6 +103,19 @@ var _ = Describe("Logging", func() {
 				Expect(cacheTlsProps).To(HaveKeyWithValue("cn", "binding-cache"))
 			}
 		})
+
+		It("has aggreate drain url", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, ig := range instanceGroups {
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggr-syslog-agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = agent.Property("aggregate_drains")
+				Expect(err).NotTo(HaveOccurred())
+			}
+		})
 	})
 
 	Describe("prom scraper", func() {

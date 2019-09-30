@@ -26,3 +26,4 @@ manifest: |
       cert: (( .properties.scheduler_binding_cache_tls.cert_pem ))
       key: (( .properties.scheduler_binding_cache_tls.private_key_pem ))
       cn: binding-cache
+  aggregate_drains: "(( ..cf.properties.syslog_agent_aggregate_drains.value ))"
