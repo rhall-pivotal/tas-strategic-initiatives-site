@@ -2,6 +2,7 @@
 name: loggr-metric-scraper
 release: loggregator-agent
 manifest: |
+  debug_port: $( variable "service_metrics_scraper_health_port" )
   system_metrics:
     tls:
       ca_cert: "(( $ops_manager.ca_certificate ))"
