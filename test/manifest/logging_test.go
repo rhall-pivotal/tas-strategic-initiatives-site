@@ -411,11 +411,7 @@ var _ = Describe("Logging", func() {
 				"log-cache.sys.example.com",
 			})))
 
-			if productName == "srt" {
-				Expect(routes).To(ContainElement(HaveKeyWithValue("tls_port", 8089)))
-			} else {
-				Expect(routes).To(ContainElement(HaveKeyWithValue("tls_port", 8083)))
-			}
+			Expect(routes).To(ContainElement(HaveKeyWithValue("tls_port", 8083)))
 			Expect(routes).To(ContainElement(HaveKeyWithValue("server_cert_domain_san", "log-cache.service.cf.internal")))
 		})
 
