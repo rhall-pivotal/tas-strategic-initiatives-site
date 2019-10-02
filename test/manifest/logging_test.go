@@ -462,25 +462,6 @@ var _ = Describe("Logging", func() {
 		})
 	})
 
-	Describe("log cache scheduler", func() {
-		var instanceGroup string
-		BeforeEach(func() {
-			if productName == "srt" {
-				instanceGroup = "control"
-			} else {
-				instanceGroup = "clock_global"
-			}
-		})
-
-		It("has a scheduler", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			_, err = manifest.FindInstanceGroupJob(instanceGroup, "log-cache-scheduler")
-			Expect(err).NotTo(HaveOccurred())
-		})
-	})
-
 	Describe("Traffic Controller", func() {
 		var instanceGroup string
 		BeforeEach(func() {
