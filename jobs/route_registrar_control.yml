@@ -27,8 +27,7 @@ manifest: |
         name: uaa-healthcheck
         script_path: /var/vcap/jobs/uaa/bin/health_check
     - name: network-policy-server
-      tls_port: 4002
-      server_cert_domain_san: "network-policy-server.service.cf.internal"
+      port: 4002
       registration_interval: 20s
       tags:
         component: NetworkPolicyServer

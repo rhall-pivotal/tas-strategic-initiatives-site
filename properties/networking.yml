@@ -385,12 +385,6 @@
       - network-policy-server.service.cf.internal
       - "*.network-policy-server.service.cf.internal"
 
-- name: network_policy_server_external_cert
-  type: rsa_cert_credentials
-  default:
-    domains:
-      - network-policy-server.service.cf.internal
-
 - name: network_policy_agent_cert
   type: rsa_cert_credentials
 
