@@ -19,13 +19,13 @@ property_inputs:
   - reference: .nfs_server.blobstore_internal_access_rules
     label: Non-RFC-1918 private network allow list
     placeholder: |
-      For example, `allow 172.99.0.0/24;,allow 172.55.0.0/24;`.
+      e.g.: allow 172.99.0.0/24;,allow 172.55.0.0/24;
 
   - reference: .properties.cf_dial_timeout_in_seconds
-    label: CF CLI connection timeout
+    label: CF CLI connection timeout (in seconds)
     description: |
       Maximum wait time to establish a connection, including
-      name resolution. Enter value in seconds.
+      name resolution.
 
   - reference: .properties.enable_tls_to_internal_pxc
     label: Enable TLS for internal system database (beta)
@@ -69,7 +69,7 @@ property_inputs:
     placeholder: 200
 
   - reference: .properties.cloud_controller_temporary_disable_deployments
-    label: Disable rolling app deployments
+    label: Disable zero-downtime app deployments
 
   - reference: .properties.log_cache_max_per_source
     label: Maximum number of envelopes stored in Log Cache per source
