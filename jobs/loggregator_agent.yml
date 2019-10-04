@@ -11,4 +11,7 @@ manifest: |
       agent:
         cert: (( .properties.loggregator_agent_tls_cert.cert_pem ))
         key: (( .properties.loggregator_agent_tls_cert.private_key_pem ))
-  tags: (( .properties.compute_isolation.selected_option.parsed_manifest(for_loggregator_agent_tags) ))
+  tags:
+    placement_tag: (( .isolated_diego_cell.placement_tag.value ))
+    product: $( variable "label" )
+    system_domain: "(( ..cf.cloud_controller.system_domain.value ))"

@@ -231,37 +231,4 @@ var _ = Describe("Diego", func() {
 			Expect(setCPUWeight).To(BeTrue())
 		})
 	})
-
-	Describe("placement_tag", func() {
-		Context("when compute isolation is enabled", func() {
-			It("adds the appropriate placement_tag", func() {
-				manifest, err := product.RenderManifest(nil)
-				Expect(err).NotTo(HaveOccurred())
-
-				rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
-				Expect(err).NotTo(HaveOccurred())
-
-				placementTag, err := rep.Property("diego/rep/placement_tags")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(placementTag).To(ContainElement("isosegtag"))
-			})
-		})
-
-		Context("when compute isolation is disabled", func() {
-			It("does not have a placement", func() {
-				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.compute_isolation":                                "disabled",
-					".properties.compute_isolation.enabled.isolation_segment_name": "",
-				})
-				Expect(err).NotTo(HaveOccurred())
-
-				rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
-				Expect(err).NotTo(HaveOccurred())
-
-				properties, err := rep.Property("diego/rep")
-				Expect(err).ToNot(HaveOccurred())
-				Expect(properties).ToNot(HaveKey("placement_tags"))
-			})
-		})
-	})
 })

@@ -24,6 +24,10 @@ property_inputs:
   placeholder: |
     10.10.10.10:8888,example.com:8888
 
+- reference: .isolated_diego_cell.placement_tag
+  label: Segment name
+  description: The placement tag for your Diego Cells.
+
 - reference: .properties.garden_disk_cleanup
   label: Docker images disk cleanup scheduling on Diego Cell VMs
   selector_property_inputs:

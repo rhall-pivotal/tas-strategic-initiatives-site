@@ -10,6 +10,9 @@
     - name: sharding_mode
       manifest: |
         segments
+    - name: isolation_segments
+      manifest: |
+        ['(( .isolated_diego_cell.placement_tag.value ))']
     - name: routing_api_enabled
       manifest: |
         false
@@ -19,6 +22,9 @@
     - name: sharding_mode
       manifest: |
         shared-and-segments
+    - name: isolation_segments
+      manifest: |
+        []
     - name: routing_api_enabled
       manifest: |
         true

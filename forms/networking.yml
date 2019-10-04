@@ -217,6 +217,14 @@ property_inputs:
 - reference: .properties.enable_silk_policy_enforcement
   label: Enable Silk policy enforcement
 
+- reference: .properties.routing_table_sharding_mode
+  label: Router sharding mode
+  selector_property_inputs:
+  - reference: .properties.routing_table_sharding_mode.isolation_segment_only
+    label: Isolation Segment only
+  - reference: .properties.routing_table_sharding_mode.no_isolation_segment
+    label: No Isolation Segment
+
 - reference: .properties.router_headers_remove_if_specified
   label: Remove specified HTTP response headers
   description: |

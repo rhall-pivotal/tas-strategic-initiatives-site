@@ -19,7 +19,12 @@ manifest: |
       post_setup_user: "root"
       instance_identity_ca_cert: ((( diego-instance-identity-intermediate-ca-2-7.certificate )))
       instance_identity_key: ((( diego-instance-identity-intermediate-ca-2-7.private_key )))
-    rep: (( .properties.compute_isolation.selected_option.parsed_manifest(for_rep) ))
+    rep:
+      use_azure_fault_domains: true
+      preloaded_rootfses:
+        - "cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar"
+      placement_tags: [ (( placement_tag.value )) ]
+      advertise_preference_for_instance_address: (( ..cf.properties.container_networking_interface_plugin.selected_option.parsed_manifest(use_container_address) ))
   enable_consul_service_registration: false
   enable_declarative_healthcheck: true
   logging:
