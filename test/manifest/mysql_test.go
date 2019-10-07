@@ -116,6 +116,15 @@ var _ = Describe("MySQL", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(maxConnections).To(Equal(1048576))
 			})
+
+			It("sets the innodb buffer pool size to 50% of available memory", func() {
+				mysqlClustered, err := manifest.FindInstanceGroupJob(instanceGroup, "pxc-mysql")
+				Expect(err).NotTo(HaveOccurred())
+
+				maxConnections, err := mysqlClustered.Property("engine_config/innodb_buffer_pool_size_percent")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(maxConnections).To(Equal(50))
+			})
 		})
 	})
 })
