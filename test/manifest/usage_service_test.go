@@ -52,6 +52,32 @@ var _ = Describe("Usage Service", func() {
 				Expect(job.Path("/provides/app-usage-internal")).To(Equal(map[interface{}]interface{}{"as": "app-usage-internal"}))
 			})
 		})
+
+		Describe("Cutoff age in days", func() {
+			It("uses the spec defaults", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob(pushUsageServiceInstanceGroup, "push-usage-service")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(job.Property("app_usage_service/cutoff_age_in_days")).To(Equal(365))
+			})
+
+			Context("when the operator specifies cutoff value manually", func() {
+				It("applies them", func() {
+					manifest, err := product.RenderManifest(map[string]interface{}{
+						".properties.push_usage_service_cutoff_age_in_days": 100,
+					})
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(pushUsageServiceInstanceGroup, "push-usage-service")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(job.Property("app_usage_service/cutoff_age_in_days")).To(Equal(100))
+				})
+			})
+		})
 	})
 
 	Describe("Backup and Restore", func() {

@@ -74,3 +74,11 @@ property_inputs:
   - reference: .properties.log_cache_max_per_source
     label: Maximum number of envelopes stored in Log Cache per source
     placeholder: 100000
+
+  - reference: .properties.push_usage_service_cutoff_age_in_days
+    label: Usage service cutoff age in days
+    description: |
+      Number of days of granular data that usage service stores.
+      Data older than the cutoff will be deleted.
+      Does not affect monthly summary records.
+      Warning - setting the configurable time limit to higher amounts may result in performance issues or migration failure

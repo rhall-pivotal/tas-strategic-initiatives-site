@@ -18,6 +18,7 @@ manifest: |
     uaa_client_id: (( .uaa.usage_service_client_credentials.identity ))
     uaa_client_secret: (( .uaa.usage_service_client_credentials.password ))
     rails_secret_token: ((( push-usage-service-secret-token )))
+    cutoff_age_in_days: (( .properties.push_usage_service_cutoff_age_in_days.value ))
   databases:
     app_usage_service: (( .properties.system_database.selected_option.parsed_manifest(push-app-usage-service) ))
   ssl:
