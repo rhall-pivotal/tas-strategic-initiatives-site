@@ -1,10 +1,14 @@
 exports.migrate = function(input) {
     var properties = input['properties'];
 
-    properties['.properties.compute_isolation'] = {'value': 'enabled'};
-    properties['.properties.compute_isolation.enabled.isolation_segment_name'] = { 'value': properties['.isolated_diego_cell.placement_tag'].value };
+    const keys = Object.keys(properties)
 
-    delete properties['.isolated_diego_cell.placement_tag'];
+    const key = keys.find(k => /^\.isolated_diego_cell.*?placement_tag/.test(k))
+
+    properties['.properties.compute_isolation.enabled.isolation_segment_name'] = { 'value': properties[key].value };
+    properties['.properties.compute_isolation'] = {'value': 'enabled'};
+
+    delete properties[key];
 
     return input;
 };
