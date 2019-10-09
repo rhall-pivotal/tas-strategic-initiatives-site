@@ -71,7 +71,9 @@ property_inputs:
   description: Logs and metrics flow to the V1 firehose.
 
 - reference: .properties.syslog_agent_aggregate_drains
-  label: Enable app log egress to external aggregator
+  label: Aggregate log/metric drain destinations
   description: |
-    A comma-separated list of destinations to external
-    syslog locations where all app logs and metrics will be sent.
+    A comma-separated list of HTTPS or syslog URLs where all
+    metrics and all apps' logs will be sent.
+  placeholder: |
+    https://10.10.10.10,syslog-tls://the-syslog-endpoint.com
