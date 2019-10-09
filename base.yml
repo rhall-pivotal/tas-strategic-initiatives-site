@@ -45,18 +45,24 @@ job_types:
 property_blueprints:
 - $( property "bbs_client_cert" )
 - $( property "bosh_ssh_enabled" )
+- $( property "forwarder_agent_metrics_tls" )
 - $( property "route_integrity" )
 - $( property "kms" )
 - $( property "loggregator_client_cert" )
 - $( property "loggregator_agent_tls_cert" )
+- $( property "loggregator_agent_metrics_tls" )
+- $( property "prom_scraper_scrape_tls" )
+- $( property "prom_scraper_metrics_tls" )
 - $( property "rep_server_cert" )
 - $( property "rep_server_cert_v2" )
 - $( property "smoke_tests_windows" )
+- $( property "syslog_agent_metrics_tls" )
 - $( property "system_logging" )
 - $( property "system_metrics_enabled" )
 - $( property "system_metrics_tls_scraper_cert" )
 - $( property "windows_admin_password" )
 - $( property "scheduler_binding_cache_tls" )
+
 
 post_deploy_errands:
   - name: install-hwc-buildpack

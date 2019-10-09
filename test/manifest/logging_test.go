@@ -3,6 +3,7 @@ package manifest_test
 import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/pivotal-cf/planitest"
 )
 
 var _ = Describe("Logging", func() {
@@ -21,6 +22,8 @@ var _ = Describe("Logging", func() {
 			tlsProps, err := agent.Property("loggregator/tls")
 			Expect(err).ToNot(HaveOccurred())
 			Expect(tlsProps).To(HaveKey("ca_cert"))
+
+			expectSecureMetrics(agent)
 
 			tlsAgentProps, err := agent.Property("loggregator/tls/agent")
 			Expect(err).ToNot(HaveOccurred())
@@ -112,6 +115,8 @@ var _ = Describe("Logging", func() {
 			agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggr-forwarder-agent-windows")
 			Expect(err).NotTo(HaveOccurred())
 
+			expectSecureMetrics(agent)
+
 			By("getting the grpc port")
 			port, err := agent.Property("port")
 			Expect(err).NotTo(HaveOccurred())
@@ -150,6 +155,8 @@ var _ = Describe("Logging", func() {
 			agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggr-syslog-agent-windows")
 			Expect(err).NotTo(HaveOccurred())
 
+			expectSecureMetrics(agent)
+
 			port, err := agent.Property("port")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(port).To(Equal(3460))
@@ -174,8 +181,19 @@ var _ = Describe("Logging", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
-			_, err = manifest.FindInstanceGroupJob("windows_diego_cell", "prom_scraper_windows")
+			scraper, err := manifest.FindInstanceGroupJob("windows_diego_cell", "prom_scraper_windows")
 			Expect(err).NotTo(HaveOccurred())
+
+			expectSecureMetrics(scraper)
 		})
 	})
 })
+
+func expectSecureMetrics(job planitest.Manifest) {
+	metricsProps, err := job.Property("metrics")
+	Expect(err).ToNot(HaveOccurred())
+	Expect(metricsProps).To(HaveKey("ca_cert"))
+	Expect(metricsProps).To(HaveKey("cert"))
+	Expect(metricsProps).To(HaveKey("key"))
+	Expect(metricsProps).To(HaveKey("server_name"))
+}

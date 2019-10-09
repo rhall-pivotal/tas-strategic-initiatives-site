@@ -3,3 +3,15 @@ name: prom_scraper_windows
 release: loggregator-agent
 consumes: |
   loggregator: {from: loggregator, deployment: (( ..cf.deployment_name ))}
+manifest: |
+  scrape:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      cert: "((.properties.prom_scraper_scrape_tls.cert_pem))"
+      key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
+      cn: prom_scraper
+  metrics:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: "((.properties.prom_scraper_metrics_tls.cert_pem))"
+    key: "((.properties.prom_scraper_metrics_tls.private_key_pem))"
+    server_name: prom_scraper_metrics
