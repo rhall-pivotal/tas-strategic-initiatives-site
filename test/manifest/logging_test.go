@@ -63,14 +63,50 @@ var _ = Describe("Logging", func() {
 				udpDisabled, err := agent.Property("disable_udp")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(udpDisabled).To(BeTrue())
-
-				tags, err := agent.Property("tags")
-				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
-				Expect(tags).To(HaveKeyWithValue("placement_tag", "isosegtag"))
-				Expect(tags).To(HaveKeyWithValue("product", "Pivotal Isolation Segment"))
-				Expect(tags).NotTo(HaveKey("product_version"))
-				Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
 			}
+		})
+
+		Describe("tags", func() {
+			Context("when compute isolation is enabled", func() {
+				It("adds the appropriate manifest for tags", func() {
+					manifest, err := product.RenderManifest(nil)
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, ig := range instanceGroups {
+						agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
+						Expect(err).NotTo(HaveOccurred())
+
+						tags, err := agent.Property("tags")
+						Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
+						Expect(tags).To(HaveKeyWithValue("placement_tag", "isosegtag"))
+						Expect(tags).To(HaveKeyWithValue("product", "Pivotal Isolation Segment"))
+						Expect(tags).NotTo(HaveKey("product_version"))
+						Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
+					}
+				})
+			})
+
+			Context("when compute isolation is disabled", func() {
+				It("adds the appropriate manifest for tags", func() {
+					manifest, err := product.RenderManifest(map[string]interface{}{
+						".properties.compute_isolation":                                "disabled",
+						".properties.compute_isolation.enabled.isolation_segment_name": "",
+					})
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, ig := range instanceGroups {
+						agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
+						Expect(err).NotTo(HaveOccurred())
+
+						tags, err := agent.Property("tags")
+						Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
+						Expect(tags).NotTo(HaveKey("placement_tag"))
+						Expect(tags).To(HaveKeyWithValue("product", "Pivotal Isolation Segment"))
+						Expect(tags).NotTo(HaveKey("product_version"))
+						Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
+					}
+				})
+			})
 		})
 	})
 
@@ -146,15 +182,50 @@ var _ = Describe("Logging", func() {
 					Expect(port).To(Equal(3458))
 
 					expectSecureMetrics(agent)
-
-					By("setting tags on the emitted metrics")
-					tags, err := agent.Property("tags")
-					Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", agent)
-					Expect(tags).To(HaveKeyWithValue("placement_tag", "isosegtag"))
-					Expect(tags).To(HaveKeyWithValue("product", "Pivotal Isolation Segment"))
-					Expect(tags).NotTo(HaveKey("product_version"))
-					Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
 				}
+			})
+
+			Describe("tags", func() {
+				Context("when compute isolation is enabled", func() {
+					It("adds the appropriate manifest for tags", func() {
+						manifest, err := product.RenderManifest(nil)
+						Expect(err).NotTo(HaveOccurred())
+
+						for _, ig := range instanceGroups {
+							agent, err := manifest.FindInstanceGroupJob(ig, "loggr-forwarder-agent")
+							Expect(err).NotTo(HaveOccurred())
+
+							tags, err := agent.Property("tags")
+							Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
+							Expect(tags).To(HaveKeyWithValue("placement_tag", "isosegtag"))
+							Expect(tags).To(HaveKeyWithValue("product", "Pivotal Isolation Segment"))
+							Expect(tags).NotTo(HaveKey("product_version"))
+							Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
+						}
+					})
+				})
+
+				Context("when compute isolation is disabled", func() {
+					It("adds the appropriate manifest for tags", func() {
+						manifest, err := product.RenderManifest(map[string]interface{}{
+							".properties.compute_isolation":                                "disabled",
+							".properties.compute_isolation.enabled.isolation_segment_name": "",
+						})
+						Expect(err).NotTo(HaveOccurred())
+
+						for _, ig := range instanceGroups {
+							agent, err := manifest.FindInstanceGroupJob(ig, "loggr-forwarder-agent")
+							Expect(err).NotTo(HaveOccurred())
+
+							tags, err := agent.Property("tags")
+							Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
+							Expect(tags).NotTo(HaveKey("placement_tag"))
+							Expect(tags).To(HaveKeyWithValue("product", "Pivotal Isolation Segment"))
+							Expect(tags).NotTo(HaveKey("product_version"))
+							Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
+						}
+					})
+				})
 			})
 		})
 	})

@@ -142,4 +142,36 @@ var _ = Describe("Routing", func() {
 		})
 	})
 
+	Describe("isolation_segments", func() {
+		Context("when compute isolation is enabled", func() {
+			It("adds the appropriate placement_tag", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
+				Expect(err).NotTo(HaveOccurred())
+
+				placementTag, err := router.Property("router/isolation_segments")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(placementTag).To(ContainElement("isosegtag"))
+			})
+		})
+
+		Context("when compute isolation is disabled", func() {
+			It("does not have a placement", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.compute_isolation":                                "disabled",
+					".properties.compute_isolation.enabled.isolation_segment_name": "",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
+				Expect(err).NotTo(HaveOccurred())
+
+				placementTag, err := router.Property("router/isolation_segments")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(placementTag).To(BeEmpty())
+			})
+		})
+	})
 })
