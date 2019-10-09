@@ -87,56 +87,6 @@ var _ = Describe("Logging", func() {
 		})
 	})
 
-	Describe("system metrics agent", func() {
-		It("sets defaults on the system-metrics agent", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			instanceGroups := getAllInstanceGroups(manifest)
-
-			for _, ig := range instanceGroups {
-				agent, err := manifest.FindInstanceGroupJob(ig, "loggr-system-metrics-agent")
-				Expect(err).NotTo(HaveOccurred())
-
-				enabled, err := agent.Property("enabled")
-				Expect(err).ToNot(HaveOccurred())
-				Expect(enabled).To(BeTrue())
-
-				tlsProps, err := agent.Property("system_metrics/tls")
-				Expect(err).ToNot(HaveOccurred())
-				Expect(tlsProps).To(HaveKey("ca_cert"))
-				Expect(tlsProps).To(HaveKey("cert"))
-				Expect(tlsProps).To(HaveKey("key"))
-			}
-		})
-
-		Context("when the Operator disables the system-metrics agent", func() {
-			It("sets enabled to false", func() {
-				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.system_metrics_enabled": false,
-				})
-				Expect(err).NotTo(HaveOccurred())
-
-				instanceGroups := getAllInstanceGroups(manifest)
-
-				for _, ig := range instanceGroups {
-					agent, err := manifest.FindInstanceGroupJob(ig, "loggr-system-metrics-agent")
-					Expect(err).NotTo(HaveOccurred())
-
-					enabled, err := agent.Property("enabled")
-					Expect(err).ToNot(HaveOccurred())
-					Expect(enabled).To(BeFalse())
-
-					tlsProps, err := agent.Property("system_metrics/tls")
-					Expect(err).ToNot(HaveOccurred())
-					Expect(tlsProps).To(HaveKey("ca_cert"))
-					Expect(tlsProps).To(HaveKey("cert"))
-					Expect(tlsProps).To(HaveKey("key"))
-				}
-			})
-		})
-	})
-
 	Describe("system metric scraper", func() {
 		var instanceGroup string
 		BeforeEach(func() {
@@ -159,6 +109,10 @@ var _ = Describe("Logging", func() {
 			Expect(tlsProps).To(HaveKey("ca_cert"))
 			Expect(tlsProps).To(HaveKey("cert"))
 			Expect(tlsProps).To(HaveKey("key"))
+
+			scrapePort, err := metricScraper.Property("scrape_port")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(scrapePort).To(Equal(53035))
 
 			expectSecureMetrics(metricScraper)
 		})
