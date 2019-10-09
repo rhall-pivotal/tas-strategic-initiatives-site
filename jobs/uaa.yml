@@ -560,6 +560,11 @@ manifest: |
         authorities: credhub.read,credhub.write
         authorized-grant-types: client_credentials
         secret: (( .uaa.smbbroker_credhub_client_credentials.password ))
+      (( .uaa.telemetry_usage_service_client_credentials.identity )):
+        id: (( .uaa.telemetry_usage_service_client_credentials.identity ))
+        secret: (( .uaa.telemetry_usage_service_client_credentials.password ))
+        authorities: "usage_service.audit"
+        authorized-grant-types: "client_credentials"
     servlet:
       session-cookie:
         max-age: (( .properties.uaa_session_cookie_max_age.value ))
