@@ -101,7 +101,7 @@ var _ = Describe("Logging", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
-			metricScraper, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-metric-scraper")
+			metricScraper, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-system-metric-scraper")
 			Expect(err).NotTo(HaveOccurred())
 
 			tlsProps, err := metricScraper.Property("system_metrics/tls")
