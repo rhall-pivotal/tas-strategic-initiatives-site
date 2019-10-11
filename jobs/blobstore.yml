@@ -12,7 +12,7 @@ manifest: |
       cert: (( .nfs_server.blobstore_cert.cert_pem ))
       private_key: (( .nfs_server.blobstore_cert.private_key_pem ))
     internal_access_rules: (( .nfs_server.blobstore_internal_access_rules.parsed_strings ))
-  release_level_backup: true
+  release_level_backup: (( .properties.system_blobstore.selected_option.parsed_manifest(enable_internal_backup) ))
   system_domain: (( .cloud_controller.system_domain.value ))
   select_directories_to_backup: '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_all) ? .properties.system_blobstore.selected_option.parsed_manifest(all_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_buckets) ))'
 

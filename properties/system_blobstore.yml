@@ -135,6 +135,9 @@
         - name: enable_gcs_backup
           manifest: |
             false
+        - name: enable_internal_backup
+          manifest: |
+            true
 
     - name: external
       select_value: external
@@ -337,6 +340,9 @@
         - name: enable_gcs_backup
           manifest: |
             false
+        - name: enable_internal_backup
+          manifest: |
+            false
 
       property_blueprints:
         - name: endpoint
@@ -497,6 +503,9 @@
         - name: enable_gcs_backup
           manifest: |
             false
+        - name: enable_internal_backup
+          manifest: |
+            false
       property_blueprints:
         - name: buildpacks_bucket
           type: string
@@ -608,6 +617,9 @@
           manifest: |
             false
         - name: enable_versioned_s3_backup
+          manifest: |
+            false
+        - name: enable_internal_backup
           manifest: |
             false
         - name: backup_buildpack
@@ -761,6 +773,9 @@
           manifest: |
             false
         - name: enable_gcs_backup
+          manifest: |
+            false
+        - name: enable_internal_backup
           manifest: |
             false
       property_blueprints:
