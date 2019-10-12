@@ -110,6 +110,13 @@
     domains:
     - loggregator-agent-metrics
 
+- name: loggr_udp_forwarder_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - loggr-udp-forwarder-metrics
+
 - name: prom_scraper_scrape_tls
   type: rsa_cert_credentials
   configurable: false
