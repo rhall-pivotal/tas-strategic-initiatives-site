@@ -60,3 +60,5 @@ instance_definition:
   label: Instances
   default: $( variable "credhub_default_instances" )
   configurable: $( variable "credhub_configurable_state" )
+  constraints:
+    min: $( variable "credhub_min_instances" )
