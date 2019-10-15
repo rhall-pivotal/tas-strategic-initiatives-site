@@ -16,6 +16,8 @@ manifest: |
     server_name: loggregator_agent_metrics
   grpc_port: 3459
   disable_udp: true
+  loggregator_agent:
+    enabled: (( .properties.enable_v2_firehose.value ))
   tags:
     product: $( variable "label" )
     system_domain: "(( .cloud_controller.system_domain.value ))"

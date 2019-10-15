@@ -70,6 +70,11 @@ property_inputs:
   label: Enable V1 firehose
   description: Logs and metrics flow to the V1 firehose.
 
+- reference: .properties.enable_v2_firehose
+  label: Enable V2 firehose
+  description: |
+    Logs and metrics flow to the V2 firehose. Disabling this requires disabling the V1 Firehose as well.
+
 - reference: .properties.syslog_agent_aggregate_drains
   label: Aggregate log/metric drain destinations
   description: |

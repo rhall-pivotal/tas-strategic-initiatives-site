@@ -447,6 +447,61 @@ var _ = Describe("Logging", func() {
 		})
 	})
 
+	Describe("V2 Firehose", func() {
+		It("is enabled by default", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			rlp, err := manifest.FindInstanceGroupJob(instanceGroup("loggregator_trafficcontroller"), "reverse_log_proxy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(rlp.Property("reverse_log_proxy/enabled")).To(BeTrue())
+
+			rlpGateway, err := manifest.FindInstanceGroupJob(instanceGroup("loggregator_trafficcontroller"), "reverse_log_proxy_gateway")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(rlpGateway.Property("logs_provider/enabled")).To(BeTrue())
+
+			doppler, err := manifest.FindInstanceGroupJob(instanceGroup("doppler"), "doppler")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(doppler.Property("doppler/enabled")).To(BeTrue())
+
+			instanceGroups := getAllInstanceGroups(manifest)
+			for _, instanceGroup := range instanceGroups {
+				la, err := manifest.FindInstanceGroupJob(instanceGroup, "loggregator_agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(la.Property("loggregator_agent/enabled")).To(BeTrue())
+			}
+		})
+
+		It("can be disabled", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.enable_v2_firehose": false,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			rlp, err := manifest.FindInstanceGroupJob(instanceGroup("loggregator_trafficcontroller"), "reverse_log_proxy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(rlp.Property("reverse_log_proxy/enabled")).To(BeFalse())
+
+			rlpGateway, err := manifest.FindInstanceGroupJob(instanceGroup("loggregator_trafficcontroller"), "reverse_log_proxy_gateway")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(rlpGateway.Property("logs_provider/enabled")).To(BeFalse())
+
+			doppler, err := manifest.FindInstanceGroupJob(instanceGroup("doppler"), "doppler")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(doppler.Property("doppler/enabled")).To(BeFalse())
+
+			instanceGroups := getAllInstanceGroups(manifest)
+			for _, instanceGroup := range instanceGroups {
+				la, err := manifest.FindInstanceGroupJob(instanceGroup, "loggregator_agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(la.Property("loggregator_agent/enabled")).To(BeFalse())
+			}
+		})
+	})
 	Describe("Traffic Controller", func() {
 		var instanceGroup string
 		BeforeEach(func() {
@@ -636,4 +691,12 @@ func expectSecureMetrics(job planitest.Manifest) {
 	Expect(metricsProps).To(HaveKey("cert"))
 	Expect(metricsProps).To(HaveKey("key"))
 	Expect(metricsProps).To(HaveKey("server_name"))
+}
+
+func instanceGroup(instanceGroupName string) string {
+	if productName == "srt" {
+		return "control"
+	}
+
+	return instanceGroupName
 }
