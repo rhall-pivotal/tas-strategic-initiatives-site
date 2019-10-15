@@ -1,0 +1,10 @@
+---
+name: loggr-system-metrics-agent-windows
+release: loggregator-agent
+manifest: |
+  enabled: (( .properties.system_metrics_enabled.value ))
+  system_metrics:
+    tls:
+      ca_cert: "(( $ops_manager.ca_certificate ))"
+      cert: "((.properties.system_metrics_tls_scraper_cert.cert_pem))"
+      key: "((.properties.system_metrics_tls_scraper_cert.private_key_pem))"
