@@ -65,48 +65,6 @@ var _ = Describe("Logging", func() {
 		})
 	})
 
-	Describe("system metrics agent", func() {
-		It("sets defaults on the system-metrics agent", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggr-system-metrics-agent-windows")
-			Expect(err).NotTo(HaveOccurred())
-
-			enabled, err := agent.Property("enabled")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(enabled).To(BeTrue())
-
-			tlsProps, err := agent.Property("system_metrics/tls")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(tlsProps).To(HaveKey("ca_cert"))
-			Expect(tlsProps).To(HaveKey("cert"))
-			Expect(tlsProps).To(HaveKey("key"))
-		})
-
-		Context("when the Operator disables the system-metrics agent", func() {
-			It("sets enabled to false", func() {
-				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.system_metrics_enabled": false,
-				})
-				Expect(err).NotTo(HaveOccurred())
-
-				agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggr-system-metrics-agent-windows")
-				Expect(err).NotTo(HaveOccurred())
-
-				enabled, err := agent.Property("enabled")
-				Expect(err).ToNot(HaveOccurred())
-				Expect(enabled).To(BeFalse())
-
-				tlsProps, err := agent.Property("system_metrics/tls")
-				Expect(err).ToNot(HaveOccurred())
-				Expect(tlsProps).To(HaveKey("ca_cert"))
-				Expect(tlsProps).To(HaveKey("cert"))
-				Expect(tlsProps).To(HaveKey("key"))
-			})
-		})
-	})
-
 	Describe("forwarder agent", func() {
 		It("sets defaults on the loggregator agent", func() {
 			manifest, err := product.RenderManifest(nil)
