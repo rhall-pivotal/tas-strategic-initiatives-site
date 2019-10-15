@@ -41,6 +41,19 @@ var _ = Describe("Logging", func() {
 			}
 		})
 
+		It("is enabled by default", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, ig := range instanceGroups {
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = agent.Property("loggregator_agent/enabled")
+				Expect(err).ToNot(HaveOccurred())
+			}
+		})
+
 		Describe("tags", func() {
 			Context("when compute isolation is enabled", func() {
 				It("adds the appropriate manifest for tags", func() {

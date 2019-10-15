@@ -10,6 +10,7 @@ manifest: |
     server_name: loggregator_agent_metrics
   grpc_port: 3459
   disable_udp: true
+  enabled: (( ..cf.properties.enable_v2_firehose.value ))
   loggregator:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
