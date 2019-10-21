@@ -338,19 +338,25 @@ var _ = Describe("Logging", func() {
 			Expect(authProxyProperties).To(HaveKey("external_key"))
 		})
 
-		It("has a log-cache-nozzle with tls certs", func() {
+		It("has a log-cache-syslog-server with tls certs", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
-			nozzle, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-nozzle")
+			nozzle, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-syslog-server")
 			Expect(err).NotTo(HaveOccurred())
 
-			tlsProps, err := nozzle.Property("logs_provider/tls")
+			tlsProps, err := nozzle.Property("tls")
 			Expect(err).ToNot(HaveOccurred())
-			Expect(tlsProps).To(HaveKey("ca_cert"))
 			Expect(tlsProps).To(HaveKey("cert"))
 			Expect(tlsProps).To(HaveKey("key"))
+
+			metricsProps, err := nozzle.Property("metrics")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(metricsProps).To(HaveKey("ca_cert"))
+			Expect(metricsProps).To(HaveKey("cert"))
+			Expect(metricsProps).To(HaveKey("key"))
 		})
+
 
 		It("registers the log-cache route", func() {
 			manifest, err := product.RenderManifest(nil)

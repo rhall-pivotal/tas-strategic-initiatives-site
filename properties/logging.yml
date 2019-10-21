@@ -259,6 +259,20 @@
     domains:
       - log-cache-gateway-metrics
 
+- name: log_cache_syslog_server_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - "doppler.service.cf.internal"
+
+- name: log_cache_syslog_server_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - log-cache-syslog-server-metrics
+
 - name: forwarder_agent_metrics_tls
   type: rsa_cert_credentials
   configurable: false

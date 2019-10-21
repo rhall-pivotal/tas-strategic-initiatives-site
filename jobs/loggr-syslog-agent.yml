@@ -18,4 +18,4 @@ manifest: |
       cert: (( .properties.syslog_agent_api_tls.cert_pem ))
       key: (( .properties.syslog_agent_api_tls.private_key_pem ))
       cn: binding-cache
-  aggregate_drains: (( .properties.syslog_agent_aggregate_drains.value ))
+  aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
