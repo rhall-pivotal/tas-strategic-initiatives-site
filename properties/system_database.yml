@@ -226,16 +226,6 @@
           password: ((( nfs-volume-db-credentials.password )))
           name: (( .properties.nfsvolume_database_name.value ))
           ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
-      - name: nfsvolume_bbr
-        manifest: |
-          db_username: ((( nfs-volume-db-credentials.username )))
-          db_password: ((( nfs-volume-db-credentials.password )))
-          db_name: (( .properties.nfsvolume_database_name.value ))
-          db_hostname: mysql.service.cf.internal
-          db_port: 3306
-          db_driver: mysql
-          db_ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
-          release_level_backup: true
       - name: uaadb
         manifest: |
           db_scheme: mysql
@@ -476,16 +466,6 @@
             password: (( .properties.system_database.external.nfsvolume_password.value ))
             name: (( .properties.nfsvolume_database_name.value ))
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
-        - name: nfsvolume_bbr
-          manifest: |
-            db_driver: mysql
-            db_hostname: (( .properties.system_database.external.host.value ))
-            db_name: (( .properties.nfsvolume_database_name.value ))
-            db_password: (( .properties.system_database.external.nfsvolume_password.value ))
-            db_port: (( .properties.system_database.external.port.value ))
-            db_username: (( .properties.system_database.external.nfsvolume_username.value ))
-            db_ca_cert: (( .properties.system_database.external.ca_cert.value ))
-            release_level_backup: true
         - name: uaadb
           manifest: |
             db_scheme: mysql
