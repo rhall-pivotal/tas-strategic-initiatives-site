@@ -4,30 +4,24 @@ label: Compute and Networking Isolation
 description: Compute and Networking Isolation
 markdown: |
   For help configuring these fields, see the
-  [Installing PCF Isolation Segment](https://docs.pivotal.io/pivotalcf/2-8/customizing/installing-pcf-is.html)
-  PCF documentation.
+  [Compute and Networking Isolation](https://docs.pivotal.io/pivotalcf/2-8/customizing/installing-pcf-is.html#compute-networking-isolation)
+  section of the Installing Pivotal Platform Isolation Segment topic in the Pivotal documentation.
 
 property_inputs:
 - reference: .properties.compute_isolation
-  label: |
-    Tag name for cell blocks
+  label: Compute isolation
   selector_property_inputs:
   - reference: .properties.compute_isolation.disabled
-    label: None
+    label: Disable
   - reference: .properties.compute_isolation.enabled
-    label: Custom
+    label: Enable
     property_inputs:
       - reference: .properties.compute_isolation.enabled.isolation_segment_name
         label: Segment name
-        description: |
-          The placement tag for your Diego Cells.
+        description: The placement tag for your Diego Cells.
 
 - reference: .properties.routing_table_sharding_mode
   label: Router sharding mode
-  description: |
-    For help configuring these fields, see the Networking section of the
-    Installing PCF Isolation Segment topic in the PCF documentation:
-    https://docs.pivotal.io/pivotalcf/2-8/customizing/installing-pcf-is.html#networking
   selector_property_inputs:
   - reference: .properties.routing_table_sharding_mode.isolation_segment_only
     label: Isolation Segment only
