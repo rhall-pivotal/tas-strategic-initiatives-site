@@ -181,6 +181,7 @@ manifest: |
         hostnames:
         - uaa.service.cf.internal
     authentication:
+      enable_uri_encoding_compatibility_mode: (( .uaa.enable_uri_encoding_compatibility_mode.value ))
       policy:
         lockoutAfterFailures: (( .properties.uaa.internal.password_max_retry.value ))
     clients:

@@ -265,6 +265,35 @@ var _ = Describe("UAA", func() {
 		})
 	})
 
+	Describe("Encoding compatibility mode", func() {
+		It("defaults to on", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			enableUriEncodingCompatibilityMode, err := uaa.Property("uaa/authentication/enable_uri_encoding_compatibility_mode")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(enableUriEncodingCompatibilityMode).To(BeTrue())
+		})
+
+		It("can be turned off", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".uaa.enable_uri_encoding_compatibility_mode": false,
+			})
+
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			enableUriEncodingCompatibilityMode, err := uaa.Property("uaa/authentication/enable_uri_encoding_compatibility_mode")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(enableUriEncodingCompatibilityMode).To(BeFalse())
+		})
+	})
+
 	Context("LDAP", func() {
 		Describe("LDAP Group MaxSearchDepth", func() {
 			var inputProperties map[string]interface{}
