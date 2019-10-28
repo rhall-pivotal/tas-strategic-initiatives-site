@@ -69,6 +69,11 @@ property_inputs:
   description: |
     Logs and metrics flow to the V2 Firehose. Disabling this requires disabling the V1 Firehose as well.
 
+- reference: .properties.enable_log_cache_syslog_ingestion
+  label: Enable Log Cache Syslog Ingestion
+  description: |
+    Logs and metrics are ingested via syslog rather than the RLP.
+
 - reference: .properties.syslog_agent_aggregate_drains
   label: Aggregate log/metric drain destinations
   description: |

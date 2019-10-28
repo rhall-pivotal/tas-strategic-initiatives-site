@@ -357,7 +357,6 @@ var _ = Describe("Logging", func() {
 			Expect(metricsProps).To(HaveKey("key"))
 		})
 
-
 		It("registers the log-cache route", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -444,6 +443,37 @@ var _ = Describe("Logging", func() {
 			} else {
 				Expect(maxPerSource).To(Equal(200000))
 			}
+		})
+
+		Context("ingestion", func() {
+
+			It("defaults to nozzle ingestion", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				logCacheNozzle, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-nozzle")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(logCacheNozzle.Property("enabled")).To(BeTrue())
+
+				logCacheSyslogServer, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-syslog-server")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(logCacheSyslogServer.Property("enabled")).To(BeFalse())
+			})
+
+			It("enables syslog ingestion", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.enable_log_cache_syslog_ingestion": true,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				logCacheNozzle, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-nozzle")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(logCacheNozzle.Property("enabled")).To(BeFalse())
+
+				logCacheSyslogServer, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-syslog-server")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(logCacheSyslogServer.Property("enabled")).To(BeTrue())
+			})
 		})
 	})
 
