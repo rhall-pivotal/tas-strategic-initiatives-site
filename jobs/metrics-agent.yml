@@ -1,0 +1,18 @@
+---
+name: metrics-agent
+release: metrics-discovery
+manifest: |
+  grpc:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .doppler.metron_tls_cert.cert_pem ))
+    key: (( .doppler.metron_tls_cert.private_key_pem ))
+  metrics:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.metrics_agent_metrics_tls.cert_pem ))
+    key: (( .properties.metrics_agent_metrics_tls.private_key_pem ))
+    server_name: metrics_agent
+  scrape:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      cert: "((.properties.prom_scraper_scrape_tls.cert_pem))"
+      key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"

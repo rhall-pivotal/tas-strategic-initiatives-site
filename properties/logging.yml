@@ -195,24 +195,12 @@
   constraints:
     min: 100000
 
-- name: system_metrics_tls_scraper_cert
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-    - system-metrics
-
 - name: trafficcontroller_tls_cert
   type: rsa_cert_credentials
   configurable: false
   default:
     domains:
     - "doppler.service.cf.internal"
-
-- name: system_metrics_enabled
-  type: boolean
-  configurable: true
-  default: true
 
 - name: syslog_agent_aggregate_drains
   type: string_list
@@ -294,20 +282,6 @@
     domains:
       - loggr_udp_forwarder_metrics
 
-- name: prom_scraper_scrape_tls
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-      - prom_scraper
-
-- name: prom_scraper_metrics_tls
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-      - prom_scraper_metrics
-
 - name: syslog_agent_metrics_tls
   type: rsa_cert_credentials
   configurable: false
@@ -321,13 +295,6 @@
   default:
     domains:
       - loggr_syslog_binding_cache_metrics
-
-- name: loggr_metric_scraper_metrics_tls
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-      - loggr_metric_scraper_metrics
 
 - name: leadership_election_metrics_tls
   type: rsa_cert_credentials
