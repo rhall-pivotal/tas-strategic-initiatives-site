@@ -84,18 +84,6 @@
           manifest: |
             ""
 
-- name: system_metrics_tls_scraper_cert
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-      - system-metrics
-
-- name: system_metrics_enabled
-  type: boolean
-  configurable: true
-  default: true
-
 - name: forwarder_agent_metrics_tls
   type: rsa_cert_credentials
   configurable: false
@@ -116,20 +104,6 @@
   default:
     domains:
       - loggr-udp-forwarder-metrics
-
-- name: prom_scraper_scrape_tls
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-    - prom-scraper
-
-- name: prom_scraper_metrics_tls
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-    - prom-scraper-metrics
 
 - name: syslog_agent_metrics_tls
   type: rsa_cert_credentials
