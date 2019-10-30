@@ -1,0 +1,9 @@
+---
+name: metrics-discovery-registrar-windows
+release: metrics-discovery
+manifest: |
+  metrics:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.metrics_discovery_metrics_tls.cert_pem ))
+    key: (( .properties.metrics_discovery_metrics_tls.private_key_pem ))
+    server_name: metrics_discovery_metrics
