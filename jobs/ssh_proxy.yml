@@ -5,7 +5,14 @@ manifest: |
   bpm:
     enabled: true
   connect_to_instance_address: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(use_container_address) ))
-  backends: (( .properties.route_integrity.selected_option.parsed_manifest(backends_tls) ))
+  backends:
+    tls:
+      enabled: true
+      ca_certificates:
+      - ((( /cf/diego-instance-identity-root-ca.certificate )))
+      - ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
+      client_certificate: (( .properties.ssh_proxy_backends_tls.cert_pem ))
+      client_private_key: (( .properties.ssh_proxy_backends_tls.private_key_pem ))
   diego:
     ssh_proxy:
       disable_healthcheck_server: true
