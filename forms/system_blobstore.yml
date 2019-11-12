@@ -83,11 +83,11 @@ property_inputs:
     label: Internal WebDAV
 
   - reference: .properties.system_blobstore.external
-    label: External S3-compatible file store
+    label: External S3-compatible filestore
     property_inputs:
       - reference: .properties.system_blobstore.external.endpoint
         label: URL endpoint
-        description: The URL endpoint of your S3-compatible file store.
+        description: The URL endpoint of your S3-compatible filestore.
 
       - reference: .properties.system_blobstore.external.iam_instance_profile_authentication
         label: S3 AWS with instance profile
@@ -151,15 +151,15 @@ property_inputs:
 
       - reference: .properties.system_blobstore.external.buildpacks_backup_bucket
         label: Backup buildpacks bucket name
-        description: The S3 bucket for storing app buildpacks.
+        description: The S3 bucket used to back up and restore your buildpacks bucket.
 
       - reference: .properties.system_blobstore.external.droplets_backup_bucket
         label: Backup droplets bucket name
-        description: The S3 bucket for storing app droplets.
+        description: The S3 bucket used to back up and restore your droplets bucket.
 
       - reference: .properties.system_blobstore.external.packages_backup_bucket
         label: Backup packages bucket name
-        description: The S3 bucket for storing app packages.
+        description: The S3 bucket used to back up and restore your packages bucket.
 
   - reference: .properties.system_blobstore.external_gcs
     label: External Google Cloud Storage with access key and secret key

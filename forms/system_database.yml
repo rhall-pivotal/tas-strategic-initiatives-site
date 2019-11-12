@@ -3,8 +3,8 @@ name: system_database
 label: Databases
 description: Databases
 markdown: |
-  To configure this pane, see the
-  [Configure System Databases](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#sys-db)
+  For help configuring these fields, see the
+  [Configure Databases](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#sys-db)
   section of the _Configuring PAS_ topic in the PCF documentation.
 
 verifiers:
@@ -122,7 +122,7 @@ property_inputs:
       Internal databases - MySQL - Percona XtraDB Cluster
 
   - reference: .properties.system_database.external
-    label: External databases (e.g. AWS RDS)
+    label: External databases
     property_inputs:
       - reference: .properties.system_database.external.host
         label: Hostname
