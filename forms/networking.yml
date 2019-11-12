@@ -175,6 +175,14 @@ property_inputs:
     Timeout for connections from Router and HAProxy to apps and system
     components. Enter value in seconds.
 
+- reference: .router.drain_timeout
+  label: Router Drain Timeout
+  description: |
+    Specifies the amount of time, in seconds, that the Router will continue
+    to serve existing connections before shutting down. After the timeout is
+    reached, all remaining connections will be terminated so that the Router
+    can be restarted.
+
 - reference: .isolated_router.drain_wait
   label: Load balancer unhealthy threshold
   description: |
