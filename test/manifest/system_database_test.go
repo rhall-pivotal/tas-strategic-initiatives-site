@@ -65,21 +65,6 @@ var _ = Describe("System Database", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(caCert).To(BeNil())
 
-			nfsbrokerbbr, err := manifest.FindInstanceGroupJob("backup_restore", "nfsbroker-bbr")
-			Expect(err).NotTo(HaveOccurred())
-
-			host, err = nfsbrokerbbr.Property("nfsbroker/db_hostname")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(host).To(Equal("mysql.service.cf.internal"))
-
-			backup, err := nfsbrokerbbr.Property("nfsbroker/release_level_backup")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(backup).To(BeTrue())
-
-			caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).To(BeNil())
-
 			// notifications
 			notifications, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "deploy-notifications")
 			Expect(err).NotTo(HaveOccurred())
@@ -203,13 +188,6 @@ var _ = Describe("System Database", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				caCert, err := nfsbrokerpush.Property("nfsbrokerpush/db/ca_cert")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(caCert).NotTo(BeEmpty())
-
-				nfsbrokerbbr, err := manifest.FindInstanceGroupJob("backup_restore", "nfsbroker-bbr")
-				Expect(err).NotTo(HaveOccurred())
-
-				caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).NotTo(BeEmpty())
 
@@ -478,13 +456,6 @@ var _ = Describe("System Database", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
 
-				nfsbrokerbbr, err := manifest.FindInstanceGroupJob("backup_restore", "nfsbroker-bbr")
-				Expect(err).NotTo(HaveOccurred())
-
-				caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(caCert).To(Equal("fake-ca-cert"))
-
 				// notifications
 				notifications, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "deploy-notifications")
 				Expect(err).NotTo(HaveOccurred())
@@ -575,7 +546,6 @@ var _ = Describe("System Database", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, "backup_restore", "bbr-usage-servicedb", "database")
-			validateConsistencyOfParsedManifest(internalManifest, externalManifest, "backup_restore", "nfsbroker-bbr", "nfsbroker")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, ccInstanceGroup, "cloud_controller_ng", "ccdb")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, ccInstanceGroup, "routing-api", "routing_api/sqldb")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, cgInstanceGroup, "deploy-notifications", "notifications/database")
