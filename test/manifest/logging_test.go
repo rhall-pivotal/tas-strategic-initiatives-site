@@ -48,6 +48,17 @@ var _ = Describe("Logging", func() {
 			Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
 		})
 
+		It("is enabled by default", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "loggregator_agent_windows")
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = agent.Property("loggregator_agent/enabled")
+			Expect(err).ToNot(HaveOccurred())
+		})
+
 		Context("when placement tags are configured by the user", func() {
 			It("sets the placement tags on the emitted metrics", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
