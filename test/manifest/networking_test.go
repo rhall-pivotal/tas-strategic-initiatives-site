@@ -929,7 +929,7 @@ var _ = Describe("Networking", func() {
 					}
 				})
 
-				It("sets the prune_all_stale_routes", func() {
+				It("sets the drain_timeout", func() {
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
