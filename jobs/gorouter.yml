@@ -36,6 +36,7 @@ manifest: |
     route_services_internal_lookup: (( .properties.route_services.selected_option.parsed_manifest(internal_lookup) ))
     ssl_skip_validation: (( .ha_proxy.skip_cert_verify.value ))
     drain_wait: (( .router.drain_wait.value ))
+    drain_timeout: (( .router.drain_timeout.value ))
     tracing:
       enable_zipkin: (( .router.enable_zipkin.value ))
     write_access_logs_locally: (( .router.enable_write_access_logs.value ))

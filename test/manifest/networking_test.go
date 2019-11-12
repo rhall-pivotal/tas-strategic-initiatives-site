@@ -912,6 +912,55 @@ var _ = Describe("Networking", func() {
 	})
 
 	Describe("Routing", func() {
+		Describe("drain_timeout", func() {
+			var (
+				inputProperties     map[string]interface{}
+				routerInstanceGroup string
+			)
+
+			BeforeEach(func() {
+				routerInstanceGroup = "router"
+			})
+
+			Describe("when the property is set", func() {
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{
+						".router.drain_timeout": 999,
+					}
+				})
+
+				It("sets the prune_all_stale_routes", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(routerInstanceGroup, "gorouter")
+					Expect(err).NotTo(HaveOccurred())
+
+					drainTimeout, err := job.Property("router/drain_timeout")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(drainTimeout).To(Equal(999))
+				})
+			})
+
+			Describe("when the property is not set", func() {
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{}
+				})
+
+				It("defaults to false", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(routerInstanceGroup, "gorouter")
+					Expect(err).NotTo(HaveOccurred())
+
+					drainTimeout, err := job.Property("router/drain_timeout")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(drainTimeout).To(Equal(900))
+				})
+			})
+		})
+
 		Describe("gorouter", func() {
 			var (
 				inputProperties     map[string]interface{}
