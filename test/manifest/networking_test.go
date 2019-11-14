@@ -204,7 +204,7 @@ var _ = Describe("Networking", func() {
 			Describe("when the property is set", func() {
 				BeforeEach(func() {
 					inputProperties = map[string]interface{}{
-						".router.drain_timeout": 999,
+						".isolated_router.drain_timeout": 999,
 					}
 				})
 

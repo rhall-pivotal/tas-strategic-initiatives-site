@@ -39,7 +39,7 @@ manifest: |
     tls_pem: (( .properties.networking_poe_ssl_certs.parsed_manifest(routing_certificates_and_private_keys) ))
     min_tls_version: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(min_tls_version) ))
     ssl_skip_validation: (( .properties.skip_cert_verify.value ))
-    drain_timeout: (( .router.drain_timeout.value ))
+    drain_timeout: (( .isolated_router.drain_timeout.value ))
     drain_wait: (( drain_wait.value ))
     load_balancer_healthy_threshold: (( lb_healthy_threshold.value ))
     extra_headers_to_log: (( extra_headers_to_log.parsed_strings ))
