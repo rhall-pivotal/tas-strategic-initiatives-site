@@ -51,49 +51,6 @@ var _ = Describe("Metrics", func() {
 		})
 	})
 
-	Describe("system metric scraper", func() {
-		var instanceGroup string
-		BeforeEach(func() {
-			if productName == "srt" {
-				instanceGroup = "control"
-			} else {
-				instanceGroup = "clock_global"
-			}
-		})
-
-		It("configures the system-metric-scraper", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			metricScraper, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-system-metric-scraper")
-			Expect(err).NotTo(HaveOccurred())
-
-			tlsProps, err := metricScraper.Property("system_metrics/tls")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(tlsProps).To(HaveKey("ca_cert"))
-			Expect(tlsProps).To(HaveKey("cert"))
-			Expect(tlsProps).To(HaveKey("key"))
-
-			scrapePort, err := metricScraper.Property("scrape_port")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(scrapePort).To(Equal(53035))
-
-			expectSecureMetrics(metricScraper)
-		})
-
-		It("has a leadership-election job collocated", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			le, err := manifest.FindInstanceGroupJob(instanceGroup, "leadership-election")
-			Expect(err).NotTo(HaveOccurred())
-
-			enabled, err := le.Property("port")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(enabled).To(Equal(7100))
-		})
-	})
-
 	Describe("metrics discovery", func() {
 		It("configures metrics-discovery on all VMs", func() {
 			manifest, err := product.RenderManifest(nil)
