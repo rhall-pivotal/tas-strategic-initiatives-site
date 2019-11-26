@@ -41,6 +41,19 @@ var _ = Describe("Logging", func() {
 			}
 		})
 
+		It("is enabled by default", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, ig := range instanceGroups {
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = agent.Property("loggregator_agent/enabled")
+				Expect(err).ToNot(HaveOccurred())
+			}
+		})
+
 		Describe("tags", func() {
 			Context("when compute isolation is enabled", func() {
 				It("adds the appropriate manifest for tags", func() {
@@ -210,9 +223,10 @@ var _ = Describe("Logging", func() {
 		It("includes the vcap rule", func() {
 			for _, ig := range instanceGroups {
 				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.system_logging":              "enabled",
-					".properties.system_logging.enabled.host": "example.com",
-					".properties.system_logging.enabled.port": 2514,
+					".properties.system_logging":                  "enabled",
+					".properties.system_logging.enabled.host":     "example.com",
+					".properties.system_logging.enabled.port":     2514,
+					".properties.system_logging.enabled.protocol": "tcp",
 				})
 				Expect(err).NotTo(HaveOccurred())
 
@@ -238,6 +252,7 @@ rule
 					".properties.system_logging.enabled.host":        "example.com",
 					".properties.system_logging.enabled.port":        2514,
 					".properties.system_logging.enabled.syslog_rule": multilineRule,
+					".properties.system_logging.enabled.protocol":    "tcp",
 				})
 				Expect(err).NotTo(HaveOccurred())
 
@@ -265,6 +280,7 @@ rule
 						".properties.system_logging.enabled.host":              "example.com",
 						".properties.system_logging.enabled.port":              2514,
 						".properties.system_logging.enabled.syslog_drop_debug": true,
+						".properties.system_logging.enabled.protocol":          "tcp",
 					})
 					Expect(err).NotTo(HaveOccurred())
 

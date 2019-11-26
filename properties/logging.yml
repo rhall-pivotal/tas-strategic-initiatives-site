@@ -84,6 +84,13 @@
           manifest: |
             ""
 
+- name: system_metrics_tls_scraper_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - system-metrics
+
 - name: forwarder_agent_metrics_tls
   type: rsa_cert_credentials
   configurable: false
