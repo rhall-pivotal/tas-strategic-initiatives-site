@@ -18,6 +18,8 @@ manifest: |
     use_v2_api: true
   grpc_port: 3459
   disable_udp: true
+  loggregator_agent:
+    enabled: (( ..cf.properties.enable_v2_firehose.value ))
   tags:
     placement_tag: (( .windows_diego_cell.placement_tags.value ))
     product: $( variable "label" )

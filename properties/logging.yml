@@ -39,10 +39,12 @@
       manifest: |
         enabled: false
 
-- name: system_metrics_enabled
-  type: boolean
-  configurable: true
-  default: true
+- name: system_metrics_tls_scraper_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - system-metrics
 
 - name: scheduler_binding_cache_tls
   type: rsa_cert_credentials
