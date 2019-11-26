@@ -176,6 +176,7 @@ var _ = Describe("Apps Manager", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(job.Property("apps_manager/memory")).To(BeNil())
+			Expect(job.Property("search_server/memory")).To(BeNil())
 			Expect(job.Property("invitations/memory")).To(BeNil())
 		})
 
@@ -183,6 +184,7 @@ var _ = Describe("Apps Manager", func() {
 			It("applies them", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.push_apps_manager_memory":             1024,
+					".properties.push_apps_manager_search_server_memory": 4096,
 					".properties.push_apps_manager_invitations_memory": 2048,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -191,6 +193,7 @@ var _ = Describe("Apps Manager", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				Expect(job.Property("apps_manager/memory")).To(Equal(1024))
+				Expect(job.Property("search_server/memory")).To(Equal(4096))
 				Expect(job.Property("invitations/memory")).To(Equal(2048))
 			})
 		})
@@ -361,4 +364,36 @@ var _ = Describe("Apps Manager", func() {
 			Expect(networkingSelfService).To(BeTrue())
 		})
 	})
+
+    Describe("Buildpacks", func() {
+        It("uses the spec defaults", func() {
+            manifest, err := product.RenderManifest(nil)
+            Expect(err).NotTo(HaveOccurred())
+
+            job, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+            Expect(err).NotTo(HaveOccurred())
+
+            Expect(job.Property("apps_manager/buildpack")).To(Equal("staticfile_buildpack"))
+            Expect(job.Property("search_server/buildpack")).To(Equal("nodejs_buildpack"))
+            Expect(job.Property("invitations/buildpack")).To(Equal("nodejs_buildpack"))
+        })
+
+        Context("when the operator specifies buildpack limits", func() {
+            It("applies them", func() {
+                manifest, err := product.RenderManifest(map[string]interface{}{
+                    ".properties.push_apps_manager_buildpack":               "jpmc_buildpack",
+                    ".properties.push_apps_manager_search_server_buildpack": "citi_buildpack",
+                    ".properties.push_apps_manager_invitations_buildpack":   "home_depot_buildpack",
+                })
+                Expect(err).NotTo(HaveOccurred())
+
+                job, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+                Expect(err).NotTo(HaveOccurred())
+
+                Expect(job.Property("apps_manager/buildpack")).To(Equal("jpmc_buildpack"))
+                Expect(job.Property("search_server/buildpack")).To(Equal("citi_buildpack"))
+                Expect(job.Property("invitations/buildpack")).To(Equal("home_depot_buildpack"))
+            })
+        })
+    })
 })

@@ -21,6 +21,7 @@ manifest: |
     enable_invitations: (( .properties.push_apps_manager_enable_invitations.value ))
     display_plan_prices: (( .properties.push_apps_manager_display_plan_prices.value ))
     currency_lookup: (( .properties.push_apps_manager_currency_lookup.value ))
+    buildpack: (( .properties.push_apps_manager_buildpack.value ))
     instances: $( variable "push_apps_manager_instances" )
     memory: (( .properties.push_apps_manager_memory.value ))
     poll_interval: (( .properties.push_apps_manager_poll_interval.value ))
@@ -40,7 +41,11 @@ manifest: |
     admin_password: (( .uaa.push_apps_manager_credentials.password ))
     system_domain: (( .cloud_controller.system_domain.value ))
     apps_domain: (( .cloud_controller.apps_domain.value ))
+  search_server:
+    buildpack: (( .properties.push_apps_manager_search_server_buildpack.value ))
+    memory: (( .properties.push_apps_manager_search_server_memory.value ))
   invitations:
+    buildpack: (( .properties.push_apps_manager_invitations_buildpack.value ))
     instances: $( variable "push_apps_manager_invitations_instances" )
     memory: (( .properties.push_apps_manager_invitations_memory.value ))
     uaa_client_secret: (( .uaa.invitations_client_credentials.password ))
