@@ -333,12 +333,6 @@ runtime_configs:
 - $( runtime_config "bosh-dns-aliases" )
 
 variables:
-- name: /cf/diego-instance-identity-root-ca
-  type: certificate
-  options:
-    common_name: 'Diego Instance Identity Root CA'
-    is_ca: true
-    duration: 1095
 
 - name: /cf/diego-instance-identity-root-ca-2-6
   type: certificate
@@ -347,13 +341,12 @@ variables:
     is_ca: true
     duration: 1095
 
-- name: diego-instance-identity-intermediate-ca-2-7
+- name: /cf/diego-instance-identity-leaf-2-6-intermediate
   type: certificate
   options:
     common_name: 'Diego Instance Identity Intermediate CA'
-    is_ca: true
-    duration: 730
     ca: /cf/diego-instance-identity-root-ca-2-6
+    is_ca: true
     key_usage:
     - key_cert_sign
 

@@ -23,8 +23,7 @@ manifest: |
     ca_certs: |
       (( .properties.routing_custom_ca_certificates.value ))
       (( $ops_manager.ca_certificate ))
-      ((( /cf/diego-instance-identity-root-ca.certificate )))
-      ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
+      ((( /cf/diego-instance-identity-leaf-2-6-intermediate.ca )))
       (( .properties.network_policy_server_external_cert.cert_pem ))
     forwarded_client_cert: (( .properties.routing_tls_termination.selected_option.parsed_manifest(gorouter_forwarded_client_cert) ))
     disable_log_forwarded_for: (( .properties.routing_log_client_ips.selected_option.parsed_manifest(disable_log_forwarded_for) ))
