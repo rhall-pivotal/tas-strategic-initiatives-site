@@ -6,8 +6,7 @@ manifest: |
   containers:
     proxy: (( .properties.route_integrity.selected_option.parsed_manifest(proxy) ))
     trusted_ca_certificates:
-      - ((( /cf/diego-instance-identity-root-ca.certificate )))
-      - ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
+      - ((( /cf/diego-instance-identity-leaf-2-6-intermediate.ca )))
       - (( $ops_manager.ca_certificate ))
       - (( $ops_manager.trusted_certificates ))
     set_cpu_weight: true
@@ -18,8 +17,8 @@ manifest: |
       memory_capacity_mb: (( executor_memory_capacity.value ))
       post_setup_hook: sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"
       post_setup_user: "root"
-      instance_identity_ca_cert: ((( diego-instance-identity-intermediate-ca-2-7.certificate )))
-      instance_identity_key: ((( diego-instance-identity-intermediate-ca-2-7.private_key )))
+      instance_identity_ca_cert: ((( /cf/diego-instance-identity-leaf-2-6-intermediate.certificate )))
+      instance_identity_key: ((( /cf/diego-instance-identity-leaf-2-6-intermediate.private_key )))
     rep: (( .properties.compute_isolation.selected_option.parsed_manifest(for_rep) ))
   enable_consul_service_registration: false
   enable_declarative_healthcheck: true
