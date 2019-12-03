@@ -142,6 +142,8 @@
           ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
           common_name: mysql.service.cf.internal
           max_open_connections: 10
+          tls:
+            enable_identity_verification: true
       - name: autoscaling
         manifest: |
           host: mysql.service.cf.internal
@@ -382,6 +384,8 @@
             max_open_connections: 10
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
             common_name: (( .properties.system_database.external.host.value ))
+            tls:
+              enable_identity_verification: false
         - name: autoscaling
           manifest: |
             adapter: mysql

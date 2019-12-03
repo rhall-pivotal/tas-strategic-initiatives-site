@@ -199,6 +199,10 @@ var _ = Describe("System Database", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).NotTo(BeEmpty())
 
+				notifcationsHostVerification, err := notifications.Property("notifications/database/tls/enable_identity_verification")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(notifcationsHostVerification).To(BeTrue())
+
 				commonName, err := notifications.Property("notifications/database/common_name")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(commonName).To(Equal("mysql.service.cf.internal"))
@@ -284,6 +288,14 @@ var _ = Describe("System Database", func() {
 			port, err := job.Property("database/port")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(port).To(Equal(5432))
+
+			// notifications
+			notifications, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "deploy-notifications")
+			Expect(err).NotTo(HaveOccurred())
+
+			notifcationsHostVerification, err := notifications.Property("notifications/database/tls/enable_identity_verification")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(notifcationsHostVerification).To(BeFalse())
 
 			// bbs
 			job, err = manifest.FindInstanceGroupJob(dbInstanceGroup, "bbs")
@@ -463,6 +475,10 @@ var _ = Describe("System Database", func() {
 				caCert, err = notifications.Property("notifications/database/ca_cert")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
+
+				notifcationsHostVerification, err := notifications.Property("notifications/database/tls/enable_identity_verification")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(notifcationsHostVerification).To(BeFalse())
 
 				commonName, err := notifications.Property("notifications/database/common_name")
 				Expect(err).NotTo(HaveOccurred())
