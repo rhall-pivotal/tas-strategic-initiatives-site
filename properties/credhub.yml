@@ -58,9 +58,6 @@
   - name: key
     type: secret
     configurable: true
-    constraints:
-    - must_match_regex: '^.{20,}$'
-      error_message: 'This password must be at least 20 characters'
   - name: primary
     type: boolean
     configurable: true
