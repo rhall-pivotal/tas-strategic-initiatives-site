@@ -48,6 +48,7 @@ job_types:
 - $( instance_group "isolated_diego_cell" )
 
 property_blueprints:
+- $( property "app_graceful_shutdown_period_in_seconds" )
 - $( property "bbs_client_cert" )
 - $( property "cf_networking_search_domains" )
 - $( property "container_networking" )
