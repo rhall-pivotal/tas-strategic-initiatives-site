@@ -528,4 +528,53 @@ var _ = Describe("Diego", func() {
 			})
 		})
 	})
+
+	Context("app graceful shutdown period", func() {
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "compute"
+			} else {
+				instanceGroup = "diego_cell"
+			}
+		})
+
+		Context("when value is not provided", func() {
+			It("uses the default", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
+				Expect(err).NotTo(HaveOccurred())
+
+				value, err := rep.Property("containers/graceful_shutdown_interval_in_seconds")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(value).To(Equal(10))
+			})
+		})
+
+		Context("when value provided is below the minimum constraint", func() {
+			It("fails", func() {
+				_, err := product.RenderManifest(map[string]interface{}{
+					".properties.app_graceful_shutdown_period_in_seconds": 1,
+				})
+				Expect(err).To(HaveOccurred())
+			})
+		})
+
+		Context("when value provided is above the minimum constraint", func() {
+			It("sets to provided value", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.app_graceful_shutdown_period_in_seconds": 100,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
+				Expect(err).NotTo(HaveOccurred())
+
+				value, err := rep.Property("containers/graceful_shutdown_interval_in_seconds")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(value).To(Equal(100))
+			})
+		})
+	})
 })

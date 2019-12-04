@@ -12,6 +12,7 @@ manifest: |
       - (( $ops_manager.ca_certificate ))
       - (( $ops_manager.trusted_certificates ))
     set_cpu_weight: true
+    graceful_shutdown_interval_in_seconds: (( .properties.app_graceful_shutdown_period_in_seconds.value ))
   diego:
     rep:
       preloaded_rootfses:
