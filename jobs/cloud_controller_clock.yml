@@ -49,6 +49,7 @@ manifest: |
       - protocol: all
         destination: 169.255.0.0-255.255.255.255
     bulk_api_password: ((( cloud-controller-bulk-api-credentials.password )))
+    maximum_app_disk_in_mb: (( .cloud_controller.max_disk_quota_app.value ))
     quota_definitions:
       default:
         memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))

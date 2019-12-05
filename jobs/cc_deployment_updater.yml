@@ -12,4 +12,5 @@ manifest: |
       public_cert: (( .properties.cloud_controller_mutual_cert.cert_pem ))
       private_key: (( .properties.cloud_controller_mutual_cert.private_key_pem ))
     temporary_disable_deployments: (( .properties.cloud_controller_temporary_disable_deployments.value ))
+    maximum_app_disk_in_mb: (( .cloud_controller.max_disk_quota_app.value ))
   release_level_backup: true
