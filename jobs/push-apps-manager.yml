@@ -49,6 +49,8 @@ manifest: |
     instances: $( variable "push_apps_manager_invitations_instances" )
     memory: (( .properties.push_apps_manager_invitations_memory.value ))
     uaa_client_secret: (( .uaa.invitations_client_credentials.password ))
+  metric_registrar:
+    enabled: (( .properties.metric_registrar_enabled.value ))
   networking:
     enable_space_developer_self_service: (( .properties.cf_networking_enable_space_developer_self_service.value ))
   ssl:

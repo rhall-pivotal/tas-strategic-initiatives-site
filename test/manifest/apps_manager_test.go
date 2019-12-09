@@ -337,6 +337,34 @@ var _ = Describe("Apps Manager", func() {
 		})
 	})
 
+    Describe("Metric Registrar", func() {
+        It("uses the spec defaults", func() {
+            manifest, err := product.RenderManifest(nil)
+            Expect(err).NotTo(HaveOccurred())
+
+            appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+            Expect(err).NotTo(HaveOccurred())
+
+            metricRegistrarEnabled, err := appsManager.Property("metric_registrar/enabled")
+            Expect(err).NotTo(HaveOccurred())
+            Expect(metricRegistrarEnabled).To(BeTrue())
+        })
+
+        It("fetches the state of the metric registrar enabled checkbox", func() {
+            manifest, err := product.RenderManifest(map[string]interface{}{
+                ".properties.metric_registrar_enabled": false,
+            })
+            Expect(err).NotTo(HaveOccurred())
+
+            appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+            Expect(err).NotTo(HaveOccurred())
+
+            metricRegistrarEnabled, err := appsManager.Property("metric_registrar/enabled")
+            Expect(err).NotTo(HaveOccurred())
+            Expect(metricRegistrarEnabled).To(BeFalse())
+        })
+    })
+
 	Describe("Networking", func() {
 		It("uses the spec defaults", func() {
 			manifest, err := product.RenderManifest(nil)
