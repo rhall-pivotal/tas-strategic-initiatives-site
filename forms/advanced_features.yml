@@ -17,8 +17,11 @@ property_inputs:
     description: Enter value in MB.
 
   - reference: .properties.app_graceful_shutdown_period_in_seconds
-    label: App Graceful Shutdown Period
-    description: Enter value in seconds.
+    label: App graceful shutdown period
+    description: |
+      The amount of time to wait for an app instance to exit once
+      it has been signalled to gracefully shut down.
+      Enter value in seconds. The default value is 10.
     placeholder: 10
 
   - reference: .nfs_server.blobstore_internal_access_rules
@@ -29,7 +32,7 @@ property_inputs:
   - reference: .properties.cf_dial_timeout_in_seconds
     label: CF CLI connection timeout
     description: |
-      Maximum wait time to establish a connection, including
+      The maximum wait time to establish a connection, including
       name resolution. Enter value in seconds.
 
   - reference: .properties.enable_tls_to_internal_pxc
@@ -81,9 +84,7 @@ property_inputs:
     placeholder: 100000
 
   - reference: .properties.push_usage_service_cutoff_age_in_days
-    label: Usage service cutoff age in days
+    label: Usage service cutoff age
     description: |
-      Number of days of granular data that usage service stores.
-      Data older than the cutoff will be deleted.
-      Does not affect monthly summary records.
-      Warning - setting the configurable time limit to higher amounts may result in performance issues or migration failure
+      The number of days of granular data that usage service
+      stores.
