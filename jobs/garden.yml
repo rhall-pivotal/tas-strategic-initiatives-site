@@ -24,3 +24,6 @@ manifest: |
       ca_cert: (( $ops_manager.ca_certificate ))
       cert: (( .properties.rep_server_cert_v2.cert_pem ))
       key: (( .properties.rep_server_cert_v2.private_key_pem ))
+  logging:
+    format:
+      timestamp: (( .properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))

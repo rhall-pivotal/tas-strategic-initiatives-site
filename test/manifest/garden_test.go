@@ -72,6 +72,32 @@ var _ = Describe("Garden", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(persistentImageList).To(ContainElement("/var/vcap/packages/cflinuxfs3/rootfs.tar"))
 	})
+
+	Describe("log format", func() {
+		When("diego_log_timestamp_format is set to unix-epoch", func() {
+			It("is used in the garden job", func() {
+				manifest := renderProductManifest(product, map[string]interface{}{
+					".properties.diego_log_timestamp_format": "unix-epoch",
+				})
+				garden := findManifestInstanceGroupJob(manifest, instanceGroup, "garden")
+
+				loggingFormatTimestamp, err := garden.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+			})
+		})
+
+		When("diego_log_timestamp_format is not set", func() {
+			It("the default is used in the garden job", func() {
+				manifest := renderProductManifest(product, nil)
+				garden := findManifestInstanceGroupJob(manifest, instanceGroup, "garden")
+
+				loggingFormatTimestamp, err := garden.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+			})
+		})
+	})
 })
 
 func renderProductManifest(p *planitest.ProductService, c map[string]interface{}) planitest.Manifest {
