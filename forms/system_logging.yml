@@ -36,10 +36,9 @@ property_inputs:
         "*.example.com").
 
     - reference: .properties.syslog_tls.enabled.tls_ca_cert
-      label: Destination Certificate
+      label: Destination certificate
       description: |
-        This certificate ensures that logs are securely transported to
-        the syslog destination.
+        Ensures that logs are securely transported to the syslog destination.
 
 - reference: .cloud_controller.security_event_logging_enabled
   label: Enable Cloud Controller security event logging
@@ -67,17 +66,18 @@ property_inputs:
 - reference: .properties.enable_v2_firehose
   label: Enable V2 Firehose
   description: |
-    Logs and metrics flow to the V2 Firehose. Disabling this requires disabling the V1 Firehose as well.
+    Logs and metrics flow to the V2 Firehose. Disabling this requires
+    disabling the V1 Firehose.
 
 - reference: .properties.enable_log_cache_syslog_ingestion
-  label: Enable Log Cache Syslog Ingestion
+  label: Enable Log Cache syslog ingestion
   description: |
-    Logs and metrics are ingested via syslog rather than the RLP.
+    Logs and metrics are ingested through syslog rather than the RLP.
 
 - reference: .properties.syslog_agent_aggregate_drains
   label: Aggregate log/metric drain destinations
   description: |
-    A comma-separated list of HTTPS or syslog URLs where all
-    metrics and all apps' logs will be sent.
+    A comma-separated list of HTTPS or syslog URLs where all app logs
+    and metrics are sent.
   placeholder: |
     https://10.10.10.10,syslog-tls://the-syslog-endpoint.com
