@@ -25,6 +25,29 @@ var _ = Describe("Routing", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(haproxyDisableTLS11).To(BeTrue())
 
+			haproxyCustomHttpErrorFiles, err := haproxy.Property("ha_proxy/custom_http_error_files")
+			fmt.Println(haproxyCustomHttpErrorFiles)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(haproxyCustomHttpErrorFiles).To(ContainSubstring(`"503": |
+       HTTP/1.1 503 Service Unavailable
+       Cache-Control: no-cache
+       Connection: close
+       Content-Type: text/html
+
+       <html><body><h1>503 Service Unavailable</h1>
+       No server is available to handle this request.
+       </body></html>
+
+"504": |
+       HTTP/1.1 504 Gateway Time-out
+       Cache-Control: no-cache
+       Connection: close
+       Content-Type: text/html
+
+       <html><body><h1>504 Gateway Time-out</h1>
+       The server didn't respond in time.
+       </body></html>`))
+
 			router, err := manifest.FindInstanceGroupJob("router", "gorouter")
 			Expect(err).NotTo(HaveOccurred())
 

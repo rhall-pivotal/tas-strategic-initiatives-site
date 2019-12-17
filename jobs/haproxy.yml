@@ -12,6 +12,26 @@ manifest: |
     buffer_size_bytes: (( .properties.haproxy_max_buffer_size.value ))
     client_cert: (( .properties.haproxy_client_cert_validation.selected_option.parsed_manifest(client_cert_validation) ))
     client_timeout: (( .router.request_timeout_in_seconds.value ))
+    custom_http_error_files: |
+      "503": |
+             HTTP/1.1 503 Service Unavailable
+             Cache-Control: no-cache
+             Connection: close
+             Content-Type: text/html
+
+             <html><body><h1>503 Service Unavailable</h1>
+             No server is available to handle this request.
+             </body></html>
+
+      "504": |
+             HTTP/1.1 504 Gateway Time-out
+             Cache-Control: no-cache
+             Connection: close
+             Content-Type: text/html
+
+             <html><body><h1>504 Gateway Time-out</h1>
+             The server didn't respond in time.
+             </body></html>
     disable_http: (( .properties.routing_disable_http.value ))
     disable_tls_10: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_10) ))
     disable_tls_11: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(disable_tls_11) ))
