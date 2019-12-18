@@ -223,7 +223,6 @@ property_blueprints:
 - $( property "networkpolicyserver_database_max_open_connections" )
 - $( property "networkpolicyserverinternal_database_max_open_connections" )
 - $( property "nfs_volume_driver" )
-- $( property "nfsvolume_database_name" )
 - $( property "notifications_database_name" )
 - $( property "pilot_server_cert" )
 - $( property "prom_scraper_scrape_tls" )
@@ -440,9 +439,6 @@ variables:
 
 - name: nfs-server-blobstore-secret
   type: password
-
-- name: nfs-volume-db-credentials
-  type: user
 
 - name: notifications-db-credentials
   type: user
@@ -662,14 +658,6 @@ install_time_verifiers:
     username: .properties.system_database.external.networkpolicyserver_username
     password: .properties.system_database.external.networkpolicyserver_password
     database: .properties.networkpolicyserver_database_name
-- name: Verifiers::MysqlDatabaseVerifier
-  ignorable: true
-  properties:
-    host: .properties.system_database.external.host
-    port: .properties.system_database.external.port
-    username: .properties.system_database.external.nfsvolume_username
-    password: .properties.system_database.external.nfsvolume_password
-    database: .properties.nfsvolume_database_name
 - name: Verifiers::MysqlDatabaseVerifier
   ignorable: true
   properties:

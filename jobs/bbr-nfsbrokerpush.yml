@@ -7,7 +7,6 @@ provides: |
 manifest: |
   nfsbrokerpush:
     domain: (( .cloud_controller.system_domain.value ))
-    db: (( .properties.system_database.selected_option.parsed_manifest(nfsvolume) ))
     cf:
       admin_user: (( .uaa.admin_credentials.identity ))
       admin_password: (( .uaa.admin_credentials.password ))

@@ -334,8 +334,6 @@ var _ = Describe("CredHub", func() {
 						".properties.system_database.external.locket_password":              map[string]interface{}{"secret": "locket_password"},
 						".properties.system_database.external.networkpolicyserver_username": "networkpolicyserver_username",
 						".properties.system_database.external.networkpolicyserver_password": map[string]interface{}{"secret": "networkpolicyserver_password"},
-						".properties.system_database.external.nfsvolume_username":           "nfsvolume_username",
-						".properties.system_database.external.nfsvolume_password":           map[string]interface{}{"secret": "nfsvolume_password"},
 						".properties.system_database.external.notifications_username":       "notifications_username",
 						".properties.system_database.external.notifications_password":       map[string]interface{}{"secret": "notifications_password"},
 						".properties.system_database.external.account_username":             "account_username",

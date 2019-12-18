@@ -76,14 +76,6 @@ verifiers:
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
-      username: .properties.system_database.external.nfsvolume_username
-      password: .properties.system_database.external.nfsvolume_password
-      database: .properties.nfsvolume_database_name
-
-  - name: Verifiers::MysqlDatabaseVerifier
-    properties:
-      host: .properties.system_database.external.host
-      port: .properties.system_database.external.port
       username: .properties.system_database.external.notifications_username
       password: .properties.system_database.external.notifications_password
       database: .properties.notifications_database_name
@@ -173,12 +165,6 @@ property_inputs:
 
       - reference: .properties.system_database.external.networkpolicyserver_password
         label: Network policy server database password
-
-      - reference: .properties.system_database.external.nfsvolume_username
-        label: NFS volume services database username
-
-      - reference: .properties.system_database.external.nfsvolume_password
-        label: NFS volume services database password
 
       - reference: .properties.system_database.external.notifications_username
         label: Notifications service database username
