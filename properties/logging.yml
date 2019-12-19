@@ -67,20 +67,6 @@
     domains:
     - loggregator-agent-metrics
 
-- name: prom_scraper_scrape_tls
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-    - prom-scraper
-
-- name: prom_scraper_metrics_tls
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-    - prom-scraper-metrics
-
 - name: syslog_agent_metrics_tls
   type: rsa_cert_credentials
   configurable: false

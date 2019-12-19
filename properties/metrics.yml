@@ -1,0 +1,33 @@
+---
+- name: system_metrics_enabled
+  type: boolean
+  configurable: true
+  default: true
+
+- name: prom_scraper_scrape_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - prom_scraper
+
+- name: prom_scraper_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - prom_scraper_metrics
+
+- name: metrics_discovery_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - metrics_discovery_metrics
+
+- name: metrics_agent_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - metrics_agent_metrics
