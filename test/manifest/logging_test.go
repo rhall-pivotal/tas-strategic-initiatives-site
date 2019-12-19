@@ -136,8 +136,9 @@ var _ = Describe("Logging", func() {
 				agent, err := manifest.FindInstanceGroupJob(ig, "loggr-syslog-agent")
 				Expect(err).NotTo(HaveOccurred())
 
-				_, err = agent.Property("aggregate_drains")
+				aggregateDrains, err := agent.Property("aggregate_drains")
 				Expect(err).NotTo(HaveOccurred())
+				Expect(aggregateDrains).To(ContainSubstring("syslog-tls://doppler.service.cf.internal:6067"))
 			}
 		})
 	})

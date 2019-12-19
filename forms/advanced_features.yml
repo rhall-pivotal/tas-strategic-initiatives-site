@@ -4,7 +4,7 @@ label: Advanced Features
 description: Advanced Features
 markdown: |
   For help configuring these fields, see the
-  [Advanced Features](https://docs.pivotal.io/pivotalcf/2-7/customizing/installing-pcf-is.html#advanced_features)
+  [Advanced Features](https://docs.pivotal.io/pivotalcf/2-9/customizing/installing-pcf-is.html#advanced_features)
   section of the _Installing Pivotal Isolation Segment_ topic in the documentation.
 
 property_inputs:
@@ -15,6 +15,11 @@ property_inputs:
 - reference: .isolated_diego_cell.executor_disk_capacity
   label: Cell disk capacity
   description: Enter value in MB.
+
+- reference: .properties.app_graceful_shutdown_period_in_seconds
+  label: App Graceful Shutdown Period
+  description: Enter value in seconds.
+  placeholder: 10
 
 - reference: .properties.enable_smb_volume_driver
   label: Enable SMB volume services
