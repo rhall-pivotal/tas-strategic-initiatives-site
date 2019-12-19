@@ -4,8 +4,8 @@ label: Networking
 description: Networking
 markdown: |
   For help configuring these fields, see the
-  [Configure Networking](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#networking)
-  section of the _Configuring PAS_ topic in the PCF documentation.
+  [Configure Networking](https://docs.pivotal.io/pivotalcf/2-9/customizing/configure-pas.html#networking)
+  section of the _Configuring PAS_ topic in the Pivotal Platform documentation.
 
 property_inputs:
   - reference: .router.static_ips
@@ -199,6 +199,14 @@ property_inputs:
     description: |
       Duration to maintain an open connection when client supports
       keep-alive connections. Enter value in seconds.
+
+  - reference: .router.drain_timeout
+    label: Router Drain Timeout
+    description: |
+      Specifies the amount of time, in seconds, that the Router will continue
+      to serve existing connections before shutting down. After the timeout is
+      reached, all remaining connections will be terminated so that the Router
+      can be restarted.
 
   - reference: .router.drain_wait
     label: Load balancer unhealthy threshold

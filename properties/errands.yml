@@ -114,12 +114,34 @@
   configurable: true
   default: "{ \"usd\": \"$\", \"eur\": \"€\" }"
 
+- name: push_apps_manager_buildpack
+  type: string
+  configurable: true
+  default: "staticfile_buildpack"
+
+- name: push_apps_manager_search_server_buildpack
+  type: string
+  configurable: true
+  default: "nodejs_buildpack"
+
+- name: push_apps_manager_invitations_buildpack
+  type: string
+  configurable: true
+  default: "nodejs_buildpack"
+
 - name: push_apps_manager_memory
   type: integer
   configurable: true
   optional: true
   constraints:
     min: 128
+
+- name: push_apps_manager_search_server_memory
+  type: integer
+  configurable: true
+  optional: true
+  constraints:
+    min: 256
 
 - name: push_apps_manager_invitations_memory
   type: integer

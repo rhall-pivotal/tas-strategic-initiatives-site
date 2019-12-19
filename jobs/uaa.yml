@@ -212,7 +212,7 @@ manifest: |
         authorized-grant-types: "client_credentials,refresh_token"
         scope: "openid,oauth.approvals"
       apps_manager_js:
-        name: "PCF Apps Manager"
+        name: "Pivotal Platform Apps Manager"
         override: true
         autoapprove:
           - cloud_controller.read
@@ -221,11 +221,13 @@ manifest: |
           - cloud_controller.user
           - cloud_controller.admin_read_only
           - cloud_controller.global_auditor
+          - doppler.firehose
           - actuator.read
           - openid
           - network.write
           - network.admin
-        scope: cloud_controller.read,cloud_controller.write,cloud_controller.global_auditor,cloud_controller.admin,usage_service.audit,cloud_controller.user,actuator.read,cloud_controller.admin_read_only,openid,network.write,network.admin
+          - usage_service.audit
+        scope: cloud_controller.read,cloud_controller.write,cloud_controller.global_auditor,cloud_controller.admin,doppler.firehose,usage_service.audit,cloud_controller.user,actuator.read,cloud_controller.admin_read_only,openid,network.write,network.admin
         authorized-grant-types: implicit
         show-on-homepage: true
         app-launch-url: "https://apps.(( .cloud_controller.system_domain.value ))"

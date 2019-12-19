@@ -3,9 +3,9 @@ name: system_logging
 label: System Logging
 description: System Logging
 markdown: |
-  To configure this pane, see the
-  [(Optional) Configure System Logging](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#sys-logging)
-  section of the _Configuring PAS_ topic in the PCF documentation.
+  For help configuring these fields, see the
+  [Configure System Logging](https://docs.pivotal.io/pivotalcf/2-9/customizing/configure-pas.html#sys-logging)
+  section of the _Configuring PAS_ topic in the Pivotal Platform documentation.
 
 property_inputs:
 - reference: .properties.syslog_host
@@ -60,15 +60,19 @@ property_inputs:
     Accepts configuration for rsyslog in the rainerscript syntax.
     Applied prior to the forwarding rule.
 
-- reference: .properties.system_metrics_enabled
-  label: Enable system metrics
-  description: |
-    Emits system-level metrics about all VMs in
-    this deployment.
-
 - reference: .properties.enable_v1_firehose
-  label: Enable V1 firehose
-  description: Logs and metrics flow to the V1 firehose.
+  label: Enable V1 Firehose
+  description: Logs and metrics flow to the V1 Firehose.
+
+- reference: .properties.enable_v2_firehose
+  label: Enable V2 Firehose
+  description: |
+    Logs and metrics flow to the V2 Firehose. Disabling this requires disabling the V1 Firehose as well.
+
+- reference: .properties.enable_log_cache_syslog_ingestion
+  label: Enable Log Cache Syslog Ingestion
+  description: |
+    Logs and metrics are ingested via syslog rather than the RLP.
 
 - reference: .properties.syslog_agent_aggregate_drains
   label: Aggregate log/metric drain destinations

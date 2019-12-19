@@ -386,6 +386,28 @@ var _ = Describe("CAPI", func() {
 				}
 			})
 		})
+
+		Context("when the Operator sets a max disk quota for an app", func() {
+			BeforeEach(func() {
+				var err error
+				manifest, err = product.RenderManifest(map[string]interface{}{
+					".cloud_controller.max_disk_quota_app": 10240,
+				})
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("passes the value to CC jobs", func() {
+				for _, job := range ccJobs {
+					manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
+					Expect(err).NotTo(HaveOccurred())
+
+					maxPackageSize, err := manifestJob.Property("cc/maximum_app_disk_in_mb")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(maxPackageSize).To(Equal(10240))
+				}
+			})
+		})
 	})
 
 	Describe("api", func() {

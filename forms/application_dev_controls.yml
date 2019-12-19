@@ -1,44 +1,46 @@
 ---
 name: application_dev_controls
-label: Application Developer Controls
-description: |
-  Application Developer Controls
+label: App Developer Controls
+description: App Developer Controls
 markdown: |
-  To configure this pane, see the
-  [Configure Application Developer Controls](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#appdevctrl-config)
-  section of the _Configuring PAS_ topic in the PCF documentation.
+  For help configuring these fields, see the
+  [Configure App Developer Controls](https://docs.pivotal.io/pivotalcf/2-9/customizing/configure-pas.html#appdevctrl-config)
+  section of the _Configuring PAS_ topic in the Pivotal Platform documentation.
 
 property_inputs:
   - reference: .cloud_controller.max_file_size
-    label: Maximum file upload size (in MB)
+    label: Maximum file upload size
     description: |
       Maximum size of an app upload droplet.
+      Enter value in MB.
 
   - reference: .cloud_controller.max_package_size
-    label: Maximum package size (in MB)
-    description: Maximum total size of an app's files.
+    label: Maximum package size
+    description: |
+      Maximum total size of an app's files.
+      Enter value in MB.
 
   - reference: .cloud_controller.default_app_memory
-    label: Default app memory (in MB)
+    label: Default app memory
     description: |
-      Memory allocated to a newly-pushed app when no value is specified at `cf
-      push`.
+      Memory allocated to a newly-pushed app when no value is
+      specified at `cf push`. Enter value in MB.
 
   - reference: .cloud_controller.default_quota_memory_limit_mb
-    label: Default app memory quota per org (in MB)
+    label: Default app memory quota per org
     description: |
-      Default memory limit for all apps in an org for the first installation of
-      PAS.
+      Default memory limit for all apps in an org for the first
+      installation of PAS. Enter value in MB.
 
   - reference: .cloud_controller.max_disk_quota_app
-    label: Maximum disk quota per app (in MB)
+    label: Maximum disk quota per app
     description: |
       Maximum disk allocated per app.
+      Enter value in MB.
 
   - reference: .cloud_controller.default_disk_quota_app
-    label: Default disk quota per app (in MB)
-    description: |
-      Default disk allocated per app.
+    label: Default disk quota per app
+    description: Default disk allocated per app.
 
   - reference: .cloud_controller.default_quota_max_number_services
     label: Default service instance quota per org
@@ -47,19 +49,18 @@ property_inputs:
       installation of PAS.
 
   - reference: .cloud_controller.staging_timeout_in_seconds
-    label: Staging timeout (in seconds)
+    label: Staging timeout
     description: |
       Server-side timeout for staging an app droplet with Cloud
-      Controller.
+      Controller. Enter value in seconds.
     placeholder: 900
 
   - reference: .properties.cf_networking_internal_domains
-    label: Internal Domains
+    label: Internal domains
     property_inputs:
     - reference: name
       label: Name
-      description: |
-        Internal domains for app service discovery.
+      description: Internal domains for app service discovery.
 
   - reference: .properties.cf_networking_enable_space_developer_self_service
     label: Allow space developers to manage network policies

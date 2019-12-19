@@ -4,8 +4,8 @@ label: Advanced Features
 description: Advanced Features
 markdown: |
   For help configuring these fields, see the
-  [Configure Advanced Features](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#advanced)
-  section of the _Configuring PAS_ topic in the PCF documentation.
+  [Configure Advanced Features](https://docs.pivotal.io/pivotalcf/2-9/customizing/configure-pas.html#advanced)
+  section of the _Configuring PAS_ topic in the Pivotal Platform documentation.
 
 property_inputs:
   - reference: .diego_cell.executor_memory_capacity
@@ -16,16 +16,21 @@ property_inputs:
     label: Cell disk capacity
     description: Enter value in MB.
 
+  - reference: .properties.app_graceful_shutdown_period_in_seconds
+    label: App Graceful Shutdown Period
+    description: Enter value in seconds.
+    placeholder: 10
+
   - reference: .nfs_server.blobstore_internal_access_rules
     label: Non-RFC-1918 private network allow list
     placeholder: |
-      e.g.: allow 172.99.0.0/24;,allow 172.55.0.0/24;
+      For example, `allow 172.99.0.0/24;,allow 172.55.0.0/24;`.
 
   - reference: .properties.cf_dial_timeout_in_seconds
-    label: CF CLI connection timeout (in seconds)
+    label: CF CLI connection timeout
     description: |
       Maximum wait time to establish a connection, including
-      name resolution.
+      name resolution. Enter value in seconds.
 
   - reference: .properties.enable_tls_to_internal_pxc
     label: Enable TLS for internal system database (beta)
@@ -69,7 +74,7 @@ property_inputs:
     placeholder: 200
 
   - reference: .properties.cloud_controller_temporary_disable_deployments
-    label: Disable zero-downtime app deployments
+    label: Disable rolling app deployments
 
   - reference: .properties.log_cache_max_per_source
     label: Maximum number of envelopes stored in Log Cache per source

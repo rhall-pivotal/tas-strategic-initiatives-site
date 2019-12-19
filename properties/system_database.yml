@@ -84,11 +84,6 @@
   constraints:
     min: 1
 
-- name: nfsvolume_database_name
-  type: string
-  configurable: false
-  default: nfsvolume
-
 - name: enable_tls_to_internal_pxc
   type: boolean
   configurable: true
@@ -142,6 +137,8 @@
           ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
           common_name: mysql.service.cf.internal
           max_open_connections: 10
+          tls:
+            enable_identity_verification: true
       - name: autoscaling
         manifest: |
           host: mysql.service.cf.internal
@@ -218,24 +215,6 @@
           connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
           require_ssl: '(( .properties.enable_tls_to_internal_pxc.value ? true : false ))'
           ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
-      - name: nfsvolume
-        manifest: |
-          host: mysql.service.cf.internal
-          port: 3306
-          username: ((( nfs-volume-db-credentials.username )))
-          password: ((( nfs-volume-db-credentials.password )))
-          name: (( .properties.nfsvolume_database_name.value ))
-          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
-      - name: nfsvolume_bbr
-        manifest: |
-          db_username: ((( nfs-volume-db-credentials.username )))
-          db_password: ((( nfs-volume-db-credentials.password )))
-          db_name: (( .properties.nfsvolume_database_name.value ))
-          db_hostname: mysql.service.cf.internal
-          db_port: 3306
-          db_driver: mysql
-          db_ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
-          release_level_backup: true
       - name: uaadb
         manifest: |
           db_scheme: mysql
@@ -320,12 +299,6 @@
         - name: networkpolicyserver_password
           type: secret
           configurable: true
-        - name: nfsvolume_username
-          type: string
-          configurable: true
-        - name: nfsvolume_password
-          type: secret
-          configurable: true
         - name: notifications_username
           type: string
           configurable: true
@@ -392,6 +365,8 @@
             max_open_connections: 10
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
             common_name: (( .properties.system_database.external.host.value ))
+            tls:
+              enable_identity_verification: false
         - name: autoscaling
           manifest: |
             adapter: mysql
@@ -468,24 +443,6 @@
             password: (( .properties.system_database.external.networkpolicyserver_password.value ))
             name: (( .properties.networkpolicyserver_database_name.value ))
             connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
-        - name: nfsvolume
-          manifest: |
-            host: (( .properties.system_database.external.host.value ))
-            port: (( .properties.system_database.external.port.value ))
-            username: (( .properties.system_database.external.nfsvolume_username.value ))
-            password: (( .properties.system_database.external.nfsvolume_password.value ))
-            name: (( .properties.nfsvolume_database_name.value ))
-            ca_cert: (( .properties.system_database.external.ca_cert.value ))
-        - name: nfsvolume_bbr
-          manifest: |
-            db_driver: mysql
-            db_hostname: (( .properties.system_database.external.host.value ))
-            db_name: (( .properties.nfsvolume_database_name.value ))
-            db_password: (( .properties.system_database.external.nfsvolume_password.value ))
-            db_port: (( .properties.system_database.external.port.value ))
-            db_username: (( .properties.system_database.external.nfsvolume_username.value ))
-            db_ca_cert: (( .properties.system_database.external.ca_cert.value ))
-            release_level_backup: true
         - name: uaadb
           manifest: |
             db_scheme: mysql

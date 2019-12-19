@@ -2,6 +2,7 @@
 name: log-cache-syslog-server
 release: log-cache
 manifest: |
+  enabled: "(( .properties.enable_log_cache_syslog_ingestion.value ))"
   tls:
     cert: (( .properties.log_cache_syslog_server_tls.cert_pem ))
     key: (( .properties.log_cache_syslog_server_tls.private_key_pem ))

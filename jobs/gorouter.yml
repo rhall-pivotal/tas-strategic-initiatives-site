@@ -23,8 +23,7 @@ manifest: |
     ca_certs: |
       (( .properties.routing_custom_ca_certificates.value ))
       (( $ops_manager.ca_certificate ))
-      ((( /cf/diego-instance-identity-root-ca.certificate )))
-      ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
+      ((( /cf/diego-instance-identity-leaf-2-6-intermediate.ca )))
       (( .properties.network_policy_server_external_cert.cert_pem ))
     forwarded_client_cert: (( .properties.routing_tls_termination.selected_option.parsed_manifest(gorouter_forwarded_client_cert) ))
     disable_log_forwarded_for: (( .properties.routing_log_client_ips.selected_option.parsed_manifest(disable_log_forwarded_for) ))
@@ -36,6 +35,7 @@ manifest: |
     route_services_internal_lookup: (( .properties.route_services.selected_option.parsed_manifest(internal_lookup) ))
     ssl_skip_validation: (( .ha_proxy.skip_cert_verify.value ))
     drain_wait: (( .router.drain_wait.value ))
+    drain_timeout: (( .router.drain_timeout.value ))
     tracing:
       enable_zipkin: (( .router.enable_zipkin.value ))
     write_access_logs_locally: (( .router.enable_write_access_logs.value ))

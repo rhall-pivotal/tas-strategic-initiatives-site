@@ -455,11 +455,11 @@ var _ = Describe("Diego", func() {
 
 			caCert, err := rep.Property("diego/executor/instance_identity_ca_cert")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).To(Equal("((diego-instance-identity-intermediate-ca-2-7.certificate))"))
+			Expect(caCert).To(Equal("((/cf/diego-instance-identity-leaf-2-6-intermediate.certificate))"))
 
 			caKey, err := rep.Property("diego/executor/instance_identity_key")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(caKey).To(Equal("((diego-instance-identity-intermediate-ca-2-7.private_key))"))
+			Expect(caKey).To(Equal("((/cf/diego-instance-identity-leaf-2-6-intermediate.private_key))"))
 		})
 	})
 
@@ -503,6 +503,55 @@ var _ = Describe("Diego", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				Expect(property).To(BeFalse())
+			})
+		})
+	})
+
+	Context("app graceful shutdown period", func() {
+		BeforeEach(func() {
+			if productName == "srt" {
+				instanceGroup = "compute"
+			} else {
+				instanceGroup = "diego_cell"
+			}
+		})
+
+		Context("when value is not provided", func() {
+			It("uses the default", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
+				Expect(err).NotTo(HaveOccurred())
+
+				value, err := rep.Property("containers/graceful_shutdown_interval_in_seconds")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(value).To(Equal(10))
+			})
+		})
+
+		Context("when value provided is below the minimum constraint", func() {
+			It("fails", func() {
+				_, err := product.RenderManifest(map[string]interface{}{
+					".properties.app_graceful_shutdown_period_in_seconds": 1,
+				})
+				Expect(err).To(HaveOccurred())
+			})
+		})
+
+		Context("when value provided is above the minimum constraint", func() {
+			It("sets to provided value", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.app_graceful_shutdown_period_in_seconds": 100,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				rep, err := manifest.FindInstanceGroupJob(instanceGroup, "rep")
+				Expect(err).NotTo(HaveOccurred())
+
+				value, err := rep.Property("containers/graceful_shutdown_interval_in_seconds")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(value).To(Equal(100))
 			})
 		})
 	})

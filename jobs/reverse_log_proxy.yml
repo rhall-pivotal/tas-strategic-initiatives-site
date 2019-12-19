@@ -11,5 +11,6 @@ manifest: |
         cert: (( .loggregator_trafficcontroller.rlp_tls_cert.cert_pem ))
         key: (( .loggregator_trafficcontroller.rlp_tls_cert.private_key_pem ))
   reverse_log_proxy:
+    enabled: (( .properties.enable_v2_firehose.value ))
     egress:
       port: $( variable "reverse_log_proxy_port" )

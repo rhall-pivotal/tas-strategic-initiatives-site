@@ -10,6 +10,8 @@ templates:
 - $( job "gorouter" )
 - $( job "loggregator_agent" )
 - $( job "loggr-syslog-agent" )
+- $( job "metrics-discovery-registrar" )
+- $( job "metrics-agent" )
 - $( job "loggr-forwarder-agent" )
 - $( job "loggr-udp-forwarder" )
 - $( job "prom_scraper" )
@@ -79,6 +81,10 @@ property_blueprints:
   type: integer
   configurable: true
   default: 20
+- name: drain_timeout
+  type: integer
+  configurable: true
+  default: 900
 - name: lb_healthy_threshold
   type: integer
   configurable: true

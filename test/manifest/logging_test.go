@@ -87,65 +87,6 @@ var _ = Describe("Logging", func() {
 		})
 	})
 
-	Describe("system metric scraper", func() {
-		var instanceGroup string
-		BeforeEach(func() {
-			if productName == "srt" {
-				instanceGroup = "control"
-			} else {
-				instanceGroup = "clock_global"
-			}
-		})
-
-		It("configures the system-metric-scraper", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			metricScraper, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-system-metric-scraper")
-			Expect(err).NotTo(HaveOccurred())
-
-			tlsProps, err := metricScraper.Property("system_metrics/tls")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(tlsProps).To(HaveKey("ca_cert"))
-			Expect(tlsProps).To(HaveKey("cert"))
-			Expect(tlsProps).To(HaveKey("key"))
-
-			scrapePort, err := metricScraper.Property("scrape_port")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(scrapePort).To(Equal(53035))
-
-			expectSecureMetrics(metricScraper)
-		})
-
-		It("has a leadership-election job collocated", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			le, err := manifest.FindInstanceGroupJob(instanceGroup, "leadership-election")
-			Expect(err).NotTo(HaveOccurred())
-
-			enabled, err := le.Property("port")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(enabled).To(Equal(7100))
-		})
-	})
-
-	Describe("prom scraper", func() {
-		It("configures the prom scraper on all VMs", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			instanceGroups := getAllInstanceGroups(manifest)
-
-			for _, ig := range instanceGroups {
-				scraper, err := manifest.FindInstanceGroupJob(ig, "prom_scraper")
-				Expect(err).NotTo(HaveOccurred())
-
-				expectSecureMetrics(scraper)
-			}
-		})
-	})
-
 	Describe("forwarder agent", func() {
 		var (
 			productTag string
@@ -357,7 +298,6 @@ var _ = Describe("Logging", func() {
 			Expect(metricsProps).To(HaveKey("key"))
 		})
 
-
 		It("registers the log-cache route", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
@@ -445,8 +385,94 @@ var _ = Describe("Logging", func() {
 				Expect(maxPerSource).To(Equal(200000))
 			}
 		})
+
+		Context("ingestion", func() {
+
+			It("defaults to nozzle ingestion", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				logCacheNozzle, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-nozzle")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(logCacheNozzle.Property("enabled")).To(BeTrue())
+
+				logCacheSyslogServer, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-syslog-server")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(logCacheSyslogServer.Property("enabled")).To(BeFalse())
+			})
+
+			It("enables syslog ingestion", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.enable_log_cache_syslog_ingestion": true,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				logCacheNozzle, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-nozzle")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(logCacheNozzle.Property("enabled")).To(BeFalse())
+
+				logCacheSyslogServer, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-syslog-server")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(logCacheSyslogServer.Property("enabled")).To(BeTrue())
+			})
+		})
 	})
 
+	Describe("V2 Firehose", func() {
+		It("is enabled by default", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			rlp, err := manifest.FindInstanceGroupJob(instanceGroup("loggregator_trafficcontroller"), "reverse_log_proxy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(rlp.Property("reverse_log_proxy/enabled")).To(BeTrue())
+
+			rlpGateway, err := manifest.FindInstanceGroupJob(instanceGroup("loggregator_trafficcontroller"), "reverse_log_proxy_gateway")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(rlpGateway.Property("logs_provider/enabled")).To(BeTrue())
+
+			doppler, err := manifest.FindInstanceGroupJob(instanceGroup("doppler"), "doppler")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(doppler.Property("doppler/enabled")).To(BeTrue())
+
+			instanceGroups := getAllInstanceGroups(manifest)
+			for _, instanceGroup := range instanceGroups {
+				la, err := manifest.FindInstanceGroupJob(instanceGroup, "loggregator_agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(la.Property("loggregator_agent/enabled")).To(BeTrue())
+			}
+		})
+
+		It("can be disabled", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.enable_v2_firehose": false,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			rlp, err := manifest.FindInstanceGroupJob(instanceGroup("loggregator_trafficcontroller"), "reverse_log_proxy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(rlp.Property("reverse_log_proxy/enabled")).To(BeFalse())
+
+			rlpGateway, err := manifest.FindInstanceGroupJob(instanceGroup("loggregator_trafficcontroller"), "reverse_log_proxy_gateway")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(rlpGateway.Property("logs_provider/enabled")).To(BeFalse())
+
+			doppler, err := manifest.FindInstanceGroupJob(instanceGroup("doppler"), "doppler")
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(doppler.Property("doppler/enabled")).To(BeFalse())
+
+			instanceGroups := getAllInstanceGroups(manifest)
+			for _, instanceGroup := range instanceGroups {
+				la, err := manifest.FindInstanceGroupJob(instanceGroup, "loggregator_agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(la.Property("loggregator_agent/enabled")).To(BeFalse())
+			}
+		})
+	})
 	Describe("Traffic Controller", func() {
 		var instanceGroup string
 		BeforeEach(func() {
@@ -636,4 +662,12 @@ func expectSecureMetrics(job planitest.Manifest) {
 	Expect(metricsProps).To(HaveKey("cert"))
 	Expect(metricsProps).To(HaveKey("key"))
 	Expect(metricsProps).To(HaveKey("server_name"))
+}
+
+func instanceGroup(instanceGroupName string) string {
+	if productName == "srt" {
+		return "control"
+	}
+
+	return instanceGroupName
 }
