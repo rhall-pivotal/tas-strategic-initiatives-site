@@ -53,38 +53,11 @@ var _ = Describe("System Database", func() {
 			manifest, err := product.RenderManifest(inputProperties)
 			Expect(err).NotTo(HaveOccurred())
 
-			// nfsbroker
-			nfsbrokerpush, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsbrokerpush")
-			Expect(err).NotTo(HaveOccurred())
-
-			host, err := nfsbrokerpush.Property("nfsbrokerpush/db/host")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(host).To(Equal("mysql.service.cf.internal"))
-
-			caCert, err := nfsbrokerpush.Property("nfsbrokerpush/db/ca_cert")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).To(BeNil())
-
-			nfsbrokerbbr, err := manifest.FindInstanceGroupJob("backup_restore", "nfsbroker-bbr")
-			Expect(err).NotTo(HaveOccurred())
-
-			host, err = nfsbrokerbbr.Property("nfsbroker/db_hostname")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(host).To(Equal("mysql.service.cf.internal"))
-
-			backup, err := nfsbrokerbbr.Property("nfsbroker/release_level_backup")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(backup).To(BeTrue())
-
-			caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(caCert).To(BeNil())
-
 			// notifications
 			notifications, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "deploy-notifications")
 			Expect(err).NotTo(HaveOccurred())
 
-			caCert, err = notifications.Property("notifications/database/ca_cert")
+			caCert, err := notifications.Property("notifications/database/ca_cert")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(caCert).To(BeNil())
 
@@ -198,28 +171,17 @@ var _ = Describe("System Database", func() {
 				manifest, err := product.RenderManifest(inputProperties)
 				Expect(err).NotTo(HaveOccurred())
 
-				// nfsbroker
-				nfsbrokerpush, err := manifest.FindInstanceGroupJob(instanceGroup, "nfsbrokerpush")
-				Expect(err).NotTo(HaveOccurred())
-
-				caCert, err := nfsbrokerpush.Property("nfsbrokerpush/db/ca_cert")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(caCert).NotTo(BeEmpty())
-
-				nfsbrokerbbr, err := manifest.FindInstanceGroupJob("backup_restore", "nfsbroker-bbr")
-				Expect(err).NotTo(HaveOccurred())
-
-				caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(caCert).NotTo(BeEmpty())
-
 				// notifications
 				notifications, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "deploy-notifications")
 				Expect(err).NotTo(HaveOccurred())
 
-				caCert, err = notifications.Property("notifications/database/ca_cert")
+				caCert, err := notifications.Property("notifications/database/ca_cert")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).NotTo(BeEmpty())
+
+				notifcationsHostVerification, err := notifications.Property("notifications/database/tls/enable_identity_verification")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(notifcationsHostVerification).To(BeTrue())
 
 				commonName, err := notifications.Property("notifications/database/common_name")
 				Expect(err).NotTo(HaveOccurred())
@@ -271,8 +233,6 @@ var _ = Describe("System Database", func() {
 				".properties.locket_database_max_open_connections":                  150,
 				".properties.system_database.external.networkpolicyserver_username": "networkpolicyserver_username",
 				".properties.system_database.external.networkpolicyserver_password": map[string]interface{}{"secret": "networkpolicyserver_password"},
-				".properties.system_database.external.nfsvolume_username":           "nfsvolume_username",
-				".properties.system_database.external.nfsvolume_password":           map[string]interface{}{"secret": "nfsvolume_password"},
 				".properties.system_database.external.notifications_username":       "notifications_username",
 				".properties.system_database.external.notifications_password":       map[string]interface{}{"secret": "notifications_password"},
 				".properties.system_database.external.account_username":             "account_username",
@@ -306,6 +266,14 @@ var _ = Describe("System Database", func() {
 			port, err := job.Property("database/port")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(port).To(Equal(5432))
+
+			// notifications
+			notifications, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "deploy-notifications")
+			Expect(err).NotTo(HaveOccurred())
+
+			notifcationsHostVerification, err := notifications.Property("notifications/database/tls/enable_identity_verification")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(notifcationsHostVerification).To(BeFalse())
 
 			// bbs
 			job, err = manifest.FindInstanceGroupJob(dbInstanceGroup, "bbs")
@@ -470,21 +438,6 @@ var _ = Describe("System Database", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
 
-				// nfsbroker
-				nfsbrokerpush, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "nfsbrokerpush")
-				Expect(err).NotTo(HaveOccurred())
-
-				caCert, err = nfsbrokerpush.Property("nfsbrokerpush/db/ca_cert")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(caCert).To(Equal("fake-ca-cert"))
-
-				nfsbrokerbbr, err := manifest.FindInstanceGroupJob("backup_restore", "nfsbroker-bbr")
-				Expect(err).NotTo(HaveOccurred())
-
-				caCert, err = nfsbrokerbbr.Property("nfsbroker/db_ca_cert")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(caCert).To(Equal("fake-ca-cert"))
-
 				// notifications
 				notifications, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "deploy-notifications")
 				Expect(err).NotTo(HaveOccurred())
@@ -492,6 +445,10 @@ var _ = Describe("System Database", func() {
 				caCert, err = notifications.Property("notifications/database/ca_cert")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
+
+				notifcationsHostVerification, err := notifications.Property("notifications/database/tls/enable_identity_verification")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(notifcationsHostVerification).To(BeFalse())
 
 				commonName, err := notifications.Property("notifications/database/common_name")
 				Expect(err).NotTo(HaveOccurred())
@@ -557,8 +514,6 @@ var _ = Describe("System Database", func() {
 				".properties.system_database.external.locket_password":              map[string]interface{}{"secret": "locket_password"},
 				".properties.system_database.external.networkpolicyserver_username": "networkpolicyserver_username",
 				".properties.system_database.external.networkpolicyserver_password": map[string]interface{}{"secret": "networkpolicyserver_password"},
-				".properties.system_database.external.nfsvolume_username":           "nfsvolume_username",
-				".properties.system_database.external.nfsvolume_password":           map[string]interface{}{"secret": "nfsvolume_password"},
 				".properties.system_database.external.notifications_username":       "notifications_username",
 				".properties.system_database.external.notifications_password":       map[string]interface{}{"secret": "notifications_password"},
 				".properties.system_database.external.account_username":             "account_username",
@@ -575,11 +530,9 @@ var _ = Describe("System Database", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, "backup_restore", "bbr-usage-servicedb", "database")
-			validateConsistencyOfParsedManifest(internalManifest, externalManifest, "backup_restore", "nfsbroker-bbr", "nfsbroker")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, ccInstanceGroup, "cloud_controller_ng", "ccdb")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, ccInstanceGroup, "routing-api", "routing_api/sqldb")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, cgInstanceGroup, "deploy-notifications", "notifications/database")
-			validateConsistencyOfParsedManifest(internalManifest, externalManifest, cgInstanceGroup, "nfsbrokerpush", "nfsbrokerpush/db")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, cgInstanceGroup, "push-usage-service", "databases/app_usage_service")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, credhubInstanceGroup, "credhub", "credhub/data_storage")
 			validateConsistencyOfParsedManifest(internalManifest, externalManifest, dbInstanceGroup, "bbs", "diego/bbs/sql")

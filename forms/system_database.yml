@@ -3,9 +3,9 @@ name: system_database
 label: Databases
 description: Databases
 markdown: |
-  To configure this pane, see the
-  [Configure System Databases](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#sys-db)
-  section of the _Configuring PAS_ topic in the PCF documentation.
+  For help configuring these fields, see the
+  [Configure Databases](https://docs.pivotal.io/pivotalcf/2-9/customizing/configure-pas.html#sys-db)
+  section of the _Configuring PAS_ topic in the Pivotal Platform documentation.
 
 verifiers:
   - name: Verifiers::MysqlDatabaseVerifier
@@ -76,14 +76,6 @@ verifiers:
     properties:
       host: .properties.system_database.external.host
       port: .properties.system_database.external.port
-      username: .properties.system_database.external.nfsvolume_username
-      password: .properties.system_database.external.nfsvolume_password
-      database: .properties.nfsvolume_database_name
-
-  - name: Verifiers::MysqlDatabaseVerifier
-    properties:
-      host: .properties.system_database.external.host
-      port: .properties.system_database.external.port
       username: .properties.system_database.external.notifications_username
       password: .properties.system_database.external.notifications_password
       database: .properties.notifications_database_name
@@ -122,7 +114,7 @@ property_inputs:
       Internal databases - MySQL - Percona XtraDB Cluster
 
   - reference: .properties.system_database.external
-    label: External databases (e.g. AWS RDS)
+    label: External databases
     property_inputs:
       - reference: .properties.system_database.external.host
         label: Hostname
@@ -173,12 +165,6 @@ property_inputs:
 
       - reference: .properties.system_database.external.networkpolicyserver_password
         label: Network policy server database password
-
-      - reference: .properties.system_database.external.nfsvolume_username
-        label: NFS volume services database username
-
-      - reference: .properties.system_database.external.nfsvolume_password
-        label: NFS volume services database password
 
       - reference: .properties.system_database.external.notifications_username
         label: Notifications service database username

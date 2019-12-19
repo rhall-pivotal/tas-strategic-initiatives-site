@@ -9,6 +9,7 @@ manifest: |
     disable_announce: true
     health_addr: localhost:14826
     outgoing_port: 65123 # This is a random port as nothing cares about what doppler listens on
+    enabled: (( .properties.enable_v2_firehose.value ))
   loggregator:
     etcd:
       machines: []

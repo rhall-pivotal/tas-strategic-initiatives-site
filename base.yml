@@ -64,7 +64,7 @@ releases:
 - $( release "staticfile-offline-buildpack" )
 - $( release "statsd-injector" )
 - $( release "syslog" )
-- $( release "system-metrics" )
+- $( release "system-metrics-scraper" )
 - $( release "uaa" )
 - $( release "istio" )
 
@@ -121,6 +121,7 @@ job_types:
 
 property_blueprints:
 - $( property "account_database_name" )
+- $( property "app_graceful_shutdown_period_in_seconds" )
 - $( property "app_usage_service_database_name" )
 - $( property "auctioneer_client_cert" )
 - $( property "auctioneer_server_cert" )
@@ -225,7 +226,6 @@ property_blueprints:
 - $( property "networkpolicyserver_database_max_open_connections" )
 - $( property "networkpolicyserverinternal_database_max_open_connections" )
 - $( property "nfs_volume_driver" )
-- $( property "nfsvolume_database_name" )
 - $( property "notifications_database_name" )
 - $( property "pilot_server_cert" )
 - $( property "prom_scraper_scrape_tls" )
@@ -245,10 +245,14 @@ property_blueprints:
 - $( property "push_apps_manager_global_wrapper_footer_content" )
 - $( property "push_apps_manager_global_wrapper_header_content" )
 - $( property "push_apps_manager_global_wrapper_text_color" )
+- $( property "push_apps_manager_search_server_buildpack" )
+- $( property "push_apps_manager_search_server_memory" )
+- $( property "push_apps_manager_invitations_buildpack" )
 - $( property "push_apps_manager_invitations_memory" )
 - $( property "push_apps_manager_logo" )
 - $( property "push_apps_manager_marketplace_name" )
 - $( property "push_apps_manager_marketplace_url" )
+- $( property "push_apps_manager_buildpack" )
 - $( property "push_apps_manager_memory" )
 - $( property "push_apps_manager_nav_links" )
 - $( property "push_apps_manager_product_name" )
@@ -320,9 +324,10 @@ property_blueprints:
 - $( property "uaa_session_cookie_max_age" )
 - $( property "uaa_session_idle_timeout" )
 - $( property "router_headers_remove_if_specified" )
-- $( property "system_metrics_enabled" )
 - $( property "system_metrics_tls_scraper_cert" )
 - $( property "enable_v1_firehose" )
+- $( property "enable_v2_firehose" )
+- $( property "enable_log_cache_syslog_ingestion" )
 - $( property "syslog_agent_api_tls" )
 - $( property "binding_cache_api_tls" )
 
@@ -330,12 +335,6 @@ runtime_configs:
 - $( runtime_config "bosh-dns-aliases" )
 
 variables:
-- name: /cf/diego-instance-identity-root-ca
-  type: certificate
-  options:
-    common_name: 'Diego Instance Identity Root CA'
-    is_ca: true
-    duration: 1095
 
 - name: /cf/diego-instance-identity-root-ca-2-6
   type: certificate
@@ -344,13 +343,12 @@ variables:
     is_ca: true
     duration: 1095
 
-- name: diego-instance-identity-intermediate-ca-2-7
+- name: /cf/diego-instance-identity-leaf-2-6-intermediate
   type: certificate
   options:
     common_name: 'Diego Instance Identity Intermediate CA'
-    is_ca: true
-    duration: 730
     ca: /cf/diego-instance-identity-root-ca-2-6
+    is_ca: true
     key_usage:
     - key_cert_sign
 
@@ -444,9 +442,6 @@ variables:
 
 - name: nfs-server-blobstore-secret
   type: password
-
-- name: nfs-volume-db-credentials
-  type: user
 
 - name: notifications-db-credentials
   type: user
@@ -666,14 +661,6 @@ install_time_verifiers:
     username: .properties.system_database.external.networkpolicyserver_username
     password: .properties.system_database.external.networkpolicyserver_password
     database: .properties.networkpolicyserver_database_name
-- name: Verifiers::MysqlDatabaseVerifier
-  ignorable: true
-  properties:
-    host: .properties.system_database.external.host
-    port: .properties.system_database.external.port
-    username: .properties.system_database.external.nfsvolume_username
-    password: .properties.system_database.external.nfsvolume_password
-    database: .properties.nfsvolume_database_name
 - name: Verifiers::MysqlDatabaseVerifier
   ignorable: true
   properties:

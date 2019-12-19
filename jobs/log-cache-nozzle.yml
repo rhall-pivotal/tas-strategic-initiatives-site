@@ -1,0 +1,10 @@
+---
+name: log-cache-nozzle
+release: log-cache
+manifest: |
+  enabled: "(( .properties.enable_log_cache_syslog_ingestion.value ? false : true ))"
+  logs_provider:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      cert: (( .properties.log_cache_nozzle_client_tls_cert.cert_pem ))
+      key: (( .properties.log_cache_nozzle_client_tls_cert.private_key_pem ))

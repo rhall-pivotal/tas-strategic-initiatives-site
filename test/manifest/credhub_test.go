@@ -52,14 +52,14 @@ var _ = Describe("CredHub", func() {
 					".properties.credhub_internal_provider_keys": []map[string]interface{}{
 						{
 							"key": map[string]interface{}{
-								"secret": "passwordA",
+								"secret": "12345678901234567890",
 							},
 							"name":    "KeyA",
 							"primary": true,
 						},
 						{
 							"key": map[string]interface{}{
-								"secret": "passwordB",
+								"secret": "09876543210987654321",
 							},
 							"name":    "KeyB",
 							"primary": false,
@@ -111,7 +111,7 @@ var _ = Describe("CredHub", func() {
 				".properties.credhub_internal_provider_keys": []map[string]interface{}{
 					{
 						"key": map[string]interface{}{
-							"secret": "passwordA",
+							"secret": "12345678901234567890",
 						},
 						"name":    "KeyA",
 						"primary": false,
@@ -165,14 +165,14 @@ var _ = Describe("CredHub", func() {
 					".properties.credhub_internal_provider_keys": []map[string]interface{}{
 						{
 							"key": map[string]interface{}{
-								"secret": "passwordA",
+								"secret": "12345678901234567890",
 							},
 							"name":    "KeyA",
 							"primary": false,
 						},
 						{
 							"key": map[string]interface{}{
-								"secret": "passwordB",
+								"secret": "98765432109876543210",
 							},
 							"name":    "KeyB",
 							"primary": false,
@@ -334,8 +334,6 @@ var _ = Describe("CredHub", func() {
 						".properties.system_database.external.locket_password":              map[string]interface{}{"secret": "locket_password"},
 						".properties.system_database.external.networkpolicyserver_username": "networkpolicyserver_username",
 						".properties.system_database.external.networkpolicyserver_password": map[string]interface{}{"secret": "networkpolicyserver_password"},
-						".properties.system_database.external.nfsvolume_username":           "nfsvolume_username",
-						".properties.system_database.external.nfsvolume_password":           map[string]interface{}{"secret": "nfsvolume_password"},
 						".properties.system_database.external.notifications_username":       "notifications_username",
 						".properties.system_database.external.notifications_password":       map[string]interface{}{"secret": "notifications_password"},
 						".properties.system_database.external.account_username":             "account_username",

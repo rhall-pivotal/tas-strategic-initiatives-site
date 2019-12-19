@@ -4,8 +4,8 @@ label: Apps Manager
 description: Apps Manager
 markdown: |
   For help configuring these fields, see the
-  [Configure Custom Branding and Apps Manager](https://docs.pivotal.io/pivotalcf/2-7/customizing/configure-pas.html#customize-apps-man)
-  section of the _Configuring PAS_ topic in the PCF documentation.
+  [Configure Custom Branding and Apps Manager](https://docs.pivotal.io/pivotalcf/2-9/customizing/configure-pas.html#customize-apps-man)
+  section of the _Configuring PAS_ topic in the Pivotal Platform documentation.
 
 property_inputs:
   - reference: .properties.push_apps_manager_enable_invitations
@@ -31,7 +31,7 @@ property_inputs:
 
   - reference: .properties.push_apps_manager_marketplace_url
     label: Marketplace URL
-    description: Replaces "/marketplace" as the Marketplace Page in Apps Manager.
+    description: Overrides the default Apps Manager Marketplace link to point to a custom marketplace.
 
   - reference: .properties.push_apps_manager_nav_links
     label: Customize Secondary Navigation Links
@@ -44,11 +44,33 @@ property_inputs:
       - reference: href
         label: URL
 
+  - reference: .properties.push_apps_manager_buildpack
+    label: Apps Manager buildpack
+    description: |
+      The buildpack to use when deploying the Apps Manager app. Must be for static content.
+
+  - reference: .properties.push_apps_manager_search_server_buildpack
+    label: Search Server buildpack
+    description: |
+      The buildpack to use when deploying the Search Server app. Must be for a node based app.
+
+  - reference: .properties.push_apps_manager_invitations_buildpack
+    label: Invitations buildpack
+    description: |
+      The buildpack to use when deploying the Invitations app. Must be for a node based app.
+
   - reference: .properties.push_apps_manager_memory
     label: Apps Manager memory usage
     description: |
       The memory limit for the Apps Manager app.
-      Enter value in MB. Leave blank to use the default value.
+      Enter value in MB. Leave blank to use the default value
+      of 128 MB.
+
+  - reference: .properties.push_apps_manager_search_server_memory
+    label: Search Server memory usage
+    description: |
+      The memory limit for the Search Server app. Enter value in MB.
+      Leave blank to use the default value of 256 MB.
 
   - reference: .properties.push_apps_manager_invitations_memory
     label: Invitations memory usage

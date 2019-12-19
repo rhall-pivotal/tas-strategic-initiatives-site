@@ -10,6 +10,7 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     client_cert: (( .properties.reverse_log_proxy_gateway_client_tls_rlp_cert.cert_pem ))
     client_key: (( .properties.reverse_log_proxy_gateway_client_tls_rlp_cert.private_key_pem ))
+    enabled: (( .properties.enable_v2_firehose.value ))
   cc:
     capi_internal_addr: https://cloud-controller-ng.service.cf.internal:9023
     ca_cert: (( $ops_manager.ca_certificate ))

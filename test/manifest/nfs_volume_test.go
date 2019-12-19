@@ -35,16 +35,6 @@ var _ = Describe("NFS volume service", func() {
 		Expect(nfsBrokerPushCredhubProperties).To(HaveKeyWithValue("uaa_client_id", "nfs-broker-credhub"))
 		Expect(nfsBrokerPushCredhubProperties).To(HaveKey("uaa_client_secret"))
 
-		nfsBrokerPushDatabaseProperties, err := nfsBrokerPush.Property("nfsbrokerpush/db")
-		Expect(err).NotTo(HaveOccurred())
-
-		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("ca_cert", BeNil()))
-		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("host", "mysql.service.cf.internal"))
-		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("port", 3306))
-		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("username", "((nfs-volume-db-credentials.username))"))
-		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("password", "((nfs-volume-db-credentials.password))"))
-		Expect(nfsBrokerPushDatabaseProperties).To(HaveKeyWithValue("name", "nfsvolume"))
-
 		domain, err := nfsBrokerPush.Property("nfsbrokerpush/domain")
 		Expect(err).NotTo(HaveOccurred())
 		Expect(domain).To(Equal("sys.example.com"))
@@ -383,7 +373,6 @@ func testNfsBrokerPushProperties(nfsBrokerPush planitest.Manifest) {
 	nfsBrokerPushProperties, err := nfsBrokerPush.Path("/properties/nfsbrokerpush")
 	Expect(err).NotTo(HaveOccurred())
 	Expect(nfsBrokerPushProperties).To(HaveKeyWithValue("domain", "sys.example.com"))
-	Expect(nfsBrokerPushProperties).To(HaveKey("db"))
 	Expect(nfsBrokerPushProperties).To(HaveKey("cf"))
 	nfsBrokerCFProperties := (nfsBrokerPushProperties.(map[interface{}]interface{}))["cf"]
 	Expect(nfsBrokerCFProperties).To(HaveKeyWithValue("admin_user", "admin"))

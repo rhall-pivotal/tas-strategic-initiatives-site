@@ -178,8 +178,7 @@
             tls:
               enabled: true
               ca_certificates:
-              - ((( /cf/diego-instance-identity-root-ca.certificate )))
-              - ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
+              - ((( /cf/diego-instance-identity-leaf-2-6-intermediate.ca )))
               client_certificate: (( .properties.ssh_proxy_backends_tls.cert_pem ))
               client_private_key: (( .properties.ssh_proxy_backends_tls.private_key_pem ))
 
@@ -200,3 +199,10 @@
         - name: timestamp_format
           manifest: |
             unix-epoch
+
+- name: app_graceful_shutdown_period_in_seconds
+  type: integer
+  configurable: true
+  default: 10
+  constraints:
+    min: 10
