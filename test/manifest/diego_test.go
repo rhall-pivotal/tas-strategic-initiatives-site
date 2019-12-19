@@ -208,7 +208,7 @@ var _ = Describe("Diego", func() {
 			Expect(disableHealthcheckProperty).To(BeTrue())
 		})
 
-		It("disables TLS between ssh proxy server and backends", func() {
+		It("enables TLS between ssh proxy server and backends", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -220,32 +220,10 @@ var _ = Describe("Diego", func() {
 
 			backendsTLSProperties = rawBackendsTLSProperties.(map[interface{}]interface{})
 
-			Expect(backendsTLSProperties["enabled"]).To(BeFalse())
-			Expect(backendsTLSProperties).NotTo(HaveKey("ca_certificates"))
-			Expect(backendsTLSProperties).NotTo(HaveKey("client_certificate"))
-			Expect(backendsTLSProperties).NotTo(HaveKey("client_private_key"))
-		})
-
-		Context("when TLS between ssh proxy server and backends is enabled", func() {
-			It("enables TLS", func() {
-				manifest, err := product.RenderManifest(map[string]interface{}{
-					".properties.route_integrity": "mutual_tls_verify",
-				})
-				Expect(err).NotTo(HaveOccurred())
-
-				sshProxy, err := manifest.FindInstanceGroupJob(instanceGroup, "ssh_proxy")
-				Expect(err).NotTo(HaveOccurred())
-
-				rawBackendsTLSProperties, err := sshProxy.Property("backends/tls")
-				Expect(err).NotTo(HaveOccurred())
-
-				backendsTLSProperties = rawBackendsTLSProperties.(map[interface{}]interface{})
-
-				Expect(backendsTLSProperties["enabled"]).To(BeTrue())
-				Expect(backendsTLSProperties).To(HaveKey("ca_certificates"))
-				Expect(backendsTLSProperties).To(HaveKey("client_certificate"))
-				Expect(backendsTLSProperties).To(HaveKey("client_private_key"))
-			})
+			Expect(backendsTLSProperties["enabled"]).To(BeTrue())
+			Expect(backendsTLSProperties).To(HaveKey("ca_certificates"))
+			Expect(backendsTLSProperties).To(HaveKey("client_certificate"))
+			Expect(backendsTLSProperties).To(HaveKey("client_private_key"))
 		})
 
 		Context("when container networking plugin is external", func() {
