@@ -5,15 +5,16 @@ manifest: |
   containers:
     proxy: (( .properties.route_integrity.selected_option.parsed_manifest(proxy) ))
     trusted_ca_certificates:
-      - ((( /cf/diego-instance-identity-leaf-2-6-intermediate.ca )))
+      - ((( /cf/diego-instance-identity-root-ca.certificate )))
+      - ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
       - (( $ops_manager.ca_certificate ))
       - (( $ops_manager.trusted_certificates ))
   declarative_healthcheck_path: /var/vcap/packages/healthcheck_windows/internal
   diego:
     executor:
       disk_capacity_mb: (( .windows_diego_cell.executor_disk_capacity.value ))
-      instance_identity_ca_cert: ((( /cf/diego-instance-identity-leaf-2-6-intermediate.certificate )))
-      instance_identity_key: ((( /cf/diego-instance-identity-leaf-2-6-intermediate.private_key )))
+      instance_identity_ca_cert: ((( diego-instance-identity-intermediate-ca-2-7.certificate )))
+      instance_identity_key: ((( diego-instance-identity-intermediate-ca-2-7.private_key )))
       memory_capacity_mb: (( .windows_diego_cell.executor_memory_capacity.value ))
     rep:
       use_azure_fault_domains: true
