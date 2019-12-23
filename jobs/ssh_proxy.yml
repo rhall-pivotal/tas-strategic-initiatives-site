@@ -9,7 +9,8 @@ manifest: |
     tls:
       enabled: true
       ca_certificates:
-      - ((( /cf/diego-instance-identity-leaf-2-6-intermediate.ca )))
+      - ((( /cf/diego-instance-identity-root-ca.certificate )))
+      - ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
       client_certificate: (( .properties.ssh_proxy_backends_tls.cert_pem ))
       client_private_key: (( .properties.ssh_proxy_backends_tls.private_key_pem ))
   diego:

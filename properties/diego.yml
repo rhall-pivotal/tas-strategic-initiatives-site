@@ -169,6 +169,15 @@
             verify_subject_alt_name:
             - gorouter.service.cf.internal
             - ssh-proxy.service.cf.internal
+        - name: backends_tls
+          manifest: |
+            tls:
+              enabled: true
+              ca_certificates:
+              - ((( /cf/diego-instance-identity-root-ca.certificate )))
+              - ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
+              client_certificate: (( .properties.ssh_proxy_backends_tls.cert_pem ))
+              client_private_key: (( .properties.ssh_proxy_backends_tls.private_key_pem ))
 
 - name: diego_log_timestamp_format
   type: selector
