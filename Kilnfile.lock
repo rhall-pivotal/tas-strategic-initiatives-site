@@ -1,43 +1,74 @@
 releases:
-- name: bpm
-  sha1: 8e83a3603c0a035cef74f02c6f432dc0df696bf3
-  version: 1.1.5
-- name: cf-networking
-  sha1: 78d2276f653cb4b419c1855ca314b6a4f81d2b2d
-  version: 2.25.0
-- name: cflinuxfs3
-  sha1: 4badf5570346dbab20d1265824cae3d3708fdbd6
-  version: 0.136.0
-- name: diego
-  sha1: 04eeec03d7677f0b46c2013a8ee51700f5d24c0b
-  version: 2.39.0
-- name: garden-runc
-  sha1: 2a950756dd7a65907324d06a648cf3c87212c9be
-  version: 1.19.8
-- name: haproxy
-  sha1: 864f1102d82ed552f2f51c18466996cedd3eebb4
-  version: 9.8.0
-- name: loggregator-agent
-  sha1: 5427050288b17b2942fe4ae8a5610974055660b4
-  version: 5.1.0
-- name: mapfs
-  sha1: b4a2c9c5405a2f682e17c3b8d55a7fa4a15a6468
-  version: 1.2.0
-- name: nfs-volume
-  sha1: 2e1e290b311b687d04652b115f99ba4262742b29
-  version: 2.3.1
-- name: routing
-  sha1: 176fdefa758c625472b044b5036e6d7c2226ef90
-  version: 0.192.0
-- name: silk
-  sha1: 1ba29035fd67b54a3bac78d8cd0dbaa0c803547a
-  version: 2.22.0
-- name: smb-volume
-  sha1: b99349960a4e492efc4b6eac5c42ef9767fb6066
-  version: 2.0.3
-- name: syslog
-  sha1: 1aff2d9fc26c54be4bcc906dab1f9e3c45ad53ef
-  version: 11.5.0
+  - name: bpm
+    remote_path: 2.9/bpm/bpm-1.1.6-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: eabdef1c6e32ad3e44323c1229a37eef4e2e95d7
+    version: 1.1.6
+  - name: cf-networking
+    remote_path: 2.9/cf-networking/cf-networking-2.27.0-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: 702f46bfac4120f42a5f1598f1b541de3b4c5e9a
+    version: 2.27.0
+  - name: cflinuxfs3
+    remote_path: 2.9/cflinuxfs3/cflinuxfs3-0.151.0-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: b24002e3a3b6de631909989008567ee1f3eb993e
+    version: 0.151.0
+  - name: diego
+    remote_path: 2.9/diego/diego-2.41.0-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: c3c2df767875c85e3a901da239796319cdc9a56f
+    version: 2.41.0
+  - name: garden-runc
+    remote_path: 2.9/garden-runc/garden-runc-1.19.9-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: 5a9755a48a84084adc5a26303aa5031262fa65ab
+    version: 1.19.9
+  - name: haproxy
+    remote_path: 2.9/haproxy/haproxy-9.8.0-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: 6ea19d04be004182471a458acd0c066b7195494f
+    version: 9.8.0
+  - name: loggregator-agent
+    remote_path: 2.9/loggregator-agent/loggregator-agent-5.3.3-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: afde87f3e45919d8c466a0502c520c92b3b5b6b1
+    version: 5.3.3
+  - name: mapfs
+    remote_path: 2.9/mapfs/mapfs-1.2.2-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: 143a07a96929b16b04770b91a1c3f872604371c9
+    version: 1.2.2
+  - name: metrics-discovery
+    remote_path: 2.9/metrics-discovery/metrics-discovery-2.0.2-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: 4aba56b1347a9c5a0368ecb18e94bc490e83fcef
+    version: 2.0.2
+  - name: nfs-volume
+    remote_path: 2.9/nfs-volume/nfs-volume-6.0.0-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: 0138dfd60b313b48fbbb10b1dc3c1d987ccd44d9
+    version: 6.0.0
+  - name: routing
+    remote_path: 2.9/routing/routing-0.196.0-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: 92e84450185d26280a2aee917648c4a454dc3269
+    version: 0.196.0
+  - name: silk
+    remote_path: 2.9/silk/silk-2.27.0-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: 432ecdc0ef74dd6a3d829557c6db326995ceda55
+    version: 2.27.0
+  - name: smb-volume
+    remote_path: 2.9/smb-volume/smb-volume-2.1.1-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: 0cbae92a40173e600a79f44ab27d32ba3c6447ef
+    version: 2.1.1
+  - name: syslog
+    remote_path: 2.9/syslog/syslog-11.6.1-ubuntu-xenial-621.29.tgz
+    remote_source: compiled-releases
+    sha1: f3af4d3aa5cbba42ae1b43e17256036f39bda022
+    version: 11.6.1
 stemcell_criteria:
   os: ubuntu-xenial
-  version: '456.30'
+  version: '621.29'

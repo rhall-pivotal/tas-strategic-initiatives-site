@@ -113,3 +113,10 @@
             verify_subject_alt_name:
             - gorouter.service.cf.internal
             - ssh-proxy.service.cf.internal
+
+- name: app_graceful_shutdown_period_in_seconds
+  type: integer
+  configurable: true
+  default: 10
+  constraints:
+    min: 10

@@ -1,14 +1,14 @@
 ---
 name: p-isolation-segment
-metadata_version: '2.7' # When a 2.8 Ops Manager appears, this value should be updated to be equal to the product version
+metadata_version: '2.8' # When a 2.9 Ops Manager appears, this value should be updated to be equal to the product version
 provides_product_versions:
 - name: p-isolation-segment
   version: $( version )
 product_version: $( version )
-minimum_version_for_upgrade: 2.7.0
+minimum_version_for_upgrade: 2.8.0
 requires_product_versions:
 - name: cf
-  version: "~> 2.8.0"
+  version: "~> 2.9.0"
 label: $( variable "label" )
 description: "Gives developers the ability to push apps to a dedicated set of compute instances."
 icon_image: $( icon )
@@ -28,6 +28,7 @@ releases:
 - $( release "garden-runc" )
 - $( release "haproxy" )
 - $( release "loggregator-agent" )
+- $( release "metrics-discovery" )
 - $( release "mapfs" )
 - $( release "nfs-volume" )
 - $( release "routing" )
@@ -48,6 +49,7 @@ job_types:
 - $( instance_group "isolated_diego_cell" )
 
 property_blueprints:
+- $( property "app_graceful_shutdown_period_in_seconds" )
 - $( property "bbs_client_cert" )
 - $( property "cf_networking_search_domains" )
 - $( property "container_networking" )
@@ -67,6 +69,8 @@ property_blueprints:
 - $( property "loggregator_agent_metrics_tls" )
 - $( property "loggregator_client_cert" )
 - $( property "loggregator_agent_tls_cert" )
+- $( property "metrics_agent_metrics_tls" )
+- $( property "metrics_discovery_metrics_tls" )
 - $( property "networking_poe_ssl_certs" )
 - $( property "networking_point_of_entry" )
 - $( property "nfs_volume_driver" )
@@ -92,7 +96,6 @@ property_blueprints:
 - $( property "service_discovery_client_tls" )
 - $( property "skip_cert_verify" )
 - $( property "syslog_agent_metrics_tls" )
-- $( property "system_metrics_enabled" )
 - $( property "system_metrics_tls_scraper_cert" )
 - $( property "system_logging" )
 - $( property "scheduler_binding_cache_tls" )
