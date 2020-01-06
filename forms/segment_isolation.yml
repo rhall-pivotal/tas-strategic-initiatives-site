@@ -11,18 +11,16 @@ markdown: |
 
 property_inputs:
 - reference: .properties.compute_isolation
-  label: |
-    Tag name for Diego Cell blocks
+  label: Compute isolation
   selector_property_inputs:
   - reference: .properties.compute_isolation.disabled
-    label: None
+    label: Disable
   - reference: .properties.compute_isolation.enabled
-    label: Custom
+    label: Enable
     property_inputs:
       - reference: .properties.compute_isolation.enabled.isolation_segment_name
         label: Segment name
-        description: |
-          The placement tag for your Diego Cells.
+        description: The placement tag for your Diego Cells.
 
 - reference: .properties.routing_table_sharding_mode
   label: Router sharding mode
