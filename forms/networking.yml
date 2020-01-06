@@ -4,8 +4,9 @@ label: Networking
 description: Networking
 markdown: |
   For help configuring these fields, see the
-  [Networking](https://docs.pivotal.io/pivotalcf/2-7/customizing/installing-pcf-is.html#networking)
-  section of the _Installing Pivotal Isolation Segment_ topic in the documentation.
+  [Networking](https://docs.pivotal.io/pivotalcf/2-9/customizing/installing-pcf-is.html#networking)
+  section of the _Installing Pivotal Isolation
+  Segment_ topic in the Pivotal Platform documentation.
 
 property_inputs:
 - reference: .isolated_router.static_ips
@@ -174,6 +175,14 @@ property_inputs:
   description: |
     Timeout for connections from Router and HAProxy to apps and system
     components. Enter value in seconds.
+
+- reference: .isolated_router.drain_timeout
+  label: Router Drain Timeout
+  description: |
+    Specifies the amount of time, in seconds, that the Router will continue
+    to serve existing connections before shutting down. After the timeout is
+    reached, all remaining connections will be terminated so that the Router
+    can be restarted.
 
 - reference: .isolated_router.drain_wait
   label: Load balancer unhealthy threshold
