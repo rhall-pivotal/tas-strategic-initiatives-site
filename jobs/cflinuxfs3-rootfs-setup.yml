@@ -4,7 +4,6 @@ release: cflinuxfs3
 manifest: |
   cflinuxfs3-rootfs:
     trusted_certs: |
-      ((( /cf/diego-instance-identity-root-ca.certificate )))
-      ((( /cf/diego-instance-identity-root-ca-2-6.certificate )))
+      ((( diego-instance-identity-intermediate-ca-2-7.ca )))
       (( $ops_manager.ca_certificate ))
       (( $ops_manager.trusted_certificates ))
