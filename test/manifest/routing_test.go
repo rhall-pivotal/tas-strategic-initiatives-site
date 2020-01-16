@@ -9,6 +9,20 @@ import (
 )
 
 var _ = Describe("Routing", func() {
+	Describe("empty pool response", func() {
+		It("is configured to use 503 behavior", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			haproxy, err := manifest.FindInstanceGroupJob("router", "gorouter")
+			Expect(err).NotTo(HaveOccurred())
+
+			behavior503, err := haproxy.Property("for_backwards_compatibility_only/empty_pool_response_code_503")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(behavior503).To(BeTrue())
+		})
+	})
+
 	Describe("operator defaults", func() {
 		It("configures the ha-proxy and router minimum TLS versions", func() {
 			manifest, err := product.RenderManifest(nil)

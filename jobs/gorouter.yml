@@ -10,6 +10,8 @@ manifest: |
     ssl:
       port: 8443
   request_timeout_in_seconds: (( .router.request_timeout_in_seconds.value ))
+  for_backwards_compatibility_only:
+    empty_pool_response_code_503: True
   router:
     http_rewrite:
       responses:
