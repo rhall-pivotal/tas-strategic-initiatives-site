@@ -205,6 +205,7 @@
           connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
           require_ssl: '(( .properties.enable_tls_to_internal_pxc.value ? true : false ))'
           ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
+          skip_hostname_validation: false
       - name: networkpolicyserverdb
         manifest: |
           type: mysql
@@ -434,6 +435,7 @@
             password: (( .properties.system_database.external.silk_password.value ))
             name: (( .properties.silk_database_name.value ))
             connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
+            skip_hostname_validation: true
         - name: networkpolicyserverdb
           manifest: |
             type: mysql
