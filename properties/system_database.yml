@@ -193,6 +193,7 @@
           password: ((( routing-db-credentials.password )))
           schema: (( .properties.routing_database_name.value ))
           ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
+          skip_hostname_validation: false
       - name: silkdb
         manifest: |
           type: mysql
@@ -421,6 +422,7 @@
             password: (( .properties.system_database.external.routing_password.value ))
             schema: (( .properties.routing_database_name.value ))
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
+            skip_hostname_validation: true
         - name: silkdb
           manifest: |
             type: mysql

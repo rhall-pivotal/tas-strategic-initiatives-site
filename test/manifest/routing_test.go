@@ -388,6 +388,64 @@ var _ = Describe("Routing", func() {
 				Expect(caCert).ToNot(BeEmpty())
 			})
 		})
+
+		When("the system database is set to internal", func() {
+			It("does not skip hostname validation", func() {
+				manifest, renderErr := product.RenderManifest(nil)
+				Expect(renderErr).NotTo(HaveOccurred())
+
+				routing_api, err := manifest.FindInstanceGroupJob(instanceGroup, "routing-api")
+				Expect(err).ToNot(HaveOccurred())
+				skip_hostname_validation, err := routing_api.Property("routing_api/sqldb/skip_hostname_validation")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(skip_hostname_validation).To(BeFalse())
+			})
+		})
+
+		When("the system database is set to external", func() {
+			var inputProperties map[string]interface{}
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.system_database":                                       "external",
+					".properties.system_database.external.host":                         "foo.bar",
+					".properties.system_database.external.port":                         5432,
+					".properties.system_database.external.credhub_username":             "some-user",
+					".properties.system_database.external.credhub_password":             map[string]interface{}{"secret": "some-password"},
+					".properties.system_database.external.app_usage_service_username":   "app_usage_service_username",
+					".properties.system_database.external.app_usage_service_password":   map[string]interface{}{"secret": "app_usage_service_password"},
+					".properties.system_database.external.autoscale_username":           "autoscale_username",
+					".properties.system_database.external.autoscale_password":           map[string]interface{}{"secret": "autoscale_password"},
+					".properties.system_database.external.ccdb_username":                "ccdb_username",
+					".properties.system_database.external.ccdb_password":                map[string]interface{}{"secret": "ccdb_password"},
+					".properties.system_database.external.diego_username":               "diego_username",
+					".properties.system_database.external.diego_password":               map[string]interface{}{"secret": "diego_password"},
+					".properties.system_database.external.locket_username":              "locket_username",
+					".properties.system_database.external.locket_password":              map[string]interface{}{"secret": "locket_password"},
+					".properties.system_database.external.networkpolicyserver_username": "networkpolicyserver_username",
+					".properties.system_database.external.networkpolicyserver_password": map[string]interface{}{"secret": "networkpolicyserver_password"},
+					".properties.system_database.external.notifications_username":       "notifications_username",
+					".properties.system_database.external.notifications_password":       map[string]interface{}{"secret": "notifications_password"},
+					".properties.system_database.external.account_username":             "account_username",
+					".properties.system_database.external.account_password":             map[string]interface{}{"secret": "account_password"},
+					".properties.system_database.external.routing_username":             "routing_username",
+					".properties.system_database.external.routing_password":             map[string]interface{}{"secret": "routing_password"},
+					".properties.system_database.external.silk_username":                "silk_username",
+					".properties.system_database.external.silk_password":                map[string]interface{}{"secret": "silk_password"},
+				}
+			})
+
+			It("skips hostname validation", func() {
+				manifest, renderErr := product.RenderManifest(inputProperties)
+				Expect(renderErr).NotTo(HaveOccurred())
+
+				routing_api, err := manifest.FindInstanceGroupJob(instanceGroup, "routing-api")
+				Expect(err).ToNot(HaveOccurred())
+				skip_hostname_validation, err := routing_api.Property("routing_api/sqldb/skip_hostname_validation")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(skip_hostname_validation).To(BeTrue())
+			})
+		})
+
 	})
 
 	Describe("logging", func() {
