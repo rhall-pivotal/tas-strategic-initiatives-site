@@ -105,6 +105,60 @@ The server didn't respond in time.
 		})
 	})
 
+	Describe("Sticky Session Cookies", func() {
+		var (
+			router          planitest.Manifest
+			inputProperties map[string]interface{}
+		)
+
+		JustBeforeEach(func() {
+			manifest, err := product.RenderManifest(inputProperties)
+			Expect(err).NotTo(HaveOccurred())
+
+			router, err = manifest.FindInstanceGroupJob("router", "gorouter")
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		Context("when user provides names", func() {
+
+			BeforeEach(func() {
+				cookieMapArray := []map[string]string{}
+
+				cookies := []string{"foo", "bar"}
+
+				for _, cookie := range cookies {
+					cookieMapArray =
+						append(cookieMapArray, map[string]string{"name": cookie})
+				}
+
+				inputProperties = map[string]interface{}{
+					".properties.router_sticky_session_cookie_names": cookieMapArray,
+				}
+			})
+
+			It("is configured to use the provided names", func() {
+				cookieNames, err := router.Property("router/sticky_session_cookie_names")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(cookieNames).To(HaveLen(2))
+				Expect(cookieNames).To(ConsistOf("foo", "bar"))
+			})
+		})
+
+		Context("when nothing is provided", func() {
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.router_sticky_session_cookie_names": []map[string]string{},
+				}
+			})
+			It("is configured to use the provided names", func() {
+				cookieNames, err := router.Property("router/sticky_session_cookie_names")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(cookieNames).To(HaveLen(0))
+			})
+		})
+	})
 	Describe("TLS termination", func() {
 		It("secures traffic between the infrastructure load balancer and HAProxy / Gorouter", func() {
 			manifest, err := product.RenderManifest(nil)
@@ -672,15 +726,15 @@ The server didn't respond in time.
 		})
 	})
 
-	Describe("TCP Routing", func(){
-		Context("when TCP Routing is enabled", func(){
+	Describe("TCP Routing", func() {
+		Context("when TCP Routing is enabled", func() {
 			var properties map[string]interface{}
-			BeforeEach(func(){
+			BeforeEach(func() {
 				properties = map[string]interface{}{
 					".properties.tcp_routing": "enable",
 				}
 			})
-			It("tcp_router.request_timeout_in_seconds should default to 300", func(){
+			It("tcp_router.request_timeout_in_seconds should default to 300", func() {
 				manifest, err := product.RenderManifest(properties)
 				Expect(err).NotTo(HaveOccurred())
 
@@ -688,15 +742,15 @@ The server didn't respond in time.
 				Expect(err).NotTo(HaveOccurred())
 				Expect(job.Property("tcp_router/request_timeout_in_seconds")).To(Equal(300))
 			})
-			Context("when the user provides a value for tcp_router.request_timeout_in_seconds", func(){
+			Context("when the user provides a value for tcp_router.request_timeout_in_seconds", func() {
 
-				BeforeEach(func(){
+				BeforeEach(func() {
 					properties = map[string]interface{}{
-						".properties.tcp_routing": "enable",
+						".properties.tcp_routing":                                   "enable",
 						".properties.tcp_routing.enable.request_timeout_in_seconds": 100,
 					}
 				})
-				It("tcp_router.request_timeout_in_seconds is updated accordingly", func(){
+				It("tcp_router.request_timeout_in_seconds is updated accordingly", func() {
 					manifest, err := product.RenderManifest(properties)
 					Expect(err).NotTo(HaveOccurred())
 
