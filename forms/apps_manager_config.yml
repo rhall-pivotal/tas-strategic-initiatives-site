@@ -17,8 +17,8 @@ property_inputs:
   - reference: .properties.push_apps_manager_currency_lookup
     label: Supported currencies as JSON
     description: |
-      Define currency codes and associated symbols.
-      Defaults to { "usd": "$", "eur": "€" }.
+      Define currency codes and associated symbols. Defaults
+      to { "usd": "$", "eur": "€" }.
 
   - reference: .properties.push_apps_manager_product_name
     label: Product name
@@ -31,12 +31,15 @@ property_inputs:
 
   - reference: .properties.push_apps_manager_marketplace_url
     label: Marketplace URL
-    description: Overrides the default Apps Manager Marketplace link to point to a custom marketplace.
+    description: |
+      Overrides the default Apps Manager Marketplace link to
+      point to a custom marketplace.
 
   - reference: .properties.push_apps_manager_nav_links
-    label: Customize Secondary Navigation Links
+    label: Secondary navigation links
     description: |
-      Up to 10 links configured here will appear in the secondary navigation of Apps Manager
+      Configures up to 10 links to appear in the secondary
+      navigation of Apps Manager.
     property_inputs:
       - reference: name
         label: Link text
@@ -47,17 +50,20 @@ property_inputs:
   - reference: .properties.push_apps_manager_buildpack
     label: Apps Manager buildpack
     description: |
-      The buildpack to use when deploying the Apps Manager app. Must be for static content.
+      The buildpack to use when deploying the Apps Manager app.
+      Must be for static content.
 
   - reference: .properties.push_apps_manager_search_server_buildpack
     label: Search Server buildpack
     description: |
-      The buildpack to use when deploying the Search Server app. Must be for a node based app.
+      The buildpack to use when deploying the Search Server app.
+      Must be for a node-based app.
 
   - reference: .properties.push_apps_manager_invitations_buildpack
     label: Invitations buildpack
     description: |
-      The buildpack to use when deploying the Invitations app. Must be for a node based app.
+      The buildpack to use when deploying the Invitations app.
+      Must be for a node-based app.
 
   - reference: .properties.push_apps_manager_memory
     label: Apps Manager memory usage
