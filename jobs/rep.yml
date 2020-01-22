@@ -25,6 +25,8 @@ manifest: |
       memory_capacity_mb: (( .diego_cell.executor_memory_capacity.value ))
       post_setup_hook: sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"
       post_setup_user: root
+      max_log_lines_per_second: (( .properties.app_log_rate_limiting.selected_option.parsed_manifest(app_log_rate_limiting_properties) ))
+
   enable_consul_service_registration: false
   enable_declarative_healthcheck: true
   logging:
