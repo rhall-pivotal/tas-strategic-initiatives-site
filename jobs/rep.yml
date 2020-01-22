@@ -17,6 +17,7 @@ manifest: |
       memory_capacity_mb: (( executor_memory_capacity.value ))
       post_setup_hook: sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"
       post_setup_user: "root"
+      max_log_lines_per_second: (( .properties.app_log_rate_limiting.selected_option.parsed_manifest(app_log_rate_limiting_properties) ))
       instance_identity_ca_cert: ((( diego-instance-identity-intermediate-ca-2-7.certificate )))
       instance_identity_key: ((( diego-instance-identity-intermediate-ca-2-7.private_key )))
     rep: (( .properties.compute_isolation.selected_option.parsed_manifest(for_rep) ))

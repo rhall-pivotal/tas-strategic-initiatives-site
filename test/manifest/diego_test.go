@@ -306,4 +306,35 @@ var _ = Describe("Diego", func() {
 		})
 	})
 
+	Context("app log rate limiting", func() {
+		It("enables the app log rate limiting", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.app_log_rate_limiting":                                 "enable",
+				".properties.app_log_rate_limiting.enable.max_log_lines_per_second": 200,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
+			Expect(err).NotTo(HaveOccurred())
+
+			value, err := rep.Property("diego/executor/max_log_lines_per_second")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(value).To(Equal(200))
+		})
+
+		It("disables the app log rate limiting", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.app_log_rate_limiting": "disable",
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			rep, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "rep")
+			Expect(err).NotTo(HaveOccurred())
+
+			value, err := rep.Property("diego/executor/max_log_lines_per_second")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(value).To(Equal(0))
+		})
+	})
+
 })
