@@ -494,5 +494,35 @@ var _ = Describe("UAA", func() {
 
 			})
 		})
+
+		Describe("apps_manager_js redirect uris", func() {
+			It("uses the spec defaults", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+				Expect(err).NotTo(HaveOccurred())
+
+				redirectUri, err := uaa.Property("uaa/clients/apps_manager_js/redirect-uri")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(redirectUri).To(Equal("https://apps.sys.example.com/**"))
+			})
+
+			Context("when the operator specifies redirect uris", func() {
+				It("applies them", func() {
+					manifest, err := product.RenderManifest(map[string]interface{}{
+						".properties.push_apps_manager_redirect_uris": `https://apps.sys.second-foundation.example.com/**`,
+					})
+					Expect(err).NotTo(HaveOccurred())
+
+					uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+					Expect(err).NotTo(HaveOccurred())
+
+					redirectUri, err := uaa.Property("uaa/clients/apps_manager_js/redirect-uri")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(redirectUri).To(Equal("https://apps.sys.example.com/**,https://apps.sys.second-foundation.example.com/**"))
+				})
+			})
+		})
 	})
 })
