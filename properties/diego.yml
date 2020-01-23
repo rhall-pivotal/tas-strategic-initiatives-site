@@ -26,3 +26,30 @@
         require_and_verify_client_certificates: true
         trusted_ca_certificates:
         - (( $ops_manager.ca_certificate ))
+- name: app_log_rate_limiting
+  type: selector
+  configurable: true
+  default: disable
+  option_templates:
+    - name: enable
+      select_value: enable
+      named_manifests:
+        - name: app_log_rate_limiting_properties
+          manifest: |
+            (( .properties.app_log_rate_limiting.enable.max_log_lines_per_second.value ))
+
+      property_blueprints:
+        - name: max_log_lines_per_second
+          type: integer
+          configurable: true
+          optional: true
+          default: 100
+          constraints:
+            min: 1
+
+    - name: disable
+      select_value: disable
+      named_manifests:
+        - name: app_log_rate_limiting_properties
+          manifest: |
+            0

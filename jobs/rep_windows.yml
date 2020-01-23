@@ -15,6 +15,7 @@ manifest: |
       instance_identity_ca_cert: ((( diego-instance-identity-intermediate-ca-2-7.certificate )))
       instance_identity_key: ((( diego-instance-identity-intermediate-ca-2-7.private_key )))
       memory_capacity_mb: (( .windows_diego_cell.executor_memory_capacity.value ))
+      max_log_lines_per_second: (( .properties.app_log_rate_limiting.selected_option.parsed_manifest(app_log_rate_limiting_properties) ))
     rep:
       use_azure_fault_domains: true
       open_bindmounts_acl: true

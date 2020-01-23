@@ -11,3 +11,19 @@ property_inputs:
 - reference: .windows_diego_cell.placement_tags
   label: Segment name
   description: The placement tag for your Diego Cells.
+
+- reference: .properties.app_log_rate_limiting
+  label: App log rate limit (beta)
+  description: |
+    Limit the number of log lines an app instance can generate per second.
+  selector_property_inputs:
+    - reference: .properties.app_log_rate_limiting.enable
+      label: Enable
+      property_inputs:
+        - reference: .properties.app_log_rate_limiting.enable.max_log_lines_per_second
+          label: Maximum app log lines per second
+          description: |
+            The default value is 100.
+
+    - reference: .properties.app_log_rate_limiting.disable
+      label: Disable
