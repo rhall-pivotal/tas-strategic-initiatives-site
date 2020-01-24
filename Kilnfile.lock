@@ -1,9 +1,4 @@
 releases:
-- name: cf-smoke-tests
-  sha1: fa710d4fefd2bb03657cf6d889298a2b9dc682b4
-  version: 40.0.127
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/cf-smoke-tests-release?v=40.0.127
 - name: diego
   sha1: 53f3688ca65cd21fd4334b32c38b362bdaf4a2ca
   version: 2.44.0
@@ -39,6 +34,11 @@ releases:
   version: 2.0.2
   remote_source: bosh.io
   remote_path: https://bosh.io/d/github.com/cloudfoundry/metrics-discovery-release?v=2.0.2
+- name: smoke-tests
+  sha1: c1520630c4a53e9b0ee3050cf69e40ed09ac47b7
+  version: 2.0.6
+  remote_source: final-pcf-bosh-releases
+  remote_path: smoke-tests/smoke-tests-2.0.6.tgz
 - name: winc
   sha1: 8d15924650cb641741dc6042219c76acda0c2b98
   version: 2.0.0
