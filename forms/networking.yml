@@ -10,33 +10,33 @@ markdown: |
 
 property_inputs:
 - reference: .isolated_router.static_ips
-  label: Router IPs
-  description: A comma-separated list of router IPs.
+  label: Gorouter IPs
+  description: A comma-separated list of Gorouter IPs.
 
 - reference: .isolated_ha_proxy.static_ips
   label: HAProxy IPs
   description: A comma-separated list of HAProxy IPs.
 
 - reference: .properties.networking_poe_ssl_certs
-  label: Certificates and private keys for HAProxy and Router
+  label: Certificates and private keys for the Gorouter and HAProxy
   property_inputs:
   - reference: name
     label: Name
     description: A human-readable name describing the use of this certificate.
   - reference: certificate
-    label: Certificate and private key for HAProxy and Router
+    label: Certificate and private key
     description: |
-      The certificate used to terminate SSL traffic at either the HAProxy or
-      Router.
+      The certificate used to terminate SSL traffic at either the Gorouter or
+      HAProxy.
 
 - reference: .properties.routing_custom_ca_certificates
-  label: Certificate Authorities trusted by Router and HAProxy
+  label: Certificate Authorities trusted by the Gorouter and HAProxy
   description: |
     Additional Certificate Authorities used to validate certificates from
     incoming requests.
 
 - reference: .properties.routing_minimum_tls_version
-  label: Minimum version of TLS supported by HAProxy and Router
+  label: Minimum version of TLS supported by the Gorouter and HAProxy
   selector_property_inputs:
     - reference: .properties.routing_minimum_tls_version.tls_v1_0
       label: TLSv1.0
@@ -46,7 +46,7 @@ property_inputs:
       label: TLSv1.2
 
 - reference: .properties.router_balancing_algorithm
-  label: Balancing algorithm used by Router
+  label: Balancing algorithm used by the Gorouter
   selector_property_inputs:
     - reference: .properties.router_balancing_algorithm.round_robin
       label: Round robin
@@ -54,7 +54,7 @@ property_inputs:
       label: Least connections
 
 - reference: .properties.routing_log_client_ips
-  label: Logging of client IPs in Router
+  label: Logging of client IPs in the Gorouter
   description: |
     To comply with GDPR, select one of the options to disable logging
     of client IPs.
@@ -74,7 +74,7 @@ property_inputs:
     - reference: .properties.routing_tls_termination.ha_proxy
       label: HAProxy
     - reference: .properties.routing_tls_termination.router
-      label: Router
+      label: Gorouter
 
 - reference: .properties.haproxy_client_cert_validation
   label: HAProxy behavior for client certificate validation
@@ -85,17 +85,17 @@ property_inputs:
       label: HAProxy requests but does not require client certificates
 
 - reference: .properties.router_client_cert_validation
-  label: Router behavior for client certificate validation
+  label: Gorouter behavior for client certificate validation
   selector_property_inputs:
     - reference: .properties.router_client_cert_validation.none
-      label: Router does not request client certificates
+      label: The Gorouter does not request client certificates
     - reference: .properties.router_client_cert_validation.request
-      label: Router requests but does not require client certificates
+      label: The Gorouter requests but does not require client certificates
     - reference: .properties.router_client_cert_validation.require
-      label: Router requires client certificates
+      label: The Gorouter requires client certificates
 
 - reference: .properties.gorouter_ssl_ciphers
-  label: TLS cipher suites for Router
+  label: TLS cipher suites for the Gorouter
   description: |
     An ordered, colon-separated list of Golang supported TLS cipher suites
     in OpenSSL format.
@@ -114,8 +114,9 @@ property_inputs:
       - reference: .properties.haproxy_forward_tls.enable.backend_ca
         label: Certificate Authority for HAProxy back end
         description: |
-          Provide a Certificate Authority for the certificate and key provided
-          in the "Certificate and private key for HAProxy and Router" field.
+          The Certificate Authority for the certificate and key provided
+          in the "Certificates and private keys for the Gorouter and
+          HAProxy" field.
     - reference: .properties.haproxy_forward_tls.disable
       label: Disable
 
@@ -139,19 +140,19 @@ property_inputs:
   label: Disable SSL certificate verification for this environment
 
 - reference: .properties.routing_disable_http
-  label: Disable HTTP on HAProxy and Router
+  label: Disable HTTP on the Gorouter and HAProxy
 
 - reference: .isolated_router.disable_insecure_cookies
-  label: Disable insecure cookies on the Router
+  label: Disable insecure cookies on the Gorouter
 
 - reference: .isolated_router.enable_zipkin
-  label: Enable Zipkin tracing headers on the Router
+  label: Enable Zipkin tracing headers on the Gorouter
 
 - reference: .isolated_router.enable_write_access_logs
-  label: Enable Router to write access logs locally
+  label: Enable the Gorouter to write access logs locally
 
 - reference: .properties.router_enable_proxy
-  label: Enable support for PROXY protocol in Router
+  label: Enable support for PROXY protocol in the Gorouter
 
 - reference: .properties.route_services_internal_lookup
   label: Bypass security checks for route service lookup
@@ -159,11 +160,11 @@ property_inputs:
 - reference: .properties.router_backend_max_conn
   label: Maximum connections per back end
   description: |
-    Maximum concurrent TCP connections per back end for each instance of
-    the Router. A value of 0 sets no limit.
+    The maximum concurrent TCP connections per back end for each instance of
+    the Gorouter. A value of 0 sets no limit.
 
 - reference: .properties.router_keepalive_connections
-  label: Keep-alive connections for Router
+  label: Keep-alive connections for the Gorouter
   selector_property_inputs:
   - reference: .properties.router_keepalive_connections.enable
     label: Enable
@@ -171,40 +172,38 @@ property_inputs:
     label: Disable
 
 - reference: .isolated_router.request_timeout_in_seconds
-  label: Router timeout to back ends
+  label: Gorouter timeout to back ends
   description: |
-    Timeout for connections from Router and HAProxy to apps and system
-    components. Enter value in seconds.
+    The timeout for connections from the Gorouter and HAProxy to apps and
+    system components. Enter value in seconds.
 
 - reference: .isolated_router.drain_timeout
-  label: Router Drain Timeout
+  label: Gorouter drain timeout
   description: |
-    Specifies the amount of time, in seconds, that the Router will continue
-    to serve existing connections before shutting down. After the timeout is
-    reached, all remaining connections will be terminated so that the Router
-    can be restarted.
+    The amount of time that the Gorouter continues to serve existing
+    connections before shutting down. Enter value in seconds.
 
 - reference: .isolated_router.drain_wait
   label: Load balancer unhealthy threshold
   description: |
-    The amount of time that the Router continues to accept connections
+    The amount of time that the Gorouter continues to accept connections
     before shutting down. Enter value in seconds.
 
 - reference: .isolated_router.lb_healthy_threshold
   label: Load balancer healthy threshold
   description: |
-    The amount of time to wait until reporting the Router instance has
+    The amount of time to wait until reporting the Gorouter instance has
     started. Enter value in seconds.
 
 - reference: .isolated_router.extra_headers_to_log
   label: HTTP headers to log
   description: |
     A comma-separated list of HTTP headers that annotate access log
-    events on the Router.
+    events on the Gorouter.
 
 - reference: .properties.haproxy_max_buffer_size
   label: HAProxy request maximum buffer size
-  description: Buffer size to use for requests. Enter value in bytes.
+  description: The buffer size to use for requests. Enter value in bytes.
 
 - reference: .isolated_ha_proxy.internal_only_domains
   label: HAProxy protected domains
@@ -229,8 +228,7 @@ property_inputs:
 - reference: .properties.router_headers_remove_if_specified
   label: Remove specified HTTP response headers
   description: |
-    A list of headers the Router removes on any response from an app.
+    A list of headers the Gorouter removes on any response from an app.
   property_inputs:
   - reference: name
     label: Header name
-    description: Header name to remove
