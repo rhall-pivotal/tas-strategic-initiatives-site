@@ -48,11 +48,11 @@ property_inputs:
 
 - reference: .uaa.service_provider_key_credentials
   label: SAML service provider credentials
-  description: Private key and certificate for the service provider.
+  description: The private key and certificate for the service provider.
 
 - reference: .uaa.service_provider_key_password
   label: SAML service provider key password
-  description: Password for the service provider private key.
+  description: The password for the service provider private key.
 
 - reference: .properties.saml_entity_id_override
   label: SAML Entity ID override
@@ -71,26 +71,22 @@ property_inputs:
 - reference: .uaa.cf_cli_access_token_lifetime
   label: Cloud Foundry CLI access token lifetime
   description: |
-    The lifetime of the access token for the cf CLI.
-    Enter value in seconds.
+    The lifetime of the access token for the cf CLI. Enter value in seconds.
 
 - reference: .uaa.cf_cli_refresh_token_lifetime
   label: Cloud Foundry CLI refresh token lifetime
   description: |
-    The lifetime of the refresh token for the cf CLI.
-    Enter value in seconds.
+    The lifetime of the refresh token for the cf CLI. Enter value in seconds.
 
 - reference: .properties.uaa_session_cookie_max_age
   label: Global login session maximum timeout
   description: |
-    The maximum timeout for a global login session.
-    Enter value in seconds.
+    The maximum timeout for a global login session. Enter value in seconds.
 
 - reference: .properties.uaa_session_idle_timeout
   label: Global login session idle timeout
   description: |
-    The maximum timeout for idle global login sessions.
-    Enter value in seconds.
+    The maximum timeout for idle global login sessions. Enter value in seconds.
 
 - reference: .uaa.customize_username_label
   label: Customize username label
@@ -109,5 +105,5 @@ property_inputs:
 - reference: .uaa.enable_uri_encoding_compatibility_mode
   label: Client basic auth compatibility mode
   description: |
-    If disabled, all client credentials must be URI encoded when provided
+    If disabled, all client credentials must be URL-encoded when provided
     as basic auth in HTTP requests.

@@ -32,8 +32,8 @@ property_inputs:
     - reference: .properties.syslog_tls.enabled.tls_permitted_peer
       label: Permitted peer
       description: |
-        Either the accepted fingerprint (SHA1) or name of remote peer (e.g.
-        "*.example.com").
+        Either the accepted fingerprint (SHA1) or hostname of your remote
+        peer.
 
     - reference: .properties.syslog_tls.enabled.tls_ca_cert
       label: Destination certificate
@@ -42,9 +42,7 @@ property_inputs:
 
 - reference: .cloud_controller.security_event_logging_enabled
   label: Enable Cloud Controller security event logging
-  description: |
-    All requests to Cloud Controller are captured in the
-    syslog.
+  description: All requests to Cloud Controller are captured in the syslog.
 
 - reference: .properties.syslog_use_tcp_for_file_forwarding_local_transport
   label: Use TCP for file forwarding local transport

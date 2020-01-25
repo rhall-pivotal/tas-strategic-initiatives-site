@@ -18,35 +18,35 @@ property_inputs:
         property_inputs:
           - reference: .properties.uaa.internal.password_min_length
             label: Minimum password length
-            description: Minimum number of characters for a valid password.
+            description: The minimum number of characters for a valid password.
 
           - reference: .properties.uaa.internal.password_min_uppercase
             label: Minimum uppercase characters
             description: |
-              Minimum number of uppercase characters required for a valid
+              The minimum number of uppercase characters required for a valid
               password.
 
           - reference: .properties.uaa.internal.password_min_lowercase
             label: Minimum lowercase characters
             description: |
-              Minimum number of lowercase characters required for a valid
+              The minimum number of lowercase characters required for a valid
               password.
 
           - reference: .properties.uaa.internal.password_min_numeric
             label: Minimum numerical digits
             description: |
-              Minimum number of digits required for a valid password.
+              The minimum number of digits required for a valid password.
 
           - reference: .properties.uaa.internal.password_min_special
             label: Minimum special characters
             description: |
-              Minimum number of special characters required for a valid
+              The minimum number of special characters required for a valid
               password.
 
           - reference: .properties.uaa.internal.password_max_retry
             label: Maximum password entry attempts allowed
             description: |
-              Maximum allowed password entry attempts within a five-minute
+              The maximum allowed password entry attempts within a five-minute
               timespan before the account is locked.
 
       - reference: .properties.uaa.saml
@@ -75,7 +75,7 @@ property_inputs:
               provider.
 
           - reference: .properties.uaa.saml.email_domains
-            label: Email domain(s)
+            label: Email domains
             description: |
               A comma-separated list of email domains for inviting external users
               to Apps Manager.
@@ -110,8 +110,8 @@ property_inputs:
         description:
         property_inputs:
           - reference: .properties.uaa.ldap.url
-            label: Server URL(s)
-            description: The URL(s) that point to the LDAP server.
+            label: Server URLs
+            description: The URLs that point to the LDAP server.
             placeholder: ldaps://example.com
 
           - reference: .properties.uaa.ldap.credentials
@@ -145,9 +145,8 @@ property_inputs:
           - reference: .properties.uaa.ldap.group_max_search_depth
             label: Maximum group search depth
             description: |
-              The LDAP group search depth. Allowed values are
-              between 1 and 10. The default value is 1, which turns
-              off the nested group search.
+              Allowed values are between 1 and 10. The default value is
+              1, which turns off the nested group search.
             placeholder: 1
 
           - reference: .properties.uaa.ldap.server_ssl_cert
@@ -169,7 +168,7 @@ property_inputs:
             description: Set the email attribute for your LDAP directory.
 
           - reference: .properties.uaa.ldap.email_domains
-            label: Email domain(s)
+            label: Email domains
             description: |
               A comma-separated list of email domains for inviting
               external users to Apps Manager.

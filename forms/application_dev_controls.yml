@@ -11,56 +11,56 @@ property_inputs:
   - reference: .cloud_controller.max_file_size
     label: Maximum file upload size
     description: |
-      Maximum size of an app upload droplet.
-      Enter value in MB.
+      The maximum size of an app upload droplet. Enter value
+      in MB.
 
   - reference: .cloud_controller.max_package_size
     label: Maximum package size
     description: |
-      Maximum total size of an app's files.
-      Enter value in MB.
+      The maximum total size of an app's files. Enter value
+      in MB.
 
   - reference: .cloud_controller.default_app_memory
     label: Default app memory
     description: |
-      Memory allocated to a newly-pushed app when no value is
-      specified at `cf push`. Enter value in MB.
+      The amount of memory allocated to a newly-pushed app when
+      no value is specified at `cf push`. Enter value in MB.
 
   - reference: .cloud_controller.default_quota_memory_limit_mb
     label: Default app memory quota per org
     description: |
-      Default memory limit for all apps in an org for the first
-      installation of Tanzu Application Service. Enter value in MB.
+      The default memory limit for all apps in an org for the
+      first installation of Tanzu Application Service. Enter value in MB.
 
   - reference: .cloud_controller.max_disk_quota_app
     label: Maximum disk quota per app
     description: |
-      Maximum disk allocated per app.
-      Enter value in MB.
+      The maximum disk allocated per app. Enter value in MB.
 
   - reference: .cloud_controller.default_disk_quota_app
     label: Default disk quota per app
-    description: Default disk allocated per app.
+    description: The default disk limit allocated per app.
 
   - reference: .cloud_controller.default_quota_max_number_services
     label: Default service instance quota per org
     description: |
-      Default maximum number of service instances in an org for the first
-      installation of Tanzu Application Service.
+      The default maximum number of service instances in an org
+      for the first installation of Tanzu Application Service.
 
   - reference: .cloud_controller.staging_timeout_in_seconds
     label: Staging timeout
     description: |
-      Server-side timeout for staging an app droplet with Cloud
+      The server-side timeout for staging an app droplet with Cloud
       Controller. Enter value in seconds.
     placeholder: 900
 
   - reference: .properties.cf_networking_internal_domains
     label: Internal domains
+    description: |
+      The internal domains apps use for internal DNS service discovery.
     property_inputs:
     - reference: name
       label: Name
-      description: Internal domains for app service discovery.
 
   - reference: .properties.cf_networking_enable_space_developer_self_service
     label: Allow space developers to manage network policies
