@@ -138,6 +138,13 @@ runtime_config: |
             deployment: (( ..cf.deployment_name ))
             network: (( ..cf.network_name ))
             domain: bosh
+        - domain: nats.service.cf.internal
+          targets:
+          - query: "*"
+            instance_group: $( variable "nats_instance_group" )
+            deployment: (( ..cf.deployment_name ))
+            network: (( ..cf.network_name ))
+            domain: bosh
         - domain: network-policy-server.service.cf.internal
           targets:
           - query: "*"

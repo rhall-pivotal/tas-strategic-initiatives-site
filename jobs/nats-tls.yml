@@ -1,9 +1,9 @@
 ---
-name: nats
+name: nats-tls
 release: nats
 provides: |
-  nats:
-    as: nats
+  nats-tls:
+    as: nats-tls
     shared: true
 
 consumes: |
@@ -34,3 +34,8 @@ manifest: |
         certificate: (( .properties.nats_tls_internal_cert.cert_pem ))
         private_key: (( .properties.nats_tls_internal_cert.private_key_pem ))
         enabled: true
+    external:
+      tls:
+        ca: (( $ops_manager.ca_certificate ))
+        certificate: (( .properties.nats_tls_external_cert.cert_pem ))
+        private_key: (( .properties.nats_tls_external_cert.private_key_pem ))
