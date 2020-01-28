@@ -4,10 +4,10 @@ release_sources:
   region: us-west-1
   access_key_id: $(variable "aws_access_key_id")
   secret_access_key: $(variable "aws_secret_access_key")
-  path_template: 2.9/{{trimSuffix .Name "-release"}}/{{.Name}}-{{.Version}}-{{.StemcellOS}}-{{.StemcellVersion}}.tgz
+  path_template: 2.10/{{trimSuffix .Name "-release"}}/{{.Name}}-{{.Version}}-{{.StemcellOS}}-{{.StemcellVersion}}.tgz
   publishable: true
   # deprecated fields
-  regex: ^2\.9/.+/(?P<release_name>[a-z-_0-9]+)-(?P<release_version>v?[0-9\.]+)-(?P<stemcell_os>[a-z-_]+)-(?P<stemcell_version>\d+\.\d+)(\.0)?\.tgz$
+  regex: ^2\.10/.+/(?P<release_name>[a-z-_0-9]+)-(?P<release_version>v?[0-9\.]+)-(?P<stemcell_os>[a-z-_]+)-(?P<stemcell_version>\d+\.\d+)(\.0)?\.tgz$
   compiled: true
 - type: bosh.io
 - type: s3
