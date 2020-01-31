@@ -68,6 +68,7 @@ The server didn't respond in time.
 			routerCACerts, err := router.Property("router/ca_certs")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(routerCACerts).NotTo(BeEmpty())
+			Expect(routerCACerts).To(ContainSubstring("((/services/intermediate_tls_ca.ca))"))
 		})
 
 		Context("when the operator sets the minimum TLS version to 1.1", func() {

@@ -4,6 +4,7 @@ release: cflinuxfs3
 manifest: |
   cflinuxfs3-rootfs:
     trusted_certs: |
+      ((( /services/intermediate_tls_ca.ca )))
       ((( diego-instance-identity-intermediate-ca-2-7.ca )))
       (( $ops_manager.ca_certificate ))
       (( $ops_manager.trusted_certificates ))

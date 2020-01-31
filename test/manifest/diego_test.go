@@ -433,6 +433,7 @@ var _ = Describe("Diego", func() {
 			trustedCerts, err := cflinuxfs3RootfsSetup.Property("cflinuxfs3-rootfs/trusted_certs")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(trustedCerts).NotTo(BeNil())
+			Expect(trustedCerts).To(ContainSubstring("((/services/intermediate_tls_ca.ca))"))
 		})
 	})
 
