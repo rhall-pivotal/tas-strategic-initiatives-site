@@ -94,3 +94,10 @@ variables:
     ca: /cf/diego-instance-identity-root-ca-2-6
     key_usage:
     - key_cert_sign
+
+- name: /services/intermediate_tls_ca
+  options:
+    ca: /services/tls_ca
+    common_name: services-intermediate-tls-ca
+    is_ca: true
+  type: certificate

@@ -8,6 +8,7 @@ manifest: |
       - ((( diego-instance-identity-intermediate-ca-2-7.ca )))
       - (( $ops_manager.ca_certificate ))
       - (( $ops_manager.trusted_certificates ))
+      - ((( /services/intermediate_tls_ca.ca )))
   declarative_healthcheck_path: /var/vcap/packages/healthcheck_windows/internal
   diego:
     executor:

@@ -58,6 +58,7 @@ var _ = Describe("Rep Windows", func() {
 			caCerts, err := rep.Property("containers/trusted_ca_certificates")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(caCerts).NotTo(BeEmpty())
+			Expect(caCerts).To(ContainElement("((/services/intermediate_tls_ca.ca))"))
 
 			proxyEnabled, err := rep.Property("containers/proxy/enabled")
 			Expect(err).NotTo(HaveOccurred())
