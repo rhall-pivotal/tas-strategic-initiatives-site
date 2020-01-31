@@ -174,4 +174,19 @@ var _ = Describe("Routing", func() {
 			})
 		})
 	})
+
+	Describe("services ca", func() {
+		It("adds the /services/intermediate_tls_ca to the router ca_certs", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
+			Expect(err).NotTo(HaveOccurred())
+
+			routerCACerts, err := router.Property("router/ca_certs")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(routerCACerts).NotTo(BeEmpty())
+			Expect(routerCACerts).To(ContainSubstring("((/services/intermediate_tls_ca.ca))"))
+		})
+	})
 })

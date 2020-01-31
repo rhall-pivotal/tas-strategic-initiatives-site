@@ -63,6 +63,7 @@ var _ = Describe("Diego", func() {
 
 			trustedCerts, err := setup.Property("cflinuxfs3-rootfs/trusted_certs")
 			Expect(trustedCerts).NotTo(BeEmpty())
+			Expect(trustedCerts).To(ContainSubstring("((/services/intermediate_tls_ca.ca))"))
 		})
 
 		It("configures the preloaded_rootfses on the rep", func() {

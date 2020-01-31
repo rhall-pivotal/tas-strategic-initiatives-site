@@ -116,6 +116,13 @@ variables:
     key_usage:
     - key_cert_sign
 
+- name: /services/intermediate_tls_ca
+  options:
+    ca: /services/tls_ca
+    common_name: services-intermediate-tls-ca
+    is_ca: true
+  type: certificate
+
 post_deploy_errands: []
 
 install_time_verifiers: []
