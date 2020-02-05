@@ -39,7 +39,7 @@ manifest: |
   domain: (( .cloud_controller.system_domain.value ))
   ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
   copilot:
-    enabled: true
+    enabled: (( .properties.istio.selected_option.parsed_manifest(capi_enabled) ))
     host: "copilot.service.cf.internal"
     port: 9001
     client_ca_file: (( $ops_manager.ca_certificate ))

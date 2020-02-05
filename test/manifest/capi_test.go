@@ -135,6 +135,43 @@ var _ = Describe("CAPI", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(temporaryUseLogcache).To(Equal(31))
 			})
+
+			It("does not enable communication to copilot", func() {
+				var cloudControllerInstanceGroup string
+				if productName == "srt" {
+					cloudControllerInstanceGroup = "control"
+				} else {
+					cloudControllerInstanceGroup = "cloud_controller"
+				}
+
+				manifestJob, err := manifest.FindInstanceGroupJob(cloudControllerInstanceGroup, "cloud_controller_ng")
+				Expect(err).NotTo(HaveOccurred())
+
+				copilotEnabled, err := manifestJob.Property("copilot/enabled")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(copilotEnabled).To(BeFalse())
+			})
+		})
+
+		Context("when istio is enabled", func() {
+			It("should enable communication to copilot", func() {
+				var cloudControllerInstanceGroup string
+				if productName == "srt" {
+					cloudControllerInstanceGroup = "control"
+				} else {
+					cloudControllerInstanceGroup = "cloud_controller"
+				}
+
+				manifest, err := product.RenderManifest(map[string]interface{}{".properties.istio": "enable"})
+				Expect(err).NotTo(HaveOccurred())
+
+				manifestJob, err := manifest.FindInstanceGroupJob(cloudControllerInstanceGroup, "cloud_controller_ng")
+				Expect(err).NotTo(HaveOccurred())
+
+				copilotEnabled, err := manifestJob.Property("copilot/enabled")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(copilotEnabled).To(BeTrue())
+			})
 		})
 
 		Context("when the TLS checkbox is checked", func() {
