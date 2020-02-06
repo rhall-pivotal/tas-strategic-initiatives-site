@@ -474,7 +474,7 @@ var _ = Describe("UAA", func() {
 				Expect(override).To(BeTrue())
 			})
 
-			By("allowing users to login to usage service with token", func() {
+			By("allowing users to login to Usage Service with token", func() {
 				rawScopes, err := uaa.Property("uaa/clients/cf/scope")
 				Expect(err).ToNot(HaveOccurred())
 				scopes := strings.Split(rawScopes.(string), ",")

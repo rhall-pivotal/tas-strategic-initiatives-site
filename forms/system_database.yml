@@ -5,7 +5,7 @@ description: Databases
 markdown: |
   For help configuring these fields, see the
   [Configure Databases](https://docs.pivotal.io/pivotalcf/2-10/customizing/configure-pas.html#sys-db)
-  section of the _Configuring PAS_ topic in the Pivotal Platform documentation.
+  section of the _Configuring Application Service_ topic in the product documentation.
 
 verifiers:
   - name: Verifiers::MysqlDatabaseVerifier
@@ -123,10 +123,10 @@ property_inputs:
         label: TCP port
 
       - reference: .properties.system_database.external.app_usage_service_username
-        label: App usage service database username
+        label: Usage Service database username
 
       - reference: .properties.system_database.external.app_usage_service_password
-        label: App usage service database password
+        label: Usage Service database password
 
       - reference: .properties.system_database.external.autoscale_username
         label: Autoscaling service database username
@@ -142,11 +142,11 @@ property_inputs:
 
       - reference: .properties.system_database.external.credhub_username
         label: CredHub database username
-        description: Required if "PAS database" is selected in the CredHub tab.
+        description: Required if "Tanzu Application Service database" is selected in the CredHub tab.
 
       - reference: .properties.system_database.external.credhub_password
         label: CredHub database password
-        description: Required if "PAS database" is selected in the CredHub tab.
+        description: Required if "Tanzu Application Service database" is selected in the CredHub tab.
 
       - reference: .properties.system_database.external.diego_username
         label: Diego database username
@@ -173,10 +173,10 @@ property_inputs:
         label: Notifications service database password
 
       - reference: .properties.system_database.external.account_username
-        label: Pivotal account database username
+        label: Account database username
 
       - reference: .properties.system_database.external.account_password
-        label: Pivotal account database password
+        label: Account database password
 
       - reference: .properties.system_database.external.routing_username
         label: Routing API database username
@@ -192,11 +192,11 @@ property_inputs:
 
       - reference: .properties.system_database.external.uaa_username
         label: UAA database username
-        description: Required if "PAS database" is selected in the UAA tab.
+        description: Required if "Tanzu Application Service database" is selected in the UAA tab.
 
       - reference: .properties.system_database.external.uaa_password
         label: UAA database password
-        description: Required if "PAS database" is selected in the UAA tab.
+        description: Required if "Tanzu Application Service database" is selected in the UAA tab.
 
       - reference: .properties.system_database.external.ca_cert
         label: Database CA certificate

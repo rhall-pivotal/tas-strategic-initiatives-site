@@ -38,7 +38,7 @@ var _ = Describe("Apps Manager", func() {
 			}
 		})
 
-		It("co-locates the BPM job with all apps manager jobs", func() {
+		It("co-locates the BPM job with all Apps Manager jobs", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 

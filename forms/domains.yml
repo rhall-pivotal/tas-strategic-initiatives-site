@@ -5,7 +5,7 @@ description: Domains
 markdown: |
   For help configuring these fields, see the
   [Configure Domains](https://docs.pivotal.io/pivotalcf/2-10/customizing/configure-pas.html#domains)
-  section of the _Configuring PAS_ topic in the Pivotal Platform documentation.
+  section of the _Configuring Application Service_ topic in the product documentation.
 verifiers:
   - name: Verifiers::WildcardDomainVerifier
     properties:
@@ -16,7 +16,7 @@ verifiers:
 property_inputs:
   - reference: .cloud_controller.system_domain
     label: System domain
-    description: The domain for system-level Pivotal Platform components.
+    description: The domain for system-level components.
     placeholder: system.example.com
 
   - reference: .cloud_controller.apps_domain

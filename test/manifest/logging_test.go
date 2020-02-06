@@ -42,9 +42,9 @@ var _ = Describe("Logging", func() {
 
 		BeforeEach(func() {
 			if productName == "srt" {
-				productTag = "Small Footprint Pivotal Application Service"
+				productTag = "Small Footprint VMware Tanzu Application Service"
 			} else {
-				productTag = "Pivotal Application Service"
+				productTag = "VMware Tanzu Application Service"
 			}
 		})
 
@@ -94,9 +94,9 @@ var _ = Describe("Logging", func() {
 
 		BeforeEach(func() {
 			if productName == "srt" {
-				productTag = "Small Footprint Pivotal Application Service"
+				productTag = "Small Footprint VMware Tanzu Application Service"
 			} else {
-				productTag = "Pivotal Application Service"
+				productTag = "VMware Tanzu Application Service"
 			}
 		})
 

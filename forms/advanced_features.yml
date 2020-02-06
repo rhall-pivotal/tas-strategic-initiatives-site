@@ -5,7 +5,7 @@ description: Advanced Features
 markdown: |
   For help configuring these fields, see the
   [Configure Advanced Features](https://docs.pivotal.io/pivotalcf/2-10/customizing/configure-pas.html#advanced)
-  section of the _Configuring PAS_ topic in the Pivotal Platform documentation.
+  section of the _Configuring Application Service_ topic in the product documentation.
 
 property_inputs:
   - reference: .diego_cell.executor_memory_capacity
@@ -38,7 +38,7 @@ property_inputs:
   - reference: .properties.enable_tls_to_internal_pxc
     label: Enable TLS for internal system database (beta)
     description: |
-      PAS components that support TLS connect to the internal
+      Tanzu Application Service components that support TLS connect to the internal
       PXC database using an encrypted TLS connection.
 
   - reference: .properties.diego_database_max_open_connections
@@ -84,7 +84,7 @@ property_inputs:
     placeholder: 100000
 
   - reference: .properties.push_usage_service_cutoff_age_in_days
-    label: Usage service cutoff age
+    label: Usage Service cutoff age
     description: |
-      The number of days of granular data that usage service
+      The number of days of granular data that Usage Service
       stores.

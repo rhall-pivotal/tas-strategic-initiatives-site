@@ -5,7 +5,7 @@ description: CredHub
 markdown: |
   For help configuring these fields, see the
   [Configure CredHub](https://docs.pivotal.io/pivotalcf/2-10/customizing/configure-pas.html#credhub)
-  section of the _Configuring PAS_ topic in the Pivotal Platform documentation.
+  section of the _Configuring Application Service_ topic in the product documentation.
 
 verifiers:
 - name: Verifiers::MysqlDatabaseVerifier
@@ -21,7 +21,7 @@ property_inputs:
   label: CredHub database location
   selector_property_inputs:
   - reference: .properties.credhub_database.internal_mysql
-    label: PAS database
+    label: Tanzu Application Service database
     description: This is configured in the Databases pane.
 
   - reference: .properties.credhub_database.external
