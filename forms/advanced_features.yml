@@ -5,7 +5,7 @@ description: Advanced Features
 markdown: |
   For help configuring these fields, see the
   [Step 3: Configure the Tile](https://docs.pivotal.io/pivotalcf/2-10/windows/installing.html#config)
-  section of the _Installing and Configuring PASW_ topic in the Pivotal Platform documentation.
+  section of the _Installing and Configuring Application Service for Windows_ topic in the product documentation.
 
 property_inputs:
   - reference: .windows_diego_cell.executor_memory_capacity
@@ -20,7 +20,7 @@ property_inputs:
     label: TLS connections from Router to apps (beta)
     description: |
       If you have mutual TLS app identity verification enabled, app containers
-      accept incoming communication only from the Gorouter. This disables TCP routing.
+      accept incoming communication only from the Router. This disables TCP routing.
     selector_property_inputs:
     - reference: .properties.route_integrity.disable
       label: Disable route integrity and mutual TLS

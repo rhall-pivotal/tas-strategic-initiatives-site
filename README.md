@@ -1,4 +1,4 @@
-# Pivotal Application Service for Windows
+# Application Service for Windows
 
 ![ballmer](http://i.giphy.com/mwDdHHKyuHe6c.gif)
 
@@ -12,7 +12,7 @@ Yup, it is located [here](https://releng.ci.cf-app.com/?search=wrt)
 
 ## What you need to deploy it
 
-- Pivotal Application Service
+- VMware Tanzu Application Service
 - Windows Specific Stemcell
 
 ## How we test it
