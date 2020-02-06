@@ -9,6 +9,7 @@ manifest: |
       nats:
         tls:
           enabled: true
+          hostname: nats.service.cf.internal
           client_cert: (( ..cf.properties.nats_client_cert.cert_pem ))
           client_key: (( ..cf.properties.nats_client_cert.private_key_pem ))
       local_mode: true
