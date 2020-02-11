@@ -74,6 +74,36 @@ var _ = Describe("Apps Manager", func() {
 		)))
 	})
 
+	Describe("Company Name", func() {
+		It("uses the spec defaults", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+			Expect(err).NotTo(HaveOccurred())
+
+			appsManagerCompanyName, err := appsManager.Property("apps_manager/generic_white_labeling/company_name")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(appsManagerCompanyName).To(BeNil())
+		})
+
+		Context("when the operator specifies a company name", func() {
+			It("applies it", func() {
+				manifest, err := product.RenderManifest(map[string]interface{}{
+					".properties.push_apps_manager_company_name": `My Company`,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				appsManager, err := manifest.FindInstanceGroupJob(instanceGroup, "push-apps-manager")
+				Expect(err).NotTo(HaveOccurred())
+
+				appsManagerCompanyName, err := appsManager.Property("apps_manager/generic_white_labeling/company_name")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(appsManagerCompanyName).To(Equal(`My Company`))
+			})
+		})
+	})
+
 	Describe("Marketplace Url", func() {
 		It("uses the spec defaults", func() {
 			manifest, err := product.RenderManifest(nil)
