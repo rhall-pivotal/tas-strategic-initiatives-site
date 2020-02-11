@@ -9,21 +9,18 @@ markdown: |
 
 property_inputs:
   - reference: .properties.isolation_segment_domain
-    label: |
-      Isolation Segment app domain:
-    description: Isolation Segment application domain for testing
+    label: Domain
+    description: The apps domain to use when running tests.
 
   - reference: .properties.smoke_tests_isolation
     label: |
       Choose where to deploy apps when running smoke tests:
     selector_property_inputs:
     - reference: .properties.smoke_tests_isolation.on_demand
-      label: |
-        A temporary space within the system org
+      label: A temporary space within the system org
 
     - reference: .properties.smoke_tests_isolation.specified
-      label: |
-        A specified org and space
+      label: A specified org and space
       property_inputs:
         - reference: .properties.smoke_tests_isolation.specified.org_name
           label: Org
