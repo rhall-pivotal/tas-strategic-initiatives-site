@@ -122,6 +122,11 @@ property_inputs:
           If server-side encryption is enabled and a KMS key ID is not provided,
           the default AWS key is used.
 
+      - reference: .properties.system_blobstore.external.path_style_s3_urls
+        label: Path Style S3 URLs (deprecated)
+        description: |
+          Access S3 buckets using path style syntax instead of domain style syntax.
+
       - reference: .properties.system_blobstore.external.buildpacks_bucket
         label: Buildpacks bucket name
         description: The S3 bucket for storing app buildpacks.

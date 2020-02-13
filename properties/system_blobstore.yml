@@ -179,7 +179,7 @@
               aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
               aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
               region:  (( .properties.system_blobstore.external.region.value ))
-              path_style: true
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccbuildpack_iam
@@ -191,7 +191,7 @@
               aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
               use_iam_profile: true
               region:  (( .properties.system_blobstore.external.region.value ))
-              path_style: true
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccdroplet
@@ -205,7 +205,7 @@
               aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
               aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
               region:  (( .properties.system_blobstore.external.region.value ))
-              path_style: true
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccdroplet_iam
@@ -218,7 +218,7 @@
               aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
               use_iam_profile: true
               region:  (( .properties.system_blobstore.external.region.value ))
-              path_style: true
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccpackage
@@ -233,7 +233,7 @@
               aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
               aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
               region:  (( .properties.system_blobstore.external.region.value ))
-              path_style: true
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccpackage_iam
@@ -246,7 +246,7 @@
               aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
               use_iam_profile: true
               region:  (( .properties.system_blobstore.external.region.value ))
-              path_style: true
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccresource
@@ -259,7 +259,7 @@
               aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
               aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
               region:  (( .properties.system_blobstore.external.region.value ))
-              path_style: true
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: ccresource_iam
@@ -271,7 +271,7 @@
               aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
               use_iam_profile: true
               region:  (( .properties.system_blobstore.external.region.value ))
-              path_style: true
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
               endpoint: (( .properties.system_blobstore.external.endpoint.value ))
             fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
         - name: backup_buildpack
@@ -349,6 +349,10 @@
           type: string
           configurable: true
           default: "https://s3.amazonaws.com"
+        - name: path_style_s3_urls
+          type: boolean
+          configurable: true
+          default: true
         - name: buildpacks_bucket
           type: string
           configurable: true
