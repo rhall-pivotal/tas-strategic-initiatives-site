@@ -1,9 +1,4 @@
 releases:
-- name: cf-windows-smoke-tests
-  sha1: 438a3e26bb35a6559db32080e4654ab66b732662
-  version: 40.0.127
-  remote_source: built-releases
-  remote_path: 2.10/cf-windows-smoke-tests/cf-windows-smoke-tests-40.0.127.tgz
 - name: diego
   sha1: e56771d9b93cd810771a5554a4ce39d3640ff8b9
   version: 2.44.0
@@ -39,6 +34,11 @@ releases:
   version: 2.0.2
   remote_source: built-releases
   remote_path: 2.10/metrics-discovery/metrics-discovery-2.0.2.tgz
+- name: smoke-tests
+  remote_path: smoke-tests/smoke-tests-2.0.5.tgz
+  remote_source: final-pcf-bosh-releases
+  sha1: 6333f1bf411ca374ff8afc78b0f3354341765c74
+  version: 2.0.5
 - name: winc
   sha1: 2654747176d5e73bab87068c4f47493d3e226a2a
   version: 2.0.0
