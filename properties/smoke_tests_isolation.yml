@@ -1,0 +1,55 @@
+---
+- name: cf_dial_timeout_in_seconds
+  type: integer
+  configurable: true
+  optional: true
+
+- name: isolation_segment_domain
+  type: string
+  configurable: true
+  optional: true
+
+- name: smoke_tests_isolation
+  type: selector
+  configurable: true
+  default: on_demand
+  option_templates:
+    - name: on_demand
+      select_value: on_demand
+      named_manifests:
+        - name: smoke_tests_isolation
+          manifest: |
+            api: "https://api.(( ..cf.cloud_controller.system_domain.value ))"
+            user: (( ..cf.uaa.run_smoke_tests_credentials.identity ))
+            password: (( ..cf.uaa.run_smoke_tests_credentials.password ))
+            organization: system
+            space: CF_SMOKE_TEST_SPACE
+            skip_ssl_validation: (( ..cf.ha_proxy.skip_cert_verify.value ))
+            cf_dial_timeout_in_seconds: (( ..cf.properties.cf_dial_timeout_in_seconds.value ))
+            isolation_segment_name: (( .properties.compute_isolation.enabled.isolation_segment_name.value ))
+            isolation_segment_domain: (( .properties.isolation_segment_domain.value ))
+            pas_routers_reject_ist_app_requests: (( ..cf.router.enable_isolated_routing.value ))
+
+    - name: specified
+      select_value: specified
+      named_manifests:
+        - name: smoke_tests_isolation
+          manifest: |
+            api: "https://api.(( ..cf.cloud_controller.system_domain.value ))"
+            user: (( ..cf.uaa.run_smoke_tests_credentials.identity ))
+            password: (( ..cf.uaa.run_smoke_tests_credentials.password ))
+            organization: (( .properties.smoke_tests_isolation.specified.org_name.value ))
+            space: (( .properties.smoke_tests_isolation.specified.space_name.value ))
+            skip_ssl_validation: (( ..cf.ha_proxy.skip_cert_verify.value ))
+            cf_dial_timeout_in_seconds: (( ..cf.properties.cf_dial_timeout_in_seconds.value ))
+            isolation_segment_name: (( .properties.compute_isolation.enabled.isolation_segment_name.value ))
+            isolation_segment_domain: (( .properties.isolation_segment_domain.value ))
+            pas_routers_reject_ist_app_requests: (( ..cf.router.enable_isolated_routing.value ))
+
+      property_blueprints:
+        - name: org_name
+          type: string
+          configurable: true
+        - name: space_name
+          type: string
+          configurable: true
