@@ -1,24 +1,26 @@
 release_sources:
 - type: s3
+  id: shared-compiled-releases
   bucket: compiled-releases
+  publishable: true
+  path_template: shared/{{.Name}}/{{.Name}}-{{.Version}}-{{.StemcellOS}}-{{.StemcellVersion}}.tgz
   region: us-west-1
   access_key_id: $(variable "aws_access_key_id")
   secret_access_key: $(variable "aws_secret_access_key")
-  path_template: 2.10/{{trimSuffix .Name "-release"}}/{{.Name}}-{{.Version}}-{{.StemcellOS}}-{{.StemcellVersion}}.tgz
+- type: s3
+  bucket: compiled-releases
   publishable: true
-  # deprecated fields
-  regex: ^2\.10/.+/(?P<release_name>[a-z-_0-9]+)-(?P<release_version>v?[0-9\.]+)-(?P<stemcell_os>[a-z-_]+)-(?P<stemcell_version>\d+\.\d+)(\.0)?\.tgz$
-  compiled: true
+  path_template: 2.10/{{trimSuffix .Name "-release"}}/{{.Name}}-{{.Version}}-{{.StemcellOS}}-{{.StemcellVersion}}.tgz
+  region: us-west-1
+  access_key_id: $(variable "aws_access_key_id")
+  secret_access_key: $(variable "aws_secret_access_key")
 - type: bosh.io
 - type: s3
   bucket: final-pcf-bosh-releases
+  path_template: '{{.Name}}/{{.Name}}-{{.Version}}.tgz'
   region: us-west-1
   access_key_id: $(variable "aws_access_key_id")
   secret_access_key: $(variable "aws_secret_access_key")
-  path_template: '{{.Name}}/{{.Name}}-{{.Version}}.tgz'
-  # deprecated fields
-  regex: ^(?:[a-z-_0-9]+/)?(?P<release_name>[a-z-_0-9]+)-(?P<release_version>v?[0-9\.]+-?[a-zA-Z0-9]\.?[0-9]*)\.tgz$
-  compiled: false
 slug: p-isolation-segment
 pre_ga_user_groups:
 - vmware Early Access for PCF ERT/OM
