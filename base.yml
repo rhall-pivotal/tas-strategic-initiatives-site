@@ -34,7 +34,6 @@ releases:
 - $( release "routing" )
 - $( release "silk" )
 - $( release "smb-volume" )
-- $( release "smoke-tests" )
 - $( release "syslog" )
 
 form_types:
@@ -43,7 +42,6 @@ form_types:
 - $( form "system_logging" )
 - $( form "advanced_features" )
 - $( form "segment_isolation" )
-- $( form "smoke_tests_isolation" )
 
 job_types:
 - $( instance_group "isolated_ha_proxy" )
@@ -68,7 +66,6 @@ property_blueprints:
 - $( property "haproxy_hsts_support" )
 - $( property "haproxy_max_buffer_size" )
 - $( property "haproxy_ssl_ciphers" )
-- $( property "isolation_segment_domain" )
 - $( property "loggr_udp_forwarder_tls" )
 - $( property "loggregator_agent_metrics_tls" )
 - $( property "loggregator_client_cert" )
@@ -100,7 +97,6 @@ property_blueprints:
 - $( property "routing_tls_termination" )
 - $( property "service_discovery_client_tls" )
 - $( property "skip_cert_verify" )
-- $( property "smoke_tests_isolation" )
 - $( property "syslog_agent_metrics_tls" )
 - $( property "system_metrics_tls_scraper_cert" )
 - $( property "system_logging" )
@@ -121,13 +117,6 @@ variables:
     key_usage:
     - key_cert_sign
 
-post_deploy_errands:
-  - name: smoke_tests_isolation
-    colocated: true
-    run_default: true
-    instances:
-      - isolated_diego_cell/first
-    label: Smoke Test Errand
-    description: Runs Smoke Tests against your Pivotal Isolation Segment installation
+post_deploy_errands: []
 
 install_time_verifiers: []
