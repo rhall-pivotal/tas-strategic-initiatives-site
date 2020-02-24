@@ -146,6 +146,7 @@ var _ = Describe("UAA", func() {
 
 				It("configures UAA to talk to DB using TLS if PAS CA cert is provided", func() {
 					inputProperties[".properties.system_database.external.ca_cert"] = "some-cert"
+					inputProperties[".properties.system_database.external.validate_hostname"] = false
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 

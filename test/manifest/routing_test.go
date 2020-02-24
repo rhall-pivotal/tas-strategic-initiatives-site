@@ -430,6 +430,7 @@ The server didn't respond in time.
 				inputProperties = map[string]interface{}{
 					".properties.system_database":                                       "external",
 					".properties.system_database.external.host":                         "foo.bar",
+					".properties.system_database.external.validate_hostname":            false,
 					".properties.system_database.external.port":                         5432,
 					".properties.system_database.external.credhub_username":             "some-user",
 					".properties.system_database.external.credhub_password":             map[string]interface{}{"secret": "some-password"},
@@ -467,7 +468,6 @@ The server didn't respond in time.
 				Expect(skip_hostname_validation).To(BeTrue())
 			})
 		})
-
 	})
 
 	Describe("logging", func() {
