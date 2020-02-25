@@ -2,35 +2,9 @@
 name: nats
 release: nats
 provides: |
-  nats:
-    as: nats
-    shared: true
-
-consumes: |
-  nats:
-    instances:
-    - address: nats.service.cf.internal
-    properties:
-      nats:
-        cluster_port: 4223
-        user: ((( nats-credentials.username )))
-        password: ((( nats-credentials.password )))
-  nats-tls:
-    instances:
-    - address: nats.service.cf.internal
-    properties:
-      nats:
-        cluster_port: 4225
-        user: ((( nats-credentials.username )))
-        password: ((( nats-credentials.password )))
+  nats: {as: nats, shared: true}
 
 manifest: |
   nats:
     user: ((( nats-credentials.username )))
     password: ((( nats-credentials.password )))
-    internal:
-      tls:
-        ca: (( $ops_manager.ca_certificate ))
-        certificate: (( .properties.nats_tls_internal_cert.cert_pem ))
-        private_key: (( .properties.nats_tls_internal_cert.private_key_pem ))
-        enabled: true
