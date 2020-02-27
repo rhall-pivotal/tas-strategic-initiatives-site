@@ -10,11 +10,16 @@
         - name: smoke_tests_windows
           manifest: |
             api: "https://api.(( ..cf.cloud_controller.system_domain.value ))"
+            apps_domain: (( ..cf.cloud_controller.apps_domain.value ))
             user: (( ..cf.uaa.run_smoke_tests_credentials.identity ))
             password: (( ..cf.uaa.run_smoke_tests_credentials.password ))
-            organization: system
+            org: system
+            space: CF_SMOKE_TEST_SPACE
             skip_ssl_validation: (( ..cf.ha_proxy.skip_cert_verify.value ))
+            use_existing_org: true
+            use_existing_space: false
             cf_dial_timeout_in_seconds: (( ..cf.properties.cf_dial_timeout_in_seconds.value ))
+            enable_windows_tests: true
             windows_stack: windows
 
     - name: specified
@@ -23,12 +28,16 @@
         - name: smoke_tests_windows
           manifest: |
             api: "https://api.(( ..cf.cloud_controller.system_domain.value ))"
+            apps_domain: (( .properties.smoke_tests_windows.specified.apps_domain.value ))
             user: (( ..cf.uaa.run_smoke_tests_credentials.identity ))
             password: (( ..cf.uaa.run_smoke_tests_credentials.password ))
-            organization: (( .properties.smoke_tests_windows.specified.org_name.value ))
+            org: (( .properties.smoke_tests_windows.specified.org_name.value ))
             space: (( .properties.smoke_tests_windows.specified.space_name.value ))
             skip_ssl_validation: (( ..cf.ha_proxy.skip_cert_verify.value ))
+            use_existing_org: true
+            use_existing_space: true
             cf_dial_timeout_in_seconds: (( ..cf.properties.cf_dial_timeout_in_seconds.value ))
+            enable_windows_tests: true
             windows_stack: windows
 
       property_blueprints:
@@ -36,5 +45,8 @@
           type: string
           configurable: true
         - name: space_name
+          type: string
+          configurable: true
+        - name: apps_domain
           type: string
           configurable: true
