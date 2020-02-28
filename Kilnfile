@@ -16,7 +16,7 @@ release_sources:
   secret_access_key: $(variable "aws_secret_access_key")
 - type: s3
   bucket: built-releases
-  path_template: 2.5/{{trimSuffix .Name "-release"}}/{{trimSuffix .Name "-release"}}-{{.Version}}.tgz
+  path_template: 2.10/{{trimSuffix .Name "-release"}}/{{trimSuffix .Name "-release"}}-{{.Version}}.tgz
   region: us-west-1
   access_key_id: $(variable "aws_access_key_id")
   secret_access_key: $(variable "aws_secret_access_key")
