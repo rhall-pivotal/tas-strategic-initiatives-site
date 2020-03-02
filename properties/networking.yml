@@ -556,18 +556,6 @@
     type: string
     configurable: true
 
-- name: router_sticky_session_cookie_names
-  type: collection
-  configurable: true
-  optional: true
-  property_blueprints:
-  - name: name
-    type: string
-    configurable: true
-  named_manifests:
-   - name: sticky_session_cookie_names
-     manifest: (( current_record.name.value ))
-
 - name: router_balancing_algorithm
   type: selector
   configurable: true
