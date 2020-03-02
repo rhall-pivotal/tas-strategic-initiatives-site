@@ -45,10 +45,10 @@ releases:
   remote_source: compiled-releases
   remote_path: 2.10/cf-networking/cf-networking-2.28.0-ubuntu-xenial-621.57.tgz
 - name: cflinuxfs3
-  sha1: e9cd6e015d01a4870882a0db66798a7e2efb9c1e
+  sha1: d6fbd05fee32cfc4b6cf4335a64a786cca5079c5
   version: 0.166.0
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/cflinuxfs3-release?v=0.166.0
+  remote_source: shared-compiled-releases
+  remote_path: shared/cflinuxfs3/cflinuxfs3-0.166.0-ubuntu-xenial-621.57.tgz
 - name: credhub
   sha1: 34b38b519cdce3b28f5fbc7f7f869ef40c5e0696
   version: 2.5.11
@@ -60,20 +60,20 @@ releases:
   remote_source: compiled-releases
   remote_path: 2.10/diego/diego-2.44.0-ubuntu-xenial-621.57.tgz
 - name: dotnet-core-offline-buildpack
-  sha1: 14ad905057eff7d603cc690bd202c79b585fd137
+  sha1: 2617444ed26fdf0226962c63c731cc3f670cb910
   version: 2.3.6
-  remote_source: built-releases
-  remote_path: 2.10/dotnet-core-offline-buildpack/dotnet-core-offline-buildpack-2.3.6.tgz
+  remote_source: shared-compiled-releases
+  remote_path: shared/dotnet-core-offline-buildpack/dotnet-core-offline-buildpack-2.3.6-ubuntu-xenial-621.57.tgz
 - name: garden-runc
   sha1: d74def513d967bfa1126a90d6354b71cfaf8d70c
   version: 1.19.10
   remote_source: compiled-releases
   remote_path: 2.10/garden-runc/garden-runc-1.19.10-ubuntu-xenial-621.57.tgz
 - name: go-offline-buildpack
-  sha1: 2ea2712d5a42bd0fd67ffe47d31d8532fae2db5a
+  sha1: fbffccec5b417452a22f92e4b97100d45a8dea67
   version: 1.9.7
-  remote_source: built-releases
-  remote_path: 2.10/go-offline-buildpack/go-offline-buildpack-1.9.7.tgz
+  remote_source: shared-compiled-releases
+  remote_path: shared/go-offline-buildpack/go-offline-buildpack-1.9.7-ubuntu-xenial-621.57.tgz
 - name: haproxy
   sha1: 92277b1be821b74145e81f069b9360059b2b4081
   version: 9.8.0
@@ -135,15 +135,15 @@ releases:
   remote_source: compiled-releases
   remote_path: 2.10/nfs-volume/nfs-volume-7.0.0-ubuntu-xenial-621.57.tgz
 - name: nginx-offline-buildpack
-  sha1: ae9796a06367a131313db6466fd05e9c4a803b03
+  sha1: 5cab16e6c99d8a71fe196b6551685d74f1d86b1d
   version: 1.1.5
-  remote_source: built-releases
-  remote_path: 2.10/nginx-offline-buildpack/nginx-offline-buildpack-1.1.5.tgz
+  remote_source: shared-compiled-releases
+  remote_path: shared/nginx-offline-buildpack/nginx-offline-buildpack-1.1.5-ubuntu-xenial-621.57.tgz
 - name: nodejs-offline-buildpack
-  sha1: 4eb27dfc6b8da5e941d894a307d133ef2b4edcce
+  sha1: 49a0b81f2b66541dc76baadad7baf6aa27a5fe76
   version: 1.7.13
-  remote_source: built-releases
-  remote_path: 2.10/nodejs-offline-buildpack/nodejs-offline-buildpack-1.7.13.tgz
+  remote_source: shared-compiled-releases
+  remote_path: shared/nodejs-offline-buildpack/nodejs-offline-buildpack-1.7.13-ubuntu-xenial-621.57.tgz
 - name: notifications
   sha1: 2145eb85e86f5b392e5302573bd698d8f5201a5f
   version: "61"
@@ -155,10 +155,10 @@ releases:
   remote_source: compiled-releases
   remote_path: 2.10/notifications-ui/notifications-ui-36-ubuntu-xenial-621.57.tgz
 - name: php-offline-buildpack
-  sha1: a810e1d9c132b9c81fe2fd2d1d2664d9e346d310
+  sha1: 8ac9e931739c4f6bf53a8d82dbd973754571a727
   version: 4.4.8
-  remote_source: built-releases
-  remote_path: 2.10/php-offline-buildpack/php-offline-buildpack-4.4.8.tgz
+  remote_source: shared-compiled-releases
+  remote_path: shared/php-offline-buildpack/php-offline-buildpack-4.4.8-ubuntu-xenial-621.57.tgz
 - name: push-apps-manager-release
   sha1: db3f17af06a876e82774291b10ca24faf21bba87
   version: 672.0.5
@@ -175,10 +175,10 @@ releases:
   remote_source: compiled-releases
   remote_path: 2.10/pxc/pxc-0.23.0-ubuntu-xenial-621.57.tgz
 - name: python-offline-buildpack
-  sha1: 7747148ac21f5293d146bb442d39bc0199ce3ad0
+  sha1: 6fa803d1c811e543f0e028e80eb6ec823efee23d
   version: 1.7.8
-  remote_source: built-releases
-  remote_path: 2.10/python-offline-buildpack/python-offline-buildpack-1.7.8.tgz
+  remote_source: shared-compiled-releases
+  remote_path: shared/python-offline-buildpack/python-offline-buildpack-1.7.8-ubuntu-xenial-621.57.tgz
 - name: r-offline-buildpack
   sha1: a436e2e107feca739a065919e5ec60786afda453
   version: 1.1.1
@@ -190,10 +190,10 @@ releases:
   remote_source: compiled-releases
   remote_path: 2.10/routing/routing-0.198.0-ubuntu-xenial-621.57.tgz
 - name: ruby-offline-buildpack
-  sha1: 667708c59d9353a6a649ba1df56398fb243588dc
+  sha1: cc488a472080760fb72c928518e7b147914e0c40
   version: 1.8.10
-  remote_source: built-releases
-  remote_path: 2.10/ruby-offline-buildpack/ruby-offline-buildpack-1.8.10.tgz
+  remote_source: shared-compiled-releases
+  remote_path: shared/ruby-offline-buildpack/ruby-offline-buildpack-1.8.10-ubuntu-xenial-621.57.tgz
 - name: silk
   sha1: 67989f641ca8b098c1c7faff6cae2fb888b586e3
   version: 2.28.0
@@ -210,10 +210,10 @@ releases:
   remote_source: compiled-releases
   remote_path: 2.10/smoke-tests/smoke-tests-2.0.5-ubuntu-xenial-621.57.tgz
 - name: staticfile-offline-buildpack
-  sha1: 89e132dc02460a1c5914b74381dfa6ee8fcff8ee
+  sha1: ac285f414cc9fdb005f9f30999a5a3d983556e2c
   version: 1.5.4
-  remote_source: built-releases
-  remote_path: 2.10/staticfile-offline-buildpack/staticfile-offline-buildpack-1.5.4.tgz
+  remote_source: shared-compiled-releases
+  remote_path: shared/staticfile-offline-buildpack/staticfile-offline-buildpack-1.5.4-ubuntu-xenial-621.57.tgz
 - name: statsd-injector
   sha1: 607663f6968c9314a8576ae37dbc3d93a3ba4b9f
   version: 1.11.15
@@ -230,10 +230,10 @@ releases:
   remote_source: compiled-releases
   remote_path: 2.10/system-metrics-scraper/system-metrics-scraper-2.0.10-ubuntu-xenial-621.57.tgz
 - name: uaa
-  sha1: 27cf2309644d7c3b6b41c5ee32775b63707062a9
+  sha1: df3d4b91558398ec869b7214d7c12b9dc87cbb0e
   version: 74.15.0
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=74.15.0
+  remote_source: shared-compiled-releases
+  remote_path: shared/uaa/uaa-74.15.0-ubuntu-xenial-621.57.tgz
 stemcell_criteria:
   os: ubuntu-xenial
   version: "621.57"
