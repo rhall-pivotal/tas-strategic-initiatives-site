@@ -47,7 +47,6 @@ manifest: |
     forwarded_client_cert: (( .properties.routing_tls_termination.selected_option.parsed_manifest(gorouter_forwarded_client_cert) ))
     disable_log_forwarded_for: (( .properties.routing_log_client_ips.selected_option.parsed_manifest(disable_log_forwarded_for) ))
     disable_log_source_ips: (( .properties.routing_log_client_ips.selected_option.parsed_manifest(disable_log_source_ips) ))
-    sticky_session_cookie_names: '(( .properties.router_sticky_session_cookie_names.value ? .properties.router_sticky_session_cookie_names.parsed_manifest(sticky_session_cookie_names) : "" ))'
   routing_api:
     enabled: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(routing_api_enabled) ))
   uaa:
