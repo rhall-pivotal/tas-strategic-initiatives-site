@@ -1,0 +1,34 @@
+---
+name: smoke_tests_isolation
+label: Smoke Tests
+description: Smoke Tests
+markdown: |
+  For help configuring these fields, see the
+  [Configure Smoke Tests](https://docs.pivotal.io/pivotalcf/2-9/customizing/configure-pas.html#config-smoke-test)
+  section of the _Configuring PAS_ topic in the Pivotal Platform documentation.
+
+property_inputs:
+  - reference: .properties.isolation_segment_domain
+    label: |
+      Isolation Segment app domain:
+    description: Isolation Segment application domain for testing
+
+  - reference: .properties.smoke_tests_isolation
+    label: |
+      Choose where to deploy apps when running smoke tests:
+    selector_property_inputs:
+    - reference: .properties.smoke_tests_isolation.on_demand
+      label: |
+        A temporary space within the system org
+
+    - reference: .properties.smoke_tests_isolation.specified
+      label: |
+        A specified org and space
+      property_inputs:
+        - reference: .properties.smoke_tests_isolation.specified.org_name
+          label: Org
+          description: The PAS org to use when running tests.
+
+        - reference: .properties.smoke_tests_isolation.specified.space_name
+          label: Space
+          description: The PAS space to use when running tests.
