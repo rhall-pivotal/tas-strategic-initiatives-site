@@ -1,13 +1,5 @@
 release_sources:
 - type: s3
-  id: shared-compiled-releases
-  bucket: compiled-releases
-  publishable: true
-  path_template: shared/{{.Name}}/{{.Name}}-{{.Version}}-{{.StemcellOS}}-{{.StemcellVersion}}.tgz
-  region: us-west-1
-  access_key_id: $(variable "aws_access_key_id")
-  secret_access_key: $(variable "aws_secret_access_key")
-- type: s3
   bucket: compiled-releases
   publishable: true
   path_template: 2.10/{{trimSuffix .Name "-release"}}/{{.Name}}-{{.Version}}-{{.StemcellOS}}-{{.StemcellVersion}}.tgz
