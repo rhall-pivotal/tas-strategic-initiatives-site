@@ -127,6 +127,8 @@
           database: (( .properties.credhub_database_name.value ))
           require_tls: '(( .properties.enable_tls_to_internal_pxc.value ? true : false ))'
           tls_ca: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
+          hostname_verification:
+            enabled: true
       - name: notifications
         manifest: |
           host: mysql.service.cf.internal
@@ -141,12 +143,15 @@
             enable_identity_verification: true
       - name: autoscaling
         manifest: |
-          host: mysql.service.cf.internal
           adapter: mysql
+          host: mysql.service.cf.internal
           port: 3306
           username: ((( autoscale-db-credentials.username )))
           password: ((( autoscale-db-credentials.password )))
           name: (( .properties.autoscale_database_name.value ))
+          enable_tls: (( .properties.enable_tls_to_internal_pxc.value ))
+          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
+          skip_ssl_validation: false
       - name: push-app-usage-service
         manifest: |
           address: mysql.service.cf.internal
@@ -156,6 +161,9 @@
           name: (( .properties.app_usage_service_database_name.value ))
           ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
           verify_ssl: '(( .properties.enable_tls_to_internal_pxc.value ? true : false ))'
+      - name: push-app-usage-service-skip-cert-verify
+        manifest: |
+          false
       - name: bbr-usage-servicedb
         manifest: |
           address: mysql.service.cf.internal
@@ -173,8 +181,8 @@
           db_password: ((( diego-db-credentials.password )))
           db_schema: (( .properties.diego_database_name.value ))
           max_open_connections: (( .properties.diego_database_max_open_connections.value ))
-          require_ssl: false
-          ca_cert: null
+          require_ssl: (( .properties.enable_tls_to_internal_pxc.value ))
+          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
       - name: locketdb
         manifest: |
           db_host: mysql.service.cf.internal
@@ -182,8 +190,11 @@
           db_username: ((( locket-db-credentials.username )))
           db_password: ((( locket-db-credentials.password )))
           db_schema: (( .properties.locket_database_name.value ))
-          require_ssl: false
-          ca_cert: null
+          require_ssl: (( .properties.enable_tls_to_internal_pxc.value ))
+          ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
+      - name: diego-enable-identity-verification
+        manifest: |
+          true
       - name: routingdb
         manifest: |
           type: mysql
@@ -244,6 +255,10 @@
       property_blueprints:
         - name: host
           type: string
+          configurable: true
+        - name: validate_hostname
+          type: boolean
+          default: true
           configurable: true
         - name: port
           type: port
@@ -339,7 +354,7 @@
             db_scheme: "mysql"
             address: (( .properties.system_database.external.host.value ))
             port: (( .properties.system_database.external.port.value ))
-            ssl_verify_hostname: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
+            ssl_verify_hostname: (( .properties.system_database.external.validate_hostname.value ))
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
             roles:
             - tag: admin
@@ -358,6 +373,8 @@
             database: (( .properties.credhub_database_name.value ))
             require_tls: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
             tls_ca: (( .properties.system_database.external.ca_cert.value ))
+            hostname_verification:
+              enabled: (( .properties.system_database.external.validate_hostname.value ))
         - name: notifications
           manifest: |
             host: (( .properties.system_database.external.host.value ))
@@ -365,11 +382,11 @@
             username: (( .properties.system_database.external.notifications_username.value ))
             password: (( .properties.system_database.external.notifications_password.value ))
             database: (( .properties.notifications_database_name.value ))
-            max_open_connections: 10
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
             common_name: (( .properties.system_database.external.host.value ))
+            max_open_connections: 10
             tls:
-              enable_identity_verification: false
+              enable_identity_verification: (( .properties.system_database.external.validate_hostname.value ))
         - name: autoscaling
           manifest: |
             adapter: mysql
@@ -378,6 +395,9 @@
             username: (( .properties.system_database.external.autoscale_username.value ))
             password: (( .properties.system_database.external.autoscale_password.value ))
             name: (( .properties.autoscale_database_name.value ))
+            enable_tls: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
+            ca_cert: (( .properties.system_database.external.ca_cert.value ))
+            skip_ssl_validation: '(( .properties.system_database.external.validate_hostname.value ? false : true ))'
         - name: push-app-usage-service
           manifest: |
             address: (( .properties.system_database.external.host.value ))
@@ -387,6 +407,9 @@
             name: (( .properties.app_usage_service_database_name.value ))
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
             verify_ssl: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
+        - name: push-app-usage-service-skip-cert-verify
+          manifest: |
+            '(( .properties.system_database.external.validate_hostname.value ? false : true ))'
         - name: bbr-usage-servicedb
           manifest: |
             address: (( .properties.system_database.external.host.value ))
@@ -395,7 +418,7 @@
             password: (( .properties.system_database.external.app_usage_service_password.value ))
             name: (( .properties.app_usage_service_database_name.value ))
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
-            skip_host_verify: false
+            skip_host_verify: '(( .properties.system_database.external.validate_hostname.value ? false : true ))'
         - name: diegodb
           manifest: |
             db_host: (( .properties.system_database.external.host.value ))
@@ -415,6 +438,9 @@
             db_schema: (( .properties.locket_database_name.value ))
             require_ssl: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
+        - name: diego-enable-identity-verification
+          manifest: |
+            (( .properties.system_database.external.validate_hostname.value ))
         - name: routingdb
           manifest: |
             type: mysql
@@ -424,35 +450,35 @@
             password: (( .properties.system_database.external.routing_password.value ))
             schema: (( .properties.routing_database_name.value ))
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
-            skip_hostname_validation: true
+            skip_hostname_validation: '(( .properties.system_database.external.validate_hostname.value ? false : true ))'
         - name: silkdb
           manifest: |
             type: mysql
             host: (( .properties.system_database.external.host.value ))
             port: (( .properties.system_database.external.port.value ))
-            require_ssl: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
-            ca_cert: (( .properties.system_database.external.ca_cert.value ))
             username: (( .properties.system_database.external.silk_username.value ))
             password: (( .properties.system_database.external.silk_password.value ))
             name: (( .properties.silk_database_name.value ))
             connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
-            skip_hostname_validation: true
+            require_ssl: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
+            ca_cert: (( .properties.system_database.external.ca_cert.value ))
+            skip_hostname_validation: '(( .properties.system_database.external.validate_hostname.value ? false : true ))'
         - name: networkpolicyserverdb
           manifest: |
             type: mysql
             host: (( .properties.system_database.external.host.value ))
             port: (( .properties.system_database.external.port.value ))
-            require_ssl: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
-            ca_cert: (( .properties.system_database.external.ca_cert.value ))
             username: (( .properties.system_database.external.networkpolicyserver_username.value ))
             password: (( .properties.system_database.external.networkpolicyserver_password.value ))
             name: (( .properties.networkpolicyserver_database_name.value ))
             connect_timeout_seconds: (( .properties.cf_networking_database_connection_timeout.value ))
-            skip_hostname_validation: true
+            require_ssl: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
+            ca_cert: (( .properties.system_database.external.ca_cert.value ))
+            skip_hostname_validation: '(( .properties.system_database.external.validate_hostname.value ? false : true ))'
         - name: uaadb
           manifest: |
             db_scheme: mysql
-            tls: '(( .properties.system_database.external.ca_cert.value ? "enabled_skip_hostname_validation" : "disabled" ))'
+            tls: '(( .properties.system_database.external.ca_cert.value ? .properties.system_database.selected_option.parsed_manifest(uaadb_tls_validation) : "disabled" ))'
             tls_protocols: TLSv1.2
             address: (( .properties.system_database.external.host.value ))
             port: (( .properties.system_database.external.port.value ))
@@ -463,6 +489,9 @@
             databases:
             - tag: uaa
               name: (( .properties.uaa_database_name.value ))
+        - name: uaadb_tls_validation
+          manifest: |
+            '(( .properties.system_database.external.validate_hostname.value ? "enabled" : "enabled_skip_hostname_validation" ))'
         - name: uaadb_certs
           manifest: |
             - (( $ops_manager.ca_certificate ))

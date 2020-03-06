@@ -16,6 +16,7 @@ var _ = Describe("System Database", func() {
 		cgInstanceGroup      string
 		credhubInstanceGroup string
 		uaaInstanceGroup     string
+		instanceGroup        string
 	)
 
 	BeforeEach(func() {
@@ -25,29 +26,21 @@ var _ = Describe("System Database", func() {
 			cgInstanceGroup = "clock_global"
 			credhubInstanceGroup = "credhub"
 			uaaInstanceGroup = "uaa"
+			instanceGroup = "clock_global"
 		} else {
 			dbInstanceGroup = "control"
 			ccInstanceGroup = "control"
 			cgInstanceGroup = "control"
 			credhubInstanceGroup = "control"
 			uaaInstanceGroup = "control"
+			instanceGroup = "control"
 		}
 	})
 
 	Describe("Internal PXC", func() {
 		var (
 			inputProperties map[string]interface{}
-			instanceGroup   string
 		)
-
-		BeforeEach(func() {
-			if productName == "ert" {
-				instanceGroup = "clock_global"
-			} else {
-				instanceGroup = "control"
-			}
-			inputProperties = map[string]interface{}{}
-		})
 
 		It("configures the errand jobs without TLS", func() {
 			manifest, err := product.RenderManifest(inputProperties)
@@ -97,6 +90,10 @@ var _ = Describe("System Database", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(maxOpenConnections).To(Equal(100))
 
+			enable_identity_verification, err := job.Property("database/tls/enable_identity_verification")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(enable_identity_verification).To(BeTrue())
+
 			// locket
 			job, err = manifest.FindInstanceGroupJob(dbInstanceGroup, "locket")
 			Expect(err).NotTo(HaveOccurred())
@@ -104,6 +101,10 @@ var _ = Describe("System Database", func() {
 			maxOpenConnections, err = job.Property("database/max_open_connections")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(maxOpenConnections).To(Equal(200))
+
+			enable_identity_verification, err = job.Property("database/tls/enable_identity_verification")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(enable_identity_verification).To(BeTrue())
 		})
 
 		Context("when the user specifies custom values for diego/locket open database connections", func() {
@@ -199,6 +200,10 @@ var _ = Describe("System Database", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(verifySSL).To(BeTrue())
 
+				verifyHostname, err := pushUsageService.Property("ssl/skip_cert_verify")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(verifyHostname).To(BeFalse())
+
 				bbrUsageServiceDB, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-usage-servicedb")
 				Expect(err).NotTo(HaveOccurred())
 
@@ -209,6 +214,22 @@ var _ = Describe("System Database", func() {
 				skipCertVerify, err := bbrUsageServiceDB.Property("database/skip_host_verify")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(skipCertVerify).To(BeFalse())
+
+				// autoscaler
+				deployAutoscaler, err := manifest.FindInstanceGroupJob(instanceGroup, "deploy-autoscaler")
+				Expect(err).NotTo(HaveOccurred())
+
+				validation, err := deployAutoscaler.Property("autoscale/database/skip_ssl_validation")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(validation).To(BeFalse())
+
+				// credhub
+				credhub, err := manifest.FindInstanceGroupJob(credhubInstanceGroup, "credhub")
+				Expect(err).NotTo(HaveOccurred())
+
+				validation, err = credhub.Property("credhub/data_storage/hostname_verification/enabled")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(validation).To(BeTrue())
 			})
 		})
 	})
@@ -218,6 +239,7 @@ var _ = Describe("System Database", func() {
 			inputProperties = map[string]interface{}{
 				".properties.system_database":                                       "external",
 				".properties.system_database.external.host":                         "foo.bar",
+				".properties.system_database.external.validate_hostname":            false,
 				".properties.system_database.external.port":                         5432,
 				".properties.system_database.external.app_usage_service_username":   "app_usage_service_username",
 				".properties.system_database.external.app_usage_service_password":   map[string]interface{}{"secret": "app_usage_service_password"},
@@ -283,6 +305,10 @@ var _ = Describe("System Database", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(maxOpenConnections).To(Equal(250))
 
+			enable_identity_verification, err := job.Property("database/tls/enable_identity_verification")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(enable_identity_verification).To(BeFalse())
+
 			// locket
 			job, err = manifest.FindInstanceGroupJob(dbInstanceGroup, "locket")
 			Expect(err).NotTo(HaveOccurred())
@@ -290,6 +316,10 @@ var _ = Describe("System Database", func() {
 			maxOpenConnections, err = job.Property("database/max_open_connections")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(maxOpenConnections).To(Equal(150))
+
+			enable_identity_verification, err = job.Property("database/tls/enable_identity_verification")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(enable_identity_verification).To(BeFalse())
 
 			// usage-service should not verify SSL
 			pushUsageService, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "push-usage-service")
@@ -299,12 +329,32 @@ var _ = Describe("System Database", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(verifySSL).To(BeFalse())
 
+			verifyHostname, err := pushUsageService.Property("ssl/skip_cert_verify")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(verifyHostname).To(BeTrue())
+
 			bbrUsageServiceDB, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-usage-servicedb")
 			Expect(err).NotTo(HaveOccurred())
 
 			skipHostVerify, err := bbrUsageServiceDB.Property("database/skip_host_verify")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(skipHostVerify).To(BeFalse())
+			Expect(skipHostVerify).To(BeTrue())
+
+			// autoscaler
+			deployAutoscaler, err := manifest.FindInstanceGroupJob(instanceGroup, "deploy-autoscaler")
+			Expect(err).NotTo(HaveOccurred())
+
+			validation, err := deployAutoscaler.Property("autoscale/database/skip_ssl_validation")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(validation).To(BeTrue())
+
+			// credhub
+			credhub, err := manifest.FindInstanceGroupJob(credhubInstanceGroup, "credhub")
+			Expect(err).NotTo(HaveOccurred())
+
+			validation, err = credhub.Property("credhub/data_storage/hostname_verification/enabled")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(validation).To(BeFalse())
 		})
 
 		Context("when the operator does not set a limit for diego/locket open database connections", func() {
@@ -364,6 +414,7 @@ var _ = Describe("System Database", func() {
 		Context("when the operator provides a CA certificate", func() {
 			BeforeEach(func() {
 				inputProperties[".properties.system_database.external.ca_cert"] = "fake-ca-cert"
+				inputProperties[".properties.system_database.external.validate_hostname"] = false
 			})
 
 			It("configures jobs to use that CA certificate ", func() {
@@ -424,7 +475,7 @@ var _ = Describe("System Database", func() {
 
 				requireSSL, err = job.Property("ccdb/ssl_verify_hostname")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(requireSSL).To(BeTrue())
+				Expect(requireSSL).To(BeFalse())
 
 				caCert, err = job.Property("ccdb/ca_cert")
 				Expect(err).NotTo(HaveOccurred())
@@ -475,7 +526,7 @@ var _ = Describe("System Database", func() {
 
 				skipHostVerify, err := bbrUsageServiceDB.Property("database/skip_host_verify")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(skipHostVerify).To(BeFalse())
+				Expect(skipHostVerify).To(BeTrue())
 
 				// uaa
 				job, err = manifest.FindInstanceGroupJob(uaaInstanceGroup, "uaa")

@@ -119,6 +119,13 @@ property_inputs:
       - reference: .properties.system_database.external.host
         label: Hostname
 
+      - reference: .properties.system_database.external.validate_hostname
+        label: Enable hostname validation
+        description: |
+          If disabled connections to this external database will continue to be
+          encrypted with TLS, however hostname in the database's TLS
+          certificate will not be validated against hostname of the database.
+
       - reference: .properties.system_database.external.port
         label: TCP port
 

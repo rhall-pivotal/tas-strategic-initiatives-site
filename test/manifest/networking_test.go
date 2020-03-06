@@ -146,6 +146,7 @@ var _ = Describe("Networking", func() {
 					inputProperties = map[string]interface{}{
 						".properties.system_database":                                       "external",
 						".properties.system_database.external.host":                         "foo.bar",
+						".properties.system_database.external.validate_hostname":            false,
 						".properties.system_database.external.port":                         5432,
 						".properties.system_database.external.credhub_username":             "some-user",
 						".properties.system_database.external.credhub_password":             map[string]interface{}{"secret": "some-password"},
@@ -385,6 +386,7 @@ var _ = Describe("Networking", func() {
 					inputProperties = map[string]interface{}{
 						".properties.system_database":                                       "external",
 						".properties.system_database.external.host":                         "foo.bar",
+						".properties.system_database.external.validate_hostname":            false,
 						".properties.system_database.external.port":                         5432,
 						".properties.system_database.external.credhub_username":             "some-user",
 						".properties.system_database.external.credhub_password":             map[string]interface{}{"secret": "some-password"},

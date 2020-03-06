@@ -4,6 +4,9 @@ release: diego
 manifest: |
   bpm:
     enabled: true
+  database:
+    tls:
+      enable_identity_verification: (( .properties.system_database.selected_option.parsed_manifest(diego-enable-identity-verification) ))
   diego:
     bbs:
       active_key_label: key1
