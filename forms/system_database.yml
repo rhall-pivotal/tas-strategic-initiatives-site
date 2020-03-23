@@ -3,9 +3,10 @@ name: system_database
 label: Databases
 description: Databases
 markdown: |
-  For help configuring these fields, see the
+  For help configuring these fields, see
   [Configure Databases](https://docs.pivotal.io/pivotalcf/2-10/customizing/configure-pas.html#sys-db)
-  section of the _Configuring Application Service_ topic in the product documentation.
+  in _Configuring TAS for VMs_ in the
+  VMware documentation.
 
 verifiers:
   - name: Verifiers::MysqlDatabaseVerifier
@@ -106,12 +107,10 @@ verifiers:
 
 property_inputs:
 - reference: .properties.system_database
-  label: |
-    System databases location
+  label: System databases location
   selector_property_inputs:
   - reference: .properties.system_database.internal_pxc
-    label: |
-      Internal databases - MySQL - Percona XtraDB Cluster
+    label: Internal databases - MySQL - Percona XtraDB Cluster
 
   - reference: .properties.system_database.external
     label: External databases
@@ -122,9 +121,8 @@ property_inputs:
       - reference: .properties.system_database.external.validate_hostname
         label: Enable hostname validation
         description: |
-          If disabled connections to this external database will continue to be
-          encrypted with TLS, however hostname in the database's TLS
-          certificate will not be validated against hostname of the database.
+          The hostname in the TLS certificate for the external
+          database is validated against the hostname of the database.
 
       - reference: .properties.system_database.external.port
         label: TCP port
@@ -149,11 +147,15 @@ property_inputs:
 
       - reference: .properties.system_database.external.credhub_username
         label: CredHub database username
-        description: Required if "Tanzu Application Service database" is selected in the CredHub pane.
+        description: |
+          Required if "Tanzu Application Service database" is selected
+          in the CredHub pane.
 
       - reference: .properties.system_database.external.credhub_password
         label: CredHub database password
-        description: Required if "Tanzu Application Service database" is selected in the CredHub pane.
+        description: |
+          Required if "Tanzu Application Service database" is selected
+          in the CredHub pane.
 
       - reference: .properties.system_database.external.diego_username
         label: Diego database username
@@ -199,11 +201,15 @@ property_inputs:
 
       - reference: .properties.system_database.external.uaa_username
         label: UAA database username
-        description: Required if "Tanzu Application Service database" is selected in the UAA pane.
+        description: |
+          Required if "Tanzu Application Service database" is selected
+          in the UAA pane.
 
       - reference: .properties.system_database.external.uaa_password
         label: UAA database password
-        description: Required if "Tanzu Application Service database" is selected in the UAA pane.
+        description: |
+          Required if "Tanzu Application Service database" is selected
+          in the UAA pane.
 
       - reference: .properties.system_database.external.ca_cert
         label: Database CA certificate
