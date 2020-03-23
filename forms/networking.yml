@@ -3,10 +3,10 @@ name: networking
 label: Networking
 description: Networking
 markdown: |
-  For help configuring these fields, see the
+  For help configuring these fields, see
   [Networking](https://docs.pivotal.io/pivotalcf/2-10/customizing/installing-pcf-is.html#networking)
-  section of the _Installing Isolation
-  Segment_ topic in the product documentation.
+  in _Installing Isolation Segment_ in the
+  VMware Tanzu documentation.
 
 property_inputs:
 - reference: .isolated_router.static_ips
@@ -30,9 +30,9 @@ property_inputs:
       HAProxy.
 
 - reference: .properties.routing_custom_ca_certificates
-  label: Certificate Authorities trusted by the Gorouter and HAProxy
+  label: Certificate authorities trusted by the Gorouter and HAProxy
   description: |
-    Additional Certificate Authorities used to validate certificates from
+    Additional certificate authorities used to validate certificates from
     incoming requests.
 
 - reference: .properties.routing_minimum_tls_version
@@ -106,15 +106,15 @@ property_inputs:
     An ordered, colon-separated list of TLS cipher suites in OpenSSL format.
 
 - reference: .properties.haproxy_forward_tls
-  label: HAProxy forwards all requests to Router over TLS
+  label: HAProxy forwards all requests to the Gorouter over TLS
   selector_property_inputs:
     - reference: .properties.haproxy_forward_tls.enable
       label: Enable
       property_inputs:
       - reference: .properties.haproxy_forward_tls.enable.backend_ca
-        label: Certificate Authority for HAProxy back end
+        label: Certificate authority for HAProxy back end
         description: |
-          The Certificate Authority for the certificate and key provided
+          The certificate authority for the certificate and key provided
           in the "Certificates and private keys for the Gorouter and
           HAProxy" field.
     - reference: .properties.haproxy_forward_tls.disable
