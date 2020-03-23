@@ -3,9 +3,10 @@ name: advanced_features
 label: Advanced Features
 description: Advanced Features
 markdown: |
-  For help configuring these fields, see the
+  For help configuring these fields, see
   [Configure Advanced Features](https://docs.pivotal.io/pivotalcf/2-10/customizing/configure-pas.html#advanced)
-  section of the _Configuring Application Service_ topic in the product documentation.
+  in _Configuring TAS for VMs_ in the
+  VMware Tanzu documentation.
 
 property_inputs:
   - reference: .diego_cell.executor_memory_capacity
@@ -38,8 +39,9 @@ property_inputs:
   - reference: .properties.enable_tls_to_internal_pxc
     label: Enable TLS for internal system database (beta)
     description: |
-      Tanzu Application Service components that support TLS connect to the internal
-      PXC database using an encrypted TLS connection.
+      Tanzu Application Service components that support TLS connect
+      to the internal PXC database using an encrypted TLS
+      connection.
 
   - reference: .properties.diego_database_max_open_connections
     label: Maximum number of open connections from the active BBS instance to the SQL database
