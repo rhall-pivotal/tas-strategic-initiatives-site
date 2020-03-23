@@ -3,9 +3,10 @@ name: system_blobstore
 label: File Storage
 description: File Storage
 markdown: |
-  For help configuring these fields, see the
+  For help configuring these fields, see
   [Configure File Storage](https://docs.pivotal.io/pivotalcf/2-10/customizing/configure-pas.html#file-storage)
-  section of the _Configuring Application Service_ topic in the product documentation.
+  in _Configuring TAS for VMs_ in the
+  VMware Tanzu documentation.
 
 verifiers:
   - name: Verifiers::BlobstoreVerifier
@@ -123,9 +124,10 @@ property_inputs:
           the default AWS key is used.
 
       - reference: .properties.system_blobstore.external.path_style_s3_urls
-        label: Path Style S3 URLs (deprecated)
+        label: Path-style S3 URLs (deprecated)
         description: |
-          Access S3 buckets using path style syntax instead of domain style syntax.
+          Access S3 buckets using path-style syntax instead of domain-style
+          syntax.
 
       - reference: .properties.system_blobstore.external.buildpacks_bucket
         label: Buildpacks bucket name
