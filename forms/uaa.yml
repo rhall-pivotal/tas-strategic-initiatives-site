@@ -3,9 +3,9 @@ name: uaa
 label: UAA
 description: UAA
 markdown: |
-  For help configuring these fields, see the
+  For help configuring these fields, see
   [Configure UAA](https://docs.pivotal.io/pivotalcf/2-10/customizing/configure-pas.html#uaa)
-  section of the _Configuring Application Service_ topic in the product documentation.
+  in _Configuring TAS for VMs_ in the VMware Tanzu documentation.
 
 verifiers:
 - name: Verifiers::MysqlDatabaseVerifier
@@ -89,12 +89,12 @@ property_inputs:
     The maximum timeout for idle global login sessions. Enter value in seconds.
 
 - reference: .uaa.customize_username_label
-  label: Customize username label
-  description: The text used to prompt for a username on the login page.
+  label: Username label
+  description: Enter the text used to prompt for a username on the login page.
 
 - reference: .uaa.customize_password_label
-  label: Customize password label
-  description: The text used to prompt for a password on the login page.
+  label: Password label
+  description: Enter the text used to prompt for a password on the login page.
 
 - reference: .uaa.proxy_ips_regex
   label: Proxy IPs regular expression
