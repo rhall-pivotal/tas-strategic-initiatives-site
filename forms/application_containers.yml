@@ -3,9 +3,9 @@ name: application_containers
 label: App Containers
 description: App Containers
 markdown: |
-  For help configuring these fields, see the
-  [Step 3: Configure the Tile](https://docs.pivotal.io/pivotalcf/2-10/windows/installing.html#config)
-  section of the _Installing and Configuring Application Service for Windows_ topic in the product documentation.
+  For help configuring these fields, see
+  [Configure the Tile](https://docs.pivotal.io/platform/application-service-windows/2-10/installing.html#config)
+  in _Installing and Configuring TAS for VMs [Windows]_ in the VMware documentation.
 
 property_inputs:
 - reference: .windows_diego_cell.placement_tags
@@ -22,8 +22,7 @@ property_inputs:
       property_inputs:
         - reference: .properties.app_log_rate_limiting.enable.max_log_lines_per_second
           label: Maximum app log lines per second
-          description: |
-            The default value is 100.
+          description: The default value is 100.
 
     - reference: .properties.app_log_rate_limiting.disable
       label: Disable
