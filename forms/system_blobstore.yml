@@ -65,7 +65,7 @@ property_inputs:
     not including the current droplet.
 
 - reference: .properties.system_blobstore_backup_level
-  label: Configure file storage backup level
+  label: File storage backup level
   selector_property_inputs:
   - reference: .properties.system_blobstore_backup_level.all
     label: Complete file storage backup
@@ -77,7 +77,7 @@ property_inputs:
     description: This option requires `cf push`.
 
 - reference: .properties.system_blobstore
-  label: "Configure your Cloud Controller's filesystem:"
+  label: Cloud Controller filesystem
   selector_property_inputs:
   - reference: .properties.system_blobstore.internal
     label: Internal WebDAV
