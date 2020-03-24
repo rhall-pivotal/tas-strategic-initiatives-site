@@ -3,9 +3,9 @@ name: mysql_config
 label: Internal MySQL
 description: Internal MySQL
 markdown: |
-  For help configuring these fields, see the
+  For help configuring these fields, see
   [Configure Internal MySQL](https://docs.pivotal.io/pivotalcf/2-10/customizing/configure-pas.html#internal-mysql)
-  section of the _Configuring Application Service_ topic in the product documentation.
+  in _Configuring TAS for VMs_ in the VMware Tanzu documentation.
 
 property_inputs:
   - reference: .mysql_monitor.poll_frequency
@@ -52,10 +52,10 @@ property_inputs:
     label: Server activity logging
     selector_property_inputs:
       - reference: .properties.mysql_activity_logging.disable
-        label: Disable server activity logging
+        label: Disable
 
       - reference: .properties.mysql_activity_logging.enable
-        label: Enable server activity logging
+        label: Enable
         property_inputs:
           - reference: .properties.mysql_activity_logging.enable.audit_logging_events
             label: Event types
