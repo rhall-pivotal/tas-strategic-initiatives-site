@@ -67,6 +67,7 @@ instance_definition:
     max: $( variable "blobstore_max_instances" )
     min: 0
   zero_if:
+    allow_manual_selection_of_zero: false
     property_reference: ".properties.system_blobstore"
     property_values:
     - external

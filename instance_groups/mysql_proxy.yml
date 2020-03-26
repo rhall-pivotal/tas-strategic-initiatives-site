@@ -55,6 +55,7 @@ instance_definition:
   configurable: $( variable "mysql_proxy_configurable_state" )
   default: $( variable "mysql_proxy_default_instances" )
   zero_if:
+    allow_manual_selection_of_zero: false
     property_reference: ".properties.system_database"
     property_values:
     - external
