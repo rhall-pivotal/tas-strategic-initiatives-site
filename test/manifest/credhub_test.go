@@ -152,7 +152,7 @@ var _ = Describe("CredHub", func() {
 			Expect(kmsProvider["type"]).To(Equal("kms-plugin"))
 			Expect(kmsProvider["connection_properties"]).To(HaveKeyWithValue("endpoint", "some-endpoint"))
 			Expect(kmsProvider["connection_properties"]).To(HaveKeyWithValue("host", "credhub-kms"))
-			Expect(kmsProvider["connection_properties"]).To(HaveKeyWithValue("ca", "((/services/tls_ca))"))
+			Expect(kmsProvider["connection_properties"]).To(HaveKeyWithValue("ca", "((/services/intermediate_tls_ca.ca))"))
 		})
 	})
 
@@ -191,7 +191,7 @@ var _ = Describe("CredHub", func() {
 							"host_address":            "some-hsm-host",
 							"certificate":             fakeServerKeypair.Certificate,
 							"partition_serial_number": "some-hsm-partition-serial",
-							"port": 9999,
+							"port":                    9999,
 						},
 					},
 					".properties.credhub_hsm_provider_encryption_keys": []map[string]interface{}{

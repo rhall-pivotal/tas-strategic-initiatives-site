@@ -107,7 +107,7 @@
         connection_properties:
           endpoint: (( current_record.endpoint.value ))
           host: credhub-kms
-          ca: (((/services/tls_ca)))
+          ca: (((/services/intermediate_tls_ca.ca)))
 
 - name: credhub_hsm_provider_partition
   type: string
