@@ -37,7 +37,7 @@ property_inputs:
         HAProxy.
 
   - reference: .properties.routing_custom_ca_certificates
-    label: Certificate authorities trusted by the Gorouter and HAProxy
+    label: Certificate Authorities trusted by the Gorouter
     description: |
       Additional certificate authorities used to validate certificates from
       incoming requests.
@@ -90,6 +90,12 @@ property_inputs:
         label: HAProxy does not request client certificates
       - reference: .properties.haproxy_client_cert_validation.request
         label: HAProxy requests but does not require client certificates
+
+  - reference: .properties.haproxy_custom_ca_certificates
+    label: Certificate Authorities trusted by the HAProxy
+    description: |
+      Additional Certificate Authorities used to validate certificates from
+      incoming requests.
 
   - reference: .properties.router_client_cert_validation
     label: Gorouter behavior for client certificate validation

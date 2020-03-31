@@ -10,6 +10,7 @@ manifest: |
     backend_port: (( .properties.haproxy_forward_tls.selected_option.parsed_manifest(backend_port) ))
     backend_ssl: (( .properties.haproxy_forward_tls.selected_option.parsed_manifest(backend_ssl) ))
     buffer_size_bytes: (( .properties.haproxy_max_buffer_size.value ))
+    client_ca_file: (( .properties.haproxy_custom_ca_certificates.value ))
     client_cert: (( .properties.haproxy_client_cert_validation.selected_option.parsed_manifest(client_cert_validation) ))
     client_timeout: (( .router.request_timeout_in_seconds.value ))
     custom_http_error_files:

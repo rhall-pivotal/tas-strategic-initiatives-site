@@ -254,7 +254,6 @@ The server didn't respond in time.
 
 				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(haproxy.Property("ha_proxy")).ShouldNot(HaveKey("client_ca_file"))
 				Expect(haproxy.Property("ha_proxy/client_cert")).To(BeFalse())
 
 				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
@@ -265,6 +264,18 @@ The server didn't respond in time.
 
 		Context("when TLS is terminated for the first time at ha proxy", func() {
 			Context("when ha proxy client cert validation is set to none", func() {
+				It("gives the ha proxy the client cert", func() {
+					manifest, err := product.RenderManifest(map[string]interface{}{
+						".properties.routing_tls_termination":        "ha_proxy",
+						".properties.haproxy_custom_ca_certificates": "some sweet sweet datums",
+					})
+					Expect(err).NotTo(HaveOccurred())
+
+					haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(haproxy.Property("ha_proxy/client_ca_file")).To(Equal("some sweet sweet datums"))
+				})
+
 				It("configures ha proxy and router", func() {
 					manifest, err := product.RenderManifest(map[string]interface{}{
 						".properties.routing_tls_termination": "ha_proxy",
@@ -273,7 +284,6 @@ The server didn't respond in time.
 
 					haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
 					Expect(err).NotTo(HaveOccurred())
-					Expect(haproxy.Property("ha_proxy")).ShouldNot(HaveKey("client_ca_file"))
 					Expect(haproxy.Property("ha_proxy/client_cert")).To(BeFalse())
 
 					router, err := manifest.FindInstanceGroupJob("router", "gorouter")
@@ -292,7 +302,6 @@ The server didn't respond in time.
 
 					haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
 					Expect(err).NotTo(HaveOccurred())
-					Expect(haproxy.Property("ha_proxy")).ShouldNot(HaveKey("client_ca_file"))
 					Expect(haproxy.Property("ha_proxy/client_cert")).To(BeTrue())
 
 					router, err := manifest.FindInstanceGroupJob("router", "gorouter")
@@ -311,7 +320,6 @@ The server didn't respond in time.
 
 				haproxy, err := manifest.FindInstanceGroupJob("ha_proxy", "haproxy")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(haproxy.Property("ha_proxy")).ShouldNot(HaveKey("client_ca_file"))
 				Expect(haproxy.Property("ha_proxy/client_cert")).To(BeFalse())
 
 				router, err := manifest.FindInstanceGroupJob("router", "gorouter")
@@ -673,15 +681,15 @@ The server didn't respond in time.
 		})
 	})
 
-	Describe("TCP Routing", func(){
-		Context("when TCP Routing is enabled", func(){
+	Describe("TCP Routing", func() {
+		Context("when TCP Routing is enabled", func() {
 			var properties map[string]interface{}
-			BeforeEach(func(){
+			BeforeEach(func() {
 				properties = map[string]interface{}{
 					".properties.tcp_routing": "enable",
 				}
 			})
-			It("tcp_router.request_timeout_in_seconds should default to 300", func(){
+			It("tcp_router.request_timeout_in_seconds should default to 300", func() {
 				manifest, err := product.RenderManifest(properties)
 				Expect(err).NotTo(HaveOccurred())
 
@@ -689,15 +697,15 @@ The server didn't respond in time.
 				Expect(err).NotTo(HaveOccurred())
 				Expect(job.Property("tcp_router/request_timeout_in_seconds")).To(Equal(300))
 			})
-			Context("when the user provides a value for tcp_router.request_timeout_in_seconds", func(){
+			Context("when the user provides a value for tcp_router.request_timeout_in_seconds", func() {
 
-				BeforeEach(func(){
+				BeforeEach(func() {
 					properties = map[string]interface{}{
-						".properties.tcp_routing": "enable",
+						".properties.tcp_routing":                                   "enable",
 						".properties.tcp_routing.enable.request_timeout_in_seconds": 100,
 					}
 				})
-				It("tcp_router.request_timeout_in_seconds is updated accordingly", func(){
+				It("tcp_router.request_timeout_in_seconds is updated accordingly", func() {
 					manifest, err := product.RenderManifest(properties)
 					Expect(err).NotTo(HaveOccurred())
 
