@@ -1,54 +1,54 @@
 releases:
 - name: diego
-  sha1: e56771d9b93cd810771a5554a4ce39d3640ff8b9
+  sha1: 53f3688ca65cd21fd4334b32c38b362bdaf4a2ca
   version: 2.44.0
-  remote_source: built-releases
-  remote_path: 2.10/diego/diego-2.44.0.tgz
+  remote_source: bosh.io
+  remote_path: https://bosh.io/d/github.com/cloudfoundry/diego-release?v=2.44.0
 - name: envoy-nginx
-  sha1: c2da8c5fb39af764b0164a2a64d060af49b035f6
+  sha1: 95873848fd254f57bab3f8abb44f81ce77f45c16
   version: 0.6.0
-  remote_source: built-releases
-  remote_path: 2.10/envoy-nginx/envoy-nginx-0.6.0.tgz
+  remote_source: bosh.io
+  remote_path: https://bosh.io/d/github.com/cloudfoundry-incubator/envoy-nginx-release?v=0.6.0
 - name: event-log
-  sha1: 973cac65127558e52120ab5049bcbb9bec9d48fe
+  sha1: d4927316ed82e4814a8a662e7a9250d3a228f748
   version: 0.9.0
-  remote_source: built-releases
-  remote_path: 2.10/event-log/event-log-0.9.0.tgz
+  remote_source: bosh.io
+  remote_path: https://bosh.io/d/github.com/cloudfoundry-incubator/event-log-release?v=0.9.0
 - name: garden-runc
-  sha1: 97c5542cbdf9a23fa916d54c555423f7157ff866
+  sha1: 6d3a30a5d90b0ab7bd89fddf7fa22b9a4cc08b0d
   version: 1.19.10
-  remote_source: built-releases
-  remote_path: 2.10/garden-runc/garden-runc-1.19.10.tgz
+  remote_source: bosh.io
+  remote_path: https://bosh.io/d/github.com/cloudfoundry/garden-runc-release?v=1.19.10
 - name: hwc-offline-buildpack
   sha1: a2ddf89527c82a97d5268daf9483790dc16b2bfb
   version: 3.1.13
-  remote_source: built-releases
-  remote_path: 2.10/hwc-offline-buildpack/hwc-offline-buildpack-3.1.13.tgz
+  remote_source: final-pcf-bosh-releases
+  remote_path: hwc-offline-buildpack/hwc-offline-buildpack-3.1.13.tgz
 - name: loggregator-agent
-  sha1: ddc593396f3029343d137051f3af4ffd40fdca1b
-  version: 5.3.7
-  remote_source: built-releases
-  remote_path: 2.10/loggregator-agent/loggregator-agent-5.3.7.tgz
+  sha1: 1a5596b3f9155841e0bb227d8a2f8d8118f5100f
+  version: 5.3.8
+  remote_source: bosh.io
+  remote_path: https://bosh.io/d/github.com/cloudfoundry/loggregator-agent-release?v=5.3.8
 - name: metrics-discovery
-  sha1: 4b05384f5f51a915e064000498a9e41d493800a5
-  version: 2.0.2
-  remote_source: built-releases
-  remote_path: 2.10/metrics-discovery/metrics-discovery-2.0.2.tgz
-- name: windows-smoke-tests
-  sha1: 5fca1c79956ebc5e9466babef671663f866683c4
-  version: 2.0.5
-  remote_source: built-releases
-  remote_path: 2.10/windows-smoke-tests/windows-smoke-tests-2.0.5.tgz
+  sha1: 024047f37cd1781a3eec46ec888e0dbdc356b759
+  version: 2.0.9
+  remote_source: bosh.io
+  remote_path: https://bosh.io/d/github.com/cloudfoundry/metrics-discovery-release?v=2.0.9
+- name: smoke-tests
+  sha1: c1520630c4a53e9b0ee3050cf69e40ed09ac47b7
+  version: 2.0.6
+  remote_source: final-pcf-bosh-releases
+  remote_path: smoke-tests/smoke-tests-2.0.6.tgz
 - name: winc
-  sha1: 2654747176d5e73bab87068c4f47493d3e226a2a
-  version: 2.0.0
-  remote_source: built-releases
-  remote_path: 2.10/winc/winc-2.0.0.tgz
+  sha1: c90d6dea4da3a9ca8044f9a61dbc67f5aa8ef1cb
+  version: 2.1.0
+  remote_source: bosh.io
+  remote_path: https://bosh.io/d/github.com/cloudfoundry-incubator/winc-release?v=2.1.0
 - name: windows-utilities
-  sha1: 83a2f8603f183b2123a028814342f5c4e952691d
-  version: 0.13.0
-  remote_source: built-releases
-  remote_path: 2.10/windows-utilities/windows-utilities-0.13.0.tgz
+  sha1: 7886ffd43b84d4eced06560ba601ce1eb97c6616
+  version: 0.14.0
+  remote_source: bosh.io
+  remote_path: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.14.0
 stemcell_criteria:
   os: windows2019
   version: "2019.17"
