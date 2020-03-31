@@ -120,7 +120,6 @@ var _ = Describe("Networking", func() {
 
 				haproxy, err := manifest.FindInstanceGroupJob("isolated_ha_proxy", "haproxy")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(haproxy.Property("ha_proxy")).ShouldNot(HaveKey("client_ca_file"))
 				Expect(haproxy.Property("ha_proxy/client_cert")).To(BeFalse())
 
 				router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
@@ -139,7 +138,6 @@ var _ = Describe("Networking", func() {
 
 					haproxy, err := manifest.FindInstanceGroupJob("isolated_ha_proxy", "haproxy")
 					Expect(err).NotTo(HaveOccurred())
-					Expect(haproxy.Property("ha_proxy")).ShouldNot(HaveKey("client_ca_file"))
 					Expect(haproxy.Property("ha_proxy/client_cert")).To(BeFalse())
 
 					router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
@@ -158,7 +156,6 @@ var _ = Describe("Networking", func() {
 
 					haproxy, err := manifest.FindInstanceGroupJob("isolated_ha_proxy", "haproxy")
 					Expect(err).NotTo(HaveOccurred())
-					Expect(haproxy.Property("ha_proxy")).ShouldNot(HaveKey("client_ca_file"))
 					Expect(haproxy.Property("ha_proxy/client_cert")).To(BeTrue())
 
 					router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")
@@ -177,7 +174,6 @@ var _ = Describe("Networking", func() {
 
 				haproxy, err := manifest.FindInstanceGroupJob("isolated_ha_proxy", "haproxy")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(haproxy.Property("ha_proxy")).ShouldNot(HaveKey("client_ca_file"))
 				Expect(haproxy.Property("ha_proxy/client_cert")).To(BeFalse())
 
 				router, err := manifest.FindInstanceGroupJob("isolated_router", "gorouter")

@@ -171,6 +171,11 @@
           manifest: |
             sanitize_set
 
+- name: haproxy_custom_ca_certificates
+  type: text
+  configurable: true
+  optional: true
+
 - name: haproxy_client_cert_validation
   type: selector
   configurable: true

@@ -189,4 +189,18 @@ var _ = Describe("Routing", func() {
 			Expect(routerCACerts).To(ContainSubstring("((/services/intermediate_tls_ca.ca))"))
 		})
 	})
+
+	Describe("ha proxy", func() {
+		It("gives the ha proxy the client cert", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.routing_tls_termination":        "ha_proxy",
+				".properties.haproxy_custom_ca_certificates": "some sweet sweet datums",
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			haproxy, err := manifest.FindInstanceGroupJob("isolated_ha_proxy", "haproxy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(haproxy.Property("ha_proxy/client_ca_file")).To(Equal("some sweet sweet datums"))
+		})
+	})
 })
