@@ -2,6 +2,7 @@
 name: loggr-system-metric-scraper
 release: system-metrics-scraper
 manifest: |
+  scrape_interval: $( variable "service_metrics_scraper_scrape_interval" )
   scrape_port: 53035
   debug_port: $( variable "service_metrics_scraper_health_port" )
   system_metrics:
