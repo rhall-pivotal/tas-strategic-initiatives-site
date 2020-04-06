@@ -78,6 +78,10 @@ var _ = Describe("Metrics", func() {
 			Expect(err).ToNot(HaveOccurred())
 			Expect(scrapePort).To(Equal(53035))
 
+			scrapePort, err = metricScraper.Property("scrape_interval")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(scrapePort).To(Equal("1m"))
+
 			expectSecureMetrics(metricScraper)
 		})
 
