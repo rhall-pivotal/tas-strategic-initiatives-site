@@ -84,5 +84,6 @@ property_inputs:
 - reference: .properties.service_metrics_scraper_scrape_interval
   label: System Metrics Scrape Interval
   description: |
-    The interval at which deployed VMs are scraped for system metrics.
+    The interval at which deployed VMs are scraped for system metrics. Uses Go
+    interval format, should not be set below 5s.
   placeholder: 1m
