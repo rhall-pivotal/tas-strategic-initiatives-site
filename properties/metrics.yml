@@ -11,6 +11,11 @@
   configurable: true
   default: true
 
+- name: system_metrics_scraper_scrape_interval
+  type: string
+  configurable: true
+  default: 1m
+
 - name: prom_scraper_scrape_tls
   type: rsa_cert_credentials
   configurable: false
@@ -45,8 +50,3 @@
   default:
     domains:
     - metrics_agent_metrics
-
-- name: service_metrics_scraper_scrape_interval
-  type: string
-  configurable: true
-  default: 1m

@@ -2,16 +2,16 @@
 name: loggr-system-metric-scraper
 release: system-metrics-scraper
 manifest: |
-  scrape_interval: $( variable "service_metrics_scraper_scrape_interval" )
+  scrape_interval: $( variable "system_metrics_scraper_scrape_interval" )
   scrape_port: 53035
-  debug_port: $( variable "service_metrics_scraper_health_port" )
+  debug_port: $( variable "system_metrics_scraper_health_port" )
   system_metrics:
     tls:
       ca_cert: "(( $ops_manager.ca_certificate ))"
       cert: "((.properties.system_metrics_tls_scraper_cert.cert_pem))"
       key: "((.properties.system_metrics_tls_scraper_cert.private_key_pem))"
   metrics:
-    port: $( variable "service_metrics_scraper_health_port" )
+    port: $( variable "system_metrics_scraper_health_port" )
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( .properties.loggr_metric_scraper_metrics_tls.cert_pem ))
     key: (( .properties.loggr_metric_scraper_metrics_tls.private_key_pem ))
