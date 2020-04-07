@@ -2,12 +2,66 @@
 
 
 [[projects]]
+  digest = "1:75679485935abc262254de761fa5a5d52f240ae2ae8dec0a47aa3583273fec81"
+  name = "github.com/cloudfoundry/honeycomb-ginkgo-reporter"
+  packages = [
+    "honeycomb",
+    "honeycomb/client",
+  ]
+  pruneopts = "UT"
+  revision = "28a6b97e14b2cdf2809beebeea904c728e4832e0"
+  version = "v0.0.2"
+
+[[projects]]
   branch = "master"
   digest = "1:71570cb9af58f4981cd3b6ac9902b37e978e1f3c34f35a04a3a4837ea542500f"
   name = "github.com/cppforlife/go-patch"
   packages = ["patch"]
   pruneopts = "UT"
   revision = "250da0e0e68ce3367b4302f34218f6c064eb9559"
+
+[[projects]]
+  branch = "master"
+  digest = "1:5fe3f6ede1c208a2efd3b78fe4df0306aa9624edd39476143d14f0326e5a8d29"
+  name = "github.com/facebookgo/clock"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "600d898af40aa09a7a93ecb9265d87b0504b6f03"
+
+[[projects]]
+  branch = "master"
+  digest = "1:3b9db7dec579a1b2385b8de0b9359c052b1ba815d283dcf28d7270d0e7c38237"
+  name = "github.com/facebookgo/limitgroup"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "6abd8d71ec01451d7f1929eacaa263bbe2935d05"
+
+[[projects]]
+  branch = "master"
+  digest = "1:94b198563e9ee4272105ad87ae469b216cafb9437b955ae866ce85b956569aac"
+  name = "github.com/facebookgo/muster"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "fd3d7953fd52354a74b9f6b3d70d0c9650c4ec2a"
+
+[[projects]]
+  digest = "1:d1e35b720b5f5156502ffdd174000c81295919293735342da78582e4dc7a8bcd"
+  name = "github.com/golang/protobuf"
+  packages = ["proto"]
+  pruneopts = "UT"
+  revision = "84668698ea25b64748563aa20726db66a6b8d299"
+  version = "v1.3.5"
+
+[[projects]]
+  digest = "1:7fb94317a8335f556e17d71f1acb6a216463a97ec5183405c5cbadc05bdd28be"
+  name = "github.com/honeycombio/libhoney-go"
+  packages = [
+    ".",
+    "transmission",
+  ]
+  pruneopts = "UT"
+  revision = "3a8e6272e2c667e79fc4720fda4b94a3c43ef65e"
+  version = "v1.12.3"
 
 [[projects]]
   digest = "1:a1038ef593beb4771c8f0f9c26e8b00410acd800af5c6864651d9bf160ea1813"
@@ -22,6 +76,20 @@
   pruneopts = "UT"
   revision = "a30252cb686a21eb2d0b98132633053ec2f7f1e5"
   version = "v1.0.0"
+
+[[projects]]
+  digest = "1:a91b999a29bf71efd8671253f77c8854d48d83cef7dc1333bf120fab4c904560"
+  name = "github.com/klauspost/compress"
+  packages = [
+    "fse",
+    "huff0",
+    "snappy",
+    "zstd",
+    "zstd/internal/xxhash",
+  ]
+  pruneopts = "UT"
+  revision = "788b7f06fee85b7e1d2aa4a3a86f8dbbbcc771ae"
+  version = "v1.10.3"
 
 [[projects]]
   digest = "1:42e29deef12327a69123b9cb2cb45fee4af5c12c2a23c6e477338279a052703f"
@@ -91,10 +159,34 @@
   version = "0.1.0"
 
 [[projects]]
+  digest = "1:bdbeee77ecd82dc2e9bdc6deab3739fb968d953f8660b5577c74585a119db40c"
+  name = "github.com/vmihailenco/msgpack"
+  packages = [
+    ".",
+    "codes",
+  ]
+  pruneopts = "UT"
+  revision = "cd92a145e6d2ce09e792f838dc0b669b680aea29"
+  version = "v4.1.1"
+
+[[projects]]
+  digest = "1:a6c5ab44d09b463220e70b89e20e55e182ba4f7d15144697fe8dfc449d553e73"
+  name = "github.com/vmihailenco/tagparser"
+  packages = [
+    ".",
+    "internal",
+    "internal/parser",
+  ]
+  pruneopts = "UT"
+  revision = "e4b6c8cf4f3d7bb572551d5a531a9f2068b2fd6e"
+  version = "v0.1.1"
+
+[[projects]]
   branch = "master"
-  digest = "1:5193d913046443e59093d66a97a40c51f4a5ea4ceba60f3b3ecf89694de5d16f"
+  digest = "1:6d5ed712653ea5321fe3e3475ab2188cf362a4e0d31e9fd3acbd4dfbbca0d680"
   name = "golang.org/x/net"
   packages = [
+    "context",
     "html",
     "html/atom",
     "html/charset",
@@ -137,6 +229,34 @@
   version = "v0.3.0"
 
 [[projects]]
+  digest = "1:f4d6f1de81abede35943b5f9d8106c9a4579d3ea5a19d0991be3055e3383254b"
+  name = "google.golang.org/appengine"
+  packages = [
+    ".",
+    "datastore",
+    "datastore/internal/cloudkey",
+    "datastore/internal/cloudpb",
+    "internal",
+    "internal/app_identity",
+    "internal/base",
+    "internal/datastore",
+    "internal/log",
+    "internal/modules",
+    "internal/remote_api",
+  ]
+  pruneopts = "UT"
+  revision = "971852bfffca25b069c31162ae8f247a3dba083b"
+  version = "v1.6.5"
+
+[[projects]]
+  digest = "1:38b469493eb173db9c03321d64adcad4c7991ea0a19b5edc5bdc094f0e8c7384"
+  name = "gopkg.in/alexcesaro/statsd.v2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "7fea3f0d2fab1ad973e641e51dba45443a311a90"
+  version = "v2.0.0"
+
+[[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
   name = "gopkg.in/fsnotify.v1"
   packages = ["."]
@@ -165,8 +285,12 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/cloudfoundry/honeycomb-ginkgo-reporter/honeycomb",
+    "github.com/cloudfoundry/honeycomb-ginkgo-reporter/honeycomb/client",
+    "github.com/honeycombio/libhoney-go",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
+    "github.com/onsi/gomega/types",
     "github.com/pivotal-cf/planitest",
   ]
   solver-name = "gps-cdcl"

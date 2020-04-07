@@ -17,6 +17,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/cloudfoundry/honeycomb-ginkgo-reporter/honeycomb"
+	"github.com/cloudfoundry/honeycomb-ginkgo-reporter/honeycomb/client"
+	"github.com/honeycombio/libhoney-go"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pivotal-cf/planitest"
@@ -31,7 +34,32 @@ type Job struct {
 
 func TestManifestGeneration(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Manifest Generation Suite")
+
+	honeycombAPIKey := os.Getenv("HONEYCOMB_API_KEY")
+	honeycombDataset := os.Getenv("HONEYCOMB_DATASET")
+	if honeycombAPIKey == "" || honeycombDataset == "" {
+		RunSpecs(t, "Manifest Generation Suite")
+	} else {
+		build_pipeline_url := os.Getenv("BUILD_PIPELINE_URL")
+		product := os.Getenv("PRODUCT")
+
+		honeyCombClient := client.New(libhoney.Config{
+			WriteKey: honeycombAPIKey,
+			Dataset:  honeycombDataset,
+		})
+		globalTags := map[string]interface{}{
+			"build_pipeline_url": build_pipeline_url,
+		}
+		customTags := map[string]interface{}{
+			"product": product,
+		}
+		honeyCombReporter := honeycomb.New(honeyCombClient)
+		honeyCombReporter.SetGlobalTags(globalTags)
+		honeyCombReporter.SetCustomTags(customTags)
+		rs := []Reporter{}
+		rs = append(rs, honeyCombReporter)
+		RunSpecsWithDefaultAndCustomReporters(t, "Manifest Generation Suite", rs)
+	}
 }
 
 var product *planitest.ProductService
