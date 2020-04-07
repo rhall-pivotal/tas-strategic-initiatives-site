@@ -54,6 +54,18 @@ var _ = Describe("System Database", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(caCert).To(BeNil())
 
+			// autoscaler
+			autoscaler, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "deploy-autoscaler")
+			Expect(err).NotTo(HaveOccurred())
+
+			caCert, err = autoscaler.Property("autoscale/database/ca_cert")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(caCert).To(BeNil())
+
+			enableTls, err := autoscaler.Property("autoscale/database/enable_tls")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(enableTls).To(BeFalse())
+
 			// usage-service
 			pushUsageService, err := manifest.FindInstanceGroupJob(instanceGroup, "push-usage-service")
 			Expect(err).NotTo(HaveOccurred())
@@ -222,6 +234,14 @@ var _ = Describe("System Database", func() {
 				validation, err := deployAutoscaler.Property("autoscale/database/skip_ssl_validation")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(validation).To(BeFalse())
+
+				caCert, err = deployAutoscaler.Property("autoscale/database/ca_cert")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(caCert).NotTo(BeEmpty())
+
+				enableTls, err := deployAutoscaler.Property("autoscale/database/enable_tls")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(enableTls).To(BeTrue())
 
 				// credhub
 				credhub, err := manifest.FindInstanceGroupJob(credhubInstanceGroup, "credhub")
