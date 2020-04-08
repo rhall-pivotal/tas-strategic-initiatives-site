@@ -96,11 +96,8 @@ var _ = Describe("Networking", func() {
 			Expect(enabled).To(BeTrue())
 		})
 
-		//TODO: Testing inheritance from PAS requires manual additions to ops-manifest fixture.
-		// Unpend this test when we can render the manifest with inheritance properties like
-		// `..cf.properties.cf_networking_internal_domain`.
 		Context("when PAS internal domain is empty", func() {
-			PIt("defaults internal domain to apps.internal", func() {
+			It("defaults internal domain to apps.internal", func() {
 				manifest, err := product.RenderManifest(nil)
 				Expect(err).NotTo(HaveOccurred())
 
