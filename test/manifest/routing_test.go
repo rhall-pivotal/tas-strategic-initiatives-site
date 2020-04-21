@@ -106,6 +106,72 @@ The server didn't respond in time.
 		})
 	})
 
+	Describe("Sticky Session Cookies", func() {
+		var (
+			router          planitest.Manifest
+			inputProperties map[string]interface{}
+		)
+
+		Describe("Valid Configurations", func() {
+			JustBeforeEach(func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				router, err = manifest.FindInstanceGroupJob("router", "gorouter")
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			Context("when user provides names", func() {
+
+				BeforeEach(func() {
+					cookieMapArray := []map[string]string{}
+
+					cookies := []string{"foo", "bar"}
+
+					for _, cookie := range cookies {
+						cookieMapArray =
+							append(cookieMapArray, map[string]string{"name": cookie})
+					}
+
+					inputProperties = map[string]interface{}{
+						".properties.router_sticky_session_cookie_names": cookieMapArray,
+					}
+				})
+
+				It("is configured to use the provided names", func() {
+					cookieNames, err := router.Property("router/sticky_session_cookie_names")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(cookieNames).To(HaveLen(2))
+					Expect(cookieNames).To(ConsistOf("foo", "bar"))
+				})
+			})
+
+			Context("by default", func() {
+				It("defaults to ['JSESSIONID']", func() {
+					cookieNames, err := router.Property("router/sticky_session_cookie_names")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(cookieNames).To(HaveLen(1))
+					Expect(cookieNames).To(ConsistOf("JSESSIONID"))
+				})
+			})
+		})
+
+		Describe("Invalid Configurations", func() {
+			Context("when nothing is provided", func() {
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{
+						".properties.router_sticky_session_cookie_names": []map[string]string{},
+					}
+				})
+				It("fails because the property is required", func() {
+					_, err := product.RenderManifest(inputProperties)
+					Expect(err).To(HaveOccurred())
+				})
+			})
+		})
+	})
 	Describe("TLS termination", func() {
 		It("secures traffic between the infrastructure load balancer and HAProxy / Gorouter", func() {
 			manifest, err := product.RenderManifest(nil)
