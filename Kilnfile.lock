@@ -20,10 +20,10 @@ releases:
   remote_source: bosh.io
   remote_path: https://bosh.io/d/github.com/cloudfoundry/bosh-system-metrics-forwarder-release?v=0.0.19
 - name: bpm
-  sha1: e7d474c3a205fa4438ea5a60d3b59479939163aa
+  sha1: 1d0db8ee4d53c97f5d1c7d44056d4f91d1332f44
   version: 1.1.7
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/bpm-release?v=1.1.7
+  remote_source: compiled-releases
+  remote_path: 2.11/bpm/bpm-1.1.7-ubuntu-xenial-621.71.tgz
 - name: capi
   sha1: 1f14c0bc54ae9eaeff9c36578fbf9f6f63f20f7e
   version: 1.93.0
@@ -40,45 +40,45 @@ releases:
   remote_source: bosh.io
   remote_path: https://bosh.io/d/github.com/bosh-packages/cf-cli-release?v=1.26.0
 - name: cf-networking
-  sha1: 0d289163e019dc2853b40c362fca2ab497ad8133
+  sha1: b255f679c80f9cb5f35fceda53da74524b090319
   version: 2.29.0
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/cf-networking-release?v=2.29.0
+  remote_source: compiled-releases
+  remote_path: 2.11/cf-networking/cf-networking-2.29.0-ubuntu-xenial-621.71.tgz
 - name: cflinuxfs3
-  sha1: 280c013f9cda8abf6887c9e3529a032d3f47698d
+  sha1: ce77cb5d21ca8a528f8d800d84494433beaefc9b
   version: 0.176.0
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/cflinuxfs3-release?v=0.176.0
+  remote_source: compiled-releases
+  remote_path: 2.11/cflinuxfs3/cflinuxfs3-0.176.0-ubuntu-xenial-621.71.tgz
 - name: credhub
   sha1: c45af16ed393bb3cf061b8749e3ee4cae74ce995
   version: 2.6.0
   remote_source: bosh.io
   remote_path: https://bosh.io/d/github.com/pivotal-cf/credhub-release?v=2.6.0
 - name: diego
-  sha1: 1a8233c6edabb2f3e70338f19871993cba49e3a8
+  sha1: 7fff34a94bb5d5faf56c4ba72432aad103e34acf
   version: 2.45.0
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/diego-release?v=2.45.0
+  remote_source: compiled-releases
+  remote_path: 2.11/diego/diego-2.45.0-ubuntu-xenial-621.71.tgz
 - name: dotnet-core-offline-buildpack
   sha1: 6ef5a9ff7219cab1b4441aed1a45ea3f87957959
   version: 2.3.9
   remote_source: final-pcf-bosh-releases
   remote_path: dotnet-core-offline-buildpack/dotnet-core-offline-buildpack-2.3.9.tgz
 - name: garden-runc
-  sha1: 74c6fc81751c38d7ff0bb0b9d689a5139293344b
+  sha1: 9a19914194dbe9b05f398b2a68e647418cefd2ed
   version: 1.19.11
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/garden-runc-release?v=1.19.11
+  remote_source: compiled-releases
+  remote_path: 2.11/garden-runc/garden-runc-1.19.11-ubuntu-xenial-621.71.tgz
 - name: go-offline-buildpack
   sha1: 84136ed35f9f784eeaf30e21f4948d231cc246c9
   version: 1.9.11
   remote_source: final-pcf-bosh-releases
   remote_path: go-offline-buildpack/go-offline-buildpack-1.9.11.tgz
 - name: haproxy
-  sha1: 5aa23123d76fbe33a78cc32d205a213a52e6b72a
+  sha1: 219630d35797b23afe226ae991dd3583facc9510
   version: 10.0.0
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry-incubator/haproxy-boshrelease?v=10.0.0
+  remote_source: compiled-releases
+  remote_path: 2.11/haproxy/haproxy-10.0.0-ubuntu-xenial-621.71.tgz
 - name: istio
   sha1: b0d96b6b9531ec7e86ac6400157eadfea842116e
   version: 1.3.0
@@ -100,25 +100,25 @@ releases:
   remote_source: bosh.io
   remote_path: https://bosh.io/d/github.com/cloudfoundry/loggregator-release?v=106.3.9
 - name: loggregator-agent
-  sha1: b3c944f11be472af7a124653c91318af51968db2
+  sha1: 294ca82b6632a8a1ef43738b4489e8abc3e5f7dc
   version: 6.0.0
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/loggregator-agent-release?v=6.0.0
+  remote_source: compiled-releases
+  remote_path: 2.11/loggregator-agent/loggregator-agent-6.0.0-ubuntu-xenial-621.71.tgz
 - name: mapfs
-  sha1: 3cc82301f6687b7da727bf0c09a04c072aaf823b
+  sha1: 4949abebb876e10d65164ad9aa2379084a6b8575
   version: 1.2.4
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/mapfs-release?v=1.2.4
+  remote_source: compiled-releases
+  remote_path: 2.11/mapfs/mapfs-1.2.4-ubuntu-xenial-621.71.tgz
 - name: metric-registrar
   sha1: fb55bac7da96929237a9088ef84bd38b788ae822
   version: 1.1.1
   remote_source: final-pcf-bosh-releases
   remote_path: metric-registrar/metric-registrar-1.1.1.tgz
 - name: metrics-discovery
-  sha1: 024047f37cd1781a3eec46ec888e0dbdc356b759
+  sha1: cc8b605ce8a6671f605fec2e486200d25350332e
   version: 2.0.9
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/metrics-discovery-release?v=2.0.9
+  remote_source: compiled-releases
+  remote_path: 2.11/metrics-discovery/metrics-discovery-2.0.9-ubuntu-xenial-621.71.tgz
 - name: mysql-monitoring
   sha1: 0717c77133063075b52446dbb49c07c49155c1e8
   version: 9.12.0
@@ -130,10 +130,10 @@ releases:
   remote_source: bosh.io
   remote_path: https://bosh.io/d/github.com/cloudfoundry/nats-release?v=32
 - name: nfs-volume
-  sha1: f9e4d002da0cedacf966e161eb1e0b9dcfe07b07
+  sha1: 6f270f887919ca8df412a94a1492a97dfc43e532
   version: 7.0.2
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/nfs-volume-release?v=7.0.2
+  remote_source: compiled-releases
+  remote_path: 2.11/nfs-volume/nfs-volume-7.0.2-ubuntu-xenial-621.71.tgz
 - name: nginx-offline-buildpack
   sha1: 4e3715cdf9ce94f2d7caba0c38a607a6bf9d0f3d
   version: 1.1.8
@@ -185,25 +185,25 @@ releases:
   remote_source: final-pcf-bosh-releases
   remote_path: r-offline-buildpack/r-offline-buildpack-1.1.2.tgz
 - name: routing
-  sha1: a617e78ef9e0fde906b35e13b8f0ecd9580e9994
+  sha1: fdd8ddebc8102306c43c7cdd9f832a4afa150196
   version: 0.200.0
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/routing-release?v=0.200.0
+  remote_source: compiled-releases
+  remote_path: 2.11/routing/routing-0.200.0-ubuntu-xenial-621.71.tgz
 - name: ruby-offline-buildpack
   sha1: 559c6b13c83fea3cc4598f153be449312c0cb6ea
   version: 1.8.14
   remote_source: final-pcf-bosh-releases
   remote_path: ruby-offline-buildpack/ruby-offline-buildpack-1.8.14.tgz
 - name: silk
-  sha1: fb75f48815bbb5b0ca318fa6daf5b4e3a269092e
+  sha1: 7897e940c513c71e20bd7155a28f6b32573d0e73
   version: 2.29.0
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/silk-release?v=2.29.0
+  remote_source: compiled-releases
+  remote_path: 2.11/silk/silk-2.29.0-ubuntu-xenial-621.71.tgz
 - name: smb-volume
-  sha1: 3206f335a02ec9ebc2bb2d1a9eb41c2393290c06
+  sha1: e148e078390768ba220105fb38872a61cdd4b40c
   version: 3.0.1
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/smb-volume-release?v=3.0.1
+  remote_source: compiled-releases
+  remote_path: 2.11/smb-volume/smb-volume-3.0.1-ubuntu-xenial-621.71.tgz
 - name: smoke-tests
   sha1: 45284914685b7303eb41b0c09c3efcc6fdd7ee21
   version: 2.2.0
@@ -220,10 +220,10 @@ releases:
   remote_source: bosh.io
   remote_path: https://bosh.io/d/github.com/cloudfoundry/statsd-injector-release?v=1.11.15
 - name: syslog
-  sha1: e2649e48c49aedcbd0ff96b00f56b028682f1dd6
+  sha1: 9cbb29ce3918458aac900e790792d543ca959bdf
   version: 11.6.1
-  remote_source: bosh.io
-  remote_path: https://bosh.io/d/github.com/cloudfoundry/syslog-release?v=11.6.1
+  remote_source: compiled-releases
+  remote_path: 2.11/syslog/syslog-11.6.1-ubuntu-xenial-621.71.tgz
 - name: system-metrics-scraper
   sha1: 7821fb979bdbc8533d9a397aa53948f1bd7e2640
   version: 2.0.10
@@ -236,4 +236,4 @@ releases:
   remote_path: https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=74.17.0
 stemcell_criteria:
   os: ubuntu-xenial
-  version: "621.69"
+  version: "621.71"
