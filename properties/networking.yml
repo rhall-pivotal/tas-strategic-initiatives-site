@@ -538,6 +538,30 @@
     domains:
     - copilot.service.cf.internal
 
+- name: nats_client_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - nats.service.cf.internal
+    - "*.nats.service.cf.internal"
+
+- name: nats_tls_external_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - nats.service.cf.internal
+    - "*.nats.service.cf.internal"
+
+- name: nats_tls_internal_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - nats.service.cf.internal
+    - "*.nats.service.cf.internal"
+
 - name: routing_api_server_cert
   type: rsa_cert_credentials
   configurable: false
