@@ -16,6 +16,7 @@ manifest: |
     server_name: loggregator_agent_metrics
   grpc_port: 3459
   disable_udp: true
+  disable_logs: (( .properties.disable_logs_in_firehose.value ))
   loggregator_agent:
     enabled: (( .properties.enable_v2_firehose.value ))
   tags:
