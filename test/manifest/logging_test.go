@@ -472,6 +472,21 @@ var _ = Describe("Logging", func() {
 				Expect(la.Property("loggregator_agent/enabled")).To(BeFalse())
 			}
 		})
+
+		It("logs can be disabled", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.disable_logs_in_firehose": true,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			instanceGroups := getAllInstanceGroups(manifest)
+			for _, instanceGroup := range instanceGroups {
+				la, err := manifest.FindInstanceGroupJob(instanceGroup, "loggregator_agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(la.Property("disable_logs")).To(BeTrue())
+			}
+		})
 	})
 	Describe("Traffic Controller", func() {
 		var instanceGroup string
