@@ -14,3 +14,6 @@ manifest: |
   shutdown_delay: (( .mysql_proxy.shutdown_delay.value ))
   inactive_mysql_port: '(( .mysql_proxy.enable_inactive_mysql_port.value ? .mysql_proxy.inactive_mysql_port.value : .mysql_proxy.inactive_mysql_port_null_value.value ))'
   max_open_files: 1048576
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))

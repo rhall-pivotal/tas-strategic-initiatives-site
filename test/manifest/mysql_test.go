@@ -126,5 +126,105 @@ var _ = Describe("MySQL", func() {
 				Expect(maxConnections).To(Equal(50))
 			})
 		})
+
+		Context("logging_timestamp_format", func() {
+			var proxyInstanceGroup string
+
+			BeforeEach(func() {
+				if productName == "srt" {
+					proxyInstanceGroup = "database"
+				} else {
+					proxyInstanceGroup = "mysql_proxy"
+				}
+			})
+
+			When("logging_timestamp_format is set to deprecated", func() {
+				It("is used in replication-canary and mysql-metrics", func() {
+					manifest := renderProductManifest(product, map[string]interface{}{
+						".properties.logging_timestamp_format": "deprecated",
+					})
+
+					replicationCanary, err := manifest.FindInstanceGroupJob("mysql_monitor", "replication-canary")
+					Expect(err).NotTo(HaveOccurred())
+					loggingFormatTimestamp, err := replicationCanary.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+
+					mysqlMetrics, err := manifest.FindInstanceGroupJob(instanceGroup, "mysql-metrics")
+					Expect(err).NotTo(HaveOccurred())
+					loggingFormatTimestamp, err = mysqlMetrics.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+
+					galeraAgent, err := manifest.FindInstanceGroupJob(instanceGroup, "galera-agent")
+					Expect(err).NotTo(HaveOccurred())
+					loggingFormatTimestamp, err = galeraAgent.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+
+					graLogPurger, err := manifest.FindInstanceGroupJob(instanceGroup, "gra-log-purger")
+					Expect(err).NotTo(HaveOccurred())
+					loggingFormatTimestamp, err = graLogPurger.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+
+					proxy, err := manifest.FindInstanceGroupJob(proxyInstanceGroup, "proxy")
+					Expect(err).NotTo(HaveOccurred())
+					loggingFormatTimestamp, err = proxy.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+
+					pxcMysql, err := manifest.FindInstanceGroupJob(instanceGroup, "pxc-mysql")
+					Expect(err).NotTo(HaveOccurred())
+					loggingFormatTimestamp, err = pxcMysql.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+				})
+			})
+
+			When("logging_format_timestamp is set to rfc3339", func() {
+				It("is used in replication-canary and mysql-metrics", func() {
+					manifest := renderProductManifest(product, map[string]interface{}{
+						".properties.logging_timestamp_format": "rfc3339",
+					})
+
+					replicationCanary, err := manifest.FindInstanceGroupJob("mysql_monitor", "replication-canary")
+					Expect(err).NotTo(HaveOccurred())
+					loggingFormatTimestamp, err := replicationCanary.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+
+					mysqlMetrics, err := manifest.FindInstanceGroupJob(instanceGroup, "mysql-metrics")
+					Expect(err).NotTo(HaveOccurred())
+					loggingFormatTimestamp, err = mysqlMetrics.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+
+					galeraAgent, err := manifest.FindInstanceGroupJob(instanceGroup, "galera-agent")
+					Expect(err).NotTo(HaveOccurred())
+					loggingFormatTimestamp, err = galeraAgent.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+
+					graLogPurger, err := manifest.FindInstanceGroupJob(instanceGroup, "gra-log-purger")
+					Expect(err).NotTo(HaveOccurred())
+					loggingFormatTimestamp, err = graLogPurger.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+
+					proxy, err := manifest.FindInstanceGroupJob(proxyInstanceGroup, "proxy")
+					Expect(err).NotTo(HaveOccurred())
+					loggingFormatTimestamp, err = proxy.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+
+					pxcMysql, err := manifest.FindInstanceGroupJob(instanceGroup, "pxc-mysql")
+					Expect(err).NotTo(HaveOccurred())
+					loggingFormatTimestamp, err = pxcMysql.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+				})
+			})
+		})
 	})
 })

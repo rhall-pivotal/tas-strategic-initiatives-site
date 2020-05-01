@@ -87,3 +87,17 @@ property_inputs:
     The interval at which deployed VMs are scraped for system metrics. Uses Go
     interval format, should not be set below 5s.
   placeholder: 1m
+
+- reference: .properties.logging_timestamp_format
+  label: Timestamp Format for Component Logs
+  description: |
+    TAS components are incrementally being updated to provide the option to generate
+    logs with the human readable timestamp format RFC3339. Selecting "Converge to
+    human readable RFC3339 format" will result in all the updated components to
+    generate logs using that format.
+  selector_property_inputs:
+    - reference: .properties.logging_timestamp_format.rfc3339
+      label: "Converge to human readable RFC3339 format"
+
+    - reference: .properties.logging_timestamp_format.deprecated
+      label: "Maintain previous format"

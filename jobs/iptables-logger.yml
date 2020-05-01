@@ -1,3 +1,7 @@
 ---
 name: iptables-logger
 release: silk
+manifest: |
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))

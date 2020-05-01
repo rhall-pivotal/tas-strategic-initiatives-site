@@ -178,24 +178,6 @@
               client_certificate: (( .properties.ssh_proxy_backends_tls.cert_pem ))
               client_private_key: (( .properties.ssh_proxy_backends_tls.private_key_pem ))
 
-- name: diego_log_timestamp_format
-  type: selector
-  configurable: true
-  default: rfc3339
-  option_templates:
-    - name: rfc3339
-      select_value: rfc3339
-      named_manifests:
-        - name: timestamp_format
-          manifest: |
-            rfc3339
-    - name: unix-epoch
-      select_value: unix-epoch
-      named_manifests:
-        - name: timestamp_format
-          manifest: |
-            unix-epoch
-
 - name: app_graceful_shutdown_period_in_seconds
   type: integer
   configurable: true

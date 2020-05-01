@@ -1076,6 +1076,54 @@ var _ = Describe("Networking", func() {
 			})
 		})
 
+		Context("logging_timestamp_format", func() {
+			var (
+				diegoCellInstanceGroup string
+			)
+			BeforeEach(func() {
+				if productName == "srt" {
+					diegoCellInstanceGroup = "compute"
+				} else {
+					diegoCellInstanceGroup = "diego_cell"
+				}
+			})
+
+			When("logging_timestamp_format is set to deprecated", func() {
+				It("is used in all jobs that have this property", func() {
+					manifest := renderProductManifest(product, map[string]interface{}{
+						".properties.logging_timestamp_format": "deprecated",
+					})
+
+					iptablesLogger := findManifestInstanceGroupJob(manifest, diegoCellInstanceGroup, "iptables-logger")
+					loggingFormatTimestamp, err := iptablesLogger.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("deprecated"))
+
+					silkDaemon := findManifestInstanceGroupJob(manifest, diegoCellInstanceGroup, "silk-daemon")
+					loggingFormatTimestamp, err = silkDaemon.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("deprecated"))
+				})
+			})
+
+			When("logging_format_timestamp is set to rfc3339", func() {
+				It("is used in all jobs that have this property", func() {
+					manifest := renderProductManifest(product, map[string]interface{}{
+						".properties.logging_timestamp_format": "rfc3339",
+					})
+
+					iptablesLogger := findManifestInstanceGroupJob(manifest, diegoCellInstanceGroup, "iptables-logger")
+					loggingFormatTimestamp, err := iptablesLogger.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+
+					silkDaemon := findManifestInstanceGroupJob(manifest, diegoCellInstanceGroup, "silk-daemon")
+					loggingFormatTimestamp, err = silkDaemon.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+				})
+			})
+		})
 		Describe("gorouter", func() {
 			var (
 				inputProperties     map[string]interface{}

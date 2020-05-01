@@ -74,10 +74,10 @@ var _ = Describe("Garden", func() {
 	})
 
 	Describe("log format", func() {
-		When("diego_log_timestamp_format is set to unix-epoch", func() {
+		When("logging_format_timestamp is set to deprecated", func() {
 			It("is used in the garden job", func() {
 				manifest := renderProductManifest(product, map[string]interface{}{
-					".properties.diego_log_timestamp_format": "unix-epoch",
+					".properties.logging_timestamp_format": "deprecated",
 				})
 				garden := findManifestInstanceGroupJob(manifest, instanceGroup, "garden")
 
@@ -87,9 +87,11 @@ var _ = Describe("Garden", func() {
 			})
 		})
 
-		When("diego_log_timestamp_format is not set", func() {
+		When("logging_format_timestamp is set to rfc3339", func() {
 			It("the default is used in the garden job", func() {
-				manifest := renderProductManifest(product, nil)
+				manifest := renderProductManifest(product, map[string]interface{}{
+					".properties.logging_timestamp_format": "rfc3339",
+				})
 				garden := findManifestInstanceGroupJob(manifest, instanceGroup, "garden")
 
 				loggingFormatTimestamp, err := garden.Property("logging/format/timestamp")

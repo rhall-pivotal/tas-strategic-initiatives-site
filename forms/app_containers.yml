@@ -106,17 +106,6 @@ property_inputs:
     Allows app developers to bind existing SMB shares to apps
     for shared file access.
 
-- reference: .properties.diego_log_timestamp_format
-  label: Format of timestamps in Diego logs
-  selector_property_inputs:
-  - reference: .properties.diego_log_timestamp_format.rfc3339
-    label: RFC3339 timestamps
-    description: For example, "2018-02-09T00:54:13.479724884Z".
-
-  - reference: .properties.diego_log_timestamp_format.unix-epoch
-    label: Seconds since the Unix epoch
-    description: For example, "1518137653.479724884".
-
 - reference: .properties.cloud_controller_default_health_check_timeout
   label: Default health check timeout
 

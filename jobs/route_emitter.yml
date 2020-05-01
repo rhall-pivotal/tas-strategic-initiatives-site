@@ -20,7 +20,7 @@ manifest: |
     key: (( .properties.loggregator_client_cert.private_key_pem ))
   logging:
     format:
-      timestamp: (( .properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))
   register_direct_instance_routes: (( .properties.container_networking_interface_plugin.selected_option.parsed_manifest(use_container_address) ))
   tcp:
     enabled: true

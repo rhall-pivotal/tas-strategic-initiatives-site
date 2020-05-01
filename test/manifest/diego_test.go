@@ -595,4 +595,103 @@ var _ = Describe("Diego", func() {
 			Expect(value).To(Equal(0))
 		})
 	})
+
+	Context("logging_timestamp_format", func() {
+		var (
+			diegoCellInstanceGroup     string
+			diegoBrainInstanceGroup    string
+			diegoDatabaseInstanceGroup string
+		)
+		BeforeEach(func() {
+			if productName == "srt" {
+				diegoCellInstanceGroup = "compute"
+				diegoBrainInstanceGroup = "control"
+				diegoDatabaseInstanceGroup = "control"
+			} else {
+				diegoCellInstanceGroup = "diego_cell"
+				diegoBrainInstanceGroup = "diego_brain"
+				diegoDatabaseInstanceGroup = "diego_database"
+			}
+		})
+
+		When("logging_timestamp_format is set to deprecated", func() {
+			It("is used in all diego jobs", func() {
+				manifest := renderProductManifest(product, map[string]interface{}{
+					".properties.logging_timestamp_format": "deprecated",
+				})
+
+				rep := findManifestInstanceGroupJob(manifest, diegoCellInstanceGroup, "rep")
+				loggingFormatTimestamp, err := rep.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+
+				auctioneer := findManifestInstanceGroupJob(manifest, diegoBrainInstanceGroup, "auctioneer")
+				loggingFormatTimestamp, err = auctioneer.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+
+				locket := findManifestInstanceGroupJob(manifest, diegoDatabaseInstanceGroup, "locket")
+				loggingFormatTimestamp, err = locket.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+
+				routeEmitter := findManifestInstanceGroupJob(manifest, diegoCellInstanceGroup, "route_emitter")
+				loggingFormatTimestamp, err = routeEmitter.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+
+				sshProxy := findManifestInstanceGroupJob(manifest, diegoBrainInstanceGroup, "ssh_proxy")
+				loggingFormatTimestamp, err = sshProxy.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+
+				bbs := findManifestInstanceGroupJob(manifest, diegoDatabaseInstanceGroup, "bbs")
+				loggingFormatTimestamp, err = bbs.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+
+				fileServer := findManifestInstanceGroupJob(manifest, diegoBrainInstanceGroup, "file_server")
+				loggingFormatTimestamp, err = fileServer.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+			})
+		})
+
+		When("logging_format_timestamp is set to rfc3339", func() {
+			It("is used in all diego jobs", func() {
+				manifest := renderProductManifest(product, map[string]interface{}{
+					".properties.logging_timestamp_format": "rfc3339",
+				})
+				rep := findManifestInstanceGroupJob(manifest, diegoCellInstanceGroup, "rep")
+				loggingFormatTimestamp, err := rep.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+
+				locket := findManifestInstanceGroupJob(manifest, diegoDatabaseInstanceGroup, "locket")
+				loggingFormatTimestamp, err = locket.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+
+				routeEmitter := findManifestInstanceGroupJob(manifest, diegoCellInstanceGroup, "route_emitter")
+				loggingFormatTimestamp, err = routeEmitter.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+
+				sshProxy := findManifestInstanceGroupJob(manifest, diegoBrainInstanceGroup, "ssh_proxy")
+				loggingFormatTimestamp, err = sshProxy.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+
+				bbs := findManifestInstanceGroupJob(manifest, diegoDatabaseInstanceGroup, "bbs")
+				loggingFormatTimestamp, err = bbs.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+
+				fileServer := findManifestInstanceGroupJob(manifest, diegoBrainInstanceGroup, "file_server")
+				loggingFormatTimestamp, err = fileServer.Property("logging/format/timestamp")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+			})
+		})
+	})
 })

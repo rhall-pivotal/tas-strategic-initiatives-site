@@ -76,3 +76,6 @@ manifest: |
       certificate: (( .properties.pxc_server_certificate.cert_pem ))
       private_key: (( .properties.pxc_server_certificate.private_key_pem ))
   admin_password: ((( mysql-admin-credentials.password )))
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))

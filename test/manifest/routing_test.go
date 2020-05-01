@@ -568,6 +568,52 @@ The server didn't respond in time.
 			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("cert"))
 			Expect(udpForwarder.Property("loggregator/tls")).Should(HaveKey("key"))
 		})
+
+		Context("timestamp formats", func() {
+			Context("when rfc3339 is selected", func() {
+				var (
+					inputProperties map[string]interface{}
+				)
+
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{
+						".properties.logging_timestamp_format": "deprecated",
+					}
+				})
+
+				It("uses the deprecated timestamp versions", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					gorouter, err := manifest.FindInstanceGroupJob("router", "gorouter")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(gorouter.Property("router/logging/format/timestamp")).Should(Equal("deprecated"))
+				})
+			})
+
+			Context("when rfc3339 is selected", func() {
+				var (
+					inputProperties map[string]interface{}
+				)
+
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{
+						".properties.logging_timestamp_format": "rfc3339",
+					}
+				})
+
+				It("enables rfc3339 format", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					gorouter, err := manifest.FindInstanceGroupJob("router", "gorouter")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(gorouter.Property("router/logging/format/timestamp")).Should(Equal("rfc3339"))
+				})
+			})
+		})
 	})
 
 	Describe("BPM", func() {

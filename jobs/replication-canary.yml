@@ -26,3 +26,6 @@ manifest: |
       uaa_admin_client_username: (( .uaa.admin_client_credentials.identity ))
       uaa_admin_client_secret: (( .uaa.admin_client_credentials.password ))
       write_read_delay: (( write_read_delay.value ))
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))

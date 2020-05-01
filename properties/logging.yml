@@ -331,3 +331,29 @@
   default:
     domains:
     - rlp_gateway_metrics
+
+
+- name: logging_timestamp_format
+  type: selector
+  configurable: true
+  default: rfc3339
+  option_templates:
+    - name: rfc3339
+      select_value: rfc3339
+      named_manifests:
+        - name: rfc3339_or_deprecated
+          manifest: |
+            rfc3339
+        - name: rfc3339_or_unix_epoch
+          manifest: |
+            rfc3339
+
+    - name: deprecated
+      select_value: deprecated
+      named_manifests:
+        - name: rfc3339_or_deprecated
+          manifest: |
+            deprecated
+        - name: rfc3339_or_unix_epoch
+          manifest: |
+            unix-epoch
