@@ -161,9 +161,6 @@
           name: (( .properties.app_usage_service_database_name.value ))
           ca_cert: '(( .properties.enable_tls_to_internal_pxc.value ? $ops_manager.ca_certificate : .properties.system_database.selected_option.parsed_manifest(null_value) ))'
           verify_ssl: '(( .properties.enable_tls_to_internal_pxc.value ? true : false ))'
-      - name: push-app-usage-service-skip-cert-verify
-        manifest: |
-          false
       - name: bbr-usage-servicedb
         manifest: |
           address: mysql.service.cf.internal
@@ -406,10 +403,7 @@
             password: (( .properties.system_database.external.app_usage_service_password.value ))
             name: (( .properties.app_usage_service_database_name.value ))
             ca_cert: (( .properties.system_database.external.ca_cert.value ))
-            verify_ssl: '(( .properties.system_database.external.ca_cert.value ? true : false ))'
-        - name: push-app-usage-service-skip-cert-verify
-          manifest: |
-            '(( .properties.system_database.external.validate_hostname.value ? false : true ))'
+            verify_ssl: '(( .properties.system_database.external.validate_hostname.value ? true : false ))'
         - name: bbr-usage-servicedb
           manifest: |
             address: (( .properties.system_database.external.host.value ))

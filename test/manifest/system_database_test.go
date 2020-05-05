@@ -345,13 +345,13 @@ var _ = Describe("System Database", func() {
 			pushUsageService, err := manifest.FindInstanceGroupJob(cgInstanceGroup, "push-usage-service")
 			Expect(err).NotTo(HaveOccurred())
 
-			verifySSL, err := pushUsageService.Property("databases/app_usage_service/verify_ssl")
+			verifyHostname, err := pushUsageService.Property("databases/app_usage_service/verify_ssl")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(verifySSL).To(BeFalse())
+			Expect(verifyHostname).To(BeFalse())
 
-			verifyHostname, err := pushUsageService.Property("ssl/skip_cert_verify")
+			skippingSSL, err := pushUsageService.Property("ssl/skip_cert_verify")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(verifyHostname).To(BeTrue())
+			Expect(skippingSSL).To(BeFalse())
 
 			bbrUsageServiceDB, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-usage-servicedb")
 			Expect(err).NotTo(HaveOccurred())
@@ -533,9 +533,9 @@ var _ = Describe("System Database", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(caCert).To(Equal("fake-ca-cert"))
 
-				verifySSL, err := pushUsageService.Property("databases/app_usage_service/verify_ssl")
+				verifyHostname, err := pushUsageService.Property("databases/app_usage_service/verify_ssl")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(verifySSL).To(BeTrue())
+				Expect(verifyHostname).To(BeFalse())
 
 				bbrUsageServiceDB, err := manifest.FindInstanceGroupJob("backup_restore", "bbr-usage-servicedb")
 				Expect(err).NotTo(HaveOccurred())
