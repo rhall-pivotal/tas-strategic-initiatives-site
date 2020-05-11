@@ -23,7 +23,7 @@ manifest: |
     ca_certs: |
       (( .properties.routing_custom_ca_certificates.value ))
       (( $ops_manager.ca_certificate ))
-      ((( /services/intermediate_tls_ca.ca )))
+      ((( /services/tls_leaf.ca )))
       ((( diego-instance-identity-intermediate-ca-2-7.ca )))
       (( .properties.network_policy_server_external_cert.cert_pem ))
     forwarded_client_cert: (( .properties.routing_tls_termination.selected_option.parsed_manifest(gorouter_forwarded_client_cert) ))
