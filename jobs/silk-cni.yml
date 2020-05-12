@@ -8,3 +8,4 @@ manifest: |
   iptables_logging: (( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ))
   iptables_accepted_udp_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec.value ))
   iptables_denied_logs_per_sec: (( .properties.container_networking_interface_plugin.silk.iptables_denied_logs_per_sec.value ))
+  host_tcp_services: (( .properties.host_tcp_services.parsed_manifest(host_tcp_services_addresses) ))

@@ -290,6 +290,19 @@ property_inputs:
       - reference: .properties.container_networking_interface_plugin.external
         label: External
 
+  - reference: .properties.host_tcp_services
+    label: Host TCP Services
+    description: |
+      If Silk is enabled, this list of TCP addresses running on the Diego Cell
+      will be accessible from all application containers.
+    property_inputs:
+    - reference: name
+      label: Name
+      description: A name describing the use of this TCP address.
+    - reference: ip_and_port
+      label: IP and Port
+      description: IPv4 address and port to make accessible, in the form of <IP>:<Port>, e.g. 169.254.0.10:8000
+
   - reference: .properties.cf_networking_search_domains
     label: DNS search domains
     description: |
