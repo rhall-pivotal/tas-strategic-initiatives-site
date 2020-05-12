@@ -95,9 +95,9 @@ variables:
     key_usage:
     - key_cert_sign
 
-- name: /services/intermediate_tls_ca
+- name: /services/tls_leaf
   options:
     ca: /services/tls_ca
-    common_name: services-intermediate-tls-ca
-    is_ca: true
+    common_name: services-tls-leaf
   type: certificate
+

@@ -14,6 +14,6 @@ var _ = Describe("windows2019fs", func() {
 
 		trustedCerts, err := fs.Property("windows-rootfs/trusted_certs")
 		Expect(trustedCerts).NotTo(BeEmpty())
-		Expect(trustedCerts).To(ContainSubstring("((/services/intermediate_tls_ca.ca))"))
+		Expect(trustedCerts).To(ContainSubstring("((/services/tls_leaf.ca))"))
 	})
 })
