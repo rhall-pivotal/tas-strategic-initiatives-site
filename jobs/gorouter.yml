@@ -22,7 +22,7 @@ manifest: |
       (( .properties.routing_custom_ca_certificates.value ))
       (( $ops_manager.ca_certificate ))
       ((( diego-instance-identity-intermediate-ca-2-7.ca )))
-      ((( /services/intermediate_tls_ca.ca )))
+      ((( /services/tls_leaf.ca )))
     frontend_idle_timeout: (( ..cf.router.frontend_idle_timeout.value ))
     tracing:
       enable_zipkin: (( enable_zipkin.value ))
