@@ -405,7 +405,7 @@ manifest: |
         override: true
         authorized-grant-types: authorization_code
         autoapprove: true
-        scope: uaa.user,cloud_controller.read,cloud_controller.admin_read_only,logs.admin,doppler.firehose
+        scope: uaa.user,cloud_controller.read,cloud_controller.admin_read_only,cloud_controller.admin,cloud_controller.global_auditor,logs.admin,doppler.firehose
         redirect-uri: "https://metrics.(( .cloud_controller.system_domain.value ))/**,https://appwatch.(( .cloud_controller.system_domain.value ))/**,https://appmetrics.(( .cloud_controller.system_domain.value ))/**,https://applogs.(( .cloud_controller.system_domain.value ))/**"
       healthwatch_ui:
         id: "(( .uaa.healthwatch_ui_credentials.identity ))"
