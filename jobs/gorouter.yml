@@ -6,6 +6,9 @@ consumes: |
 manifest: |
   request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
   router:
+    logging:
+      format:
+        timestamp: (( ..cf.properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
     http_rewrite:
       responses:
         remove_headers: (( .properties.router_headers_remove_if_specified.value ))

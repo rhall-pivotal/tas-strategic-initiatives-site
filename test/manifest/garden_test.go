@@ -69,10 +69,10 @@ var _ = Describe("Garden", func() {
 		//TODO: Testing inheritance from PAS requires manual additions to ops-manifest fixture.
 		// Unpend this test when we can render the manifest with inheritance properties like
 		// `..cf.properties.cf_networking_interface_plugin`.
-		PWhen("diego_log_timestamp_format is set to unix-epoch", func() {
+		PWhen("logging_timestamp_format is set to deprecated", func() {
 			It("is used in the garden job", func() {
 				manifest := renderProductManifest(product, map[string]interface{}{
-					"..cf.properties.diego_log_timestamp_format": "unix-epoch",
+					"..cf.properties.logging_timestamp_format": "deprecated",
 				})
 				garden := findManifestInstanceGroupJob(manifest, instanceGroup, "garden")
 
@@ -82,9 +82,11 @@ var _ = Describe("Garden", func() {
 			})
 		})
 
-		When("diego_log_timestamp_format is not set", func() {
-			It("the default is used in the garden job", func() {
-				manifest := renderProductManifest(product, nil)
+		PWhen("logging_timestamp_format is set to rfc3339", func() {
+			It("is used in the garden job", func() {
+				manifest := renderProductManifest(product, map[string]interface{}{
+					"..cf.properties.logging_timestamp_format": "rfc3339",
+				})
 				garden := findManifestInstanceGroupJob(manifest, instanceGroup, "garden")
 
 				loggingFormatTimestamp, err := garden.Property("logging/format/timestamp")

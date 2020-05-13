@@ -25,4 +25,4 @@ manifest: |
       key: (( .properties.rep_server_cert.private_key_pem ))
   logging:
     format:
-      timestamp: (( ..cf.properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))
+      timestamp: (( ..cf.properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))

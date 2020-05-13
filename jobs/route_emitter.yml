@@ -16,7 +16,7 @@ manifest: |
     enabled: true
   logging:
     format:
-      timestamp: (( ..cf.properties.diego_log_timestamp_format.selected_option.parsed_manifest(timestamp_format) ))
+      timestamp: (( ..cf.properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))
   loggregator:
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( .properties.loggregator_client_cert.cert_pem ))
