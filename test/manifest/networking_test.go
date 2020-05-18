@@ -183,6 +183,40 @@ var _ = Describe("Networking", func() {
 		})
 	})
 
+	Describe("silk-cni properties", func(){
+			var (
+				inputProperties     map[string]interface{}
+			)
+
+			Context("when host tcp services are specified", func() {
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{
+						".properties.host_tcp_services": []map[string]string{
+							{
+								"name":        "some-host-tcp-service",
+								"ip_and_port": "169.254.0.1:2345",
+							},
+							{
+								"ip_and_port": "169.254.0.2:6789",
+							},
+						},
+					}
+				})
+
+				It("adds the addresses to the manifest", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "silk-cni")
+					Expect(err).NotTo(HaveOccurred())
+
+					addresses, err := job.Property("host_tcp_services")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(addresses).To(ConsistOf("169.254.0.1:2345", "169.254.0.2:6789"))
+				})
+			})
+		})
+
 	Describe("Routing", func() {
 		Describe("drain_timeout", func() {
 			var (

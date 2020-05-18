@@ -344,6 +344,23 @@
   - name: disable
     select_value: disable
 
+- name: host_tcp_services
+  type: collection
+  configurable: true
+  optional: true
+  property_blueprints:
+  - name: name
+    type: string
+    optional: true
+    configurable: true
+  - name: ip_and_port
+    type: string
+    configurable: true
+  named_manifests:
+  - name: host_tcp_services_addresses
+    manifest: |
+      (( current_record.ip_and_port.value ))
+
 - name: skip_cert_verify
   type: boolean
   configurable: true
