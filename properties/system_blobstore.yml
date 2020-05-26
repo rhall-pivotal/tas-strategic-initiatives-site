@@ -129,6 +129,9 @@
         - name: enable_unversioned_s3_backup
           manifest: |
             false
+        - name: enable_backup_path_style
+          manifest: |
+            false
         - name: enable_versioned_s3_backup
           manifest: |
             false
@@ -337,6 +340,9 @@
         - name: enable_versioned_s3_backup
           manifest: |
             (( .properties.system_blobstore.external.versioning.value ))
+        - name: enable_backup_path_style
+          manifest: |
+             (( .properties.system_blobstore.external.path_style_s3_urls.value ))
         - name: enable_gcs_backup
           manifest: |
             false
@@ -504,6 +510,9 @@
         - name: enable_versioned_s3_backup
           manifest: |
             false
+        - name: enable_backup_path_style
+          manifest: |
+            false
         - name: enable_gcs_backup
           manifest: |
             false
@@ -621,6 +630,9 @@
           manifest: |
             false
         - name: enable_versioned_s3_backup
+          manifest: |
+            false
+        - name: enable_backup_path_style
           manifest: |
             false
         - name: enable_internal_backup
@@ -774,6 +786,9 @@
           manifest: |
             false
         - name: enable_versioned_s3_backup
+          manifest: |
+            false
+        - name: enable_backup_path_style
           manifest: |
             false
         - name: enable_gcs_backup

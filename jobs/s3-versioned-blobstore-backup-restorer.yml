@@ -3,5 +3,6 @@ name: s3-versioned-blobstore-backup-restorer
 release: backup-and-restore-sdk
 manifest: |
   enabled: (( .properties.system_blobstore.selected_option.parsed_manifest(enable_versioned_s3_backup) ))
+  force_path_style: (( .properties.system_blobstore.selected_option.parsed_manifest(enable_backup_path_style) ))
   buckets:
     '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_all) ? .properties.system_blobstore.selected_option.parsed_manifest(all_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_buckets) ))'

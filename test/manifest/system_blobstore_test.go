@@ -247,6 +247,44 @@ var _ = Describe("System Blobstore", func() {
 					}
 				})
 			})
+
+			When("backup path style is enabled", func() {
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external.path_style_s3_urls"] = "true"
+				})
+
+				It("templates force_path_style=true", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-versioned-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					value, err := job.Property("force_path_style")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(value).To(BeTrue())
+				})
+			})
+
+			When("backup path style is disabled", func() {
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external.path_style_s3_urls"] = "false"
+				})
+
+				It("templates force_path_style=true", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-versioned-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					value, err := job.Property("force_path_style")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(value).To(BeFalse())
+				})
+			})
 		})
 
 		Context("when the user disables versioning", func() {
@@ -402,6 +440,44 @@ var _ = Describe("System Blobstore", func() {
 						_, err := job.Property(fmt.Sprintf("buckets/%s", bucket))
 						Expect(err).To(HaveOccurred())
 					}
+				})
+			})
+
+			When("backup path style is enabled", func() {
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external.path_style_s3_urls"] = "true"
+				})
+
+				It("templates force_path_style=true", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-unversioned-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					value, err := job.Property("force_path_style")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(value).To(BeTrue())
+				})
+			})
+
+			When("backup path style is disabled", func() {
+				BeforeEach(func() {
+					inputProperties[".properties.system_blobstore.external.path_style_s3_urls"] = "false"
+				})
+
+				It("templates force_path_style=true", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob("backup_restore", "s3-unversioned-blobstore-backup-restorer")
+					Expect(err).NotTo(HaveOccurred())
+
+					value, err := job.Property("force_path_style")
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(value).To(BeFalse())
 				})
 			})
 		})
