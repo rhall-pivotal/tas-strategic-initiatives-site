@@ -2,7 +2,6 @@
 name: bosh-system-metrics-forwarder
 release: bosh-system-metrics-forwarder
 manifest: |
-  enabled: (( $director.metrics_server_enabled ))
   bosh:
     url: https://(( $director.hostname || $director.deployment_ip )):25555
     root_ca_cert: "(( $director.ca_public_key ))"

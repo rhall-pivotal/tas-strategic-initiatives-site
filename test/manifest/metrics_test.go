@@ -118,27 +118,4 @@ var _ = Describe("Metrics", func() {
 			}
 		})
 	})
-
-	Describe("system metric forwarder", func() {
-		var instanceGroup string
-		BeforeEach(func() {
-			if productName == "srt" {
-				instanceGroup = "control"
-			} else {
-				instanceGroup = "loggregator_trafficcontroller"
-			}
-		})
-
-		It("configures the legacy bosh-system-metrics-forwarder if it is enabled on the Director", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			metricsForwarder, err := manifest.FindInstanceGroupJob(instanceGroup, "bosh-system-metrics-forwarder")
-			Expect(err).NotTo(HaveOccurred())
-
-			enabled, err := metricsForwarder.Property("enabled")
-			Expect(err).ToNot(HaveOccurred())
-			Expect(enabled).To(Equal(false)) // This is defaulted to false in Ops Manager 2.10
-		})
-	})
 })
