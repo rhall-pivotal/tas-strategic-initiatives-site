@@ -2,13 +2,10 @@
 name: metrics-discovery-registrar
 release: metrics-discovery
 consumes: |
-  nats-tls: {from: nats-tls, deployment: ((  ..cf.deployment_name  )) }
+  nats: {from: nats, deployment: ((  ..cf.deployment_name  )) }
 manifest: |
   metrics:
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( .properties.metrics_discovery_metrics_tls.cert_pem ))
     key: (( .properties.metrics_discovery_metrics_tls.private_key_pem ))
     server_name: metrics_discovery_metrics
-  nats_client:
-    cert: (( ..cf.properties.nats_client_cert.cert_pem ))
-    key: (( ..cf.properties.nats_client_cert.private_key_pem ))
