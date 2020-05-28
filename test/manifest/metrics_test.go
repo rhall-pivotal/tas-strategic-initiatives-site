@@ -96,6 +96,18 @@ var _ = Describe("Metrics", func() {
 			Expect(err).ToNot(HaveOccurred())
 			Expect(enabled).To(Equal(7100))
 		})
+
+		It("uses the director value of system_metrics_runtime_enabled for the enabled property", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			metricScraper, err := manifest.FindInstanceGroupJob(instanceGroup, "loggr-system-metric-scraper")
+			Expect(err).NotTo(HaveOccurred())
+
+			enabled, err := metricScraper.Property("enabled")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(enabled).To(Equal(true))
+		})
 	})
 
 	Describe("metrics discovery", func() {
