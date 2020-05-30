@@ -8,14 +8,16 @@ import (
 )
 
 type OpsManifestRunner struct {
-	cmdRunner CommandRunner
-	FileIO    FileIO
+	cmdRunner      CommandRunner
+	FileIO         FileIO
+	additionalArgs []string
 }
 
-func NewOpsManifestRunner(cmdRunner CommandRunner, fileIO FileIO) OpsManifestRunner {
+func NewOpsManifestRunner(cmdRunner CommandRunner, fileIO FileIO, additionalArgs ...string) OpsManifestRunner {
 	return OpsManifestRunner{
-		cmdRunner: cmdRunner,
-		FileIO:    fileIO,
+		cmdRunner:      cmdRunner,
+		FileIO:         fileIO,
+		additionalArgs: additionalArgs,
 	}
 }
 
@@ -33,11 +35,10 @@ func (o OpsManifestRunner) GetManifest(productProperties, metadataFilePath strin
 		return nil, err //not tested
 	}
 
-	response, errOutput, err := o.cmdRunner.Run(
-		"ops-manifest",
-		"--config-file", configFileYML,
-		"--metadata-path", metadataFilePath,
-	)
+	args := []string{"--config-file", configFileYML, "--metadata-path", metadataFilePath}
+	args = append(args, o.additionalArgs...)
+
+	response, errOutput, err := o.cmdRunner.Run("ops-manifest", args...)
 
 	if err != nil {
 		return nil, fmt.Errorf("Unable to retrieve manifest: %s: %s", err, errOutput)

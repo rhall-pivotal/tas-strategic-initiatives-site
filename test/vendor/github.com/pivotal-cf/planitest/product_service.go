@@ -37,7 +37,7 @@ func NewProductService(config ProductConfig) (*ProductService, error) {
 
 	executor := internal.NewEnvironmentSharingCommandRunner(os.Environ())
 	omRunner := internal.NewOMRunner(executor, internal.RealIO)
-	opsManifestRunner := internal.NewOpsManifestRunner(executor, internal.RealIO)
+	opsManifestRunner := internal.NewOpsManifestRunner(executor, internal.RealIO, opsManifestAdditionalArgs()...)
 
 	var (
 		renderService RenderService
@@ -57,6 +57,22 @@ func NewProductService(config ProductConfig) (*ProductService, error) {
 	}
 
 	return &ProductService{config: config, renderService: renderService}, nil
+}
+
+func opsManifestAdditionalArgs() []string {
+	tasMetadataPath := os.Getenv("TAS_METADATA_PATH")
+	tasConfigFile := os.Getenv("TAS_CONFIG_FILE")
+	var args []string
+
+	if tasMetadataPath != "" {
+		args = append(args, "--tas-metadata-path", tasMetadataPath)
+	}
+
+	if tasConfigFile != "" {
+		args = append(args, "--tas-config-file", tasConfigFile)
+	}
+
+	return args
 }
 
 func (p *ProductService) RenderManifest(additionalProperties map[string]interface{}) (Manifest, error) {
