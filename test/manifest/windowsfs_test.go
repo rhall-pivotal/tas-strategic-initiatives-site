@@ -7,7 +7,7 @@ import (
 
 var _ = Describe("windows2019fs", func() {
 	It("accepts trusted certs", func() {
-		manifest, err := product.RenderManifest(map[string]interface{}{})
+		manifest, err := product.RenderManifest(nil)
 
 		fs, err := manifest.FindInstanceGroupJob("windows_diego_cell", "windows2019fs")
 		Expect(err).NotTo(HaveOccurred())

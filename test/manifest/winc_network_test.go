@@ -7,7 +7,7 @@ import (
 
 var _ = Describe("winc_network", func() {
 	It("sets networking properties", func() {
-		manifest, err := product.RenderManifest(map[string]interface{}{})
+		manifest, err := product.RenderManifest(nil)
 		Expect(err).NotTo(HaveOccurred())
 
 		winc, err := manifest.FindInstanceGroupJob("windows_diego_cell", "winc-network-hns-acls")
