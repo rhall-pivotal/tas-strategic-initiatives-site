@@ -19,11 +19,7 @@ type ProductConfig struct {
 
 type ProductService struct {
 	config        ProductConfig
-	renderService RenderService
-}
-
-type RenderService interface {
-	RenderManifest(tileConfig io.Reader, tileMetadata io.Reader) (string, error)
+	renderService internal.RenderService
 }
 
 func NewProductService(config ProductConfig) (*ProductService, error) {
@@ -40,7 +36,7 @@ func NewProductService(config ProductConfig) (*ProductService, error) {
 	opsManifestRunner := internal.NewOpsManifestRunner(executor, internal.RealIO, opsManifestAdditionalArgs()...)
 
 	var (
-		renderService RenderService
+		renderService internal.RenderService
 		err           error
 	)
 
