@@ -17,15 +17,6 @@ product-properties:
     value: cf-release-engineering@pivotal.io
   ".properties.cf_networking_search_domains":
     value: "some-search-domain,another-search-domain"
-  ".properties.credhub_key_encryption_passwords":
-    value:
-    - key:
-        secret: credhub_key_encryption_password
-      name: Key
-      primary: true
-      provider: internal
-  ".properties.enable_service_discovery_for_apps":
-    value: true
   ".properties.gorouter_ssl_ciphers":
     value: ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
   ".properties.haproxy_forward_tls":
@@ -58,14 +49,10 @@ product-properties:
     value: internal
   ".properties.tcp_routing":
     value: enable
-  ".properties.tcp_routing.enable.reservable_ports":
-    value: 1024-1123
   ".properties.syslog_agent_aggregate_drains":
     value: "external-syslog-destination"
   ".properties.enable_v2_firehose":
     value: true
-  ".properties.disable_logs_in_firehose":
-    value: false
   ".uaa.service_provider_key_credentials":
     value:
       cert_pem: some-cert-pem
