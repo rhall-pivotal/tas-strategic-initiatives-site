@@ -74,11 +74,11 @@ property_inputs:
     Reverse Log Proxy.
 
 - reference: .properties.disable_logs_in_firehose
-  label: Disable Logs In Firehose
+  label: Disable logs in Firehose
   description: |
-    Logs are not sent in the firehose components,
-    allowing scaling down doppler and traffic controller vms.
-    Use in conjunction with log cache syslog ingestion.
+    Logs are not sent to Firehose components.
+    Use in conjunction with Log Cache syslog ingestion
+    or an aggregate log drain.
 
 - reference: .properties.syslog_agent_aggregate_drains
   label: Aggregate log and metric drain destinations
