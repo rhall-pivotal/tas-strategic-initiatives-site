@@ -196,10 +196,12 @@ property_inputs:
       label: Disable
 
   - reference: .router.request_timeout_in_seconds
-    label: Gorouter timeout to back ends
+    label: Back end request timeout and idle timeout for the Gorouter
     description: |
-      The timeout for connections from the Gorouter and HAProxy to apps and
-      system components. Enter value in seconds.
+      The amount of time requests from the Gorouter to apps are allowed to live
+      before being canceled. Also the amount of time connections from the
+      Gorouter to apps are allowed to remain idle before being closed. Enter
+      value in seconds.
 
   - reference: .router.frontend_idle_timeout
     label: Front end idle timeout for the Gorouter and HAProxy
