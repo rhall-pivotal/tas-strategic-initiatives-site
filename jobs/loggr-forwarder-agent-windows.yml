@@ -11,7 +11,7 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
     cert: (( .properties.forwarder_agent_metrics_tls.cert_pem ))
     key: (( .properties.forwarder_agent_metrics_tls.private_key_pem ))
-    server_name: forwarder_agent_metrics
+    server_name: forwarder-agent-metrics
   tags:
     placement_tag: (( .windows_diego_cell.placement_tags.value ))
     product: $( variable "label" )
