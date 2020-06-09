@@ -3268,7 +3268,7 @@ job_types:
             override: true
             authorized-grant-types: authorization_code
             autoapprove: true
-            scope: uaa.user,cloud_controller.read,cloud_controller.admin_read_only,logs.admin,doppler.firehose
+            scope: uaa.user,cloud_controller.read,cloud_controller.admin_read_only,cloud_controller.admin,cloud_controller.global_auditor,logs.admin,doppler.firehose
             redirect-uri: "https://metrics.(( .cloud_controller.system_domain.value ))/**,https://appwatch.(( .cloud_controller.system_domain.value ))/**,https://appmetrics.(( .cloud_controller.system_domain.value ))/**,https://applogs.(( .cloud_controller.system_domain.value ))/**"
           healthwatch_ui:
             id: "(( .uaa.healthwatch_ui_credentials.identity ))"
@@ -3471,7 +3471,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.65"
+      build: "2.11.0-build.66"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -8072,7 +8072,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: 06d71563c5b4800c609a9f4c5272f0df1b4d3bcd
+  metadata_git_sha: 8c664a40b9490b8097b2dc16a7c6489c814bcade
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8160,7 +8160,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.65
+product_version: 2.11.0-build.66
 property_blueprints:
 - configurable: false
   default: account
@@ -11578,7 +11578,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.65
+  version: 2.11.0-build.66
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
@@ -11975,7 +11975,7 @@ runtime_configs:
 serial: false
 stemcell_criteria:
   os: ubuntu-xenial
-  version: "621.74"
+  version: "621.75"
 variables:
 - name: /cf/diego-instance-identity-root-ca-2-6
   options:
