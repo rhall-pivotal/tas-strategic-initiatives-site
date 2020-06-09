@@ -8072,7 +8072,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: e40f77c40a560cb2ed70680c7ce418a667116f82
+  metadata_git_sha: c46b1a03ef9b085030bdc26f2bf2941091917016
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8995,6 +8995,7 @@ property_blueprints:
   default:
     domains:
     - doppler.service.cf.internal
+    - q-s3.doppler.default.cf.bosh
   name: log_cache_syslog_server_tls
   type: rsa_cert_credentials
 - configurable: false
