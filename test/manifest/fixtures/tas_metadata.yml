@@ -1374,6 +1374,12 @@ form_types:
     label: Enable Log Cache syslog ingestion
     reference: .properties.enable_log_cache_syslog_ingestion
   - description: |
+      Logs are not sent to Firehose components.
+      Use in conjunction with Log Cache syslog ingestion
+      and an aggregate log drain.
+    label: Disable logs in Firehose
+    reference: .properties.disable_logs_in_firehose
+  - description: |
       A comma-separated list of HTTPS or syslog URLs where all app logs
       and metrics are sent.
     label: Aggregate log and metric drain destinations
@@ -1974,6 +1980,7 @@ job_types:
         server_name: loggregator_agent_metrics
       grpc_port: 3459
       disable_udp: true
+      disable_logs: (( .properties.disable_logs_in_firehose.value ))
       loggregator_agent:
         enabled: (( .properties.enable_v2_firehose.value ))
       tags:
@@ -1999,7 +2006,7 @@ job_types:
           cert: (( .properties.syslog_agent_api_tls.cert_pem ))
           key: (( .properties.syslog_agent_api_tls.private_key_pem ))
           cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
+      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
       drain_ca_cert: (( $ops_manager.ca_certificate ))
     name: loggr-syslog-agent
     release: loggregator-agent
@@ -2350,6 +2357,7 @@ job_types:
         server_name: loggregator_agent_metrics
       grpc_port: 3459
       disable_udp: true
+      disable_logs: (( .properties.disable_logs_in_firehose.value ))
       loggregator_agent:
         enabled: (( .properties.enable_v2_firehose.value ))
       tags:
@@ -2374,7 +2382,7 @@ job_types:
           cert: (( .properties.syslog_agent_api_tls.cert_pem ))
           key: (( .properties.syslog_agent_api_tls.private_key_pem ))
           cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
+      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
       drain_ca_cert: (( $ops_manager.ca_certificate ))
     name: loggr-syslog-agent
     release: loggregator-agent
@@ -2590,6 +2598,7 @@ job_types:
         server_name: loggregator_agent_metrics
       grpc_port: 3459
       disable_udp: true
+      disable_logs: (( .properties.disable_logs_in_firehose.value ))
       loggregator_agent:
         enabled: (( .properties.enable_v2_firehose.value ))
       tags:
@@ -2615,7 +2624,7 @@ job_types:
           cert: (( .properties.syslog_agent_api_tls.cert_pem ))
           key: (( .properties.syslog_agent_api_tls.private_key_pem ))
           cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
+      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
       drain_ca_cert: (( $ops_manager.ca_certificate ))
     name: loggr-syslog-agent
     release: loggregator-agent
@@ -3471,7 +3480,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.70"
+      build: "2.11.0-build.72"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -4768,6 +4777,7 @@ job_types:
         server_name: loggregator_agent_metrics
       grpc_port: 3459
       disable_udp: true
+      disable_logs: (( .properties.disable_logs_in_firehose.value ))
       loggregator_agent:
         enabled: (( .properties.enable_v2_firehose.value ))
       tags:
@@ -4792,7 +4802,7 @@ job_types:
           cert: (( .properties.syslog_agent_api_tls.cert_pem ))
           key: (( .properties.syslog_agent_api_tls.private_key_pem ))
           cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
+      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
       drain_ca_cert: (( $ops_manager.ca_certificate ))
     name: loggr-syslog-agent
     release: loggregator-agent
@@ -5282,6 +5292,7 @@ job_types:
         server_name: loggregator_agent_metrics
       grpc_port: 3459
       disable_udp: true
+      disable_logs: (( .properties.disable_logs_in_firehose.value ))
       loggregator_agent:
         enabled: (( .properties.enable_v2_firehose.value ))
       tags:
@@ -5306,7 +5317,7 @@ job_types:
           cert: (( .properties.syslog_agent_api_tls.cert_pem ))
           key: (( .properties.syslog_agent_api_tls.private_key_pem ))
           cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
+      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
       drain_ca_cert: (( $ops_manager.ca_certificate ))
     name: loggr-syslog-agent
     release: loggregator-agent
@@ -6391,6 +6402,7 @@ job_types:
         server_name: loggregator_agent_metrics
       grpc_port: 3459
       disable_udp: true
+      disable_logs: (( .properties.disable_logs_in_firehose.value ))
       loggregator_agent:
         enabled: (( .properties.enable_v2_firehose.value ))
       tags:
@@ -6415,7 +6427,7 @@ job_types:
           cert: (( .properties.syslog_agent_api_tls.cert_pem ))
           key: (( .properties.syslog_agent_api_tls.private_key_pem ))
           cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
+      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
       drain_ca_cert: (( $ops_manager.ca_certificate ))
     name: loggr-syslog-agent
     release: loggregator-agent
@@ -6721,6 +6733,7 @@ job_types:
         server_name: loggregator_agent_metrics
       grpc_port: 3459
       disable_udp: true
+      disable_logs: (( .properties.disable_logs_in_firehose.value ))
       loggregator_agent:
         enabled: (( .properties.enable_v2_firehose.value ))
       tags:
@@ -6745,7 +6758,7 @@ job_types:
           cert: (( .properties.syslog_agent_api_tls.cert_pem ))
           key: (( .properties.syslog_agent_api_tls.private_key_pem ))
           cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
+      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
       drain_ca_cert: (( $ops_manager.ca_certificate ))
     name: loggr-syslog-agent
     release: loggregator-agent
@@ -6900,6 +6913,7 @@ job_types:
         server_name: loggregator_agent_metrics
       grpc_port: 3459
       disable_udp: true
+      disable_logs: (( .properties.disable_logs_in_firehose.value ))
       loggregator_agent:
         enabled: (( .properties.enable_v2_firehose.value ))
       tags:
@@ -6924,7 +6938,7 @@ job_types:
           cert: (( .properties.syslog_agent_api_tls.cert_pem ))
           key: (( .properties.syslog_agent_api_tls.private_key_pem ))
           cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
+      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
       drain_ca_cert: (( $ops_manager.ca_certificate ))
     name: loggr-syslog-agent
     release: loggregator-agent
@@ -7415,6 +7429,7 @@ job_types:
         server_name: loggregator_agent_metrics
       grpc_port: 3459
       disable_udp: true
+      disable_logs: (( .properties.disable_logs_in_firehose.value ))
       loggregator_agent:
         enabled: (( .properties.enable_v2_firehose.value ))
       tags:
@@ -7439,7 +7454,7 @@ job_types:
           cert: (( .properties.syslog_agent_api_tls.cert_pem ))
           key: (( .properties.syslog_agent_api_tls.private_key_pem ))
           cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
+      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
       drain_ca_cert: (( $ops_manager.ca_certificate ))
     name: loggr-syslog-agent
     release: loggregator-agent
@@ -7656,6 +7671,7 @@ job_types:
         server_name: loggregator_agent_metrics
       grpc_port: 3459
       disable_udp: true
+      disable_logs: (( .properties.disable_logs_in_firehose.value ))
       loggregator_agent:
         enabled: (( .properties.enable_v2_firehose.value ))
       tags:
@@ -7680,7 +7696,7 @@ job_types:
           cert: (( .properties.syslog_agent_api_tls.cert_pem ))
           key: (( .properties.syslog_agent_api_tls.private_key_pem ))
           cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
+      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
       drain_ca_cert: (( $ops_manager.ca_certificate ))
     name: loggr-syslog-agent
     release: loggregator-agent
@@ -7820,6 +7836,7 @@ job_types:
         server_name: loggregator_agent_metrics
       grpc_port: 3459
       disable_udp: true
+      disable_logs: (( .properties.disable_logs_in_firehose.value ))
       loggregator_agent:
         enabled: (( .properties.enable_v2_firehose.value ))
       tags:
@@ -7844,7 +7861,7 @@ job_types:
           cert: (( .properties.syslog_agent_api_tls.cert_pem ))
           key: (( .properties.syslog_agent_api_tls.private_key_pem ))
           cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
+      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
       drain_ca_cert: (( $ops_manager.ca_certificate ))
     name: loggr-syslog-agent
     release: loggregator-agent
@@ -7982,6 +7999,7 @@ job_types:
         server_name: loggregator_agent_metrics
       grpc_port: 3459
       disable_udp: true
+      disable_logs: (( .properties.disable_logs_in_firehose.value ))
       loggregator_agent:
         enabled: (( .properties.enable_v2_firehose.value ))
       tags:
@@ -8006,7 +8024,7 @@ job_types:
           cert: (( .properties.syslog_agent_api_tls.cert_pem ))
           key: (( .properties.syslog_agent_api_tls.private_key_pem ))
           cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067,(( .properties.syslog_agent_aggregate_drains.value ))
+      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
       drain_ca_cert: (( $ops_manager.ca_certificate ))
     name: loggr-syslog-agent
     release: loggregator-agent
@@ -8074,7 +8092,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: 7fcfb2022b9bcf2552ff72fa21c3bcc9ffef0e2c
+  metadata_git_sha: 9453b7e6ff68ba95965f11168c4f5d645923c3b9
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8162,7 +8180,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.70
+product_version: 2.11.0-build.72
 property_blueprints:
 - configurable: false
   default: account
@@ -11580,6 +11598,10 @@ property_blueprints:
   type: boolean
 - configurable: true
   default: false
+  name: disable_logs_in_firehose
+  type: boolean
+- configurable: true
+  default: false
   name: enable_log_cache_syslog_ingestion
   type: boolean
 - configurable: false
@@ -11596,7 +11618,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.70
+  version: 2.11.0-build.72
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
