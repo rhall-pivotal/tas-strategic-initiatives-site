@@ -318,8 +318,6 @@ form_types:
         label: TCP request timeout
         reference: .properties.tcp_routing.enable.request_timeout_in_seconds
       reference: .properties.tcp_routing.enable
-  - label: Enable dynamic egress enforcement (beta)
-    reference: .properties.experimental_dynamic_egress_enforcement
   - description: |
       A list of headers the Gorouter removes on any response from an app.
     label: Remove specified HTTP response headers
@@ -3471,7 +3469,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.68"
+      build: "2.11.0-build.69"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -8074,7 +8072,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: e67ad78cf678d34af164442c113419c002475384
+  metadata_git_sha: e40f77c40a560cb2ed70680c7ce418a667116f82
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8162,7 +8160,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.68
+product_version: 2.11.0-build.69
 property_blueprints:
 - configurable: false
   default: account
@@ -11595,7 +11593,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.68
+  version: 2.11.0-build.69
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
