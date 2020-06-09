@@ -5446,12 +5446,14 @@ job_types:
     release: cf-autoscaling
   - manifest: |
       enabled: (( .properties.system_blobstore.selected_option.parsed_manifest(enable_versioned_s3_backup) ))
+      force_path_style: (( .properties.system_blobstore.selected_option.parsed_manifest(enable_backup_path_style) ))
       buckets:
         '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_all) ? .properties.system_blobstore.selected_option.parsed_manifest(all_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_buckets) ))'
     name: s3-versioned-blobstore-backup-restorer
     release: backup-and-restore-sdk
   - manifest: |
       enabled: (( .properties.system_blobstore.selected_option.parsed_manifest(enable_unversioned_s3_backup) ))
+      force_path_style: (( .properties.system_blobstore.selected_option.parsed_manifest(enable_backup_path_style) ))
       buckets:
         '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_all) ? .properties.system_blobstore.selected_option.parsed_manifest(all_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_buckets) ))'
     name: s3-unversioned-blobstore-backup-restorer
@@ -8072,7 +8074,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: 8c664a40b9490b8097b2dc16a7c6489c814bcade
+  metadata_git_sha: 7af024b2a4d9e643345e0e003faec4f89030e896
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -10019,6 +10021,9 @@ property_blueprints:
       name: enable_unversioned_s3_backup
     - manifest: |
         false
+      name: enable_backup_path_style
+    - manifest: |
+        false
       name: enable_versioned_s3_backup
     - manifest: |
         false
@@ -10225,6 +10230,9 @@ property_blueprints:
         (( .properties.system_blobstore.external.versioning.value ))
       name: enable_versioned_s3_backup
     - manifest: |
+        (( .properties.system_blobstore.external.path_style_s3_urls.value ))
+      name: enable_backup_path_style
+    - manifest: |
         false
       name: enable_gcs_backup
     - manifest: |
@@ -10391,6 +10399,9 @@ property_blueprints:
       name: enable_versioned_s3_backup
     - manifest: |
         false
+      name: enable_backup_path_style
+    - manifest: |
+        false
       name: enable_gcs_backup
     - manifest: |
         false
@@ -10507,6 +10518,9 @@ property_blueprints:
     - manifest: |
         false
       name: enable_versioned_s3_backup
+    - manifest: |
+        false
+      name: enable_backup_path_style
     - manifest: |
         false
       name: enable_internal_backup
@@ -10658,6 +10672,9 @@ property_blueprints:
     - manifest: |
         false
       name: enable_versioned_s3_backup
+    - manifest: |
+        false
+      name: enable_backup_path_style
     - manifest: |
         false
       name: enable_gcs_backup
