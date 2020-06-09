@@ -407,7 +407,7 @@ var _ = Describe("UAA", func() {
 			By("providing catalyst the expected permission scopes", func() {
 				catalystScopes, err := uaa.Property("uaa/clients/catalyst/scope")
 				Expect(err).ToNot(HaveOccurred())
-				Expect(catalystScopes).To(Equal("uaa.user,cloud_controller.read,cloud_controller.admin_read_only,logs.admin,doppler.firehose"))
+				Expect(catalystScopes).To(Equal("uaa.user,cloud_controller.read,cloud_controller.admin_read_only,cloud_controller.admin,cloud_controller.global_auditor,logs.admin,doppler.firehose"))
 			})
 
 			By("providing catalyst has the expected redirect uri", func() {
