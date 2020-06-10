@@ -150,7 +150,7 @@ var _ = Describe("Metrics", func() {
 
 			enabled, err := metricsForwarder.Property("enabled")
 			Expect(err).ToNot(HaveOccurred())
-			Expect(enabled).To(Equal(false)) // This is defaulted to false in Ops Manager 2.10
+			Expect(enabled).To(Equal(true)) // This is defaulted to true in Ops Manager 2.10
 		})
 	})
 })
