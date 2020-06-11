@@ -3480,7 +3480,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.77"
+      build: "2.11.0-build.78"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -8092,7 +8092,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: 6bee4527d93cbf73b5db94f2d168cc6c82062c45
+  metadata_git_sha: c5d3ccdd86af0a352a57cda5b7d559aa191af3c1
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8180,7 +8180,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.77
+product_version: 2.11.0-build.78
 property_blueprints:
 - configurable: false
   default: account
@@ -11618,7 +11618,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.77
+  version: 2.11.0-build.78
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
