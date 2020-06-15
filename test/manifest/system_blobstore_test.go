@@ -497,6 +497,7 @@ var _ = Describe("System Blobstore", func() {
 				".properties.system_blobstore.external_azure.packages_container":   "some-packages-bucket",
 				".properties.system_blobstore.external_azure.resources_container":  "some-resources-bucket",
 				".properties.system_blobstore.external_azure.account_name":         "some-account-name",
+				".properties.system_blobstore.external_azure.environment":          "some-environment-name",
 				".properties.system_blobstore.external_azure.access_key": map[string]string{
 					"secret": "some-access-key",
 				},
@@ -545,6 +546,7 @@ var _ = Describe("System Blobstore", func() {
 					containerProperties, err := job.Property(fmt.Sprintf("containers/%s", container))
 					Expect(err).NotTo(HaveOccurred())
 					Expect(containerProperties).To(HaveKeyWithValue("azure_storage_account", "some-account-name"))
+					Expect(containerProperties).To(HaveKeyWithValue("environment", "some-environment-name"))
 					Expect(containerProperties).To(HaveKeyWithValue("azure_storage_key", ContainSubstring("system_blobstore/external_azure/access_key")))
 				}
 			})
@@ -593,8 +595,9 @@ var _ = Describe("System Blobstore", func() {
 					Expect(err).NotTo(HaveOccurred())
 
 					for _, container := range []string{"buildpacks", "packages"} {
-						_, err = job.Property(fmt.Sprintf("containers/%s", container))
+						containerProperties, err := job.Property(fmt.Sprintf("containers/%s", container))
 						Expect(err).NotTo(HaveOccurred())
+						Expect(containerProperties).To(HaveKeyWithValue("environment", "some-environment-name"))
 					}
 
 					_, err = job.Property("containers/droplets")
@@ -619,8 +622,9 @@ var _ = Describe("System Blobstore", func() {
 					job, err := manifest.FindInstanceGroupJob("backup_restore", "azure-blobstore-backup-restorer")
 					Expect(err).NotTo(HaveOccurred())
 
-					_, err = job.Property("containers/buildpacks")
+					containerProperties, err := job.Property("containers/buildpacks")
 					Expect(err).NotTo(HaveOccurred())
+					Expect(containerProperties).To(HaveKeyWithValue("environment", "some-environment-name"))
 
 					for _, container := range []string{"packages", "droplets"} {
 						_, err := job.Property(fmt.Sprintf("containers/%s", container))
