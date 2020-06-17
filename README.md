@@ -24,5 +24,3 @@ Yup, it is located [here](https://releng.ci.cf-app.com/?search=wrt)
 
 Please refer to [PAS Contribution document](https://github.com/pivotal-cf/p-runtime/blob/master/CONTRIBUTING.md)
 
-
-## Ignore this - testing PR dependency
