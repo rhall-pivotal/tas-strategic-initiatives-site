@@ -56,6 +56,22 @@ var _ = Describe("CF Autoscaling", func() {
 		Expect(property).To(BeTrue())
 	})
 
+	Context("when the user enables verbose logging", func() {
+		It("enables verbose logging", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.autoscale_enable_verbose_logging": true,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "deploy-autoscaler")
+			Expect(err).NotTo(HaveOccurred())
+
+			property, err := job.Property("autoscale/enable_verbose_logging")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(property).To(BeTrue())
+		})
+	})
+
 	Context("when the user disables connection pooling", func() {
 		It("sets the autoscale api to disable connection pooling", func() {
 			manifest, err := product.RenderManifest(map[string]interface{}{

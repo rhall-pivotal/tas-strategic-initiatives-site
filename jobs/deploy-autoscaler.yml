@@ -25,7 +25,7 @@ manifest: |
     instance_count: (( .properties.autoscale_instance_count.value ))
     instance_memory: '256M'
     log_level: 'error'
-    log_verbose: (( .properties.autoscale_enable_verbose_logging.value ))
+    enable_verbose_logging: (( .properties.autoscale_enable_verbose_logging.value ))
     marketplace_company_name: VMware, Inc. or its affiliates
     # $v is declared higher up
     marketplace_documentation_url: https://docs.pivotal.io/pivotalcf/$($v)/appsman-services/autoscaler/using-autoscaler.html
