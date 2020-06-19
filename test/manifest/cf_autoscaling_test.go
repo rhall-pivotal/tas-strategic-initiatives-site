@@ -56,6 +56,18 @@ var _ = Describe("CF Autoscaling", func() {
 		Expect(property).To(BeTrue())
 	})
 
+	It("sets the log_level to error", func() {
+		manifest, err := product.RenderManifest(nil)
+		Expect(err).NotTo(HaveOccurred())
+
+		job, err := manifest.FindInstanceGroupJob(instanceGroup, "deploy-autoscaler")
+		Expect(err).NotTo(HaveOccurred())
+
+		logLevel, err := job.Property("autoscale/log_level")
+		Expect(err).ToNot(HaveOccurred())
+		Expect(logLevel).To(Equal("error"))
+	})
+
 	Context("when the user enables verbose logging", func() {
 		It("enables verbose logging", func() {
 			manifest, err := product.RenderManifest(map[string]interface{}{
@@ -69,6 +81,19 @@ var _ = Describe("CF Autoscaling", func() {
 			property, err := job.Property("autoscale/enable_verbose_logging")
 			Expect(err).ToNot(HaveOccurred())
 			Expect(property).To(BeTrue())
+		})
+		It("sets the log_level to info", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".properties.autoscale_enable_verbose_logging": true,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "deploy-autoscaler")
+			Expect(err).NotTo(HaveOccurred())
+
+			logLevel, err := job.Property("autoscale/log_level")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(logLevel).To(Equal("info"))
 		})
 	})
 
