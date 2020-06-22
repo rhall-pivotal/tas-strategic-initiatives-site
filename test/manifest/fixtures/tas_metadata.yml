@@ -1588,7 +1588,7 @@ form_types:
   - label: Autoscaler API instance count
     reference: .properties.autoscale_api_instance_count
   - description: |
-      The size of the window of metrics that App Autoscaler uses
+      The maximum size of the window of metrics that App Autoscaler uses
       to make scaling decisions. Enter value in seconds.
     label: Metric collection interval
     reference: .properties.autoscale_metric_bucket_count
@@ -3480,7 +3480,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.90"
+      build: "2.11.0-build.91"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -8092,7 +8092,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: 82af9772e2f574a69336456a0d6d7d606e5de375
+  metadata_git_sha: 2c234caa7f0924fc31c24f8c0f8599c4e4a05178
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8180,7 +8180,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.90
+product_version: 2.11.0-build.91
 property_blueprints:
 - configurable: false
   default: account
@@ -11624,7 +11624,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.90
+  version: 2.11.0-build.91
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
