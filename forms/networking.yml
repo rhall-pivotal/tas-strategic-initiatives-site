@@ -206,7 +206,9 @@ property_inputs:
   label: HTTP headers to log
   description: |
     A comma-separated list of HTTP headers that annotate access log
-    events on the Gorouter.
+    events on the Gorouter. This list only applies to headers on HTTP
+    Requests. The following HTTP Request headers are always logged: Referer,
+    User-Agent, X-Forwarded-For, X-Forwarded-Proto, and X-Vcap-Request-ID.
 
 - reference: .properties.haproxy_max_buffer_size
   label: HAProxy request maximum buffer size
