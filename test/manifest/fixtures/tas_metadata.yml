@@ -3480,7 +3480,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.89"
+      build: "2.11.0-build.90"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -8092,7 +8092,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: fcad08a68455852584ae7c328bd51b93489232e6
+  metadata_git_sha: 82af9772e2f574a69336456a0d6d7d606e5de375
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8180,7 +8180,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.89
+product_version: 2.11.0-build.90
 property_blueprints:
 - configurable: false
   default: account
@@ -10588,6 +10588,7 @@ property_blueprints:
           name: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
           azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
           azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+          environment: (( .properties.system_blobstore.external_azure.environment.value ))
           restore_from:
             azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
             azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
@@ -10595,6 +10596,7 @@ property_blueprints:
           name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
           azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
           azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+          environment: (( .properties.system_blobstore.external_azure.environment.value ))
           restore_from:
             azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
             azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
@@ -10602,6 +10604,7 @@ property_blueprints:
           name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
           azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
           azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+          environment: (( .properties.system_blobstore.external_azure.environment.value ))
           restore_from:
             azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
             azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
@@ -10614,6 +10617,7 @@ property_blueprints:
           name: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
           azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
           azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+          environment: (( .properties.system_blobstore.external_azure.environment.value ))
           restore_from:
             azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
             azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
@@ -10621,6 +10625,7 @@ property_blueprints:
           name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
           azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
           azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+          environment: (( .properties.system_blobstore.external_azure.environment.value ))
           restore_from:
             azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
             azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
@@ -10630,6 +10635,7 @@ property_blueprints:
           name: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
           azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
           azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+          environment: (( .properties.system_blobstore.external_azure.environment.value ))
           restore_from:
             azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
             azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
@@ -11618,7 +11624,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.89
+  version: 2.11.0-build.90
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
