@@ -223,7 +223,9 @@ form_types:
     reference: .router.lb_healthy_threshold
   - description: |
       A comma-separated list of HTTP headers that annotate access log
-      events on the Gorouter.
+      events on the Gorouter. This list only applies to headers on HTTP
+      Requests. The following HTTP Request headers are always logged: Referer,
+      User-Agent, X-Forwarded-For, X-Forwarded-Proto, and X-Vcap-Request-ID.
     label: HTTP headers to log
     reference: .router.extra_headers_to_log
   - description: The buffer size to use for requests. Enter value in bytes.
@@ -2723,6 +2725,7 @@ job_types:
     name: prom_scraper
     release: loggregator-agent
   - manifest: |
+      enabled: (( $director.system_metrics_runtime_enabled ))
       scrape_interval: "1m"
       scrape_port: 53035
       debug_port: 14920
@@ -3480,7 +3483,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.91"
+      build: "2.11.0-build.92"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -4150,6 +4153,7 @@ job_types:
   - name: database-backup-restorer
     release: backup-and-restore-sdk
   - manifest: |
+      enabled: (( $director.metrics_server_enabled ))
       bosh:
         url: https://(( $director.hostname || $director.deployment_ip )):25555
         root_ca_cert: "(( $director.ca_public_key ))"
@@ -4413,8 +4417,8 @@ job_types:
         encryption_key: ((( deploy-autoscaling-encryption-key )))
         instance_count: (( .properties.autoscale_instance_count.value ))
         instance_memory: '256M'
-        log_level: 'error'
-        log_verbose: (( .properties.autoscale_enable_verbose_logging.value ))
+        log_level: '(( .properties.autoscale_enable_verbose_logging.value ? "info" : "error" ))'
+        enable_verbose_logging: (( .properties.autoscale_enable_verbose_logging.value ))
         marketplace_company_name: VMware, Inc. or its affiliates
         # $v is declared higher up
         marketplace_documentation_url: https://docs.pivotal.io/pivotalcf/2-11/appsman-services/autoscaler/using-autoscaler.html
@@ -5590,8 +5594,8 @@ job_types:
         encryption_key: ((( deploy-autoscaling-encryption-key )))
         instance_count: (( .properties.autoscale_instance_count.value ))
         instance_memory: '256M'
-        log_level: 'error'
-        log_verbose: (( .properties.autoscale_enable_verbose_logging.value ))
+        log_level: '(( .properties.autoscale_enable_verbose_logging.value ? "info" : "error" ))'
+        enable_verbose_logging: (( .properties.autoscale_enable_verbose_logging.value ))
         marketplace_company_name: VMware, Inc. or its affiliates
         # $v is declared higher up
         marketplace_documentation_url: https://docs.pivotal.io/pivotalcf/2-11/appsman-services/autoscaler/using-autoscaler.html
@@ -8092,7 +8096,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: 2c234caa7f0924fc31c24f8c0f8599c4e4a05178
+  metadata_git_sha: f4211bb3bd00f3df84649c796876214825ad6aff
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8180,7 +8184,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.91
+product_version: 2.11.0-build.92
 property_blueprints:
 - configurable: false
   default: account
@@ -11624,7 +11628,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.91
+  version: 2.11.0-build.92
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
