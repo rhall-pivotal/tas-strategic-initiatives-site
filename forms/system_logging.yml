@@ -57,6 +57,16 @@ property_inputs:
     Accepts configuration for rsyslog in the rainerscript syntax.
     Applied prior to the forwarding rule.
 
+- reference: .properties.logging_timestamp_format
+  label: Timestamp format for component logs
+
+  selector_property_inputs:
+    - reference: .properties.logging_timestamp_format.rfc3339
+      label: "Converge to human-readable RFC3339 format"
+
+    - reference: .properties.logging_timestamp_format.deprecated
+      label: "Maintain previous format"
+
 - reference: .properties.enable_v1_firehose
   label: Enable V1 Firehose
   description: Logs and metrics flow to the V1 Firehose.
@@ -89,22 +99,8 @@ property_inputs:
     https://10.10.10.10,syslog-tls://the-syslog-endpoint.com
 
 - reference: .properties.system_metrics_scraper_scrape_interval
-  label: System Metrics Scrape Interval
+  label: System metrics scrape interval
   description: |
-    The interval at which deployed VMs are scraped for system metrics. Uses Go
-    interval format, should not be set below 5s.
+    The interval at which deployed VMs are scraped for system metrics.
+    This should not be set below 5s.
   placeholder: 1m
-
-- reference: .properties.logging_timestamp_format
-  label: Timestamp Format for Component Logs
-  description: |
-    TAS components are incrementally being updated to provide the option to generate
-    logs with the human readable timestamp format RFC3339. Selecting "Converge to
-    human readable RFC3339 format" will result in all the updated components to
-    generate logs using that format.
-  selector_property_inputs:
-    - reference: .properties.logging_timestamp_format.rfc3339
-      label: "Converge to human readable RFC3339 format"
-
-    - reference: .properties.logging_timestamp_format.deprecated
-      label: "Maintain previous format"
