@@ -1362,6 +1362,13 @@ form_types:
       Applied prior to the forwarding rule.
     label: Custom rsyslog configuration
     reference: .properties.syslog_rule
+  - label: Timestamp format for component logs
+    reference: .properties.logging_timestamp_format
+    selector_property_inputs:
+    - label: Converge to human-readable RFC3339 format
+      reference: .properties.logging_timestamp_format.rfc3339
+    - label: Maintain previous format
+      reference: .properties.logging_timestamp_format.deprecated
   - description: Logs and metrics flow to the V1 Firehose.
     label: Enable V1 Firehose
     reference: .properties.enable_v1_firehose
@@ -1389,23 +1396,11 @@ form_types:
       https://10.10.10.10,syslog-tls://the-syslog-endpoint.com
     reference: .properties.syslog_agent_aggregate_drains
   - description: |
-      The interval at which deployed VMs are scraped for system metrics. Uses Go
-      interval format, should not be set below 5s.
-    label: System Metrics Scrape Interval
+      The interval at which deployed VMs are scraped for system metrics.
+      This should not be set below 5s.
+    label: System metrics scrape interval
     placeholder: 1m
     reference: .properties.system_metrics_scraper_scrape_interval
-  - description: |
-      TAS components are incrementally being updated to provide the option to generate
-      logs with the human readable timestamp format RFC3339. Selecting "Converge to
-      human readable RFC3339 format" will result in all the updated components to
-      generate logs using that format.
-    label: Timestamp Format for Component Logs
-    reference: .properties.logging_timestamp_format
-    selector_property_inputs:
-    - label: Converge to human readable RFC3339 format
-      reference: .properties.logging_timestamp_format.rfc3339
-    - label: Maintain previous format
-      reference: .properties.logging_timestamp_format.deprecated
 - description: Custom Branding
   label: Custom Branding
   markdown: |
@@ -3483,7 +3478,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.100"
+      build: "2.11.0-build.101"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -8096,7 +8091,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: 14c05f415fe1dc639c4dd735f602d8cf49d06358
+  metadata_git_sha: 979dbb467b9f6fa513398f4503f8c5b301a9de7f
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8184,7 +8179,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.100
+product_version: 2.11.0-build.101
 property_blueprints:
 - configurable: false
   default: account
@@ -11628,7 +11623,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.100
+  version: 2.11.0-build.101
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
