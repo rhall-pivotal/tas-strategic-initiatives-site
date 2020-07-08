@@ -578,6 +578,9 @@
               google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
               google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
               google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+              open_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.open_timeout_sec.value ))
+              read_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.read_timeout_sec.value ))
+              send_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.send_timeout_sec.value ))
         - name: ccdroplet
           manifest: |
             max_staged_droplets_stored: 2
@@ -588,6 +591,9 @@
               google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
               google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
               google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+              open_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.open_timeout_sec.value ))
+              read_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.read_timeout_sec.value ))
+              send_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.send_timeout_sec.value ))
         - name: ccpackage
           manifest: |
             max_package_size: (( .cloud_controller.max_package_size.value ))
@@ -598,6 +604,9 @@
               google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
               google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
               google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+              open_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.open_timeout_sec.value ))
+              read_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.read_timeout_sec.value ))
+              send_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.send_timeout_sec.value ))
         - name: ccresource
           manifest: |
             blobstore_type: fog
@@ -607,6 +616,9 @@
               google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
               google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
               google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+              open_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.open_timeout_sec.value ))
+              read_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.read_timeout_sec.value ))
+              send_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.send_timeout_sec.value ))
         - name: backup_bucket
           manifest: |
             enabled: true
@@ -676,6 +688,18 @@
         - name: service_account_json_key
           type: text
           configurable: true
+        - name: open_timeout_sec
+          type: integer
+          configurable: true
+          optional: true
+        - name: read_timeout_sec
+          type: integer
+          configurable: true
+          optional: true
+        - name: send_timeout_sec
+          type: integer
+          configurable: true
+          optional: true
 
     - name: external_azure
       select_value: external_azure

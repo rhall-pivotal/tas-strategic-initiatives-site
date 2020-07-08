@@ -1,9 +1,12 @@
 package manifest_test
 
 import (
+	"fmt"
+
+	"github.com/pivotal-cf/planitest"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/planitest"
 )
 
 var _ = Describe("CAPI", func() {
@@ -445,6 +448,89 @@ var _ = Describe("CAPI", func() {
 				}
 			})
 		})
+
+		Context("gcs storage account timeouts", func() {
+			Context("when the Operator sets timeouts", func() {
+				BeforeEach(func() {
+					var err error
+					manifest, err = product.RenderManifest(map[string]interface{}{
+						".properties.system_blobstore": "external_gcs_service_account",
+						".properties.system_blobstore.external_gcs_service_account.buildpacks_bucket":        "some-buildpacks-bucket",
+						".properties.system_blobstore.external_gcs_service_account.droplets_bucket":          "some-droplets-bucket",
+						".properties.system_blobstore.external_gcs_service_account.packages_bucket":          "some-packages-bucket",
+						".properties.system_blobstore.external_gcs_service_account.resources_bucket":         "some-resources-bucket",
+						".properties.system_blobstore.external_gcs_service_account.service_account_json_key": "service-account-json-key",
+						".properties.system_blobstore.external_gcs_service_account.project_id":               "dontcare",
+						".properties.system_blobstore.external_gcs_service_account.service_account_email":    "dontcare",
+						".properties.system_blobstore.external_gcs_service_account.backup_bucket":            "my-backup-bucket",
+						".properties.system_blobstore.external_gcs_service_account.open_timeout_sec":         12,
+						".properties.system_blobstore.external_gcs_service_account.read_timeout_sec":         34,
+						".properties.system_blobstore.external_gcs_service_account.send_timeout_sec":         56,
+					})
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				It("configures the timeouts on the blobstore buckets", func() {
+					for _, job := range ccJobs {
+						manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
+						Expect(err).NotTo(HaveOccurred())
+
+						for _, bucket := range []string{"buildpacks", "droplets", "packages", "resource_pool"} {
+							openTimeout, err := manifestJob.Property(fmt.Sprintf("cc/%s/fog_connection/open_timeout_sec", bucket))
+							Expect(err).NotTo(HaveOccurred())
+							Expect(openTimeout).To(Equal(12))
+
+							readTimeout, err := manifestJob.Property(fmt.Sprintf("cc/%s/fog_connection/read_timeout_sec", bucket))
+							Expect(err).NotTo(HaveOccurred())
+							Expect(readTimeout).To(Equal(34))
+
+							sendTimeout, err := manifestJob.Property(fmt.Sprintf("cc/%s/fog_connection/send_timeout_sec", bucket))
+							Expect(err).NotTo(HaveOccurred())
+							Expect(sendTimeout).To(Equal(56))
+						}
+					}
+				})
+			})
+
+			Context("when the Operator does not set timeouts", func() {
+				BeforeEach(func() {
+					var err error
+					manifest, err = product.RenderManifest(map[string]interface{}{
+						".properties.system_blobstore": "external_gcs_service_account",
+						".properties.system_blobstore.external_gcs_service_account.buildpacks_bucket":        "some-buildpacks-bucket",
+						".properties.system_blobstore.external_gcs_service_account.droplets_bucket":          "some-droplets-bucket",
+						".properties.system_blobstore.external_gcs_service_account.packages_bucket":          "some-packages-bucket",
+						".properties.system_blobstore.external_gcs_service_account.resources_bucket":         "some-resources-bucket",
+						".properties.system_blobstore.external_gcs_service_account.service_account_json_key": "service-account-json-key",
+						".properties.system_blobstore.external_gcs_service_account.project_id":               "dontcare",
+						".properties.system_blobstore.external_gcs_service_account.service_account_email":    "dontcare",
+						".properties.system_blobstore.external_gcs_service_account.backup_bucket":            "my-backup-bucket",
+					})
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				It("sets the timeouts to nil on each bucket", func() {
+					for _, job := range ccJobs {
+						manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
+						Expect(err).NotTo(HaveOccurred())
+
+						for _, bucket := range []string{"buildpacks", "droplets", "packages", "resource_pool"} {
+							openTimeout, err := manifestJob.Property(fmt.Sprintf("cc/%s/fog_connection/open_timeout_sec", bucket))
+							Expect(err).NotTo(HaveOccurred())
+							Expect(openTimeout).To(BeNil())
+
+							readTimeout, err := manifestJob.Property(fmt.Sprintf("cc/%s/fog_connection/read_timeout_sec", bucket))
+							Expect(err).NotTo(HaveOccurred())
+							Expect(readTimeout).To(BeNil())
+
+							sendTimeout, err := manifestJob.Property(fmt.Sprintf("cc/%s/fog_connection/send_timeout_sec", bucket))
+							Expect(err).NotTo(HaveOccurred())
+							Expect(sendTimeout).To(BeNil())
+						}
+					}
+				})
+			})
+		})
 	})
 
 	Describe("api", func() {
@@ -492,7 +578,6 @@ var _ = Describe("CAPI", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(description).To(Equal("cflinuxfs3"))
 		})
-
 
 		Describe("tls routing", func() {
 			It("configures the route registrar to use tls", func() {

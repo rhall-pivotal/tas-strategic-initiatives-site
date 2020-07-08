@@ -231,6 +231,18 @@ property_inputs:
         label: Backup bucket name
         description: The bucket for your buildpack, droplet, and package backup artifacts.
 
+      - reference: .properties.system_blobstore.external_gcs_service_account.open_timeout_sec
+        label: GCS open timeout
+        description: How long, in seconds, before failed connections time out.
+
+      - reference: .properties.system_blobstore.external_gcs_service_account.read_timeout_sec
+        label: GCS read timeout
+        description: How long, in seconds, before requests that read data time out.
+
+      - reference: .properties.system_blobstore.external_gcs_service_account.send_timeout_sec
+        label: GCS send timeout
+        description: How long, in seconds, before requests that send data time out.
+
   - reference: .properties.system_blobstore.external_azure
     label: External Azure storage
     description:
