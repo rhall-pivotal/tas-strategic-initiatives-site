@@ -2,6 +2,7 @@
 name: prom_scraper
 release: loggregator-agent
 manifest: |
+  scrape_interval: 60s
   scrape:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
