@@ -4,6 +4,7 @@ release: loggregator-agent
 consumes: |
   loggregator: {from: loggregator, deployment: (( ..cf.deployment_name ))}
 manifest: |
+  scrape_interval: 60s
   scrape:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
