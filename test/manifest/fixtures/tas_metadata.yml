@@ -3469,7 +3469,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.125"
+      build: "2.11.0-build.126"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -8080,7 +8080,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: 291f15b194b95ec7fc3b785d4accd001d879abc8
+  metadata_git_sha: 95dfc82d52f4af0fbd5dc9c9c3fe50619636f601
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8165,7 +8165,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.125
+product_version: 2.11.0-build.126
 property_blueprints:
 - configurable: false
   default: account
@@ -11607,7 +11607,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.125
+  version: 2.11.0-build.126
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
@@ -12004,7 +12004,7 @@ runtime_configs:
 serial: false
 stemcell_criteria:
   os: ubuntu-xenial
-  version: "621.77"
+  version: "621.78"
 variables:
 - name: /cf/diego-instance-identity-root-ca-2-6
   options:
