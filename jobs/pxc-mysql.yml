@@ -67,6 +67,7 @@ manifest: |
     username: ((( mysql-metrics-db-credentials.username )))
     password: ((( mysql-metrics-db-credentials.password )))
   tls:
+    enforce_tls_v1_2: true
     galera:
       ca: (( $ops_manager.ca_certificate ))
       certificate: (( .properties.pxc_internal_certificate.cert_pem ))
