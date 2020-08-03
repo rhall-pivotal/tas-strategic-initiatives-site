@@ -1240,6 +1240,15 @@ form_types:
       - description: The bucket for your buildpack, droplet, and package backup artifacts.
         label: Backup bucket name
         reference: .properties.system_blobstore.external_gcs_service_account.backup_bucket
+      - description: How long, in seconds, before failed connections time out.
+        label: GCS open timeout
+        reference: .properties.system_blobstore.external_gcs_service_account.open_timeout_sec
+      - description: How long, in seconds, before requests that read data time out.
+        label: GCS read timeout
+        reference: .properties.system_blobstore.external_gcs_service_account.read_timeout_sec
+      - description: How long, in seconds, before requests that send data time out.
+        label: GCS send timeout
+        reference: .properties.system_blobstore.external_gcs_service_account.send_timeout_sec
       reference: .properties.system_blobstore.external_gcs_service_account
     - description: null
       label: External Azure storage
@@ -3469,7 +3478,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.130"
+      build: "2.11.0-build.131"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -8080,7 +8089,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: e1c30237eca6a7e80499ff8c8b4d9993ab23df28
+  metadata_git_sha: 9533ad523db0ce9ad8ebdc4677615926156e173f
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8165,7 +8174,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.130
+product_version: 2.11.0-build.131
 property_blueprints:
 - configurable: false
   default: account
@@ -10466,6 +10475,9 @@ property_blueprints:
           google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
           google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
           google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+          open_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.open_timeout_sec.value ))
+          read_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.read_timeout_sec.value ))
+          send_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.send_timeout_sec.value ))
       name: ccbuildpack
     - manifest: |
         max_staged_droplets_stored: 2
@@ -10476,6 +10488,9 @@ property_blueprints:
           google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
           google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
           google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+          open_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.open_timeout_sec.value ))
+          read_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.read_timeout_sec.value ))
+          send_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.send_timeout_sec.value ))
       name: ccdroplet
     - manifest: |
         max_package_size: (( .cloud_controller.max_package_size.value ))
@@ -10486,6 +10501,9 @@ property_blueprints:
           google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
           google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
           google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+          open_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.open_timeout_sec.value ))
+          read_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.read_timeout_sec.value ))
+          send_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.send_timeout_sec.value ))
       name: ccpackage
     - manifest: |
         blobstore_type: fog
@@ -10495,6 +10513,9 @@ property_blueprints:
           google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
           google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
           google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+          open_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.open_timeout_sec.value ))
+          read_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.read_timeout_sec.value ))
+          send_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.send_timeout_sec.value ))
       name: ccresource
     - manifest: |
         enabled: true
@@ -10564,6 +10585,18 @@ property_blueprints:
     - configurable: true
       name: service_account_json_key
       type: text
+    - configurable: true
+      name: open_timeout_sec
+      optional: true
+      type: integer
+    - configurable: true
+      name: read_timeout_sec
+      optional: true
+      type: integer
+    - configurable: true
+      name: send_timeout_sec
+      optional: true
+      type: integer
     select_value: external_gcs_service_account
   - name: external_azure
     named_manifests:
@@ -11607,7 +11640,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.130
+  version: 2.11.0-build.131
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
