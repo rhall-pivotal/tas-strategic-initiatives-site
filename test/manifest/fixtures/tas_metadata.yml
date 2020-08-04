@@ -2053,7 +2053,8 @@ job_types:
         origin: mysql
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      scrape_interval: 60s
       scrape:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -2429,7 +2430,8 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      scrape_interval: 60s
       scrape:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -2706,7 +2708,8 @@ job_types:
     provides: |
       binding_cache: {as: binding_cache, shared: true}
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      scrape_interval: 60s
       scrape:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -3480,7 +3483,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.133"
+      build: "2.11.0-build.134"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -4852,7 +4855,8 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      scrape_interval: 60s
       scrape:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -5366,7 +5370,8 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      scrape_interval: 60s
       scrape:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -6475,7 +6480,8 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      scrape_interval: 60s
       scrape:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -6819,7 +6825,8 @@ job_types:
         server_name: loggr_udp_forwarder_metrics
     name: loggr-udp-forwarder
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      scrape_interval: 60s
       scrape:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -6986,7 +6993,8 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      scrape_interval: 60s
       scrape:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -7515,7 +7523,8 @@ job_types:
         server_name: loggr_udp_forwarder_metrics
     name: loggr-udp-forwarder
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      scrape_interval: 60s
       scrape:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -7744,7 +7753,8 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      scrape_interval: 60s
       scrape:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -7909,7 +7919,8 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      scrape_interval: 60s
       scrape:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -8072,7 +8083,8 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      scrape_interval: 60s
       scrape:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -8091,7 +8103,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: e767646ae5812c723195d7a18df613bd0f810876
+  metadata_git_sha: bc0161fbae7707865969ac13753e06b2dc6de65f
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8176,7 +8188,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.133
+product_version: 2.11.0-build.134
 property_blueprints:
 - configurable: false
   default: account
@@ -11642,7 +11654,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.133
+  version: 2.11.0-build.134
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
