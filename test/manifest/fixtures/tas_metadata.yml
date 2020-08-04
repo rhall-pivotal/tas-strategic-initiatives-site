@@ -2207,6 +2207,7 @@ job_types:
         username: ((( mysql-metrics-db-credentials.username )))
         password: ((( mysql-metrics-db-credentials.password )))
       tls:
+        enforce_tls_v1_2: true
         galera:
           ca: (( $ops_manager.ca_certificate ))
           certificate: (( .properties.pxc_internal_certificate.cert_pem ))
@@ -2990,6 +2991,7 @@ job_types:
             - console.support
             - doppler.firehose
             - healthwatch.read
+            - healthwatch.edit
             - healthwatch.admin
             - notification_preferences.read
             - notification_preferences.write
@@ -3478,7 +3480,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.132"
+      build: "2.11.0-build.133"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -8089,7 +8091,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: cf0339dd9af9cd394ca632e2aabc700d474d491e
+  metadata_git_sha: e767646ae5812c723195d7a18df613bd0f810876
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8174,7 +8176,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.132
+product_version: 2.11.0-build.133
 property_blueprints:
 - configurable: false
   default: account
@@ -11640,7 +11642,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.132
+  version: 2.11.0-build.133
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
