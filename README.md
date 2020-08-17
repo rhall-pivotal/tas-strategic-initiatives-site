@@ -4,4 +4,4 @@ This repository is used to generate a .pivotal file for VMware Tanzu Application
 
 ## Contributing
 
-See [CONTRIBUTING.md](https://github.com/pivotal-cf/p-runtime/blob/master/CONTRIBUTING.md) for information on how to use our tooling.
+Please see the [Contribution docs](http://docs.releng.rocks/Contributing-to-PAS/) for notes on how to contribute to this repository as well as the rest of the tiles in the PAS product family.
