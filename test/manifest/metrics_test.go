@@ -74,6 +74,17 @@ var _ = Describe("Metrics", func() {
 			Expect(tlsProps).To(HaveKey("cert"))
 			Expect(tlsProps).To(HaveKey("key"))
 
+			leadershipElection, err := metricScraper.Property("leadership_election")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(leadershipElection).To(HaveKey("ca_cert"))
+			Expect(leadershipElection).To(HaveKey("cert"))
+			Expect(leadershipElection).To(HaveKey("key"))
+
+			natsClient, err := metricScraper.Property("nats_client")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(natsClient).To(HaveKey("cert"))
+			Expect(natsClient).To(HaveKey("key"))
+
 			scrapePort, err := metricScraper.Property("scrape_port")
 			Expect(err).ToNot(HaveOccurred())
 			Expect(scrapePort).To(Equal(53035))
