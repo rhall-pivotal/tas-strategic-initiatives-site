@@ -187,26 +187,6 @@ var _ = Describe("Networking", func() {
 		})
 
 		Describe("policy server internal", func() {
-			Context("when experimental dynamic egress enforcement is enabled", func() {
-				BeforeEach(func() {
-					inputProperties = map[string]interface{}{
-						".properties.experimental_dynamic_egress_enforcement": true,
-					}
-				})
-
-				It("enables experimental dynamic egress policy", func() {
-					manifest, err := product.RenderManifest(inputProperties)
-					Expect(err).NotTo(HaveOccurred())
-
-					job, err := manifest.FindInstanceGroupJob(controllerInstanceGroup, "policy-server-internal")
-					Expect(err).NotTo(HaveOccurred())
-
-					enabled, err := job.Property("enforce_experimental_dynamic_egress_policies")
-					Expect(err).NotTo(HaveOccurred())
-					Expect(enabled).To(BeTrue())
-				})
-			})
-
 			Context("when the operator does not set a limit for policy server internal open database connections", func() {
 				It("configures jobs with default values", func() {
 					manifest, err := product.RenderManifest(inputProperties)
