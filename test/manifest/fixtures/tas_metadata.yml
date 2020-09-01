@@ -2743,6 +2743,9 @@ job_types:
         ca_cert: (( $ops_manager.ca_certificate ))
         cert: (( .properties.leadership_election_tls.cert_pem ))
         key: (( .properties.leadership_election_tls.private_key_pem ))
+      nats_client:
+        cert: (( .properties.nats_client_cert.cert_pem ))
+        key: (( .properties.nats_client_cert.private_key_pem ))
     name: loggr-system-metric-scraper
     release: system-metrics-scraper
   - manifest: |
@@ -3483,7 +3486,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.249"
+      build: "2.11.0-build.250"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -8103,7 +8106,7 @@ job_types:
     name: syslog_forwarder
     release: syslog
 kiln_metadata:
-  metadata_git_sha: e40c7d0ee6c02b98bca82e7ddb866496a5fb5461
+  metadata_git_sha: 80c782566a70479e7f9282c0a2c381f727112569
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8188,7 +8191,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.249
+product_version: 2.11.0-build.250
 property_blueprints:
 - configurable: false
   default: account
@@ -11654,7 +11657,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.249
+  version: 2.11.0-build.250
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
