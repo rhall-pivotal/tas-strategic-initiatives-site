@@ -18,6 +18,20 @@ var _ = Describe("UAA", func() {
 		}
 	})
 
+	Describe("Legal Footer Text", func() {
+		It("passes through the correct legal text", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			job, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			footerLegalText, err := job.Property("login/branding/footer_legal_text")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(footerLegalText).To(MatchRegexp(`© \d+ VMware, Inc. or its affiliates. All rights reserved.`))
+		})
+	})
+
 	Describe("database connection", func() {
 		Context("when PAS Database is selected", func() {
 			var (
