@@ -1436,7 +1436,7 @@ form_types:
     label: Favicon
     reference: .properties.push_apps_manager_favicon
   - description: |
-      The default is "VMware, Inc. or its affiliates; All rights reserved."
+      Custom text to appear in the Apps Manager footer.
     label: Footer text
     reference: .properties.push_apps_manager_footer_text
   - description: Configure up to three links in the Apps Manager footer.
@@ -2914,10 +2914,9 @@ job_types:
               - https://apps.(( .cloud_controller.system_domain.value ))/
         self_service_links_enabled: (( .properties.uaa.selected_option.parsed_manifest(self_service_links_enabled) ))
         branding:
-          company_name: (( .properties.push_apps_manager_company_name.value ))
           product_logo: (( .properties.push_apps_manager_logo.value || "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" ))
           square_logo: (( .properties.push_apps_manager_square_logo.value || "iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAMAAADW3miqAAABSlBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAACAgIFBQUGBgYSEhIWFhYYGBgZGRkaGhofHx8gICAsLCwuLi4zMzM0NDQ2NjY3Nzc4ODg8PDw9PT0+Pj5AQEBERERFRUVHR0dLS0tQUFBUVFRVVVVWVlZXV1dYWFhZWVlbW1tcXFxdXV1gYGBmZmZpaWltbW1ubm5vb29zc3N1dXV2dnZ6enp+fn6AgICBgYGFhYWGhoaIiIiJiYmRkZGSkpKampqbm5ucnJyhoaGioqKkpKSmpqapqamqqqqzs7O0tLS1tbW3t7e7u7u/v7/CwsLFxcXIyMjLy8vQ0NDR0dHU1NTV1dXW1tbX19fd3d3f39/h4eHm5ubm5ubo6Ojo6Ojr6+vs7Ozu7u7x8fHx8fH09PT09PT29vb4+Pj5+fn6+vr7+/v8/Pz9/f3+/v7+/v7///8WK6eIAAAAbHRSTlMEWVqWl5ioqKmprK2trq6vsLOztLW1tba3t7i4ubm6u7y9vb6+v7+/wMDBw8PFxcXGx8fJysrLzc3NztDR1NTU1tfX2NnZ3d7e3+Di4+Tl5+jp6+vr7O/w8fLz8/T19fb3+Pn6+/v8/P39/v549jpWAAAAAWJLR0RtuwYArQAAASRJREFUOMvt1EdTwmAYBODPmCyJgAZ7F7GjoiJiRVCKWIBYsaMIRmP2/189oM5wMZz0wp6fwzs776wQkoJfI0tCSHCMJBRnpAg0kCb6e6Rm0i4A/rwR8STOC4Hho4t0uzvsBXpCGhCYBgS8FmeBLpNkleTbO0ljh1moD1yHbr4CAjhhDsiwYLCyGLV5NXVAhljWxskzrLEICMBPy6ebHM0yD5S4hSFysMSJJE2rI8/t2uGXTMRoIMsc8MgNDJB9KSZvKnvcNO3OGlri8xODdah3jC88HmGZp18VqHdk0VWHunFLLuOejHz3FKYdBFI8BK65Ap/9oSPGqhv7rHh+ypyfAeCN6kD/qgYE54C2+ALg2Z1s/tO/INnZtDYyYi1CSLLjHH4CUQBZuqsfEWkAAAAASUVORK5CYII=" ))
-          footer_legal_text: (( .properties.push_apps_manager_footer_text.value ))
+          footer_legal_text: "© 2020 VMware, Inc. or its affiliates. All rights reserved."
         prompt:
           password:
             text: (( .uaa.customize_password_label.value ))
@@ -3486,7 +3485,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.263"
+      build: "2.11.0-build.264"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -3506,21 +3505,11 @@ job_types:
         staging_disk_limit_mb: 6144
       app_domains:
       - (( .cloud_controller.apps_domain.value ))
-      - (( .properties.istio.selected_option.parsed_manifest(ingress_istio_domain) ))
       - (( .properties.cf_networking_internal_domains.parsed_manifest(for_cloud_controller_ng) ))
       login:
         url: https://login.(( .cloud_controller.system_domain.value ))
       domain: (( .cloud_controller.system_domain.value ))
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
-      copilot:
-        enabled: (( .properties.istio.selected_option.parsed_manifest(capi_enabled) ))
-        host: "copilot.service.cf.internal"
-        port: 9001
-        client_ca_file: (( $ops_manager.ca_certificate ))
-        client_chain_file: (( .properties.copilot_client_cert.cert_pem ))
-        client_key_file: (( .properties.copilot_client_cert.private_key_pem ))
-        temporary_istio_domains:
-        - (( .properties.istio.selected_option.parsed_manifest(ingress_istio_domain) ))
       cc:
         temporary_use_logcache: true
         logcache:
@@ -7638,517 +7627,8 @@ job_types:
             key: (( .doppler.metron_tls_cert.private_key_pem ))
     name: loggregator_agent
     release: loggregator-agent
-- description: This configures the istio routers to serve routes
-  instance_definition:
-    configurable: true
-    constraints:
-      max: 1
-      min: 0
-    default: 1
-    label: Instances
-    name: instances
-    type: integer
-    zero_if:
-      allow_manual_selection_of_zero: false
-      property_reference: .properties.istio
-      property_values:
-      - disable
-  label: Istio Control
-  max_in_flight: 1
-  name: istio_control
-  resource_definitions:
-  - configurable: true
-    constraints:
-      min: 8192
-    default: 8192
-    label: RAM
-    name: ram
-    type: integer
-  - configurable: true
-    constraints:
-      min: 2048
-    default: 2048
-    label: Ephemeral Disk
-    name: ephemeral_disk
-    type: integer
-  - configurable: false
-    default: 0
-    label: Persistent Disk
-    name: persistent_disk
-    type: integer
-  - configurable: true
-    constraints:
-      min: 2
-    default: 2
-    label: CPU
-    name: cpu
-    type: integer
-  resource_label: Istio Control
-  serial: true
-  single_az_only: false
-  templates:
-  - name: bpm
-    release: bpm
-  - manifest: |
-      cloud_controller_client_ca_cert: (( $ops_manager.ca_certificate ))
-      pilot_client_ca_cert: (( $ops_manager.ca_certificate ))
-      server_cert: (( .properties.copilot_server_cert.cert_pem ))
-      server_key: (( .properties.copilot_server_cert.private_key_pem ))
-      bbs:
-        server_ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.bbs_client_cert.cert_pem ))
-        client_key: (( .properties.bbs_client_cert.private_key_pem ))
-      frontend_tls_keypairs: (( .properties.istio_frontend_tls_keypairs.parsed_manifest(istio_certificates_and_private_keys) ))
-    name: copilot
-    release: istio
-  - manifest: |
-      copilot:
-        server_ca_cert: (( $ops_manager.ca_certificate ))
-        client_cert: (( .properties.pilot_server_cert.cert_pem ))
-        client_key: (( .properties.pilot_server_cert.private_key_pem ))
-      bpm:
-        enable: true
-    name: pilot-discovery
-    release: istio
-  - manifest: |
-      loggregator:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          agent:
-            cert: (( .doppler.metron_tls_cert.cert_pem ))
-            key: (( .doppler.metron_tls_cert.private_key_pem ))
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.loggregator_agent_metrics_tls.cert_pem ))
-        key: (( .properties.loggregator_agent_metrics_tls.private_key_pem ))
-        server_name: loggregator_agent_metrics
-      grpc_port: 3459
-      disable_udp: true
-      disable_logs: (( .properties.disable_logs_in_firehose.value ))
-      loggregator_agent:
-        enabled: (( .properties.enable_v2_firehose.value ))
-      tags:
-        product: "Small Footprint VMware Tanzu Application Service"
-        system_domain: "(( .cloud_controller.system_domain.value ))"
-    name: loggregator_agent
-    release: loggregator-agent
-  - manifest: |
-      port: 3460
-      tls:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.syslog_agent_metrics_tls.cert_pem ))
-        key: (( .properties.syslog_agent_metrics_tls.private_key_pem ))
-        server_name: syslog-agent-metrics
-      cache:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          cert: (( .properties.syslog_agent_api_tls.cert_pem ))
-          key: (( .properties.syslog_agent_api_tls.private_key_pem ))
-          cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
-      drain_ca_cert: (( $ops_manager.ca_certificate ))
-    name: loggr-syslog-agent
-    release: loggregator-agent
-  - manifest: |
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.metrics_discovery_metrics_tls.cert_pem ))
-        key: (( .properties.metrics_discovery_metrics_tls.private_key_pem ))
-        server_name: metrics_discovery_metrics
-      nats_client:
-        cert: (( .properties.nats_client_cert.cert_pem ))
-        key: (( .properties.nats_client_cert.private_key_pem ))
-    name: metrics-discovery-registrar
-    release: metrics-discovery
-  - manifest: |
-      metrics_exporter_port: 14726
-      grpc:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.metrics_agent_metrics_tls.cert_pem ))
-        key: (( .properties.metrics_agent_metrics_tls.private_key_pem ))
-        server_name: metrics_agent_metrics
-      scrape:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          cert: "((.properties.prom_scraper_scrape_tls.cert_pem))"
-          key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
-    name: metrics-agent
-    release: metrics-discovery
-  - manifest: |
-      port: 3458
-      tls:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.forwarder_agent_metrics_tls.cert_pem ))
-        key: (( .properties.forwarder_agent_metrics_tls.private_key_pem ))
-        server_name: forwarder_agent_metrics
-      tags:
-        product: "Small Footprint VMware Tanzu Application Service"
-        system_domain: "(( .cloud_controller.system_domain.value ))"
-    name: loggr-forwarder-agent
-    release: loggregator-agent
-  - manifest: |
-      scrape_interval: 60s
-      scrape:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          cert: "((.properties.prom_scraper_scrape_tls.cert_pem))"
-          key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
-          cn: prom_scraper
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: "((.properties.prom_scraper_metrics_tls.cert_pem))"
-        key: "((.properties.prom_scraper_metrics_tls.private_key_pem))"
-        server_name: prom_scraper_metrics
-    name: prom_scraper
-    release: loggregator-agent
-  - manifest: |
-      syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-    name: syslog_forwarder
-    release: syslog
-- description: Istio based replacement for Gorouter
-  instance_definition:
-    configurable: true
-    constraints:
-      min: 0
-    default: 2
-    label: Instances
-    name: instances
-    type: integer
-    zero_if:
-      allow_manual_selection_of_zero: false
-      property_reference: .properties.istio
-      property_values:
-      - disable
-  label: Istio Router
-  max_in_flight: 1
-  name: istio_router
-  property_blueprints:
-  - configurable: true
-    name: static_ips
-    optional: true
-    type: ip_ranges
-  resource_definitions:
-  - configurable: true
-    constraints:
-      min: 8192
-    default: 8192
-    label: RAM
-    name: ram
-    type: integer
-  - configurable: true
-    constraints:
-      min: 2048
-    default: 2048
-    label: Ephemeral Disk
-    name: ephemeral_disk
-    type: integer
-  - configurable: false
-    default: 0
-    label: Persistent Disk
-    name: persistent_disk
-    type: integer
-  - configurable: true
-    constraints:
-      min: 2
-    default: 2
-    label: CPU
-    name: cpu
-    type: integer
-  resource_label: Istio Router
-  serial: true
-  single_az_only: false
-  templates:
-  - name: bpm
-    release: bpm
-  - consumes: |
-      pilot: {from: pilot}
-    name: envoy
-    release: istio
-  - manifest: |
-      loggregator:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          agent:
-            cert: (( .doppler.metron_tls_cert.cert_pem ))
-            key: (( .doppler.metron_tls_cert.private_key_pem ))
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.loggregator_agent_metrics_tls.cert_pem ))
-        key: (( .properties.loggregator_agent_metrics_tls.private_key_pem ))
-        server_name: loggregator_agent_metrics
-      grpc_port: 3459
-      disable_udp: true
-      disable_logs: (( .properties.disable_logs_in_firehose.value ))
-      loggregator_agent:
-        enabled: (( .properties.enable_v2_firehose.value ))
-      tags:
-        product: "Small Footprint VMware Tanzu Application Service"
-        system_domain: "(( .cloud_controller.system_domain.value ))"
-    name: loggregator_agent
-    release: loggregator-agent
-  - manifest: |
-      port: 3460
-      tls:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.syslog_agent_metrics_tls.cert_pem ))
-        key: (( .properties.syslog_agent_metrics_tls.private_key_pem ))
-        server_name: syslog-agent-metrics
-      cache:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          cert: (( .properties.syslog_agent_api_tls.cert_pem ))
-          key: (( .properties.syslog_agent_api_tls.private_key_pem ))
-          cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
-      drain_ca_cert: (( $ops_manager.ca_certificate ))
-    name: loggr-syslog-agent
-    release: loggregator-agent
-  - manifest: |
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.metrics_discovery_metrics_tls.cert_pem ))
-        key: (( .properties.metrics_discovery_metrics_tls.private_key_pem ))
-        server_name: metrics_discovery_metrics
-      nats_client:
-        cert: (( .properties.nats_client_cert.cert_pem ))
-        key: (( .properties.nats_client_cert.private_key_pem ))
-    name: metrics-discovery-registrar
-    release: metrics-discovery
-  - manifest: |
-      metrics_exporter_port: 14726
-      grpc:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.metrics_agent_metrics_tls.cert_pem ))
-        key: (( .properties.metrics_agent_metrics_tls.private_key_pem ))
-        server_name: metrics_agent_metrics
-      scrape:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          cert: "((.properties.prom_scraper_scrape_tls.cert_pem))"
-          key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
-    name: metrics-agent
-    release: metrics-discovery
-  - manifest: |
-      port: 3458
-      tls:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.forwarder_agent_metrics_tls.cert_pem ))
-        key: (( .properties.forwarder_agent_metrics_tls.private_key_pem ))
-        server_name: forwarder_agent_metrics
-      tags:
-        product: "Small Footprint VMware Tanzu Application Service"
-        system_domain: "(( .cloud_controller.system_domain.value ))"
-    name: loggr-forwarder-agent
-    release: loggregator-agent
-  - manifest: |
-      scrape_interval: 60s
-      scrape:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          cert: "((.properties.prom_scraper_scrape_tls.cert_pem))"
-          key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
-          cn: prom_scraper
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: "((.properties.prom_scraper_metrics_tls.cert_pem))"
-        key: "((.properties.prom_scraper_metrics_tls.private_key_pem))"
-        server_name: prom_scraper_metrics
-    name: prom_scraper
-    release: loggregator-agent
-  - manifest: |
-      syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-    name: syslog_forwarder
-    release: syslog
-- description: Does bulk syncing of Cloud Controller routes with Copilot.
-  instance_definition:
-    configurable: true
-    constraints:
-      max: 1
-      min: 0
-    default: 1
-    label: Instances
-    name: instances
-    type: integer
-    zero_if:
-      allow_manual_selection_of_zero: false
-      property_reference: .properties.istio
-      property_values:
-      - disable
-  label: Route Syncer
-  max_in_flight: 1
-  name: route_syncer
-  resource_definitions:
-  - configurable: true
-    constraints:
-      min: 8192
-    default: 8192
-    label: RAM
-    name: ram
-    type: integer
-  - configurable: true
-    constraints:
-      min: 2048
-    default: 2048
-    label: Ephemeral Disk
-    name: ephemeral_disk
-    type: integer
-  - configurable: false
-    default: 0
-    label: Persistent Disk
-    name: persistent_disk
-    type: integer
-  - configurable: true
-    constraints:
-      min: 2
-    default: 2
-    label: CPU
-    name: cpu
-    type: integer
-  resource_label: Route Syncer
-  serial: true
-  single_az_only: false
-  templates:
-  - name: bpm
-    release: bpm
-  - manifest: |
-      bpm:
-       enable: true
-      ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
-    name: cc_route_syncer
-    release: capi
-  - manifest: |
-      loggregator:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          agent:
-            cert: (( .doppler.metron_tls_cert.cert_pem ))
-            key: (( .doppler.metron_tls_cert.private_key_pem ))
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.loggregator_agent_metrics_tls.cert_pem ))
-        key: (( .properties.loggregator_agent_metrics_tls.private_key_pem ))
-        server_name: loggregator_agent_metrics
-      grpc_port: 3459
-      disable_udp: true
-      disable_logs: (( .properties.disable_logs_in_firehose.value ))
-      loggregator_agent:
-        enabled: (( .properties.enable_v2_firehose.value ))
-      tags:
-        product: "Small Footprint VMware Tanzu Application Service"
-        system_domain: "(( .cloud_controller.system_domain.value ))"
-    name: loggregator_agent
-    release: loggregator-agent
-  - manifest: |
-      port: 3460
-      tls:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.syslog_agent_metrics_tls.cert_pem ))
-        key: (( .properties.syslog_agent_metrics_tls.private_key_pem ))
-        server_name: syslog-agent-metrics
-      cache:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          cert: (( .properties.syslog_agent_api_tls.cert_pem ))
-          key: (( .properties.syslog_agent_api_tls.private_key_pem ))
-          cn: binding-cache
-      aggregate_drains: syslog-tls://doppler.service.cf.internal:6067?include-metrics-deprecated=true,(( .properties.syslog_agent_aggregate_drains.value ))
-      drain_ca_cert: (( $ops_manager.ca_certificate ))
-    name: loggr-syslog-agent
-    release: loggregator-agent
-  - manifest: |
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.metrics_discovery_metrics_tls.cert_pem ))
-        key: (( .properties.metrics_discovery_metrics_tls.private_key_pem ))
-        server_name: metrics_discovery_metrics
-      nats_client:
-        cert: (( .properties.nats_client_cert.cert_pem ))
-        key: (( .properties.nats_client_cert.private_key_pem ))
-    name: metrics-discovery-registrar
-    release: metrics-discovery
-  - manifest: |
-      metrics_exporter_port: 14726
-      grpc:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.metrics_agent_metrics_tls.cert_pem ))
-        key: (( .properties.metrics_agent_metrics_tls.private_key_pem ))
-        server_name: metrics_agent_metrics
-      scrape:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          cert: "((.properties.prom_scraper_scrape_tls.cert_pem))"
-          key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
-    name: metrics-agent
-    release: metrics-discovery
-  - manifest: |
-      port: 3458
-      tls:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .doppler.metron_tls_cert.cert_pem ))
-        key: (( .doppler.metron_tls_cert.private_key_pem ))
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: (( .properties.forwarder_agent_metrics_tls.cert_pem ))
-        key: (( .properties.forwarder_agent_metrics_tls.private_key_pem ))
-        server_name: forwarder_agent_metrics
-      tags:
-        product: "Small Footprint VMware Tanzu Application Service"
-        system_domain: "(( .cloud_controller.system_domain.value ))"
-    name: loggr-forwarder-agent
-    release: loggregator-agent
-  - manifest: |
-      scrape_interval: 60s
-      scrape:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          cert: "((.properties.prom_scraper_scrape_tls.cert_pem))"
-          key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
-          cn: prom_scraper
-      metrics:
-        ca_cert: (( $ops_manager.ca_certificate ))
-        cert: "((.properties.prom_scraper_metrics_tls.cert_pem))"
-        key: "((.properties.prom_scraper_metrics_tls.private_key_pem))"
-        server_name: prom_scraper_metrics
-    name: prom_scraper
-    release: loggregator-agent
-  - manifest: |
-      syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
-    name: syslog_forwarder
-    release: syslog
 kiln_metadata:
-  metadata_git_sha: 0140d3a0758d6e9918b300e7e3cfbbb286a0cdef
+  metadata_git_sha: 7b6d77213c5342cabb40c8229831960064b1b110
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -8233,7 +7713,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.263
+product_version: 2.11.0-build.264
 property_blueprints:
 - configurable: false
   default: account
@@ -8547,18 +8027,6 @@ property_blueprints:
       name: cni_plugin_dir
     select_value: external
   type: selector
-- configurable: false
-  default:
-    domains:
-    - copilot.service.cf.internal
-  name: copilot_client_cert
-  type: rsa_cert_credentials
-- configurable: false
-  default:
-    domains:
-    - copilot.service.cf.internal
-  name: copilot_server_cert
-  type: rsa_cert_credentials
 - configurable: true
   default: internal_mysql
   name: credhub_database
@@ -8969,47 +8437,6 @@ property_blueprints:
     name: ip_and_port
     type: string
   type: collection
-- configurable: true
-  default: disable
-  name: istio
-  option_templates:
-  - name: disable
-    named_manifests:
-    - manifest: "false"
-      name: capi_enabled
-    - manifest: |
-        []
-      name: ingress_istio_domain
-    select_value: disable
-  - name: enable
-    named_manifests:
-    - manifest: "true"
-      name: capi_enabled
-    - manifest: |
-        '(( .properties.istio_domain.value ? "" : "mesh."))(( .properties.istio_domain.value ? .properties.istio_domain.value : .cloud_controller.apps_domain.value ))'
-      name: ingress_istio_domain
-    select_value: enable
-  type: selector
-- configurable: true
-  name: istio_frontend_tls_keypairs
-  named_manifests:
-  - manifest: |
-      cert_chain: (( current_record.certificate.cert_pem ))
-      private_key: (( current_record.certificate.private_key_pem ))
-    name: istio_certificates_and_private_keys
-  optional: true
-  property_blueprints:
-  - configurable: true
-    name: name
-    type: string
-  - configurable: true
-    name: certificate
-    type: rsa_cert_credentials
-  type: collection
-- configurable: true
-  name: istio_domain
-  optional: true
-  type: string
 - configurable: false
   default: locket
   name: locket_database_name
@@ -9353,12 +8780,6 @@ property_blueprints:
   default: notifications
   name: notifications_database_name
   type: string
-- configurable: false
-  default:
-    domains:
-    - pilot.service.cf.internal
-  name: pilot_server_cert
-  type: rsa_cert_credentials
 - configurable: false
   default:
     domains:
@@ -11712,7 +11133,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.263
+  version: 2.11.0-build.264
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
@@ -11899,10 +11320,6 @@ releases:
   name: uaa
   sha1: 3a890dd2c3ee08a1b40af1df400683f1115da566
   version: "72.0"
-- file: istio-2-ubuntu-xenial-315.13.tgz
-  name: istio
-  sha1: 4479df97907c82276b7011bf9223c67d8fa5ee69
-  version: "2"
 runtime_configs:
 - name: bosh-dns-aliases
   runtime_config: |
@@ -11994,13 +11411,6 @@ runtime_configs:
               deployment: (( ..cf.deployment_name ))
               network: (( ..cf.network_name ))
               domain: bosh
-          - domain: copilot.service.cf.internal
-            targets:
-            - query: "*"
-              instance_group: "istio_control"
-              deployment: (( ..cf.deployment_name ))
-              network: (( ..cf.network_name ))
-              domain: bosh
           - domain: credhub.service.cf.internal
             targets:
             - query: "*"
@@ -12061,13 +11471,6 @@ runtime_configs:
             targets:
             - query: "*"
               instance_group: "control"
-              deployment: (( ..cf.deployment_name ))
-              network: (( ..cf.network_name ))
-              domain: bosh
-          - domain: pilot.service.cf.internal
-            targets:
-            - query: "*"
-              instance_group: "istio_control"
               deployment: (( ..cf.deployment_name ))
               network: (( ..cf.network_name ))
               domain: bosh
