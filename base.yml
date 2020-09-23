@@ -99,5 +99,8 @@ variables:
   options:
     ca: /services/tls_ca
     common_name: services-tls-leaf
+    alternative_names:
+      - services-tls-leaf
   type: certificate
+  update_mode: converge
 
