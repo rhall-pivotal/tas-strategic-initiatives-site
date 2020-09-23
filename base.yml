@@ -127,7 +127,10 @@ variables:
   options:
     ca: /services/tls_ca
     common_name: services-tls-leaf
+    alternative_names:
+    - services-tls-leaf
   type: certificate
+  update_mode: converge
 
 post_deploy_errands:
   - name: smoke_tests_isolation
