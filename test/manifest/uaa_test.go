@@ -307,6 +307,154 @@ var _ = Describe("UAA", func() {
 		})
 	})
 
+	Describe("Proxy IPs Regex", func() {
+		It("defaults to default regex value", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			proxyIpsRegex, err := uaa.Property("uaa/proxy_ips_regex")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(proxyIpsRegex).To(Equal("10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|192\\.168\\.\\d{1,3}\\.\\d{1,3}|169\\.254\\.\\d{1,3}\\.\\d{1,3}|127\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|172\\.1[6-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.2[0-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.3[0-1]{1}\\.\\d{1,3}\\.\\d{1,3}"))
+		})
+
+		It("can be set to custom regex value", func() {
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".uaa.proxy_ips_regex": "coolest-regex",
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			proxyIpsRegex, err := uaa.Property("uaa/proxy_ips_regex")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(proxyIpsRegex).To(Equal("coolest-regex"))
+		})
+	})
+
+	Describe("Proxy Servers", func() {
+		It("defaults to an empty array", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			proxyServers, err := uaa.Property("uaa/proxy/servers")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(proxyServers).To(BeEmpty())
+		})
+
+		It("can be set to custom array values", func() {
+			producedProxyServersArray := make([]interface{}, 2, 2)
+			producedProxyServersArray[0] = "string 1"
+			producedProxyServersArray[1] = "string 2"
+
+			providedProxyServersStringList := "string 1,string 2"
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".uaa.proxy_servers": providedProxyServersStringList,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			proxyServers, err := uaa.Property("uaa/proxy/servers")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(proxyServers).To(Equal(producedProxyServersArray))
+		})
+	})
+
+	Describe("http proxy", func() {
+		It("isn't set by default", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			httpProxy, err := uaa.Property("env/http_proxy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(httpProxy).To(BeNil())
+		})
+
+		It("can be set to a custom string value", func() {
+			providedHttpProxy := "http://test.proxy:8080"
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".uaa.http_proxy": providedHttpProxy,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			httpProxy, err := uaa.Property("env/http_proxy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(httpProxy).To(Equal(providedHttpProxy))
+		})
+	})
+
+	Describe("https proxy", func() {
+		It("isn't set by default", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			httpsProxy, err := uaa.Property("env/https_proxy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(httpsProxy).To(BeNil())
+		})
+
+		It("can be set to a custom string value", func() {
+			providedHttpsProxy := "https://test.proxy:8080"
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".uaa.https_proxy": providedHttpsProxy,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			httpsProxy, err := uaa.Property("env/https_proxy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(httpsProxy).To(Equal(providedHttpsProxy))
+		})
+	})
+
+	Describe("no proxy", func() {
+		It("isn't set by default", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			noProxy, err := uaa.Property("env/no_proxy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(noProxy).To(BeNil())
+		})
+
+		It("can be set to a custom string value", func() {
+			providedNoProxy := "localhost,127.0.0.0/8,127.0.1.1"
+			manifest, err := product.RenderManifest(map[string]interface{}{
+				".uaa.no_proxy": providedNoProxy,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			noProxy, err := uaa.Property("env/no_proxy")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(noProxy).To(Equal(providedNoProxy))
+		})
+	})
+
 	Context("LDAP", func() {
 		Describe("LDAP Group MaxSearchDepth", func() {
 			var inputProperties map[string]interface{}

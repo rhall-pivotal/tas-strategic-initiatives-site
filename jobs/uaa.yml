@@ -45,6 +45,10 @@ manifest: |
         text: (( .uaa.customize_password_label.value ))
       username:
         text: (( .uaa.customize_username_label.value ))
+  env:
+    http_proxy: (( .uaa.http_proxy.value ))
+    https_proxy: (( .uaa.https_proxy.value ))
+    no_proxy: (( .uaa.no_proxy.value ))
   uaa:
     sslCertificate: (( .uaa.ssl_credentials.cert_pem ))
     ca_certs: (( .properties.uaa_database.selected_option.parsed_manifest(ca_certs) ))
@@ -174,6 +178,8 @@ manifest: |
         - cloud_controller.admin_read_only
         - doppler.firehose
     proxy_ips_regex: (( .uaa.proxy_ips_regex.value ))
+    proxy:
+      servers: (( .uaa.proxy_servers.parsed_strings))
     sslPrivateKey: (( .uaa.ssl_credentials.private_key_pem ))
     issuer: (( .uaa.issuer_uri.value ))
     zones:

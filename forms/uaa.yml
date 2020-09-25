@@ -102,6 +102,27 @@ property_inputs:
     A pipe-separated set of regular expressions of IP addresses that are
     considered reverse proxies.
 
+- reference: .uaa.proxy_servers
+  label: List of proxy servers
+  description: |
+    Comma separated list of the router IPs acting as the first group of
+    HTTP/TCP backends. These will be added to the proxy_ips_regex as exact matches.
+
+- reference: .uaa.http_proxy
+  label: http proxy
+  description: |
+    The http_proxy across the VMs used for all requests over http
+
+- reference: .uaa.https_proxy
+  label: https proxy
+  description: |
+    The https_proxy across the VMs used for all requests over https
+
+- reference: .uaa.no_proxy
+  label: no proxy
+  description: |
+    Set No_Proxy across the VMs
+
 - reference: .uaa.enable_uri_encoding_compatibility_mode
   label: Client basic auth compatibility mode
   description: |

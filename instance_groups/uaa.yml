@@ -322,6 +322,22 @@ property_blueprints:
   type: string
   configurable: true
   default: 10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3}
+- name: proxy_servers
+  type: string_list
+  configurable: true
+  optional: true
+- name: http_proxy
+  type: string
+  configurable: true
+  optional: true
+- name: https_proxy
+  type: string
+  configurable: true
+  optional: true
+- name: no_proxy
+  type: string
+  configurable: true
+  optional: true
 - name: issuer_uri
   type: string
   configurable: true
