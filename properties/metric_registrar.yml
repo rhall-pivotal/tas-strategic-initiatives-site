@@ -20,21 +20,6 @@
     domains:
     - metric-registrar-orchestration
 
-- name: metric_registrar_secure_worker_tls
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-    - metric-registrar-orchestration
-
-- name: metric_registrar_endpoint_worker_scrape_tls
-  type: rsa_cert_credentials
-  configurable: false
-  default:
-    domains:
-    - metric_registrar_endpoint_worker_scrape_tls
-    - doppler.service.cf.internal
-
 - name: metric_registrar_scrape_interval_in_seconds
   type: integer
   configurable: true
