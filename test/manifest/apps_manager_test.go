@@ -321,7 +321,6 @@ var _ = Describe("Apps Manager", func() {
 					{".cloud_controller.system_domain", "example.com", "cf/notifications_service_url", Equal("https://notifications.example.com")},
 					{".cloud_controller.system_domain", "example.com", "cf/system_domain", Equal("example.com")},
 					{".cloud_controller.apps_domain", "example.com", "cf/apps_domain", Equal("example.com")},
-					{".ha_proxy.skip_cert_verify", true, "ssl/skip_cert_verify", BeTrue()},
 					{".properties.cf_dial_timeout_in_seconds", 10, "apps_manager/cf_dial_timeout", Equal(10)},
 				}
 
@@ -352,6 +351,9 @@ var _ = Describe("Apps Manager", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				_, err = job.Property("cf/admin_password")
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = job.Property("ssl/skip_cert_verify")
 				Expect(err).NotTo(HaveOccurred())
 			})
 
