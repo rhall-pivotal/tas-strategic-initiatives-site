@@ -2855,7 +2855,6 @@ job_types:
       ca_cert: (( $ops_manager.ca_certificate ))
       server_cert: (( .properties.network_policy_server_cert.cert_pem ))
       server_key: (( .properties.network_policy_server_cert.private_key_pem ))
-      enforce_experimental_dynamic_egress_policies: (( .properties.experimental_dynamic_egress_enforcement.value ))
     name: policy-server-internal
     release: cf-networking
   - name: bpm
@@ -3485,7 +3484,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.285"
+      build: "2.11.0-build.286"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -7628,7 +7627,7 @@ job_types:
     name: loggregator_agent
     release: loggregator-agent
 kiln_metadata:
-  metadata_git_sha: 30cc74f36d49d7aeeae173e59225d2a3c3f31d7f
+  metadata_git_sha: 63bb1b201505adf49b151c595b0692a88cd97239
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -7713,7 +7712,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.285
+product_version: 2.11.0-build.286
 property_blueprints:
 - configurable: false
   default: account
@@ -8265,10 +8264,6 @@ property_blueprints:
 - configurable: true
   default: false
   name: enable_tls_to_internal_pxc
-  type: boolean
-- configurable: true
-  default: false
-  name: experimental_dynamic_egress_enforcement
   type: boolean
 - configurable: false
   default:
@@ -11133,7 +11128,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.285
+  version: 2.11.0-build.286
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
@@ -11531,9 +11526,12 @@ variables:
   type: certificate
 - name: /services/tls_leaf
   options:
+    alternative_names:
+    - services-tls-leaf
     ca: /services/tls_ca
     common_name: services-tls-leaf
   type: certificate
+  update_mode: converge
 - name: app-usage-db-credentials
   options:
     username: app_usage
