@@ -123,7 +123,7 @@ var _ = Describe("CAPI", func() {
 				Expect(manifestJob.Property("cc/logcache_tls")).Should(HaveKey("private_key"))
 			})
 
-			It("defaults the completed task pruning properties on the cloud_controller_clock job", func() {
+			It("defaults the completed pruning properties on the cloud_controller_clock job", func() {
 				var cloudControllerClockInstanceGroup string
 				if productName == "srt" {
 					cloudControllerClockInstanceGroup = "control"
@@ -134,9 +134,13 @@ var _ = Describe("CAPI", func() {
 				manifestJob, err := manifest.FindInstanceGroupJob(cloudControllerClockInstanceGroup, "cloud_controller_clock")
 				Expect(err).NotTo(HaveOccurred())
 
-				temporaryUseLogcache, err := manifestJob.Property("cc/completed_tasks/cutoff_age_in_days")
+				auditEventCutoff, err := manifestJob.Property("cc/audit_events/cutoff_age_in_days")
 				Expect(err).NotTo(HaveOccurred())
-				Expect(temporaryUseLogcache).To(Equal(31))
+				Expect(auditEventCutoff).To(Equal(31))
+
+				completedTasksCutoff, err := manifestJob.Property("cc/completed_tasks/cutoff_age_in_days")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(completedTasksCutoff).To(Equal(31))
 			})
 		})
 
@@ -226,6 +230,32 @@ var _ = Describe("CAPI", func() {
 				temporaryDisableDeployments, err = manifestCcDeploymentUpdaterJob.Property("cc/temporary_disable_deployments")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(temporaryDisableDeployments).To(BeTrue())
+			})
+		})
+
+		Context("when the Operator sets the audit events cutoff age to a custom value", func() {
+			BeforeEach(func() {
+				var err error
+				manifest, err = product.RenderManifest(map[string]interface{}{
+					".properties.cloud_controller_audit_events_cutoff_age_in_days": 54,
+				})
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("configures the subsequent property", func() {
+				var cloudControllerClockInstanceGroup string
+				if productName == "srt" {
+					cloudControllerClockInstanceGroup = "control"
+				} else {
+					cloudControllerClockInstanceGroup = "clock_global"
+				}
+
+				manifestJob, err := manifest.FindInstanceGroupJob(cloudControllerClockInstanceGroup, "cloud_controller_clock")
+				Expect(err).NotTo(HaveOccurred())
+
+				auditEventCutoff, err := manifestJob.Property("cc/audit_events/cutoff_age_in_days")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(auditEventCutoff).To(Equal(54))
 			})
 		})
 

@@ -83,6 +83,11 @@
     domains:
     - cloud-controller-ng.service.cf.internal
 
+- name: cloud_controller_audit_events_cutoff_age_in_days
+  type: integer
+  configurable: true
+  default: 31
+
 - name: cloud_controller_completed_tasks_cutoff_age_in_days
   type: integer
   configurable: true
