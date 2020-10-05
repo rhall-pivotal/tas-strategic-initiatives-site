@@ -3484,7 +3484,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.287"
+      build: "2.11.0-build.288"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -4586,48 +4586,6 @@ job_types:
           id: (( .uaa.metric_registrar_credentials.identity ))
           secret: (( .uaa.metric_registrar_credentials.password ))
     name: metric_registrar_endpoint_worker
-    release: metric-registrar
-  - manifest: |
-      disabled: "(( .properties.metric_registrar_enabled.value ? false : true ))"
-      health_check_port: 21548
-      orchestration_port: 21549
-      skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
-      blacklisted_tags: (( .properties.metric_registrar_blacklisted_tags.parsed_strings ))
-      scrape_interval: (( .properties.metric_registrar_scrape_interval_in_seconds.value ))s
-      loggregator:
-        tls:
-          ca_cert: (( $ops_manager.ca_certificate ))
-          agent:
-            cert: (( .doppler.metron_tls_cert.cert_pem ))
-            key: (( .doppler.metron_tls_cert.private_key_pem ))
-      cloud_controller:
-        tls:
-          ca: (( $ops_manager.ca_certificate ))
-          cert: (( .properties.cloud_controller_mutual_cert.cert_pem ))
-          key: (( .properties.cloud_controller_mutual_cert.private_key_pem ))
-      orchestration:
-        tls:
-          ca: (( $ops_manager.ca_certificate ))
-          cert: (( .properties.metric_registrar_secure_worker_tls.cert_pem ))
-          key: (( .properties.metric_registrar_secure_worker_tls.private_key_pem ))
-      uaa:
-        tls:
-          ca: (( $ops_manager.ca_certificate ))
-        client:
-          id: (( .uaa.metric_registrar_credentials.identity ))
-          secret: (( .uaa.metric_registrar_credentials.password ))
-      bbs:
-        tls:
-          ca: (( $ops_manager.ca_certificate ))
-          cert: (( .properties.bbs_client_cert.cert_pem ))
-          key: (( .properties.bbs_client_cert.private_key_pem ))
-      scrape:
-        diego_identity_ca: ((( diego-instance-identity-intermediate-ca-2-7.certificate )))
-        tls:
-          ca: (( $ops_manager.ca_certificate ))
-          cert: (( .properties.metric_registrar_endpoint_worker_scrape_tls.cert_pem ))
-          key: (( .properties.metric_registrar_endpoint_worker_scrape_tls.private_key_pem ))
-    name: metric_registrar_secure_endpoint_worker
     release: metric-registrar
   - manifest: |
       skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
@@ -7627,7 +7585,7 @@ job_types:
     name: loggregator_agent
     release: loggregator-agent
 kiln_metadata:
-  metadata_git_sha: 6a2d35f121fe3ce56ba4ae031d669353a36bc667
+  metadata_git_sha: 4242ba8b861a300011497f022090334e79330a88
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -7712,7 +7670,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.287
+product_version: 2.11.0-build.288
 property_blueprints:
 - configurable: false
   default: account
@@ -8599,19 +8557,6 @@ property_blueprints:
     domains:
     - metric-registrar-orchestration
   name: metric_registrar_worker_tls
-  type: rsa_cert_credentials
-- configurable: false
-  default:
-    domains:
-    - metric-registrar-orchestration
-  name: metric_registrar_secure_worker_tls
-  type: rsa_cert_credentials
-- configurable: false
-  default:
-    domains:
-    - metric_registrar_endpoint_worker_scrape_tls
-    - doppler.service.cf.internal
-  name: metric_registrar_endpoint_worker_scrape_tls
   type: rsa_cert_credentials
 - configurable: true
   default: enable
@@ -11128,7 +11073,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.287
+  version: 2.11.0-build.288
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
