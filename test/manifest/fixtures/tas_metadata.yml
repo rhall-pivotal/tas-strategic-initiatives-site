@@ -3484,7 +3484,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.289"
+      build: "2.11.0-build.290"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -4232,7 +4232,7 @@ job_types:
         server_name: log-cache-syslog-server-metrics
     name: log-cache-syslog-server
     release: log-cache
-  - name: cf-cli-7-linux
+  - name: cf-cli-6-linux
     release: cf-cli
   - manifest: |
       smoke_tests: (( .properties.smoke_tests.selected_option.parsed_manifest(smoke_tests) ))
@@ -5433,7 +5433,7 @@ job_types:
       release_level_backup: true
     name: bbr-usage-servicedb
     release: push-usage-service-release
-  - name: cf-cli-7-linux
+  - name: cf-cli-6-linux
     release: cf-cli
   - name: database-backup-restorer
     release: backup-and-restore-sdk
@@ -7585,7 +7585,7 @@ job_types:
     name: loggregator_agent
     release: loggregator-agent
 kiln_metadata:
-  metadata_git_sha: 395be72df185e0043624480d6ff0af73460aecc1
+  metadata_git_sha: 919b2b9b12dc4a95c4de897353dc151f107846c5
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -7670,7 +7670,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.289
+product_version: 2.11.0-build.290
 property_blueprints:
 - configurable: false
   default: account
@@ -11073,7 +11073,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.289
+  version: 2.11.0-build.290
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
