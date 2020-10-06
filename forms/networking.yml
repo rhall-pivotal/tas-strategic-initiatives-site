@@ -210,7 +210,9 @@ property_inputs:
     label: Gorouter drain timeout
     description: |
       The amount of time that the Gorouter continues to serve existing
-      connections before shutting down. Enter value in seconds.
+      connections before shutting down. This timeout should be smaller than
+      "Back end request timeout and idle timeout" to reduce drain time during
+      deploys.  Enter value in seconds.
 
   - reference: .router.drain_wait
     label: Load balancer unhealthy threshold
