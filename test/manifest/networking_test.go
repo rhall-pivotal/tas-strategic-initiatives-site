@@ -590,8 +590,12 @@ var _ = Describe("Networking", func() {
 	})
 
 	Describe("Service Discovery For Apps", func() {
+		var (
+			inputProperties map[string]interface{}
+			instanceGroup   string
+		)
+
 		Describe("controller", func() {
-			var instanceGroup string
 			BeforeEach(func() {
 				if productName == "ert" {
 					instanceGroup = "diego_brain"
@@ -606,6 +610,23 @@ var _ = Describe("Networking", func() {
 
 				_, err = manifest.FindInstanceGroupJob(instanceGroup, "service-discovery-controller")
 				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("sets the stales threshold when configured", func() {
+				inputProperties = map[string]interface{}{
+					".properties.service_discovery_controller_staleness_threshold": 42,
+				}
+
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob(instanceGroup, "service-discovery-controller")
+				Expect(err).NotTo(HaveOccurred())
+
+				threshold, err := job.Property("staleness_threshold_seconds")
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(threshold).To(Equal(42))
 			})
 		})
 

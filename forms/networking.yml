@@ -355,3 +355,10 @@ property_inputs:
     property_inputs:
     - reference: name
       label: Cookie name
+
+  - reference: .properties.service_discovery_controller_staleness_threshold
+    label: Internal routes staleness threshold (seconds)
+    description: |
+      Staleness threshold in seconds for internal routes. If the
+      service-discovery-controller does not receive a message about a route
+      within this threshold, the route will be pruned from the table.
