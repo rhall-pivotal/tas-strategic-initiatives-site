@@ -72,7 +72,6 @@ manifest: |
       description: Windows Server
     default_stack: cflinuxfs3
     min_cli_version: 6.23.0
-    bulk_api_password: ((( cloud-controller-bulk-api-credentials.password )))
     default_running_security_groups:
     - default_security_group
     allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
