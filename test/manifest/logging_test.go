@@ -2,10 +2,12 @@ package manifest_test
 
 import (
 	"fmt"
+	"io/ioutil"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pivotal-cf/planitest"
+	"gopkg.in/yaml.v2"
 )
 
 var _ = Describe("Logging", func() {
@@ -69,6 +71,13 @@ var _ = Describe("Logging", func() {
 				Expect(tlsAgentProps).To(HaveKey("cert"))
 				Expect(tlsAgentProps).To(HaveKey("key"))
 
+				d, err := loadDomain("../../properties/logging.yml", "loggregator_agent_metrics_tls")
+				Expect(err).ToNot(HaveOccurred())
+
+				metricsProps, err := agent.Property("metrics")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
+
 				grpcPort, err := agent.Property("grpc_port")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(grpcPort).To(Equal(3459))
@@ -116,6 +125,13 @@ var _ = Describe("Logging", func() {
 
 				expectSecureMetrics(agent)
 
+				d, err := loadDomain("../../properties/logging.yml", "forwarder_agent_metrics_tls")
+				Expect(err).ToNot(HaveOccurred())
+
+				metricsProps, err := agent.Property("metrics")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
+
 				By("adding tags to the metrics emitted")
 				tags, err := agent.Property("tags")
 				Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
@@ -148,6 +164,13 @@ var _ = Describe("Logging", func() {
 				Expect(tlsProps).To(HaveKey("key"))
 
 				expectSecureMetrics(agent)
+
+				d, err := loadDomain("../../properties/logging.yml", "syslog_agent_metrics_tls")
+				Expect(err).ToNot(HaveOccurred())
+
+				metricsProps, err := agent.Property("metrics")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
 
 				cacheTlsProps, err := agent.Property("cache/tls")
 				Expect(err).ToNot(HaveOccurred())
@@ -193,6 +216,13 @@ var _ = Describe("Logging", func() {
 			Expect(port).To(Equal(9000))
 
 			expectSecureMetrics(cache)
+
+			d, err := loadDomain("../../properties/logging.yml", "loggr_syslog_binding_cache_metrics_tls")
+			Expect(err).ToNot(HaveOccurred())
+
+			metricsProps, err := cache.Property("metrics")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
 		})
 	})
 
@@ -220,6 +250,13 @@ var _ = Describe("Logging", func() {
 			Expect(tlsProps).To(HaveKey("key"))
 
 			expectSecureMetrics(logCache)
+
+			d, err := loadDomain("../../properties/logging.yml", "log_cache_metrics_tls")
+			Expect(err).ToNot(HaveOccurred())
+
+			metricsProps, err := logCache.Property("metrics")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
 		})
 
 		It("specifies the port to listen on", func() {
@@ -401,6 +438,22 @@ var _ = Describe("Logging", func() {
 				Expect(logCacheSyslogServer.Property("enabled")).To(BeFalse())
 			})
 
+			It("has secure metrics", func() {
+				manifest, err := product.RenderManifest(nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				logCacheSyslogServer, err := manifest.FindInstanceGroupJob(instanceGroup, "log-cache-syslog-server")
+				Expect(err).NotTo(HaveOccurred())
+
+				expectSecureMetrics(logCacheSyslogServer)
+				d, err := loadDomain("../../properties/logging.yml", "log_cache_syslog_server_metrics_tls")
+				Expect(err).ToNot(HaveOccurred())
+
+				metricsProps, err := logCacheSyslogServer.Property("metrics")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
+			})
+
 			It("enables syslog ingestion", func() {
 				manifest, err := product.RenderManifest(map[string]interface{}{
 					".properties.enable_log_cache_syslog_ingestion": true,
@@ -487,7 +540,24 @@ var _ = Describe("Logging", func() {
 				Expect(la.Property("disable_logs")).To(BeTrue())
 			}
 		})
+
+		It("has secure metrics", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			rlpGateway, err := manifest.FindInstanceGroupJob(instanceGroup("loggregator_trafficcontroller"), "reverse_log_proxy_gateway")
+			Expect(err).NotTo(HaveOccurred())
+
+			expectSecureMetrics(rlpGateway)
+			d, err := loadDomain("../../properties/logging.yml", "rlp_gateway_metrics_tls")
+			Expect(err).ToNot(HaveOccurred())
+
+			metricsProps, err := rlpGateway.Property("metrics")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
+		})
 	})
+
 	Describe("Traffic Controller", func() {
 		var instanceGroup string
 		BeforeEach(func() {
@@ -685,4 +755,35 @@ func instanceGroup(instanceGroupName string) string {
 	}
 
 	return instanceGroupName
+}
+
+func loadDomain(file, property string) (string, error) {
+	b, err := ioutil.ReadFile(file)
+	if err != nil {
+		return "", err
+	}
+	var certs []certEntry
+	err = yaml.Unmarshal(b, &certs)
+	if err != nil {
+		return "", err
+	}
+
+	for _, c := range certs {
+		if c.Name == property {
+			if d, ok := c.Default.(map[interface{}]interface{}); ok {
+				if doms, ok := d["domains"].([]interface{}); ok {
+					return fmt.Sprintf("%v", doms[0]), nil
+				}
+			}
+
+			return "", fmt.Errorf("property %s in %s incorrect", property, file)
+		}
+	}
+
+	return "", fmt.Errorf("property %s not found in %s", property, file)
+}
+
+type certEntry struct {
+	Name    string      `yaml:"name"`
+	Default interface{} `yaml:"default"`
 }
