@@ -1,9 +1,13 @@
 package manifest_test
 
 import (
+	"fmt"
+	"io/ioutil"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pivotal-cf/planitest"
+	"gopkg.in/yaml.v2"
 )
 
 var _ = Describe("Logging", func() {
@@ -51,6 +55,23 @@ var _ = Describe("Logging", func() {
 
 				_, err = agent.Property("loggregator_agent/enabled")
 				Expect(err).ToNot(HaveOccurred())
+			}
+		})
+
+		It("has a secure metrics endpoint", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, ig := range instanceGroups {
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggregator_agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				d, err := loadDomain("../../properties/logging.yml", "loggregator_agent_metrics_tls")
+				Expect(err).ToNot(HaveOccurred())
+
+				metricsProps, err := agent.Property("metrics")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
 			}
 		})
 
@@ -141,79 +162,99 @@ var _ = Describe("Logging", func() {
 				Expect(aggregateDrains).To(ContainSubstring("syslog-tls://doppler.service.cf.internal:6067"))
 			}
 		})
-	})
 
-	Describe("prom scraper", func() {
-		It("configures the prom scraper on all VMs", func() {
+		It("has a secure metrics endpoint", func() {
 			manifest, err := product.RenderManifest(nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			for _, ig := range instanceGroups {
-				scraper, err := manifest.FindInstanceGroupJob(ig, "prom_scraper")
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggr-syslog-agent")
 				Expect(err).NotTo(HaveOccurred())
 
-				expectSecureMetrics(scraper)
+				d, err := loadDomain("../../properties/logging.yml", "syslog_agent_metrics_tls")
+				Expect(err).ToNot(HaveOccurred())
+
+				metricsProps, err := agent.Property("metrics")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
+			}
+		})
+	})
+
+	Describe("forwarder agent", func() {
+		It("sets defaults on the forwarder agent", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, ig := range instanceGroups {
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggr-forwarder-agent")
+				Expect(err).NotTo(HaveOccurred())
+
+				By("getting the grpc port")
+				port, err := agent.Property("port")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(port).To(Equal(3458))
+
+				expectSecureMetrics(agent)
 			}
 		})
 
-		Describe("forwarder agent", func() {
-			It("sets defaults on the forwarder agent", func() {
-				manifest, err := product.RenderManifest(nil)
+		It("has a secure metrics endpoint", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, ig := range instanceGroups {
+				agent, err := manifest.FindInstanceGroupJob(ig, "loggr-forwarder-agent")
 				Expect(err).NotTo(HaveOccurred())
 
-				for _, ig := range instanceGroups {
-					agent, err := manifest.FindInstanceGroupJob(ig, "loggr-forwarder-agent")
+				d, err := loadDomain("../../properties/logging.yml", "forwarder_agent_metrics_tls")
+				Expect(err).ToNot(HaveOccurred())
+
+				metricsProps, err := agent.Property("metrics")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
+			}
+		})
+
+		Describe("tags", func() {
+			Context("when compute isolation is enabled", func() {
+				It("adds the appropriate manifest for tags", func() {
+					manifest, err := product.RenderManifest(nil)
 					Expect(err).NotTo(HaveOccurred())
 
-					By("getting the grpc port")
-					port, err := agent.Property("port")
-					Expect(err).NotTo(HaveOccurred())
-					Expect(port).To(Equal(3458))
+					for _, ig := range instanceGroups {
+						agent, err := manifest.FindInstanceGroupJob(ig, "loggr-forwarder-agent")
+						Expect(err).NotTo(HaveOccurred())
 
-					expectSecureMetrics(agent)
-				}
+						tags, err := agent.Property("tags")
+						Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
+						Expect(tags).To(HaveKeyWithValue("placement_tag", "isosegtag"))
+						Expect(tags).To(HaveKeyWithValue("product", "Isolation Segment"))
+						Expect(tags).NotTo(HaveKey("product_version"))
+						Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
+					}
+				})
 			})
 
-			Describe("tags", func() {
-				Context("when compute isolation is enabled", func() {
-					It("adds the appropriate manifest for tags", func() {
-						manifest, err := product.RenderManifest(nil)
+			Context("when compute isolation is disabled", func() {
+				It("adds the appropriate manifest for tags", func() {
+					manifest, err := product.RenderManifest(map[string]interface{}{
+						".properties.compute_isolation":                                "disabled",
+						".properties.compute_isolation.enabled.isolation_segment_name": "",
+					})
+					Expect(err).NotTo(HaveOccurred())
+
+					for _, ig := range instanceGroups {
+						agent, err := manifest.FindInstanceGroupJob(ig, "loggr-forwarder-agent")
 						Expect(err).NotTo(HaveOccurred())
 
-						for _, ig := range instanceGroups {
-							agent, err := manifest.FindInstanceGroupJob(ig, "loggr-forwarder-agent")
-							Expect(err).NotTo(HaveOccurred())
-
-							tags, err := agent.Property("tags")
-							Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
-							Expect(tags).To(HaveKeyWithValue("placement_tag", "isosegtag"))
-							Expect(tags).To(HaveKeyWithValue("product", "Isolation Segment"))
-							Expect(tags).NotTo(HaveKey("product_version"))
-							Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
-						}
-					})
-				})
-
-				Context("when compute isolation is disabled", func() {
-					It("adds the appropriate manifest for tags", func() {
-						manifest, err := product.RenderManifest(map[string]interface{}{
-							".properties.compute_isolation":                                "disabled",
-							".properties.compute_isolation.enabled.isolation_segment_name": "",
-						})
-						Expect(err).NotTo(HaveOccurred())
-
-						for _, ig := range instanceGroups {
-							agent, err := manifest.FindInstanceGroupJob(ig, "loggr-forwarder-agent")
-							Expect(err).NotTo(HaveOccurred())
-
-							tags, err := agent.Property("tags")
-							Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
-							Expect(tags).NotTo(HaveKey("placement_tag"))
-							Expect(tags).To(HaveKeyWithValue("product", "Isolation Segment"))
-							Expect(tags).NotTo(HaveKey("product_version"))
-							Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
-						}
-					})
+						tags, err := agent.Property("tags")
+						Expect(err).NotTo(HaveOccurred(), "Instance Group: %s", ig)
+						Expect(tags).NotTo(HaveKey("placement_tag"))
+						Expect(tags).To(HaveKeyWithValue("product", "Isolation Segment"))
+						Expect(tags).NotTo(HaveKey("product_version"))
+						Expect(tags).To(HaveKeyWithValue("system_domain", Not(BeEmpty())))
+					}
 				})
 			})
 		})
@@ -305,4 +346,35 @@ func expectSecureMetrics(job planitest.Manifest) {
 	Expect(metricsProps).To(HaveKey("cert"))
 	Expect(metricsProps).To(HaveKey("key"))
 	Expect(metricsProps).To(HaveKey("server_name"))
+}
+
+func loadDomain(file, property string) (string, error) {
+	b, err := ioutil.ReadFile(file)
+	if err != nil {
+		return "", err
+	}
+	var certs []certEntry
+	err = yaml.Unmarshal(b, &certs)
+	if err != nil {
+		return "", err
+	}
+
+	for _, c := range certs {
+		if c.Name == property {
+			if d, ok := c.Default.(map[interface{}]interface{}); ok {
+				if doms, ok := d["domains"].([]interface{}); ok {
+					return fmt.Sprintf("%v", doms[0]), nil
+				}
+			}
+
+			return "", fmt.Errorf("property %s in %s incorrect", property, file)
+		}
+	}
+
+	return "", fmt.Errorf("property %s not found in %s", property, file)
+}
+
+type certEntry struct {
+	Name    string      `yaml:"name"`
+	Default interface{} `yaml:"default"`
 }

@@ -49,6 +49,23 @@ var _ = Describe("Metrics", func() {
 				expectSecureMetrics(scraper)
 			}
 		})
+
+		It("has a secure metrics endpoint", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, ig := range getAllInstanceGroups(manifest) {
+				agent, err := manifest.FindInstanceGroupJob(ig, "prom_scraper")
+				Expect(err).NotTo(HaveOccurred())
+
+				d, err := loadDomain("../../properties/metrics.yml", "prom_scraper_metrics_tls")
+				Expect(err).ToNot(HaveOccurred())
+
+				metricsProps, err := agent.Property("metrics")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
+			}
+		})
 	})
 
 	Describe("metrics discovery", func() {
@@ -68,6 +85,23 @@ var _ = Describe("Metrics", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				expectSecureMetrics(agent)
+			}
+		})
+
+		It("has a secure metrics endpoint", func() {
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, ig := range getAllInstanceGroups(manifest) {
+				agent, err := manifest.FindInstanceGroupJob(ig, "metrics-discovery-registrar")
+				Expect(err).NotTo(HaveOccurred())
+
+				d, err := loadDomain("../../properties/metrics.yml", "metrics_discovery_metrics_tls")
+				Expect(err).ToNot(HaveOccurred())
+
+				metricsProps, err := agent.Property("metrics")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
 			}
 		})
 	})
