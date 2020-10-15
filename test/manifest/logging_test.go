@@ -1,9 +1,13 @@
 package manifest_test
 
 import (
+	"fmt"
+	"io/ioutil"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pivotal-cf/planitest"
+	"gopkg.in/yaml.v2"
 )
 
 var _ = Describe("Logging", func() {
@@ -24,6 +28,13 @@ var _ = Describe("Logging", func() {
 			Expect(tlsProps).To(HaveKey("ca_cert"))
 
 			expectSecureMetrics(agent)
+
+			d, err := loadDomain("../../properties/logging.yml", "loggregator_agent_metrics_tls")
+			Expect(err).ToNot(HaveOccurred())
+
+			metricsProps, err := agent.Property("metrics")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
 
 			tlsAgentProps, err := agent.Property("loggregator/tls/agent")
 			Expect(err).ToNot(HaveOccurred())
@@ -86,6 +97,13 @@ var _ = Describe("Logging", func() {
 
 			expectSecureMetrics(agent)
 
+			d, err := loadDomain("../../properties/logging.yml", "forwarder_agent_metrics_tls")
+			Expect(err).ToNot(HaveOccurred())
+
+			metricsProps, err := agent.Property("metrics")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
+
 			By("getting the grpc port")
 			port, err := agent.Property("port")
 			Expect(err).NotTo(HaveOccurred())
@@ -126,6 +144,13 @@ var _ = Describe("Logging", func() {
 
 			expectSecureMetrics(agent)
 
+			d, err := loadDomain("../../properties/logging.yml", "syslog_agent_metrics_tls")
+			Expect(err).ToNot(HaveOccurred())
+
+			metricsProps, err := agent.Property("metrics")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
+
 			port, err := agent.Property("port")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(port).To(Equal(3460))
@@ -144,18 +169,6 @@ var _ = Describe("Logging", func() {
 			Expect(cacheTlsProps).To(HaveKeyWithValue("cn", "binding-cache"))
 		})
 	})
-
-	Describe("prom scraper", func() {
-		It("configures the prom scraper", func() {
-			manifest, err := product.RenderManifest(nil)
-			Expect(err).NotTo(HaveOccurred())
-
-			scraper, err := manifest.FindInstanceGroupJob("windows_diego_cell", "prom_scraper_windows")
-			Expect(err).NotTo(HaveOccurred())
-
-			expectSecureMetrics(scraper)
-		})
-	})
 })
 
 func expectSecureMetrics(job planitest.Manifest) {
@@ -165,4 +178,35 @@ func expectSecureMetrics(job planitest.Manifest) {
 	Expect(metricsProps).To(HaveKey("cert"))
 	Expect(metricsProps).To(HaveKey("key"))
 	Expect(metricsProps).To(HaveKey("server_name"))
+}
+
+func loadDomain(file, property string) (string, error) {
+	b, err := ioutil.ReadFile(file)
+	if err != nil {
+		return "", err
+	}
+	var certs []certEntry
+	err = yaml.Unmarshal(b, &certs)
+	if err != nil {
+		return "", err
+	}
+
+	for _, c := range certs {
+		if c.Name == property {
+			if d, ok := c.Default.(map[interface{}]interface{}); ok {
+				if doms, ok := d["domains"].([]interface{}); ok {
+					return fmt.Sprintf("%v", doms[0]), nil
+				}
+			}
+
+			return "", fmt.Errorf("property %s in %s incorrect", property, file)
+		}
+	}
+
+	return "", fmt.Errorf("property %s not found in %s", property, file)
+}
+
+type certEntry struct {
+	Name    string      `yaml:"name"`
+	Default interface{} `yaml:"default"`
 }

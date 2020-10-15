@@ -16,6 +16,13 @@ var _ = Describe("Metrics", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			expectSecureMetrics(scraper)
+
+			d, err := loadDomain("../../properties/metrics.yml", "prom_scraper_metrics_tls")
+			Expect(err).ToNot(HaveOccurred())
+
+			metricsProps, err := scraper.Property("metrics")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
 		})
 	})
 
@@ -29,10 +36,24 @@ var _ = Describe("Metrics", func() {
 
 			expectSecureMetrics(registrar)
 
+			d, err := loadDomain("../../properties/metrics.yml", "metrics_discovery_metrics_tls")
+			Expect(err).ToNot(HaveOccurred())
+
+			metricsProps, err := registrar.Property("metrics")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
+
 			agent, err := manifest.FindInstanceGroupJob("windows_diego_cell", "metrics-agent-windows")
 			Expect(err).NotTo(HaveOccurred())
 
 			expectSecureMetrics(agent)
+
+			d, err = loadDomain("../../properties/metrics.yml", "metrics_agent_metrics_tls")
+			Expect(err).ToNot(HaveOccurred())
+
+			metricsProps, err = agent.Property("metrics")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
 		})
 	})
 })
