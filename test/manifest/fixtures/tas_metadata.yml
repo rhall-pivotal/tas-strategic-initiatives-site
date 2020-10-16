@@ -335,6 +335,12 @@ form_types:
     - label: Cookie name
       reference: name
     reference: .properties.router_sticky_session_cookie_names
+  - description: |
+      Staleness threshold in seconds for internal routes. If the
+      service-discovery-controller does not receive a message about a route
+      within this threshold, the route will be pruned from the table.
+    label: Internal routes staleness threshold (seconds)
+    reference: .properties.service_discovery_controller_staleness_threshold
 - description: App Containers
   label: App Containers
   markdown: |
@@ -3484,7 +3490,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.301"
+      build: "2.11.0-build.302"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -4487,6 +4493,7 @@ job_types:
           tls:
             certificate: (( .properties.service_discovery_server_tls.cert_pem ))
             private_key: (( .properties.service_discovery_server_tls.private_key_pem ))
+      staleness_threshold_seconds: (( .properties.service_discovery_controller_staleness_threshold.value ))
     name: service-discovery-controller
     provides: |
       service-discovery-controller: {as: service-discovery-controller, shared: true}
@@ -7585,7 +7592,7 @@ job_types:
     name: loggregator_agent
     release: loggregator-agent
 kiln_metadata:
-  metadata_git_sha: 1196c36af0d27abb3d272b2950177c7a1ce9928f
+  metadata_git_sha: 4edd85d03588ecc6b28d115bdf618ba8435de8bb
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -7670,7 +7677,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.301
+product_version: 2.11.0-build.302
 property_blueprints:
 - configurable: false
   default: account
@@ -9204,6 +9211,11 @@ property_blueprints:
     - service-discovery-controller.service.cf.internal
   name: service_discovery_server_tls
   type: rsa_cert_credentials
+- configurable: true
+  default: 600
+  name: service_discovery_controller_staleness_threshold
+  optional: false
+  type: integer
 - configurable: true
   default: 1m
   name: system_metrics_scraper_scrape_interval
@@ -11073,7 +11085,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.301
+  version: 2.11.0-build.302
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
