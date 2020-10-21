@@ -205,7 +205,9 @@ form_types:
     reference: .router.frontend_idle_timeout
   - description: |
       The amount of time that the Gorouter continues to serve existing
-      connections before shutting down. Enter value in seconds.
+      connections before shutting down. This timeout should be smaller than
+      "Back end request timeout and idle timeout" to reduce drain time during
+      deploys.  Enter value in seconds.
     label: Gorouter drain timeout
     reference: .router.drain_timeout
   - description: |
@@ -3517,7 +3519,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.309"
+      build: "2.11.0-build.310"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -7639,7 +7641,7 @@ job_types:
     name: loggregator_agent
     release: loggregator-agent
 kiln_metadata:
-  metadata_git_sha: 8c885f6df784b5c3632376a37aae3ba45f97713b
+  metadata_git_sha: bc649ab0a52b8c5bb4c3a47af77aa108d41bace7
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -7724,7 +7726,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.309
+product_version: 2.11.0-build.310
 property_blueprints:
 - configurable: false
   default: account
@@ -11136,7 +11138,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.309
+  version: 2.11.0-build.310
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
