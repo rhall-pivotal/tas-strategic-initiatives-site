@@ -729,6 +729,23 @@ form_types:
     label: Proxy IPs regular expression
     reference: .uaa.proxy_ips_regex
   - description: |
+      Comma separated list of the router IPs acting as the first group of
+      HTTP/TCP backends. These will be added to the proxy_ips_regex as exact matches.
+    label: List of proxy servers
+    reference: .uaa.proxy_servers
+  - description: |
+      The http_proxy across the VMs used for all requests over http
+    label: http proxy
+    reference: .uaa.http_proxy
+  - description: |
+      The https_proxy across the VMs used for all requests over https
+    label: https proxy
+    reference: .uaa.https_proxy
+  - description: |
+      Set No_Proxy across the VMs
+    label: no proxy
+    reference: .uaa.no_proxy
+  - description: |
       If disabled, all client credentials must be URL-encoded when provided
       as basic auth in HTTP requests.
     label: Client basic auth compatibility mode
@@ -2925,6 +2942,10 @@ job_types:
             text: (( .uaa.customize_password_label.value ))
           username:
             text: (( .uaa.customize_username_label.value ))
+      env:
+        http_proxy: (( .uaa.http_proxy.value ))
+        https_proxy: (( .uaa.https_proxy.value ))
+        no_proxy: (( .uaa.no_proxy.value ))
       uaa:
         sslCertificate: (( .uaa.ssl_credentials.cert_pem ))
         ca_certs: (( .properties.uaa_database.selected_option.parsed_manifest(ca_certs) ))
@@ -3054,6 +3075,8 @@ job_types:
             - cloud_controller.admin_read_only
             - doppler.firehose
         proxy_ips_regex: (( .uaa.proxy_ips_regex.value ))
+        proxy:
+          servers: (( .uaa.proxy_servers.parsed_strings))
         sslPrivateKey: (( .uaa.ssl_credentials.private_key_pem ))
         issuer: (( .uaa.issuer_uri.value ))
         zones:
@@ -3488,7 +3511,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.307"
+      build: "2.11.0-build.308"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -6069,6 +6092,22 @@ job_types:
     name: proxy_ips_regex
     type: string
   - configurable: true
+    name: proxy_servers
+    optional: true
+    type: string_list
+  - configurable: true
+    name: http_proxy
+    optional: true
+    type: string
+  - configurable: true
+    name: https_proxy
+    optional: true
+    type: string
+  - configurable: true
+    name: no_proxy
+    optional: true
+    type: string
+  - configurable: true
     name: issuer_uri
     optional: true
     type: string
@@ -7592,7 +7631,7 @@ job_types:
     name: loggregator_agent
     release: loggregator-agent
 kiln_metadata:
-  metadata_git_sha: 8d37d8136667a046168500493848a05352e025c6
+  metadata_git_sha: d137c35fdd457b5462c9ed6f421a606f28ce5e15
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -7677,7 +7716,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.307
+product_version: 2.11.0-build.308
 property_blueprints:
 - configurable: false
   default: account
@@ -11085,7 +11124,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.307
+  version: 2.11.0-build.308
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
