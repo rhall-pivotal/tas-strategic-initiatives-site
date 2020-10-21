@@ -157,8 +157,6 @@ form_types:
       reference: .properties.haproxy_hsts_support.enable
     - label: Disable
       reference: .properties.haproxy_hsts_support.disable
-  - label: Disable SSL certificate verification for this environment
-    reference: .ha_proxy.skip_cert_verify
   - label: Disable HTTP on the Gorouter and HAProxy
     reference: .properties.routing_disable_http
   - label: Disable insecure cookies on the Gorouter
@@ -3490,7 +3488,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.306"
+      build: "2.11.0-build.307"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -6298,8 +6296,10 @@ job_types:
     name: static_ips
     optional: true
     type: ip_ranges
-  - configurable: true
+  - configurable: false
+    default: false
     name: skip_cert_verify
+    optional: false
     type: boolean
   - configurable: true
     name: internal_only_domains
@@ -7592,7 +7592,7 @@ job_types:
     name: loggregator_agent
     release: loggregator-agent
 kiln_metadata:
-  metadata_git_sha: bf72c5dbef6e65c776ad70a523443d9caa9daeef
+  metadata_git_sha: 8d37d8136667a046168500493848a05352e025c6
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -7677,7 +7677,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.306
+product_version: 2.11.0-build.307
 property_blueprints:
 - configurable: false
   default: account
@@ -11085,7 +11085,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.306
+  version: 2.11.0-build.307
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
