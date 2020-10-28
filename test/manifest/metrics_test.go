@@ -168,6 +168,28 @@ var _ = Describe("Metrics", func() {
 				Expect(metricsProps).To(HaveKeyWithValue("server_name", d))
 			}
 		})
+
+		It("configures metrics-discovery to connect to nats locally on the instance group where nats-tls is deployed", func() {
+			var natsInstanceGroupName string
+			if productName == "srt" {
+				natsInstanceGroupName = "database"
+			} else {
+				natsInstanceGroupName = "nats"
+			}
+
+			manifest, err := product.RenderManifest(nil)
+			Expect(err).NotTo(HaveOccurred())
+
+			instanceGroups := getAllInstanceGroups(manifest)
+			for _, ig := range instanceGroups {
+				registrar, err := manifest.FindInstanceGroupJob(ig, "metrics-discovery-registrar")
+				Expect(err).NotTo(HaveOccurred())
+
+				configuredNatsInstanceGroup, err := registrar.Property("nats_instance_group")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(configuredNatsInstanceGroup).To(Equal(natsInstanceGroupName))
+			}
+		})
 	})
 
 	Describe("system metric forwarder", func() {

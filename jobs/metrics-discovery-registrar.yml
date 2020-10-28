@@ -10,3 +10,8 @@ manifest: |
   nats_client:
     cert: (( .properties.nats_client_cert.cert_pem ))
     key: (( .properties.nats_client_cert.private_key_pem ))
+{{if eq tile "srt"}}
+  nats_instance_group: database
+{{else}}
+  nats_instance_group: nats
+{{end}}
