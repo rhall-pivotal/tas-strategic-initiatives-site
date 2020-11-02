@@ -3519,7 +3519,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.324"
+      build: "2.11.0-build.325"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -3579,7 +3579,6 @@ job_types:
           description: Windows Server
         default_stack: cflinuxfs3
         min_cli_version: 6.23.0
-        bulk_api_password: ((( cloud-controller-bulk-api-credentials.password )))
         default_running_security_groups:
         - default_security_group
         allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
@@ -3698,7 +3697,7 @@ job_types:
         ca_cert: (( $ops_manager.ca_certificate ))
       routing_api:
         log_level: debug
-        enable_api_endpoints: "both"
+        enabled_api_endpoints: "both"
         mtls_ca: (( $ops_manager.ca_certificate ))
         mtls_server_cert: (( .properties.routing_api_server_cert.cert_pem ))
         mtls_server_key: (( .properties.routing_api_server_cert.private_key_pem ))
@@ -3767,7 +3766,6 @@ job_types:
             destination: 0.0.0.0-169.253.255.255
           - protocol: all
             destination: 169.255.0.0-255.255.255.255
-        bulk_api_password: ((( cloud-controller-bulk-api-credentials.password )))
         maximum_app_disk_in_mb: (( .cloud_controller.max_disk_quota_app.value ))
         quota_definitions:
           default:
@@ -3815,7 +3813,6 @@ job_types:
         droplets: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))'
         packages:  '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccpackage_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))'
         resource_pool:  '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccresource_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))'
-        bulk_api_password: ((( cloud-controller-bulk-api-credentials.password )))
         db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
         database_encryption:
           keys: (( .properties.cloud_controller_encryption_keys.parsed_manifest(keys) ))
@@ -7641,7 +7638,7 @@ job_types:
     name: loggregator_agent
     release: loggregator-agent
 kiln_metadata:
-  metadata_git_sha: 2722a439065bdef6722e5592f3068d7cbd20440a
+  metadata_git_sha: 3153f5f369a9a514594b65b29b038193046cf843
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -7726,7 +7723,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.324
+product_version: 2.11.0-build.325
 property_blueprints:
 - configurable: false
   default: account
@@ -11138,7 +11135,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.324
+  version: 2.11.0-build.325
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
@@ -11549,10 +11546,6 @@ variables:
 - name: autoscale-db-credentials
   type: user
 - name: cc-db-credentials
-  type: user
-- name: cloud-controller-bulk-api-credentials
-  options:
-    username: bulk_api
   type: user
 - name: cloud-controller-internal-api-user-credentials
   type: user
