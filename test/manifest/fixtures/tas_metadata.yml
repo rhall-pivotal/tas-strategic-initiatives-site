@@ -2045,6 +2045,8 @@ job_types:
       nats_client:
         cert: (( .properties.nats_client_cert.cert_pem ))
         key: (( .properties.nats_client_cert.private_key_pem ))
+
+      nats_instance_group: database
     name: metrics-discovery-registrar
     release: metrics-discovery
   - manifest: |
@@ -2441,6 +2443,8 @@ job_types:
       nats_client:
         cert: (( .properties.nats_client_cert.cert_pem ))
         key: (( .properties.nats_client_cert.private_key_pem ))
+
+      nats_instance_group: database
     name: metrics-discovery-registrar
     release: metrics-discovery
   - manifest: |
@@ -2666,6 +2670,8 @@ job_types:
       nats_client:
         cert: (( .properties.nats_client_cert.cert_pem ))
         key: (( .properties.nats_client_cert.private_key_pem ))
+
+      nats_instance_group: database
     name: metrics-discovery-registrar
     release: metrics-discovery
   - manifest: |
@@ -3519,7 +3525,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.326"
+      build: "2.11.0-build.327"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -4845,6 +4851,8 @@ job_types:
       nats_client:
         cert: (( .properties.nats_client_cert.cert_pem ))
         key: (( .properties.nats_client_cert.private_key_pem ))
+
+      nats_instance_group: database
     name: metrics-discovery-registrar
     release: metrics-discovery
   - manifest: |
@@ -5360,6 +5368,8 @@ job_types:
       nats_client:
         cert: (( .properties.nats_client_cert.cert_pem ))
         key: (( .properties.nats_client_cert.private_key_pem ))
+
+      nats_instance_group: database
     name: metrics-discovery-registrar
     release: metrics-discovery
   - manifest: |
@@ -6488,6 +6498,8 @@ job_types:
       nats_client:
         cert: (( .properties.nats_client_cert.cert_pem ))
         key: (( .properties.nats_client_cert.private_key_pem ))
+
+      nats_instance_group: database
     name: metrics-discovery-registrar
     release: metrics-discovery
   - manifest: |
@@ -6820,6 +6832,8 @@ job_types:
       nats_client:
         cert: (( .properties.nats_client_cert.cert_pem ))
         key: (( .properties.nats_client_cert.private_key_pem ))
+
+      nats_instance_group: database
     name: metrics-discovery-registrar
     release: metrics-discovery
   - manifest: |
@@ -7001,6 +7015,8 @@ job_types:
       nats_client:
         cert: (( .properties.nats_client_cert.cert_pem ))
         key: (( .properties.nats_client_cert.private_key_pem ))
+
+      nats_instance_group: database
     name: metrics-discovery-registrar
     release: metrics-discovery
   - manifest: |
@@ -7518,6 +7534,8 @@ job_types:
       nats_client:
         cert: (( .properties.nats_client_cert.cert_pem ))
         key: (( .properties.nats_client_cert.private_key_pem ))
+
+      nats_instance_group: database
     name: metrics-discovery-registrar
     release: metrics-discovery
   - manifest: |
@@ -7638,7 +7656,7 @@ job_types:
     name: loggregator_agent
     release: loggregator-agent
 kiln_metadata:
-  metadata_git_sha: 3b3f8a42798aaec39059db7003004f30405efa32
+  metadata_git_sha: afe63d8c4d2d6c5d2d8a0432c28191954f7cbad5
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.10.0
@@ -7723,7 +7741,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.326
+product_version: 2.11.0-build.327
 property_blueprints:
 - configurable: false
   default: account
@@ -11135,7 +11153,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.326
+  version: 2.11.0-build.327
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
