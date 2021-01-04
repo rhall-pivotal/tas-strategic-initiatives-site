@@ -306,6 +306,136 @@ var _ = Describe("CAPI", func() {
 			})
 		})
 
+		Context("logging_timestamp_format", func() {
+			var (
+				rubyJobs []Job
+				goJobs map[Job]string
+			)
+
+			BeforeEach(func() {
+				if productName == "srt" {
+					rubyJobs = []Job{
+						{
+							InstanceGroup: "control",
+							Name:          "cloud_controller_ng",
+						},
+						{
+							InstanceGroup: "control",
+							Name:          "cloud_controller_worker",
+						},
+						{
+							InstanceGroup: "control",
+							Name:          "cloud_controller_clock",
+						},
+						{
+							InstanceGroup: "control",
+							Name:          "rotate_cc_database_key",
+						},
+						{
+							InstanceGroup: "control",
+							Name:          "cc_deployment_updater",
+						},
+					}
+				} else {
+					rubyJobs = []Job{
+						{
+							InstanceGroup: "cloud_controller",
+							Name:          "cloud_controller_ng",
+						},
+						{
+							InstanceGroup: "cloud_controller_worker",
+							Name:          "cloud_controller_worker",
+						},
+						{
+							InstanceGroup: "clock_global",
+							Name:          "cloud_controller_clock",
+						},
+
+						{
+							InstanceGroup: "clock_global",
+							Name:          "rotate_cc_database_key",
+						},
+						{
+							InstanceGroup: "clock_global",
+							Name:          "cc_deployment_updater",
+						},
+					}
+				}
+
+				if productName == "srt" {
+					goJobs = map[Job]string{
+						{ InstanceGroup: "control", Name: "tps"}: "capi/tps/logging/format/timestamp",
+						{ InstanceGroup: "control", Name: "cc_uploader"}: "capi/cc_uploader/logging/format/timestamp",
+					}
+				} else {
+					goJobs = map[Job]string{
+						{ InstanceGroup: "diego_brain", Name: "tps"}: "capi/tps/logging/format/timestamp",
+						{ InstanceGroup: "diego_brain", Name: "cc_uploader"}: "capi/cc_uploader/logging/format/timestamp",
+					}
+				}
+			})
+
+			When("logging_timestamp_format is set to deprecated", func() {
+				BeforeEach(func() {
+					var err error
+					manifest, err = product.RenderManifest(map[string]interface{}{
+						".properties.logging_timestamp_format": "deprecated",
+					})
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				It("is used in all ruby-based capi jobs", func() {
+					for _, job := range rubyJobs {
+						manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
+
+						loggingFormatTimestamp, err := manifestJob.Property("cc/logging/format/timestamp")
+						Expect(err).NotTo(HaveOccurred())
+						Expect(loggingFormatTimestamp).To(Equal("deprecated"))
+					}
+				})
+
+				It("is used in all go-based capi jobs", func() {
+					for job, property := range goJobs {
+						manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
+
+						loggingFormatTimestamp, err := manifestJob.Property(property)
+						Expect(err).NotTo(HaveOccurred())
+						Expect(loggingFormatTimestamp).To(Equal("unix-epoch"))
+					}
+				})
+			})
+
+			When("logging_format_timestamp is set to rfc3339", func() {
+				BeforeEach(func() {
+					var err error
+					manifest, err = product.RenderManifest(map[string]interface{}{
+						".properties.logging_timestamp_format": "rfc3339",
+					})
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				It("is used in all ruby-based capi jobs", func() {
+					for _, job := range rubyJobs {
+						manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
+
+						loggingFormatTimestamp, err := manifestJob.Property("cc/logging/format/timestamp")
+						Expect(err).NotTo(HaveOccurred())
+						Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+					}
+				})
+
+				It("is used in all go-based capi jobs", func() {
+					for job, property := range goJobs {
+						manifestJob, err := manifest.FindInstanceGroupJob(job.InstanceGroup, job.Name)
+
+						loggingFormatTimestamp, err := manifestJob.Property(property)
+						Expect(err).NotTo(HaveOccurred())
+						Expect(loggingFormatTimestamp).To(Equal("rfc3339"))
+					}
+				})
+			})
+		})
+
 		Context("when the Operator sets the Database Connection Validation Timeout", func() {
 			BeforeEach(func() {
 				var err error

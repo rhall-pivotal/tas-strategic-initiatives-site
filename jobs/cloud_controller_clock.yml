@@ -16,6 +16,9 @@ manifest: |
     ca_cert: (( $ops_manager.ca_certificate ))
   system_domain: (( .cloud_controller.system_domain.value ))
   cc:
+    logging:
+      format:
+        timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
     logging_level: (( .properties.cc_logging_level.value ))
     default_health_check_timeout: (( .properties.cloud_controller_default_health_check_timeout.value ))
     buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))'

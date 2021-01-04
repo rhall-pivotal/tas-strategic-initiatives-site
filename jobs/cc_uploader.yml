@@ -14,3 +14,6 @@ manifest: |
         ca_cert: (( $ops_manager.ca_certificate ))
         client_cert: (( .properties.cloud_controller_client_cert.cert_pem ))
         client_key: (( .properties.cloud_controller_client_cert.private_key_pem ))
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))
