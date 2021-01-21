@@ -3525,7 +3525,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.11.0-build.372"
+      build: "2.11.0-build.373"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-11/pcf-release-notes/runtime-rn.html
       uaa:
@@ -3551,6 +3551,9 @@ job_types:
       domain: (( .cloud_controller.system_domain.value ))
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
       cc:
+        logging:
+          format:
+            timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
         temporary_use_logcache: true
         logcache:
           port: 8090
@@ -3738,6 +3741,9 @@ job_types:
         ca_cert: (( $ops_manager.ca_certificate ))
       system_domain: (( .cloud_controller.system_domain.value ))
       cc:
+        logging:
+          format:
+            timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
         logging_level: (( .properties.cc_logging_level.value ))
         default_health_check_timeout: (( .properties.cloud_controller_default_health_check_timeout.value ))
         buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))'
@@ -3813,6 +3819,9 @@ job_types:
   - manifest: |
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
       cc:
+        logging:
+          format:
+            timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
         logging_level: (( .properties.cc_logging_level.value ))
         default_health_check_timeout: (( .properties.cloud_controller_default_health_check_timeout.value ))
         buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))'
@@ -3893,12 +3902,19 @@ job_types:
       release_level_backup: true
     name: cloud_controller_worker
     release: capi
-  - manifest: '{}'
+  - manifest: |
+      cc:
+        logging:
+          format:
+            timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
     name: rotate_cc_database_key
     release: capi
   - manifest: |
       ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
       cc:
+        logging:
+          format:
+            timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
         db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
         database_encryption:
           keys: (( .properties.cloud_controller_encryption_keys.parsed_manifest(keys) ))
@@ -3953,6 +3969,9 @@ job_types:
             ca_cert: (( $ops_manager.ca_certificate ))
             client_cert: (( .properties.cloud_controller_client_cert.cert_pem ))
             client_key: (( .properties.cloud_controller_client_cert.private_key_pem ))
+          logging:
+            format:
+              timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))
     name: cc_uploader
     release: capi
   - manifest: |
@@ -4030,6 +4049,9 @@ job_types:
               api_location: locket.service.cf.internal:8891
             skip_consul_lock: true
           listener_enabled: false
+          logging:
+            format:
+              timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))
       diego:
         ssl:
           skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
@@ -7656,7 +7678,7 @@ job_types:
     name: loggregator_agent
     release: loggregator-agent
 kiln_metadata:
-  metadata_git_sha: 38272321dd045fc5127010dc08ff9e8965db4823
+  metadata_git_sha: 2b0c39e63b22a03999cd52e4cae3d337467ec5d8
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.7.0
@@ -7741,7 +7763,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.11.0-build.372
+product_version: 2.11.0-build.373
 property_blueprints:
 - configurable: false
   default: account
@@ -11153,7 +11175,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.11.0-build.372
+  version: 2.11.0-build.373
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
