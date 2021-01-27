@@ -106,6 +106,9 @@ manifest: |
     admin:
       client_secret: (( .uaa.admin_client_credentials.password ))
     log_level: INFO
+    logging:
+      format:
+        timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
     scim:
       groups:
         cloud_controller.admin_read_only: "Group that grants global read permissions for the Cloud Controller API"

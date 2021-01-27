@@ -688,4 +688,40 @@ var _ = Describe("UAA", func() {
 			})
 		})
 	})
+
+	Describe("logging timestamp formats", func() {
+		var (
+			inputProperties map[string]interface{}
+		)
+
+		It("when rfc3339 is selected", func() {
+			inputProperties = map[string]interface{}{
+				".properties.logging_timestamp_format": "rfc3339",
+			}
+			manifest, err := product.RenderManifest(inputProperties)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			timestampFormat, err := uaa.Property("uaa/logging/format/timestamp")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(timestampFormat).To(Equal("rfc3339"))
+		})
+
+		It("when deprecated is selected", func() {
+			inputProperties = map[string]interface{}{
+				".properties.logging_timestamp_format": "deprecated",
+			}
+			manifest, err := product.RenderManifest(inputProperties)
+			Expect(err).NotTo(HaveOccurred())
+
+			uaa, err := manifest.FindInstanceGroupJob(instanceGroup, "uaa")
+			Expect(err).NotTo(HaveOccurred())
+
+			timestampFormat, err := uaa.Property("uaa/logging/format/timestamp")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(timestampFormat).To(Equal("deprecated"))
+		})
+	})
 })
