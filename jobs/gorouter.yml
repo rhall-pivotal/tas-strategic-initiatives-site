@@ -23,6 +23,9 @@ manifest: |
       (( $ops_manager.ca_certificate ))
       ((( diego-instance-identity-intermediate-ca-2-7.ca )))
       ((( /services/tls_leaf.ca )))
+    client_ca_certs: |
+      (( .properties.router_only_trust_client_ca_certs.selected_option.parsed_manifest(client_ca_certs) ))
+    only_trust_client_ca_certs: (( .properties.router_only_trust_client_ca_certs.selected_option.parsed_manifest(only_trust_client_ca_certs) ))
     frontend_idle_timeout: (( ..cf.router.frontend_idle_timeout.value ))
     tracing:
       enable_zipkin: (( enable_zipkin.value ))

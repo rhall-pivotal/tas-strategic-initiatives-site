@@ -29,10 +29,26 @@ property_inputs:
       HAProxy.
 
 - reference: .properties.routing_custom_ca_certificates
-  label: Certificate Authorities trusted by the Gorouter
+  label: Certificate Authorities trusted by the Gorouter for back ends and route services
   description: |
-    Additional certificate authorities used to validate certificates from
-    incoming requests.
+    Additional certificate authorities used to validate certificates when
+    gorouter communicates with back ends and route services.
+
+- reference: .properties.router_only_trust_client_ca_certs
+  label: Certificate Authorities trusted by the Gorouter for client requests
+  description: |
+  selector_property_inputs:
+    - reference: .properties.router_only_trust_client_ca_certs.disable
+      label: Trust certs provided in "Certificate Authorities trusted by the Gorouter for back ends and route services"
+    - reference: .properties.router_only_trust_client_ca_certs.enable
+      label: Only trust the following Certificate Authorities
+      property_inputs:
+      - reference: .properties.router_only_trust_client_ca_certs.enable.client_ca_certs
+        label: Trusted client CA certs
+        description: |
+          This property is only used when "Gorouter behavior for client
+          certificate validation" is set to "request" or "require".
+
 
 - reference: .properties.routing_minimum_tls_version
   label: Minimum version of TLS supported by the Gorouter and HAProxy

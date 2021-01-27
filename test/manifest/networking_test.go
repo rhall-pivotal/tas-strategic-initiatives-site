@@ -183,50 +183,102 @@ var _ = Describe("Networking", func() {
 		})
 	})
 
-	Describe("silk-cni properties", func(){
-			var (
-				inputProperties     map[string]interface{}
-			)
+	Describe("silk-cni properties", func() {
+		var (
+			inputProperties map[string]interface{}
+		)
 
-			Context("when host tcp services are specified", func() {
+		Context("when host tcp services are specified", func() {
+			BeforeEach(func() {
+				inputProperties = map[string]interface{}{
+					".properties.host_tcp_services": []map[string]string{
+						{
+							"name":        "some-host-tcp-service",
+							"ip_and_port": "169.254.0.1:2345",
+						},
+						{
+							"ip_and_port": "169.254.0.2:6789",
+						},
+					},
+				}
+			})
+
+			It("adds the addresses to the manifest", func() {
+				manifest, err := product.RenderManifest(inputProperties)
+				Expect(err).NotTo(HaveOccurred())
+
+				job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "silk-cni")
+				Expect(err).NotTo(HaveOccurred())
+
+				addresses, err := job.Property("host_tcp_services")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(addresses).To(ConsistOf("169.254.0.1:2345", "169.254.0.2:6789"))
+			})
+		})
+	})
+
+	Describe("Routing", func() {
+		var (
+			inputProperties     map[string]interface{}
+			routerInstanceGroup string
+		)
+
+		BeforeEach(func() {
+			routerInstanceGroup = "isolated_router"
+		})
+		Describe("router_only_trust_client_ca_certs", func() {
+
+			Context("when disabled", func() {
+
 				BeforeEach(func() {
 					inputProperties = map[string]interface{}{
-						".properties.host_tcp_services": []map[string]string{
-							{
-								"name":        "some-host-tcp-service",
-								"ip_and_port": "169.254.0.1:2345",
-							},
-							{
-								"ip_and_port": "169.254.0.2:6789",
-							},
-						},
+						".properties.router_only_trust_client_ca_certs": "disable",
 					}
 				})
 
-				It("adds the addresses to the manifest", func() {
+				It("sets client_ca_certs to empty", func() {
 					manifest, err := product.RenderManifest(inputProperties)
 					Expect(err).NotTo(HaveOccurred())
 
-					job, err := manifest.FindInstanceGroupJob("isolated_diego_cell", "silk-cni")
+					job, err := manifest.FindInstanceGroupJob(routerInstanceGroup, "gorouter")
 					Expect(err).NotTo(HaveOccurred())
 
-					addresses, err := job.Property("host_tcp_services")
+					clientCACerts, err := job.Property("router/client_ca_certs")
 					Expect(err).NotTo(HaveOccurred())
-					Expect(addresses).To(ConsistOf("169.254.0.1:2345", "169.254.0.2:6789"))
+					Expect(clientCACerts).To(Equal("\n"))
+
+					onlyTrustClientCACerts, err := job.Property("router/only_trust_client_ca_certs")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(onlyTrustClientCACerts).To(Equal(false))
+				})
+			})
+			Context("when enabled", func() {
+
+				BeforeEach(func() {
+					inputProperties = map[string]interface{}{
+						".properties.router_only_trust_client_ca_certs":                        "enable",
+						".properties.router_only_trust_client_ca_certs.enable.client_ca_certs": "meow-cert",
+					}
+				})
+
+				It("sets client_ca_certs properly", func() {
+					manifest, err := product.RenderManifest(inputProperties)
+					Expect(err).NotTo(HaveOccurred())
+
+					job, err := manifest.FindInstanceGroupJob(routerInstanceGroup, "gorouter")
+					Expect(err).NotTo(HaveOccurred())
+
+					clientCACerts, err := job.Property("router/client_ca_certs")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(clientCACerts).To(Equal("meow-cert\n"))
+
+					onlyTrustClientCACerts, err := job.Property("router/only_trust_client_ca_certs")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(onlyTrustClientCACerts).To(Equal(true))
 				})
 			})
 		})
-
-	Describe("Routing", func() {
 		Describe("drain_timeout", func() {
-			var (
-				inputProperties     map[string]interface{}
-				routerInstanceGroup string
-			)
-
-			BeforeEach(func() {
-				routerInstanceGroup = "isolated_router"
-			})
 
 			Describe("when the property is set", func() {
 				BeforeEach(func() {
