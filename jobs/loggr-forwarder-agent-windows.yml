@@ -2,6 +2,10 @@
 name: loggr-forwarder-agent-windows
 release: loggregator-agent
 manifest: |
+
+  logging:
+    format:
+      timestamp: (( ..cf.properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
   port: 3458
   tls:
     ca_cert: (( $ops_manager.ca_certificate ))

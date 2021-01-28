@@ -11,6 +11,44 @@ import (
 )
 
 var _ = Describe("Logging", func() {
+
+	Describe("timestamp format", func() {
+		var manifest planitest.Manifest
+
+		var jobs []string
+
+		BeforeEach(func() {
+			jobs = []string{
+				"loggregator_agent_windows",
+				"loggr-forwarder-agent-windows",
+				"loggr-syslog-agent-windows",
+				"prom_scraper_windows",
+			}
+		})
+
+		When("logging_format_timestamp is set to rfc3339", func() {
+			BeforeEach(func() {
+				var err error
+				// this test relies on the fixtures/tas_metadata.yml
+				// that fixture sets "..cf.properties.logging_timestamp_format": "rfc3339"
+				manifest, err = product.RenderManifest(map[string]interface{}{})
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("sets format to rfc3339 on the logging jobs", func() {
+				ig := "windows_diego_cell"
+
+				for _, jobName := range jobs {
+					job, err := manifest.FindInstanceGroupJob(ig, jobName)
+					Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("%s job was not found on %s", jobName, ig))
+
+					loggingFormatTimestamp, err := job.Property("logging/format/timestamp")
+					Expect(err).NotTo(HaveOccurred())
+					Expect(loggingFormatTimestamp).To(Equal("rfc3339"), fmt.Sprintf("%s failed", jobName))
+				}
+			})
+		})
+	})
 	Describe("loggregator agent", func() {
 		It("sets defaults on the loggregator agent", func() {
 			manifest, err := product.RenderManifest(nil)
