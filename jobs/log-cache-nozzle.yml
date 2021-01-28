@@ -2,6 +2,10 @@
 name: log-cache-nozzle
 release: log-cache
 manifest: |
+
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
   enabled: "(( .properties.enable_log_cache_syslog_ingestion.value ? false : true ))"
   logs_provider:
     tls:

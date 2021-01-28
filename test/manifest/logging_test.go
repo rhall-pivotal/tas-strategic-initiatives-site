@@ -11,11 +11,8 @@ import (
 )
 
 var _ = Describe("Logging", func() {
-	var (
-		getAllInstanceGroups func(planitest.Manifest) []string
-	)
 
-	getAllInstanceGroups = func(manifest planitest.Manifest) []string {
+	getAllInstanceGroups := func(manifest planitest.Manifest) []string {
 		groups, err := manifest.Path("/instance_groups")
 		Expect(err).NotTo(HaveOccurred())
 
@@ -36,6 +33,112 @@ var _ = Describe("Logging", func() {
 		Expect(names).NotTo(BeEmpty())
 		return names
 	}
+
+	Describe("timestamp format", func() {
+		var manifest planitest.Manifest
+
+		var jobToInstanceGroups = map[string]map[string][]string{}
+		var jobsOnAllInstanceGroups []string
+
+		BeforeEach(func() {
+			jobToInstanceGroups = map[string]map[string][]string{
+				"doppler":                       {"srt": {"control"}, "ert": {"doppler"}},
+				"loggregator_trafficcontroller": {"srt": {"control"}, "ert": {"loggregator_trafficcontroller"}},
+				"reverse_log_proxy":             {"srt": {"control"}, "ert": {"loggregator_trafficcontroller"}},
+				"reverse_log_proxy_gateway":     {"srt": {"control"}, "ert": {"loggregator_trafficcontroller"}},
+				"log-cache-cf-auth-proxy":       {"srt": {"control"}, "ert": {"doppler"}},
+				"log-cache-gateway":             {"srt": {"control"}, "ert": {"doppler"}},
+				"log-cache-nozzle":              {"srt": {"control"}, "ert": {"doppler"}},
+				"log-cache-syslog-server":       {"srt": {"control"}, "ert": {"doppler"}},
+				"log-cache":                     {"srt": {"control"}, "ert": {"doppler"}},
+				"loggr-syslog-binding-cache":    {"srt": {"control"}, "ert": {"clock_global"}},
+				"loggr-udp-forwarder":           {"srt": {"control"}, "ert": {"cloud_controller", "router", "tcp_router", "diego_brain"}},
+			}
+
+			jobsOnAllInstanceGroups = []string{
+				"loggregator_agent",
+				"loggr-forwarder-agent",
+				"loggr-syslog-agent",
+				"prom_scraper",
+				"syslog_forwarder",
+			}
+
+		})
+
+		When("logging_format_timestamp is set to deprecated", func() {
+			BeforeEach(func() {
+				var err error
+				manifest, err = product.RenderManifest(map[string]interface{}{
+					".properties.logging_timestamp_format": "deprecated",
+				})
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("sets format to deprecated for all the logging jobs", func() {
+				instanceGroups := getAllInstanceGroups(manifest)
+
+				for _, ig := range instanceGroups {
+					for _, jobName := range jobsOnAllInstanceGroups {
+						job, err := manifest.FindInstanceGroupJob(ig, jobName)
+						Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("%s job was not found on %s", jobName, ig))
+
+						loggingFormatTimestamp, err := job.Property("logging/format/timestamp")
+						Expect(err).NotTo(HaveOccurred())
+						Expect(loggingFormatTimestamp).To(Equal("deprecated"), fmt.Sprintf("%s failed", jobName))
+					}
+				}
+
+				for jobName, productNameToInstanceGroupMap := range jobToInstanceGroups {
+					instanceGroups := productNameToInstanceGroupMap[productName]
+					for _, ig := range instanceGroups {
+						job, err := manifest.FindInstanceGroupJob(ig, jobName)
+						Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("%s job was not found on %s for %s", jobName, ig, productName))
+
+						loggingFormatTimestamp, err := job.Property("logging/format/timestamp")
+						Expect(err).NotTo(HaveOccurred())
+						Expect(loggingFormatTimestamp).To(Equal("deprecated"), fmt.Sprintf("%s job on %s for %s failed", jobName, ig, productName))
+					}
+				}
+			})
+		})
+		When("logging_format_timestamp is set to rfc3339", func() {
+			BeforeEach(func() {
+				var err error
+				manifest, err = product.RenderManifest(map[string]interface{}{
+					".properties.logging_timestamp_format": "rfc3339",
+				})
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("sets the format to rfc3339 the logging jobs", func() {
+				instanceGroups := getAllInstanceGroups(manifest)
+
+				for _, ig := range instanceGroups {
+					for _, jobName := range jobsOnAllInstanceGroups {
+						job, err := manifest.FindInstanceGroupJob(ig, jobName)
+						Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("%s job was not found on %s", jobName, ig))
+
+						loggingFormatTimestamp, err := job.Property("logging/format/timestamp")
+						Expect(err).NotTo(HaveOccurred())
+						Expect(loggingFormatTimestamp).To(Equal("rfc3339"), fmt.Sprintf("%s failed", jobName))
+					}
+				}
+
+				for jobName, productNameToInstanceGroupMap := range jobToInstanceGroups {
+					instanceGroups := productNameToInstanceGroupMap[productName]
+					for _, ig := range instanceGroups {
+						job, err := manifest.FindInstanceGroupJob(ig, jobName)
+						Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("%s job was not found on %s for %s", jobName, ig, productName))
+
+						loggingFormatTimestamp, err := job.Property("logging/format/timestamp")
+						Expect(err).NotTo(HaveOccurred())
+						Expect(loggingFormatTimestamp).To(Equal("rfc3339"), fmt.Sprintf("%s job on %s for %s failed", jobName, ig, productName))
+					}
+				}
+
+			})
+		})
+	})
 
 	Describe("loggregator agent", func() {
 		var (
