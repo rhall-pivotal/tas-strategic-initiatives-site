@@ -15,6 +15,64 @@ var _ = Describe("Logging", func() {
 		instanceGroups []string = []string{"isolated_diego_cell", "isolated_ha_proxy", "isolated_router"}
 	)
 
+	Describe("timestamp format", func() {
+		var manifest planitest.Manifest
+
+		var jobToInstanceGroups = map[string][]string{}
+		var jobsOnAllInstanceGroups []string
+
+		BeforeEach(func() {
+			jobToInstanceGroups = map[string][]string{
+				"loggr-udp-forwarder": {"isolated_router", "isolated_diego_cell"},
+			}
+
+			jobsOnAllInstanceGroups = []string{
+				"loggregator_agent",
+				"loggr-forwarder-agent",
+				"loggr-syslog-agent",
+				"prom_scraper",
+				"syslog_forwarder",
+			}
+		})
+
+		When("logging_format_timestamp is set to rfc3339", func() {
+			BeforeEach(func() {
+				var err error
+				// this test relies on the fixtures/tas_metadata.yml
+				// that fixture sets "..cf.properties.logging_timestamp_format": "rfc3339"
+				manifest, err = product.RenderManifest(map[string]interface{}{})
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("sets format to rfc3339 on the logging jobs", func() {
+				instanceGroups := []string{"isolated_diego_cell", "isolated_router", "isolated_ha_proxy"}
+
+				for _, ig := range instanceGroups {
+					for _, jobName := range jobsOnAllInstanceGroups {
+						job, err := manifest.FindInstanceGroupJob(ig, jobName)
+						Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("%s job was not found on %s", jobName, ig))
+
+						loggingFormatTimestamp, err := job.Property("logging/format/timestamp")
+						Expect(err).NotTo(HaveOccurred())
+						Expect(loggingFormatTimestamp).To(Equal("rfc3339"), fmt.Sprintf("%s failed", jobName))
+					}
+				}
+
+				for jobName, igs := range jobToInstanceGroups {
+					for _, ig := range igs {
+						job, err := manifest.FindInstanceGroupJob(ig, jobName)
+						Expect(err).NotTo(HaveOccurred(), fmt.Sprintf("%s job was not found on %s", jobName, ig))
+
+						loggingFormatTimestamp, err := job.Property("logging/format/timestamp")
+						Expect(err).NotTo(HaveOccurred())
+						Expect(loggingFormatTimestamp).To(Equal("rfc3339"), fmt.Sprintf("%s job on %s failed", jobName, ig))
+					}
+				}
+
+			})
+		})
+	})
+
 	Describe("loggregator agent", func() {
 		It("sets tags on the loggregator agent", func() {
 			manifest, err := product.RenderManifest(nil)
