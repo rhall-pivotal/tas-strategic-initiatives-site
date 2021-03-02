@@ -1992,7 +1992,11 @@ job_types:
   templates:
   - name: bpm
     release: bpm
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -2015,7 +2019,11 @@ job_types:
         origin: mysql
     name: loggregator_agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3460
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -2067,7 +2075,11 @@ job_types:
           key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
     name: metrics-agent
     release: metrics-discovery
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3458
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -2084,7 +2096,11 @@ job_types:
         origin: mysql
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       scrape_interval: 60s
       scrape:
         tls:
@@ -2099,7 +2115,11 @@ job_types:
         server_name: prom_scraper_metrics
     name: prom_scraper
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
     name: syslog_forwarder
     release: syslog
@@ -2373,7 +2393,11 @@ job_types:
   templates:
   - name: bpm
     release: bpm
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -2395,7 +2419,11 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggregator_agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3460
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -2447,7 +2475,11 @@ job_types:
       nats_instance_group: database
     name: metrics-discovery-registrar
     release: metrics-discovery
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3458
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -2463,7 +2495,11 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       scrape_interval: 60s
       scrape:
         tls:
@@ -2506,7 +2542,11 @@ job_types:
             - blobstore.(( .cloud_controller.system_domain.value ))
     name: route_registrar
     release: routing
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
     name: syslog_forwarder
     release: syslog
@@ -2617,7 +2657,11 @@ job_types:
         key: (( .properties.leadership_election_tls.private_key_pem ))
     name: leadership-election
     release: system-metrics-scraper
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -2640,7 +2684,11 @@ job_types:
       health_port: 22222
     name: loggregator_agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3460
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -2692,7 +2740,11 @@ job_types:
           key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
     name: metrics-agent
     release: metrics-discovery
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3458
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -2708,7 +2760,10 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca: (( $ops_manager.ca_certificate ))
@@ -2721,7 +2776,11 @@ job_types:
         server_name: loggr_udp_forwarder_metrics
     name: loggr-udp-forwarder
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |2-
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       external_port: 9000
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -2743,7 +2802,11 @@ job_types:
     provides: |
       binding_cache: {as: binding_cache, shared: true}
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       scrape_interval: 60s
       scrape:
         tls:
@@ -2808,7 +2871,11 @@ job_types:
         key: (( .properties.loggregator_client_cert.private_key_pem ))
     name: locket
     release: diego
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       route_registrar:
         routes:
         - name: doppler
@@ -2908,7 +2975,11 @@ job_types:
     provides: |
       cf_network: {as: cf_network, shared: true}
     release: silk
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
     name: syslog_forwarder
     release: syslog
@@ -3017,6 +3088,9 @@ job_types:
         admin:
           client_secret: (( .uaa.admin_client_credentials.password ))
         log_level: INFO
+        logging:
+          format:
+            timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
         scim:
           groups:
             cloud_controller.admin_read_only: "Group that grants global read permissions for the Cloud Controller API"
@@ -3525,7 +3599,7 @@ job_types:
   - _hack: null
     manifest: |
       name: "Small Footprint VMware Tanzu Application Service"
-      build: "2.12.0-build.16"
+      build: "2.12.0-build.17"
       # $v is defined higher up
       description: https://docs.pivotal.io/pivotalcf/2-12/pcf-release-notes/runtime-rn.html
       uaa:
@@ -4058,7 +4132,11 @@ job_types:
       release_level_backup: true
     name: tps
     release: capi
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       traffic_controller:
         enabled: (( .properties.enable_v1_firehose.value ))
       system_domain: (( .cloud_controller.system_domain.value ))
@@ -4088,7 +4166,11 @@ job_types:
           client_secret: (( .uaa.doppler_client_credentials.password ))
     name: loggregator_trafficcontroller
     release: loggregator
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -4103,7 +4185,11 @@ job_types:
     provides: |
       reverse_log_proxy: {as: reverse_log_proxy, shared: true}
     release: loggregator
-  - manifest: |-
+  - manifest: |2-
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       http:
         address: "0.0.0.0:8088"
         cert: (( .properties.reverse_log_proxy_gateway_server_tls_cert.cert_pem))
@@ -4131,7 +4217,11 @@ job_types:
         server_name: rlp_gateway_metrics
     name: reverse_log_proxy_gateway
     release: loggregator
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       doppler:
         disable_announce: true
         health_addr: localhost:14826
@@ -4225,7 +4315,11 @@ job_types:
         key: (( .doppler.metron_tls_cert.private_key_pem ))
     name: bosh-system-metrics-forwarder
     release: bosh-system-metrics-forwarder
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 8090
       max_per_source: (( .properties.log_cache_max_per_source.value ))
       tls:
@@ -4239,7 +4333,11 @@ job_types:
         server_name: log_cache_metrics
     name: log-cache
     release: log-cache
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       external_cert: (( .properties.log_cache_gateway_auth_proxy_tls_cert.cert_pem ))
       external_key: (( .properties.log_cache_gateway_auth_proxy_tls_cert.private_key_pem ))
       cc:
@@ -4262,7 +4360,11 @@ job_types:
         server_name: log_cache_cf_auth_proxy_metrics
     name: log-cache-cf-auth-proxy
     release: log-cache
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       gateway_addr: localhost:8087
       metrics:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -4273,7 +4375,11 @@ job_types:
       proxy_key: (( .properties.log_cache_gateway_auth_proxy_tls_cert.private_key_pem ))
     name: log-cache-gateway
     release: log-cache
-  - manifest: |-
+  - manifest: |2-
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       enabled: "(( .properties.enable_log_cache_syslog_ingestion.value ? false : true ))"
       logs_provider:
         tls:
@@ -4282,7 +4388,11 @@ job_types:
           key: (( .properties.log_cache_nozzle_client_tls_cert.private_key_pem ))
     name: log-cache-nozzle
     release: log-cache
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       enabled: "(( .properties.enable_log_cache_syslog_ingestion.value ))"
       tls:
         cert: (( .properties.log_cache_syslog_server_tls.cert_pem ))
@@ -4821,7 +4931,11 @@ job_types:
           (( $ops_manager.trusted_certificates ))
     name: cflinuxfs3-rootfs-setup
     release: cflinuxfs3
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -4843,7 +4957,11 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggregator_agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3460
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -4895,7 +5013,11 @@ job_types:
           key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
     name: metrics-agent
     release: metrics-discovery
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3458
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -4911,7 +5033,11 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       scrape_interval: 60s
       scrape:
         tls:
@@ -4983,7 +5109,11 @@ job_types:
       disable: "(( .properties.enable_smb_volume_driver.value ? false: true ))"
     name: smbdriver
     release: smb-volume
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
     name: syslog_forwarder
     release: syslog
@@ -5048,7 +5178,11 @@ job_types:
   resource_label: NATS
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -5122,7 +5256,11 @@ job_types:
   serial: true
   single_az_only: true
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -5202,7 +5340,11 @@ job_types:
   resource_label: MySQL Proxy
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -5282,7 +5424,11 @@ job_types:
   resource_label: MySQL Server
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -5338,7 +5484,11 @@ job_types:
   templates:
   - name: bpm
     release: bpm
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -5360,7 +5510,11 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggregator_agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3460
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -5412,7 +5566,11 @@ job_types:
           key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
     name: metrics-agent
     release: metrics-discovery
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3458
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -5428,7 +5586,11 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       scrape_interval: 60s
       scrape:
         tls:
@@ -5547,7 +5709,11 @@ job_types:
         '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_all) ? .properties.system_blobstore.selected_option.parsed_manifest(all_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_buckets) ))'
     name: azure-blobstore-backup-restorer
     release: backup-and-restore-sdk
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
     name: syslog_forwarder
     release: syslog
@@ -5845,7 +6011,11 @@ job_types:
   serial: true
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -6201,7 +6371,11 @@ job_types:
   serial: true
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -6345,7 +6519,11 @@ job_types:
   serial: true
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -6468,7 +6646,11 @@ job_types:
         trusted_domain_cidrs: (( .ha_proxy.trusted_domain_cidrs.value ))
     name: haproxy
     release: haproxy
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -6490,7 +6672,11 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggregator_agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3460
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -6542,7 +6728,11 @@ job_types:
           key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
     name: metrics-agent
     release: metrics-discovery
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3458
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -6558,7 +6748,11 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       scrape_interval: 60s
       scrape:
         tls:
@@ -6573,7 +6767,11 @@ job_types:
         server_name: prom_scraper_metrics
     name: prom_scraper
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
     name: syslog_forwarder
     release: syslog
@@ -6637,7 +6835,11 @@ job_types:
   resource_label: Diego Brain
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -6802,7 +7004,11 @@ job_types:
         enabled: true
     name: gorouter
     release: routing
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -6824,7 +7030,11 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggregator_agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3460
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -6876,7 +7086,11 @@ job_types:
           key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
     name: metrics-agent
     release: metrics-discovery
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3458
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -6892,7 +7106,10 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca: (( $ops_manager.ca_certificate ))
@@ -6905,7 +7122,11 @@ job_types:
         server_name: loggr_udp_forwarder_metrics
     name: loggr-udp-forwarder
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       scrape_interval: 60s
       scrape:
         tls:
@@ -6920,7 +7141,11 @@ job_types:
         server_name: prom_scraper_metrics
     name: prom_scraper
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
     name: syslog_forwarder
     release: syslog
@@ -6985,7 +7210,11 @@ job_types:
   templates:
   - name: bpm
     release: bpm
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -7007,7 +7236,11 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggregator_agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3460
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -7059,7 +7292,11 @@ job_types:
           key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
     name: metrics-agent
     release: metrics-discovery
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3458
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -7075,7 +7312,11 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       scrape_interval: 60s
       scrape:
         tls:
@@ -7124,7 +7365,11 @@ job_types:
           timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))
     name: replication-canary
     release: mysql-monitoring
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
     name: syslog_forwarder
     release: syslog
@@ -7170,7 +7415,11 @@ job_types:
   resource_label: Clock Global
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -7221,7 +7470,11 @@ job_types:
   resource_label: Cloud Controller Worker
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -7291,7 +7544,11 @@ job_types:
   resource_label: Diego Cell
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -7367,7 +7624,11 @@ job_types:
   resource_label: Loggregator Trafficcontroller
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -7431,7 +7692,11 @@ job_types:
   resource_label: Doppler Server
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -7504,7 +7769,11 @@ job_types:
         request_timeout_in_seconds: (( .properties.tcp_routing.selected_option.parsed_manifest(tcp_router_request_timeout_in_seconds) ))
     name: tcp_router
     release: routing
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -7526,7 +7795,11 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggregator_agent
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3460
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -7578,7 +7851,11 @@ job_types:
           key: "((.properties.prom_scraper_scrape_tls.private_key_pem))"
     name: metrics-agent
     release: metrics-discovery
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       port: 3458
       tls:
         ca_cert: (( $ops_manager.ca_certificate ))
@@ -7594,7 +7871,10 @@ job_types:
         system_domain: "(( .cloud_controller.system_domain.value ))"
     name: loggr-forwarder-agent
     release: loggregator-agent
-  - manifest: |-
+  - manifest: |
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca: (( $ops_manager.ca_certificate ))
@@ -7607,7 +7887,11 @@ job_types:
         server_name: loggr_udp_forwarder_metrics
     name: loggr-udp-forwarder
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       scrape_interval: 60s
       scrape:
         tls:
@@ -7622,7 +7906,11 @@ job_types:
         server_name: prom_scraper_metrics
     name: prom_scraper
     release: loggregator-agent
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))
     name: syslog_forwarder
     release: syslog
@@ -7668,7 +7956,11 @@ job_types:
   resource_label: CredHub
   single_az_only: false
   templates:
-  - manifest: |
+  - manifest: |2
+
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
       loggregator:
         tls:
           ca_cert: (( $ops_manager.ca_certificate ))
@@ -7678,7 +7970,7 @@ job_types:
     name: loggregator_agent
     release: loggregator-agent
 kiln_metadata:
-  metadata_git_sha: 52934d1b50bddaca0c0e63c4d855b4831d0e5d29
+  metadata_git_sha: 69fc9e49357d8f7e816b5a0cc37fc51a5a7463a9
 label: Small Footprint VMware Tanzu Application Service
 metadata_version: "2.10"
 minimum_version_for_upgrade: 2.11.0
@@ -7763,7 +8055,7 @@ post_deploy_errands:
   label: Rotate CC Database Key
   name: rotate_cc_database_key
   run_default: false
-product_version: 2.12.0-build.16
+product_version: 2.12.0-build.17
 property_blueprints:
 - configurable: false
   default: account
@@ -11175,7 +11467,7 @@ property_blueprints:
   type: rsa_cert_credentials
 provides_product_versions:
 - name: cf
-  version: 2.12.0-build.16
+  version: 2.12.0-build.17
 rank: 90
 releases:
 - file: backup-and-restore-sdk-1.9.0-97.0.0.tgz
@@ -11554,7 +11846,7 @@ runtime_configs:
 serial: false
 stemcell_criteria:
   os: ubuntu-xenial
-  version: "621.107"
+  version: "621.108"
 variables:
 - name: /cf/diego-instance-identity-root-ca-2-6
   options:
