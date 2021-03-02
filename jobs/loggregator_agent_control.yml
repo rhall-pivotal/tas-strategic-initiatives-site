@@ -3,6 +3,10 @@ name: loggregator_agent
 alias: loggregator_agent_control
 release: loggregator-agent
 manifest: |
+
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
   loggregator:
     tls:
       ca_cert: (( $ops_manager.ca_certificate ))
