@@ -1,0 +1,63 @@
+name: gorouter
+release: routing
+consumes: |
+  nats: {from: nats, deployment: ((  ..cf.deployment_name  )) }
+  routing_api: {from: routing_api, deployment: ((  ..cf.deployment_name  )) }
+manifest: |
+  request_timeout_in_seconds: (( request_timeout_in_seconds.value ))
+  router:
+    logging:
+      format:
+        timestamp: (( ..cf.properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
+    http_rewrite:
+      responses:
+        remove_headers: (( .properties.router_headers_remove_if_specified.value ))
+    balancing_algorithm: (( .properties.router_balancing_algorithm.value ))
+    backends:
+      enable_tls: true
+      max_conns: (( .properties.router_backend_max_conn.value ))
+      cert_chain: (( .properties.routing_backends_client_cert_with_san.cert_pem ))
+      private_key: (( .properties.routing_backends_client_cert_with_san.private_key_pem ))
+    ca_certs: |
+      (( .properties.routing_custom_ca_certificates.value ))
+      (( $ops_manager.ca_certificate ))
+      ((( diego-instance-identity-intermediate-ca-2-7.ca )))
+      ((( /services/tls_leaf.ca )))
+    frontend_idle_timeout: (( ..cf.router.frontend_idle_timeout.value ))
+    tracing:
+      enable_zipkin: (( enable_zipkin.value ))
+    write_access_logs_locally: (( enable_write_access_logs.value ))
+    secure_cookies: (( disable_insecure_cookies.value ))
+    status:
+      user: router_status
+      password: (( status_credentials.password ))
+    route_services_secret: ((( router-route-services-secret )))
+    route_services_internal_lookup: (( .properties.route_services_internal_lookup.value ))
+    client_cert_validation: (( .properties.router_client_cert_validation.selected_option.parsed_manifest(client_cert_validation) ))
+    enable_proxy: (( .properties.router_enable_proxy.value ))
+    disable_http: (( .properties.routing_disable_http.value ))
+    cipher_suites: (( .properties.gorouter_ssl_ciphers.value ))
+    enable_ssl: true
+    max_idle_connections: (( .properties.router_keepalive_connections.selected_option.parsed_manifest(max_idle_connections) ))
+    tls_pem: (( .properties.networking_poe_ssl_certs.parsed_manifest(routing_certificates_and_private_keys) ))
+    min_tls_version: (( .properties.routing_minimum_tls_version.selected_option.parsed_manifest(min_tls_version) ))
+    ssl_skip_validation: (( .properties.skip_cert_verify.value ))
+    drain_timeout: (( .isolated_router.drain_timeout.value ))
+    drain_wait: (( drain_wait.value ))
+    load_balancer_healthy_threshold: (( lb_healthy_threshold.value ))
+    extra_headers_to_log: (( extra_headers_to_log.parsed_strings ))
+    routing_table_sharding_mode: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(sharding_mode) ))
+    isolation_segments: (( .properties.compute_isolation.selected_option.parsed_manifest(for_routing_table_sharding_mode) ))
+    forwarded_client_cert: (( .properties.routing_tls_termination.selected_option.parsed_manifest(gorouter_forwarded_client_cert) ))
+    disable_log_forwarded_for: (( .properties.routing_log_client_ips.selected_option.parsed_manifest(disable_log_forwarded_for) ))
+    disable_log_source_ips: (( .properties.routing_log_client_ips.selected_option.parsed_manifest(disable_log_source_ips) ))
+    sticky_session_cookie_names: (( .properties.router_sticky_session_cookie_names.parsed_manifest(sticky_session_cookie_names) ))
+  routing_api:
+    enabled: (( .properties.routing_table_sharding_mode.selected_option.parsed_manifest(routing_api_enabled) ))
+  uaa:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    ssl:
+      port: 8443
+    clients:
+      gorouter:
+        secret: (( ..cf.uaa.gorouter_client_credentials.password ))

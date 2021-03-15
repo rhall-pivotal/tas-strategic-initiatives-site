@@ -1,0 +1,28 @@
+name: garden
+release: garden-runc
+manifest: |
+  garden:
+    containerd_mode: "(( .properties.enable_garden_containerd_mode.value ? true : false ))"
+    cleanup_process_dirs_on_wait: true
+    debug_listen_address: 127.0.0.1:17019
+    deny_networks:
+    - 0.0.0.0/0
+    destroy_containers_on_start: true
+    http_proxy: (( $ops_manager.http_proxy ))
+    https_proxy: (( $ops_manager.https_proxy ))
+    network_plugin: /var/vcap/packages/runc-cni/bin/garden-external-networker
+    network_plugin_extra_args:
+    - --configFile=/var/vcap/jobs/garden-cni/config/adapter.json
+    no_proxy: (( $ops_manager.no_proxy ))
+    persistent_image_list:
+      - "/var/vcap/packages/cflinuxfs3/rootfs.tar"
+  grootfs:
+    reserved_space_for_other_jobs_in_mb: (( .properties.garden_disk_cleanup.selected_option.parsed_manifest(reserved_space_for_other_jobs_in_mb) ))
+    insecure_docker_registry_list: (( insecure_docker_registry_list.parsed_strings ))
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      cert: (( .properties.rep_server_cert.cert_pem ))
+      key: (( .properties.rep_server_cert.private_key_pem ))
+  logging:
+    format:
+      timestamp: (( ..cf.properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))

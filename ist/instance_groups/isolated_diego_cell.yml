@@ -1,0 +1,104 @@
+---
+name: isolated_diego_cell
+label: Diego Cell
+resource_label: Diego Cell
+templates:
+- $( job "rep" )
+- $( job "route_emitter" )
+- $( job "cfdot" )
+- $( job "garden" )
+- $( job "cflinuxfs3-rootfs-setup" )
+- $( job "loggregator_agent" )
+- $( job "metrics-agent" )
+- $( job "metrics-discovery-registrar" )
+- $( job "silk-cni" )
+- $( job "bpm" )
+- $( job "silk-daemon" )
+- $( job "garden-cni" )
+- $( job "netmon" )
+- $( job "vxlan-policy-agent" )
+- $( job "mapfs" )
+- $( job "nfsv3driver" )
+- $( job "smbdriver" )
+- $( job "syslog_forwarder" )
+- $( job "loggr-syslog-agent" )
+- $( job "loggr-forwarder-agent" )
+- $( job "loggr-udp-forwarder" )
+- $( job "prom_scraper" )
+- $( job "bosh-dns-adapter" )
+- $( job "iptables-logger" )
+- $( job "smoke_tests_isolation" )
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 16_384
+    constraints:
+      min: 2_048
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 65_536
+    constraints:
+      min: 4_096
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: false
+    default: 0
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 2
+    constraints:
+      min: 1
+
+static_ip: 0
+dynamic_ip: 1
+max_in_flight: "4%"
+single_az_only: false
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 3
+  constraints:
+    min: 0
+
+property_blueprints:
+  - name: executor_disk_capacity
+    type: integer
+    label: Cell Disk Capacity (in MB)
+    configurable: true
+    optional: true
+    constraints:
+      min: 1
+
+  - name: executor_memory_capacity
+    type: integer
+    label: Cell Memory Capacity (in MB)
+    configurable: true
+    optional: true
+    constraints:
+      min: 1
+
+  - name: insecure_docker_registry_list
+    type: string_list
+    configurable: true
+    optional: true
+
+  - name: silk_daemon_client_cert
+    type: rsa_cert_credentials
+    configurable: false
+
+  - name: network_policy_agent_cert
+    type: rsa_cert_credentials

@@ -1,0 +1,7 @@
+name: cfdot
+release: diego
+manifest: |
+  tls:
+    ca_certificate: (( $ops_manager.ca_certificate ))
+    certificate: (( .properties.bbs_client_cert.cert_pem ))
+    private_key: (( .properties.bbs_client_cert.private_key_pem ))

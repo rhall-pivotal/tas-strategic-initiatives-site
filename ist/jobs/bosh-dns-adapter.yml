@@ -1,0 +1,15 @@
+---
+name: bosh-dns-adapter
+release: cf-networking
+consumes: |
+  service-discovery-controller: {from: service-discovery-controller, deployment: (( ..cf.deployment_name )) }
+  cloud_controller_container_networking_info: {from: cloud_controller_container_networking_info, deployment: (( ..cf.deployment_name )) }
+manifest: |
+  dnshttps:
+    client:
+      tls:
+        certificate: (( .properties.service_discovery_client_tls.cert_pem ))
+        private_key: (( .properties.service_discovery_client_tls.private_key_pem ))
+    server:
+      ca: (( $ops_manager.ca_certificate ))
+  internal_domains: (( ..cf.properties.cf_networking_internal_domains.parsed_manifest(for_bosh_dns_adapter) ))

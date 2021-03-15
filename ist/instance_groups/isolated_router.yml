@@ -1,0 +1,115 @@
+---
+name: isolated_router
+label: Router
+resource_label: Router
+description: Routers route Internet traffic to applications placed in the isolation segment.
+templates:
+  - $( job "bpm" )
+  - $( job "gorouter" )
+  - $( job "loggregator_agent" )
+  - $( job "metrics-agent" )
+  - $( job "metrics-discovery-registrar" )
+  - $( job "syslog_forwarder" )
+  - $( job "loggr-syslog-agent" )
+  - $( job "loggr-forwarder-agent" )
+  - $( job "loggr-udp-forwarder" )
+  - $( job "prom_scraper" )
+
+resource_definitions:
+  - name: ram
+    type: integer
+    label: RAM
+    configurable: true
+    default: 1_024
+    constraints:
+      min: 1_024
+
+  - name: ephemeral_disk
+    type: integer
+    label: Ephemeral Disk
+    configurable: true
+    default: 2_048
+    constraints:
+      min: 2_048
+
+  - name: persistent_disk
+    type: integer
+    label: Persistent Disk
+    configurable: false
+    default: 0
+
+  - name: cpu
+    type: integer
+    label: CPU
+    configurable: true
+    default: 2
+    constraints:
+      min: 1
+
+static_ip: 1
+dynamic_ip: 0
+max_in_flight: 1
+single_az_only: false
+serial: true
+
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 3
+  constraints:
+    min: 0
+
+property_blueprints:
+  - name: static_ips
+    type: ip_ranges
+    configurable: true
+    optional: true
+
+  - name: disable_insecure_cookies
+    type: boolean
+    configurable: true
+    default: false
+
+  - name: status_credentials
+    type: simple_credentials
+    default:
+      identity: router_status
+
+  - name: enable_zipkin
+    type: boolean
+    configurable: true
+    default: true
+
+  - name: enable_write_access_logs
+    type: boolean
+    configurable: true
+    default: true
+
+  - name: request_timeout_in_seconds
+    type: integer
+    configurable: true
+    default: 900
+    constraints:
+      min: 1
+
+  - name: extra_headers_to_log
+    type: string_list
+    configurable: true
+    optional: true
+
+  - name: drain_wait
+    type: integer
+    configurable: true
+    default: 20
+
+  - name: drain_timeout
+    type: integer
+    configurable: true
+    default: 900
+
+  - name: lb_healthy_threshold
+    type: integer
+    configurable: true
+    default: 20
