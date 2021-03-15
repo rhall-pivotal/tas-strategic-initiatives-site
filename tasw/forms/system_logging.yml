@@ -1,0 +1,30 @@
+---
+name: system_logging
+label: System Logging
+description: System Logging
+markdown: |
+  For help configuring these fields, see
+  [Configure System Logging](https://docs.pivotal.io/platform/application-service-windows/2-12/installing.html#config-system-logging)
+  in _Installing and Configuring TAS for VMs [Windows]_ in the VMware documentation.
+
+property_inputs:
+- reference: .properties.system_logging
+  label: Enable syslog for VM logs?
+  selector_property_inputs:
+  - reference: .properties.system_logging.enable
+    label: Enable
+    property_inputs:
+    - reference: .properties.system_logging.enable.syslog_host
+      label: Address
+      description: The hostname or IP address of the syslog server.
+
+    - reference: .properties.system_logging.enable.syslog_port
+      label: Port
+      description: The port of the syslog server. The default is 514.
+
+    - reference: .properties.system_logging.enable.syslog_protocol
+      label: Protocol
+      description: Select the transport protocol for forwarding logs.
+
+  - reference: .properties.system_logging.disable
+    label: Disable

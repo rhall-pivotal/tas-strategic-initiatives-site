@@ -1,0 +1,40 @@
+---
+- name: smoke_tests_windows
+  type: selector
+  configurable: true
+  default: on_demand
+  option_templates:
+    - name: on_demand
+      select_value: on_demand
+      named_manifests:
+        - name: smoke_tests_windows
+          manifest: |
+            api: "https://api.(( ..cf.cloud_controller.system_domain.value ))"
+            user: (( ..cf.uaa.run_smoke_tests_credentials.identity ))
+            password: (( ..cf.uaa.run_smoke_tests_credentials.password ))
+            organization: system
+            skip_ssl_validation: (( ..cf.ha_proxy.skip_cert_verify.value ))
+            cf_dial_timeout_in_seconds: (( ..cf.properties.cf_dial_timeout_in_seconds.value ))
+            windows_stack: windows
+
+    - name: specified
+      select_value: specified
+      named_manifests:
+        - name: smoke_tests_windows
+          manifest: |
+            api: "https://api.(( ..cf.cloud_controller.system_domain.value ))"
+            user: (( ..cf.uaa.run_smoke_tests_credentials.identity ))
+            password: (( ..cf.uaa.run_smoke_tests_credentials.password ))
+            organization: (( .properties.smoke_tests_windows.specified.org_name.value ))
+            space: (( .properties.smoke_tests_windows.specified.space_name.value ))
+            skip_ssl_validation: (( ..cf.ha_proxy.skip_cert_verify.value ))
+            cf_dial_timeout_in_seconds: (( ..cf.properties.cf_dial_timeout_in_seconds.value ))
+            windows_stack: windows
+
+      property_blueprints:
+        - name: org_name
+          type: string
+          configurable: true
+        - name: space_name
+          type: string
+          configurable: true

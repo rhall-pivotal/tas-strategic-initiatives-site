@@ -1,0 +1,27 @@
+---
+name: smoke_tests_windows
+label: Smoke Tests
+description: Smoke Tests
+markdown: |
+  For help configuring these fields, see
+  [Configure Smoke Tests](https://docs.pivotal.io/platform/application-service-windows/2-12/installing.html#config-smoke-tests)
+  in _Installing and Configuring TAS for VMs [Windows]_ in the VMware documentation.
+
+property_inputs:
+  - reference: .properties.smoke_tests_windows
+    label: |
+      Choose where to deploy apps when running smoke tests:
+    selector_property_inputs:
+    - reference: .properties.smoke_tests_windows.on_demand
+      label: A temporary space within the system org
+
+    - reference: .properties.smoke_tests_windows.specified
+      label: A specified org and space
+      property_inputs:
+        - reference: .properties.smoke_tests_windows.specified.org_name
+          label: Org
+          description: The org to use when running tests.
+
+        - reference: .properties.smoke_tests_windows.specified.space_name
+          label: Space
+          description: The space to use when running tests.
