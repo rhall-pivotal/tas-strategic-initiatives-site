@@ -1,0 +1,15 @@
+---
+name: lock-unlock-pcf-autoscaling
+release: cf-autoscaling
+manifest: |
+  autoscale:
+    cf:
+      admin_password: (( .uaa.admin_credentials.password ))
+      admin_user: (( .uaa.admin_credentials.identity ))
+      dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
+    organization: system
+    space: autoscaling
+  domain: (( .cloud_controller.system_domain.value ))
+  release_level_backup: true
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))

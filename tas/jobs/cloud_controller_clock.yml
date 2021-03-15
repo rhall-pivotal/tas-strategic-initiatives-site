@@ -1,0 +1,91 @@
+---
+name: cloud_controller_clock
+release: capi
+manifest: |
+  ccdb: (( .properties.system_database.selected_option.parsed_manifest(ccdb) ))
+  system_domain_organization: system
+  app_domains:
+  - (( .cloud_controller.apps_domain.value ))
+  uaa:
+    url: https://uaa.(( .cloud_controller.system_domain.value ))
+    clients:
+      cc-service-dashboards:
+        secret: (( .uaa.cc_service_dashboards_credentials.password ))
+      cc_routing:
+        secret: (( .uaa.cc_routing_credentials.password ))
+    ca_cert: (( $ops_manager.ca_certificate ))
+  system_domain: (( .cloud_controller.system_domain.value ))
+  cc:
+    logging:
+      format:
+        timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
+    logging_level: (( .properties.cc_logging_level.value ))
+    default_health_check_timeout: (( .properties.cloud_controller_default_health_check_timeout.value ))
+    buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccbuildpack) ))'
+    droplets: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccdroplet) ))'
+    packages:  '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccpackage_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccpackage) ))'
+    resource_pool:  '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(ccresource_iam) : .properties.system_blobstore.selected_option.parsed_manifest(ccresource) ))'
+    default_running_security_groups:
+    - default_security_group
+    db_encryption_key: (( .cloud_controller.encrypt_key.value || .cloud_controller.db_encryption_credentials.password ))
+    database_encryption:
+      keys: (( .properties.cloud_controller_encryption_keys.parsed_manifest(keys) ))
+    mutual_tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      public_cert: (( .properties.cloud_controller_mutual_cert.cert_pem ))
+      private_key: (( .properties.cloud_controller_mutual_cert.private_key_pem ))
+    internal_api_user: ((( cloud-controller-internal-api-user-credentials.username )))
+    internal_api_password: ((( cloud-controller-internal-api-user-credentials.password )))
+    staging_upload_user: ((( cloud-controller-staging-upload-credentials.username )))
+    staging_upload_password: ((( cloud-controller-staging-upload-credentials.password )))
+    default_staging_security_groups:
+    - default_security_group
+    allow_app_ssh_access: (( .cloud_controller.allow_app_ssh_access.value ))
+    maximum_health_check_timeout: 600
+    audit_events:
+      cutoff_age_in_days: (( .properties.cloud_controller_audit_events_cutoff_age_in_days.value ))
+    completed_tasks:
+      cutoff_age_in_days: (( .properties.cloud_controller_completed_tasks_cutoff_age_in_days.value ))
+    security_group_definitions:
+    - name: default_security_group
+      rules:
+      - protocol: all
+        destination: 0.0.0.0-169.253.255.255
+      - protocol: all
+        destination: 169.255.0.0-255.255.255.255
+    maximum_app_disk_in_mb: (( .cloud_controller.max_disk_quota_app.value ))
+    quota_definitions:
+      default:
+        memory_limit: (( .cloud_controller.default_quota_memory_limit_mb.value ))
+        total_services: (( .cloud_controller.default_quota_max_number_services.value ))
+        non_basic_services_allowed: true
+        total_routes: 1000
+        trial_db_allowed: true
+      runaway:
+        memory_limit: 102400
+        total_services: -1
+        total_routes: 1000
+        non_basic_services_allowed: true
+    diego:
+      file_server_url: http://file-server.service.cf.internal:$( variable "diego_fileserver_port" )
+      insecure_docker_registry_list: (( .diego_cell.insecure_docker_registry_list.parsed_strings ))
+      pid_limit: 0
+      temporary_cc_uploader_mtls: true
+      temporary_droplet_download_mtls: true
+      temporary_local_apps: true
+      temporary_local_staging: true
+      temporary_local_sync: true
+      temporary_local_tasks: true
+      temporary_local_tps: true
+    staging_timeout_in_seconds: (( .cloud_controller.staging_timeout_in_seconds.value ))
+  credhub_api:
+    ca_cert: (( $ops_manager.ca_certificate ))
+  login:
+    url: https://login.(( .cloud_controller.system_domain.value ))
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  routing_api:
+    enabled: true
+  hm9000:
+    port: 12345
+  release_level_backup: true

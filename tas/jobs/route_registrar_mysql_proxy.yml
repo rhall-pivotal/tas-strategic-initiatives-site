@@ -1,0 +1,15 @@
+---
+name: route_registrar
+alias: route_registrar_mysql_proxy
+release: routing
+manifest: |
+  route_registrar:
+    routes:
+    - name: cf-mysql-proxy
+      port: 8080
+      registration_interval: 20s
+      tags:
+        component: MySQLProxy
+      uris:
+      - "proxy-p-mysql-ert.(( .cloud_controller.system_domain.value ))"
+      prepend_instance_index: true

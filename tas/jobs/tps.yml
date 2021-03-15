@@ -1,0 +1,26 @@
+---
+name: tps
+release: capi
+manifest: |
+  capi:
+    tps:
+      bbs:
+        ca_cert: (( $ops_manager.ca_certificate ))
+        client_cert: (( .properties.bbs_client_cert.cert_pem ))
+        client_key: (( .properties.bbs_client_cert.private_key_pem ))
+      cc:
+        client_cert: (( .properties.tps_client_cert.cert_pem ))
+        client_key: (( .properties.tps_client_cert.private_key_pem ))
+        ca_cert: (( $ops_manager.ca_certificate ))
+      watcher:
+        locket:
+          api_location: locket.service.cf.internal:8891
+        skip_consul_lock: true
+      listener_enabled: false
+      logging:
+        format:
+          timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))
+  diego:
+    ssl:
+      skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  release_level_backup: true

@@ -1,0 +1,24 @@
+---
+name: doppler
+release: loggregator
+provides: |
+  doppler: {as: doppler, shared: true}
+  loggregator: {as: loggregator, shared: true}
+manifest: |
+
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
+  doppler:
+    disable_announce: true
+    health_addr: localhost:14826
+    outgoing_port: 65123 # This is a random port as nothing cares about what doppler listens on
+    enabled: (( .properties.enable_v2_firehose.value ))
+  loggregator:
+    etcd:
+      machines: []
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      doppler:
+        cert: (( .doppler.doppler_tls_cert.cert_pem ))
+        key: (( .doppler.doppler_tls_cert.private_key_pem ))

@@ -1,0 +1,31 @@
+---
+name: replication-canary
+release: mysql-monitoring
+consumes: |
+  mysql: {from: pxc-direct-mysql}
+manifest: |
+  cf_mysql:
+    external_host: p-mysql-ert.(( .cloud_controller.system_domain.value ))
+  cf:
+    skip_ssl_validation: (( .ha_proxy.skip_cert_verify.value ))
+  domain: (( .cloud_controller.system_domain.value ))
+  mysql-monitoring:
+    cluster_identifier: cf
+    recipient_email: (( recipient_email.value ))
+    replication-canary:
+      canary_database: monitor
+      canary_username: ((( mysql-monitor-db-credentials.username )))
+      canary_password: ((( mysql-monitor-db-credentials.password )))
+      mysql_port: $( variable "mysql_port" )
+      notifications_client_username: (( .uaa.notifications_client_credentials.identity ))
+      notifications_client_secret: (( .uaa.notifications_client_credentials.password ))
+      poll_frequency: (( poll_frequency.value ))
+      switchboard_count: (( .mysql_proxy.instances ))
+      switchboard_username: ((( mysql-proxy-dashboard-credentials.username )))
+      switchboard_password: ((( mysql-proxy-dashboard-credentials.password )))
+      uaa_admin_client_username: (( .uaa.admin_client_credentials.identity ))
+      uaa_admin_client_secret: (( .uaa.admin_client_credentials.password ))
+      write_read_delay: (( write_read_delay.value ))
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_unix_epoch) ))

@@ -1,0 +1,17 @@
+---
+name: log-cache-syslog-server
+release: log-cache
+manifest: |
+
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
+  enabled: "(( .properties.enable_log_cache_syslog_ingestion.value ))"
+  tls:
+    cert: (( .properties.log_cache_syslog_server_tls.cert_pem ))
+    key: (( .properties.log_cache_syslog_server_tls.private_key_pem ))
+  metrics:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.log_cache_syslog_server_metrics_tls.cert_pem ))
+    key: (( .properties.log_cache_syslog_server_metrics_tls.private_key_pem ))
+    server_name: log-cache-syslog-server-metrics

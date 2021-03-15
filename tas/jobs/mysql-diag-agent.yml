@@ -1,0 +1,8 @@
+---
+name: mysql-diag-agent
+release: mysql-monitoring
+manifest: |
+  mysql-monitoring:
+    mysql-diag-agent:
+      username: ((( mysql-diag-agent-db-credentials.username )))
+      password: ((( mysql-diag-agent-db-credentials.password )))

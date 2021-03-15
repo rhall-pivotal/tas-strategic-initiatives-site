@@ -1,0 +1,116 @@
+---
+- name: cc_api_rate_limit
+  type: selector
+  configurable: true
+  default: disable
+  option_templates:
+    - name: enable
+      select_value: enable
+      named_manifests:
+        - name: rate_limiter
+          manifest: |
+            enabled: true
+            general_limit: (( .properties.cc_api_rate_limit.enable.general_limit.value ))
+            unauthenticated_limit: (( .properties.cc_api_rate_limit.enable.unauthenticated_limit.value ))
+      property_blueprints:
+        - name: general_limit
+          type: integer
+          configurable: true
+          default: 2000
+        - name: unauthenticated_limit
+          type: integer
+          configurable: true
+          default: 100
+    - name: disable
+      select_value: disable
+      named_manifests:
+        - name: rate_limiter
+          manifest: |
+            enabled: false
+
+- name: cloud_controller_client_cert
+  type: rsa_cert_credentials
+  configurable: false
+
+- name: cloud_controller_mutual_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - cloud-controller-ng.service.cf.internal
+
+- name: cloud_controller_public_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - cloud-controller-ng.service.cf.internal
+
+- name: cc_logging_level
+  type: text
+  configurable: true
+  default: info
+
+- name: cloud_controller_default_health_check_timeout
+  type: integer
+  configurable: true
+  default: 60
+  minimum: 60
+
+- name: cloud_controller_temporary_disable_deployments
+  type: boolean
+  configurable: true
+  default: false
+
+- name: ccdb_connection_validation_timeout
+  type: integer
+  configurable: true
+  default: 3600
+  constraints:
+    min: -1
+
+- name: ccdb_read_timeout
+  type: integer
+  configurable: true
+  default: 3600
+  constraints:
+    min: 1
+
+- name: cloud_controller_logcache_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - cloud-controller-ng.service.cf.internal
+
+- name: cloud_controller_audit_events_cutoff_age_in_days
+  type: integer
+  configurable: true
+  default: 31
+
+- name: cloud_controller_completed_tasks_cutoff_age_in_days
+  type: integer
+  configurable: true
+  default: 31
+
+- name: cloud_controller_encryption_keys
+  type: collection
+  configurable: true
+  optional: true
+  property_blueprints:
+    - name: label
+      type: string
+      configurable: true
+    - name: encryption_key
+      configurable: true
+      type: secret
+    - name: primary
+      type: boolean
+      configurable: true
+      default: false
+  named_manifests:
+    - name: keys
+      manifest: |
+        label: (( current_record.label.value ))
+        encryption_key: (( current_record.encryption_key.value ))
+        active: (( current_record.primary.value ))

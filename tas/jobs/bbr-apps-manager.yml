@@ -1,0 +1,16 @@
+---
+name: bbr-apps-manager
+release: push-apps-manager-release
+manifest: |
+  apps_manager:
+    cf_dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
+  cf:
+    api_url: https://api.(( .cloud_controller.system_domain.value ))
+    uaa_url: https://login.(( .cloud_controller.system_domain.value ))
+    notifications_service_url: https://notifications.(( .cloud_controller.system_domain.value ))
+    admin_username: (( .uaa.push_apps_manager_credentials.identity ))
+    admin_password: (( .uaa.push_apps_manager_credentials.password ))
+    system_domain: (( .cloud_controller.system_domain.value ))
+    apps_domain: (( .cloud_controller.apps_domain.value ))
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))

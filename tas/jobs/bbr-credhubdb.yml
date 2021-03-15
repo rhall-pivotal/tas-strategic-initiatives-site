@@ -1,0 +1,7 @@
+---
+name: bbr-credhubdb
+release: credhub
+manifest: |
+  credhub:
+    data_storage: (( .properties.credhub_database.selected_option.parsed_manifest(db_config) ))
+  release_level_backup: true

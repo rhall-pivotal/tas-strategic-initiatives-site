@@ -1,0 +1,14 @@
+---
+name: route_registrar
+alias: route_registrar_nfs_server
+release: routing
+manifest: |
+  route_registrar:
+    routes:
+      - name: blobstore
+        port: 8080
+        registration_interval: 20s
+        tags:
+          component: blobstore
+        uris:
+        - blobstore.(( .cloud_controller.system_domain.value ))

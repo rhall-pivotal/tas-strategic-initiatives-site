@@ -1,0 +1,65 @@
+---
+name: route_registrar
+alias: route_registrar_control
+release: routing
+manifest: |
+
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
+  route_registrar:
+    routes:
+    - name: doppler
+      tls_port: 8081
+      registration_interval: 20s
+      server_cert_domain_san: "doppler.service.cf.internal"
+      uris:
+      - "doppler.(( .cloud_controller.system_domain.value ))"
+      - "*.doppler.(( .cloud_controller.system_domain.value ))"
+    - name: uaa
+      tls_port: 8443
+      server_cert_domain_san: "uaa.service.cf.internal"
+      registration_interval: 4s
+      tags:
+        component: uaa
+      uris:
+      - "uaa.(( .cloud_controller.system_domain.value ))"
+      - "*.uaa.(( .cloud_controller.system_domain.value ))"
+      - "login.(( .cloud_controller.system_domain.value ))"
+      - "*.login.(( .cloud_controller.system_domain.value ))"
+      health_check:
+        name: uaa-healthcheck
+        script_path: /var/vcap/jobs/uaa/bin/health_check
+    - name: network-policy-server
+      tls_port: 4002
+      server_cert_domain_san: "network-policy-server.service.cf.internal"
+      registration_interval: 20s
+      tags:
+        component: NetworkPolicyServer
+      uris:
+      - "api.(( .cloud_controller.system_domain.value ))/networking"
+    - name: api
+      server_cert_domain_san: "cloud-controller-ng.service.cf.internal"
+      tls_port: 9024
+      registration_interval: 20s
+      tags:
+        component: CloudController
+      uris:
+      - "api.(( .cloud_controller.system_domain.value ))"
+      health_check:
+        name: api-health-check
+        script_path: "/var/vcap/jobs/cloud_controller_ng/bin/cloud_controller_ng_health_check"
+        timeout: 6s
+    - name: log-cache-reverse-proxy
+      tls_port: $( variable "log_cache_cf_auth_proxy_port" )
+      server_cert_domain_san: "log-cache.service.cf.internal"
+      registration_interval: 20s
+      uris:
+      - "log-cache.(( .cloud_controller.system_domain.value ))"
+    - name: rlp-gateway
+      tls_port: 8088
+      registration_interval: 20s
+      server_cert_domain_san: "reverse-log-proxy.service.cf.internal"
+      uris:
+      - "log-stream.(( .cloud_controller.system_domain.value ))"
+      - "*.log-stream.(( .cloud_controller.system_domain.value ))"

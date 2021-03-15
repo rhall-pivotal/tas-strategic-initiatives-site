@@ -1,0 +1,15 @@
+---
+name: route_registrar
+alias: route_registrar_diego_database
+release: routing
+manifest: |
+  route_registrar:
+    routes:
+    - name: network-policy-server
+      tls_port: 4002
+      server_cert_domain_san: "network-policy-server.service.cf.internal"
+      registration_interval: 20s
+      tags:
+        component: NetworkPolicyServer
+      uris:
+      - "api.(( .cloud_controller.system_domain.value ))/networking"

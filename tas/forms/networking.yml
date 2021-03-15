@@ -1,0 +1,363 @@
+---
+name: networking
+label: Networking
+description: Networking
+markdown: |
+  For help configuring these fields, see
+  [Configure Networking](https://docs.pivotal.io/pivotalcf/2-12/customizing/configure-pas.html#networking)
+  in _Configuring TAS for VMs_ in the VMware Tanzu documentation.
+
+property_inputs:
+  - reference: .router.static_ips
+    label: Gorouter IPs
+    description: A comma-separated list of Gorouter IPs.
+
+  - reference: $( variable "ssh_proxy_static_ips" )
+    label: SSH Proxy IPs
+    description: A comma-separated list of SSH Proxy IPs.
+
+  - reference: .ha_proxy.static_ips
+    label: HAProxy IPs
+    description: A comma-separated list of HAProxy IPs.
+
+  - reference: .tcp_router.static_ips
+    label: TCP router IPs
+    description: A comma-separated list of TCP router IPs.
+
+  - reference: .properties.networking_poe_ssl_certs
+    label: Certificates and private keys for the Gorouter and HAProxy
+    property_inputs:
+    - reference: name
+      label: Name
+      description: A human-readable name describing the use of this certificate.
+    - reference: certificate
+      label: Certificate and private key
+      description: |
+        The certificate used to terminate SSL traffic at either the Gorouter or
+        HAProxy.
+
+  - reference: .properties.routing_custom_ca_certificates
+    label: Certificate Authorities trusted by the Gorouter
+    description: |
+      Additional certificate authorities used to validate certificates from
+      incoming requests.
+
+  - reference: .properties.routing_minimum_tls_version
+    label: Minimum version of TLS supported by the Gorouter and HAProxy
+    selector_property_inputs:
+      - reference: .properties.routing_minimum_tls_version.tls_v1_0
+        label: TLSv1.0
+      - reference: .properties.routing_minimum_tls_version.tls_v1_1
+        label: TLSv1.1
+      - reference: .properties.routing_minimum_tls_version.tls_v1_2
+        label: TLSv1.2
+
+  - reference: .properties.router_balancing_algorithm
+    label: Balancing algorithm used by the Gorouter
+    selector_property_inputs:
+      - reference: .properties.router_balancing_algorithm.round_robin
+        label: Round robin
+      - reference: .properties.router_balancing_algorithm.least_connection
+        label: Least connections
+
+  - reference: .properties.routing_log_client_ips
+    label: Logging of client IPs in the Gorouter
+    description: |
+      To comply with GDPR, select one of the options to disable logging
+      of client IPs.
+    selector_property_inputs:
+      - reference: .properties.routing_log_client_ips.log_client_ips
+        label: Log client IPs
+      - reference: .properties.routing_log_client_ips.disable_x_forwarded_for
+        label: Disable logging of X-Forwarded-For header only
+      - reference: .properties.routing_log_client_ips.disable_all_log_client_ips
+        label: Disable logging of both source IP and X-Forwarded-For header
+
+  - reference: .properties.routing_tls_termination
+    label: TLS termination point
+    selector_property_inputs:
+      - reference: .properties.routing_tls_termination.load_balancer
+        label: Infrastructure load balancer
+      - reference: .properties.routing_tls_termination.ha_proxy
+        label: HAProxy
+      - reference: .properties.routing_tls_termination.router
+        label: Gorouter
+
+  - reference: .properties.haproxy_client_cert_validation
+    label: HAProxy behavior for client certificate validation
+    selector_property_inputs:
+      - reference: .properties.haproxy_client_cert_validation.none
+        label: HAProxy does not request client certificates
+      - reference: .properties.haproxy_client_cert_validation.request
+        label: HAProxy requests but does not require client certificates
+
+  - reference: .properties.haproxy_custom_ca_certificates
+    label: Certificate Authorities trusted by the HAProxy
+    description: |
+      Additional Certificate Authorities used to validate certificates from
+      incoming requests.
+
+  - reference: .properties.router_client_cert_validation
+    label: Gorouter behavior for client certificate validation
+    selector_property_inputs:
+      - reference: .properties.router_client_cert_validation.none
+        label: The Gorouter does not request client certificates
+      - reference: .properties.router_client_cert_validation.request
+        label: The Gorouter requests but does not require client certificates
+      - reference: .properties.router_client_cert_validation.require
+        label: The Gorouter requires client certificates
+
+  - reference: .properties.gorouter_ssl_ciphers
+    label: TLS cipher suites for the Gorouter
+    description: |
+      An ordered, colon-separated list of Golang supported TLS cipher suites
+      in OpenSSL format.
+
+  - reference: .properties.haproxy_ssl_ciphers
+    label: TLS cipher suites for HAProxy
+    description: |
+      An ordered, colon-separated list of TLS cipher suites in OpenSSL format.
+
+  - reference: .properties.haproxy_forward_tls
+    label: HAProxy forwards all requests to the Gorouter over TLS
+    selector_property_inputs:
+      - reference: .properties.haproxy_forward_tls.enable
+        label: Enable
+        property_inputs:
+        - reference: .properties.haproxy_forward_tls.enable.backend_ca
+          label: Certificate authority for HAProxy back end
+          description: |
+            The certificate authority for the certificate and key provided
+            in the "Certificates and private keys for the Gorouter and
+            HAProxy" field.
+      - reference: .properties.haproxy_forward_tls.disable
+        label: Disable
+
+  - reference: .properties.haproxy_hsts_support
+    label: HAProxy support for HSTS
+    selector_property_inputs:
+      - reference: .properties.haproxy_hsts_support.enable
+        label: Enable
+        property_inputs:
+        - reference: .properties.haproxy_hsts_support.enable.max_age
+          label: Maximum age
+          description: Enter value in seconds.
+        - reference: .properties.haproxy_hsts_support.enable.include_subdomains
+          label: Include subdomains
+        - reference: .properties.haproxy_hsts_support.enable.enable_preload
+          label: Enable preload
+      - reference: .properties.haproxy_hsts_support.disable
+        label: Disable
+
+  - reference: .properties.routing_disable_http
+    label: Disable HTTP on the Gorouter and HAProxy
+
+  - reference: .router.disable_insecure_cookies
+    label: Disable insecure cookies on the Gorouter
+
+  - reference: .router.enable_zipkin
+    label: Enable Zipkin tracing headers on the Gorouter
+
+  - reference: .router.enable_write_access_logs
+    label: Enable the Gorouter to write access logs locally
+
+  - reference: .router.enable_isolated_routing
+    label: Gorouters reject requests for isolation segments
+
+  - reference: .properties.router_enable_proxy
+    label: Enable support for PROXY protocol in the Gorouter
+
+  - reference: .properties.route_services
+    label: Route services
+    selector_property_inputs:
+      - reference: .properties.route_services.enable
+        label: Enable
+        property_inputs:
+        - reference: .properties.route_services.enable.internal_lookup
+          label: Bypass security checks for route service lookup
+      - reference: .properties.route_services.disable
+        label: Disable
+
+  - reference: .properties.router_backend_max_conn
+    label: Maximum connections per back end
+    description: |
+      The maximum concurrent TCP connections per back end for each instance of
+      the Gorouter. A value of 0 sets no limit.
+
+  - reference: .properties.router_keepalive_connections
+    label: Keep-alive connections for the Gorouter
+    selector_property_inputs:
+    - reference: .properties.router_keepalive_connections.enable
+      label: Enable
+    - reference: .properties.router_keepalive_connections.disable
+      label: Disable
+
+  - reference: .router.request_timeout_in_seconds
+    label: Back end request timeout and idle timeout for the Gorouter
+    description: |
+      The amount of time requests from the Gorouter to apps are allowed to live
+      before being canceled. Also the amount of time connections from the
+      Gorouter to apps are allowed to remain idle before being closed. Enter
+      value in seconds.
+
+  - reference: .router.frontend_idle_timeout
+    label: Front end idle timeout for the Gorouter and HAProxy
+    description: |
+      The duration to maintain an open connection when client supports
+      keep-alive connections. Enter value in seconds.
+
+  - reference: .router.drain_timeout
+    label: Gorouter drain timeout
+    description: |
+      The amount of time that the Gorouter continues to serve existing
+      connections before shutting down. This timeout should be smaller than
+      "Back end request timeout and idle timeout" to reduce drain time during
+      deploys.  Enter value in seconds.
+
+  - reference: .router.drain_wait
+    label: Load balancer unhealthy threshold
+    description: |
+      The amount of time that the Gorouter continues to accept connections
+      before shutting down. Enter value in seconds.
+
+  - reference: .router.lb_healthy_threshold
+    label: Load balancer healthy threshold
+    description: |
+      The amount of time to wait until reporting the Gorouter instance has
+      started. Enter value in seconds.
+
+  - reference: .router.extra_headers_to_log
+    label: HTTP headers to log
+    description: |
+      A comma-separated list of HTTP headers that annotate access log
+      events on the Gorouter. This list only applies to headers on HTTP
+      Requests. The following HTTP Request headers are always logged: Referer,
+      User-Agent, X-Forwarded-For, X-Forwarded-Proto, and X-Vcap-Request-ID.
+
+  - reference: .properties.haproxy_max_buffer_size
+    label: HAProxy request maximum buffer size
+    description: The buffer size to use for requests. Enter value in bytes.
+
+  - reference: .ha_proxy.internal_only_domains
+    label: HAProxy protected domains
+    description: |
+      A comma-separated list of domains to protect from requests from unknown
+      sources.
+
+  - reference: .ha_proxy.trusted_domain_cidrs
+    label: HAProxy trusted CIDRs
+    description: |
+      A space-separated list of CIDRs allowed to make requests to the domains
+      listed in the "HAProxy protected domains" field.
+
+  - reference: .properties.logger_endpoint_port
+    label: Loggregator port
+    description: The default is 443.
+
+  - reference: .properties.container_networking_interface_plugin
+    label: Container network interface plugin
+    selector_property_inputs:
+      - reference: .properties.container_networking_interface_plugin.silk
+        label: Silk
+        property_inputs:
+          - reference: .properties.container_networking_interface_plugin.silk.network_mtu
+            label: App network maximum transmission unit
+            description: |
+              The maximum size of a protocol data unit that can be sent in a
+              single network transaction. Enter value in bytes. The default is
+              1454 bytes.
+          - reference: .properties.container_networking_interface_plugin.silk.network_cidr
+            label: Overlay subnet
+            description: |
+              The range of the overlay network. The default is 10.255.0.0/16.
+            placeholder: 10.255.0.0/16
+          - reference: .properties.container_networking_interface_plugin.silk.vtep_port
+            label: VXLAN tunnel endpoint port
+            description: |
+              The host port used for receiving VXLAN packets. The default is 4789.
+          - reference: .properties.container_networking_interface_plugin.silk.iptables_denied_logs_per_sec
+            label: Denied logging interval
+            description: |
+              The rate at which traffic logging is denied. Enter value in
+              packets per second. The default is 1 packet per second.
+          - reference: .properties.container_networking_interface_plugin.silk.iptables_accepted_udp_logs_per_sec
+            label: UDP logging interval
+            description: |
+              The rate at which UDP traffic logging is denied. Enter value in
+              packets per second. The default is 100 packets per second.
+          - reference: .properties.container_networking_interface_plugin.silk.enable_log_traffic
+            label: Log traffic for all accepted and denied app packets
+          - reference: .properties.container_networking_interface_plugin.silk.enable_policy_enforcement
+            label: Enable Silk network policy enforcement
+
+      - reference: .properties.container_networking_interface_plugin.external
+        label: External
+
+  - reference: .properties.host_tcp_services
+    label: Host TCP Services
+    description: |
+      If Silk is enabled, this list of TCP addresses running on the Diego Cell
+      will be accessible from all application containers.
+    property_inputs:
+    - reference: name
+      label: Name
+      description: A name describing the use of this TCP address.
+    - reference: ip_and_port
+      label: IP and Port
+      description: IPv4 address and port to make accessible, in the form of <IP>:<Port>, e.g. 169.254.0.10:8000
+
+  - reference: .properties.cf_networking_search_domains
+    label: DNS search domains
+    description: |
+      A comma-separated list of DNS search domains used in containers.
+
+  - reference: .properties.cf_networking_database_connection_timeout
+    label: Database connection timeout
+    description: |
+      The connection timeout for clients of the policy server and Silk
+      databases. Enter value in seconds.
+
+  - reference: .properties.tcp_routing
+    label: TCP routing
+    description: |
+      Enable or disable TCP requests to apps through specific ports on
+      the TCP router.
+    selector_property_inputs:
+      - reference: .properties.tcp_routing.disable
+        label: Disable
+
+      - reference: .properties.tcp_routing.enable
+        label: Enable
+        property_inputs:
+          - reference: .properties.tcp_routing.enable.reservable_ports
+            label: TCP routing ports
+            description: Enter a single port number or a single range of ports.
+          - reference: .properties.tcp_routing.enable.request_timeout_in_seconds
+            label: TCP request timeout
+            description: |
+              The idle connection timeout for TCP requests from clients to
+              apps. Enter value in seconds.
+
+  - reference: .properties.router_headers_remove_if_specified
+    label: Remove specified HTTP response headers
+    description: |
+      A list of headers the Gorouter removes on any response from an app.
+    property_inputs:
+    - reference: name
+      label: Header name
+
+  - reference: .properties.router_sticky_session_cookie_names
+    label: Sticky session cookies
+    description: |
+      The names of the cookies to use for handling sticky sessions in the
+      Gorouter.
+    property_inputs:
+    - reference: name
+      label: Cookie name
+
+  - reference: .properties.service_discovery_controller_staleness_threshold
+    label: Internal routes staleness threshold (seconds)
+    description: |
+      Staleness threshold in seconds for internal routes. If the
+      service-discovery-controller does not receive a message about a route
+      within this threshold, the route will be pruned from the table.

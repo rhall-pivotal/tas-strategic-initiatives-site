@@ -1,0 +1,55 @@
+---
+- name: credhub_database_name
+  type: string
+  configurable: false
+  default: credhub
+
+- name: credhub_database
+  type: selector
+  configurable: true
+  default: internal_mysql
+  option_templates:
+    - name: internal_mysql
+      select_value: internal_mysql
+      named_manifests:
+      - name: db_config
+        manifest: |
+          (( .properties.system_database.selected_option.parsed_manifest(credhub) ))
+
+    - name: external
+      select_value: external
+      property_blueprints:
+        - name: host
+          type: string
+          configurable: true
+        - name: port
+          type: port
+          configurable: true
+        - name: username
+          type: string
+          configurable: true
+        - name: password
+          type: secret
+          configurable: true
+        - name: tls_ca
+          type: text
+          configurable: true
+        - name: require_tls
+          type: boolean
+        - name: disable_hostname_verification
+          type: boolean
+          configurable: true
+          default: false
+      named_manifests:
+      - name: db_config
+        manifest: |
+          type: mysql
+          host: (( .properties.credhub_database.external.host.value ))
+          port: (( .properties.credhub_database.external.port.value ))
+          username: (( .properties.credhub_database.external.username.value ))
+          password: (( .properties.credhub_database.external.password.value ))
+          database: (( .properties.credhub_database_name.value ))
+          require_tls: true
+          tls_ca: (( .properties.credhub_database.external.tls_ca.value ))
+          hostname_verification:
+            enabled: "(( .properties.credhub_database.external.disable_hostname_verification.value ? false : true ))"

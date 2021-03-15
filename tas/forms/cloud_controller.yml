@@ -1,0 +1,69 @@
+---
+name: cloud_controller
+label: Cloud Controller
+description: Cloud Controller
+markdown: |
+  For help configuring these fields, see
+  [Configure Cloud Controller](https://docs.pivotal.io/pivotalcf/2-12/customizing/configure-pas.html#config-cc)
+  in _Configuring TAS for VMs_ in the VMware Tanzu documentation.
+
+property_inputs:
+  - reference: .cloud_controller.encrypt_key
+    label: Cloud Controller database encryption key
+    description: |
+      Leave blank unless restoring a Cloud Controller database exported from
+      a previous installation.
+
+  - reference: .properties.cc_api_rate_limit
+    label: Cloud Foundry API rate limiting
+    selector_property_inputs:
+      - reference: .properties.cc_api_rate_limit.enable
+        label: Enable
+        property_inputs:
+          - reference: .properties.cc_api_rate_limit.enable.general_limit
+            label: General limit
+            description: |
+              The number of requests a user or client is allowed to make for
+              all endpoints that do not have a custom limit over an hour-long
+              interval.
+
+          - reference: .properties.cc_api_rate_limit.enable.unauthenticated_limit
+            label: Unauthenticated limit
+            description: |
+              The number of requests an unauthenticated client is allowed to
+              make over an hour-long interval.
+
+      - reference: .properties.cc_api_rate_limit.disable
+        label: Disable
+
+  - reference: .properties.ccdb_connection_validation_timeout
+    label: Database connection validation timeout
+    description: The connection validation timeout. Enter value in seconds.
+
+  - reference: .properties.ccdb_read_timeout
+    label: Database read timeout
+    description: The read timeout for query responses. Enter value in seconds.
+
+  - reference: .properties.cloud_controller_audit_events_cutoff_age_in_days
+    label: |
+      Age of audit events pruned from Cloud Controller database
+    description: |
+      The number of days after which audit events are pruned from the Cloud
+      Controller database. Enter value in days.
+
+  - reference: .properties.cloud_controller_completed_tasks_cutoff_age_in_days
+    label: |
+      Age of completed tasks pruned from Cloud Controller database
+    description: |
+      The number of days after which completed tasks are pruned from the Cloud
+      Controller database. Enter value in days.
+
+  - reference: .properties.cloud_controller_encryption_keys
+    label: Encryption key ledger
+    property_inputs:
+      - reference: label
+        label: Encryption key label
+      - reference: encryption_key
+        label: Encryption key
+      - reference: primary
+        label: Primary

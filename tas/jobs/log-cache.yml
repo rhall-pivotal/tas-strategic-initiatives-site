@@ -1,0 +1,19 @@
+---
+name: log-cache
+release: log-cache
+manifest: |
+
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
+  port: $( variable "log_cache_port" )
+  max_per_source: (( .properties.log_cache_max_per_source.value ))
+  tls:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.log_cache_server_tls_cert.cert_pem ))
+    key: (( .properties.log_cache_server_tls_cert.private_key_pem ))
+  metrics:
+    ca_cert: (( $ops_manager.ca_certificate ))
+    cert: (( .properties.log_cache_metrics_tls.cert_pem ))
+    key: (( .properties.log_cache_metrics_tls.private_key_pem ))
+    server_name: log_cache_metrics

@@ -1,0 +1,66 @@
+---
+name: generic_white_label_config
+label: Custom Branding
+description: Custom Branding
+markdown: |
+  For help configuring these fields, see
+  [Configure Custom Branding and Apps Manager](https://docs.pivotal.io/pivotalcf/2-12/customizing/configure-pas.html#customize-apps-man)
+  in _Configuring TAS for VMs_ in the VMware Tanzu documentation.
+
+property_inputs:
+  - reference: .properties.push_apps_manager_company_name
+    label: Company name
+    description: The default is "VMware".
+
+  - reference: .properties.push_apps_manager_accent_color
+    label: Accent color
+    description: Enter a hexadecimal color code. For example, "#71ffda".
+
+  - reference: .properties.push_apps_manager_logo
+    label: Main logo
+    description: |
+      Enter a base64-encoded PNG image string, leaving out the mime-type
+      (data:image/png;base64,) string.
+
+  - reference: .properties.push_apps_manager_square_logo
+    label: Square logo
+    description: |
+      Enter a base64-encoded PNG image string, leaving out the mime-type
+      (data:image/png;base64,) string.
+
+  - reference: .properties.push_apps_manager_favicon
+    label: Favicon
+    description: |
+      Enter a base64-encoded PNG image string, leaving out the mime-type
+      (data:image/png;base64,) string.
+
+  - reference: .properties.push_apps_manager_footer_text
+    label: Footer text
+    description: |
+      Custom text to appear in the Apps Manager footer.
+
+  - reference: .properties.push_apps_manager_footer_links
+    label: Footer links
+    description: Configure up to three links in the Apps Manager footer.
+    property_inputs:
+      - reference: name
+        label: Link text
+
+      - reference: href
+        label: URL
+
+  - reference: .properties.push_apps_manager_global_wrapper_bg_color
+    label: Classification header and footer background color
+    description: Enter a hexadecimal color code. For example, "#71ffda".
+
+  - reference: .properties.push_apps_manager_global_wrapper_text_color
+    label: Classification header and footer text color
+    description: Enter a hexadecimal color code. For example, "#71ffda".
+
+  - reference: .properties.push_apps_manager_global_wrapper_header_content
+    label: Classification header content
+    description: Enter plain text or HTML markup.
+
+  - reference: .properties.push_apps_manager_global_wrapper_footer_content
+    label: Classification footer content
+    description: Enter plain text or HTML markup.

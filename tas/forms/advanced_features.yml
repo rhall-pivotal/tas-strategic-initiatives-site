@@ -1,0 +1,91 @@
+---
+name: advanced_features
+label: Advanced Features
+description: Advanced Features
+markdown: |
+  For help configuring these fields, see
+  [Configure Advanced Features](https://docs.pivotal.io/pivotalcf/2-12/customizing/configure-pas.html#advanced)
+  in _Configuring TAS for VMs_ in the VMware Tanzu documentation.
+
+property_inputs:
+  - reference: .diego_cell.executor_memory_capacity
+    label: Diego Cell memory capacity
+    description: Enter value in MB.
+
+  - reference: .diego_cell.executor_disk_capacity
+    label: Diego Cell disk capacity
+    description: Enter value in MB.
+
+  - reference: .properties.app_graceful_shutdown_period_in_seconds
+    label: App graceful shutdown period
+    description: |
+      The amount of time to wait for an app instance to exit once
+      it has been signalled to gracefully shut down.
+      Enter value in seconds. The default value is 10.
+    placeholder: 10
+
+  - reference: .nfs_server.blobstore_internal_access_rules
+    label: Non-RFC-1918 private network allow list
+    placeholder: |
+      For example, `allow 172.99.0.0/24;,allow 172.55.0.0/24;`.
+
+  - reference: .properties.cf_dial_timeout_in_seconds
+    label: CF CLI connection timeout
+    description: |
+      The maximum wait time to establish a connection, including
+      name resolution. Enter value in seconds.
+
+  - reference: .properties.enable_tls_to_internal_pxc
+    label: Enable TLS for internal system database (beta)
+    description: |
+      Tanzu Application Service components that support TLS connect
+      to the internal PXC database using an encrypted TLS
+      connection.
+
+  - reference: .properties.diego_database_max_open_connections
+    label: Maximum number of open connections from the active BBS instance to the SQL database
+    description: |
+      The maximum number of concurrent database connections the
+      active BBS instance can have.
+    placeholder: 100
+
+  - reference: .properties.locket_database_max_open_connections
+    label: Maximum number of open connections from each Locket instance to the SQL database
+    description: |
+      The maximum number of concurrent database connections each
+      Locket instance can have.
+    placeholder: 200
+
+  - reference: .properties.silk_database_max_open_connections
+    label: Maximum number of open connections from each Silk Controller instance to the SQL database
+    description: |
+      The maximum number of concurrent database connections each
+      Silk Controller instance can have.
+    placeholder: 200
+
+  - reference: .properties.networkpolicyserver_database_max_open_connections
+    label: Maximum number of open connections from the network policy server instance to the SQL database
+    description: |
+      The maximum number of concurrent database connections the
+      network policy server instance can have.
+    placeholder: 200
+
+  - reference: .properties.networkpolicyserverinternal_database_max_open_connections
+    label: Maximum number of open connections from each network policy server internal instance to the SQL database
+    description: |
+      The maximum number of concurrent database connections each
+      network policy server internal instance can have.
+    placeholder: 200
+
+  - reference: .properties.cloud_controller_temporary_disable_deployments
+    label: Disable rolling app deployments
+
+  - reference: .properties.log_cache_max_per_source
+    label: Maximum number of envelopes stored in Log Cache per source
+    placeholder: 100000
+
+  - reference: .properties.push_usage_service_cutoff_age_in_days
+    label: Usage Service cutoff age
+    description: |
+      The number of days of granular data that Usage Service
+      stores.

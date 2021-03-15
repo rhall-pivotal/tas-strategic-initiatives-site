@@ -1,0 +1,126 @@
+---
+name: credhub
+label: CredHub
+description: CredHub
+markdown: |
+  For help configuring these fields, see
+  [Configure CredHub](https://docs.pivotal.io/pivotalcf/2-12/customizing/configure-pas.html#credhub)
+  in _Configuring TAS for VMs_ in the VMware Tanzu documentation.
+
+verifiers:
+- name: Verifiers::MysqlDatabaseVerifier
+  properties:
+    host: .properties.credhub_database.external.host
+    port: .properties.credhub_database.external.port
+    username: .properties.credhub_database.external.username
+    password: .properties.credhub_database.external.password
+    database: .properties.credhub_database_name
+
+property_inputs:
+- reference: .properties.credhub_database
+  label: CredHub database location
+  selector_property_inputs:
+  - reference: .properties.credhub_database.internal_mysql
+    label: Tanzu Application Service database
+    description: This is configured in the Databases pane.
+
+  - reference: .properties.credhub_database.external
+    label: Other external database
+    property_inputs:
+      - reference: .properties.credhub_database.external.host
+        label: Hostname
+
+      - reference: .properties.credhub_database.external.port
+        label: TCP port
+
+      - reference: .properties.credhub_database.external.username
+        label: Username
+
+      - reference: .properties.credhub_database.external.password
+        label: Password
+
+      - reference: .properties.credhub_database.external.tls_ca
+        label: Database CA certificate
+
+      - reference: .properties.credhub_database.external.disable_hostname_verification
+        label: Disable hostname verification
+        description: |
+          Disables hostname verification for TLS connections to 
+          the targeted database server.
+
+- reference: .properties.credhub_kms_providers
+  label: KMS plugin providers
+  property_inputs:
+  - reference: instance_name
+    label: Instance name
+    description: The name of the KMS provider instance.
+  - reference: endpoint
+    label: Endpoint
+    description: |
+      The Unix socket address at which the provider is running.
+  - reference: primary
+    label: Primary
+    description: |
+      Marks this key as the primary encryption key.
+      Only one key should be marked as primary.
+
+- reference: .properties.credhub_internal_provider_keys
+  label: Internal encryption provider keys
+  property_inputs:
+  - reference: name
+    label: Name
+    description: The name of the encryption key.
+  - reference: key
+    label: Key
+    description: The key used to encrypt all data.
+  - reference: primary
+    label: Primary
+    description: |
+      Marks this key as the primary encryption key.
+      Only one key should be marked as primary.
+
+- reference: .properties.credhub_hsm_provider_partition
+  label: HSM provider partition
+  description: The name of the HSM provider partition.
+
+- reference: .properties.credhub_hsm_provider_partition_password
+  label: HSM provider partition password
+  description: The password used to access the HSM provider partition.
+
+- reference: .properties.credhub_hsm_provider_client_certificate
+  label: HSM provider client certificate
+  description: The client certificate for the HSM provider.
+
+- reference: .properties.credhub_hsm_provider_encryption_keys
+  label: HSM provider encryption keys
+  property_inputs:
+  - reference: name
+    label: Name
+    description: The name of the encryption key.
+  - reference: primary
+    label: Primary
+    description: |
+      Marks this key as the primary encryption key.
+      Only one key should be marked as primary.
+
+- reference: .properties.credhub_hsm_provider_servers
+  label: HSM provider servers
+  property_inputs:
+  - reference: host_address
+    label: Host address
+    description: The hostname or IP address of the HSM server.
+  - reference: port
+    label: Port
+    description: The port of the HSM server.
+  - reference: partition_serial_number
+    label: Partition serial number
+    description: The serial number of the HSM partition.
+  - reference: certificate
+    label: HSM certificate
+    description: The certificate for the HSM server.
+
+- reference: .properties.secure_service_instance_credentials
+  label: Secure service instance credentials
+  description: |
+    Service brokers can store their service instance
+    credentials in CredHub.

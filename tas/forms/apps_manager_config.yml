@@ -1,0 +1,108 @@
+---
+name: apps_manager_config
+label: Apps Manager
+description: Apps Manager
+markdown: |
+  For help configuring these fields, see
+  [Configure Custom Branding and Apps Manager](https://docs.pivotal.io/pivotalcf/2-12/customizing/configure-pas.html#customize-apps-man)
+  in _Configuring TAS for VMs_ in the VMware Tanzu documentation.
+
+property_inputs:
+  - reference: .properties.push_apps_manager_enable_invitations
+    label: Enable invitations
+
+  - reference: .properties.push_apps_manager_display_plan_prices
+    label: Display Marketplace service plan prices
+
+  - reference: .properties.push_apps_manager_currency_lookup
+    label: Supported currencies as JSON
+    description: |
+      Define currency codes and associated symbols. Defaults
+      to { "usd": "$", "eur": "€" }.
+
+  - reference: .properties.push_apps_manager_product_name
+    label: Product name
+    description: |
+      Enter a custom product name. Defaults to "Apps Manager".
+
+  - reference: .properties.push_apps_manager_marketplace_name
+    label: Marketplace name
+    description: Enter a custom Marketplace name.
+
+  - reference: .properties.push_apps_manager_marketplace_url
+    label: Marketplace URL
+    description: |
+      Overrides the default Apps Manager Marketplace link to
+      point to a custom marketplace.
+
+  - reference: .properties.push_apps_manager_nav_links
+    label: Secondary navigation links
+    description: |
+      Configure up to 10 links to appear in the secondary
+      navigation of Apps Manager.
+    property_inputs:
+      - reference: name
+        label: Link text
+
+      - reference: href
+        label: URL
+
+  - reference: .properties.push_apps_manager_buildpack
+    label: Apps Manager buildpack
+    description: |
+      The buildpack to use when deploying the Apps Manager app.
+      Must be for static content.
+
+  - reference: .properties.push_apps_manager_search_server_buildpack
+    label: Search Server buildpack
+    description: |
+      The buildpack to use when deploying the Search Server app.
+      Must be for a node-based app.
+
+  - reference: .properties.push_apps_manager_invitations_buildpack
+    label: Invitations buildpack
+    description: |
+      The buildpack to use when deploying the Invitations app.
+      Must be for a node-based app.
+
+  - reference: .properties.push_apps_manager_memory
+    label: Apps Manager memory usage
+    description: |
+      The memory limit for the Apps Manager app. Enter value in MB.
+      Leave blank to use the default value of 128 MB.
+
+  - reference: .properties.push_apps_manager_search_server_memory
+    label: Search Server memory usage
+    description: |
+      The memory limit for the Search Server app. Enter value in MB.
+      Leave blank to use the default value of 256 MB.
+
+  - reference: .properties.push_apps_manager_invitations_memory
+    label: Invitations memory usage
+    description: |
+      The memory limit for the Invitations app. Enter value in MB.
+      Leave blank to use the default value of 256 MB.
+
+  - reference: .properties.push_apps_manager_poll_interval
+    label: Apps Manager polling interval
+    description: |
+      The Apps Manager polling interval. Enter value in seconds.
+      Leave blank to use the default value of 30 seconds.
+
+  - reference: .properties.push_apps_manager_app_poll_interval
+    label: App details polling interval
+    description: |
+      The app details polling interval. Enter value in seconds.
+      Leave blank to use the default value of 10 seconds.
+
+  - reference: .properties.push_apps_manager_foundations
+    label: Multi-foundation configuration (beta)
+    description: |
+      A JSON string containing all the foundations Apps Manager
+      manages.
+
+  - reference: .properties.push_apps_manager_redirect_uris
+    label: Redirect URIs
+    description: |
+      A comma-separated list of URIs for other foundations Apps
+      Manager manages.

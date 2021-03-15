@@ -1,0 +1,360 @@
+---
+- name: logger_endpoint_port
+  type: port
+  configurable: true
+  optional: true
+
+- name: syslog_host
+  type: network_address
+  configurable: true
+  optional: true
+
+- name: syslog_port
+  type: port
+  configurable: true
+  optional: true
+
+- name: syslog_protocol
+  type: dropdown_select
+  configurable: true
+  optional: true
+  options:
+    - name: tcp
+      label: TCP protocol
+    - name: relp
+      label: RELP protocol
+    - name: udp
+      label: UDP protocol
+
+- name: system_logging
+  type: selector
+  configurable: false
+  default: only-option
+  option_templates:
+    - name: doesnt-matter
+      select_value: only-option
+      named_manifests:
+        - name: syslog
+          manifest: |
+            "(( .properties.syslog_host.value ? .properties.system_logging.selected_option.parsed_manifest(syslog_enabled) : .properties.system_logging.selected_option.parsed_manifest(syslog_disabled) ))"
+        - name: syslog_enabled
+          manifest: |
+            address: (( .properties.syslog_host.value ))
+            port: (( .properties.syslog_port.value ))
+            transport: (( .properties.syslog_protocol.value ))
+            tls_enabled: (( .properties.syslog_tls.selected_option.parsed_manifest(tls_enabled) ))
+            ca_cert: (( .properties.syslog_tls.selected_option.parsed_manifest(ca_cert) ))
+            permitted_peer: (( .properties.syslog_tls.selected_option.parsed_manifest(permitted_peer) ))
+            use_tcp_for_file_forwarding_local_transport: (( .properties.syslog_use_tcp_for_file_forwarding_local_transport.value ))
+            custom_rule: |
+              (( .properties.syslog_rule.value ))
+              if ($programname startswith "vcap.") then stop
+              (( .properties.syslog_drop_debug.value ? 'if ($msg contains "DEBUG") then stop' : "" ))
+              (( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ? .properties.system_logging.selected_option.parsed_manifest(iptables_logging_enabled_part_1) : .properties.system_logging.selected_option.parsed_manifest(iptables_logging_disabled) ))
+              (( .properties.container_networking_interface_plugin.silk.enable_log_traffic.value ? .properties.system_logging.selected_option.parsed_manifest(iptables_logging_enabled_part_2) : .properties.system_logging.selected_option.parsed_manifest(iptables_logging_disabled) ))
+        - name: iptables_logging_enabled_part_1
+          manifest: |
+            if $programname == 'kernel' and ($msg contains "DENY_" or $msg contains "OK_") then -/var/log/kern.log
+        - name: iptables_logging_enabled_part_2
+          manifest: |
+            "&stop"
+        - name: iptables_logging_disabled
+          manifest: |
+            ""
+        - name: syslog_disabled
+          manifest: |
+            migration:
+              disabled: true
+        - name: syslog_aggregator
+          manifest: |
+            "(( .properties.syslog_host.value ? .properties.system_logging.selected_option.parsed_manifest(syslog_aggregator_enabled) : .properties.system_logging.selected_option.parsed_manifest(syslog_aggregator_disabled) ))"
+        - name: syslog_aggregator_enabled
+          manifest: |
+            address: (( .properties.syslog_host.value ))
+            port: (( .properties.syslog_port.value ))
+            transport: (( .properties.syslog_protocol.value ))
+        - name: syslog_aggregator_disabled
+          manifest: |
+            {}
+        - name: syslog_url
+          manifest: |
+            "(( .properties.syslog_host.value ? .properties.system_logging.selected_option.parsed_manifest(syslog_url_enabled) : .properties.system_logging.selected_option.parsed_manifest(syslog_url_disabled) ))"
+        - name: syslog_url_enabled
+          manifest: "(( .properties.syslog_protocol.value ))://(( .properties.syslog_host.value )):(( .properties.syslog_port.value ))"
+        - name: syslog_url_disabled
+          manifest: |
+            ""
+
+- name: syslog_tls
+  type: selector
+  configurable: true
+  default: disabled
+  option_templates:
+    - name: disabled
+      select_value: disabled
+      named_manifests:
+        - name: tls_enabled
+          manifest: |
+            false
+        - name: ca_cert
+          manifest: ""
+        - name: permitted_peer
+          manifest: |
+            ""
+    - name: enabled
+      select_value: enabled
+      property_blueprints:
+        - name: tls_ca_cert
+          type: ca_certificate
+          configurable: true
+        - name: tls_permitted_peer
+          type: string
+          configurable: true
+      named_manifests:
+        - name: tls_enabled
+          manifest: |
+            true
+        - name: ca_cert
+          manifest: |
+            (( .properties.syslog_tls.enabled.tls_ca_cert.value ))
+        - name: permitted_peer
+          manifest: |
+            (( .properties.syslog_tls.enabled.tls_permitted_peer.value ))
+
+- name: syslog_use_tcp_for_file_forwarding_local_transport
+  type: boolean
+  configurable: true
+  default: false
+
+- name: syslog_drop_debug
+  type: boolean
+  configurable: true
+  default: true
+
+- name: syslog_rule
+  type: text
+  configurable: true
+  optional: true
+
+- name: log_cache_auth_proxy_client_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - log-cache
+
+- name: log_cache_server_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - log_cache
+    - log-cache
+    - logcache
+
+- name: log_cache_gateway_auth_proxy_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - localhost
+    - log-cache.service.cf.internal
+
+- name: log_cache_nozzle_client_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - log-cache
+
+- name: reverse_log_proxy_gateway_client_tls_cc_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - rlp_gateway
+
+- name: reverse_log_proxy_gateway_client_tls_rlp_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - rlp_gateway
+
+- name: reverse_log_proxy_gateway_server_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - "reverse-log-proxy.service.cf.internal"
+
+- name: log_cache_max_per_source
+  type: integer
+  configurable: true
+  default: 100000
+  constraints:
+    min: 100000
+
+- name: trafficcontroller_tls_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - "doppler.service.cf.internal"
+
+- name: syslog_agent_aggregate_drains
+  type: string_list
+  configurable: true
+  optional: true
+
+- name: syslog_agent_api_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - syslog-agent
+
+- name: binding_cache_api_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - binding-cache
+
+- name: enable_v1_firehose
+  type: boolean
+  configurable: true
+  default: true
+
+- name: enable_v2_firehose
+  type: boolean
+  configurable: true
+  default: true
+
+- name: enable_log_cache_syslog_ingestion
+  type: boolean
+  configurable: true
+  default: false
+
+- name: disable_logs_in_firehose
+  type: boolean
+  configurable: true
+  default: false
+
+- name: log_cache_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - log_cache_metrics
+
+- name: log_cache_cf_auth_proxy_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - log_cache_cf_auth_proxy_metrics
+
+- name: log_cache_gateway_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - log_cache_gateway_metrics
+
+- name: log_cache_syslog_server_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - "doppler.service.cf.internal"
+    - "q-s3.doppler.default.cf.bosh"
+
+- name: log_cache_syslog_server_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - log-cache-syslog-server-metrics
+
+- name: forwarder_agent_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - forwarder_agent_metrics
+
+- name: loggregator_agent_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - loggregator_agent_metrics
+
+- name: loggr_udp_forwarder_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - loggr_udp_forwarder_metrics
+
+- name: syslog_agent_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - syslog_agent_metrics
+
+- name: loggr_syslog_binding_cache_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - loggr_syslog_binding_cache_metrics
+
+- name: leadership_election_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - leadership_election_metrics
+
+- name: leadership_election_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+      - leadership_election
+
+- name: rlp_gateway_metrics_tls
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - rlp_gateway_metrics
+
+
+- name: logging_timestamp_format
+  type: selector
+  configurable: true
+  default: rfc3339
+  option_templates:
+    - name: rfc3339
+      select_value: rfc3339
+      named_manifests:
+        - name: rfc3339_or_deprecated
+          manifest: |
+            rfc3339
+        - name: rfc3339_or_unix_epoch
+          manifest: |
+            rfc3339
+
+    - name: deprecated
+      select_value: deprecated
+      named_manifests:
+        - name: rfc3339_or_deprecated
+          manifest: |
+            deprecated
+        - name: rfc3339_or_unix_epoch
+          manifest: |
+            unix-epoch

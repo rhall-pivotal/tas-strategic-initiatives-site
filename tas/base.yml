@@ -1,0 +1,702 @@
+---
+name: cf
+metadata_version: '2.10' # When a 2.11 Ops Manager appears, this value should be updated to be equal to the product version
+provides_product_versions:
+- name: cf
+  version: $( version )
+product_version: $( version )
+pivnet_filename_regex: $( variable "product_regex" )
+minimum_version_for_upgrade: 2.11.0
+label: $( variable "label" )
+description:
+  Gives developers the ability to push apps on a dynamically-configured software stack
+icon_image: $( icon )
+rank: 90
+serial: false
+
+kiln_metadata:
+  metadata_git_sha: $( variable "metadata-git-sha" )
+
+stemcell_criteria: $( stemcell )
+
+releases:
+- $( release "backup-and-restore-sdk" )
+- $( release "binary-offline-buildpack" )
+- $( release "bosh-dns-aliases" )
+- $( release "bosh-system-metrics-forwarder" )
+- $( release "bpm" )
+- $( release "capi" )
+- $( release "cf-autoscaling" )
+- $( release "cf-cli" )
+- $( release "cf-networking" )
+- $( release "smoke-tests" )
+- $( release "cflinuxfs3" )
+- $( release "credhub" )
+- $( release "diego" )
+- $( release "dotnet-core-offline-buildpack" )
+- $( release "garden-runc" )
+- $( release "go-offline-buildpack" )
+- $( release "haproxy" )
+- $( release "java-offline-buildpack" )
+- $( release "log-cache" )
+- $( release "loggregator" )
+- $( release "loggregator-agent" )
+- $( release "mapfs" )
+- $( release "metric-registrar" )
+- $( release "metrics-discovery" )
+- $( release "mysql-monitoring" )
+- $( release "nats" )
+- $( release "nfs-volume" )
+- $( release "nginx-offline-buildpack" )
+- $( release "nodejs-offline-buildpack" )
+- $( release "notifications" )
+- $( release "notifications-ui" )
+- $( release "php-offline-buildpack" )
+- $( release "push-apps-manager-release" )
+- $( release "push-usage-service-release" )
+- $( release "r-offline-buildpack" )
+- $( release "python-offline-buildpack" )
+- $( release "pxc" )
+- $( release "routing" )
+- $( release "ruby-offline-buildpack" )
+- $( release "silk" )
+- $( release "smb-volume" )
+- $( release "staticfile-offline-buildpack" )
+- $( release "statsd-injector" )
+- $( release "syslog" )
+- $( release "system-metrics-scraper" )
+- $( release "uaa" )
+
+form_types:
+- $( form "domains" )
+- $( form "networking" )
+- $( form "app_containers" )
+- $( form "application_dev_controls" )
+- $( form "application_security_groups" )
+- $( form "sso" )
+- $( form "uaa" )
+- $( form "credhub" )
+- $( form "system_database" )
+- $( form "mysql_config" )
+- $( form "system_blobstore" )
+- $( form "system_logging" )
+- $( form "generic_white_label_config" )
+- $( form "apps_manager_config" )
+- $( form "smtp_config" )
+- $( form "app_autoscaler" )
+- $( form "cloud_controller" )
+- $( form "smoke_tests" )
+- $( form "advanced_features" )
+- $( form "metric_registrar" )
+
+job_types:
+- $( instance_group "database" ) # SRT only
+- $( instance_group "blobstore" ) # SRT only
+- $( instance_group "control" ) # SRT only
+- $( instance_group "compute" ) # SRT only
+- $( instance_group "nats" ) # ERT only
+- $( instance_group "nfs_server" ) # ERT only
+- $( instance_group "mysql_proxy" ) # ERT only
+- $( instance_group "mysql" ) # ERT only
+- $( instance_group "backup_restore" ) # ERT & SRT
+- $( instance_group "diego_database" ) # ERT only
+- $( instance_group "uaa" ) # ERT only
+- $( instance_group "cloud_controller" ) # ERT only
+- $( instance_group "ha_proxy" ) # ERT & SRT
+- $( instance_group "diego_brain" ) # ERT only
+- $( instance_group "router" ) # ERT & SRT
+- $( instance_group "mysql_monitor" ) # ERT & SRT
+- $( instance_group "clock_global" ) # ERT only
+- $( instance_group "cloud_controller_worker" ) # ERT only
+- $( instance_group "diego_cell" ) # ERT only
+- $( instance_group "loggregator_trafficcontroller" ) # ERT only
+- $( instance_group "doppler" ) # ERT only
+- $( instance_group "tcp_router" ) # ERT & SRT
+- $( instance_group "credhub" ) # ERT only
+
+property_blueprints:
+- $( property "account_database_name" )
+- $( property "app_graceful_shutdown_period_in_seconds" )
+- $( property "app_log_rate_limiting" )
+- $( property "app_usage_service_database_name" )
+- $( property "auctioneer_client_cert" )
+- $( property "auctioneer_server_cert" )
+- $( property "autoscale_api_disable_connection_pooling" )
+- $( property "autoscale_api_instance_count" )
+- $( property "autoscale_database_name" )
+- $( property "autoscale_enable_notifications" )
+- $( property "autoscale_enable_verbose_logging" )
+- $( property "autoscale_instance_count" )
+- $( property "autoscale_metric_bucket_count" )
+- $( property "autoscale_scaling_interval_in_seconds" )
+- $( property "bbs_client_cert" )
+- $( property "bbs_server_cert" )
+- $( property "cc_api_rate_limit" )
+- $( property "cc_logging_level" )
+- $( property "ccdb_database_name" )
+- $( property "ccdb_connection_validation_timeout" )
+- $( property "ccdb_read_timeout" )
+- $( property "cf_dial_timeout_in_seconds" )
+- $( property "cf_networking_database_connection_timeout" )
+- $( property "cf_networking_enable_space_developer_self_service" )
+- $( property "cf_networking_search_domains" )
+- $( property "cf_networking_internal_domains" )
+- $( property "cloud_controller_client_cert" )
+- $( property "cloud_controller_default_health_check_timeout" )
+- $( property "cloud_controller_logcache_tls_cert" )
+- $( property "cloud_controller_mutual_cert" )
+- $( property "cloud_controller_public_tls_cert" )
+- $( property "cloud_controller_temporary_disable_deployments" )
+- $( property "cloud_controller_audit_events_cutoff_age_in_days" )
+- $( property "cloud_controller_completed_tasks_cutoff_age_in_days" )
+- $( property "cloud_controller_encryption_keys" )
+- $( property "container_networking" )
+- $( property "container_networking_interface_plugin" )
+- $( property "credhub_database" )
+- $( property "credhub_database_name" )
+- $( property "credhub_providers" )
+- $( property "credhub_encryption_keys" )
+- $( property "credhub_internal_provider_keys" )
+- $( property "credhub_kms_providers" )
+- $( property "credhub_hsm_provider_partition" )
+- $( property "credhub_hsm_provider_partition_password" )
+- $( property "credhub_hsm_provider_client_certificate" )
+- $( property "credhub_hsm_provider_encryption_keys" )
+- $( property "credhub_hsm_provider_servers" )
+- $( property "credhub_tls" )
+- $( property "diego_database_name" )
+- $( property "diego_database_max_open_connections" )
+- $( property "enable_smb_volume_driver" )
+- $( property "enable_tls_to_internal_pxc" )
+- $( property "file_server_cert" )
+- $( property "garden_disk_cleanup" )
+- $( property "enable_garden_containerd_mode" )
+- $( property "gorouter_ssl_ciphers" )
+- $( property "haproxy_client_cert_validation" )
+- $( property "haproxy_client_certificate" )
+- $( property "haproxy_custom_ca_certificates" )
+- $( property "haproxy_forward_tls" )
+- $( property "haproxy_hsts_support" )
+- $( property "haproxy_max_buffer_size" )
+- $( property "haproxy_ssl_ciphers" )
+- $( property "host_tcp_services" )
+- $( property "locket_database_name" )
+- $( property "locket_database_max_open_connections" )
+- $( property "log_cache_auth_proxy_client_tls_cert" )
+- $( property "log_cache_nozzle_client_tls_cert" )
+- $( property "log_cache_server_tls_cert" )
+- $( property "log_cache_max_per_source" )
+- $( property "log_cache_cf_auth_proxy_metrics_tls" )
+- $( property "log_cache_gateway_metrics_tls" )
+- $( property "log_cache_metrics_tls" )
+- $( property "log_cache_syslog_server_tls" )
+- $( property "log_cache_syslog_server_metrics_tls" )
+- $( property "forwarder_agent_metrics_tls" )
+- $( property "loggr_udp_forwarder_tls" )
+- $( property "log_cache_gateway_auth_proxy_tls_cert" )
+- $( property "logger_endpoint_port" )
+- $( property "loggregator_agent_metrics_tls" )
+- $( property "loggr_syslog_binding_cache_metrics_tls" )
+- $( property "loggr_metric_scraper_metrics_tls" )
+- $( property "leadership_election_metrics_tls" )
+- $( property "leadership_election_tls" )
+- $( property "loggregator_client_cert" )
+- $( property "metrics_agent_metrics_tls" )
+- $( property "metrics_discovery_metrics_tls" )
+- $( property "metric_registrar_blacklisted_tags" )
+- $( property "metric_registrar_enabled" )
+- $( property "metric_registrar_orchestrator_tls" )
+- $( property "metric_registrar_rlp_tls" )
+- $( property "metric_registrar_scrape_interval_in_seconds" )
+- $( property "metric_registrar_worker_tls" )
+- $( property "mysql_activity_logging" )
+- $( property "nats_tls_external_cert" )
+- $( property "nats_client_cert" )
+- $( property "nats_tls_internal_cert" )
+- $( property "network_policy_agent_cert" )
+- $( property "network_policy_server_cert" )
+- $( property "network_policy_server_external_cert" )
+- $( property "networking_poe_ssl_certs" )
+- $( property "networkpolicyserver_database_name" )
+- $( property "networkpolicyserver_database_max_open_connections" )
+- $( property "networkpolicyserverinternal_database_max_open_connections" )
+- $( property "nfs_volume_driver" )
+- $( property "notifications_database_name" )
+- $( property "prom_scraper_scrape_tls" )
+- $( property "prom_scraper_metrics_tls" )
+- $( property "push_apps_manager_accent_color" )
+- $( property "push_apps_manager_app_poll_interval" )
+- $( property "push_apps_manager_poll_interval" )
+- $( property "push_apps_manager_company_name" )
+- $( property "push_apps_manager_currency_lookup" )
+- $( property "push_apps_manager_display_plan_prices" )
+- $( property "push_apps_manager_enable_invitations" )
+- $( property "push_apps_manager_favicon" )
+- $( property "push_apps_manager_footer_links" )
+- $( property "push_apps_manager_footer_text" )
+- $( property "push_apps_manager_foundations" )
+- $( property "push_apps_manager_redirect_uris" )
+- $( property "push_apps_manager_global_wrapper_bg_color" )
+- $( property "push_apps_manager_global_wrapper_footer_content" )
+- $( property "push_apps_manager_global_wrapper_header_content" )
+- $( property "push_apps_manager_global_wrapper_text_color" )
+- $( property "push_apps_manager_search_server_buildpack" )
+- $( property "push_apps_manager_search_server_memory" )
+- $( property "push_apps_manager_invitations_buildpack" )
+- $( property "push_apps_manager_invitations_memory" )
+- $( property "push_apps_manager_logo" )
+- $( property "push_apps_manager_marketplace_name" )
+- $( property "push_apps_manager_marketplace_url" )
+- $( property "push_apps_manager_buildpack" )
+- $( property "push_apps_manager_memory" )
+- $( property "push_apps_manager_nav_links" )
+- $( property "push_apps_manager_product_name" )
+- $( property "push_apps_manager_square_logo" )
+- $( property "push_usage_service_cutoff_age_in_days" )
+- $( property "pxc_internal_certificate" )
+- $( property "pxc_server_certificate" )
+- $( property "rep_client_cert" )
+- $( property "rep_server_cert_v2" )
+- $( property "reverse_log_proxy_gateway_client_tls_cc_cert" )
+- $( property "reverse_log_proxy_gateway_server_tls_cert" )
+- $( property "reverse_log_proxy_gateway_client_tls_rlp_cert" )
+- $( property "rlp_gateway_metrics_tls" )
+- $( property "route_integrity" )
+- $( property "route_services" )
+- $( property "router_backend_max_conn" )
+- $( property "router_client_cert_validation" )
+- $( property "router_enable_proxy" )
+- $( property "router_keepalive_connections" )
+- $( property "routing_api_client_cert" )
+- $( property "routing_api_server_cert" )
+- $( property "routing_backends_client_cert_with_san" )
+- $( property "routing_custom_ca_certificates" )
+- $( property "routing_database_name" )
+- $( property "routing_minimum_tls_version" )
+- $( property "routing_log_client_ips" )
+- $( property "routing_disable_http" )
+- $( property "routing_tls_termination" )
+- $( property "router_balancing_algorithm" )
+- $( property "saml_entity_id_override" )
+- $( property "saml_signature_algorithm" )
+- $( property "secure_service_instance_credentials" )
+- $( property "security_acknowledgement" )
+- $( property "service_discovery_client_tls" )
+- $( property "service_discovery_server_tls" )
+- $( property "service_discovery_controller_staleness_threshold" )
+- $( property "system_metrics_scraper_scrape_interval" )
+- $( property "logging_timestamp_format" )
+- $( property "silk_database_name" )
+- $( property "silk_database_max_open_connections" )
+- $( property "smoke_tests" )
+- $( property "smtp_address" )
+- $( property "smtp_auth_mechanism" )
+- $( property "smtp_crammd5_secret" )
+- $( property "smtp_credentials" )
+- $( property "smtp_enable_starttls_auto" )
+- $( property "smtp_from" )
+- $( property "smtp_port" )
+- $( property "ssh_proxy_backends_tls" )
+- $( property "syslog_agent_metrics_tls" )
+- $( property "syslog_agent_aggregate_drains" )
+- $( property "syslog_drop_debug" )
+- $( property "syslog_host" )
+- $( property "syslog_port" )
+- $( property "syslog_protocol" )
+- $( property "syslog_rule" )
+- $( property "syslog_tls" )
+- $( property "syslog_use_tcp_for_file_forwarding_local_transport" )
+- $( property "system_blobstore" )
+- $( property "system_blobstore_backup_level" )
+- $( property "system_blobstore_ccpackage_max_valid_packages_stored" )
+- $( property "system_blobstore_ccdroplet_max_staged_droplets_stored" )
+- $( property "system_database" )
+- $( property "system_logging" )
+- $( property "tcp_routing" )
+- $( property "tile_name" )
+- $( property "tps_client_cert" )
+- $( property "trafficcontroller_tls_cert" )
+- $( property "uaa" )
+- $( property "uaa_database" )
+- $( property "uaa_database_name" )
+- $( property "uaa_session_cookie_max_age" )
+- $( property "uaa_session_idle_timeout" )
+- $( property "router_headers_remove_if_specified" )
+- $( property "router_sticky_session_cookie_names" )
+- $( property "system_metrics_tls_scraper_cert" )
+- $( property "enable_v1_firehose" )
+- $( property "enable_v2_firehose" )
+- $( property "disable_logs_in_firehose" )
+- $( property "enable_log_cache_syslog_ingestion" )
+- $( property "syslog_agent_api_tls" )
+- $( property "binding_cache_api_tls" )
+
+runtime_configs:
+- $( runtime_config "bosh-dns-aliases" )
+
+variables:
+- name: /cf/diego-instance-identity-root-ca-2-6
+  type: certificate
+  options:
+    common_name: 'Diego Instance Identity Root CA'
+    is_ca: true
+    duration: 1095
+
+- name: diego-instance-identity-intermediate-ca-2-7
+  type: certificate
+  options:
+    common_name: 'Diego Instance Identity Intermediate CA'
+    is_ca: true
+    duration: 730
+    ca: /cf/diego-instance-identity-root-ca-2-6
+    key_usage:
+    - key_cert_sign
+
+- name: /services/tls_leaf
+  options:
+    ca: /services/tls_ca
+    common_name: services-tls-leaf
+    alternative_names:
+    - services-tls-leaf
+  type: certificate
+  update_mode: converge
+
+- name: app-usage-db-credentials
+  type: user
+  options:
+    username: app_usage
+
+- name: autoscale-db-credentials
+  type: user
+
+- name: cc-db-credentials
+  type: user
+
+- name: cloud-controller-internal-api-user-credentials
+  type: user
+
+- name: cloud-controller-staging-upload-credentials
+  type: user
+  options:
+    username: staging_upload_user
+
+- name: credhub-db-credentials
+  type: user
+
+- name: deploy-autoscaling-broker-credentials
+  type: user
+
+- name: deploy-autoscaling-encryption-key
+  type: password
+
+- name: deploy-notifications-encryption-key
+  type: password
+
+- name: diego-db-bbs-encryption-passphrase
+  type: password
+
+- name: diego-db-credentials
+  type: user
+
+- name: locket-db-credentials
+  type: user
+
+- name: mysql-admin-credentials
+  type: user
+  options:
+    username: root
+
+- name: mysql-bootstrap-db-credentials
+  type: user
+
+- name: mysql-cluster-health-credentials
+  type: user
+  options:
+    username: cluster-health-logger
+
+- name: mysql-diag-agent-db-credentials
+  type: user
+
+- name: mysql-galera-sidecar-credentials
+  type: user
+  options:
+    username: galera-healthcheck
+
+- name: mysql-metrics-db-credentials
+  type: user
+
+- name: mysql-monitor-db-credentials
+  type: user
+
+- name: mysql-proxy-dashboard-credentials
+  type: user
+  options:
+    username: admin
+
+- name: nats-credentials
+  type: user
+  options:
+    username: nats
+
+- name: network-policy-server-db-credentials
+  type: user
+
+- name: nfs-broker-push-db-credentials
+  type: user
+
+- name: nfs-server-blobstore-secret
+  type: password
+
+- name: notifications-db-credentials
+  type: user
+
+- name: push-usage-service-secret-token
+  type: password
+
+- name: router-route-services-secret
+  type: password
+
+- name: router-status-credentials
+  type: user
+  options:
+    username: router_status
+
+- name: routing-db-credentials
+  type: user
+
+- name: silk-db-credentials
+  type: user
+
+- name: smb-broker-credentials
+  type: user
+
+- name: uaa-db-credentials
+  type: user
+
+- name: uaa-default-encryption-passphrase
+  type: password
+
+- name: webdav-blobstore-credentials
+  type: user
+  options:
+    username: blobstore
+
+post_deploy_errands:
+  - name: smoke_tests
+    label: Smoke Test Errand
+    description: Runs Smoke Tests against your installation
+    colocated: true
+    run_default: true
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: push-usage-service
+    label: Usage Service Errand
+    description: Pushes the Usage Service application to your installation. Apps Manager depends on this application.
+    colocated: true
+    run_default: true
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: push-apps-manager
+    label: Apps Manager Errand
+    description: Pushes the Apps Manager application to your installation
+    colocated: true
+    run_default: true
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: deploy-notifications
+    label: Notifications Errand
+    description: |
+      Pushes the Notifications application to your installation
+    colocated: true
+    run_default: true
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: deploy-notifications-ui
+    label: Notifications UI Errand
+    description: Pushes the Notifications UI component to your installation
+    colocated: true
+    run_default: true
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: deploy-autoscaler
+    label: App Autoscaler Errand
+    description: Pushes the App Autoscaler application to your installation
+    colocated: true
+    run_default: true
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: test-autoscaling
+    label: App Autoscaler Smoke Test Errand
+    description: Runs Smoke Tests against the App Autoscaling Service.
+    colocated: true
+    run_default: true
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: metric_registrar_smoke_test
+    label: Metric Registrar Smoke Test Errand
+    description: Runs Smoke Tests against the Metric Registrar. Requires that "Enable Metric Registrar" is checked in the Metric Registrar tab.
+    colocated: true
+    run_default: false
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: nfsbrokerpush
+    label: NFS Broker Errand
+    description: Pushes the NFS Broker application to your installation
+    colocated: true
+    run_default: true
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: smbbrokerpush
+    label: SMB Broker Errand
+    description: Pushes the SMB Broker application to your installation
+    colocated: true
+    run_default: true
+    instances:
+      - $( variable "errand_instance_group" )
+  - name: rotate_cc_database_key
+    label: Rotate CC Database Key
+    description: Re-encrypts credentials in Cloud Controller DB with selected encryption key
+    run_default: false
+    colocated: true
+    instances:
+      - $( variable "errand_instance_group" )
+
+install_time_verifiers:
+- name: Verifiers::WildcardDomainVerifier
+  ignorable: true
+  properties:
+    domain: .cloud_controller.system_domain
+- name: Verifiers::WildcardDomainVerifier
+  ignorable: true
+  properties:
+    domain: .cloud_controller.apps_domain
+- name: Verifiers::SsoUrlVerifier
+  properties:
+    url: .properties.uaa.saml.sso_url
+- name: Verifiers::BlobstoreVerifier
+  ignorable: true
+  properties:
+    endpoint: .properties.system_blobstore.external.endpoint
+    access_key_id: .properties.system_blobstore.external.access_key
+    secret_access_key: .properties.system_blobstore.external.secret_key
+    bucket_name: .properties.system_blobstore.external.buildpacks_bucket
+    region: .properties.system_blobstore.external.region
+    signature_version: .properties.system_blobstore.external.signature_version
+- name: Verifiers::BlobstoreVerifier
+  ignorable: true
+  properties:
+    endpoint: .properties.system_blobstore.external.endpoint
+    access_key_id: .properties.system_blobstore.external.access_key
+    secret_access_key: .properties.system_blobstore.external.secret_key
+    bucket_name: .properties.system_blobstore.external.droplets_bucket
+    region: .properties.system_blobstore.external.region
+    signature_version: .properties.system_blobstore.external.signature_version
+- name: Verifiers::BlobstoreVerifier
+  ignorable: true
+  properties:
+    endpoint: .properties.system_blobstore.external.endpoint
+    access_key_id: .properties.system_blobstore.external.access_key
+    secret_access_key: .properties.system_blobstore.external.secret_key
+    bucket_name: .properties.system_blobstore.external.packages_bucket
+    region: .properties.system_blobstore.external.region
+    signature_version: .properties.system_blobstore.external.signature_version
+- name: Verifiers::BlobstoreVerifier
+  ignorable: true
+  properties:
+    endpoint: .properties.system_blobstore.external.endpoint
+    access_key_id: .properties.system_blobstore.external.access_key
+    secret_access_key: .properties.system_blobstore.external.secret_key
+    bucket_name: .properties.system_blobstore.external.resources_bucket
+    region: .properties.system_blobstore.external.region
+    signature_version: .properties.system_blobstore.external.signature_version
+- name: Verifiers::MysqlDatabaseVerifier
+  ignorable: true
+  properties:
+    host: .properties.system_database.external.host
+    port: .properties.system_database.external.port
+    username: .properties.system_database.external.account_username
+    password: .properties.system_database.external.account_password
+    database: .properties.account_database_name
+- name: Verifiers::MysqlDatabaseVerifier
+  ignorable: true
+  properties:
+    host: .properties.system_database.external.host
+    port: .properties.system_database.external.port
+    username: .properties.system_database.external.app_usage_service_username
+    password: .properties.system_database.external.app_usage_service_password
+    database: .properties.app_usage_service_database_name
+- name: Verifiers::MysqlDatabaseVerifier
+  ignorable: true
+  properties:
+    host: .properties.system_database.external.host
+    port: .properties.system_database.external.port
+    username: .properties.system_database.external.autoscale_username
+    password: .properties.system_database.external.autoscale_password
+    database: .properties.autoscale_database_name
+- name: Verifiers::MysqlDatabaseVerifier
+  ignorable: true
+  properties:
+    host: .properties.system_database.external.host
+    port: .properties.system_database.external.port
+    username: .properties.system_database.external.ccdb_username
+    password: .properties.system_database.external.ccdb_password
+    database: .properties.ccdb_database_name
+- name: Verifiers::MysqlDatabaseVerifier
+  ignorable: true
+  properties:
+    host: .properties.system_database.external.host
+    port: .properties.system_database.external.port
+    username: .properties.system_database.external.diego_username
+    password: .properties.system_database.external.diego_password
+    database: .properties.diego_database_name
+- name: Verifiers::MysqlDatabaseVerifier
+  ignorable: true
+  properties:
+    host: .properties.system_database.external.host
+    port: .properties.system_database.external.port
+    username: .properties.system_database.external.locket_username
+    password: .properties.system_database.external.locket_password
+    database: .properties.locket_database_name
+- name: Verifiers::MysqlDatabaseVerifier
+  ignorable: true
+  properties:
+    host: .properties.system_database.external.host
+    port: .properties.system_database.external.port
+    username: .properties.system_database.external.networkpolicyserver_username
+    password: .properties.system_database.external.networkpolicyserver_password
+    database: .properties.networkpolicyserver_database_name
+- name: Verifiers::MysqlDatabaseVerifier
+  ignorable: true
+  properties:
+    host: .properties.system_database.external.host
+    port: .properties.system_database.external.port
+    username: .properties.system_database.external.notifications_username
+    password: .properties.system_database.external.notifications_password
+    database: .properties.notifications_database_name
+- name: Verifiers::MysqlDatabaseVerifier
+  ignorable: true
+  properties:
+    host: .properties.system_database.external.host
+    port: .properties.system_database.external.port
+    username: .properties.system_database.external.routing_username
+    password: .properties.system_database.external.routing_password
+    database: .properties.routing_database_name
+- name: Verifiers::MysqlDatabaseVerifier
+  ignorable: true
+  properties:
+    host: .properties.system_database.external.host
+    port: .properties.system_database.external.port
+    username: .properties.system_database.external.silk_username
+    password: .properties.system_database.external.silk_password
+    database: .properties.silk_database_name
+- name: Verifiers::MysqlDatabaseVerifier
+  ignorable: true
+  properties:
+    host: .properties.uaa_database.external.host
+    port: .properties.uaa_database.external.port
+    username: .properties.uaa_database.external.uaa_username
+    password: .properties.uaa_database.external.uaa_password
+    database: .properties.uaa_database_name
+
+
+

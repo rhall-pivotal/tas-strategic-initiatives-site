@@ -1,0 +1,22 @@
+---
+name: metric_registrar
+label: Metric Registrar
+description: Metric Registrar
+markdown: |
+  For help configuring these fields, see
+  [Configure Metric Registrar](https://docs.pivotal.io/pivotalcf/2-12/customizing/configure-pas.html#metric-registrar)
+  in _Configuring TAS for VMs_ in the VMware Tanzu documentation.
+
+property_inputs:
+- reference: .properties.metric_registrar_enabled
+  label: Enable Metric Registrar
+- reference: .properties.metric_registrar_scrape_interval_in_seconds
+  label: Endpoint scraping interval
+  description: |
+    The amount of time between scrapes of registered metrics endpoints.
+    Enter value in seconds. The default is 35.
+- reference: .properties.metric_registrar_blacklisted_tags
+  label: Blocked tags
+  description: |
+    A comma-separated list of tags that users cannot set on their
+    emitted metrics.

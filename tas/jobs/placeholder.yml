@@ -1,0 +1,17 @@
+---
+# This placeholder exists to include on "hidden" VMs whose instance count will always be 0, in order to satisfy BOSH's needs.
+name: loggregator_agent
+alias: placeholder
+release: loggregator-agent
+# these properties are necessary since bosh still tries to render the templates
+manifest: |
+
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
+  loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      agent:
+        cert: (( .doppler.metron_tls_cert.cert_pem ))
+        key: (( .doppler.metron_tls_cert.private_key_pem ))

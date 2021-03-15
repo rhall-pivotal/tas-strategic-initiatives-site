@@ -1,0 +1,27 @@
+---
+name: nats-tls
+release: nats
+provides: |
+  nats-tls:
+    as: nats-tls
+    shared: true
+
+consumes: |
+  nats: {from: nats}
+
+manifest: |
+  nats:
+    user: ((( nats-credentials.username )))
+    password: ((( nats-credentials.password )))
+    hostname: nats.service.cf.internal
+    internal:
+      tls:
+        ca: (( $ops_manager.ca_certificate ))
+        certificate: (( .properties.nats_tls_internal_cert.cert_pem ))
+        private_key: (( .properties.nats_tls_internal_cert.private_key_pem ))
+        enabled: true
+    external:
+      tls:
+        ca: (( $ops_manager.ca_certificate ))
+        certificate: (( .properties.nats_tls_external_cert.cert_pem ))
+        private_key: (( .properties.nats_tls_external_cert.private_key_pem ))

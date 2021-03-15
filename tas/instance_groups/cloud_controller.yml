@@ -1,0 +1,165 @@
+---
+name: cloud_controller
+label: Cloud Controller
+resource_label: Cloud Controller
+description: Coordinates VMware Tanzu Application Service application lifecycles
+templates:
+{{if eq tile "ert"}}
+- $( job "bpm" )
+- $( job "go-buildpack" )
+- $( job "binary-buildpack" )
+- $( job "nginx-buildpack" )
+- $( job "nodejs-buildpack" )
+- $( job "ruby-buildpack" )
+- $( job "php-buildpack" )
+- $( job "r-buildpack" )
+- $( job "python-buildpack" )
+- $( job "java-buildpack" )
+- $( job "staticfile-buildpack" )
+- $( job "dotnet-core-buildpack" )
+- $( job "cloud_controller_ng" )
+- $( job "routing-api" )
+- $( job "loggregator_agent" )
+- $( job "loggr-syslog-agent" )
+- $( job "metrics-discovery-registrar" )
+- $( job "metrics-agent" )
+- $( job "loggr-forwarder-agent" )
+- $( job "loggr-udp-forwarder" )
+- $( job "prom_scraper" )
+- $( job "route_registrar_cloud_controller" )
+- $( job "statsd_injector" )
+- $( job "syslog_forwarder" )
+{{else}}
+- $( job "placeholder" )
+{{end}}
+
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 4096
+  constraints:
+    min: 4096
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 20480
+  constraints:
+    min: 20480
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+max_in_flight: 1
+single_az_only: false
+serial: true
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: $( variable "cloud_controller_configurable_state" )
+  default: $( variable "cloud_controller_default_instances" )
+  constraints:
+    min: $( variable "cloud_controller_min_instances" )
+property_blueprints:
+- name: db_encryption_credentials
+  type: simple_credentials
+  default:
+    identity: db_encryption
+- name: encrypt_key
+  type: secret
+  configurable: true
+  optional: true
+- name: max_file_size
+  type: integer
+  configurable: true
+  optional: false
+  default: 1024
+  constraints:
+    min: 1024
+    max: 2048
+- name: max_package_size
+  type: integer
+  configurable: true
+  optional: false
+  default: 2147483648
+  constraints:
+    min: 2147483648
+- name: default_app_memory
+  type: integer
+  configurable: true
+  optional: false
+  default: 1024
+  constraints:
+    min: 64
+    max: 2048
+- name: max_disk_quota_app
+  type: integer
+  configurable: true
+  optional: false
+  default: 2048
+  constraints:
+    min: 512
+    max: 20480
+- name: default_disk_quota_app
+  type: integer
+  configurable: true
+  optional: false
+  default: 1024
+  constraints:
+    min: 512
+    max: 20480
+- name: enable_custom_buildpacks
+  type: boolean
+  configurable: true
+  optional: false
+  default: true
+- name: system_domain
+  type: wildcard_domain
+  configurable: true
+- name: apps_domain
+  type: wildcard_domain
+  configurable: true
+- name: default_quota_memory_limit_mb
+  type: integer
+  configurable: true
+  default: 10240
+  constraints:
+    min: 10240
+    max: 102400
+- name: default_quota_max_number_services
+  type: integer
+  configurable: true
+  default: 100
+  constraints:
+    min: 0
+    max: 1000
+- name: staging_timeout_in_seconds
+  type: integer
+  configurable: true
+  default: 900
+- name: allow_app_ssh_access
+  type: boolean
+  configurable: true
+  default: true
+- name: default_app_ssh_access
+  type: boolean
+  configurable: true
+  default: true
+- name: security_event_logging_enabled
+  type: boolean
+  configurable: true
+  default: true
+- name: locket_client_cert
+  type: rsa_cert_credentials
+  configurable: false

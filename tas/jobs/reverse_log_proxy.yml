@@ -1,0 +1,20 @@
+---
+name: reverse_log_proxy
+release: loggregator
+provides: |
+  reverse_log_proxy: {as: reverse_log_proxy, shared: true}
+manifest: |
+
+  logging:
+    format:
+      timestamp: (( .properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
+  loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      reverse_log_proxy:
+        cert: (( .loggregator_trafficcontroller.rlp_tls_cert.cert_pem ))
+        key: (( .loggregator_trafficcontroller.rlp_tls_cert.private_key_pem ))
+  reverse_log_proxy:
+    enabled: (( .properties.enable_v2_firehose.value ))
+    egress:
+      port: $( variable "reverse_log_proxy_port" )

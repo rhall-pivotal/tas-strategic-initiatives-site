@@ -1,0 +1,130 @@
+---
+name: uaa
+label: UAA
+description: UAA
+markdown: |
+  For help configuring these fields, see
+  [Configure UAA](https://docs.pivotal.io/pivotalcf/2-12/customizing/configure-pas.html#uaa)
+  in _Configuring TAS for VMs_ in the VMware Tanzu documentation.
+
+verifiers:
+- name: Verifiers::MysqlDatabaseVerifier
+  properties:
+    host: .properties.uaa_database.external.host
+    port: .properties.uaa_database.external.port
+    username: .properties.uaa_database.external.uaa_username
+    password: .properties.uaa_database.external.uaa_password
+    database: .properties.uaa_database_name
+
+property_inputs:
+- reference: .properties.uaa_database
+  label: UAA database location
+  selector_property_inputs:
+  - reference: .properties.uaa_database.internal_mysql
+    label: Tanzu Application Service database
+    description: This is configured in the Databases pane.
+
+  - reference: .properties.uaa_database.external
+    label: Other external database
+    property_inputs:
+      - reference: .properties.uaa_database.external.host
+        label: Hostname
+
+      - reference: .properties.uaa_database.external.port
+        label: TCP port
+
+      - reference: .properties.uaa_database.external.uaa_username
+        label: Username
+
+      - reference: .properties.uaa_database.external.uaa_password
+        label: Password
+
+      - reference: .properties.uaa_database.external.ca_cert
+        label: CA certificate
+
+- reference: .uaa.issuer_uri
+  label: JWT issuer URI
+  description: When generating tokens, UAA uses this URI as the issuer.
+
+- reference: .uaa.service_provider_key_credentials
+  label: SAML service provider credentials
+  description: The private key and certificate for the service provider.
+
+- reference: .uaa.service_provider_key_password
+  label: SAML service provider key password
+  description: The password for the service provider private key.
+
+- reference: .properties.saml_entity_id_override
+  label: SAML Entity ID override
+  description: Overrides the default Entity ID value.
+
+- reference: .properties.saml_signature_algorithm
+  label: Signature algorithm
+  description: The supported algorithm for signed requests and assertions.
+
+- reference: .uaa.apps_manager_access_token_lifetime
+  label: Apps Manager access token lifetime
+  description: |
+    The lifetime of the access token for Apps Manager.
+    Enter value in seconds.
+
+- reference: .uaa.cf_cli_access_token_lifetime
+  label: Cloud Foundry CLI access token lifetime
+  description: |
+    The lifetime of the access token for the cf CLI. Enter value in seconds.
+
+- reference: .uaa.cf_cli_refresh_token_lifetime
+  label: Cloud Foundry CLI refresh token lifetime
+  description: |
+    The lifetime of the refresh token for the cf CLI. Enter value in seconds.
+
+- reference: .properties.uaa_session_cookie_max_age
+  label: Global login session maximum timeout
+  description: |
+    The maximum timeout for a global login session. Enter value in seconds.
+
+- reference: .properties.uaa_session_idle_timeout
+  label: Global login session idle timeout
+  description: |
+    The maximum timeout for idle global login sessions. Enter value in seconds.
+
+- reference: .uaa.customize_username_label
+  label: Username label
+  description: Enter the text used to prompt for a username on the login page.
+
+- reference: .uaa.customize_password_label
+  label: Password label
+  description: Enter the text used to prompt for a password on the login page.
+
+- reference: .uaa.proxy_ips_regex
+  label: Proxy IPs regular expression
+  description: |
+    A pipe-separated set of regular expressions of IP addresses that are
+    considered reverse proxies.
+
+- reference: .uaa.proxy_servers
+  label: List of proxy servers
+  description: |
+    Comma separated list of the router IPs acting as the first group of
+    HTTP/TCP backends. These will be added to the proxy_ips_regex as exact matches.
+
+- reference: .uaa.http_proxy
+  label: http proxy
+  description: |
+    The http_proxy across the VMs used for all requests over http
+
+- reference: .uaa.https_proxy
+  label: https proxy
+  description: |
+    The https_proxy across the VMs used for all requests over https
+
+- reference: .uaa.no_proxy
+  label: no proxy
+  description: |
+    Set No_Proxy across the VMs
+
+- reference: .uaa.enable_uri_encoding_compatibility_mode
+  label: Client basic auth compatibility mode
+  description: |
+    If disabled, all client credentials must be URL-encoded when provided
+    as basic auth in HTTP requests.

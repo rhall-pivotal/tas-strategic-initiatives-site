@@ -1,0 +1,14 @@
+---
+name: send-email
+release: mysql-monitoring
+manifest: |
+  domain: (( .cloud_controller.system_domain.value ))
+  mysql-monitoring:
+    recipient_email: (( .mysql_monitor.recipient_email.value ))
+    cluster_identifier: cf
+    admin_client:
+      secret: (( .uaa.admin_client_credentials.password ))
+      username: (( .uaa.admin_client_credentials.identity ))
+    client:
+      username: (( .uaa.notifications_client_credentials.identity ))
+      secret: (( .uaa.notifications_client_credentials.password ))

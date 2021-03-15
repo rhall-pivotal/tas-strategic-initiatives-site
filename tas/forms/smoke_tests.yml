@@ -1,0 +1,27 @@
+---
+name: smoke_tests
+label: Smoke Tests
+description: Smoke Tests
+markdown: |
+  For help configuring these fields, see
+  [Configure Smoke Tests](https://docs.pivotal.io/pivotalcf/2-12/customizing/configure-pas.html#config-smoke-test)
+  in _Configuring TAS for VMs_ in the VMware Tanzu documentation.
+
+property_inputs:
+  - reference: .properties.smoke_tests
+    label: |
+      Choose where to deploy apps when running smoke tests:
+    selector_property_inputs:
+    - reference: .properties.smoke_tests.on_demand
+      label: A temporary space within the system org
+
+    - reference: .properties.smoke_tests.specified
+      label: A specified org and space
+      property_inputs:
+        - reference: .properties.smoke_tests.specified.org_name
+          label: Org
+          description: The org to use when running tests.
+
+        - reference: .properties.smoke_tests.specified.space_name
+          label: Space
+          description: The space to use when running tests.

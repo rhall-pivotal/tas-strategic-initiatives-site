@@ -1,0 +1,72 @@
+---
+name: compute
+label: Compute
+resource_label: Compute
+description: Compute
+templates:
+{{if eq tile "srt"}}
+- $( job "rep" )
+- $( job "route_emitter" )
+- $( job "cfdot" )
+- $( job "garden" )
+- $( job "cflinuxfs3-rootfs-setup" )
+- $( job "loggregator_agent" )
+- $( job "loggr-syslog-agent" )
+- $( job "metrics-discovery-registrar" )
+- $( job "metrics-agent" )
+- $( job "loggr-forwarder-agent" )
+- $( job "prom_scraper" )
+- $( job "silk-cni" )
+- $( job "silk-daemon" )
+- $( job "garden-cni" )
+- $( job "netmon" )
+- $( job "vxlan-policy-agent" )
+- $( job "mapfs" )
+- $( job "nfsv3driver" )
+- $( job "smbdriver" )
+- $( job "syslog_forwarder" )
+- $( job "bpm" )
+- $( job "bosh-dns-adapter" )
+- $( job "iptables-logger" )
+{{else}}
+- $( job "placeholder" )
+{{end}}
+
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 16384
+  constraints:
+    min: 2048
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 65536
+  constraints:
+    min: 4096
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 2
+  constraints:
+    min: 1
+max_in_flight: 4%
+single_az_only: false
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: $( variable "compute_configurable_state" )
+  default: $( variable "compute_default_instances" )
+  constraints:
+    min: $( variable "compute_min_instances" )
+    max: $( variable "compute_max_instances" )

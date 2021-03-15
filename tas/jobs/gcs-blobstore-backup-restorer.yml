@@ -1,0 +1,10 @@
+---
+name: gcs-blobstore-backup-restorer
+release: backup-and-restore-sdk
+manifest: |
+  enabled: (( .properties.system_blobstore.selected_option.parsed_manifest(enable_gcs_backup) ))
+  gcp_service_account_key: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+  bpm:
+    enabled: true
+  buckets:
+    '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_all) ? .properties.system_blobstore.selected_option.parsed_manifest(all_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_buckets) ))'

@@ -1,0 +1,82 @@
+---
+name: diego_brain
+label: Diego Brain
+resource_label: Diego Brain
+description: Diego Brain
+templates:
+{{if eq tile "ert"}}
+- $( job "auctioneer" )
+- $( job "cfdot" )
+- $( job "cc_uploader" )
+- $( job "file_server" )
+- $( job "ssh_proxy" )
+- $( job "tps" )
+- $( job "loggregator_agent_diego_brain" )
+- $( job "loggr-syslog-agent" )
+- $( job "metrics-discovery-registrar" )
+- $( job "metrics-agent" )
+- $( job "loggr-forwarder-agent" )
+- $( job "loggr-udp-forwarder" )
+- $( job "prom_scraper" )
+- $( job "syslog_forwarder" )
+- $( job "bpm" )
+- $( job "service-discovery-controller" )
+{{else}}
+- $( job "placeholder" )
+{{end}}
+
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 2048
+  constraints:
+    min: 1024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 4096
+  constraints:
+    min: 4096
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+max_in_flight: 1
+single_az_only: false
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: $( variable "diego_brain_configurable_state" )
+  default: $( variable "diego_brain_default_instances" )
+  constraints:
+    min: $( variable "diego_brain_min_instances" )
+property_blueprints:
+- name: ssh_host_key
+  type: rsa_pkey_credentials
+  configurable: false
+- name: static_ips
+  type: ip_ranges
+  configurable: true
+  optional: true
+- name: starting_container_count_maximum
+  type: integer
+  configurable: true
+  default: 200
+- name: cc_uploader_server_cert
+  type: rsa_cert_credentials
+  configurable: false
+  default:
+    domains:
+    - cc-uploader.service.cf.internal

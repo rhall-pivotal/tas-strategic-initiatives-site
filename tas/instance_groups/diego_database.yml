@@ -1,0 +1,80 @@
+---
+name: diego_database
+label: Diego BBS
+resource_label: Diego BBS
+description: An datastore node for Diego
+templates:
+{{if eq tile "ert"}}
+- $( job "bbs" )
+- $( job "cfdot" )
+- $( job "loggregator_agent" )
+- $( job "loggr-syslog-agent" )
+- $( job "metrics-discovery-registrar" )
+- $( job "metrics-agent" )
+- $( job "loggr-forwarder-agent" )
+- $( job "prom_scraper" )
+- $( job "locket" )
+- $( job "route_registrar_diego_database" )
+- $( job "policy-server" )
+- $( job "policy-server-internal" )
+- $( job "bpm" )
+- $( job "silk-controller" )
+- $( job "syslog_forwarder" )
+{{else}}
+- $( job "placeholder" )
+{{end}}
+
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 1024
+  constraints:
+    min: 1024
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 2048
+  constraints:
+    min: 1024
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+serial: true
+max_in_flight: 1
+single_az_only: false
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: $( variable "diego_database_configurable_state" )
+  default: $( variable "diego_database_default_instances" )
+  constraints:
+    min: $( variable "diego_database_min_instances" )
+property_blueprints:
+  - name: locket_server_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains: ["locket.service.cf.internal"]
+
+  - name: silk_controller_server_cert
+    type: rsa_cert_credentials
+    configurable: false
+    default:
+      domains: ["silk-controller.service.cf.internal"]
+
+  - name: silk_daemon_client_cert
+    type: rsa_cert_credentials
+    configurable: false

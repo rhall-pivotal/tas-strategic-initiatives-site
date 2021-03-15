@@ -1,0 +1,10 @@
+---
+name: statsd_injector
+release: statsd-injector
+manifest: |
+  loggregator:
+    tls:
+      ca_cert: (( $ops_manager.ca_certificate ))
+      statsd_injector:
+        cert: (( .loggregator_trafficcontroller.statsdinjector_tls_cert.cert_pem ))
+        key: (( .loggregator_trafficcontroller.statsdinjector_tls_cert.private_key_pem ))

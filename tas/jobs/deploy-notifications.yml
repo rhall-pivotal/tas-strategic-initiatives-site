@@ -1,0 +1,43 @@
+---
+name: deploy-notifications
+release: notifications
+manifest: |
+  domain: (( .cloud_controller.system_domain.value ))
+  ssl:
+    skip_cert_verify: (( .ha_proxy.skip_cert_verify.value ))
+  notifications:
+    network: notifications
+    database: (( .properties.system_database.selected_option.parsed_manifest(notifications) ))
+    uaa:
+      admin_client_id: (( .uaa.admin_client_credentials.identity ))
+      admin_client_secret: (( .uaa.admin_client_credentials.password ))
+      client_id: (( .uaa.notifications_client_credentials.identity ))
+      client_secret: (( .uaa.notifications_client_credentials.password ))
+    app_domain: (( .cloud_controller.system_domain.value ))
+    encryption_key: ((( deploy-notifications-encryption-key )))
+    enable_diego: true
+    syslog_url: (( .properties.system_logging.selected_option.parsed_manifest(syslog_url) ))
+    organization: system
+    buildpack_url: go_buildpack
+    instance_count: 3
+    space: notifications-with-ui
+    error_on_misconfiguration: false
+    smtp:
+      tls: (( .properties.smtp_enable_starttls_auto.value ))
+      auth_mechanism: (( .properties.smtp_auth_mechanism.value ))
+      crammd5_secret: (( .properties.smtp_crammd5_secret.value ))
+      host: (( .properties.smtp_address.value ))
+      pass: (( .properties.smtp_credentials.password ))
+      port: (( .properties.smtp_port.value ))
+      user: (( .properties.smtp_credentials.identity ))
+    sender: (( .properties.smtp_from.value ))
+    cf:
+      dial_timeout: (( .properties.cf_dial_timeout_in_seconds.value ))
+    default_template: |
+      {
+        "name": "Default Template",
+        "subject": "CF Notification: {{`{{.Subject}}`}}",
+        "html": "\u003ctable width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;font-family: Helvetica, Arial,sans-serif\"\u003e\n    \u003ctbody\u003e\n        \u003ctr\u003e\n            \u003ctd width=\"100%\" align=\"center\" bgcolor=\"#F8f8f8\" style=\"padding-right:10px;padding-left:10px\"\u003e\n                \u003ctable width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\"\u003e\n                    \u003ctbody\u003e\n                        \u003ctr\u003e\n                            \u003ctd align=\"left\" valign=\"top\" style=\"padding-bottom:30px;padding-top:30px\"\u003e\n                              \u003cimg src=\"http://notifications-ui.{{`{{.Domain}}`}}/assets/pivotal_logo.png\"\n                                alt=\"VMware Tanzu Application Service\" border=\"0\" style=\"display:block\" class=\"CToWUd\"\n                                width=\"166px\" height=\"35px\"\u003e\n                            \u003c/td\u003e\n                        \u003c/tr\u003e\n                    \u003c/tbody\u003e\n                \u003c/table\u003e\n                \u003ctable width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\"\u003e\n                    \u003ctbody\u003e\n                        \u003ctr\u003e\n                            \u003ctd align=\"left\" valign=\"top\" bgcolor=\"#FFFFFF\"\u003e\n                                \u003ctable width=\"600\" cellpadding=\"40\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;border:1px solid #e0e4e5\"\u003e\n                                    \u003ctbody\u003e\n                                        \u003ctr\u003e\n                                            \u003ctd style=\"color:#666666;font-size:16px;line-height:22px\"\u003e\n                                                \u003cdiv\u003e\n                                                    {{`{{.HTML}}`}}\n                                                \u003c/div\u003e\n                                            \u003c/td\u003e\n                                        \u003c/tr\u003e\n                                    \u003c/tbody\u003e\n                                \u003c/table\u003e\n                            \u003c/td\u003e\n                        \u003c/tr\u003e\n                    \u003c/tbody\u003e\n                \u003c/table\u003e\n                \u003ctable width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;font-size:12px;color:#b4b4b4\"\u003e\n                    \u003ctbody\u003e\n                        \u003ctr\u003e\n                          \u003ctd align=\"left\" valign=\"middle\" style=\"padding-top:20px;padding-bottom:20px\"\u003eManage your \u003ca href=\"https://notifications-ui.{{`{{.Domain}}`}}/preferences\"\n                                target=\"_blank\"\u003enotification preferences\u003c/a\u003e or\n                              \u003ca href=\"https://notifications-ui.{{`{{.Domain}}`}}/unsubscribe/{{`{{.UnsubscribeID}}`}}\"\n                                target=\"_blank\"\u003eunsubscribe\u003c/a\u003e\n                            \u003c/td\u003e\n                        \u003c/tr\u003e\n                        \u003ctr\u003e\n                            \u003ctd align=\"left\" valign=\"middle\" style=\"padding-bottom:20px\"\u003eVMware Tanzu Application Service, and the VMware Tanzu Application Service logo are registered\n                                trademarks or trademarks of VMware, Inc. or its affiliates.\n                                in the United States and other countries. All other\n                                trademarks used herein are the property of their\n                                respective owners.\n                                \u003ca\u003e\n                            \u003c/td\u003e\n                        \u003c/tr\u003e\n                        \u003ctr\u003e\n                            \u003ctd align=\"left\" valign=\"middle\" style=\"padding-bottom:20px\"\u003e\u00A9 2020 VMware, Inc. or its affiliates. All rights reserved.\n                                Published in the USA.\n                                \u003ca\u003e\n                            \u003c/td\u003e\n                        \u003c/tr\u003e\n                    \u003c/tbody\u003e\n                \u003c/table\u003e\n            \u003c/td\u003e\n        \u003c/tr\u003e\n    \u003c/tbody\u003e\n\u003c/table\u003e\n",
+        "text": "_____\n\n\nVMware Tanzu Application Service\n\n{{`{{.Text}}`}}\n\nManage your notification preferences:\nhttps://notifications-ui.{{`{{.Domain}}`}}/preferences\n\nUnsubscribe from Pivotal emails:\nhttps://notifications-ui.{{`{{.Domain}}`}}/unsubscribe/{{`{{.UnsubscribeID}}`}}\n\nVMware Tanzu Application Service, and the VMware Tanzu Application Service logo are registered trademarks or trademarks of VMware, Inc. or its affiliates. in the United States and other countries. All other trademarks used herein are the property of their respective owners.\n\n\u00A9 2020 VMware, Inc. or its affiliates. All rights reserved. Published in the USA.\n\n______\n",
+        "metadata": {}
+      }

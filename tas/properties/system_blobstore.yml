@@ -1,0 +1,865 @@
+---
+- name: system_blobstore_ccdroplet_max_staged_droplets_stored
+  type: integer
+  configurable: true
+  default: 2
+  constraints:
+    min: 1
+
+- name: system_blobstore_ccpackage_max_valid_packages_stored
+  type: integer
+  configurable: true
+  default: 2
+  constraints:
+    min: 1
+
+- name: system_blobstore_backup_level
+  type: selector
+  configurable: true
+  default: all
+  option_templates:
+    - name: all
+      select_value: all
+      named_manifests:
+        - name: backup_all
+          manifest: |
+            true
+        - name: backup_skip_droplets
+          manifest: |
+            false
+        - name: backup_skip_droplets_packages
+          manifest: |
+            false
+    - name: skip_droplets
+      select_value: skip_droplets
+      named_manifests:
+        - name: backup_all
+          manifest: |
+            false
+        - name: backup_skip_droplets
+          manifest: |
+            true
+        - name: backup_skip_droplets_packages
+          manifest: |
+            false
+    - name: skip_droplets_packages
+      select_value: skip_droplets_packages
+      named_manifests:
+        - name: backup_all
+          manifest: |
+            false
+        - name: backup_skip_droplets
+          manifest: |
+            false
+        - name: backup_skip_droplets_packages
+          manifest: |
+            true
+
+- name: system_blobstore
+  type: selector
+  configurable: true
+  default: internal
+  option_templates:
+
+    - name: internal
+      select_value: internal
+      named_manifests:
+        - name: all_buckets
+          manifest: |
+            - "buildpacks"
+            - "packages"
+            - "droplets"
+        - name: skip_buckets
+          manifest: |
+            '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_skip_droplets) ? .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_packages_buckets) ))'
+        - name: skip_droplets_buckets
+          manifest: |
+            - "buildpacks"
+            - "packages"
+        - name: skip_droplets_packages_buckets
+          manifest: |
+            - "buildpacks"
+        - name: ccbuildpack
+          manifest: |
+            blobstore_type: webdav
+            webdav_config:
+              username: ((( webdav-blobstore-credentials.username )))
+              password: ((( webdav-blobstore-credentials.password )))
+              public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+              ca_cert: (( $ops_manager.ca_certificate ))
+        - name: ccdroplet
+          manifest: |
+            max_staged_droplets_stored:  (( .properties.system_blobstore_ccdroplet_max_staged_droplets_stored.value ))
+            blobstore_type: webdav
+            webdav_config:
+              username: ((( webdav-blobstore-credentials.username )))
+              password: ((( webdav-blobstore-credentials.password )))
+              public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+              ca_cert: (( $ops_manager.ca_certificate ))
+        - name: ccpackage
+          manifest: |
+            max_package_size: (( .cloud_controller.max_package_size.value ))
+            max_valid_packages_stored: (( .properties.system_blobstore_ccpackage_max_valid_packages_stored.value ))
+            blobstore_type: webdav
+            webdav_config:
+              username: ((( webdav-blobstore-credentials.username )))
+              password: ((( webdav-blobstore-credentials.password )))
+              public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+              ca_cert: (( $ops_manager.ca_certificate ))
+        - name: ccresource
+          manifest: |
+            blobstore_type: webdav
+            webdav_config:
+              username: ((( webdav-blobstore-credentials.username )))
+              password: ((( webdav-blobstore-credentials.password )))
+              public_endpoint: https://blobstore.(( .cloud_controller.system_domain.value ))
+              ca_cert: (( $ops_manager.ca_certificate ))
+        - name: backup_buildpack
+          manifest: null
+        - name: backup_buildpack_iam
+          manifest: null
+        - name: backup_droplet
+          manifest: null
+        - name: backup_droplet_iam
+          manifest: null
+        - name: backup_package
+          manifest: null
+        - name: backup_package_iam
+          manifest: null
+        - name: enable_unversioned_s3_backup
+          manifest: |
+            false
+        - name: enable_backup_path_style
+          manifest: |
+            false
+        - name: enable_versioned_s3_backup
+          manifest: |
+            false
+        - name: enable_gcs_backup
+          manifest: |
+            false
+        - name: enable_internal_backup
+          manifest: |
+            true
+
+    - name: external
+      select_value: external
+      named_manifests:
+        - name: aes_hash
+          manifest: |
+            encryption: "AES256"
+        - name: kms_hash
+          manifest: |
+            encryption: "aws:kms"
+            x-amz-server-side-encryption-aws-kms-key-id: (( .properties.system_blobstore.external.encryption_kms_key_id.value ))
+        - name: encrypt_hash
+          manifest: |
+            "(( .properties.system_blobstore.external.encryption_kms_key_id.value ? .properties.system_blobstore.selected_option.parsed_manifest(kms_hash) : .properties.system_blobstore.selected_option.parsed_manifest(aes_hash) ))"
+        - name: empty_hash
+          manifest: '{}'
+        - name: all_buckets
+          manifest: |
+            buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack) ))'
+            droplets: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_droplet_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_droplet) ))'
+            packages: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_package_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_package) ))'
+        - name: skip_buckets
+          manifest: |
+            '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_skip_droplets) ? .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_packages_buckets) ))'
+        - name: skip_droplets_buckets
+          manifest: |
+            buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack) ))'
+            packages: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_package_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_package) ))'
+        - name: skip_droplets_packages_buckets
+          manifest: |
+            buildpacks: '(( .properties.system_blobstore.external.iam_instance_profile_authentication.value ? .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack_iam) : .properties.system_blobstore.selected_option.parsed_manifest(backup_buildpack) ))'
+        - name: ccbuildpack
+          manifest: |
+            blobstore_type: fog
+            buildpack_directory_key: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
+            fog_connection:
+              provider: AWS
+              aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+              aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccbuildpack_iam
+          manifest: |
+            blobstore_type: fog
+            buildpack_directory_key: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
+            fog_connection:
+              provider: AWS
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              use_iam_profile: true
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccdroplet
+          manifest: |
+            max_staged_droplets_stored:  (( .properties.system_blobstore_ccdroplet_max_staged_droplets_stored.value ))
+            blobstore_type: fog
+            droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
+            fog_connection:
+              provider: AWS
+              aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+              aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccdroplet_iam
+          manifest: |
+            max_staged_droplets_stored: 2
+            blobstore_type: fog
+            droplet_directory_key: (( .properties.system_blobstore.external.droplets_bucket.value ))
+            fog_connection:
+              provider: AWS
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              use_iam_profile: true
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccpackage
+          manifest: |
+            max_package_size: (( .cloud_controller.max_package_size.value ))
+            max_valid_packages_stored: (( .properties.system_blobstore_ccpackage_max_valid_packages_stored.value ))
+            app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
+            blobstore_type: fog
+            fog_connection:
+              provider: AWS
+              aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+              aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccpackage_iam
+          manifest: |
+            max_package_size: (( .cloud_controller.max_package_size.value ))
+            app_package_directory_key: (( .properties.system_blobstore.external.packages_bucket.value ))
+            blobstore_type: fog
+            fog_connection:
+              provider: AWS
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              use_iam_profile: true
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccresource
+          manifest: |
+            blobstore_type: fog
+            resource_directory_key: (( .properties.system_blobstore.external.resources_bucket.value ))
+            fog_connection:
+              provider: AWS
+              aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+              aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: ccresource_iam
+          manifest: |
+            blobstore_type: fog
+            resource_directory_key: (( .properties.system_blobstore.external.resources_bucket.value ))
+            fog_connection:
+              provider: AWS
+              aws_signature_version: (( .properties.system_blobstore.external.signature_version.value ))
+              use_iam_profile: true
+              region:  (( .properties.system_blobstore.external.region.value ))
+              path_style: (( .properties.system_blobstore.external.path_style_s3_urls.value ))
+              endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            fog_aws_storage_options: '(( .properties.system_blobstore.external.encryption.value ? .properties.system_blobstore.selected_option.parsed_manifest(encrypt_hash) : .properties.system_blobstore.selected_option.parsed_manifest(empty_hash) ))'
+        - name: backup_buildpack
+          manifest: |
+            name: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+            aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            backup:
+              name: (( .properties.system_blobstore.external.buildpacks_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: backup_buildpack_iam
+          manifest: |
+            name: (( .properties.system_blobstore.external.buildpacks_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            use_iam_profile: true
+            backup:
+              name: (( .properties.system_blobstore.external.buildpacks_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: backup_droplet
+          manifest: |
+            name: (( .properties.system_blobstore.external.droplets_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+            aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            backup:
+              name: (( .properties.system_blobstore.external.droplets_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: backup_droplet_iam
+          manifest: |
+            name: (( .properties.system_blobstore.external.droplets_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            use_iam_profile: true
+            backup:
+              name: (( .properties.system_blobstore.external.droplets_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: backup_package
+          manifest: |
+            name: (( .properties.system_blobstore.external.packages_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            aws_access_key_id: (( .properties.system_blobstore.external.access_key.value ))
+            aws_secret_access_key: (( .properties.system_blobstore.external.secret_key.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            backup:
+              name: (( .properties.system_blobstore.external.packages_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: backup_package_iam
+          manifest: |
+            name: (( .properties.system_blobstore.external.packages_bucket.value ))
+            region: (( .properties.system_blobstore.external.region.value ))
+            endpoint: (( .properties.system_blobstore.external.endpoint.value ))
+            use_iam_profile: true
+            backup:
+              name: (( .properties.system_blobstore.external.packages_backup_bucket.value ))
+              region: (( .properties.system_blobstore.external.backup_region.value ))
+        - name: enable_unversioned_s3_backup
+          manifest: |
+            '(( .properties.system_blobstore.external.versioning.value ? false : true ))'
+        - name: enable_versioned_s3_backup
+          manifest: |
+            (( .properties.system_blobstore.external.versioning.value ))
+        - name: enable_backup_path_style
+          manifest: |
+             (( .properties.system_blobstore.external.path_style_s3_urls.value ))
+        - name: enable_gcs_backup
+          manifest: |
+            false
+        - name: enable_internal_backup
+          manifest: |
+            false
+
+      property_blueprints:
+        - name: endpoint
+          type: string
+          configurable: true
+          default: "https://s3.amazonaws.com"
+        - name: path_style_s3_urls
+          type: boolean
+          configurable: true
+          default: true
+        - name: buildpacks_bucket
+          type: string
+          configurable: true
+        - name: droplets_bucket
+          type: string
+          configurable: true
+        - name: packages_bucket
+          type: string
+          configurable: true
+        - name: resources_bucket
+          type: string
+          configurable: true
+        - name: buildpacks_backup_bucket
+          type: string
+          configurable: true
+          optional: true
+        - name: droplets_backup_bucket
+          type: string
+          configurable: true
+          optional: true
+        - name: packages_backup_bucket
+          type: string
+          configurable: true
+          optional: true
+        - name: iam_instance_profile_authentication
+          type: boolean
+          configurable: true
+          default: false
+        - name: access_key
+          type: string
+          configurable: true
+          optional: true
+        - name: secret_key
+          type: secret
+          configurable: true
+          optional: true
+        - name: signature_version
+          type: dropdown_select
+          configurable: true
+          optional: false
+          default: 4
+          options:
+          - name: 2
+            label: V2 Signature
+          - name: 4
+            label: V4 Signature
+        - name: region
+          type: string
+          configurable: true
+          optional: true
+        - name: backup_region
+          type: string
+          configurable: true
+          optional: true
+        - name: encryption
+          type: boolean
+          configurable: true
+          optional: false
+          default: false
+        - name: encryption_kms_key_id
+          type: string
+          configurable: true
+          optional: true
+        - name: versioning
+          type: boolean
+          configurable: true
+          default: false
+
+    - name: external_gcs
+      select_value: external_gcs
+      named_manifests:
+        - name: all_buckets
+          manifest: |
+            droplet:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.droplets_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+            buildpack:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+            package:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+        - name: skip_buckets
+          manifest: |
+            '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_skip_droplets) ? .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_packages_buckets) ))'
+        - name: skip_droplets_buckets
+          manifest: |
+            buildpack:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+            package:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+        - name: skip_droplets_packages_buckets
+          manifest: |
+            buildpack:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+        - name: ccbuildpack
+          manifest: |
+            blobstore_type: fog
+            buildpack_directory_key: (( .properties.system_blobstore.external_gcs.buildpacks_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
+              google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
+        - name: ccdroplet
+          manifest: |
+            max_staged_droplets_stored:  (( .properties.system_blobstore_ccdroplet_max_staged_droplets_stored.value ))
+            blobstore_type: fog
+            droplet_directory_key: (( .properties.system_blobstore.external_gcs.droplets_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
+              google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
+        - name: ccpackage
+          manifest: |
+            max_package_size: (( .cloud_controller.max_package_size.value ))
+            max_valid_packages_stored: (( .properties.system_blobstore_ccpackage_max_valid_packages_stored.value ))
+            blobstore_type: fog
+            app_package_directory_key: (( .properties.system_blobstore.external_gcs.packages_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
+              google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
+        - name: ccresource
+          manifest: |
+            blobstore_type: fog
+            resource_directory_key: (( .properties.system_blobstore.external_gcs.resources_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_storage_access_key_id: (( .properties.system_blobstore.external_gcs.access_key.value ))
+              google_storage_secret_access_key: (( .properties.system_blobstore.external_gcs.secret_key.value ))
+        - name: backup_buildpack
+          manifest: null
+        - name: backup_buildpack_iam
+          manifest: null
+        - name: backup_droplet
+          manifest: null
+        - name: backup_droplet_iam
+          manifest: null
+        - name: backup_package
+          manifest: null
+        - name: backup_package_iam
+          manifest: null
+        - name: enable_unversioned_s3_backup
+          manifest: |
+            false
+        - name: enable_versioned_s3_backup
+          manifest: |
+            false
+        - name: enable_backup_path_style
+          manifest: |
+            false
+        - name: enable_gcs_backup
+          manifest: |
+            false
+        - name: enable_internal_backup
+          manifest: |
+            false
+      property_blueprints:
+        - name: buildpacks_bucket
+          type: string
+          configurable: true
+        - name: droplets_bucket
+          type: string
+          configurable: true
+        - name: packages_bucket
+          type: string
+          configurable: true
+        - name: resources_bucket
+          type: string
+          configurable: true
+        - name: access_key
+          type: string
+          configurable: true
+        - name: secret_key
+          type: secret
+          configurable: true
+
+    - name: external_gcs_service_account
+      select_value: external_gcs_service_account
+      named_manifests:
+        - name: all_buckets
+          manifest: |
+            droplet:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.droplets_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+            buildpack:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+            package:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+        - name: skip_buckets
+          manifest: |
+            '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_skip_droplets) ? .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_packages_buckets) ))'
+        - name: skip_droplets_buckets
+          manifest: |
+            buildpack:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+            package:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+        - name: skip_droplets_packages_buckets
+          manifest: |
+            buildpack:
+              bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+              backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+        - name: ccbuildpack
+          manifest: |
+            blobstore_type: fog
+            buildpack_directory_key: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
+              google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
+              google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+              open_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.open_timeout_sec.value ))
+              read_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.read_timeout_sec.value ))
+              send_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.send_timeout_sec.value ))
+        - name: ccdroplet
+          manifest: |
+            max_staged_droplets_stored: 2
+            blobstore_type: fog
+            droplet_directory_key: (( .properties.system_blobstore.external_gcs_service_account.droplets_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
+              google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
+              google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+              open_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.open_timeout_sec.value ))
+              read_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.read_timeout_sec.value ))
+              send_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.send_timeout_sec.value ))
+        - name: ccpackage
+          manifest: |
+            max_package_size: (( .cloud_controller.max_package_size.value ))
+            blobstore_type: fog
+            app_package_directory_key: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
+              google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
+              google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+              open_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.open_timeout_sec.value ))
+              read_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.read_timeout_sec.value ))
+              send_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.send_timeout_sec.value ))
+        - name: ccresource
+          manifest: |
+            blobstore_type: fog
+            resource_directory_key: (( .properties.system_blobstore.external_gcs_service_account.resources_bucket.value ))
+            fog_connection:
+              provider: Google
+              google_project: (( .properties.system_blobstore.external_gcs_service_account.project_id.value ))
+              google_client_email: (( .properties.system_blobstore.external_gcs_service_account.service_account_email.value ))
+              google_json_key_string: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+              open_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.open_timeout_sec.value ))
+              read_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.read_timeout_sec.value ))
+              send_timeout_sec: (( .properties.system_blobstore.external_gcs_service_account.send_timeout_sec.value ))
+        - name: backup_bucket
+          manifest: |
+            enabled: true
+            gcp_service_account_key: (( .properties.system_blobstore.external_gcs_service_account.service_account_json_key.value ))
+            bpm:
+              enabled: true
+            buckets:
+              droplet:
+                bucket_name: (( .properties.system_blobstore.external_gcs_service_account.droplets_bucket.value ))
+                backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+              buildpack:
+                bucket_name: (( .properties.system_blobstore.external_gcs_service_account.buildpacks_bucket.value ))
+                backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+              package:
+                bucket_name: (( .properties.system_blobstore.external_gcs_service_account.packages_bucket.value ))
+                backup_bucket_name: (( .properties.system_blobstore.external_gcs_service_account.backup_bucket.value ))
+        - name: enable_gcs_backup
+          manifest: |
+            true
+        - name: enable_unversioned_s3_backup
+          manifest: |
+            false
+        - name: enable_versioned_s3_backup
+          manifest: |
+            false
+        - name: enable_backup_path_style
+          manifest: |
+            false
+        - name: enable_internal_backup
+          manifest: |
+            false
+        - name: backup_buildpack
+          manifest: null
+        - name: backup_buildpack_iam
+          manifest: null
+        - name: backup_droplet
+          manifest: null
+        - name: backup_droplet_iam
+          manifest: null
+        - name: backup_package
+          manifest: null
+        - name: backup_package_iam
+          manifest: null
+
+      property_blueprints:
+        - name: buildpacks_bucket
+          type: string
+          configurable: true
+        - name: droplets_bucket
+          type: string
+          configurable: true
+        - name: packages_bucket
+          type: string
+          configurable: true
+        - name: resources_bucket
+          type: string
+          configurable: true
+        - name: backup_bucket
+          type: string
+          configurable: true
+        - name: project_id
+          type: string
+          configurable: true
+        - name: service_account_email
+          type: string
+          configurable: true
+        - name: service_account_json_key
+          type: text
+          configurable: true
+        - name: open_timeout_sec
+          type: integer
+          configurable: true
+          optional: true
+        - name: read_timeout_sec
+          type: integer
+          configurable: true
+          optional: true
+        - name: send_timeout_sec
+          type: integer
+          configurable: true
+          optional: true
+
+    - name: external_azure
+      select_value: external_azure
+      named_manifests:
+        - name: all_buckets
+          manifest: |
+            buildpacks:
+              name: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
+              azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              restore_from:
+                azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+                azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
+            droplets:
+              name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
+              azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              restore_from:
+                azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+                azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
+            packages:
+              name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
+              azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              restore_from:
+                azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+                azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
+        - name: skip_buckets
+          manifest: |
+            '(( .properties.system_blobstore_backup_level.selected_option.parsed_manifest(backup_skip_droplets) ? .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_buckets) : .properties.system_blobstore.selected_option.parsed_manifest(skip_droplets_packages_buckets) ))'
+        - name: skip_droplets_buckets
+          manifest: |
+            buildpacks:
+              name: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
+              azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              restore_from:
+                azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+                azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
+            packages:
+              name: (( .properties.system_blobstore.external_azure.droplets_container.value ))
+              azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              restore_from:
+                azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+                azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
+        - name: skip_droplets_packages_buckets
+          manifest: |
+            buildpacks:
+              name: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
+              azure_storage_account:  (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              restore_from:
+                azure_storage_account:  (( .properties.system_blobstore.external_azure.restore_from_account_name.value ))
+                azure_storage_key: (( .properties.system_blobstore.external_azure.restore_from_access_key.value ))
+        - name: ccbuildpack
+          manifest: |
+            blobstore_type: fog
+            buildpack_directory_key: (( .properties.system_blobstore.external_azure.buildpacks_container.value ))
+            fog_connection:
+              provider: AzureRM
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+        - name: ccdroplet
+          manifest: |
+            max_staged_droplets_stored:  (( .properties.system_blobstore_ccdroplet_max_staged_droplets_stored.value ))
+            blobstore_type: fog
+            droplet_directory_key: (( .properties.system_blobstore.external_azure.droplets_container.value ))
+            fog_connection:
+              provider: AzureRM
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+        - name: ccpackage
+          manifest: |
+            max_package_size: (( .cloud_controller.max_package_size.value ))
+            max_valid_packages_stored: (( .properties.system_blobstore_ccpackage_max_valid_packages_stored.value ))
+            blobstore_type: fog
+            app_package_directory_key: (( .properties.system_blobstore.external_azure.packages_container.value ))
+            fog_connection:
+              provider: AzureRM
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+        - name: ccresource
+          manifest: |
+            blobstore_type: fog
+            resource_directory_key: (( .properties.system_blobstore.external_azure.resources_container.value ))
+            fog_connection:
+              provider: AzureRM
+              environment: (( .properties.system_blobstore.external_azure.environment.value ))
+              azure_storage_account_name: (( .properties.system_blobstore.external_azure.account_name.value ))
+              azure_storage_access_key: (( .properties.system_blobstore.external_azure.access_key.value ))
+        - name: backup_buildpack
+          manifest: null
+        - name: backup_buildpack_iam
+          manifest: null
+        - name: backup_droplet
+          manifest: null
+        - name: backup_droplet_iam
+          manifest: null
+        - name: backup_package
+          manifest: null
+        - name: backup_package_iam
+          manifest: null
+        - name: enable_unversioned_s3_backup
+          manifest: |
+            false
+        - name: enable_versioned_s3_backup
+          manifest: |
+            false
+        - name: enable_backup_path_style
+          manifest: |
+            false
+        - name: enable_gcs_backup
+          manifest: |
+            false
+        - name: enable_internal_backup
+          manifest: |
+            false
+      property_blueprints:
+        - name: buildpacks_container
+          type: string
+          configurable: true
+        - name: droplets_container
+          type: string
+          configurable: true
+        - name: packages_container
+          type: string
+          configurable: true
+        - name: resources_container
+          type: string
+          configurable: true
+        - name: account_name
+          type: string
+          configurable: true
+        - name: access_key
+          type: secret
+          configurable: true
+        - name: environment
+          type: string
+          configurable: true
+          optional: false
+          default: AzureCloud
+        - name: enable_bbr
+          type: boolean
+          configurable: true
+          default: false
+        - name: restore_from_account_name
+          type: string
+          configurable: true
+          optional: true
+        - name: restore_from_access_key
+          type: secret
+          configurable: true
+          optional: true

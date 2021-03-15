@@ -1,0 +1,70 @@
+---
+name: mysql_monitor
+label: MySQL Monitor
+resource_label: MySQL Monitor
+description: Monitors the MySQL Cluster
+templates:
+- $( job "bpm" )
+- $( job "loggregator_agent" )
+- $( job "loggr-syslog-agent" )
+- $( job "metrics-discovery-registrar" )
+- $( job "metrics-agent" )
+- $( job "loggr-forwarder-agent" )
+- $( job "prom_scraper" )
+- $( job "mysql-diag" )
+- $( job "replication-canary" )
+- $( job "syslog_forwarder" )
+resource_definitions:
+- name: ram
+  type: integer
+  label: RAM
+  configurable: true
+  default: 1024
+  constraints:
+    min: 256
+- name: ephemeral_disk
+  type: integer
+  label: Ephemeral Disk
+  configurable: true
+  default: 1024
+  constraints:
+    min: 1024
+- name: persistent_disk
+  type: integer
+  label: Persistent Disk
+  configurable: false
+  default: 0
+- name: cpu
+  type: integer
+  label: CPU
+  configurable: true
+  default: 1
+  constraints:
+    min: 1
+max_in_flight: 1
+single_az_only: true
+instance_definition:
+  name: instances
+  type: integer
+  label: Instances
+  configurable: true
+  default: 1
+  constraints:
+    max: 1
+  zero_if:
+    allow_manual_selection_of_zero: true
+    property_reference: ".properties.system_database"
+    property_values:
+    - external
+property_blueprints:
+- name: poll_frequency
+  type: integer
+  configurable: true
+  default: 30
+- name: write_read_delay
+  type: integer
+  configurable: true
+  default: 20
+- name: recipient_email
+  type: string
+  configurable: true
