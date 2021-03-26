@@ -16,8 +16,8 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#fullpage').fullpage({
-              sectionsColor: ['#f2f2f2', '#4BBFC3',],
-              anchors: ['homepage', 'more'],
+              sectionsColor: ['#f2f2f2', '#4BBFC3', '#1bbc9b'],
+              anchors: ['home', 'more', 'upptime'],
               menu: '#menu',
             });
         });
@@ -28,8 +28,9 @@
 
 
 <ul id="menu">
-    <li data-menuanchor="homepage" class="active"><a href="#homepage">Homepage</a></li>
+    <li data-menuanchor="home" class="active"><a href="#home">Home</a></li>
     <li data-menuanchor="more"><a href="#more">More</a></li>
+    <li data-menuanchor="upptime"><a href="#upptime">Dashboards</a></li>
 </ul>
 
 <div id="fullpage">
@@ -104,6 +105,18 @@
     <div class="section" id="section1">
         <h1>Looking for More?</h1>
         <p><a href="https://docs.google.com/spreadsheets/d/1omDzHU1CO1yKMbDg9plZNscVAf3bNgmHmJX3dmmTqU4#gid=0">PPE Resources Monster Spreadsheet</a></p>
+    </div>
+    <div class="section" id="section2">
+        <div class="slide" id="slide1">
+            <iframe src="https://uptime.releng.rocks/" frameborder="0" width="100%" height="90%">
+            <p><a href="https://uptime.releng.rocks/">Fallback link for browsers that don't support iframes</a></p>
+            </iframe>
+        </div>
+        <div class="slide" id="slide2">
+            <iframe src="https://concourse-summary.releng.rocks/host/releng.ci.cf-app.com/" frameborder="0" width="100%" height="90%">
+            <p><a href="https://concourse-summary.releng.rocks/host/releng.ci.cf-app.com/">Fallback link for browsers that don't support iframes</a></p>
+            </iframe>
+        </div>
     </div>
 </div>
 
