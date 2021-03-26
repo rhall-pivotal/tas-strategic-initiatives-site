@@ -1,0 +1,111 @@
+<!-- Modified from https://html5-templates.com/preview/fullpage_js.html -->
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://html5-templates.com/" />
+    <title>PPE Home</title>
+    <meta name="description" content="Homepage for PPE">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+
+    <script src="script.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#fullpage').fullpage({
+              sectionsColor: ['#f2f2f2', '#4BBFC3',],
+              anchors: ['homepage', 'more'],
+              menu: '#menu',
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+
+<ul id="menu">
+    <li data-menuanchor="homepage" class="active"><a href="#homepage">Homepage</a></li>
+    <li data-menuanchor="more"><a href="#more">More</a></li>
+</ul>
+
+<div id="fullpage">
+    <div class="section active" id="section0">
+        <h1>Welcome!</h1>
+        <div class="grid-container">
+            <div class="grid-item">Basecamp
+                <ul>
+                    <li><a href="https://3.basecamp.com/4957863/projects/20358889">Platform HQ Project</a></li>
+                    <li><a href="#">Playbooks</a></li>
+                    <li><a href="#">Process Records</a></li>
+                </ul>
+                <img src="assets/logo-bc.png">
+            </div>
+            <div class="grid-item">Github
+                <ul>
+                    <li><a href="https://github.com/pivotal/tas">TAS Repository</a></li>
+                    <li><a href="https://github.com/pivotal-cf/upgrade-planner">Upgrade Planner</a></li>
+                    <li><a href="https://github.com/pivotal-cf/om">Platform Automation</a></li>
+                </ul>
+                <img src="assets/logo-gh.png">
+            </div>
+            <div class="grid-item">Miro
+                <ul>
+                    <li><a href="https://miro.com/app/dashboard/">Team Boards</a></li>
+                </ul>
+                <img src="assets/logo-miro.svg">
+            </div> 
+            <div class="grid-item">Slack
+                <ul>
+                    <li><a href="https://vmware.slack.com/archives/C01EHT4AEBW">#platform-provider-experience</a></li>
+                    <li><a href="https://vmware.slack.com/archives/GM0M2EMDW">#platform-provider-experience-private</a></li>
+                    <li>Other team channels [<a href="https://docs.google.com/spreadsheets/d/1omDzHU1CO1yKMbDg9plZNscVAf3bNgmHmJX3dmmTqU4#gid=1506465806">PPE Resources</a>]</li>
+                </ul>
+                <img src="assets/logo-slack.png">
+            </div>
+            <div class="grid-item">Confluence
+                <ul>
+                    <li><a href="https://confluence.eng.vmware.com/display/TASppe">Team Space</a></li>
+                    <li><a href="https://confluence.eng.vmware.com/display/CNA">MAPBU Space</a></li>
+                </ul>
+                <img src="assets/logo-confluence.png">
+            </div>
+            <div class="grid-item">Zoom
+                <ul>
+                    <li><a href="http://video.ppxp.team/">Team Room</a></li>
+                </ul>
+                <img src="assets/logo-zoom.png">
+            </div>  
+            <div class="grid-item">Jira
+                <ul>
+                    <li><a href="https://pivotal-io.atlassian.net/secure/RapidBoard.jspa?rapidView=98">PPE Board</a></li>
+                </ul>
+                <img src="assets/logo-jira.png">
+            </div>
+            <div class="grid-item">Pipestat
+                <ul>
+                    <li><a href="https://pipestat.ppxp.teams/">Pipestat</a></li>
+                </ul>
+                <img src="assets/logo-pipestat.png">
+            </div>
+            <div class="grid-item">Concourse
+                <ul>
+                    <li><a href="https://ppe.ci.cf-app.com/">PPE CI</a></li>
+                    <li><a href="https://releng.ci.cf-app.com/">Releng CI</a></li>
+                </ul>
+                <img src="assets/logo-concourse.png">
+            </div>  
+        </div>
+    </div>
+    <div class="section" id="section1">
+        <h1>Looking for More?</h1>
+        <p><a href="https://docs.google.com/spreadsheets/d/1omDzHU1CO1yKMbDg9plZNscVAf3bNgmHmJX3dmmTqU4#gid=0">PPE Resources Monster Spreadsheet</a></p>
+    </div>
+</div>
+
+</body>
+
+</html>
