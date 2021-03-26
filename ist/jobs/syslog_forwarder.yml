@@ -1,8 +1,0 @@
-name: syslog_forwarder
-release: syslog
-manifest: |
-
-  logging:
-    format:
-      timestamp: (( ..cf.properties.logging_timestamp_format.selected_option.parsed_manifest(rfc3339_or_deprecated) ))
-  syslog: (( .properties.system_logging.selected_option.parsed_manifest(syslog) ))

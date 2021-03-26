@@ -1,8 +1,0 @@
----
-name: cluster-health-logger
-release: pxc
-consumes: |
-  mysql: {from: pxc-direct-mysql}
-
-manifest: |
-  db_password: ((( mysql-cluster-health-credentials.password )))
