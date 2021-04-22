@@ -207,7 +207,7 @@ html.fp-enabled,
     top: -2px;
     color: #fff;
     font-size: 14px;
-    font-family: arial, helvetica, sans-serif;
+    font-family: 'Clarity City', arial, helvetica, sans-serif;
     white-space: nowrap;
     max-width: 220px;
     overflow: hidden;
@@ -284,10 +284,61 @@ q:before,q:after {
 abbr,acronym { border: 0;
 }
 
+/* Clarity font by VMware */
+
+/* Copyright (c) 2016-2019 VMware, Inc. All Rights Reserved.
+ * This software is released under SIL OFL v1.1 license.
+ * The full license information can be found in LICENSE in the root directory of this project.
+ */
+
+/*
+ * Default recommended bundle, optimized for performance and CDN/Bundling tools.
+ */
+
+ /* light */
+ @font-face {
+  font-family: 'Clarity City';
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  src: local('Clarity City'), url('assets/Webfonts/WOFF2/ClarityCity-Light.woff2') format('woff2'),
+    url('assets/Webfonts/WOFF/ClarityCity-Light.woff') format('woff');
+}
+
+/* regular */
+@font-face {
+  font-family: 'Clarity City';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: local('Clarity City'), url('assets/Webfonts/WOFF2/ClarityCity-Regular.woff2') format('woff2'),
+    url('assets/Webfonts/WOFF/ClarityCity-Regular.woff') format('woff');
+}
+
+/* medium */
+@font-face {
+  font-family: 'Clarity City';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: local('Clarity City'), url('assets/Webfonts/WOFF2/ClarityCity-Medium.woff2') format('woff2'),
+    url('assets/Webfonts/WOFF/ClarityCity-Medium.woff') format('woff');
+}
+
+/* semi bold */
+@font-face {
+  font-family: 'Clarity City';
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: local('Clarity City'), url('assets/Webfonts/WOFF2/ClarityCity-SemiBold.woff2') format('woff2'),
+    url('assets/Webfonts/WOFF/ClarityCity-SemiBold.woff') format('woff');
+}
+
 /* Custom CSS
  * --------------------------------------- */
 body{
-	font-family: arial,helvetica;
+	font-family: 'Clarity City', arial,helvetica;
 	color: #333;
 	color: rgba(0,0,0,0.5);
 }
@@ -471,8 +522,10 @@ p {
 .grid-container {
   display: grid;
   grid-gap: 1.5em 2em;
-  grid-template-columns: auto auto auto;
+  /* grid-template-columns: auto auto auto; */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
   margin: 2em 0;
+  max-width: 1400px !important;
 }
 
 .grid-item {
@@ -480,10 +533,12 @@ p {
   color:#444;
   background-color: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(0, 0, 0, 0.2);
-  padding: 0.5em 1em;
+  padding: 0.75em;
   font-size: 2em;
   text-align: left;
   box-shadow: 0 0.1em #BDBDBD;
+  cursor: pointer;
+  border-radius: 10px;
 }
 
 .grid-item img {
@@ -495,9 +550,34 @@ p {
   opacity: 0.3;
 }
 
+h1 {
+  letter-spacing: -2px;
+}
+
+h1, .grid-item h2 {
+  font-weight: bold;
+}
+
 .grid-item ul li {
-    color:#666;
-    margin: 0.5em 0;
-    text-align: left;
-    font-size: 0.5em;
-  }
+  color:#666;
+  margin: 0.5em 0;
+  text-align: left;
+  font-size: 0.5em;
+}
+
+a {
+  color: hsl(198, 100%, 32%);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.resources-link img {
+  width: 24px;
+  vertical-align: -5px;
+}
+
+.resources-link {
+  font-weight: bold;
+}
