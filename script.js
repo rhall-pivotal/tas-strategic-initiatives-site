@@ -3126,8 +3126,12 @@
 
 
 $(document).ready(function() {
-  $(".grid-item").click(function() {
-    window.location = $(this).find("a").attr("href");
+  $(".grid-item").click(function(e) {
+    if ($(e.target).closest('a').length) {
+      $(e.target).click();
+    } else {
+      window.location = $(this).find("a").attr("href");
+    }
     return false;
   });
 });
